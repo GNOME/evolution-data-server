@@ -34,17 +34,18 @@
 
 #include "goaewsclient.h"
 
+#define AUTODISCOVER_MESSAGES 2
 typedef struct {
 	GCancellable *cancellable;
-	SoupMessage *msgs[2];
 	SoupSession *session;
 	gulong cancellable_id;
-	xmlOutputBuffer *buf;
+	gint requests_in_flight;
+} AutodiscoverData;
 
-	/* results */
+typedef struct {
 	gchar *as_url;
 	gchar *oab_url;
-} AutodiscoverData;
+} AutodiscoverResult;
 
 typedef struct {
 	gchar *password;
@@ -54,20 +55,22 @@ typedef struct {
 static void
 ews_autodiscover_data_free (AutodiscoverData *data)
 {
-	if (data->cancellable_id > 0) {
-		g_cancellable_disconnect (
-			data->cancellable, data->cancellable_id);
-		g_object_unref (data->cancellable);
-	}
+	g_cancellable_disconnect (data->cancellable, data->cancellable_id);
+	data->cancellable_id = 0;
+	g_clear_object (&data->cancellable);
+	g_clear_object (&data->session);
 
-	/* soup_session_queue_message stole the references to data->msgs */
-	xmlOutputBufferClose (data->buf);
-	g_object_unref (data->session);
+	g_free (data);
+}
 
-	g_free (data->as_url);
-	g_free (data->oab_url);
+static void
+ews_autodiscover_result_free (gpointer result)
+{
+	AutodiscoverResult *data = result;
+	g_clear_pointer (&data->as_url, g_free);
+	g_clear_pointer (&data->oab_url, g_free);
 
-	g_slice_free (AutodiscoverData, data);
+	g_free (data);
 }
 
 static void
@@ -76,9 +79,9 @@ ews_autodiscover_auth_data_free (gpointer data,
 {
 	AutodiscoverAuthData *auth = data;
 
-	g_free (auth->password);
-	g_free (auth->username);
-	g_slice_free (AutodiscoverAuthData, auth);
+	g_clear_pointer (&auth->password, e_util_safe_free_string);
+	g_clear_pointer (&auth->username, g_free);
+	g_free (auth);
 }
 
 static gboolean
@@ -136,10 +139,11 @@ has_suffix_icmp (const gchar *text,
 
 static gboolean
 ews_autodiscover_parse_protocol (xmlNode *node,
-                                 AutodiscoverData *data)
+                                 AutodiscoverResult **result)
 {
 	gboolean got_as_url = FALSE;
 	gboolean got_oab_url = FALSE;
+	AutodiscoverResult *data = g_new0 (AutodiscoverResult, 1);
 
 	for (node = node->children; node; node = node->next) {
 		xmlChar *content;
@@ -164,7 +168,7 @@ ews_autodiscover_parse_protocol (xmlNode *node,
 				else
 					tmp = g_strconcat (oab_url, "/", "oab.xml", NULL);
 
-				data->oab_url = tmp; /* takes ownership */
+				data->oab_url = g_steal_pointer (&tmp); /* takes ownership */
 			} else {
 				data->oab_url = g_strdup (oab_url);
 			}
@@ -172,16 +176,20 @@ ews_autodiscover_parse_protocol (xmlNode *node,
 			got_oab_url = TRUE;
 		}
 
-		if (got_as_url && got_oab_url)
-			break;
+		if (got_as_url && got_oab_url) {
+			*result = g_steal_pointer (&data);
+			return TRUE;
+		}
 	}
 
-	return (got_as_url && got_oab_url);
+	*result = NULL;
+	g_clear_pointer (&data, ews_autodiscover_result_free);
+	return FALSE;
 }
 
 typedef struct _ResponseData {
 	SoupMessage *msg;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 } ResponseData;
 
 static void
@@ -190,47 +198,26 @@ ews_autodiscover_response_cb (GObject *source_object,
                               gpointer user_data)
 {
 	ResponseData *rd = user_data;
-	GSimpleAsyncResult *simple = rd->simple;
-	SoupMessage *msg = rd->msg;
-	AutodiscoverData *data;
+	GTask *task = g_steal_pointer (&rd->task);
+	SoupMessage *msg = g_steal_pointer (&rd->msg);
+	AutodiscoverData *data = g_task_get_task_data (task);
+	AutodiscoverResult *discover_result = NULL;
 	GBytes *bytes;
 	gboolean success = FALSE;
-	gint idx;
-	gsize size;
-	xmlDoc *doc;
+	xmlDoc *doc = NULL;
 	xmlNode *node;
 	GError *error = NULL;
 
-	data = g_simple_async_result_get_op_res_gpointer (simple);
-
-	g_slice_free (ResponseData, rd);
-	rd = NULL;
-
+	g_clear_pointer (&rd, g_free);
 	bytes = soup_session_send_and_read_finish (SOUP_SESSION (source_object), result, &error);
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_atomic_int_dec_and_test (&data->requests_in_flight);
 		g_clear_error (&error);
 		g_clear_object (&msg);
-		g_clear_object (&simple);
+		g_clear_object (&task);
 		return;
 	}
-
-	size = sizeof (data->msgs) / sizeof (data->msgs[0]);
-
-	for (idx = 0; idx < size; idx++) {
-		if (data->msgs[idx] == msg)
-			break;
-	}
-	if (idx == size) {
-		g_clear_error (&error);
-		if (bytes)
-			g_bytes_unref (bytes);
-		g_clear_object (&msg);
-		g_clear_object (&simple);
-		return;
-	}
-
-	data->msgs[idx] = NULL;
 
 	if (soup_message_get_status (msg) != SOUP_STATUS_OK) {
 		if (!error) {
@@ -240,8 +227,7 @@ ews_autodiscover_response_cb (GObject *source_object,
 				_("Code: %u — Unexpected response from server"),
 				soup_message_get_status (msg));
 		}
-		if (bytes)
-			g_bytes_unref (bytes);
+		g_clear_pointer (&bytes, g_bytes_unref);
 		goto out;
 	}
 
@@ -299,22 +285,21 @@ ews_autodiscover_response_cb (GObject *source_object,
 
 	for (node = node->children; node; node = node->next) {
 		if (ews_check_node (node, "Protocol")) {
-			success = ews_autodiscover_parse_protocol (node, data);
+			success = ews_autodiscover_parse_protocol (node, &discover_result);
 			break;
 		}
 	}
-	if (!success) {
+
+	if (success) {
+		g_task_return_pointer (task,
+			g_steal_pointer (&discover_result),
+			ews_autodiscover_result_free);
+	} else {
 		g_set_error (
 			&error, GOA_ERROR,
 			GOA_ERROR_FAILED, /* TODO: more specific */
 			_("Failed to find ASUrl and OABUrl in autodiscover response"));
 			goto out;
-	}
-
-	for (idx = 0; idx < size; idx++) {
-		if (data->msgs[idx] != NULL) {
-			data->msgs[idx] = NULL;
-		}
 	}
 
 	/* Since we are cancelling from the same thread
@@ -325,23 +310,18 @@ ews_autodiscover_response_cb (GObject *source_object,
 
  out:
 	if (error != NULL) {
-		for (idx = 0; idx < size; idx++) {
-			if (data->msgs[idx] != NULL) {
-				/* There's another request outstanding.
-				 * Hope that it has better luck. */
-				g_clear_error (&error);
-				g_clear_object (&msg);
-				g_clear_object (&simple);
-				return;
-			}
+		/* There's another request outstanding.
+		 * Hope that it has better luck. */
+		if (g_atomic_int_dec_and_test (&data->requests_in_flight)) {
+			g_task_return_error (task, g_steal_pointer (&error));
 		}
-		g_simple_async_result_take_error (simple, error);
+
+		g_clear_error (&error);
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-	g_object_unref (simple);
+	g_clear_pointer (&doc, xmlFreeDoc);
 	g_clear_object (&msg);
-	g_clear_object (&simple);
+	g_clear_object (&task);
 }
 
 static xmlDoc *
@@ -370,24 +350,26 @@ ews_create_autodiscover_xml (const gchar *email)
 	return doc;
 }
 
-static gconstpointer
-compat_libxml_output_buffer_get_content (xmlOutputBufferPtr buf,
-                                         gsize *out_len)
+static GBytes *
+libxml_output_buffer_to_gbytes (xmlOutputBuffer *buf)
 {
+	GBytes *bytes;
 #ifdef LIBXML2_NEW_BUFFER
-	*out_len = xmlOutputBufferGetSize (buf);
-	return xmlOutputBufferGetContent (buf);
+	gsize len = xmlOutputBufferGetSize (buf);
+	bytes = g_bytes_new_with_free_func (xmlOutputBufferGetContent (buf), len,
+	                                    (GDestroyNotify) xmlOutputBufferClose, buf);
 #else
-	*out_len = buf->buffer->use;
-	return buf->buffer->content;
+	bytes = g_bytes_new_with_free_func (buf->buffer->content, buf->buffer->use,
+	                                    (GDestroyNotify) xmlOutputBufferClose, buf);
 #endif
+	return bytes;
 }
 
 static void
 ews_post_restarted_cb (SoupMessage *msg,
                        gpointer data)
 {
-	xmlOutputBuffer *buf = data;
+	GBytes *buf = data;
 	gconstpointer buf_content;
 	gsize buf_size;
 
@@ -396,7 +378,7 @@ ews_post_restarted_cb (SoupMessage *msg,
 	g_debug ("Working around libsoup bug with redirect");
 	g_object_set (msg, "method", "POST", NULL);
 
-	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
+	buf_content = g_bytes_get_data (buf, &buf_size);
 	e_soup_session_util_set_message_request_body_from_data (msg, TRUE, "text/xml; charset=utf-8", buf_content, buf_size, NULL);
 }
 
@@ -415,11 +397,9 @@ goa_ews_client_accept_certificate_cb (SoupMessage *msg,
 
 static SoupMessage *
 ews_create_msg_for_url (const gchar *url,
-                        xmlOutputBuffer *buf)
+                        GBytes *buf)
 {
 	SoupMessage *msg;
-	gconstpointer buf_content;
-	gsize buf_size;
 
 	msg = soup_message_new (buf != NULL ? "POST" : "GET", url);
 	soup_message_headers_append (
@@ -429,11 +409,13 @@ ews_create_msg_for_url (const gchar *url,
 		G_CALLBACK (goa_ews_client_accept_certificate_cb), NULL);
 
 	if (buf != NULL) {
-		buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
+		gsize buf_size;
+		gconstpointer buf_content = g_bytes_get_data (buf, &buf_size);
 		e_soup_session_util_set_message_request_body_from_data (msg, TRUE, "text/xml; charset=utf-8", buf_content, buf_size, NULL);
-		g_signal_connect (
+		g_signal_connect_data (
 			msg, "restarted",
-			G_CALLBACK (ews_post_restarted_cb), buf);
+			G_CALLBACK (ews_post_restarted_cb), g_bytes_ref (buf),
+			(GClosureNotify) g_bytes_unref, 0);
 	}
 
 	return msg;
@@ -448,39 +430,64 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	GoaAccount *goa_account;
 	GoaExchange *goa_exchange;
 	GoaPasswordBased *goa_password;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AutodiscoverData *data;
-	AutodiscoverAuthData *auth;
-	gchar *url1;
-	gchar *url2;
+	gchar *urls[AUTODISCOVER_MESSAGES];
 	xmlDoc *doc;
 	xmlOutputBuffer *buf;
 	gchar *email;
+	gchar *username;
 	gchar *host;
 	gchar *password = NULL;
 	GError *error = NULL;
+	GBytes *bytes;
+	guint ii;
 
 	g_return_if_fail (GOA_IS_OBJECT (goa_object));
 
-	goa_account = goa_object_get_account (goa_object);
-	goa_exchange = goa_object_get_exchange (goa_object);
-	goa_password = goa_object_get_password_based (goa_object);
+	task = g_task_new (goa_object, cancellable, callback, user_data);
+	g_task_set_source_tag (task, goa_ews_autodiscover);
+	g_task_set_check_cancellable (task, TRUE);
 
-	email = goa_account_dup_presentation_identity (goa_account);
+	goa_password = goa_object_get_password_based (goa_object);
+	goa_password_based_call_get_password_sync (
+		goa_password, "", &password, cancellable, &error);
+	g_clear_object (&goa_password);
+
+	/* Sanity check */
+	g_return_if_fail (
+		((password != NULL) && (error == NULL)) ||
+		((password == NULL) && (error != NULL)));
+
+	if (error) {
+		g_dbus_error_strip_remote_error (error);
+		g_task_return_error (task, g_steal_pointer (&error));
+		g_object_unref (task);
+		return;
+	}
+
+	goa_exchange = goa_object_get_exchange (goa_object);
 	host = goa_exchange_dup_host (goa_exchange);
+	g_clear_object (&goa_exchange);
+
+	goa_account = goa_object_get_account (goa_object);
+	email = goa_account_dup_presentation_identity (goa_account);
+	username = goa_account_dup_identity (goa_account);
+	g_clear_object (&goa_account);
 
 	doc = ews_create_autodiscover_xml (email);
 	buf = xmlAllocOutputBuffer (NULL);
 	xmlNodeDumpOutput (buf, doc, xmlDocGetRootElement (doc), 0, 1, NULL);
 	xmlOutputBufferFlush (buf);
+	bytes = libxml_output_buffer_to_gbytes (g_steal_pointer (&buf));
+	g_clear_pointer (&doc, xmlFreeDoc);
+	g_clear_pointer (&email, g_free);
 
-	url1 = g_strdup_printf (
+	urls[0] = g_strdup_printf (
 		"https://%s/autodiscover/autodiscover.xml", host);
-	url2 = g_strdup_printf (
+	urls[1] = g_strdup_printf (
 		"https://autodiscover.%s/autodiscover/autodiscover.xml", host);
-
-	g_free (host);
-	g_free (email);
+	g_clear_pointer (&host, g_free);
 
 	/* http://msdn.microsoft.com/en-us/library/ee332364.aspx says we are
 	* supposed to try $domain and then autodiscover.$domain. But some
@@ -488,14 +495,13 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	* instead of rejecting connections, and make the request take ages
 	* to time out. So run both queries in parallel and let the fastest
 	* (successful) one win. */
-	data = g_slice_new0 (AutodiscoverData);
-	data->buf = buf;
-	data->msgs[0] = ews_create_msg_for_url (url1, buf);
-	data->msgs[1] = ews_create_msg_for_url (url2, buf);
+
+	data = g_new0 (AutodiscoverData, 1);
 	data->session = soup_session_new_with_options (
 		"timeout", 90,
 		"accept-language-auto", TRUE,
 		NULL);
+	data->requests_in_flight = AUTODISCOVER_MESSAGES;
 	if (G_IS_CANCELLABLE (cancellable)) {
 		data->cancellable = g_object_ref (cancellable);
 		data->cancellable_id = g_cancellable_connect (
@@ -503,75 +509,34 @@ goa_ews_autodiscover (GoaObject *goa_object,
 			G_CALLBACK (ews_autodiscover_cancelled_cb),
 			data, NULL);
 	}
+	g_task_set_task_data (task, data, (GDestroyNotify) ews_autodiscover_data_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (goa_object), callback,
-		user_data, goa_ews_autodiscover);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, data, (GDestroyNotify) ews_autodiscover_data_free);
-
-	goa_password_based_call_get_password_sync (
-		goa_password, "", &password, cancellable, &error);
-
-	/* Sanity check */
-	g_return_if_fail (
-		((password != NULL) && (error == NULL)) ||
-		((password == NULL) && (error != NULL)));
-
-	if (error == NULL) {
+	for (ii = 0; ii < AUTODISCOVER_MESSAGES; ii++) {
 		ResponseData *rd;
-		gchar *username;
+		AutodiscoverAuthData *auth;
 
-		username = goa_account_dup_identity (goa_account);
+		rd = g_new0 (ResponseData, 1);
+		rd->msg = ews_create_msg_for_url (urls[ii], bytes);
+		rd->task = g_object_ref (task);
+		g_clear_pointer (&urls[ii], g_free);
 
-		auth = g_slice_new0 (AutodiscoverAuthData);
-		auth->username = username;  /* takes ownership */
-		auth->password = password;  /* takes ownership */
-
-		g_signal_connect_data (
-			data->msgs[0], "authenticate",
-			G_CALLBACK (ews_authenticate), auth,
-			ews_autodiscover_auth_data_free, 0);
-
-		auth = g_slice_new0 (AutodiscoverAuthData);
+		auth = g_new0 (AutodiscoverAuthData, 1);
 		auth->username = g_strdup (username);
 		auth->password = g_strdup (password);
 
 		g_signal_connect_data (
-			data->msgs[1], "authenticate",
-			G_CALLBACK (ews_authenticate), auth,
+			rd->msg, "authenticate",
+			G_CALLBACK (ews_authenticate), g_steal_pointer (&auth),
 			ews_autodiscover_auth_data_free, 0);
 
-		rd = g_slice_new (ResponseData);
-		rd->msg = g_object_ref (data->msgs[0]);
-		rd->simple = g_object_ref (simple);
-
-		soup_session_send_and_read_async (data->session, data->msgs[0], G_PRIORITY_DEFAULT, cancellable,
-			ews_autodiscover_response_cb, rd);
-
-		rd = g_slice_new (ResponseData);
-		rd->msg = g_object_ref (data->msgs[1]);
-		rd->simple = g_object_ref (simple);
-
-		soup_session_send_and_read_async (data->session, data->msgs[1], G_PRIORITY_DEFAULT, cancellable,
-			ews_autodiscover_response_cb, rd);
-	} else {
-		g_dbus_error_strip_remote_error (error);
-		g_simple_async_result_take_error (simple, error);
-		g_simple_async_result_complete_in_idle (simple);
-		g_object_unref (simple);
+		soup_session_send_and_read_async (data->session, rd->msg, G_PRIORITY_DEFAULT,
+			cancellable, ews_autodiscover_response_cb, rd);
 	}
 
-	g_free (url2);
-	g_free (url1);
-	xmlFreeDoc (doc);
-
-	g_object_unref (goa_account);
-	g_object_unref (goa_exchange);
-	g_object_unref (goa_password);
+	g_clear_pointer (&username, g_free);
+	g_clear_pointer (&password, e_util_safe_free_string);
+	g_clear_pointer (&bytes, g_bytes_unref);
+	g_object_unref (task);
 }
 
 gboolean
@@ -581,30 +546,22 @@ goa_ews_autodiscover_finish (GoaObject *goa_object,
                              gchar **out_oab_url,
                              GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AutodiscoverData *data;
+	AutodiscoverResult *data;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (goa_object),
-		goa_ews_autodiscover), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, goa_object), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, goa_ews_autodiscover), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	data = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	data = g_task_propagate_pointer (G_TASK (result), error);
+	if (!data)
 		return FALSE;
 
-	if (out_as_url != NULL) {
-		*out_as_url = data->as_url;
-		data->as_url = NULL;
-	}
+	if (out_as_url != NULL)
+		*out_as_url = g_steal_pointer (&data->as_url);
 
-	if (out_oab_url != NULL) {
-		*out_oab_url = data->oab_url;
-		data->oab_url = NULL;
-	}
+	if (out_oab_url != NULL)
+		*out_oab_url = g_steal_pointer (&data->oab_url);
 
+	g_clear_pointer (&data, ews_autodiscover_result_free);
 	return TRUE;
 }
 
