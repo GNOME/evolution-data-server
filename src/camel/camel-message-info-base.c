@@ -929,6 +929,30 @@ message_info_base_set_preview (CamelMessageInfo *mi,
 	if (changed) {
 		g_free (bmi->priv->preview);
 		bmi->priv->preview = g_strdup (preview);
+
+		if (bmi->priv->preview) {
+			gchar *ptr, *wrt = bmi->priv->preview;
+
+			/* make it a single line without tabs, with merged
+			   consecutive spaces and no leading spaces */
+			for (ptr = bmi->priv->preview; *ptr; ptr++) {
+				if (*ptr == '\r') {
+					/* just skip it */
+				} else if (*ptr == '\n' || *ptr == '\t') {
+					if (wrt > bmi->priv->preview && wrt[-1] != ' ') {
+						*wrt = ' ';
+						wrt++;
+					}
+				} else if (*ptr != ' ' || (wrt > bmi->priv->preview && wrt[-1] != ' ')) {
+					if (wrt != ptr)
+						*wrt = *ptr;
+					wrt++;
+				}
+			}
+
+			if (wrt != ptr)
+				*wrt = '\0';
+		}
 	}
 
 	camel_message_info_property_unlock (mi);
