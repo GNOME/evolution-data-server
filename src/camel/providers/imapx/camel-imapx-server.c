@@ -1382,6 +1382,32 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
 			}
 
+			if ((finfo->got & FETCH_PREVIEW) != 0 && finfo->preview) {
+				CamelStream *base;
+				CamelStream *filtered_stream;
+				CamelMimeFilter *filter;
+				const gchar *text;
+
+				base = camel_stream_null_new ();
+				filtered_stream = camel_stream_filter_new (base);
+
+				filter = camel_mime_filter_preview_new (CAMEL_MAX_PREVIEW_LENGTH);
+				camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
+
+				camel_stream_write (filtered_stream, g_bytes_get_data (finfo->preview, NULL), g_bytes_get_size (finfo->preview), NULL, NULL);
+				camel_stream_flush (filtered_stream, NULL, NULL);
+
+				text = camel_mime_filter_preview_get_text (CAMEL_MIME_FILTER_PREVIEW (filter));
+
+				printf ("%s: preview:---%s---\n", __FUNCTION__, text);
+				if (text && *text)
+					camel_message_info_set_preview (mi, text);
+
+				g_clear_object (&filtered_stream);
+				g_clear_object (&filter);
+				g_clear_object (&base);
+			}
+
 			if (!(finfo->got & FETCH_FLAGS) && is->priv->fetch_changes_infos) {
 				FetchChangesInfo *nfo;
 
@@ -3559,10 +3585,17 @@ preauthed:
 			" SubscriptionChange))"
 
 		/* XXX The list of FETCH attributes is negotiable. */
-		if (camel_imapx_store_get_bodystructure_enabled (store))
-			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (" BODYSTRUCTURE"));
-		else
-			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (""));
+		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, PREVIEW)) {
+			if (camel_imapx_store_get_bodystructure_enabled (store))
+				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (" BODYSTRUCTURE PREVIEW"));
+			else
+				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (" PREVIEW"));
+		} else {
+			if (camel_imapx_store_get_bodystructure_enabled (store))
+				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (" BODYSTRUCTURE"));
+			else
+				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (""));
+		}
 		camel_imapx_server_process_command_sync (is, ic, _("Failed to issue NOTIFY"), cancellable, &local_error);
 		camel_imapx_command_unref (ic);
 
@@ -5493,10 +5526,17 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 			if (imapx_uidset_add (&uidset, ic, uid) == 1 || (!link->next && ic && imapx_uidset_done (&uidset, ic))) {
 				GError *local_error = NULL;
 
-				if (bodystructure_enabled)
-					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)");
-				else
-					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER FLAGS)");
+				if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, PREVIEW)) {
+					if (bodystructure_enabled)
+						camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE PREVIEW FLAGS)");
+					else
+						camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER PREVIEW FLAGS)");
+				} else {
+					if (bodystructure_enabled)
+						camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)");
+					else
+						camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER FLAGS)");
+				}
 
 				success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching message info"), cancellable, &local_error);
 

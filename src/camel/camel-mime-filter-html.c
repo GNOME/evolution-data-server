@@ -33,6 +33,7 @@
 
 struct _CamelMimeFilterHTMLPrivate {
 	CamelHTMLParser *ctxt;
+	gboolean in_body;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterHTML, camel_mime_filter_html, CAMEL_TYPE_MIME_FILTER)
@@ -94,11 +95,20 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 		switch (state) {
 		case CAMEL_HTML_PARSER_DATA:
 		case CAMEL_HTML_PARSER_ENT:
-			memcpy (outp, data, len);
-			outp += len;
+			if (priv->in_body && camel_html_parser_tag (priv->ctxt) &&
+			    g_ascii_strcasecmp (camel_html_parser_tag (priv->ctxt), "style") != 0) {
+				memcpy (outp, data, len);
+				outp += len;
+			}
 			break;
 		case CAMEL_HTML_PARSER_ELEMENT:
 			/* FIXME: do some whitespace processing here */
+			if (camel_html_parser_tag (priv->ctxt)) {
+				if (g_ascii_strcasecmp (camel_html_parser_tag (priv->ctxt), "body") == 0)
+					priv->in_body = TRUE;
+				else if (g_ascii_strcasecmp (camel_html_parser_tag (priv->ctxt), "html") == 0)
+					priv->in_body = FALSE;
+			}
 			break;
 		default:
 			/* ignore everything else */
@@ -162,6 +172,7 @@ mime_filter_html_reset (CamelMimeFilter *mime_filter)
 
 	g_object_unref (priv->ctxt);
 	priv->ctxt = camel_html_parser_new ();
+	priv->in_body = FALSE;
 }
 
 static void

@@ -73,9 +73,12 @@ struct _CamelMultipartClass {
 	gint		(*construct_from_parser)
 						(CamelMultipart *multipart,
 						 CamelMimeParser *parser);
+	gchar *		(*generate_preview)	(CamelMultipart *multipart,
+						 CamelGeneratePreviewFunc func,
+						 gpointer user_data);
 
 	/* Padding for future expansion */
-	gpointer reserved[20];
+	gpointer reserved[19];
 };
 
 GType		camel_multipart_get_type	(void) G_GNUC_CONST;
@@ -98,6 +101,9 @@ void		camel_multipart_set_postface	(CamelMultipart *multipart,
 gint		camel_multipart_construct_from_parser
 						(CamelMultipart *multipart,
 						 CamelMimeParser *parser);
+gchar *		camel_multipart_generate_preview(CamelMultipart *multipart,
+						 CamelGeneratePreviewFunc func,
+						 gpointer user_data);
 
 G_END_DECLS
 

@@ -72,6 +72,7 @@
 #include <camel/camel-mime-filter-index.h>
 #include <camel/camel-mime-filter-linewrap.h>
 #include <camel/camel-mime-filter-pgp.h>
+#include <camel/camel-mime-filter-preview.h>
 #include <camel/camel-mime-filter-progress.h>
 #include <camel/camel-mime-filter-tohtml.h>
 #include <camel/camel-mime-filter-windows.h>

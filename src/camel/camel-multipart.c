@@ -374,6 +374,36 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 		return 0;
 }
 
+static gchar *
+multipart_generate_preview (CamelMultipart *multipart,
+			    CamelGeneratePreviewFunc func,
+			    gpointer user_data)
+{
+	gchar *preview = NULL;
+
+	if (func)
+		preview = func (multipart, user_data);
+
+	if (!preview) {
+		guint ii, count;
+
+		count = camel_multipart_get_number (multipart);
+
+		for (ii = 0; ii < count && !preview; ii++) {
+			CamelMimePart *part;
+
+			part = camel_multipart_get_part (multipart, ii);
+
+			if (part)
+				preview = camel_mime_part_generate_preview (part, func, user_data);
+			else
+				break;
+		}
+	}
+
+	return preview;
+}
+
 static void
 camel_multipart_class_init (CamelMultipartClass *class)
 {
@@ -397,6 +427,7 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	class->set_boundary = multipart_set_boundary;
 	class->get_boundary = multipart_get_boundary;
 	class->construct_from_parser = multipart_construct_from_parser;
+	class->generate_preview = multipart_generate_preview;
 }
 
 static void
@@ -639,4 +670,38 @@ camel_multipart_construct_from_parser (CamelMultipart *multipart,
 	g_return_val_if_fail (class->construct_from_parser != NULL, -1);
 
 	return class->construct_from_parser (multipart, mp);
+}
+
+/**
+ * camel_multipart_generate_preview:
+ * @multipart: a #CamelMultipart
+ * @func: (nullable) (scope call): an optional #CamelGeneratePreviewFunc function, or %NULL
+ * @user_data: (closure func): user data for the @func, or %NULL
+ *
+ * Generates preview of the @multipart, to be used in the interface,
+ * read by the users.
+ *
+ * The optional @func can be used to override default preview generation
+ * function. If provided, it's always called as the first try on the parts.
+ *
+ * Returns: (nullable) (transfer full): part's preview as a new string,
+ *    or %NULL, when cannot be generated. Free with g_free(), when no
+ *    longer needed.
+ *
+ * Since: 3.52
+ **/
+gchar *
+camel_multipart_generate_preview (CamelMultipart *multipart,
+				  CamelGeneratePreviewFunc func,
+				  gpointer user_data)
+{
+	CamelMultipartClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_MULTIPART (multipart), NULL);
+
+	klass = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_val_if_fail (klass != NULL, NULL);
+	g_return_val_if_fail (klass->generate_preview != NULL, NULL);
+
+	return klass->generate_preview (multipart, func, user_data);
 }

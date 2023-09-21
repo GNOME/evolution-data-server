@@ -34,10 +34,13 @@
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-crlf.h"
+#include "camel-mime-filter-html.h"
+#include "camel-mime-filter-preview.h"
 #include "camel-mime-parser.h"
 #include "camel-mime-part-utils.h"
 #include "camel-mime-part.h"
 #include "camel-mime-utils.h"
+#include "camel-multipart.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 #include "camel-stream-null.h"
@@ -1004,6 +1007,63 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	return success;
 }
 
+static gchar *
+mime_part_generate_preview (CamelMimePart *mime_part,
+			    CamelGeneratePreviewFunc func,
+			    gpointer user_data)
+{
+	gchar *preview = NULL;
+
+	if (func)
+		preview = func (mime_part, user_data);
+
+	if (!preview && (!camel_mime_part_get_disposition (mime_part) ||
+	    g_ascii_strcasecmp (camel_mime_part_get_disposition (mime_part), "inline") == 0)) {
+		CamelContentType *ct;
+		CamelDataWrapper *content;
+
+		ct = camel_mime_part_get_content_type (mime_part);
+		content = camel_medium_get_content (CAMEL_MEDIUM (mime_part));
+
+		if (ct && content && (
+		    camel_content_type_is (ct, "text", "plain") ||
+		    camel_content_type_is (ct, "text", "html"))) {
+			CamelStream *base;
+			CamelStream *filtered_stream;
+			CamelMimeFilter *filter;
+			const gchar *text;
+
+			base = camel_stream_null_new ();
+			filtered_stream = camel_stream_filter_new (base);
+
+			if (camel_content_type_is (ct, "text", "html")) {
+				filter = camel_mime_filter_html_new ();
+				camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
+				g_clear_object (&filter);
+			}
+
+			filter = camel_mime_filter_preview_new (CAMEL_MAX_PREVIEW_LENGTH);
+			camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
+
+			camel_data_wrapper_decode_to_stream_sync (content, filtered_stream, NULL, NULL);
+			camel_stream_flush (filtered_stream, NULL, NULL);
+
+			text = camel_mime_filter_preview_get_text (CAMEL_MIME_FILTER_PREVIEW (filter));
+
+			if (text && *text)
+				preview = g_strdup (text);
+
+			g_clear_object (&filtered_stream);
+			g_clear_object (&filter);
+			g_clear_object (&base);
+		} else if (ct && content && CAMEL_IS_MULTIPART (content)) {
+			preview = camel_multipart_generate_preview (CAMEL_MULTIPART (content), func, user_data);
+		}
+	}
+
+	return preview;
+}
+
 static void
 camel_mime_part_class_init (CamelMimePartClass *class)
 {
@@ -1032,6 +1092,7 @@ camel_mime_part_class_init (CamelMimePartClass *class)
 	data_wrapper_class->construct_from_input_stream_sync = mime_part_construct_from_input_stream_sync;
 
 	class->construct_from_parser_sync = mime_part_construct_from_parser_sync;
+	class->generate_preview = mime_part_generate_preview;
 
 	g_object_class_install_property (
 		object_class,
@@ -1693,4 +1754,38 @@ camel_mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
 		result, camel_mime_part_construct_from_parser), FALSE);
 
 	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
+ * camel_mime_part_generate_preview:
+ * @mime_part: a #CamelMimePart
+ * @func: (nullable) (scope call): an optional #CamelGeneratePreviewFunc function, or %NULL
+ * @user_data: (closure func): user data for the @func, or %NULL
+ *
+ * Generates preview of the @mime_part, to be used in the interface,
+ * read by the users.
+ *
+ * The optional @func can be used to override default preview generation
+ * function. If provided, it's always called as the first try on the parts.
+ *
+ * Returns: (nullable) (transfer full): part's preview as a new string,
+ *    or %NULL, when cannot be generated. Free with g_free(), when no
+ *    longer needed.
+ *
+ * Since: 3.52
+ **/
+gchar *
+camel_mime_part_generate_preview (CamelMimePart *mime_part,
+				  CamelGeneratePreviewFunc func,
+				  gpointer user_data)
+{
+	CamelMimePartClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	klass = CAMEL_MIME_PART_GET_CLASS (mime_part);
+	g_return_val_if_fail (klass != NULL, NULL);
+	g_return_val_if_fail (klass->generate_preview != NULL, NULL);
+
+	return klass->generate_preview (mime_part, func, user_data);
 }

@@ -1863,6 +1863,10 @@ tail_recurse:
 						databuffer, datalength, &presize);
 					d (fwrite (*databuffer, sizeof (gchar), *datalength, stdout));
 					d (printf ("'\n"));
+					if (camel_mime_filter_get_request_stop (f->filter)) {
+						*datalength = 0;
+						break;
+					}
 					f = f->next;
 				}
 				return;

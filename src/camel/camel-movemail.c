@@ -407,6 +407,9 @@ camel_movemail_copy_filter (gint fromfd,
 				filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
 				&filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
+
+			if (camel_mime_filter_get_request_stop (filter))
+				break;
 		}
 
 		d (printf ("writing %d filtered bytes\n", towrite));

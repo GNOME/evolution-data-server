@@ -726,6 +726,16 @@ imapx_get_message_sync (CamelFolder *folder,
 					has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
 			}
 
+			if (!camel_message_info_get_preview (mi)) {
+				gchar *preview;
+
+				preview = camel_mime_part_generate_preview (CAMEL_MIME_PART (msg), NULL, NULL);
+				if (preview && *preview)
+					camel_message_info_set_preview (mi, preview);
+
+				g_free (preview);
+			}
+
 			g_clear_object (&mi);
 		}
 	}

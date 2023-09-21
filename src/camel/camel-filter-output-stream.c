@@ -152,6 +152,9 @@ filter_output_stream_write (GOutputStream *stream,
 			NULL, cancellable, error);
 		if (!success)
 			return -1;
+
+		if (camel_mime_filter_get_request_stop (filter))
+			return 0;
 	}
 
 	return count;

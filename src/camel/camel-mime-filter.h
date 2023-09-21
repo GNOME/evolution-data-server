@@ -122,6 +122,12 @@ void		camel_mime_filter_set_size	(CamelMimeFilter *filter,
 						 gsize size,
 						 gint keep);
 
+void		camel_mime_filter_set_request_stop
+						(CamelMimeFilter *filter,
+						 gboolean request_stop);
+gboolean	camel_mime_filter_get_request_stop
+						(CamelMimeFilter *filter);
+
 G_END_DECLS
 
 #endif /* CAMEL_MIME_FILTER_H */

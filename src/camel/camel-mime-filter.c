@@ -30,6 +30,7 @@
 struct _CamelMimeFilterPrivate {
 	gchar *inbuf;
 	gsize inlen;
+	gboolean request_stop;
 };
 
 /* Compatible with filter() and complete() methods. */
@@ -288,6 +289,7 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
 
 	/* could free some buffers, if they are really big? */
 	filter->backlen = 0;
+	filter->priv->request_stop = FALSE;
 }
 
 /**
@@ -348,4 +350,43 @@ camel_mime_filter_set_size (CamelMimeFilter *filter,
 		 * this should be good enough */
 		filter->outpre = PRE_HEAD * 4;
 	}
+}
+
+/**
+ * camel_mime_filter_set_request_stop:
+ * @filter: a #CamelMimeFilter
+ * @request_stop: value to set
+ *
+ * Sets whether the @filter requests, or not, stop further processing.
+ * This can be used to stop before all the data is filtered.
+ *
+ * Since: 3.52
+ **/
+void
+camel_mime_filter_set_request_stop (CamelMimeFilter *filter,
+				    gboolean request_stop)
+{
+	g_return_if_fail (CAMEL_IS_MIME_FILTER (filter));
+
+	filter->priv->request_stop = request_stop;
+}
+
+/**
+ * camel_mime_filter_get_request_stop:
+ * @filter: a #CamelMimeFilter
+ *
+ * Returns whether the @filter requested stop further processing
+ * with camel_mime_filter_set_request_stop().
+ *
+ * Returns: %TRUE, when the @filter request stop further processing,
+ *    %FALSE otherwise
+ *
+ * Since: 3.52
+ **/
+gboolean
+camel_mime_filter_get_request_stop (CamelMimeFilter *filter)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_FILTER (filter), FALSE);
+
+	return filter->priv->request_stop;
 }

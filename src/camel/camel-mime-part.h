@@ -52,6 +52,34 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CAMEL_MAX_PREVIEW_LENGTH:
+ * Maximum length, in characters, of a mime part preview.
+ *
+ * Since: 3.52
+ **/
+#define CAMEL_MAX_PREVIEW_LENGTH 256
+
+/**
+ * CamelGeneratePreviewFunc:
+ * @part: either a #CamelMimePart or a #CamelMultipart
+ * @user_data: user data for the function
+ *
+ * A custom function to generate preview text for the content
+ * of the @part. The @part can be either a #CamelMimePart or
+ * a #CamelMultipart, depending in which context it is called.
+ *
+ * The preview is supposed to be up to %CAMEL_MAX_PREVIEW_LENGTH
+ * characters long, in a plain text format.
+ *
+ * Returns: (nullable) (transfer full): valid UTF-8 encoded preview
+ *    text for the @part, or %NULL, when cannot handle the @part
+ *
+ * Since: 3.52
+ **/
+typedef gchar * (* CamelGeneratePreviewFunc) (gpointer part,
+					      gpointer user_data);
+
 typedef struct _CamelMimePart CamelMimePart;
 typedef struct _CamelMimePartClass CamelMimePartClass;
 typedef struct _CamelMimePartPrivate CamelMimePartPrivate;
@@ -70,9 +98,12 @@ struct _CamelMimePartClass {
 						 CamelMimeParser *parser,
 						 GCancellable *cancellable,
 						 GError **error);
+	gchar *		(*generate_preview)	(CamelMimePart *mime_part,
+						 CamelGeneratePreviewFunc func,
+						 gpointer user_data);
 
 	/* Padding for future expansion */
-	gpointer reserved[20];
+	gpointer reserved[19];
 };
 
 GType		camel_mime_part_get_type	(void);
@@ -136,6 +167,9 @@ gboolean	camel_mime_part_construct_from_parser_finish
 						(CamelMimePart *mime_part,
 						 GAsyncResult *result,
 						 GError **error);
+gchar *		camel_mime_part_generate_preview(CamelMimePart *mime_part,
+						 CamelGeneratePreviewFunc func,
+						 gpointer user_data);
 
 G_END_DECLS
 

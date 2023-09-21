@@ -64,6 +64,7 @@ typedef enum _camel_imapx_id_t {
 	IMAPX_PARSE,
 	IMAPX_PERMANENTFLAGS,
 	IMAPX_PREAUTH,
+	IMAPX_PREVIEW,
 	IMAPX_READ_ONLY,
 	IMAPX_READ_WRITE,
 	IMAPX_RECENT,
@@ -196,7 +197,8 @@ enum {
 	IMAPX_CAPABILITY_X_GM_EXT_1 = (1 << 16),
 	IMAPX_CAPABILITY_UTF8_ACCEPT = (1 << 17),
 	IMAPX_CAPABILITY_UTF8_ONLY = (1 << 18),
-	IMAPX_CAPABILITY_LOGINDISABLED = (1 << 19)
+	IMAPX_CAPABILITY_LOGINDISABLED = (1 << 19),
+	IMAPX_CAPABILITY_PREVIEW = (1 << 20)
 };
 
 struct _capability_info {
@@ -248,6 +250,7 @@ struct _fetch_info {
 	GBytes *body;		/* BODY[.*](<.*>)? */
 	GBytes *text;		/* RFC822.TEXT */
 	GBytes *header;		/* RFC822.HEADER */
+	GBytes *preview;	/* PREVIEW */
 	CamelMessageInfo *minfo;	/* ENVELOPE */
 	CamelMessageContentInfo *cinfo;	/* BODYSTRUCTURE,BODY */
 	guint32 size;		/* RFC822.SIZE */
@@ -272,6 +275,7 @@ struct _fetch_info {
 #define FETCH_SECTION (1 << 9)
 #define FETCH_UID (1 << 10)
 #define FETCH_MODSEQ (1 << 11)
+#define FETCH_PREVIEW (1 << 12)
 
 struct _fetch_info *
 		imapx_parse_fetch		(CamelIMAPXInputStream *stream,

@@ -952,6 +952,12 @@ message_info_base_set_preview (CamelMessageInfo *mi,
 
 			if (wrt != ptr)
 				*wrt = '\0';
+
+			/* shorten to up to CAMEL_MAX_PREVIEW_LENGTH characters (not bytes) */
+			if (g_utf8_strlen (bmi->priv->preview, -1) > CAMEL_MAX_PREVIEW_LENGTH) {
+				wrt = g_utf8_offset_to_pointer (bmi->priv->preview, CAMEL_MAX_PREVIEW_LENGTH);
+				*wrt = '\0';
+			}
 		}
 	}
 

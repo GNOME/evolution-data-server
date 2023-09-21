@@ -71,6 +71,7 @@ set(SOURCES
 	camel-mime-filter-index.c
 	camel-mime-filter-linewrap.c
 	camel-mime-filter-pgp.c
+	camel-mime-filter-preview.c
 	camel-mime-filter-progress.c
 	camel-mime-filter-tohtml.c
 	camel-mime-filter-windows.c
@@ -213,6 +214,7 @@ set(HEADERS
 	camel-mime-filter-index.h
 	camel-mime-filter-linewrap.h
 	camel-mime-filter-pgp.h
+	camel-mime-filter-preview.h
 	camel-mime-filter-progress.h
 	camel-mime-filter-tohtml.h
 	camel-mime-filter-windows.h

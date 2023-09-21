@@ -489,7 +489,8 @@ struct {
 	{ "X-GM-EXT-1", IMAPX_CAPABILITY_X_GM_EXT_1 },
 	{ "UTF8=ACCEPT", IMAPX_CAPABILITY_UTF8_ACCEPT },
 	{ "UTF8=ONLY", IMAPX_CAPABILITY_UTF8_ONLY },
-	{ "LOGINDISABLED", IMAPX_CAPABILITY_LOGINDISABLED }
+	{ "LOGINDISABLED", IMAPX_CAPABILITY_LOGINDISABLED },
+	{ "PREVIEW", IMAPX_CAPABILITY_PREVIEW }
 };
 
 static GMutex capa_htable_lock;         /* capabilities lookup table lock */
@@ -1787,6 +1788,8 @@ imapx_free_fetch (struct _fetch_info *finfo)
 		g_bytes_unref (finfo->text);
 	if (finfo->header)
 		g_bytes_unref (finfo->header);
+	if (finfo->preview)
+		g_bytes_unref (finfo->preview);
 	if (finfo->cinfo)
 		camel_message_content_info_free (finfo->cinfo);
 	camel_named_flags_free (finfo->user_flags);
@@ -2012,6 +2015,28 @@ imapx_parse_fetch_modseq (CamelIMAPXInputStream *stream,
 }
 
 static gboolean
+imapx_parse_fetch_preview (CamelIMAPXInputStream *stream,
+			   struct _fetch_info *finfo,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	gboolean success;
+
+	success = camel_imapx_input_stream_nstring_bytes (
+		stream, &finfo->preview, FALSE, cancellable, error);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (finfo->preview != NULL)) ||
+		(!success && (finfo->preview == NULL)), FALSE);
+
+	if (success)
+		finfo->got |= FETCH_PREVIEW;
+
+	return success;
+}
+
+static gboolean
 imapx_parse_fetch_rfc822_header (CamelIMAPXInputStream *stream,
                                  struct _fetch_info *finfo,
                                  GCancellable *cancellable,
@@ -2169,6 +2194,11 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 
 			case IMAPX_MODSEQ:
 				success = imapx_parse_fetch_modseq (
+					stream, finfo, cancellable, error);
+				break;
+
+			case IMAPX_PREVIEW:
+				success = imapx_parse_fetch_preview (
 					stream, finfo, cancellable, error);
 				break;
 
@@ -3363,6 +3393,7 @@ imapx_verify_tokens_tab (void)
 		item (IMAPX_PARSE),
 		item (IMAPX_PERMANENTFLAGS),
 		item (IMAPX_PREAUTH),
+		item (IMAPX_PREVIEW),
 		{ IMAPX_READ_ONLY, "READ-ONLY" },
 		{ IMAPX_READ_WRITE, "READ-WRITE" },
 		item (IMAPX_RECENT),

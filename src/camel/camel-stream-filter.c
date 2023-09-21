@@ -94,6 +94,7 @@ stream_filter_read (CamelStream *stream,
                     GError **error)
 {
 	CamelStreamFilterPrivate *priv;
+	gboolean stop_requested = FALSE;
 	gssize size;
 	struct _filter *f;
 
@@ -150,6 +151,11 @@ stream_filter_read (CamelStream *stream,
 				d (fwrite (priv->filtered, sizeof (gchar), priv->filteredlen, stdout));
 				d (printf ("'\n"));
 
+				if (camel_mime_filter_get_request_stop (f->filter)) {
+					stop_requested = TRUE;
+					break;
+				}
+
 				f = f->next;
 			}
 		}
@@ -162,7 +168,7 @@ stream_filter_read (CamelStream *stream,
 
 	g_check (priv->realbuffer);
 
-	return size;
+	return stop_requested ? 0 : size;
 }
 
 /* Note: Since the caller expects to write out as much as they asked us to
@@ -179,6 +185,7 @@ stream_filter_write (CamelStream *stream,
 	struct _filter *f;
 	gsize presize, len, left = n;
 	gchar *buffer, realbuffer[READ_SIZE + READ_PAD];
+	gboolean stop_requested = FALSE;
 
 	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
@@ -213,11 +220,19 @@ stream_filter_write (CamelStream *stream,
 			d (fwrite (buffer, sizeof (gchar), len, stdout));
 			d (printf ("'\n"));
 
+			if (camel_mime_filter_get_request_stop (f->filter)) {
+				stop_requested = TRUE;
+				break;
+			}
+
 			f = f->next;
 		}
 
 		if (camel_stream_write (priv->source, buffer, len, cancellable, error) != len)
 			return -1;
+
+		if (stop_requested)
+			return 0;
 	}
 
 	g_check (priv->realbuffer);

@@ -2876,6 +2876,7 @@ static CamelMessageInfo *
 message_info_new_from_message (CamelFolderSummary *summary,
                                CamelMimeMessage *msg)
 {
+	CamelMessageInfo *mi;
 	CamelFolderSummaryClass *klass;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
@@ -2884,7 +2885,20 @@ message_info_new_from_message (CamelFolderSummary *summary,
 	g_return_val_if_fail (klass != NULL, NULL);
 	g_return_val_if_fail (klass->message_info_new_from_headers != NULL, NULL);
 
-	return klass->message_info_new_from_headers (summary, camel_medium_get_headers (CAMEL_MEDIUM (msg)));
+	mi = klass->message_info_new_from_headers (summary, camel_medium_get_headers (CAMEL_MEDIUM (msg)));
+
+	if (mi && !camel_message_info_get_preview (mi)) {
+		gchar *preview;
+
+		preview = camel_mime_part_generate_preview (CAMEL_MIME_PART (msg), NULL, NULL);
+
+		if (preview) {
+			camel_message_info_set_preview (mi, preview);
+			g_free (preview);
+		}
+	}
+
+	return mi;
 }
 
 static gchar *

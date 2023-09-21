@@ -169,6 +169,9 @@ exit:
 	priv->filtered_length -= n_bytes_read;
 	priv->filtered += n_bytes_read;
 
+	if (camel_mime_filter_get_request_stop (filter))
+		return 0;
+
 	return n_bytes_read;
 }
 
