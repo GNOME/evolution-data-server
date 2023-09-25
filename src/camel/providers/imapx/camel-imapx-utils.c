@@ -2025,12 +2025,8 @@ imapx_parse_fetch_preview (CamelIMAPXInputStream *stream,
 	success = camel_imapx_input_stream_nstring_bytes (
 		stream, &finfo->preview, FALSE, cancellable, error);
 
-	/* Sanity check. */
-	g_return_val_if_fail (
-		(success && (finfo->preview != NULL)) ||
-		(!success && (finfo->preview == NULL)), FALSE);
-
-	if (success)
+	/* the preview can be NIL */
+	if (success && finfo->preview)
 		finfo->got |= FETCH_PREVIEW;
 
 	return success;
