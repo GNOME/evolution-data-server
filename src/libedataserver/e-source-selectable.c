@@ -141,7 +141,7 @@ e_source_selectable_class_init (ESourceSelectableClass *class)
 			"color",
 			"Color",
 			"Textual specification of a color",
-			"#becedd",
+			"#62a0ea",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |

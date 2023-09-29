@@ -6,6 +6,6 @@ Parent=contacts-stub
 
 [Calendar]
 BackendName=contacts
-Color=#fed4d3
+Color=#ffbe6f
 Enabled=true
 Writable=false

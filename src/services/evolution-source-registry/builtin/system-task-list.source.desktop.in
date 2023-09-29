@@ -6,6 +6,6 @@ Parent=local-stub
 
 [Task List]
 BackendName=local
-Color=#becedd
+Color=#62a0ea
 Selected=true
 
