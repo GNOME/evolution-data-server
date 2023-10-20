@@ -1,3 +1,13 @@
+Evolution-Data-Server 3.50.1 2023-10-20
+---------------------------------------
+
+Bug Fixes:
+	I#494 - Update default calendar colors
+	evo-I#1436 - Mail: Correct conversion of UTF-16 encoded text files
+
+Translations:
+	Alan Mortensen (da)
+
 Evolution-Data-Server 3.50.0 2023-09-15
 ---------------------------------------
 
