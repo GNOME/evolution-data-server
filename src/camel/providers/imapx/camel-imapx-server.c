@@ -1399,7 +1399,6 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 				text = camel_mime_filter_preview_get_text (CAMEL_MIME_FILTER_PREVIEW (filter));
 
-				printf ("%s: preview:---%s---\n", __FUNCTION__, text);
 				if (text && *text)
 					camel_message_info_set_preview (mi, text);
 
