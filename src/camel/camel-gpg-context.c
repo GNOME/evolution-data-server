@@ -2700,6 +2700,7 @@ gpg_sign_sync (CamelCipherContext *context,
 
 fail:
 	g_object_unref (ostream);
+	g_object_unref (istream);
 
 	if (gpg)
 		gpg_ctx_free (gpg);
