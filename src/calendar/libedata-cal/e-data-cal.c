@@ -36,6 +36,7 @@
 
 #include "e-data-cal.h"
 #include "e-cal-backend.h"
+#include "e-cal-backend-private.h"
 #include "e-cal-backend-sexp.h"
 
 typedef struct _AsyncContext AsyncContext;

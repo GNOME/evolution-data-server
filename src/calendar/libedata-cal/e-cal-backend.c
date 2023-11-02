@@ -29,6 +29,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "e-cal-backend.h"
+#include "e-cal-backend-private.h"
 
 #define NOTIFY_CHANGES_THRESHOLD 50
 #define NOTIFY_CHANGES_TIMEOUT   333

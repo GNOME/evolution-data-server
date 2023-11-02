@@ -506,12 +506,6 @@ void		e_cal_backend_notify_property_changed
 						 const gchar *prop_name,
 						 const gchar *prop_value);
 
-GSimpleAsyncResult *
-		e_cal_backend_prepare_for_completion
-						(ECalBackend *backend,
-						 guint opid,
-						 GQueue **result_queue);
-
 /**
  * ECalBackendCustomOpFunc:
  * @cal_backend: an #ECalBackend
