@@ -37,6 +37,7 @@
 #include "e-data-book.h"
 #include "e-data-book-view-watcher-memory.h"
 #include "e-book-backend.h"
+#include "e-book-backend-private.h"
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _DispatchNode DispatchNode;

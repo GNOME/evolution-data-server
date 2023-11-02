@@ -446,11 +446,6 @@ gboolean	e_book_backend_delete_cursor	(EBookBackend *backend,
 						 EDataBookCursor *cursor,
 						 GError **error);
 
-GSimpleAsyncResult *
-		e_book_backend_prepare_for_completion
-						(EBookBackend *backend,
-						 guint32 opid,
-						 GQueue **result_queue);
 /**
  * EBookBackendCustomOpFunc:
  * @book_backend: an #EBookBackend

@@ -12,6 +12,7 @@ set(SOURCES
 	e-book-backend.c
 	e-book-backend-cache.c
 	e-book-backend-factory.c
+	e-book-backend-private.h
 	e-book-backend-sexp.c
 	e-book-backend-sqlitedb.c
 	e-book-backend-summary.c

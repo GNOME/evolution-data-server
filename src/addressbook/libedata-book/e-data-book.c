@@ -41,6 +41,7 @@
 #include "e-data-book.h"
 #include "e-data-book-view.h"
 #include "e-book-backend.h"
+#include "e-book-backend-private.h"
 #include "e-book-backend-sexp.h"
 #include "e-book-backend-factory.h"
 
