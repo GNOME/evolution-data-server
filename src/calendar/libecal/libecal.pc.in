@@ -7,7 +7,7 @@ datadir=@SHARE_INSTALL_PREFIX@
 privincludedir=@privincludedir@
 
 Name: libecal
-Description: Client library for evolution calendars
+Description: Client library for Evolution Data Server calendars
 Version: @PROJECT_VERSION@
 Requires: libical-glib libedataserver-@API_VERSION@
 Requires.private: camel-@API_VERSION@

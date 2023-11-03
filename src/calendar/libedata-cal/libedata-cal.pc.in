@@ -11,7 +11,7 @@ privincludedir=@privincludedir@
 backenddir=@ecal_backenddir@
 
 Name: libedata-cal
-Description: Backend library for evolution calendars
+Description: Backend library for Evolution Data Server calendars
 Version: @PROJECT_VERSION@
 Requires: libical-glib libebackend-@API_VERSION@ libecal-@CAL_API_VERSION@
 Libs: -L${libdir} -ledata-cal-@CAL_API_VERSION@

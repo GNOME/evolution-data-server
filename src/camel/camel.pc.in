@@ -8,7 +8,7 @@ privincludedir=@privincludedir@
 camel_providerdir=@camel_providerdir@
 
 Name: camel
-Description: the Evolution MIME message handling library
+Description: The Evolution Data Server MIME message handling library
 Version: @PROJECT_VERSION@
 Requires: gio-2.0
 Libs: -L${libdir} -lcamel-@API_VERSION@

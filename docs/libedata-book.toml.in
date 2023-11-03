@@ -9,7 +9,7 @@ browse_url = "https://gitlab.gnome.org/GNOME/evolution-data-server/"
 repository_url = "https://gitlab.gnome.org/GNOME/evolution-data-server.git"
 authors = "Evolution Data Server Development Team"
 license = "LGPL-2.0-only"
-description = "Backend library for evolution address books"
+description = "Backend library for Evolution Data Server address books"
 dependencies = [ "GObject-2.0", "EDataServer-@API_VERSION@", "EBookContacts-@API_VERSION@" ]
 devhelp = true
 search_index = true
@@ -26,7 +26,7 @@ search_index = true
 
   [dependencies."EBookContacts-@API_VERSION@"]
   name = "EBookContacts"
-  description = "Client library for evolution contacts and vcard structures"
+  description = "Client library for Evolution Data Server contacts and vCard structures"
   docs_url = "https://gnome.pages.gitlab.gnome.org/evolution-data-server/libebook-contacts"
 
 [theme]

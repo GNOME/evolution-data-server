@@ -10,7 +10,7 @@ privincludedir=@privincludedir@
 moduledir=@moduledir@
 
 Name: libebackend
-Description: Utility library for Evolution Data Server Backends
+Description: Utility library for Evolution Data Server backends
 Version: @PROJECT_VERSION@
 Requires: libedataserver-@API_VERSION@
 Libs: -L${libdir} -lebackend-@API_VERSION@

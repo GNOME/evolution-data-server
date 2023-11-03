@@ -9,7 +9,7 @@ browse_url = "https://gitlab.gnome.org/GNOME/evolution-data-server/"
 repository_url = "https://gitlab.gnome.org/GNOME/evolution-data-server.git"
 authors = "Evolution Data Server Development Team"
 license = "LGPL-2.0-only"
-description = "Backend library for evolution calendars"
+description = "Backend library for Evolution Data Server calendars"
 dependencies = [ "GObject-2.0", "EDataServer-@API_VERSION@", "ECal-@CAL_API_VERSION@" ]
 devhelp = true
 search_index = true
@@ -26,7 +26,7 @@ search_index = true
 
   [dependencies."ECal-@CAL_API_VERSION@"]
   name = "ECal"
-  description = "Client library for evolution calendars"
+  description = "Client library for Evolution Data Server calendars"
   docs_url = "https://gnome.pages.gitlab.gnome.org/evolution-data-server/libebook-contacts"
 
 [theme]

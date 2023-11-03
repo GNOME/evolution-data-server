@@ -11,7 +11,7 @@ privincludedir=@privincludedir@
 backenddir=@ebook_backenddir@
 
 Name: libedatabook
-Description: Backend library for evolution address books
+Description: Backend library for Evolution Data Server address books
 Version: @PROJECT_VERSION@
 Requires: libebackend-@API_VERSION@ libebook-contacts-@API_VERSION@
 Libs: -L${libdir} -ledata-book-@API_VERSION@

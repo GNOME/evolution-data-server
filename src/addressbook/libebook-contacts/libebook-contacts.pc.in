@@ -7,7 +7,7 @@ datadir=@SHARE_INSTALL_PREFIX@
 privincludedir=@privincludedir@
 
 Name: libebook-contacts
-Description: Client library for evolution contacts and vcard structures
+Description: Client library for Evolution Data Server contacts and vCard structures
 Version: @PROJECT_VERSION@
 Requires: libedataserver-@API_VERSION@
 Requires.private: camel-@API_VERSION@

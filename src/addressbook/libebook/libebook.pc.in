@@ -7,7 +7,7 @@ datadir=@SHARE_INSTALL_PREFIX@
 privincludedir=@privincludedir@
 
 Name: libebook
-Description: Client library for evolution address books
+Description: Client library for Evolution Data Server address books
 Version: @PROJECT_VERSION@
 Requires: libedataserver-@API_VERSION@ libebook-contacts-@API_VERSION@ libedata-book-@API_VERSION@
 Requires.private: camel-@API_VERSION@ libxml-2.0
