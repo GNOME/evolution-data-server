@@ -252,7 +252,7 @@ main (gint argc,
 			uids = camel_folder_get_uids (folder);
 			check (uids->len == 100);
 			for (j = 0; j < 100; j++) {
-				gchar *uid = uids->pdata[j];
+				uid = uids->pdata[j];
 
 				if ((j / 13) * 13 == j) {
 					camel_folder_set_message_user_flag (folder, uid, "every13", TRUE);

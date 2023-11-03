@@ -42,16 +42,16 @@ typedef EBook Book;
 static Book *create_book  (const gchar *book_id);
 static void  add_contacts (Book *book, GSList *contacts);
 
-static gchar    *book_id = NULL;
-static gchar    *contacts_directory = NULL;
-static gboolean  test_sandbox = FALSE;
+static gchar    *arg_book_id = NULL;
+static gchar    *arg_contacts_directory = NULL;
+static gboolean  arg_test_sandbox = FALSE;
 
 static GOptionEntry option_entries[] = {
-	{"book-id", 'b', 0, G_OPTION_ARG_STRING, &book_id,
+	{"book-id", 'b', 0, G_OPTION_ARG_STRING, &arg_book_id,
 	 "The book identifier string", NULL },
-	{"contacts-directory", 'd', 0, G_OPTION_ARG_FILENAME, &contacts_directory,
+	{"contacts-directory", 'd', 0, G_OPTION_ARG_FILENAME, &arg_contacts_directory,
 	 "The directory from where to read the contact files", NULL },
-	{"use-test-sandbox", 't', 0, G_OPTION_ARG_NONE, &test_sandbox,
+	{"use-test-sandbox", 't', 0, G_OPTION_ARG_NONE, &arg_test_sandbox,
 	 "Whether to use the test case sandbox to create the test book "
 	 "(Only available after EDS 3.10)", NULL },
 	{ NULL }
@@ -287,7 +287,7 @@ setup_migration_run (ETestServerFixture *fixture,
 	EBookClient *book_client;
 	GSList      *contacts;
 
-	contacts = load_contacts (contacts_directory);
+	contacts = load_contacts (arg_contacts_directory);
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 	add_contacts (book_client, contacts);
@@ -324,12 +324,12 @@ main (gint argc,
 	if (!g_option_context_parse (option_context, &argc, &argv, &error))
 		g_error ("Failed to parse program arguments: %s", error->message);
 
-	if (!book_id || !contacts_directory)
+	if (!arg_book_id || !arg_contacts_directory)
 		g_error (
 			"Must provide the book identifier and contacts directory\n%s",
 			g_option_context_get_help (option_context, TRUE, NULL));
 
-	if (test_sandbox) {
+	if (arg_test_sandbox) {
 
 #if EDS_CHECK_VERSION(3,10,0)
 		g_test_init (&argc, &argv, NULL);
@@ -349,9 +349,9 @@ main (gint argc,
 #endif
 	} else {
 
-		contacts = load_contacts (contacts_directory);
+		contacts = load_contacts (arg_contacts_directory);
 
-		book = create_book (book_id);
+		book = create_book (arg_book_id);
 		add_contacts (book, contacts);
 
 		g_object_unref (book);

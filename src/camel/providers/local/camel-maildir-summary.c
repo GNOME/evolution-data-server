@@ -610,7 +610,6 @@ maildir_summary_check (CamelLocalSummary *cls,
 	gint i, count, total;
 	gint forceindex;
 	gchar *new, *cur;
-	gchar *uid;
 	struct _remove_data rd = { cls, changes, NULL };
 	GPtrArray *known_uids;
 
@@ -664,6 +663,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	rewinddir (dir);
 
 	while ((d = readdir (dir))) {
+		gchar *uid;
 		guint32 stored_flags = 0;
 		gint pc;
 

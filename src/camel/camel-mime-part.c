@@ -628,7 +628,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 		}
 
 		if (mp->priv->encoding != camel_data_wrapper_get_encoding (content)) {
-			gchar *content;
+			gchar *tmp_content;
 
 			switch (mp->priv->encoding) {
 			case CAMEL_TRANSFER_ENCODING_BASE64:
@@ -642,11 +642,9 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 				if (filename == NULL)
 					filename = "untitled";
 
-				content = g_strdup_printf (
-					"begin 644 %s\n", filename);
-				count = camel_stream_write_string (
-					ostream, content, cancellable, error);
-				g_free (content);
+				tmp_content = g_strdup_printf ("begin 644 %s\n", filename);
+				count = camel_stream_write_string (ostream, tmp_content, cancellable, error);
+				g_free (tmp_content);
 
 				if (count == -1)
 					return -1;
@@ -821,7 +819,7 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 		}
 
 		if (mp->priv->encoding != camel_data_wrapper_get_encoding (content)) {
-			gchar *content;
+			gchar *tmp_content;
 
 			switch (mp->priv->encoding) {
 			case CAMEL_TRANSFER_ENCODING_BASE64:
@@ -837,13 +835,11 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 				if (filename == NULL)
 					filename = "untitled";
 
-				content = g_strdup_printf (
-					"begin 644 %s\n", filename);
-				success = g_output_stream_write_all (
-					output_stream,
-					content, strlen (content),
+				tmp_content = g_strdup_printf ("begin 644 %s\n", filename);
+				success = g_output_stream_write_all (output_stream,
+					tmp_content, strlen (tmp_content),
 					&bytes_written, cancellable, error);
-				g_free (content);
+				g_free (tmp_content);
 
 				if (!success)
 					return -1;

@@ -2405,7 +2405,6 @@ e_book_client_add_contacts_sync (EBookClient *client,
 	 *     list.  This is unnecessary work. */
 	if (out_added_uids != NULL) {
 		GSList *tmp = NULL;
-		gint ii;
 
 		/* Take ownership of the string array elements. */
 		for (ii = 0; uids[ii] != NULL; ii++) {

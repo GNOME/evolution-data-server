@@ -291,7 +291,6 @@ test_intervals (TCUFixture *fixture,
 		GSList *next = l1->next;
 
 		if (g_rand_double (myrand) < DELETE_PROBABILITY) {
-			ECalComponent *comp;
 			ECalComponentId *id;
 
 			interval = l1->data;

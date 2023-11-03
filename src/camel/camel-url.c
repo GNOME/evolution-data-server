@@ -68,7 +68,7 @@ camel_url_new_with_base (CamelURL *base,
 {
 	CamelURL *url;
 	const gchar *end, *hash, *colon, *semi, *at, *slash, *question;
-	const gchar *p;
+	const gchar *ptr;
 
 #ifdef G_OS_WIN32
 	const gchar *start = url_string;
@@ -93,15 +93,15 @@ camel_url_new_with_base (CamelURL *base,
 		end = url_string + strlen (url_string);
 
 	/* Find protocol: initial [a-z+.-]* substring until ":" */
-	p = url_string;
-	while (p < end && (isalnum ((guchar) * p) ||
-			   *p == '.' || *p == '+' || *p == '-'))
-		p++;
+	ptr = url_string;
+	while (ptr < end && (isalnum ((guchar) *ptr) ||
+			   *ptr == '.' || *ptr == '+' || *ptr == '-'))
+		ptr++;
 
-	if (p > url_string && *p == ':') {
-		url->protocol = g_strndup (url_string, p - url_string);
+	if (ptr > url_string && *ptr == ':') {
+		url->protocol = g_strndup (url_string, ptr - url_string);
 		camel_strdown (url->protocol);
-		url_string = p + 1;
+		url_string = ptr + 1;
 	}
 
 	if (!*url_string && !base)

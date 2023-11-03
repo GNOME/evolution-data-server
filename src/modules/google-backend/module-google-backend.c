@@ -448,9 +448,6 @@ google_add_task_list (ECollectionBackend *collection,
 	e_source_alarms_set_include_me (E_SOURCE_ALARMS (extension), FALSE);
 
 	if (is_new) {
-		ESourceRegistryServer *server;
-
-		server = e_collection_backend_ref_server (collection);
 		e_source_registry_server_add_source (server, source);
 		g_object_unref (server);
 	}

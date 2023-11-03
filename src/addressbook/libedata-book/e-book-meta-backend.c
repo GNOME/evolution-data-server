@@ -1453,18 +1453,18 @@ ebmb_create_contact_sync (EBookMetaBackend *meta_backend,
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!uid) {
-		gchar *new_uid;
+		gchar *gen_uid;
 
-		new_uid = e_util_generate_uid ();
-		if (!new_uid) {
+		gen_uid = e_util_generate_uid ();
+		if (!gen_uid) {
 			g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
 			return FALSE;
 		}
 
-		e_contact_set (contact, E_CONTACT_UID, new_uid);
+		e_contact_set (contact, E_CONTACT_UID, gen_uid);
 		uid = e_contact_get_const (contact, E_CONTACT_UID);
 
-		g_free (new_uid);
+		g_free (gen_uid);
 	}
 
 	if (e_cache_contains (E_CACHE (book_cache), uid, E_CACHE_EXCLUDE_DELETED)) {

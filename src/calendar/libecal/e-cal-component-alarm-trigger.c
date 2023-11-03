@@ -250,7 +250,6 @@ e_cal_component_alarm_trigger_set_from_property (ECalComponentAlarmTrigger *trig
 	if (relative) {
 		ECalComponentAlarmTriggerKind kind;
 		ICalDuration *duration;
-		ICalParameter *param;
 
 		param = i_cal_property_get_first_parameter (prop, I_CAL_RELATED_PARAMETER);
 		if (param) {

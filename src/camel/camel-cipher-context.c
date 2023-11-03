@@ -1102,10 +1102,10 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 				info->email);
 
 		if (index != -1 && info->properties) {
-			GSList *link;
+			GSList *slink;
 
-			for (link = info->properties; link; link = g_slist_next (link)) {
-				CamelCipherCertInfoProperty *property = link->data;
+			for (slink = info->properties; slink; slink = g_slist_next (slink)) {
+				CamelCipherCertInfoProperty *property = slink->data;
 				gpointer value;
 
 				if (!property)
@@ -1138,10 +1138,10 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 				info->email);
 
 		if (index != -1 && info->properties) {
-			GSList *link;
+			GSList *slink;
 
-			for (link = info->properties; link; link = g_slist_next (link)) {
-				CamelCipherCertInfoProperty *property = link->data;
+			for (slink = info->properties; slink; slink = g_slist_next (slink)) {
+				CamelCipherCertInfoProperty *property = slink->data;
 				gpointer value;
 
 				if (!property)

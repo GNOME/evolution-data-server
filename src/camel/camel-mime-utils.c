@@ -4550,9 +4550,9 @@ parse_broken_date (struct _date_token *tokens,
 		}
 
 		if (is_tzone (token) && !got_tzone) {
-			struct _date_token *t = token;
+			struct _date_token *dt = token;
 
-			if ((n = get_tzone (&t)) != -1) {
+			if ((n = get_tzone (&dt)) != -1) {
 				d (printf ("tzone; "));
 				got_tzone = TRUE;
 				offset = n;

@@ -297,11 +297,11 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 						}
 
 						while (*s) {
-							gchar *start = s;
+							gchar *from = s;
 
 							while (*s && imapx_is_quoted_char (*s))
 								s++;
-							g_string_append_len (buffer, start, s - start);
+							g_string_append_len (buffer, from, s - from);
 							if (*s) {
 								g_string_append_c (buffer, '\\');
 								g_string_append_c (buffer, *s);

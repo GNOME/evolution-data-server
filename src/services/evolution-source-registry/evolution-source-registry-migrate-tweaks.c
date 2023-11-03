@@ -82,7 +82,6 @@ evolution_source_registry_migrate_imap_to_imapx (ESourceRegistryServer *server,
 
 	if (g_key_file_has_group (key_file, group_name)) {
 		gchar **keys;
-		gint ii;
 
 		keys = g_key_file_get_keys (
 			key_file, group_name, NULL, NULL);

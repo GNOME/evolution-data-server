@@ -2228,8 +2228,6 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 		nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 		if (nntp_stream == NULL) {
-			gboolean success;
-
 			success = camel_service_connect_sync (
 				service, cancellable, error);
 

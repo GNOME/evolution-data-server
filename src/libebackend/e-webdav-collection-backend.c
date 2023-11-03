@@ -347,8 +347,9 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 	list = e_collection_backend_claim_all_resources (collection);
 
 	for (liter = list; liter; liter = g_list_next (liter)) {
-		ESource *source = liter->data;
 		gchar *resource_id;
+
+		source = liter->data;
 
 		resource_id = e_webdav_collection_backend_get_resource_id (webdav_backend, source);
 		if (resource_id) {

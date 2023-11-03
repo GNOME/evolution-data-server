@@ -790,19 +790,19 @@ sm_verify_cmsg (CamelCipherContext *context,
 					   because CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN means "valid signature,
 					   but not trusted certificate" */
 					if (status == NSSCMSVS_SigningCertNotTrusted) {
-						NSSCMSContentInfo *cinfo;
+						NSSCMSContentInfo *cinfo2;
 						SECOidData *algiddata;
 						SECItem *contentType, *digest;
 						SECOidTag oidTag;
 
-						cinfo = &(sigd->contentInfo);
+						cinfo2 = &(sigd->contentInfo);
 
 						/* find digest and contentType for signerinfo */
 						algiddata = camel_smime_NSS_CMSSignerInfo_GetDigestAlg (si);
 						oidTag = algiddata ? algiddata->offset : SEC_OID_UNKNOWN;
 						digest = camel_smime_NSS_CMSSignedData_GetDigestValue (sigd, oidTag);
 						/* NULL digest is acceptable. */
-						contentType = camel_smime_NSS_CMSContentInfo_GetContentTypeOID (cinfo);
+						contentType = camel_smime_NSS_CMSContentInfo_GetContentTypeOID (cinfo2);
 						/* NULL contentType is acceptable. */
 
 						/* now verify signature */

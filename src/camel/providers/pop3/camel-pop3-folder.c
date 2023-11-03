@@ -643,7 +643,6 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 
 	/* Get rid of the old cache */
 	if (pop3_folder->uids) {
-		gint i;
 		CamelPOP3FolderInfo *last_fi;
 
 		if (pop3_folder->uids->len) {

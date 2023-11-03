@@ -103,8 +103,6 @@ book_utils_get_recipient_certificates_thread (gpointer data,
 
 		if (client && e_book_client_get_contacts_sync (client, sexp->str, &contacts, rcd->cancellable, NULL) && contacts) {
 			GSList *link;
-			GHashTableIter iter;
-			gpointer value;
 			gboolean all_done;
 
 			g_mutex_lock (&rcd->lock);

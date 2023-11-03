@@ -333,8 +333,6 @@ static EContactCSVFieldData csv_field_data[] = {
 
 };
 
-static GSList *pre_defined_fields;
-
 static gchar *
 escape_string (gchar *orig)
 {
@@ -591,70 +589,57 @@ e_contact_csv_get (EContact *contact,
 }
 
 static gchar *
-e_contact_csv_get_header_line (GSList *csv_all_fields)
+e_contact_csv_get_header_line (const EContactFieldCSV *csv_all_fields)
 {
-
-	guint field_number;
-	gint csv_field;
-	gchar **field_name_array;
+	GPtrArray *field_names;
 	gchar *header_line;
+	gint csv_field;
+	guint ii;
 
-	gint loop_counter;
-
-	field_number = g_slist_length (csv_all_fields);
-	field_name_array = g_new0 (gchar *, field_number + 1);
-
-	for (loop_counter = 0; loop_counter < field_number; loop_counter++) {
-		csv_field = GPOINTER_TO_INT (g_slist_nth_data (csv_all_fields, loop_counter));
-		*(field_name_array + loop_counter) = e_contact_csv_get_name (csv_field);
+	field_names = g_ptr_array_new_with_free_func (g_free);
+	for (ii = 0; csv_all_fields[ii] != E_CONTACT_CSV_LAST; ii++) {
+		csv_field = csv_all_fields[ii];
+		g_ptr_array_add (field_names, e_contact_csv_get_name (csv_field));
 	}
 
-	header_line = g_strjoinv (COMMA_SEPARATOR, field_name_array);
+	g_ptr_array_add (field_names, NULL);
 
-	for (loop_counter = 0; loop_counter < field_number; loop_counter++) {
-		g_free (*(field_name_array + loop_counter));
-	}
-	g_free (field_name_array);
+	header_line = g_strjoinv (COMMA_SEPARATOR, (gchar **) field_names->pdata);
+
+	g_ptr_array_unref (field_names);
 
 	return header_line;
-
 }
 
 static gchar *
 e_contact_to_csv (EContact *contact,
-                  GSList *csv_all_fields)
+                  const EContactFieldCSV *csv_all_fields)
 {
-	guint field_number;
-	gint csv_field;
-	gchar **field_value_array;
+	GPtrArray *field_values;
 	gchar *aline;
+	gint csv_field;
+	guint ii;
 
-	gint loop_counter;
+	field_values = g_ptr_array_new_with_free_func (g_free);
 
-	field_number = g_slist_length (csv_all_fields);
-	field_value_array = g_new0 (gchar *, field_number + 1);
-
-	for (loop_counter = 0; loop_counter < field_number; loop_counter++) {
-		csv_field = GPOINTER_TO_INT (g_slist_nth_data (csv_all_fields, loop_counter));
-		*(field_value_array + loop_counter) = e_contact_csv_get (contact, csv_field);
+	for (ii = 0; csv_all_fields[ii] != E_CONTACT_CSV_LAST; ii++) {
+		csv_field = csv_all_fields[ii];
+		g_ptr_array_add (field_values, e_contact_csv_get (contact, csv_field));
 	}
 
-	aline = g_strjoinv (COMMA_SEPARATOR, field_value_array);
+	g_ptr_array_add (field_values, NULL);
 
-	for (loop_counter = 0; loop_counter < field_number; loop_counter++) {
-		g_free (*(field_value_array + loop_counter));
-	}
-	g_free (field_value_array);
+	aline = g_strjoinv (COMMA_SEPARATOR, (gchar **) field_values->pdata);
+
+	g_ptr_array_unref (field_values);
 
 	return aline;
-
 }
 
 static gchar *
 e_contact_get_csv (EContact *contact,
-                   GSList *csv_all_fields)
+                   const EContactFieldCSV *csv_all_fields)
 {
-	gchar *aline;
 	GList *emails;
 	guint n_emails;
 	gchar *full_name;
@@ -667,57 +652,7 @@ e_contact_get_csv (EContact *contact,
 	g_free (full_name);
 	g_list_free_full (emails, (GDestroyNotify) e_vcard_attribute_free);
 
-	aline = e_contact_to_csv (contact, csv_all_fields);
-	return aline;
-}
-
-static void
-set_pre_defined_field (GSList **pre_defined_fields)
-{
-	*pre_defined_fields = NULL;
-
-	#define add(x) *pre_defined_fields = g_slist_append (*pre_defined_fields, GINT_TO_POINTER (x))
-
-	add (E_CONTACT_CSV_NAME_TITLE);
-	add (E_CONTACT_CSV_GIVEN_NAME);
-	add (E_CONTACT_CSV_MIDDLE_NAME);
-	add (E_CONTACT_CSV_FAMILY_NAME);
-	add (E_CONTACT_CSV_NAME_SUFFIX);
-	add (E_CONTACT_CSV_FULL_NAME);
-	add (E_CONTACT_CSV_NICKNAME);
-	add (E_CONTACT_CSV_EMAIL_1);
-	add (E_CONTACT_CSV_EMAIL_2);
-	add (E_CONTACT_CSV_EMAIL_3);
-	add (E_CONTACT_CSV_EMAIL_4);
-	add (E_CONTACT_CSV_WANTS_HTML);
-	add (E_CONTACT_CSV_PHONE_BUSINESS);
-	add (E_CONTACT_CSV_PHONE_HOME);
-	add (E_CONTACT_CSV_PHONE_BUSINESS_FAX);
-	add (E_CONTACT_CSV_PHONE_PAGER);
-	add (E_CONTACT_CSV_PHONE_MOBILE);
-	add (E_CONTACT_CSV_ADDRESS_HOME_STREET);
-	add (E_CONTACT_CSV_ADDRESS_HOME_EXT);
-	add (E_CONTACT_CSV_ADDRESS_HOME_CITY);
-	add (E_CONTACT_CSV_ADDRESS_HOME_REGION);
-	add (E_CONTACT_CSV_ADDRESS_HOME_POSTCODE);
-	add (E_CONTACT_CSV_ADDRESS_HOME_COUNTRY);
-	add (E_CONTACT_CSV_ADDRESS_BUSINESS_STREET);
-	add (E_CONTACT_CSV_ADDRESS_BUSINESS_EXT);
-	add (E_CONTACT_CSV_ADDRESS_BUSINESS_CITY);
-	add (E_CONTACT_CSV_ADDRESS_BUSINESS_REGION);
-	add (E_CONTACT_CSV_ADDRESS_BUSINESS_POSTCODE);
-	add (E_CONTACT_CSV_ADDRESS_BUSINESS_COUNTRY);
-	add (E_CONTACT_CSV_TITLE);
-	add (E_CONTACT_CSV_OFFICE);
-	add (E_CONTACT_CSV_ORG);
-	add (E_CONTACT_CSV_HOMEPAGE_URL);
-	add (E_CONTACT_CSV_CALENDAR_URI);
-	add (E_CONTACT_CSV_BIRTH_DATE_YEAR);
-	add (E_CONTACT_CSV_BIRTH_DATE_MONTH);
-	add (E_CONTACT_CSV_BIRTH_DATE_DAY);
-	add (E_CONTACT_CSV_NOTE);
-
-	#undef add
+	return e_contact_to_csv (contact, csv_all_fields);
 }
 
 static gint
@@ -736,18 +671,56 @@ output_n_cards_file (FILE *outputfile,
 			g_free (vcard);
 		}
 	} else if (format == CARD_FORMAT_CSV) {
+		const EContactFieldCSV csv_all_fields[] = {
+			E_CONTACT_CSV_NAME_TITLE,
+			E_CONTACT_CSV_GIVEN_NAME,
+			E_CONTACT_CSV_MIDDLE_NAME,
+			E_CONTACT_CSV_FAMILY_NAME,
+			E_CONTACT_CSV_NAME_SUFFIX,
+			E_CONTACT_CSV_FULL_NAME,
+			E_CONTACT_CSV_NICKNAME,
+			E_CONTACT_CSV_EMAIL_1,
+			E_CONTACT_CSV_EMAIL_2,
+			E_CONTACT_CSV_EMAIL_3,
+			E_CONTACT_CSV_EMAIL_4,
+			E_CONTACT_CSV_WANTS_HTML,
+			E_CONTACT_CSV_PHONE_BUSINESS,
+			E_CONTACT_CSV_PHONE_HOME,
+			E_CONTACT_CSV_PHONE_BUSINESS_FAX,
+			E_CONTACT_CSV_PHONE_PAGER,
+			E_CONTACT_CSV_PHONE_MOBILE,
+			E_CONTACT_CSV_ADDRESS_HOME_STREET,
+			E_CONTACT_CSV_ADDRESS_HOME_EXT,
+			E_CONTACT_CSV_ADDRESS_HOME_CITY,
+			E_CONTACT_CSV_ADDRESS_HOME_REGION,
+			E_CONTACT_CSV_ADDRESS_HOME_POSTCODE,
+			E_CONTACT_CSV_ADDRESS_HOME_COUNTRY,
+			E_CONTACT_CSV_ADDRESS_BUSINESS_STREET,
+			E_CONTACT_CSV_ADDRESS_BUSINESS_EXT,
+			E_CONTACT_CSV_ADDRESS_BUSINESS_CITY,
+			E_CONTACT_CSV_ADDRESS_BUSINESS_REGION,
+			E_CONTACT_CSV_ADDRESS_BUSINESS_POSTCODE,
+			E_CONTACT_CSV_ADDRESS_BUSINESS_COUNTRY,
+			E_CONTACT_CSV_TITLE,
+			E_CONTACT_CSV_OFFICE,
+			E_CONTACT_CSV_ORG,
+			E_CONTACT_CSV_HOMEPAGE_URL,
+			E_CONTACT_CSV_CALENDAR_URI,
+			E_CONTACT_CSV_BIRTH_DATE_YEAR,
+			E_CONTACT_CSV_BIRTH_DATE_MONTH,
+			E_CONTACT_CSV_BIRTH_DATE_DAY,
+			E_CONTACT_CSV_NOTE,
+			E_CONTACT_CSV_LAST
+		};
 		gchar *csv_fields_name;
 
-		if (!pre_defined_fields)
-			set_pre_defined_field (&pre_defined_fields);
-
-		csv_fields_name = e_contact_csv_get_header_line (pre_defined_fields);
+		csv_fields_name = e_contact_csv_get_header_line (csv_all_fields);
 		fprintf (outputfile, "%s\n", csv_fields_name);
 		g_free (csv_fields_name);
 
 		for (i = begin_no; i < size + begin_no; i++) {
 			EContact *contact = g_slist_nth_data (contacts, i);
-			gchar *csv = e_contact_get_csv (contact, pre_defined_fields);
+			gchar *csv = e_contact_get_csv (contact, csv_all_fields);
 			fprintf (outputfile, "%s\n", csv);
 			g_free (csv);
 		}

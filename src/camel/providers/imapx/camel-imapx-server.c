@@ -2560,7 +2560,6 @@ imapx_completion (CamelIMAPXServer *is,
 
 		if (camel_folder_change_info_changed (is->priv->changes)) {
 			CamelFolder *folder = NULL;
-			CamelIMAPXMailbox *mailbox;
 			CamelFolderChangeInfo *changes;
 
 			changes = is->priv->changes;
@@ -4728,7 +4727,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 				      GError **error)
 {
 	GPtrArray *data_uids;
-	gint ii;
+	gint jj;
 	gboolean use_move_command = FALSE;
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder;
@@ -4777,9 +4776,9 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	source_infos = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_object_unref);
 	data_uids = g_ptr_array_new ();
 
-	for (ii = 0; ii < uids->len; ii++) {
+	for (jj = 0; jj < uids->len; jj++) {
 		CamelMessageInfo *source_info;
-		gchar *uid = (gchar *) camel_pstring_strdup (uids->pdata[ii]);
+		gchar *uid = (gchar *) camel_pstring_strdup (uids->pdata[jj]);
 
 		g_ptr_array_add (data_uids, uid);
 
@@ -4790,10 +4789,10 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 	g_ptr_array_sort (data_uids, (GCompareFunc) imapx_uids_array_cmp);
 
-	ii = 0;
-	while (ii < data_uids->len && success) {
+	jj = 0;
+	while (jj < data_uids->len && success) {
 		struct _uidset_state uidset;
-		gint last_index = ii;
+		gint last_index = jj;
 
 		imapx_uidset_init (&uidset, 0, MAX_COMMAND_LEN);
 
@@ -4802,10 +4801,10 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 		else
 			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_COPY_MESSAGE, "UID COPY ");
 
-		while (ii < data_uids->len) {
-			const gchar *uid = (gchar *) g_ptr_array_index (data_uids, ii);
+		while (jj < data_uids->len) {
+			const gchar *uid = (gchar *) g_ptr_array_index (data_uids, jj);
 
-			ii++;
+			jj++;
 
 			if (imapx_uidset_add (&uidset, ic, uid) == 1)
 				break;
@@ -4865,10 +4864,6 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 					}
 
 					if (removed_uids) {
-						CamelFolderSummary *summary;
-
-						summary = camel_folder_get_folder_summary (folder);
-
 						camel_folder_summary_remove_uids (summary, removed_uids);
 
 						for (llink = removed_uids; llink; llink = g_list_next (llink)) {
@@ -4988,10 +4983,10 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 			}
 
 			if (delete_originals || use_move_command) {
-				gint jj;
+				gint ii;
 
-				for (jj = last_index; jj < ii; jj++) {
-					const gchar *uid = uids->pdata[jj];
+				for (ii = last_index; ii < jj; ii++) {
+					const gchar *uid = uids->pdata[ii];
 
 					if (delete_originals) {
 						camel_folder_delete_message (folder, uid);
@@ -5012,7 +5007,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 		camel_imapx_command_unref (ic);
 
-		camel_operation_progress (cancellable, ii * 100 / data_uids->len);
+		camel_operation_progress (cancellable, jj * 100 / data_uids->len);
 	}
 
 	if (changes) {
@@ -5234,12 +5229,12 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 			c (is->priv->tagprefix, "Got appenduid %u %u\n", (guint32) ic->status->u.appenduid.uidvalidity, ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == uidvalidity) {
 				CamelFolderChangeInfo *dest_changes;
-				gchar *uid;
+				gchar *new_uid;
 
-				uid = g_strdup_printf ("%u", ic->status->u.appenduid.uid);
-				camel_message_info_set_uid (clone, uid);
+				new_uid = g_strdup_printf ("%u", ic->status->u.appenduid.uid);
+				camel_message_info_set_uid (clone, new_uid);
 
-				cur = camel_data_cache_get_filename  (imapx_folder->cache, "cur", uid);
+				cur = camel_data_cache_get_filename  (imapx_folder->cache, "cur", new_uid);
 				if (g_rename (path, cur) == -1 && errno != ENOENT) {
 					g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, path, cur, g_strerror (errno));
 				}
@@ -5263,9 +5258,9 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 				camel_folder_change_info_free (dest_changes);
 
 				if (appended_uid)
-					*appended_uid = uid;
+					*appended_uid = new_uid;
 				else
-					g_free (uid);
+					g_free (new_uid);
 
 				g_clear_object (&clone);
 
@@ -5972,11 +5967,10 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				      GCancellable *cancellable,
 				      GError **error)
 {
-	guint i, jj, on, on_orset, off_orset;
+	guint i, on, on_orset, off_orset;
 	GPtrArray *changed_uids;
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelFolder *folder;
-	CamelMessageInfo *info;
 	CamelFolderChangeInfo *expunged_changes = NULL;
 	GList *expunged_removed_list = NULL;
 	GHashTable *stamps;
@@ -6077,6 +6071,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
+		CamelMessageInfo *info;
 		CamelIMAPXMessageInfo *xinfo;
 		guint32 flags, sflags;
 		const CamelNamedFlags *local_uflags, *server_uflags;
@@ -6253,6 +6248,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 	success = TRUE;
 	for (on = 0; on < 2 && success; on++) {
+		guint jj;
 		guint32 orset = on ? on_orset : off_orset;
 		GArray *user_set = on ? on_user : off_user;
 
@@ -7005,7 +7001,7 @@ camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic;
 	GArray *uid_search_results;
 	GPtrArray *results = NULL;
-	gint ii;
+	guint ii;
 	gboolean need_charset = FALSE;
 	gboolean success;
 
@@ -7061,8 +7057,6 @@ camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 	g_mutex_unlock (&is->priv->search_results_lock);
 
 	if (success) {
-		guint ii;
-
 		/* Convert the numeric UIDs to strings. */
 
 		g_return_val_if_fail (uid_search_results != NULL, NULL);

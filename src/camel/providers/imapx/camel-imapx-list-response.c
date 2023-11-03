@@ -386,8 +386,6 @@ camel_imapx_list_response_new (CamelIMAPXInputStream *stream,
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
 	if (tok == '(') {
-		gboolean success;
-
 extended_item_repeat:
 		success = imapx_list_response_parse_extended_item (
 			stream, response, cancellable, error);

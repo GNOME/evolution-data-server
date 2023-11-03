@@ -4682,7 +4682,7 @@ e_book_cache_populate_other_columns (EBookCache *book_cache,
 		EContactField *fields;
 		EContactField *indexed_fields;
 		EBookIndexType *index_types = NULL;
-		gint n_fields = 0, n_indexed_fields = 0, ii;
+		gint n_fields = 0, n_indexed_fields = 0;
 
 		fields = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
 		indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);

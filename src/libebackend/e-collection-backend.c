@@ -935,8 +935,6 @@ collection_backend_constructed (GObject *object)
 		e_source_registry_server_find_extension (
 		server, source, E_SOURCE_EXTENSION_AUTHENTICATION);
 	if (backend->priv->authentication_source != NULL) {
-		gulong handler_id;
-
 		handler_id = g_signal_connect_data (
 			backend->priv->authentication_source, "changed",
 			G_CALLBACK (collection_backend_auth_source_changed_cb),

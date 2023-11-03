@@ -2869,8 +2869,6 @@ gpg_verify_sync (CamelCipherContext *context,
 
 	/* report error only when no data or didn't found signature */
 	if (gpg_ctx_op_wait (gpg) != 0 && (gpg->nodata || !gpg->hadsig)) {
-		const gchar *diagnostics;
-
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",

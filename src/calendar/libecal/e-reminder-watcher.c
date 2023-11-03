@@ -939,11 +939,11 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 				ECalComponent *instance_comp = e_cal_component_alarm_instance_get_component (instance);
 
 				if (instance_comp) {
-					GSList *alarms;
+					GSList *existing_alarms;
 
-					alarms = e_cal_component_get_all_alarms (instance_comp);
-					if (alarms)
-						all_alarms = g_slist_concat (all_alarms, alarms);
+					existing_alarms = e_cal_component_get_all_alarms (instance_comp);
+					if (existing_alarms)
+						all_alarms = g_slist_concat (all_alarms, existing_alarms);
 				}
 			}
 

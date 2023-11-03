@@ -146,7 +146,7 @@ static gint
 object_state_read (CamelObject *object,
                    FILE *fp)
 {
-	GValue value = G_VALUE_INIT;
+	GValue gvalue = G_VALUE_INIT;
 	GObjectClass *class;
 	GParamSpec **properties;
 	guint32 count, version;
@@ -209,26 +209,26 @@ object_state_read (CamelObject *object,
 			case CAMEL_ARG_BOO:
 				if (camel_file_util_decode_uint32 (fp, &v_uint32) == -1)
 					goto exit;
-				g_value_init (&value, G_TYPE_BOOLEAN);
-				g_value_set_boolean (&value, (gboolean) v_uint32);
+				g_value_init (&gvalue, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&gvalue, (gboolean) v_uint32);
 				break;
 			case CAMEL_ARG_INT:
 				if (camel_file_util_decode_fixed_int32 (fp, &v_int32) == -1)
 					goto exit;
-				g_value_init (&value, G_TYPE_INT);
-				g_value_set_int (&value, v_int32);
+				g_value_init (&gvalue, G_TYPE_INT);
+				g_value_set_int (&gvalue, v_int32);
 				break;
 			case CAMEL_ARG_3ST:
 				if (camel_file_util_decode_uint32 (fp, &v_uint32) == -1)
 					goto exit;
-				g_value_init (&value, CAMEL_TYPE_THREE_STATE);
-				g_value_set_enum (&value, (CamelThreeState) v_uint32);
+				g_value_init (&gvalue, CAMEL_TYPE_THREE_STATE);
+				g_value_set_enum (&gvalue, (CamelThreeState) v_uint32);
 				break;
 			case CAMEL_ARG_I64:
 				if (camel_file_util_decode_gint64 (fp, &v_int64) == -1)
 					goto exit;
-				g_value_init (&value, G_TYPE_INT64);
-				g_value_set_int64 (&value, v_int64);
+				g_value_init (&gvalue, G_TYPE_INT64);
+				g_value_set_int64 (&gvalue, v_int64);
 				break;
 			default:
 				g_warn_if_reached ();
@@ -255,18 +255,18 @@ object_state_read (CamelObject *object,
 				continue;
 
 			if (version == 1 && pspec->value_type == CAMEL_TYPE_THREE_STATE &&
-			    G_VALUE_HOLDS_BOOLEAN (&value)) {
+			    G_VALUE_HOLDS_BOOLEAN (&gvalue)) {
 				/* Convert from boolean to three-state value. Assign the 'TRUE' to 'On'
 				   and the rest keep as 'Inconsistent'. */
-				gboolean stored = g_value_get_boolean (&value);
+				gboolean stored = g_value_get_boolean (&gvalue);
 
-				g_value_unset (&value);
-				g_value_init (&value, CAMEL_TYPE_THREE_STATE);
-				g_value_set_enum (&value, stored ? CAMEL_THREE_STATE_ON : CAMEL_THREE_STATE_INCONSISTENT);
+				g_value_unset (&gvalue);
+				g_value_init (&gvalue, CAMEL_TYPE_THREE_STATE);
+				g_value_set_enum (&gvalue, stored ? CAMEL_THREE_STATE_ON : CAMEL_THREE_STATE_INCONSISTENT);
 			}
 
 			g_object_set_property (
-				G_OBJECT (object), pspec->name, &value);
+				G_OBJECT (object), pspec->name, &gvalue);
 
 			property_set = TRUE;
 			break;
@@ -285,7 +285,7 @@ object_state_read (CamelObject *object,
 				"property for state file tag 0x%x",
 				G_OBJECT_TYPE_NAME (object), tag);
 
-		g_value_unset (&value);
+		g_value_unset (&gvalue);
 	}
 
 exit:

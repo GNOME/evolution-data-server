@@ -40,7 +40,7 @@
 
 /* Number of days in a month, using 0 (Jan) to 11 (Dec). For leap years,
  * add 1 to February (month 1). */
-static const gint days_in_month[12] = {
+static const gint glob_days_in_month[12] = {
 	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
@@ -515,7 +515,7 @@ time_days_in_month (gint year,
 	g_return_val_if_fail (year >= 1900, 0);
 	g_return_val_if_fail ((month >= 0) && (month < 12), 0);
 
-	days = days_in_month[month];
+	days = glob_days_in_month[month];
 	if (month == 1 && time_is_leap_year (year))
 		days++;
 
@@ -541,7 +541,7 @@ time_day_of_year (gint day,
 	gint i;
 
 	for (i = 0; i < month; i++) {
-		day += days_in_month[i];
+		day += glob_days_in_month[i];
 
 		if (i == 1 && time_is_leap_year (year))
 			day++;

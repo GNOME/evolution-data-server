@@ -191,7 +191,6 @@ gint main (gint argc, gchar **argv)
 {
 	gint i;
 	CamelInternetAddress *addr, *addr2;
-	gchar *name;
 	const gchar *charset;
 	const gchar *real, *where;
 	gchar *enc, *enc2, *format, *format2;
@@ -326,6 +325,7 @@ gint main (gint argc, gchar **argv)
 	camel_test_start ("CamelInternetAddress, I18N");
 
 	for (i = 0; i < G_N_ELEMENTS (test_lines); i++) {
+		gchar *name;
 		gchar *ptr;
 
 		push ("Testing text line %d (%s) '%s'", i, test_lines[i].type, test_lines[i].line);

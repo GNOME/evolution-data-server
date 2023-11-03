@@ -2260,12 +2260,12 @@ e_cal_cache_migrate (ECache *cache,
 		memset (&ci, 0, sizeof (ComponentInfo));
 
 		if (e_cal_cache_search_with_callback (cal_cache, NULL, cal_cache_gather_all_cb, &ci, cancellable, NULL)) {
-			gboolean success = TRUE;
+			gboolean success2 = TRUE;
 
 			if (ci.online_comps)
-				success = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, ci.online_custom_flags, E_CACHE_IS_ONLINE, cancellable, NULL);
+				success2 = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, ci.online_custom_flags, E_CACHE_IS_ONLINE, cancellable, NULL);
 
-			if (success && ci.offline_comps)
+			if (success2 && ci.offline_comps)
 				e_cal_cache_put_components (cal_cache, ci.offline_comps, ci.offline_extras, ci.offline_custom_flags, E_CACHE_IS_OFFLINE, cancellable, NULL);
 		}
 

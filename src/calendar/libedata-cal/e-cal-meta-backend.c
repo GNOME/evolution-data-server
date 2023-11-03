@@ -1092,7 +1092,6 @@ ecmb_put_instances (ECalMetaBackend *meta_backend,
 	/* What left got removed from the remote side, notify about it */
 	if (success && cache_instances) {
 		ECalBackend *cal_backend = E_CAL_BACKEND (meta_backend);
-		GSList *link;
 
 		for (link = cache_instances; link && success; link = g_slist_next (link)) {
 			ECalComponent *comp = link->data;
@@ -1721,18 +1720,18 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 	uid = i_cal_component_get_uid (icomp);
 	if (!uid) {
-		gchar *new_uid;
+		gchar *gen_uid;
 
-		new_uid = e_util_generate_uid ();
-		if (!new_uid) {
+		gen_uid = e_util_generate_uid ();
+		if (!gen_uid) {
 			g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			return FALSE;
 		}
 
-		i_cal_component_set_uid (icomp, new_uid);
+		i_cal_component_set_uid (icomp, gen_uid);
 		uid = i_cal_component_get_uid (icomp);
 
-		g_free (new_uid);
+		g_free (gen_uid);
 	}
 
 	if (e_cal_cache_contains (cal_cache, uid, NULL, E_CACHE_EXCLUDE_DELETED)) {
@@ -2743,9 +2742,9 @@ ecmb_receive_objects_sync (ECalBackendSync *sync_backend,
 		top_method = I_CAL_METHOD_PUBLISH;
 
 	for (link = comps; link && success; link = g_slist_next (link)) {
-		ECalComponent *comp = link->data;
 		ICalPropertyMethod method;
 
+		comp = link->data;
 		subcomp = e_cal_component_get_icalcomponent (comp);
 
 		if (e_cal_util_component_has_property (subcomp, I_CAL_METHOD_PROPERTY)) {

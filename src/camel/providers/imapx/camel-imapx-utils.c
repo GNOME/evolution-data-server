@@ -2624,8 +2624,6 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 		goto fail;
 
 	if (tok == '[') {
-		gboolean success;
-
 		success = camel_imapx_input_stream_atom (
 			stream, &token, &len, cancellable, error);
 

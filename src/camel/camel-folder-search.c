@@ -874,10 +874,10 @@ folder_search_not (CamelSExp *sexp,
 				v = camel_folder_search_get_current_summary (search);
 				m = (gchar **) v->pdata;
 				for (i = 0; i < v->len; i++) {
-					gchar *uid = m[i];
+					gchar *muid = m[i];
 
-					if (g_hash_table_lookup (have, uid) == NULL)
-						g_ptr_array_add (r->value.ptrarray, uid);
+					if (g_hash_table_lookup (have, muid) == NULL)
+						g_ptr_array_add (r->value.ptrarray, muid);
 				}
 				g_hash_table_destroy (have);
 			}

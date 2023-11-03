@@ -1115,7 +1115,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				       GCancellable *cancellable,
 				       GError **error)
 {
-	GSList *link;
+	GSList *slink;
 	ConnectionInfo *cinfo;
 	gboolean success = FALSE, is_new_connection = FALSE;
 	GError *local_error = NULL;
@@ -1130,16 +1130,16 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 		return FALSE;
 	}
 
-	link = conn_man->priv->job_queue;
-	while (link) {
-		CamelIMAPXJob *queued_job = link->data;
+	slink = conn_man->priv->job_queue;
+	while (slink) {
+		CamelIMAPXJob *queued_job = slink->data;
 		gboolean matches;
 
 		g_warn_if_fail (queued_job != NULL);
 		g_warn_if_fail (queued_job != job);
 
 		if (!queued_job) {
-			link = g_slist_next (link);
+			slink = g_slist_next (slink);
 			continue;
 		}
 
@@ -1179,9 +1179,9 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 			camel_imapx_job_unref (queued_job);
 
 			/* The queue could change, start from the beginning. */
-			link = conn_man->priv->job_queue;
+			slink = conn_man->priv->job_queue;
 		} else {
-			link = g_slist_next (link);
+			slink = g_slist_next (slink);
 		}
 	}
 
@@ -1212,7 +1212,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 			success = camel_imapx_server_stop_idle_sync (cinfo->is, cancellable, &local_error);
 
 			if (success && camel_imapx_server_can_use_idle (cinfo->is)) {
-				GList *link, *connection_infos, *disconnected_infos = NULL;
+				GList *llink, *connection_infos, *disconnected_infos = NULL;
 
 				CON_READ_LOCK (conn_man);
 				connection_infos = g_list_copy (conn_man->priv->connections);
@@ -1221,8 +1221,8 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 
 				/* Stop IDLE on all connections serving the same mailbox,
 				   to avoid notifications for changes done by itself */
-				for (link = connection_infos; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
-					ConnectionInfo *other_cinfo = link->data;
+				for (llink = connection_infos; llink && !g_cancellable_is_cancelled (cancellable); llink = g_list_next (llink)) {
+					ConnectionInfo *other_cinfo = llink->data;
 					CamelIMAPXMailbox *other_mailbox;
 
 					if (!other_cinfo || other_cinfo == cinfo || connection_info_get_busy (other_cinfo) ||
@@ -1249,8 +1249,8 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 					g_clear_object (&other_mailbox);
 				}
 
-				for (link = disconnected_infos; link; link = g_list_next (link)) {
-					ConnectionInfo *other_cinfo = link->data;
+				for (llink = disconnected_infos; llink; llink = g_list_next (llink)) {
+					ConnectionInfo *other_cinfo = llink->data;
 
 					imapx_conn_manager_remove_info (conn_man, other_cinfo);
 				}

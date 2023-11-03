@@ -187,14 +187,13 @@ gint main (gint argc, gchar **argv)
 			g_clear_error (&error);
 
 			for (i = 0; i < MAX_THREADS; i++) {
-				GError *error = NULL;
-
 				info = g_malloc (sizeof (*info));
 				info->id = i * MAX_MESSAGES;
 				info->folder = folder;
 
 				threads[i] = g_thread_try_new (NULL, worker, info, &error);
 				check_msg (error == NULL, "g_thread_try_new() failed: %s", error->message);
+				g_clear_error (&error);
 			}
 
 			for (i = 0; i < MAX_THREADS; i++) {
