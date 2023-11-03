@@ -829,6 +829,7 @@ action_list_cards_init (ActionContext *p_actctx)
 	}
 
 	g_object_unref (book_client);
+	g_free (query_str);
 
 	if (error != NULL) {
 		g_warning ("Failed to get contacts: %s", error->message);
@@ -933,6 +934,8 @@ main (gint argc,
 		g_error_free (error);
 		exit (-1);
 	}
+
+	g_clear_pointer (&context, g_option_context_free);
 
 	actctx.action_type = ACTION_NOTHING;
 	actctx.registry = e_source_registry_new_sync (NULL, &error);
