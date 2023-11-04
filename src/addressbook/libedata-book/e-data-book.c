@@ -1179,25 +1179,25 @@ e_data_book_respond_open (EDataBook *book,
                           GError *error)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open book: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1217,25 +1217,25 @@ e_data_book_respond_refresh (EDataBook *book,
                              GError *error)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot refresh address book: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1256,31 +1256,35 @@ e_data_book_respond_get_contact (EDataBook *book,
                                  const EContact *contact)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot get contact: "));
 
-	if (error == NULL) {
-		g_queue_push_tail (queue, g_object_ref ((EContact *) contact));
-	} else {
-		g_simple_async_result_take_error (simple, error);
-	}
+	if (!error)
+		g_task_return_pointer (task, g_object_ref ((EContact *) contact), g_object_unref);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
+}
+
+static void
+free_object_queue (GQueue *queue)
+{
+	if (!queue)
+		return;
+
+	g_queue_free_full (queue, g_object_unref);
 }
 
 /**
@@ -1301,22 +1305,21 @@ e_data_book_respond_get_contact_list (EDataBook *book,
                                       const GSList *contacts)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot get contact list: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *link;
 
 		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
@@ -1325,14 +1328,22 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
+		g_task_return_pointer (task, g_steal_pointer (&queue), (GDestroyNotify) free_object_queue);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
+}
+
+static void
+free_string_queue (GQueue *queue)
+{
+	if (!queue)
+		return;
+
+	g_queue_free_full (queue, g_free);
 }
 
 /**
@@ -1353,22 +1364,21 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
                                            const GSList *uids)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot get contact list uids: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *list, *link;
 
 		list = (GSList *) uids;
@@ -1376,13 +1386,12 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 		for (link = list; link != NULL; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 
+		g_task_return_pointer (task, g_steal_pointer (&queue), (GDestroyNotify) free_string_queue);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1404,22 +1413,21 @@ e_data_book_respond_create_contacts (EDataBook *book,
                                      const GSList *contacts)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot add contact: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *link;
 
 		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
@@ -1427,13 +1435,12 @@ e_data_book_respond_create_contacts (EDataBook *book,
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
+		g_task_return_pointer (task, g_steal_pointer (&queue), (GDestroyNotify) free_object_queue);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1455,22 +1462,21 @@ e_data_book_respond_modify_contacts (EDataBook *book,
                                      const GSList *contacts)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot modify contacts: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *link;
 
 		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
@@ -1479,13 +1485,12 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
 
+		g_task_return_pointer (task, g_steal_pointer (&queue), (GDestroyNotify) free_object_queue);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1507,34 +1512,32 @@ e_data_book_respond_remove_contacts (EDataBook *book,
                                      const GSList *ids)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot remove contacts: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *link;
 
 		for (link = (GSList *) ids; link; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 
+		g_task_return_pointer (task, g_steal_pointer (&queue), (GDestroyNotify) free_string_queue);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1556,28 +1559,26 @@ e_data_book_respond_contains_email (EDataBook *book,
 				    gboolean found)
 {
 	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	backend = e_data_book_ref_backend (book);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_book_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_book_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot find email address: "));
 
 	if (error == NULL) {
-		g_simple_async_result_set_op_res_gboolean (simple, found);
+		g_task_return_boolean (task, found);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 

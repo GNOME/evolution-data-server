@@ -32,11 +32,9 @@
 
 G_BEGIN_DECLS
 
-GSimpleAsyncResult *
-		e_book_backend_prepare_for_completion
+GTask *		e_book_backend_prepare_for_completion
 						(EBookBackend *backend,
-						 guint32 opid,
-						 GQueue **result_queue);
+						 guint32 opid);
 
 G_END_DECLS
 
