@@ -36,6 +36,7 @@
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _DispatchNode DispatchNode;
+typedef struct _CustomOpFuncData CustomOpFuncData;
 typedef struct _SignalClosure SignalClosure;
 
 struct _ECalBackendPrivate {
@@ -68,8 +69,7 @@ struct _ECalBackendPrivate {
 	GHashTable *operation_ids;
 	GQueue pending_operations;
 	guint32 next_operation_id;
-	GSimpleAsyncResult *blocked;
-	gboolean blocked_by_custom_op;
+	GTask *blocked;
 };
 
 struct _AsyncContext {
@@ -88,9 +88,6 @@ struct _AsyncContext {
 	GSList *string_list;
 	ECalOperationFlags opflags;
 
-	/* Outputs */
-	GQueue result_queue;
-
 	/* One of these should point to result_queue
 	 * so any leftover resources can be released. */
 	GQueue *object_queue;
@@ -100,13 +97,14 @@ struct _AsyncContext {
 struct _DispatchNode {
 	/* This is the dispatch function
 	 * that invokes the class method. */
-	GSimpleAsyncThreadFunc dispatch_func;
+	GTaskThreadFunc dispatch_func;
 	gboolean blocking_operation;
 
-	GSimpleAsyncResult *simple;
-	GCancellable *cancellable;
+	GTask *task;
+};
 
-	GWeakRef *cal_backend_weak_ref;
+
+struct _CustomOpFuncData {
 	ECalBackendCustomOpFunc custom_func;
 	gpointer custom_func_user_data;
 	GDestroyNotify custom_func_user_data_free;
@@ -182,14 +180,7 @@ async_context_free (AsyncContext *async_context)
 static void
 dispatch_node_free (DispatchNode *dispatch_node)
 {
-	g_clear_object (&dispatch_node->simple);
-	g_clear_object (&dispatch_node->cancellable);
-
-	if (dispatch_node->custom_func_user_data_free)
-		dispatch_node->custom_func_user_data_free (dispatch_node->custom_func_user_data);
-
-	if (dispatch_node->cal_backend_weak_ref)
-		e_weak_ref_free (dispatch_node->cal_backend_weak_ref);
+	g_clear_object (&dispatch_node->task);
 
 	g_slice_free (DispatchNode, dispatch_node);
 }
@@ -405,14 +396,13 @@ schedule_notify_changes (ECalBackend *backend,
 
 static void
 cal_backend_push_operation (ECalBackend *backend,
-                            GSimpleAsyncResult *simple,
-                            GCancellable *cancellable,
+                            GTask *task,
                             gboolean blocking_operation,
-                            GSimpleAsyncThreadFunc dispatch_func)
+                            GTaskThreadFunc dispatch_func)
 {
 	DispatchNode *node;
 
-	g_return_if_fail (G_IS_SIMPLE_ASYNC_RESULT (simple));
+	g_return_if_fail (G_IS_TASK (task));
 	g_return_if_fail (dispatch_func != NULL);
 
 	g_mutex_lock (&backend->priv->operation_lock);
@@ -420,55 +410,24 @@ cal_backend_push_operation (ECalBackend *backend,
 	node = g_slice_new0 (DispatchNode);
 	node->dispatch_func = dispatch_func;
 	node->blocking_operation = blocking_operation;
-	node->simple = g_object_ref (simple);
-
-	if (G_IS_CANCELLABLE (cancellable))
-		node->cancellable = g_object_ref (cancellable);
+	node->task = g_steal_pointer (&task);
 
 	g_queue_push_tail (&backend->priv->pending_operations, node);
 
 	g_mutex_unlock (&backend->priv->operation_lock);
 }
 
-static void cal_backend_unblock_operations (ECalBackend *backend, GSimpleAsyncResult *simple);
+static void cal_backend_unblock_operations (ECalBackend *backend, GTask *task);
 
 static void
 cal_backend_dispatch_thread (DispatchNode *node)
 {
-	GCancellable *cancellable = node->cancellable;
-	GError *local_error = NULL;
+	GCancellable *cancellable = g_task_get_cancellable (node->task);
+	if (!g_task_return_error_if_cancelled (node->task)) {
+		GObject *source_object = g_task_get_source_object (node->task);
+		gpointer task_data = g_task_get_task_data (node->task);
 
-	if (node->custom_func) {
-		ECalBackend *cal_backend;
-
-		cal_backend = g_weak_ref_get (node->cal_backend_weak_ref);
-		if (cal_backend &&
-		    !g_cancellable_is_cancelled (cancellable)) {
-			node->custom_func (cal_backend, node->custom_func_user_data, cancellable, &local_error);
-
-			if (local_error) {
-				if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-					e_cal_backend_notify_error (cal_backend, local_error->message);
-
-				g_clear_error (&local_error);
-			}
-		}
-
-		if (cal_backend) {
-			cal_backend_unblock_operations (cal_backend, NULL);
-			e_util_unref_in_thread (cal_backend);
-		}
-	} else if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
-		g_simple_async_result_take_error (node->simple, local_error);
-		g_simple_async_result_complete_in_idle (node->simple);
-	} else {
-		GAsyncResult *result;
-		GObject *source_object;
-
-		result = G_ASYNC_RESULT (node->simple);
-		source_object = g_async_result_get_source_object (result);
-		node->dispatch_func (node->simple, source_object, cancellable);
-		g_object_unref (source_object);
+		node->dispatch_func (node->task, source_object, task_data, cancellable);
 	}
 
 	dispatch_node_free (node);
@@ -483,8 +442,7 @@ cal_backend_dispatch_next_operation (ECalBackend *backend)
 
 	/* We can't dispatch additional operations
 	 * while a blocking operation is in progress. */
-	if (backend->priv->blocked != NULL ||
-	    backend->priv->blocked_by_custom_op) {
+	if (backend->priv->blocked != NULL) {
 		g_mutex_unlock (&backend->priv->operation_lock);
 		return FALSE;
 	}
@@ -499,10 +457,7 @@ cal_backend_dispatch_next_operation (ECalBackend *backend)
 	/* If this a blocking operation, block any
 	 * further dispatching until this finishes. */
 	if (node->blocking_operation) {
-		if (node->simple)
-			backend->priv->blocked = g_object_ref (node->simple);
-		else
-			backend->priv->blocked_by_custom_op = TRUE;
+		backend->priv->blocked = g_object_ref (node->task);
 	}
 
 	g_mutex_unlock (&backend->priv->operation_lock);
@@ -516,16 +471,14 @@ cal_backend_dispatch_next_operation (ECalBackend *backend)
 
 static void
 cal_backend_unblock_operations (ECalBackend *backend,
-                                GSimpleAsyncResult *simple)
+                                GTask *task)
 {
-	/* If the GSimpleAsyncResult was blocking the dispatch queue,
-	 * unblock the dispatch queue.  Then dispatch as many waiting
-	 * operations as we can. */
+	/* If the GTask was blocking the dispatch queue, unblock the dispatch queue.
+	 * Then dispatch as many waiting operations as we can. */
 
 	g_mutex_lock (&backend->priv->operation_lock);
-	if (backend->priv->blocked == simple)
+	if (backend->priv->blocked == task)
 		g_clear_object (&backend->priv->blocked);
-	backend->priv->blocked_by_custom_op = FALSE;
 	g_mutex_unlock (&backend->priv->operation_lock);
 
 	while (cal_backend_dispatch_next_operation (backend))
@@ -534,7 +487,7 @@ cal_backend_unblock_operations (ECalBackend *backend,
 
 static guint32
 cal_backend_stash_operation (ECalBackend *backend,
-                             GSimpleAsyncResult *simple)
+                             GTask *task)
 {
 	guint32 opid;
 
@@ -548,28 +501,28 @@ cal_backend_stash_operation (ECalBackend *backend,
 	g_hash_table_insert (
 		backend->priv->operation_ids,
 		GUINT_TO_POINTER (opid),
-		g_object_ref (simple));
+		g_object_ref (task));
 
 	g_mutex_unlock (&backend->priv->operation_lock);
 
 	return opid;
 }
 
-static GSimpleAsyncResult *
+static GTask *
 cal_backend_claim_operation (ECalBackend *backend,
                              guint32 opid)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_val_if_fail (opid > 0, NULL);
 
 	g_mutex_lock (&backend->priv->operation_lock);
 
-	simple = g_hash_table_lookup (
+	task = g_hash_table_lookup (
 		backend->priv->operation_ids,
 		GUINT_TO_POINTER (opid));
 
-	if (simple != NULL) {
+	if (task != NULL) {
 		/* Steal the hash table's reference. */
 		g_hash_table_steal (
 			backend->priv->operation_ids,
@@ -578,7 +531,7 @@ cal_backend_claim_operation (ECalBackend *backend,
 
 	g_mutex_unlock (&backend->priv->operation_lock);
 
-	return simple;
+	return task;
 }
 
 static void
@@ -1907,8 +1860,9 @@ e_cal_backend_open_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_open() */
 static void
-cal_backend_open_thread (GSimpleAsyncResult *simple,
-                         GObject *source_object,
+cal_backend_open_thread (GTask *task,
+                         gpointer source_object,
+                         gpointer task_data,
                          GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -1925,12 +1879,11 @@ cal_backend_open_thread (GSimpleAsyncResult *simple,
 	g_return_if_fail (data_cal != NULL);
 
 	if (e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_complete_in_idle (simple);
-
+		g_task_return_boolean (task, TRUE);
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		e_backend_ensure_online_state_updated (E_BACKEND (backend), cancellable);
 
@@ -1963,23 +1916,17 @@ e_cal_backend_open (ECalBackend *backend,
                     GAsyncReadyCallback callback,
                     gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback,
-		user_data, e_cal_backend_open);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_open);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, TRUE,
-		cal_backend_open_thread);
+		backend, g_steal_pointer (&task), TRUE, cal_backend_open_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -2001,23 +1948,21 @@ e_cal_backend_open_finish (ECalBackend *backend,
                            GAsyncResult *result,
                            GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_open), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_open), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
+	if (g_task_propagate_boolean (task, error)) {
+		backend->priv->opened = TRUE;
+		return TRUE;
+	}
 
-	backend->priv->opened = TRUE;
-
-	return TRUE;
+	return FALSE;
 }
 
 /**
@@ -2067,8 +2012,9 @@ e_cal_backend_refresh_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_refresh() */
 static void
-cal_backend_refresh_thread (GSimpleAsyncResult *simple,
-                            GObject *source_object,
+cal_backend_refresh_thread (GTask *task,
+                            gpointer source_object,
+                            gpointer task_data,
                             GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -2084,25 +2030,23 @@ cal_backend_refresh_thread (GSimpleAsyncResult *simple,
 	g_return_if_fail (data_cal != NULL);
 
 	if (class->impl_refresh == NULL) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_SUPPORTED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_SUPPORTED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_refresh (backend, data_cal, opid, cancellable);
 	}
@@ -2133,23 +2077,17 @@ e_cal_backend_refresh (ECalBackend *backend,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback,
-		user_data, e_cal_backend_refresh);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_refresh);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_refresh_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_refresh_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -2174,19 +2112,16 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
                               GAsyncResult *result,
                               GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_refresh), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_refresh), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (task, error);
 }
 
 /**
@@ -2240,8 +2175,9 @@ e_cal_backend_get_object_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_get_object() */
 static void
-cal_backend_get_object_thread (GSimpleAsyncResult *simple,
-                               GObject *source_object,
+cal_backend_get_object_thread (GTask *task,
+                               gpointer source_object,
+                               gpointer task_data,
                                GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -2250,6 +2186,7 @@ cal_backend_get_object_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -2258,20 +2195,16 @@ cal_backend_get_object_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
-
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_get_object (
 			backend, data_cal, opid, cancellable,
@@ -2306,7 +2239,7 @@ e_cal_backend_get_object (ECalBackend *backend,
                           GAsyncReadyCallback callback,
                           gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -2317,22 +2250,14 @@ e_cal_backend_get_object (ECalBackend *backend,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_get_object);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_get_object);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_get_object_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_get_object_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -2358,28 +2283,16 @@ e_cal_backend_get_object_finish (ECalBackend *backend,
                                  GAsyncResult *result,
                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	gchar *calobj;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_get_object), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_get_object), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	calobj = g_queue_pop_head (&async_context->result_queue);
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	return calobj;
+	return g_task_propagate_pointer (task, error);
 }
 
 /**
@@ -2434,16 +2347,18 @@ e_cal_backend_get_object_list_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_get_object_list() */
 static void
-cal_backend_get_object_list_thread (GSimpleAsyncResult *simple,
-                                    GObject *source_object,
+cal_backend_get_object_list_thread (GTask *task,
+                                    gpointer source_object,
+                                    gpointer task_data,
                                     GCancellable *cancellable)
 {
 	ECalBackend *backend;
 	ECalBackendClass *class;
 	EDataCal *data_cal;
-	AsyncContext *async_context;
+	const gchar *query;
 
 	backend = E_CAL_BACKEND (source_object);
+	query = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -2452,24 +2367,20 @@ cal_backend_get_object_list_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_get_object_list (
-			backend, data_cal, opid, cancellable,
-			async_context->query);
+			backend, data_cal, opid, cancellable, query);
 	}
 
 	g_object_unref (data_cal);
@@ -2499,31 +2410,19 @@ e_cal_backend_get_object_list (ECalBackend *backend,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (query != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->query = g_strdup (query);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_get_object_list);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_get_object_list);
+	g_task_set_task_data (task, g_strdup (query), g_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_get_object_list_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_get_object_list_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -2551,24 +2450,23 @@ e_cal_backend_get_object_list_finish (ECalBackend *backend,
                                       GQueue *out_objects,
                                       GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
+	GQueue *queue;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_get_object_list), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_get_object_list), FALSE);
 	g_return_val_if_fail (out_objects != NULL, FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	queue = g_task_propagate_pointer (task, error);
+	if (!queue)
 		return FALSE;
 
-	e_queue_transfer (&async_context->result_queue, out_objects);
+	e_queue_transfer (queue, out_objects);
+	g_queue_free (queue);
 
 	return TRUE;
 }
@@ -2630,8 +2528,9 @@ e_cal_backend_get_free_busy_sync (ECalBackend *backend,
 }
 
 static void
-cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
-                                  GObject *source_object,
+cal_backend_get_free_busy_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -2640,6 +2539,7 @@ cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -2648,20 +2548,17 @@ cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_get_free_busy (
 			backend, data_cal, opid, cancellable,
@@ -2701,7 +2598,7 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 	GSList *list = NULL;
 	gint ii;
@@ -2719,22 +2616,14 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
 	async_context->end = end;
 	async_context->string_list = g_slist_reverse (list);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_get_free_busy);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_get_free_busy);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_get_free_busy_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_get_free_busy_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -2763,37 +2652,29 @@ e_cal_backend_get_free_busy_finish (ECalBackend *backend,
 				    GSList **out_freebusy,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	GSList *ical_strings = NULL;
+	GTask *task;
+	GQueue *queue;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_get_free_busy), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_get_free_busy), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	/* Assume success unless a GError is set. */
-	if (g_simple_async_result_propagate_error (simple, error))
+	queue = g_task_propagate_pointer (task, error);
+	if (!queue)
 		return FALSE;
 
-	while (!g_queue_is_empty (&async_context->result_queue)) {
-		gchar *ical_freebusy;
+	if (out_freebusy) {
+		GSList *ical_strings = NULL;
+		while (!g_queue_is_empty (queue))
+			ical_strings = g_slist_prepend (ical_strings, g_queue_pop_head (queue));
 
-		ical_freebusy = g_queue_pop_head (&async_context->result_queue);
-		if (out_freebusy)
-			ical_strings = g_slist_prepend (ical_strings, ical_freebusy);
-		else
-			g_free (ical_freebusy);
+		*out_freebusy = g_slist_reverse (ical_strings);
 	}
 
-	if (out_freebusy)
-		*out_freebusy = g_slist_reverse (ical_strings);
-
+	e_cal_queue_free_strings (queue);
 	return TRUE;
 }
 
@@ -2850,8 +2731,9 @@ e_cal_backend_create_objects_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_create_objects() */
 static void
-cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
-                                   GObject *source_object,
+cal_backend_create_objects_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
                                    GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -2860,6 +2742,7 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -2867,28 +2750,24 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (class->impl_create_objects == NULL) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_SUPPORTED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_SUPPORTED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_create_objects (
 			backend, data_cal, opid, cancellable,
@@ -2923,7 +2802,7 @@ e_cal_backend_create_objects (ECalBackend *backend,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 	GSList *list = NULL;
 	gint ii;
@@ -2938,22 +2817,14 @@ e_cal_backend_create_objects (ECalBackend *backend,
 	async_context->string_list = g_slist_reverse (list);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_create_objects);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_create_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_create_objects_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_create_objects_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -2980,50 +2851,32 @@ e_cal_backend_create_objects_finish (ECalBackend *backend,
                                      GQueue *out_uids,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	GQueue *string_queue;
-	GQueue *component_queue;
+	GTask *task;
+	ECalQueueTuple *tuple;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_create_objects), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_create_objects), FALSE);
 	g_return_val_if_fail (out_uids != NULL, FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	tuple = g_task_propagate_pointer (task, error);
+	if (!tuple)
 		return FALSE;
 
-	/* XXX Packing GQueues in a GQueue is pretty awkward, but until
-	 *     the backend methods can be updated I'm trying to make do
-	 *     with a single data container for all kinds of results. */
+	e_queue_transfer (&tuple->first, out_uids);
 
-	string_queue = g_queue_pop_head (&async_context->result_queue);
-	component_queue = g_queue_pop_head (&async_context->result_queue);
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	g_return_val_if_fail (string_queue != NULL, FALSE);
-	g_return_val_if_fail (component_queue != NULL, FALSE);
-
-	e_queue_transfer (string_queue, out_uids);
-
-	while (!g_queue_is_empty (component_queue)) {
+	while (!g_queue_is_empty (&tuple->second)) {
 		ECalComponent *component;
 
-		component = g_queue_pop_head (component_queue);
+		component = g_queue_pop_head (&tuple->second);
 		e_cal_backend_notify_component_created (backend, component);
 		g_object_unref (component);
 	}
 
-	g_queue_free (string_queue);
-	g_queue_free (component_queue);
-
+	e_cal_queue_tuple_free (tuple);
 	return TRUE;
 }
 
@@ -3077,8 +2930,9 @@ e_cal_backend_modify_objects_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_modify_objects() */
 static void
-cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
-                                   GObject *source_object,
+cal_backend_modify_objects_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
                                    GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -3087,6 +2941,7 @@ cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -3094,28 +2949,24 @@ cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (class->impl_modify_objects == NULL) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_SUPPORTED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_SUPPORTED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_modify_objects (
 			backend, data_cal, opid, cancellable,
@@ -3155,7 +3006,7 @@ e_cal_backend_modify_objects (ECalBackend *backend,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 	GSList *list = NULL;
 	gint ii;
@@ -3171,22 +3022,14 @@ e_cal_backend_modify_objects (ECalBackend *backend,
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_modify_objects);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_modify_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_modify_objects_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_modify_objects_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -3208,47 +3051,31 @@ e_cal_backend_modify_objects_finish (ECalBackend *backend,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	GQueue *old_component_queue;
-	GQueue *new_component_queue;
+	GTask *task;
+	ECalQueueTuple *tuple;
 	guint length, ii;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_modify_objects), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_modify_objects), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	tuple = g_task_propagate_pointer (task, error);
+	if (!tuple)
 		return FALSE;
 
-	/* XXX Packing GQueues in a GQueue is pretty awkward, but until
-	 *     the backend methods can be updated I'm trying to make do
-	 *     with a single data container for all kinds of results. */
-
-	old_component_queue = g_queue_pop_head (&async_context->result_queue);
-	new_component_queue = g_queue_pop_head (&async_context->result_queue);
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	g_return_val_if_fail (old_component_queue != NULL, FALSE);
-	g_return_val_if_fail (new_component_queue != NULL, FALSE);
-
 	length = MIN (
-		g_queue_get_length (old_component_queue),
-		g_queue_get_length (new_component_queue));
+		g_queue_get_length (&tuple->first),
+		g_queue_get_length (&tuple->second));
 
 	for (ii = 0; ii < length; ii++) {
 		ECalComponent *old_component;
 		ECalComponent *new_component;
 
-		old_component = g_queue_pop_head (old_component_queue);
-		new_component = g_queue_pop_head (new_component_queue);
+		old_component = g_queue_pop_head (&tuple->first);
+		new_component = g_queue_pop_head (&tuple->second);
 
 		e_cal_backend_notify_component_modified (
 			backend, old_component, new_component);
@@ -3257,12 +3084,10 @@ e_cal_backend_modify_objects_finish (ECalBackend *backend,
 		g_clear_object (&new_component);
 	}
 
-	g_warn_if_fail (g_queue_is_empty (old_component_queue));
-	g_queue_free (old_component_queue);
+	g_warn_if_fail (g_queue_is_empty (&tuple->first));
+	g_warn_if_fail (g_queue_is_empty (&tuple->second));
 
-	g_warn_if_fail (g_queue_is_empty (new_component_queue));
-	g_queue_free (new_component_queue);
-
+	e_cal_queue_tuple_free (tuple);
 	return TRUE;
 }
 
@@ -3316,8 +3141,9 @@ e_cal_backend_remove_objects_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_remove_objects() */
 static void
-cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
-                                   GObject *source_object,
+cal_backend_remove_objects_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
                                    GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -3326,6 +3152,7 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -3334,20 +3161,17 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_remove_objects (
 			backend, data_cal, opid, cancellable,
@@ -3387,7 +3211,7 @@ e_cal_backend_remove_objects (ECalBackend *backend,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 	GSList *list = NULL;
 
@@ -3405,22 +3229,14 @@ e_cal_backend_remove_objects (ECalBackend *backend,
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_remove_objects);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_remove_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_remove_objects_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_remove_objects_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -3442,53 +3258,36 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	GQueue *component_id_queue;
-	GQueue *old_component_queue;
-	GQueue *new_component_queue;
+	GTask *task;
+	ECalQueueTuple *tuple;
 	guint length, ii;
+	gboolean has_new_components;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_remove_objects), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_remove_objects), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	tuple = g_task_propagate_pointer (task, error);
+	if (!tuple)
 		return FALSE;
 
-	/* XXX Packing GQueues in a GQueue is pretty awkward, but until
-	 *     the backend methods can be updated I'm trying to make do
-	 *     with a single data container for all kinds of results. */
-
-	component_id_queue = g_queue_pop_head (&async_context->result_queue);
-	old_component_queue = g_queue_pop_head (&async_context->result_queue);
-	new_component_queue = g_queue_pop_head (&async_context->result_queue);
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	g_return_val_if_fail (component_id_queue != NULL, FALSE);
-	g_return_val_if_fail (old_component_queue != NULL, FALSE);
-	/* new_component_queue may be NULL */
-
+	has_new_components = !g_queue_is_empty (&tuple->third);
 	length = MIN (
-		g_queue_get_length (component_id_queue),
-		g_queue_get_length (old_component_queue));
+		g_queue_get_length (&tuple->first),
+		g_queue_get_length (&tuple->second));
 
 	for (ii = 0; ii < length; ii++) {
 		ECalComponentId *component_id;
 		ECalComponent *old_component;
 		ECalComponent *new_component = NULL;
 
-		component_id = g_queue_pop_head (component_id_queue);
-		old_component = g_queue_pop_head (old_component_queue);
-		if (new_component_queue != NULL)
-			new_component = g_queue_pop_head (new_component_queue);
+		component_id = g_queue_pop_head (&tuple->first);
+		old_component = g_queue_pop_head (&tuple->second);
+		if (has_new_components)
+			new_component = g_queue_pop_head (&tuple->third);
 
 		e_cal_backend_notify_component_removed (
 			backend, component_id, old_component, new_component);
@@ -3498,17 +3297,11 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
 		g_clear_object (&new_component);
 	}
 
-	g_warn_if_fail (g_queue_is_empty (component_id_queue));
-	g_queue_free (component_id_queue);
+	g_warn_if_fail (g_queue_is_empty (&tuple->first));
+	g_warn_if_fail (g_queue_is_empty (&tuple->second));
+	g_warn_if_fail (g_queue_is_empty (&tuple->third));
 
-	g_warn_if_fail (g_queue_is_empty (old_component_queue));
-	g_queue_free (old_component_queue);
-
-	if (new_component_queue != NULL) {
-		g_warn_if_fail (g_queue_is_empty (new_component_queue));
-		g_queue_free (new_component_queue);
-	}
-
+	e_cal_queue_tuple_free (tuple);
 	return TRUE;
 }
 
@@ -3561,8 +3354,9 @@ e_cal_backend_receive_objects_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_receive_objects() */
 static void
-cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
-                                    GObject *source_object,
+cal_backend_receive_objects_thread (GTask *task,
+                                    gpointer source_object,
+                                    gpointer task_data,
                                     GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -3571,6 +3365,7 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -3579,20 +3374,17 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_receive_objects (
 			backend, data_cal, opid, cancellable,
@@ -3630,7 +3422,7 @@ e_cal_backend_receive_objects (ECalBackend *backend,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -3640,22 +3432,14 @@ e_cal_backend_receive_objects (ECalBackend *backend,
 	async_context->calobj = g_strdup (calobj);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_receive_objects);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_receive_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_receive_objects_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_receive_objects_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -3677,19 +3461,16 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_receive_objects), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_receive_objects), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (task, error);
 }
 
 /**
@@ -3747,8 +3528,9 @@ e_cal_backend_send_objects_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_send_objects() */
 static void
-cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_backend_send_objects_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -3757,6 +3539,7 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -3765,20 +3548,17 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_send_objects (
 			backend, data_cal, opid, cancellable,
@@ -3814,7 +3594,7 @@ e_cal_backend_send_objects (ECalBackend *backend,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -3824,22 +3604,14 @@ e_cal_backend_send_objects (ECalBackend *backend,
 	async_context->calobj = g_strdup (calobj);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_send_objects);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_send_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_send_objects_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_send_objects_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -3869,27 +3641,26 @@ e_cal_backend_send_objects_finish (ECalBackend *backend,
                                    GQueue *out_users,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
+	GQueue *queue;
 	gchar *calobj;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_send_objects), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, backend), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_send_objects), NULL);
 	g_return_val_if_fail (out_users != NULL, NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	queue = g_task_propagate_pointer (task, error);
+	if (!queue)
 		return NULL;
 
-	calobj = g_queue_pop_head (&async_context->result_queue);
+	calobj = g_queue_pop_head (queue);
 
-	e_queue_transfer (&async_context->result_queue, out_users);
+	e_queue_transfer (queue, out_users);
+	g_queue_free (queue);
 
 	return calobj;
 }
@@ -3949,8 +3720,9 @@ e_cal_backend_get_attachment_uris_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_get_attachment_uris() */
 static void
-cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
-                                        GObject *source_object,
+cal_backend_get_attachment_uris_thread (GTask *task,
+                                        gpointer source_object,
+                                        gpointer task_data,
                                         GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -3959,6 +3731,7 @@ cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -3967,20 +3740,17 @@ cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_get_attachment_uris (
 			backend, data_cal, opid, cancellable,
@@ -4017,7 +3787,7 @@ e_cal_backend_get_attachment_uris (ECalBackend *backend,
                                    GAsyncReadyCallback callback,
                                    gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -4028,22 +3798,14 @@ e_cal_backend_get_attachment_uris (ECalBackend *backend,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_get_attachment_uris);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_get_attachment_uris);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_get_attachment_uris_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_get_attachment_uris_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -4071,24 +3833,23 @@ e_cal_backend_get_attachment_uris_finish (ECalBackend *backend,
                                           GQueue *out_attachment_uris,
                                           GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
+	GQueue *queue;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_get_attachment_uris), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_get_attachment_uris), FALSE);
 	g_return_val_if_fail (out_attachment_uris != NULL, FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	queue = g_task_propagate_pointer (task, error);
+	if (!queue)
 		return FALSE;
 
-	e_queue_transfer (&async_context->result_queue, out_attachment_uris);
+	e_queue_transfer (queue, out_attachment_uris);
+	g_queue_free (queue);
 
 	return TRUE;
 }
@@ -4148,8 +3909,9 @@ e_cal_backend_discard_alarm_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_discard_alarm() */
 static void
-cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
-                                  GObject *source_object,
+cal_backend_discard_alarm_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
 	ECalBackend *backend;
@@ -4158,6 +3920,7 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 
 	backend = E_CAL_BACKEND (source_object);
+	async_context = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -4165,28 +3928,22 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (class->impl_discard_alarm == NULL) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_SUPPORTED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_SUPPORTED));
-		g_simple_async_result_complete_in_idle (simple);
-
 	} else if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
-
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_discard_alarm (
 			backend, data_cal, opid, cancellable,
@@ -4229,7 +3986,7 @@ e_cal_backend_discard_alarm (ECalBackend *backend,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -4243,22 +4000,14 @@ e_cal_backend_discard_alarm (ECalBackend *backend,
 	async_context->alarm_uid = g_strdup (alarm_uid);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_discard_alarm);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_discard_alarm);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_discard_alarm_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_discard_alarm_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -4280,19 +4029,16 @@ e_cal_backend_discard_alarm_finish (ECalBackend *backend,
                                     GAsyncResult *result,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_discard_alarm), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_discard_alarm), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (task, error);
 }
 
 /**
@@ -4342,16 +4088,18 @@ e_cal_backend_get_timezone_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_get_timezone() */
 static void
-cal_backend_get_timezone_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_backend_get_timezone_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
 	ECalBackend *backend;
 	ECalBackendClass *class;
 	EDataCal *data_cal;
-	AsyncContext *async_context;
+	const gchar *tzid;
 
 	backend = E_CAL_BACKEND (source_object);
+	tzid = task_data;
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class != NULL);
@@ -4360,24 +4108,20 @@ cal_backend_get_timezone_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_get_timezone (
-			backend, data_cal, opid, cancellable,
-			async_context->tzid);
+			backend, data_cal, opid, cancellable, tzid);
 	}
 
 	g_object_unref (data_cal);
@@ -4406,31 +4150,19 @@ e_cal_backend_get_timezone (ECalBackend *backend,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzid != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->tzid = g_strdup (tzid);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_get_timezone);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_get_timezone);
+	g_task_set_task_data (task, g_strdup (tzid), g_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_get_timezone_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_get_timezone_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -4454,33 +4186,16 @@ e_cal_backend_get_timezone_finish (ECalBackend *backend,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	gchar *tzobject;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_get_timezone), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_get_timezone), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	tzobject = g_queue_pop_head (&async_context->result_queue);
-
-	if (!tzobject)
-		g_set_error_literal (error,
-			E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
-			e_cal_client_error_to_string (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	return tzobject;
+	return g_task_propagate_pointer (task, error);
 }
 
 /**
@@ -4529,14 +4244,15 @@ e_cal_backend_add_timezone_sync (ECalBackend *backend,
 
 /* Helper for e_cal_backend_add_timezone() */
 static void
-cal_backend_add_timezone_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_backend_add_timezone_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
 	ECalBackend *backend;
 	ECalBackendClass *class;
 	EDataCal *data_cal;
-	AsyncContext *async_context;
+	const gchar *tzobject = task_data;
 
 	backend = E_CAL_BACKEND (source_object);
 
@@ -4547,24 +4263,20 @@ cal_backend_add_timezone_thread (GSimpleAsyncResult *simple,
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
 	if (!e_cal_backend_is_opened (backend)) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
+		g_task_return_new_error (
+			task, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
-		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
 		guint32 opid;
 
-		opid = cal_backend_stash_operation (backend, simple);
+		opid = cal_backend_stash_operation (backend, task);
 
 		class->impl_add_timezone (
-			backend, data_cal, opid, cancellable,
-			async_context->tzobject);
+			backend, data_cal, opid, cancellable, tzobject);
 	}
 
 	g_object_unref (data_cal);
@@ -4593,31 +4305,19 @@ e_cal_backend_add_timezone (ECalBackend *backend,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobject != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->tzobject = g_strdup (tzobject);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_add_timezone);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_backend_add_timezone);
+	g_task_set_task_data (task, g_strdup (tzobject), g_free);
 
 	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_add_timezone_thread);
+		backend, g_steal_pointer (&task), FALSE, cal_backend_add_timezone_thread);
 
 	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
 }
 
 /**
@@ -4639,19 +4339,16 @@ e_cal_backend_add_timezone_finish (ECalBackend *backend,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_add_timezone), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_backend_add_timezone), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
+	task = G_TASK (result);
 
-	cal_backend_unblock_operations (backend, simple);
+	cal_backend_unblock_operations (backend, task);
 
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (task, error);
 }
 
 /**
@@ -4840,10 +4537,8 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
  * e_cal_backend_prepare_for_completion:
  * @backend: an #ECalBackend
  * @opid: an operation ID given to #EDataCal
- * @result_queue: return location for a #GQueue, or %NULL
  *
- * Obtains the #GSimpleAsyncResult for @opid and sets @result_queue as a
- * place to deposit results prior to completing the #GSimpleAsyncResult.
+ * Obtains the #GTask for @opid.
  *
  * <note>
  *   <para>
@@ -4853,34 +4548,114 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
  *   </para>
  * </note>
  *
- * Returns: (transfer full): a #GSimpleAsyncResult
+ * Returns: (transfer full): a #GTask
  *
  * Since: 3.10
  **/
-GSimpleAsyncResult *
+GTask *
 e_cal_backend_prepare_for_completion (ECalBackend *backend,
-                                      guint32 opid,
-                                      GQueue **result_queue)
+                                      guint32 opid)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (opid > 0, NULL);
 
-	simple = cal_backend_claim_operation (backend, opid);
-	g_return_val_if_fail (simple != NULL, NULL);
+	task = cal_backend_claim_operation (backend, opid);
+	g_return_val_if_fail (task != NULL, NULL);
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	return task;
+}
 
-	if (result_queue != NULL) {
-		if (async_context != NULL)
-			*result_queue = &async_context->result_queue;
-		else
-			*result_queue = NULL;
+void
+e_cal_queue_free_strings (GQueue *queue)
+{
+	if (!queue)
+		return;
+
+	g_queue_free_full (queue, g_free);
+}
+
+ECalQueueTuple *
+e_cal_queue_tuple_new (GDestroyNotify first_free_func,
+                       GDestroyNotify second_free_func,
+                       GDestroyNotify third_free_func)
+{
+	ECalQueueTuple *queue_tuple;
+
+	queue_tuple = g_new0 (ECalQueueTuple, 1);
+	g_queue_init (&queue_tuple->first);
+	g_queue_init (&queue_tuple->second);
+	g_queue_init (&queue_tuple->third);
+	queue_tuple->first_free_func = first_free_func;
+	queue_tuple->second_free_func = second_free_func;
+	queue_tuple->third_free_func = third_free_func;
+
+	return queue_tuple;
+}
+
+void
+e_cal_queue_tuple_free (ECalQueueTuple *queue_tuple)
+{
+	if (!queue_tuple)
+		return;
+
+	g_queue_clear_full (&queue_tuple->first, queue_tuple->first_free_func);
+	g_queue_clear_full (&queue_tuple->second, queue_tuple->second_free_func);
+	g_queue_clear_full (&queue_tuple->third, queue_tuple->third_free_func);
+	g_free (queue_tuple);
+}
+
+static void
+custom_op_func_data_free (CustomOpFuncData *data)
+{
+	if (!data)
+		return;
+
+	if (data->custom_func_user_data_free)
+		g_clear_pointer (&data->custom_func_user_data, data->custom_func_user_data_free);
+
+	g_free (data);
+}
+
+static void
+on_custom_operation_finished (GObject *source_object,
+                              GAsyncResult *res,
+                              gpointer user_data)
+{
+	ECalBackend *backend = E_CAL_BACKEND (source_object);
+	GTask *task = G_TASK (res);
+	GError *local_error = NULL;
+
+	cal_backend_unblock_operations (backend, task);
+
+	if (!g_task_propagate_boolean (task, &local_error)) {
+		if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			e_cal_backend_notify_error (backend, local_error->message);
 	}
 
-	return simple;
+	g_clear_error (&local_error);
+}
+
+static void
+e_cal_backend_custom_operation_thread (GTask *task,
+                                       gpointer source_object,
+                                       gpointer task_data,
+                                       GCancellable *cancellable)
+{
+	ECalBackend *backend = source_object;
+	CustomOpFuncData *data = task_data;
+
+	if (!g_task_return_error_if_cancelled (task)) {
+		GError *local_error = NULL;
+		data->custom_func (backend, data->custom_func_user_data, cancellable, &local_error);
+		if (!local_error) {
+			g_task_return_boolean (task, TRUE);
+		} else {
+			g_task_return_error (task, g_steal_pointer (&local_error));
+		}
+
+	}
 }
 
 /**
@@ -4909,26 +4684,23 @@ e_cal_backend_schedule_custom_operation (ECalBackend *cal_backend,
 					 gpointer user_data,
 					 GDestroyNotify user_data_free)
 {
-	DispatchNode *node;
+	GTask *task;
+	CustomOpFuncData *data;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (cal_backend));
 	g_return_if_fail (func != NULL);
 
-	g_mutex_lock (&cal_backend->priv->operation_lock);
+	data = g_new0 (CustomOpFuncData, 1);
+	data->custom_func = func;
+	data->custom_func_user_data = user_data;
+	data->custom_func_user_data_free = user_data_free;
 
-	node = g_slice_new0 (DispatchNode);
-	node->blocking_operation = TRUE;
-	node->cal_backend_weak_ref = e_weak_ref_new (cal_backend);
-	node->custom_func = func;
-	node->custom_func_user_data = user_data;
-	node->custom_func_user_data_free = user_data_free;
+	task = g_task_new (cal_backend, use_cancellable, on_custom_operation_finished, NULL);
+	g_task_set_source_tag (task, e_cal_backend_schedule_custom_operation);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) custom_op_func_data_free);
 
-	if (G_IS_CANCELLABLE (use_cancellable))
-		node->cancellable = g_object_ref (use_cancellable);
-
-	g_queue_push_tail (&cal_backend->priv->pending_operations, node);
-
-	g_mutex_unlock (&cal_backend->priv->operation_lock);
+	cal_backend_push_operation (
+		cal_backend, g_steal_pointer (&task), TRUE, e_cal_backend_custom_operation_thread);
 
 	cal_backend_dispatch_next_operation (cal_backend);
 }

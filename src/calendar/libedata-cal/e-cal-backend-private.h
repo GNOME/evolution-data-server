@@ -27,11 +27,29 @@
 
 G_BEGIN_DECLS
 
-GSimpleAsyncResult *
-		e_cal_backend_prepare_for_completion
+typedef struct _ECalQueueTuple ECalQueueTuple;
+
+struct _ECalQueueTuple {
+	GQueue first;
+	GQueue second;
+	GQueue third;
+	GDestroyNotify first_free_func;
+	GDestroyNotify second_free_func;
+	GDestroyNotify third_free_func;
+};
+
+GTask *		e_cal_backend_prepare_for_completion
 						(ECalBackend *backend,
-						 guint opid,
-						 GQueue **result_queue);
+						 guint opid);
+
+void		e_cal_queue_free_strings (GQueue *queue);
+
+ECalQueueTuple *
+		e_cal_queue_tuple_new (GDestroyNotify first_free_func,
+		                       GDestroyNotify second_free_func,
+		                       GDestroyNotify third_free_func);
+
+void		e_cal_queue_tuple_free (ECalQueueTuple *queue_tuple);
 
 G_END_DECLS
 

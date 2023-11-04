@@ -1337,7 +1337,7 @@ data_cal_handle_close_cb (EDBusCalendar *dbus_interface,
  * e_data_cal_respond_open:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the open method call.
  *
@@ -1349,25 +1349,25 @@ e_data_cal_respond_open (EDataCal *cal,
                          GError *error)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open calendar: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1375,7 +1375,7 @@ e_data_cal_respond_open (EDataCal *cal,
  * e_data_cal_respond_refresh:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the refresh method call.
  *
@@ -1387,25 +1387,25 @@ e_data_cal_respond_refresh (EDataCal *cal,
                             GError *error)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot refresh calendar: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1413,7 +1413,7 @@ e_data_cal_respond_refresh (EDataCal *cal,
  * e_data_cal_respond_get_object:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @object: The object retrieved as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_object method call.
@@ -1427,38 +1427,34 @@ e_data_cal_respond_get_object (EDataCal *cal,
                                const gchar *object)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot retrieve calendar object path: "));
 
 	if (error == NULL) {
 		if (object != NULL) {
-			g_queue_push_tail (queue, g_strdup (object));
+			g_task_return_pointer (task, g_strdup (object), g_free);
 		} else {
-			g_simple_async_result_set_error (
-				simple, E_CAL_CLIENT_ERROR,
+			g_task_return_new_error (
+				task, E_CAL_CLIENT_ERROR,
 				E_CAL_CLIENT_ERROR_INVALID_OBJECT,
 				"%s", e_cal_client_error_to_string (
 				E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		}
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1466,7 +1462,7 @@ e_data_cal_respond_get_object (EDataCal *cal,
  * e_data_cal_respond_get_object_list:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @objects: (element-type utf8): List of retrieved objects.
  *
  * Notifies listeners of the completion of the get_object_list method call.
@@ -1480,40 +1476,37 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
                                     const GSList *objects)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot retrieve calendar object list: "));
 
 	if (error == NULL) {
-		GSList *list, *link;
+		const GSList *link;
+		GQueue *queue = g_queue_new ();
 
-		list = (GSList *) objects;
-
-		for (link = list; link != NULL; link = g_slist_next (link)) {
+		for (link = objects; link != NULL; link = g_slist_next (link)) {
 			const gchar *calobj = link->data;
 
 			if (calobj != NULL)
 				g_queue_push_tail (queue, g_strdup (calobj));
 		}
 
+		g_task_return_pointer (task, g_steal_pointer (&queue),
+		                       (GDestroyNotify) e_cal_queue_free_strings);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1521,7 +1514,7 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
  * e_data_cal_respond_get_free_busy:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @freebusy: (element-type utf8): a #GSList of iCalendar strings with all gathered free/busy components.
  *
  * Notifies listeners of the completion of the get_free_busy method call.
@@ -1538,8 +1531,7 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
 				  const GSList *freebusy)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 	const GSList *link;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
@@ -1547,25 +1539,28 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot retrieve calendar free/busy list: "));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
-	} else {
+	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
+
 		for (link = freebusy; link; link = g_slist_next (link)) {
 			const gchar *ical_freebusy = link->data;
 
 			g_queue_push_tail (queue, g_strdup (ical_freebusy));
 		}
+
+		g_task_return_pointer (task, g_steal_pointer (&queue),
+		                       (GDestroyNotify) e_cal_queue_free_strings);
+	} else {
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1573,7 +1568,7 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
  * e_data_cal_respond_create_objects:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @uids: (element-type utf8): UIDs of the objects created.
  * @new_components: (element-type ECalComponent): The newly created #ECalComponent objects.
  *
@@ -1589,52 +1584,43 @@ e_data_cal_respond_create_objects (EDataCal *cal,
                                    GSList *new_components)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot create calendar object: "));
 
 	if (error == NULL) {
-		GQueue *inner_queue;
+		ECalQueueTuple *tuple;
 		GSList *list, *link;
 
-		inner_queue = g_queue_new ();
-
+		tuple = e_cal_queue_tuple_new (g_free,
+		                               g_object_unref,
+		                               NULL);
 		list = (GSList *) uids;
 
 		for (link = list; link != NULL; link = g_slist_next (link))
-			g_queue_push_tail (inner_queue, g_strdup (link->data));
-
-		g_queue_push_tail (queue, inner_queue);
-
-		inner_queue = g_queue_new ();
+			g_queue_push_tail (&tuple->first, g_strdup (link->data));
 
 		list = (GSList *) new_components;
 
 		for (link = list; link != NULL; link = g_slist_next (link))
-			g_queue_push_tail (
-				inner_queue,
-				g_object_ref (link->data));
+			g_queue_push_tail (&tuple->second, g_object_ref (link->data));
 
-		g_queue_push_tail (queue, inner_queue);
-
+		g_task_return_pointer (task, g_steal_pointer (&tuple),
+		                       (GDestroyNotify) e_cal_queue_tuple_free);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1642,7 +1628,7 @@ e_data_cal_respond_create_objects (EDataCal *cal,
  * e_data_cal_respond_modify_objects:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
  * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
  *
@@ -1658,59 +1644,47 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
                                    GSList *new_components)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot modify calendar object: "));
 
 	if (error == NULL) {
-		GQueue *inner_queue;
+		ECalQueueTuple *tuple;
 		GSList *list, *link;
 
-		/* FIXME Ugh, this is awkward... */
-
-		inner_queue = g_queue_new ();
-
+		tuple = e_cal_queue_tuple_new (g_object_unref,
+		                               g_object_unref,
+		                               NULL);
 		list = (GSList *) old_components;
 
 		for (link = list; link != NULL; link = g_slist_next (link)) {
 			if (link->data)
 				g_object_ref (link->data);
-			g_queue_push_tail (
-				inner_queue,
-				link->data);
+			g_queue_push_tail (&tuple->first, link->data);
 		}
-
-		g_queue_push_tail (queue, inner_queue);
-
-		inner_queue = g_queue_new ();
 
 		list = (GSList *) new_components;
 
 		for (link = list; link != NULL; link = g_slist_next (link))
-			g_queue_push_tail (
-				inner_queue,
-				g_object_ref (link->data));
+			g_queue_push_tail (&tuple->second, g_object_ref (link->data));
 
-		g_queue_push_tail (queue, inner_queue);
+		g_task_return_pointer (task, g_steal_pointer (&tuple),
+		                       (GDestroyNotify) e_cal_queue_tuple_free);
 
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1718,7 +1692,7 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
  * e_data_cal_respond_remove_objects:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @ids: (element-type ECalComponentId): IDs of the removed objects.
  * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
  * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
@@ -1737,55 +1711,40 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
                                   GSList *new_components)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot remove calendar object: "));
 
 	if (error == NULL) {
-		GQueue *inner_queue;
+		ECalQueueTuple *tuple;
 		GSList *list, *link;
 
-		/* FIXME Ugh, this is awkward... */
-
-		inner_queue = g_queue_new ();
-
+		tuple = e_cal_queue_tuple_new (e_cal_component_id_free,
+		                               g_object_unref,
+		                               g_object_unref);
 		list = (GSList *) ids;
 
 		for (link = list; link != NULL; link = g_slist_next (link))
-			g_queue_push_tail (
-				inner_queue,
-				e_cal_component_id_copy (link->data));
-
-		g_queue_push_tail (queue, inner_queue);
-
-		inner_queue = g_queue_new ();
+			g_queue_push_tail (&tuple->first, e_cal_component_id_copy (link->data));
 
 		list = (GSList *) old_components;
 
 		for (link = list; link != NULL; link = g_slist_next (link)) {
 			if (link->data)
 				g_object_ref (link->data);
-			g_queue_push_tail (
-				inner_queue,
-				link->data);
+			g_queue_push_tail (&tuple->second, link->data);
 		}
 
-		g_queue_push_tail (queue, inner_queue);
-
 		if (new_components != NULL) {
-			inner_queue = g_queue_new ();
-
 			list = (GSList *) new_components;
 
 			/* XXX Careful here.  Apparently list elements
@@ -1793,20 +1752,17 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
 			for (link = list; link != NULL; link = g_slist_next (link)) {
 				if (link->data != NULL)
 					g_object_ref (link->data);
-				g_queue_push_tail (
-					inner_queue, link->data);
+				g_queue_push_tail (&tuple->third, link->data);
 			}
-
-			g_queue_push_tail (queue, inner_queue);
 		}
 
+		g_task_return_pointer (task, g_steal_pointer (&tuple),
+		                       (GDestroyNotify) e_cal_queue_tuple_free);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1814,7 +1770,7 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
  * e_data_cal_respond_receive_objects:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the receive_objects method call.
  *
@@ -1826,25 +1782,25 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
                                     GError *error)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot receive calendar objects: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (error == NULL)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1852,7 +1808,7 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
  * e_data_cal_respond_send_objects:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @users: (element-type utf8): List of users.
  * @calobj: An iCalendar string representing the object sent.
  *
@@ -1868,22 +1824,21 @@ e_data_cal_respond_send_objects (EDataCal *cal,
                                  const gchar *calobj)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot send calendar objects: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *list, *link;
 
 		g_queue_push_tail (queue, g_strdup (calobj));
@@ -1893,13 +1848,13 @@ e_data_cal_respond_send_objects (EDataCal *cal,
 		for (link = list; link != NULL; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 
+		g_task_return_pointer (task, g_steal_pointer (&queue),
+		                       (GDestroyNotify) e_cal_queue_free_strings);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1907,7 +1862,7 @@ e_data_cal_respond_send_objects (EDataCal *cal,
  * e_data_cal_respond_get_attachment_uris:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @attachment_uris: (element-type utf8): List of retrieved attachment uri's.
  *
  * Notifies listeners of the completion of the get_attachment_uris method call.
@@ -1921,35 +1876,35 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
                                         const GSList *attachment_uris)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not retrieve attachment uris: "));
 
 	if (error == NULL) {
+		GQueue *queue = g_queue_new ();
 		GSList *list, *link;
 
 		list = (GSList *) attachment_uris;
 
 		for (link = list; link != NULL; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
+
+		g_task_return_pointer (task, g_steal_pointer (&queue),
+		                       (GDestroyNotify) e_cal_queue_free_strings);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1957,7 +1912,7 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
  * e_data_cal_respond_discard_alarm:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the discard_alarm method call.
  *
@@ -1969,25 +1924,25 @@ e_data_cal_respond_discard_alarm (EDataCal *cal,
                                   GError *error)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not discard reminder: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (error == NULL)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -1995,7 +1950,7 @@ e_data_cal_respond_discard_alarm (EDataCal *cal,
  * e_data_cal_respond_get_timezone:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  * @tzobject: The requested timezone as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_timezone method call.
@@ -2009,30 +1964,26 @@ e_data_cal_respond_get_timezone (EDataCal *cal,
                                  const gchar *tzobject)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not retrieve calendar time zone: "));
 
 	if (error == NULL) {
-		g_queue_push_tail (queue, g_strdup (tzobject));
+		g_task_return_pointer (task, g_strdup (tzobject), g_free);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	}
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
@@ -2040,7 +1991,7 @@ e_data_cal_respond_get_timezone (EDataCal *cal,
  * e_data_cal_respond_add_timezone:
  * @cal: A calendar client interface.
  * @opid: associated operation id
- * @error: Operation error, if any, automatically freed if passed it.
+ * @error: (transfer full) (nullable): Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the add_timezone method call.
  *
@@ -2052,25 +2003,25 @@ e_data_cal_respond_add_timezone (EDataCal *cal,
                                  GError *error)
 {
 	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, NULL);
-	g_return_if_fail (simple != NULL);
+	task = e_cal_backend_prepare_for_completion (backend, opid);
+	g_return_if_fail (task != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not add calendar time zone: "));
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (!error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&error));
 
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 	g_object_unref (backend);
 }
 
