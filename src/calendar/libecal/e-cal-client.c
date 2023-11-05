@@ -53,6 +53,7 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 typedef struct _ConnectClosure ConnectClosure;
 typedef struct _RunInThreadClosure RunInThreadClosure;
+typedef struct _SendObjectResult SendObjectResult;
 
 struct _ECalClientPrivate {
 	EDBusCalendar *dbus_proxy;
@@ -70,16 +71,11 @@ struct _ECalClientPrivate {
 };
 
 struct _AsyncContext {
-	ECalClientView *client_view;
 	ICalComponent *in_comp;
-	ICalComponent *out_comp;
 	ICalTimezone *zone;
 	GSList *comp_list;
-	GSList *object_list;
 	GSList *string_list;
 	GSList *ids_list; /* ECalComponentId * */
-	gchar *sexp;
-	gchar *tzid;
 	gchar *uid;
 	gchar *rid;
 	gchar *auid;
@@ -104,9 +100,13 @@ struct _ConnectClosure {
 };
 
 struct _RunInThreadClosure {
-	GSimpleAsyncThreadFunc func;
-	GSimpleAsyncResult *simple;
-	GCancellable *cancellable;
+	GTaskThreadFunc func;
+	GTask *task;
+};
+
+struct _SendObjectResult {
+	GSList *users;
+	ICalComponent *modified_icalcomp;
 };
 
 enum {
@@ -148,18 +148,13 @@ G_DEFINE_TYPE_WITH_CODE (
 static void
 async_context_free (AsyncContext *async_context)
 {
-	g_clear_object (&async_context->client_view);
 	g_clear_object (&async_context->in_comp);
-	g_clear_object (&async_context->out_comp);
 	g_clear_object (&async_context->zone);
 
 	g_slist_free_full (async_context->comp_list, g_object_unref);
-	g_slist_free_full (async_context->object_list, g_object_unref);
 	g_slist_free_full (async_context->string_list, g_free);
 	g_slist_free_full (async_context->ids_list, e_cal_component_id_free);
 
-	g_free (async_context->sexp);
-	g_free (async_context->tzid);
 	g_free (async_context->uid);
 	g_free (async_context->rid);
 	g_free (async_context->auid);
@@ -187,11 +182,7 @@ signal_closure_free (SignalClosure *signal_closure)
 static void
 connect_closure_free (ConnectClosure *connect_closure)
 {
-	if (connect_closure->source != NULL)
-		g_object_unref (connect_closure->source);
-
-	if (connect_closure->cancellable != NULL)
-		g_object_unref (connect_closure->cancellable);
+	g_clear_object (&connect_closure->source);
 
 	g_slice_free (ConnectClosure, connect_closure);
 }
@@ -199,11 +190,7 @@ connect_closure_free (ConnectClosure *connect_closure)
 static void
 run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
 {
-	if (run_in_thread_closure->simple != NULL)
-		g_object_unref (run_in_thread_closure->simple);
-
-	if (run_in_thread_closure->cancellable != NULL)
-		g_object_unref (run_in_thread_closure->cancellable);
+	g_clear_object (&run_in_thread_closure->task);
 
 	g_slice_free (RunInThreadClosure, run_in_thread_closure);
 }
@@ -370,30 +357,22 @@ static gboolean
 cal_client_run_in_dbus_thread_idle_cb (gpointer user_data)
 {
 	RunInThreadClosure *closure = user_data;
-	GObject *source_object;
-	GAsyncResult *result;
+	GTask *task;
 
-	result = G_ASYNC_RESULT (closure->simple);
-	source_object = g_async_result_get_source_object (result);
+	task = G_TASK (closure->task);
 
 	closure->func (
-		closure->simple,
-		source_object,
-		closure->cancellable);
+		task,
+		g_task_get_source_object (task),
+		g_task_get_task_data (task),
+		g_task_get_cancellable (task));
 
-	if (source_object != NULL)
-		g_object_unref (source_object);
-
-	g_simple_async_result_complete_in_idle (closure->simple);
-
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
-cal_client_run_in_dbus_thread (GSimpleAsyncResult *simple,
-                               GSimpleAsyncThreadFunc func,
-                               gint io_priority,
-                               GCancellable *cancellable)
+cal_client_run_in_dbus_thread (GTask *task,
+                               GTaskThreadFunc func)
 {
 	RunInThreadClosure *closure;
 	GMainContext *main_context;
@@ -403,13 +382,10 @@ cal_client_run_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	closure = g_slice_new0 (RunInThreadClosure);
 	closure->func = func;
-	closure->simple = g_object_ref (simple);
-
-	if (G_IS_CANCELLABLE (cancellable))
-		closure->cancellable = g_object_ref (cancellable);
+	closure->task = g_object_ref (task);
 
 	idle_source = g_idle_source_new ();
-	g_source_set_priority (idle_source, io_priority);
+	g_source_set_priority (idle_source, g_task_get_priority (task));
 	g_source_set_callback (
 		idle_source, cal_client_run_in_dbus_thread_idle_cb,
 		closure, (GDestroyNotify) run_in_thread_closure_free);
@@ -1172,8 +1148,9 @@ cal_client_retrieve_properties_sync (EClient *client,
 }
 
 static void
-cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
-                                GObject *source_object,
+cal_client_init_in_dbus_thread (GTask *task,
+                                gpointer source_object,
+                                gpointer task_data,
                                 GCancellable *cancellable)
 {
 	ECalClientPrivate *priv;
@@ -1204,7 +1181,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		return;
 	}
 
@@ -1222,7 +1199,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		g_object_unref (connection);
 		return;
 	}
@@ -1256,7 +1233,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		g_object_unref (connection);
 		return;
 	}
@@ -1278,7 +1255,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		g_object_unref (connection);
 		return;
 	}
@@ -1326,6 +1303,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_object_notify (G_OBJECT (proxy), "capabilities");
 
 	g_object_unref (connection);
+	g_task_return_boolean (task, TRUE);
 }
 
 static gboolean
@@ -1361,19 +1339,15 @@ cal_client_initable_init_async (GAsyncInitable *initable,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (initable), callback, user_data,
-		cal_client_initable_init_async);
+	task = g_task_new (initable, cancellable, callback, user_data);
+	g_task_set_source_tag (task, cal_client_initable_init_async);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	cal_client_run_in_dbus_thread (task, cal_client_init_in_dbus_thread);
 
-	cal_client_run_in_dbus_thread (
-		simple, cal_client_init_in_dbus_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static gboolean
@@ -1381,17 +1355,10 @@ cal_client_initable_init_finish (GAsyncInitable *initable,
                                  GAsyncResult *result,
                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, initable), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, cal_client_initable_init_async), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (initable),
-		cal_client_initable_init_async), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static void
@@ -1725,16 +1692,14 @@ cal_client_connect_wait_for_connected_cb (GObject *source_object,
 					   GAsyncResult *result,
 					   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	GTask *task = user_data;
 
 	/* These errors are ignored, the book is left opened in an offline mode. */
 	e_client_wait_for_connected_finish (E_CLIENT (source_object), result, NULL);
 
-	g_simple_async_result_complete (simple);
+	g_task_return_boolean (task, TRUE);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /* Helper for e_cal_client_connect() */
@@ -1743,48 +1708,45 @@ cal_client_connect_open_cb (GObject *source_object,
                             GAsyncResult *result,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	gchar **properties = NULL;
-	GObject *client_object;
+	ECalClient *client_object;
 	GError *local_error = NULL;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	task = G_TASK (user_data);
 
 	e_dbus_calendar_call_open_finish (
 		E_DBUS_CALENDAR (source_object), &properties, result, &local_error);
 
-	client_object = g_async_result_get_source_object (G_ASYNC_RESULT (simple));
+	client_object = g_task_get_source_object (task);
 	if (client_object) {
-		cal_client_process_properties (E_CAL_CLIENT (client_object), properties);
+		cal_client_process_properties (client_object, properties);
 
 		if (!local_error) {
 			ConnectClosure *closure;
 
-			closure = g_simple_async_result_get_op_res_gpointer (simple);
+			closure = g_task_get_task_data (task);
 			if (closure->wait_for_connected_seconds != (guint32) -1) {
+				GCancellable *cancellable;
+
+				cancellable = g_task_get_cancellable (task);
 				e_client_wait_for_connected (E_CLIENT (client_object),
 					closure->wait_for_connected_seconds,
-					closure->cancellable,
-					cal_client_connect_wait_for_connected_cb, g_object_ref (simple));
-
-				g_clear_object (&client_object);
-				g_object_unref (simple);
-				g_strfreev (properties);
-				return;
+					cancellable,
+					cal_client_connect_wait_for_connected_cb,
+					g_steal_pointer (&task));
 			}
 		}
-
-		g_clear_object (&client_object);
 	}
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
+	} else if (task) {
+		g_task_return_boolean (task, TRUE);
 	}
 
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
+	g_clear_object (&task);
 	g_strfreev (properties);
 }
 
@@ -1794,40 +1756,36 @@ cal_client_connect_init_cb (GObject *source_object,
                             GAsyncResult *result,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	ECalClientPrivate *priv;
-	ConnectClosure *closure;
 	GError *local_error = NULL;
+	ECalClient *client_object;
+	GCancellable *cancellable;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	task = G_TASK (user_data);
 
 	g_async_initable_init_finish (
 		G_ASYNC_INITABLE (source_object), result, &local_error);
 
 	if (local_error != NULL) {
-		g_simple_async_result_take_error (simple, local_error);
-		g_simple_async_result_complete (simple);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 		goto exit;
 	}
 
-	/* Note, we're repurposing some function parameters. */
+	client_object = g_task_get_source_object (task);
+	cancellable = g_task_get_cancellable (task);
 
-	result = G_ASYNC_RESULT (simple);
-	source_object = g_async_result_get_source_object (result);
-	closure = g_simple_async_result_get_op_res_gpointer (simple);
-
-	priv = E_CAL_CLIENT (source_object)->priv;
+	g_return_if_fail (E_IS_CAL_CLIENT (client_object));
+	priv = client_object->priv;
 
 	e_dbus_calendar_call_open (
 		priv->dbus_proxy,
-		closure->cancellable,
+		cancellable,
 		cal_client_connect_open_cb,
-		g_object_ref (simple));
-
-	g_object_unref (source_object);
+		g_steal_pointer (&task));
 
 exit:
-	g_object_unref (simple);
+	g_clear_object (&task);
 }
 
 /**
@@ -1867,7 +1825,7 @@ e_cal_client_connect (ESource *source,
                       GAsyncReadyCallback callback,
                       gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	ConnectClosure *closure;
 	ECalClient *client;
 
@@ -1887,30 +1845,21 @@ e_cal_client_connect (ESource *source,
 	closure->source = g_object_ref (source);
 	closure->wait_for_connected_seconds = wait_for_connected_seconds;
 
-	if (G_IS_CANCELLABLE (cancellable))
-		closure->cancellable = g_object_ref (cancellable);
-
 	client = g_object_new (
 		E_TYPE_CAL_CLIENT,
 		"source", source,
 		"source-type", source_type, NULL);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback,
-		user_data, e_cal_client_connect);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, closure, (GDestroyNotify) connect_closure_free);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_connect);
+	g_task_set_task_data (task, g_steal_pointer (&closure), (GDestroyNotify) connect_closure_free);
 
 	g_async_initable_init_async (
 		G_ASYNC_INITABLE (client),
 		G_PRIORITY_DEFAULT, cancellable,
 		cal_client_connect_init_cb,
-		g_object_ref (simple));
+		g_steal_pointer (&task));
 
-	g_object_unref (simple);
 	g_object_unref (client);
 }
 
@@ -1935,26 +1884,24 @@ EClient *
 e_cal_client_connect_finish (GAsyncResult *result,
                              GError **error)
 {
-	GSimpleAsyncResult *simple;
-	ConnectClosure *closure;
-	gpointer source_tag;
+	GTask *task = (GTask *)result;
+	EClient *client;
 
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (G_IS_TASK (task), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_connect), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	closure = g_simple_async_result_get_op_res_gpointer (simple);
+	if (!g_task_propagate_boolean (task, error)) {
+		ConnectClosure *closure;
 
-	source_tag = g_simple_async_result_get_source_tag (simple);
-	g_return_val_if_fail (source_tag == e_cal_client_connect, NULL);
-
-	if (g_simple_async_result_propagate_error (simple, error)) {
+		closure = g_task_get_task_data (task);
 		g_prefix_error (
 			error, _("Unable to connect to “%s”: "),
 			e_source_get_display_name (closure->source));
 		return NULL;
 	}
 
-	return E_CLIENT (g_async_result_get_source_object (result));
+	client = g_task_get_source_object (task);
+	return g_object_ref (client);
 }
 
 /**
@@ -3249,18 +3196,17 @@ e_cal_client_get_component_as_string (ECalClient *client,
 
 /* Helper for e_cal_client_get_default_object() */
 static void
-cal_client_get_default_object_thread (GSimpleAsyncResult *simple,
-                                      GObject *source_object,
+cal_client_get_default_object_thread (GTask *task,
+                                      gpointer source_object,
+                                      gpointer task_data,
                                       GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	ICalComponent *icalcomp = NULL;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_get_default_object_sync (
 		E_CAL_CLIENT (source_object),
-		&async_context->out_comp,
+		&icalcomp,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -3270,8 +3216,10 @@ cal_client_get_default_object_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&icalcomp), g_object_unref);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -3293,27 +3241,16 @@ e_cal_client_get_default_object (ECalClient *client,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_default_object);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_default_object);
+	g_task_run_in_thread (task, cal_client_get_default_object_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_default_object_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -3338,26 +3275,19 @@ e_cal_client_get_default_object_finish (ECalClient *client,
                                         ICalComponent **out_icalcomp,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	ICalComponent *icalcomp;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_default_object), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_default_object), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	icalcomp = g_task_propagate_pointer (G_TASK (result), error);
+	if (!icalcomp)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->out_comp != NULL, FALSE);
-
-	if (out_icalcomp != NULL) {
-		*out_icalcomp = async_context->out_comp;
-		async_context->out_comp = NULL;
-	}
+	if (out_icalcomp != NULL)
+		*out_icalcomp = g_steal_pointer (&icalcomp);
+	else
+		g_clear_object (&icalcomp);
 
 	return TRUE;
 }
@@ -3420,20 +3350,20 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_object() */
 static void
-cal_client_get_object_thread (GSimpleAsyncResult *simple,
-                              GObject *source_object,
+cal_client_get_object_thread (GTask *task,
+                              gpointer source_object,
+                              gpointer task_data,
                               GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	ICalComponent *icalcomp = NULL;
 
 	if (!e_cal_client_get_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		async_context->rid,
-		&async_context->out_comp,
+		&icalcomp,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -3443,8 +3373,10 @@ cal_client_get_object_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&icalcomp), g_object_unref);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -3474,7 +3406,7 @@ e_cal_client_get_object (ECalClient *client,
                          GAsyncReadyCallback callback,
                          gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -3485,20 +3417,13 @@ e_cal_client_get_object (ECalClient *client,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_object);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_object);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_get_object_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_object_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -3527,26 +3452,19 @@ e_cal_client_get_object_finish (ECalClient *client,
                                 ICalComponent **out_icalcomp,
                                 GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	ICalComponent *icalcomp;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_object), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_object), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	icalcomp = g_task_propagate_pointer (G_TASK (result), error);
+	if (!icalcomp)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->out_comp != NULL, FALSE);
-
-	if (out_icalcomp != NULL) {
-		*out_icalcomp = async_context->out_comp;
-		async_context->out_comp = NULL;
-	}
+	if (out_icalcomp != NULL)
+		*out_icalcomp = g_steal_pointer (&icalcomp);
+	else
+		g_clear_object (&icalcomp);
 
 	return TRUE;
 }
@@ -3694,19 +3612,19 @@ e_cal_client_get_object_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_objects_for_uid() */
 static void
-cal_client_get_objects_for_uid_thread (GSimpleAsyncResult *simple,
-                                       GObject *source_object,
+cal_client_get_objects_for_uid_thread (GTask *task,
+                                       gpointer source_object,
+                                       gpointer task_data,
                                        GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *uid = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *ecalcomps = NULL;
 
 	if (!e_cal_client_get_objects_for_uid_sync (
 		E_CAL_CLIENT (source_object),
-		async_context->uid,
-		&async_context->object_list,
+		uid,
+		&ecalcomps,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -3716,8 +3634,10 @@ cal_client_get_objects_for_uid_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&ecalcomps), (GDestroyNotify) e_util_free_object_slist);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -3743,29 +3663,18 @@ e_cal_client_get_objects_for_uid (ECalClient *client,
                                   GAsyncReadyCallback callback,
                                   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (uid != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->uid = g_strdup (uid);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_objects_for_uid);
+	g_task_set_task_data (task, g_strdup (uid), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_objects_for_uid);
+	g_task_run_in_thread (task, cal_client_get_objects_for_uid_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_objects_for_uid_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -3792,24 +3701,19 @@ e_cal_client_get_objects_for_uid_finish (ECalClient *client,
                                          GSList **out_ecalcomps,
                                          GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GSList *ecalcomps;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_objects_for_uid), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_objects_for_uid), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	ecalcomps = g_task_propagate_pointer (G_TASK (result), error);
+	if (!ecalcomps)
 		return FALSE;
 
-	if (out_ecalcomps != NULL) {
-		*out_ecalcomps = async_context->object_list;
-		async_context->object_list = NULL;
-	}
+	if (out_ecalcomps != NULL)
+		*out_ecalcomps = g_steal_pointer (&ecalcomps);
+	else
+		g_clear_pointer (&ecalcomps, e_util_free_object_slist);
 
 	return TRUE;
 }
@@ -3932,19 +3836,19 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_object_list() */
 static void
-cal_client_get_object_list_thread (GSimpleAsyncResult *simple,
-                                   GObject *source_object,
+cal_client_get_object_list_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
                                    GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *sexp = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *icalcomps = NULL;
 
 	if (!e_cal_client_get_object_list_sync (
 		E_CAL_CLIENT (source_object),
-		async_context->sexp,
-		&async_context->comp_list,
+		sexp,
+		&icalcomps,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -3954,8 +3858,10 @@ cal_client_get_object_list_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&icalcomps), (GDestroyNotify) e_util_free_object_slist);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -3980,29 +3886,18 @@ e_cal_client_get_object_list (ECalClient *client,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->sexp = g_strdup (sexp);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_object_list);
+	g_task_set_task_data (task, g_strdup (sexp), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_object_list);
+	g_task_run_in_thread (task, cal_client_get_object_list_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_object_list_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -4027,24 +3922,19 @@ e_cal_client_get_object_list_finish (ECalClient *client,
                                      GSList **out_icalcomps,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GSList *icalcomps;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_object_list), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_object_list), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	icalcomps = g_task_propagate_pointer (G_TASK (result), error);
+	if (!icalcomps)
 		return FALSE;
 
-	if (out_icalcomps != NULL) {
-		*out_icalcomps = async_context->comp_list;
-		async_context->comp_list = NULL;
-	}
+	if (out_icalcomps != NULL)
+		*out_icalcomps = g_steal_pointer (&icalcomps);
+	else
+		g_clear_pointer (&icalcomps, e_util_free_object_slist);
 
 	return TRUE;
 }
@@ -4124,19 +4014,19 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_object_list_as_comps() */
 static void
-cal_client_get_object_list_as_comps_thread (GSimpleAsyncResult *simple,
-                                            GObject *source_object,
+cal_client_get_object_list_as_comps_thread (GTask *task,
+                                            gpointer source_object,
+                                            gpointer task_data,
                                             GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	const gchar *sexp = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *ecalcomps = NULL;
 
 	if (!e_cal_client_get_object_list_as_comps_sync (
 		E_CAL_CLIENT (source_object),
-		async_context->sexp,
-		&async_context->object_list,
+		sexp,
+		&ecalcomps,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -4146,8 +4036,11 @@ cal_client_get_object_list_as_comps_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&ecalcomps), (GDestroyNotify) e_util_free_object_slist);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -4172,29 +4065,18 @@ e_cal_client_get_object_list_as_comps (ECalClient *client,
                                        GAsyncReadyCallback callback,
                                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->sexp = g_strdup (sexp);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_object_list_as_comps);
+	g_task_set_task_data (task, g_strdup (sexp), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_object_list_as_comps);
+	g_task_run_in_thread (task, cal_client_get_object_list_as_comps_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_object_list_as_comps_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -4219,24 +4101,19 @@ e_cal_client_get_object_list_as_comps_finish (ECalClient *client,
                                               GSList **out_ecalcomps,
                                               GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GSList *ecalcomps;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_object_list_as_comps), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_object_list_as_comps), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	ecalcomps = g_task_propagate_pointer (G_TASK (result), error);
+	if (!ecalcomps)
 		return FALSE;
 
-	if (out_ecalcomps != NULL) {
-		*out_ecalcomps = async_context->object_list;
-		async_context->object_list = NULL;
-	}
+	if (out_ecalcomps != NULL)
+		*out_ecalcomps = g_steal_pointer (&ecalcomps);
+	else
+		g_clear_pointer (&ecalcomps, e_util_free_object_slist);
 
 	return TRUE;
 }
@@ -4305,21 +4182,21 @@ e_cal_client_get_object_list_as_comps_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_free_busy() */
 static void
-cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_client_get_free_busy_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *freebusy = NULL;
 
 	if (!e_cal_client_get_free_busy_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->start,
 		async_context->end,
 		async_context->string_list,
-		&async_context->object_list,
+		&freebusy,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -4329,8 +4206,10 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&freebusy), (GDestroyNotify) e_util_free_object_slist);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -4360,8 +4239,8 @@ e_cal_client_get_free_busy (ECalClient *client,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (start > 0);
@@ -4373,20 +4252,13 @@ e_cal_client_get_free_busy (ECalClient *client,
 	async_context->string_list = g_slist_copy_deep (
 		(GSList *) users, (GCopyFunc) g_strdup, NULL);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_free_busy);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_free_busy);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_get_free_busy_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_free_busy_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -4411,27 +4283,19 @@ e_cal_client_get_free_busy_finish (ECalClient *client,
 				   GSList **out_freebusy,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
+	GSList *freebusy;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_free_busy), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_free_busy), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	if (g_simple_async_result_propagate_error (simple, error))
+	freebusy = g_task_propagate_pointer (G_TASK (result), error);
+	if (!freebusy)
 		return FALSE;
 
-	if (out_freebusy != NULL) {
-		AsyncContext *async_context;
-
-		async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-		*out_freebusy = async_context->object_list;
-		async_context->object_list = NULL;
-	}
+	if (out_freebusy != NULL)
+		*out_freebusy = g_steal_pointer (&freebusy);
+	else
+		g_clear_pointer (&freebusy, e_util_free_object_slist);
 
 	return TRUE;
 }
@@ -4541,20 +4405,20 @@ e_cal_client_sanitize_comp_as_string (ICalComponent *icomp)
 
 /* Helper for e_cal_client_create_object() */
 static void
-cal_client_create_object_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_client_create_object_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	gchar *uid = NULL;
 
 	if (!e_cal_client_create_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		async_context->opflags,
-		&async_context->uid,
+		&uid,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -4564,8 +4428,10 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&uid), g_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -4593,7 +4459,7 @@ e_cal_client_create_object (ECalClient *client,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -4603,25 +4469,20 @@ e_cal_client_create_object (ECalClient *client,
 	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_create_object);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_create_object);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, cal_client_create_object_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_create_object_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
  * e_cal_client_create_object_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @out_uid: (out) (nullable) (optional): Return value for the UID assigned to the new component
+ * @out_uid: (out) (optional): Return value for the UID assigned to the new component
  *           by the calendar backend
  * @error: a #GError to set an error, if any
  *
@@ -4639,26 +4500,19 @@ e_cal_client_create_object_finish (ECalClient *client,
                                    gchar **out_uid,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	gchar *uid;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_create_object), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_create_object), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	uid = g_task_propagate_pointer (G_TASK (result), error);
+	if (!uid)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->uid != NULL, FALSE);
-
-	if (out_uid != NULL) {
-		*out_uid = async_context->uid;
-		async_context->uid = NULL;
-	}
+	if (out_uid != NULL)
+		*out_uid = g_steal_pointer (&uid);
+	else
+		g_clear_pointer (&uid, g_free);
 
 	return TRUE;
 }
@@ -4718,20 +4572,20 @@ e_cal_client_create_object_sync (ECalClient *client,
 
 /* Helper for e_cal_client_create_objects() */
 static void
-cal_client_create_objects_thread (GSimpleAsyncResult *simple,
-                                  GObject *source_object,
+cal_client_create_objects_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *uids = NULL;
 
 	if (!e_cal_client_create_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
 		async_context->opflags,
-		&async_context->string_list,
+		&uids,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -4741,8 +4595,10 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&uids), (GDestroyNotify) e_util_free_string_slist);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -4770,7 +4626,7 @@ e_cal_client_create_objects (ECalClient *client,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -4781,20 +4637,13 @@ e_cal_client_create_objects (ECalClient *client,
 		icalcomps, (GCopyFunc) i_cal_component_clone, NULL);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_create_objects);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_create_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_create_objects_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_create_objects_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -4819,24 +4668,19 @@ e_cal_client_create_objects_finish (ECalClient *client,
                                     GSList **out_uids,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GSList *uids;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_create_objects), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_create_objects), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	uids = g_task_propagate_pointer (G_TASK (result), error);
+	if (!uids)
 		return FALSE;
 
-	if (out_uids != NULL) {
-		*out_uids = async_context->string_list;
-		async_context->string_list = NULL;
-	}
+	if (out_uids != NULL)
+		*out_uids = g_steal_pointer (&uids);
+	else
+		g_clear_pointer (&uids, e_util_free_string_slist);
 
 	return TRUE;
 }
@@ -4926,14 +4770,13 @@ e_cal_client_create_objects_sync (ECalClient *client,
 
 /* Helper for e_cal_client_modify_object() */
 static void
-cal_client_modify_object_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_client_modify_object_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_modify_object_sync (
 		E_CAL_CLIENT (source_object),
@@ -4949,8 +4792,10 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -4985,7 +4830,7 @@ e_cal_client_modify_object (ECalClient *client,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -4996,20 +4841,13 @@ e_cal_client_modify_object (ECalClient *client,
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_modify_object);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_modify_object);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_modify_object_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_modify_object_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -5029,17 +4867,10 @@ e_cal_client_modify_object_finish (ECalClient *client,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_modify_object), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_modify_object), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -5082,14 +4913,13 @@ e_cal_client_modify_object_sync (ECalClient *client,
 
 /* Helper for e_cal_client_modify_objects() */
 static void
-cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
-                                  GObject *source_object,
+cal_client_modify_objects_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_modify_objects_sync (
 		E_CAL_CLIENT (source_object),
@@ -5105,8 +4935,10 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -5141,7 +4973,7 @@ e_cal_client_modify_objects (ECalClient *client,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -5153,20 +4985,13 @@ e_cal_client_modify_objects (ECalClient *client,
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_modify_objects);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_modify_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_modify_objects_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_modify_objects_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -5186,17 +5011,10 @@ e_cal_client_modify_objects_finish (ECalClient *client,
                                     GAsyncResult *result,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_modify_objects), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_modify_objects), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -5279,14 +5097,13 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 
 /* Helper for e_cal_client_remove_object() */
 static void
-cal_client_remove_object_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_client_remove_object_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_remove_object_sync (
 		E_CAL_CLIENT (source_object),
@@ -5303,8 +5120,10 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -5339,7 +5158,7 @@ e_cal_client_remove_object (ECalClient *client,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -5352,20 +5171,13 @@ e_cal_client_remove_object (ECalClient *client,
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_remove_object);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_remove_object);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_remove_object_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_remove_object_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -5385,17 +5197,10 @@ e_cal_client_remove_object_finish (ECalClient *client,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_remove_object), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_remove_object), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -5446,14 +5251,13 @@ e_cal_client_remove_object_sync (ECalClient *client,
 
 /* Helper for e_cal_client_remove_objects() */
 static void
-cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
-                                  GObject *source_object,
+cal_client_remove_objects_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_remove_objects_sync (
 		E_CAL_CLIENT (source_object),
@@ -5469,8 +5273,10 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -5503,7 +5309,7 @@ e_cal_client_remove_objects (ECalClient *client,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -5515,20 +5321,13 @@ e_cal_client_remove_objects (ECalClient *client,
 	async_context->mod = mod;
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_remove_objects);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_remove_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_remove_objects_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_remove_objects_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -5548,17 +5347,10 @@ e_cal_client_remove_objects_finish (ECalClient *client,
                                     GAsyncResult *result,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_remove_objects), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_remove_objects), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -5674,14 +5466,13 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 
 /* Helper for e_cal_client_receive_objects() */
 static void
-cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
-                                   GObject *source_object,
+cal_client_receive_objects_thread (GTask *task,
+                                   gpointer source_object,
+                                   gpointer task_data,
                                    GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_receive_objects_sync (
 		E_CAL_CLIENT (source_object),
@@ -5696,8 +5487,10 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -5726,7 +5519,7 @@ e_cal_client_receive_objects (ECalClient *client,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -5736,20 +5529,13 @@ e_cal_client_receive_objects (ECalClient *client,
 	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_receive_objects);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_receive_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_receive_objects_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_receive_objects_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -5769,17 +5555,10 @@ e_cal_client_receive_objects_finish (ECalClient *client,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_receive_objects), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_receive_objects), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -5827,23 +5606,34 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 	return TRUE;
 }
 
+static void
+send_object_result_free (SendObjectResult *res)
+{
+	if (!res)
+		return;
+
+	g_clear_pointer (&res->users, e_util_free_string_slist);
+	g_clear_object (&res->modified_icalcomp);
+	g_free (res);
+}
+
 /* Helper for e_cal_client_send_objects() */
 static void
-cal_client_send_objects_thread (GSimpleAsyncResult *simple,
-                                GObject *source_object,
+cal_client_send_objects_thread (GTask *task,
+                                gpointer source_object,
+                                gpointer task_data,
                                 GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	SendObjectResult *result = g_new0 (SendObjectResult, 1);
 
 	if (!e_cal_client_send_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		async_context->opflags,
-		&async_context->string_list,
-		&async_context->out_comp,
+		&result->users,
+		&result->modified_icalcomp,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -5853,8 +5643,12 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&result), (GDestroyNotify) send_object_result_free);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
+
+	g_clear_pointer (&result, send_object_result_free);
 }
 
 /**
@@ -5881,7 +5675,7 @@ e_cal_client_send_objects (ECalClient *client,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -5891,20 +5685,13 @@ e_cal_client_send_objects (ECalClient *client,
 	async_context->in_comp = i_cal_component_clone (icalcomp);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_send_objects);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_send_objects);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_send_objects_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_send_objects_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -5933,32 +5720,22 @@ e_cal_client_send_objects_finish (ECalClient *client,
                                   ICalComponent **out_modified_icalcomp,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	SendObjectResult *send_res;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_send_objects), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_send_objects), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	send_res = g_task_propagate_pointer (G_TASK (result), error);
+	if (!send_res)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->out_comp != NULL, FALSE);
+	if (out_users != NULL)
+		*out_users = g_steal_pointer (&send_res->users);
 
-	if (out_users != NULL) {
-		*out_users = async_context->string_list;
-		async_context->string_list = NULL;
-	}
+	if (out_modified_icalcomp != NULL)
+		*out_modified_icalcomp = g_steal_pointer (&send_res->modified_icalcomp);
 
-	if (out_modified_icalcomp != NULL) {
-		*out_modified_icalcomp = async_context->out_comp;
-		async_context->out_comp = NULL;
-	}
-
+	g_clear_pointer (&send_res, send_object_result_free);
 	return TRUE;
 }
 
@@ -6058,20 +5835,20 @@ e_cal_client_send_objects_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_attachment_uris() */
 static void
-cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
-                                       GObject *source_object,
+cal_client_get_attachment_uris_thread (GTask *task,
+                                       gpointer source_object,
+                                       gpointer task_data,
                                        GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	GSList *string_list = NULL;
 
 	if (!e_cal_client_get_attachment_uris_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		async_context->rid,
-		&async_context->string_list,
+		&string_list,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -6081,8 +5858,10 @@ cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, g_steal_pointer (&string_list), (GDestroyNotify) e_util_free_string_slist);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -6108,7 +5887,7 @@ e_cal_client_get_attachment_uris (ECalClient *client,
                                   GAsyncReadyCallback callback,
                                   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_CAL_CLIENT (client));
@@ -6119,20 +5898,13 @@ e_cal_client_get_attachment_uris (ECalClient *client,
 	async_context->uid = g_strdup (uid);
 	async_context->rid = g_strdup (rid);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_attachment_uris);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_attachment_uris);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_get_attachment_uris_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_attachment_uris_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -6157,24 +5929,19 @@ e_cal_client_get_attachment_uris_finish (ECalClient *client,
                                          GSList **out_attachment_uris,
                                          GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GSList *attachment_uris;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_attachment_uris), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_attachment_uris), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	attachment_uris = g_task_propagate_pointer (G_TASK (result), error);
+	if (!attachment_uris)
 		return FALSE;
 
-	if (out_attachment_uris != NULL) {
-		*out_attachment_uris = async_context->string_list;
-		async_context->string_list = NULL;
-	}
+	if (out_attachment_uris != NULL)
+		*out_attachment_uris = g_steal_pointer (&attachment_uris);
+	else
+		g_slist_free_full (attachment_uris, g_free);
 
 	return TRUE;
 }
@@ -6256,14 +6023,13 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 
 /* Helper for e_cal_client_discard_alarm() */
 static void
-cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
-                                 GObject *source_object,
+cal_client_discard_alarm_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
-	AsyncContext *async_context;
+	AsyncContext *async_context = task_data;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (!e_cal_client_discard_alarm_sync (
 		E_CAL_CLIENT (source_object),
@@ -6280,8 +6046,10 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -6311,7 +6079,7 @@ e_cal_client_discard_alarm (ECalClient *client,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -6325,20 +6093,13 @@ e_cal_client_discard_alarm (ECalClient *client,
 	async_context->auid = g_strdup (auid);
 	async_context->opflags = opflags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_discard_alarm);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_discard_alarm);
+	g_task_set_task_data (task, g_steal_pointer (&async_context), (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, cal_client_discard_alarm_thread);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_discard_alarm_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -6358,17 +6119,10 @@ e_cal_client_discard_alarm_finish (ECalClient *client,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_discard_alarm), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_discard_alarm), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -6432,25 +6186,19 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_view() */
 static void
-cal_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
-                                    GObject *source_object,
+cal_client_get_view_in_dbus_thread (GTask *task,
+                                    gpointer source_object,
+                                    gpointer task_data,
                                     GCancellable *cancellable)
 {
 	ECalClient *client = E_CAL_CLIENT (source_object);
-	AsyncContext *async_context;
-	gchar *utf8_sexp;
+	const gchar *utf8_sexp = task_data;
 	gchar *object_path = NULL;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	utf8_sexp = e_util_utf8_make_valid (async_context->sexp);
 
 	e_dbus_calendar_call_get_view_sync (
 		client->priv->dbus_proxy, utf8_sexp,
 		&object_path, cancellable, &local_error);
-
-	g_free (utf8_sexp);
 
 	/* Sanity check. */
 	g_return_if_fail (
@@ -6471,20 +6219,17 @@ cal_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 			"connection", connection,
 			"object-path", object_path,
 			NULL);
+		g_clear_pointer (&object_path, g_free);
 
 		/* Sanity check. */
 		g_return_if_fail (
 			((client_view != NULL) && (local_error == NULL)) ||
 			((client_view == NULL) && (local_error != NULL)));
 
-		async_context->client_view = client_view;
-
-		g_free (object_path);
-	}
-
-	if (local_error != NULL) {
+		g_task_return_pointer (task, g_steal_pointer (&client_view), g_object_unref);
+	} else {
 		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	}
 }
 
@@ -6509,29 +6254,18 @@ e_cal_client_get_view (ECalClient *client,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->sexp = g_strdup (sexp);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_view);
+	g_task_set_task_data (task, e_util_utf8_make_valid (sexp), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_view);
+	cal_client_run_in_dbus_thread (task, cal_client_get_view_in_dbus_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	cal_client_run_in_dbus_thread (
-		simple, cal_client_get_view_in_dbus_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -6555,25 +6289,19 @@ e_cal_client_get_view_finish (ECalClient *client,
                               ECalClientView **out_view,
                               GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	ECalClientView *view;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_view), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_view), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	view = g_task_propagate_pointer (G_TASK (result), error);
+	if (!view)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->client_view != NULL, FALSE);
-
 	if (out_view != NULL)
-		*out_view = g_object_ref (async_context->client_view);
+		*out_view = g_steal_pointer (&view);
 
+	g_clear_object (&view);
 	return TRUE;
 }
 
@@ -6626,19 +6354,19 @@ e_cal_client_get_view_sync (ECalClient *client,
 
 /* Helper for e_cal_client_get_timezone() */
 static void
-cal_client_get_timezone_thread (GSimpleAsyncResult *simple,
-                                GObject *source_object,
+cal_client_get_timezone_thread (GTask *task,
+                                gpointer source_object,
+                                gpointer task_data,
                                 GCancellable *cancellable)
 {
-	AsyncContext *async_context;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	const gchar *tzid = task_data;
+	ICalTimezone *zone = NULL;
 
 	if (!e_cal_client_get_timezone_sync (
 		E_CAL_CLIENT (source_object),
-		async_context->tzid,
-		&async_context->zone,
+		tzid,
+		&zone,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -6648,8 +6376,10 @@ cal_client_get_timezone_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_pointer (task, zone, NULL);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -6673,29 +6403,18 @@ e_cal_client_get_timezone (ECalClient *client,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (tzid != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->tzid = g_strdup (tzid);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_get_timezone);
+	g_task_set_task_data (task, g_strdup (tzid), g_free);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_get_timezone);
+	g_task_run_in_thread (task, cal_client_get_timezone_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cal_client_get_timezone_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -6719,26 +6438,17 @@ e_cal_client_get_timezone_finish (ECalClient *client,
                                   ICalTimezone **out_zone,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	ICalTimezone *zone;
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_get_timezone), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_get_timezone), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
+	zone = g_task_propagate_pointer (G_TASK (result), error);
+	if (!zone)
 		return FALSE;
 
-	g_return_val_if_fail (async_context->zone != NULL, FALSE);
-
-	if (out_zone != NULL) {
-		*out_zone = async_context->zone;
-		async_context->zone = NULL;
-	}
+	if (out_zone != NULL)
+		*out_zone = g_steal_pointer (&zone);
 
 	return TRUE;
 }
@@ -6851,18 +6561,17 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 
 /* Helper for e_cal_client_add_timezone() */
 static void
-cal_client_add_timezone_thread (GSimpleAsyncResult *simple,
-                                GObject *source_object,
+cal_client_add_timezone_thread (GTask *task,
+                                gpointer source_object,
+                                gpointer task_data,
                                 GCancellable *cancellable)
 {
-	AsyncContext *async_context;
 	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	ICalTimezone *zone = task_data;
 
 	if (!e_cal_client_add_timezone_sync (
 		E_CAL_CLIENT (source_object),
-		async_context->zone,
+		zone,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -6872,8 +6581,10 @@ cal_client_add_timezone_thread (GSimpleAsyncResult *simple,
 				_("Unknown error"));
 	}
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (!local_error)
+		g_task_return_boolean (task, TRUE);
+	else
+		g_task_return_error (task, g_steal_pointer (&local_error));
 }
 
 /**
@@ -6897,32 +6608,21 @@ e_cal_client_add_timezone (ECalClient *client,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (zone != NULL);
 
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->zone = e_cal_util_copy_timezone (zone);
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_cal_client_add_timezone);
+	g_task_set_task_data (task, e_cal_util_copy_timezone (zone), g_object_unref);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (client), callback, user_data,
-		e_cal_client_add_timezone);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	if (!async_context->zone || zone == i_cal_timezone_get_utc_timezone ())
-		g_simple_async_result_complete_in_idle (simple);
+	if (zone == i_cal_timezone_get_utc_timezone ())
+		g_task_return_boolean (task, TRUE);
 	else
-		g_simple_async_result_run_in_thread (
-			simple, cal_client_add_timezone_thread,
-			G_PRIORITY_DEFAULT, cancellable);
+		g_task_run_in_thread (task, cal_client_add_timezone_thread);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -6942,17 +6642,10 @@ e_cal_client_add_timezone_finish (ECalClient *client,
                                   GAsyncResult *result,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_cal_client_add_timezone), FALSE);
 
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (client),
-		e_cal_client_add_timezone), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
