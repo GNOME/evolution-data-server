@@ -809,61 +809,41 @@ gchar *
 camel_host_idna_to_ascii (const gchar *host)
 {
 	UErrorCode uerror = U_ZERO_ERROR;
-	int32_t uhost_len = 0;
-	const gchar *ptr;
-	gchar *ascii = NULL;
+	int32_t ascii_host_len;
+	UIDNAInfo info = UIDNA_INFO_INITIALIZER;
+	UIDNA *uidna;
 
 	if (!host)
 		return NULL;
 
-	ptr = host;
-	while (*ptr > 0)
-		ptr++;
-
-	if (!*ptr) {
-		/* Did read whole buffer, it should be ASCII string already */
+	if (g_str_is_ascii (host))
 		return g_strdup (host);
-	}
 
-	u_strFromUTF8 (NULL, 0, &uhost_len, host, -1, &uerror);
-	if (uhost_len > 0) {
-		UChar *uhost = g_new0 (UChar, uhost_len + 2);
+	uidna = uidna_openUTS46 (UIDNA_DEFAULT, &uerror);
+	if (U_FAILURE (uerror))
+		return g_strdup (host);
+
+	ascii_host_len = uidna_nameToASCII_UTF8 (uidna, host, -1, NULL, 0, &info, &uerror);
+	if (uerror == U_BUFFER_OVERFLOW_ERROR) {
+		gchar *ascii_host;
 
 		uerror = U_ZERO_ERROR;
-		u_strFromUTF8 (uhost, uhost_len + 1, &uhost_len, host, -1, &uerror);
-		if (uerror == U_ZERO_ERROR && uhost_len > 0) {
-			int32_t buffer_len = uhost_len * 6 + 6, nconverted;
-			UChar *buffer = g_new0 (UChar, buffer_len);
+		ascii_host = g_new0 (gchar, ascii_host_len + 1);
+		uidna_nameToASCII_UTF8 (uidna,
+					host, -1,
+					ascii_host, ascii_host_len,
+					&info, &uerror);
+		if (U_SUCCESS (uerror)) {
+			g_clear_pointer (&uidna, uidna_close);
 
-			nconverted = uidna_IDNToASCII (uhost, uhost_len, buffer, buffer_len, UIDNA_ALLOW_UNASSIGNED, 0, &uerror);
-			if (uerror == U_ZERO_ERROR && nconverted > 0) {
-				int32_t ascii_len = 0;
-
-				u_strToUTF8 (NULL, 0, &ascii_len, buffer, nconverted, &uerror);
-				if (ascii_len > 0) {
-					uerror = U_ZERO_ERROR;
-					ascii = g_new0 (gchar, ascii_len + 2);
-
-					u_strToUTF8 (ascii, ascii_len + 1, &ascii_len, buffer, nconverted, &uerror);
-					if (uerror == U_ZERO_ERROR && ascii_len > 0) {
-						ascii[ascii_len] = '\0';
-					} else {
-						g_free (ascii);
-						ascii = NULL;
-					}
-				}
-			}
-
-			g_free (buffer);
+			return g_steal_pointer (&ascii_host);
 		}
 
-		g_free (uhost);
+		g_clear_pointer (&ascii_host, g_free);
 	}
 
-	if (!ascii)
-		ascii = g_strdup (host);
-
-	return ascii;
+	g_clear_pointer (&uidna, uidna_close);
+	return g_strdup (host);
 }
 
 /**
