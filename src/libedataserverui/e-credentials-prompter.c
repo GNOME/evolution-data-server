@@ -81,6 +81,12 @@ G_DEFINE_TYPE_WITH_CODE (ECredentialsPrompter, e_credentials_prompter, G_TYPE_OB
 	G_ADD_PRIVATE (ECredentialsPrompter)
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
+static void e_credentials_prompter_complete_prompt_call (ECredentialsPrompter *prompter,
+							 GSimpleAsyncResult *async_result,
+							 ESource *source,
+							 const ENamedParameters *credentials,
+							 const GError *error);
+
 static void
 process_prompt_data_free (gpointer ptr)
 {
@@ -1760,7 +1766,7 @@ e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
 	return TRUE;
 }
 
-/**
+/*
  * e_credentials_prompter_complete_prompt_call:
  * @prompter: an #ECredentialsPrompter
  * @async_result: a #GSimpleAsyncResult
@@ -1776,10 +1782,8 @@ e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
  *
  * Using %NULL @credentials will result in a G_IO_ERROR_CANCELLED error, if
  * no other @error is provided.
- *
- * Since: 3.16
  **/
-void
+static void
 e_credentials_prompter_complete_prompt_call (ECredentialsPrompter *prompter,
 					     GSimpleAsyncResult *async_result,
 					     ESource *source,

@@ -183,12 +183,6 @@ gboolean	e_credentials_prompter_prompt_finish
 						 ESource **out_source,
 						 ENamedParameters **out_credentials,
 						 GError **error);
-void		e_credentials_prompter_complete_prompt_call
-						(ECredentialsPrompter *prompter,
-						 GSimpleAsyncResult *async_result,
-						 ESource *source,
-						 const ENamedParameters *credentials,
-						 const GError *error);
 gboolean	e_credentials_prompter_loop_prompt_sync
 						(ECredentialsPrompter *prompter,
 						 ESource *source,
