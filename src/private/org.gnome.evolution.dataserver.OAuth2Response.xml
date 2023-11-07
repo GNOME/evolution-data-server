@@ -1,0 +1,22 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.OAuth2Response:
+    @short_description: OAuth2 response interface
+
+    Interface to receive OAuth2 response from external browser.
+-->
+<interface name="org.gnome.evolution.dataserver.OAuth2Response">
+  <!--
+      ResponseURI:
+      @uri: Returned URI by the server
+
+      Receives a @uri response from the server.
+  -->
+  <method name="ResponseURI">
+    <arg name="uri" direction="in" type="s"/>
+  </method>
+</interface>

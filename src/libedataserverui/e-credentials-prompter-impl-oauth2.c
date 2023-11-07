@@ -25,6 +25,7 @@
 #include <libedataserver/libedataserver.h>
 
 #include "libedataserverui-private.h"
+#include "e-dbus-oauth2-response.h"
 
 #include "e-credentials-prompter.h"
 #include "e-credentials-prompter-impl-oauth2.h"
@@ -51,6 +52,8 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	GMutex property_lock;
 
 	EOAuth2Services *oauth2_services;
+	EDBusOAuth2Response *oauth2_response_skeleton;
+	guint bus_owner_id;
 
 	gpointer prompt_id;
 	ESource *auth_source;
@@ -61,7 +64,10 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	gboolean refresh_failed_with_transport_error;
 
 	GtkDialog *dialog;
+	GtkEntry *url_entry;
 #ifdef WITH_WEBKITGTK
+	GBinding *url_entry_text_binding;
+	GBinding *url_entry_tooltip_text_binding;
 	WebKitWebView *web_view;
 #endif
 	GtkNotebook *notebook;
@@ -806,6 +812,98 @@ credentials_prompter_impl_oauth2_set_proxy (
 #endif /* WITH_WEBKITGTK */
 
 static void
+cpi_oauth2_test_authorization_code_from_gui (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+{
+	gchar *authorization_code = NULL;
+	const gchar *entered_text;
+
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
+
+	entered_text = _libedataserverui_entry_get_text (prompter_oauth2->priv->auth_code_entry);
+
+	if (cpi_oauth2_get_debug ())
+		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", entered_text);
+
+	/* when the entered text looks like a URL, try to extract the code out of it */
+	if (entered_text && (g_ascii_strncasecmp (entered_text, "https://", 8) == 0 || (strstr (entered_text, ":") && strstr (entered_text, "code="))) &&
+	    e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
+		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+		NULL, entered_text, NULL, &authorization_code)) {
+		cpi_oauth2_test_authorization_code (prompter_oauth2, authorization_code);
+	} else {
+		cpi_oauth2_test_authorization_code (prompter_oauth2, g_strdup (entered_text));
+	}
+}
+
+static gboolean
+cpi_oauth2_handle_response_uri (EDBusOAuth2Response *object,
+				GDBusMethodInvocation *invocation,
+				const gchar *arg_uri,
+				gpointer user_data)
+{
+	ECredentialsPrompterImplOAuth2 *prompter_oauth2 = user_data;
+
+	e_dbus_oauth2_response_complete_response_uri (object, invocation);
+
+	if (arg_uri && *arg_uri) {
+		_libedataserverui_entry_set_text (prompter_oauth2->priv->auth_code_entry, arg_uri);
+		cpi_oauth2_test_authorization_code_from_gui (prompter_oauth2);
+	}
+
+	return TRUE;
+}
+
+static void
+cpi_oauth2_bus_acquired_cb (GDBusConnection *connection,
+			    const gchar *name,
+			    gpointer user_data)
+{
+	GWeakRef *wk = user_data;
+	ECredentialsPrompterImplOAuth2 *prompter_oauth2;
+
+	prompter_oauth2 = g_weak_ref_get (wk);
+	if (prompter_oauth2) {
+		if (prompter_oauth2->priv->oauth2_response_skeleton) {
+			GError *local_error = NULL;
+
+			g_dbus_interface_skeleton_export (
+				G_DBUS_INTERFACE_SKELETON (prompter_oauth2->priv->oauth2_response_skeleton),
+				connection,
+				"/org/gnome/evolution/dataserver/OAuth2Response",
+				&local_error);
+
+			if (local_error) {
+				e_source_registry_debug_print ("OAuth2Prompter: Failed to export OAuth2Response skeleton: %s\n", local_error->message);
+				g_clear_error (&local_error);
+			}
+		}
+
+		g_object_unref (prompter_oauth2);
+	}
+}
+
+static void
+cpi_oauth2_maybe_prepare_oauth2_service (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+{
+	if (!prompter_oauth2->priv->oauth2_response_skeleton) {
+		prompter_oauth2->priv->oauth2_response_skeleton = e_dbus_oauth2_response_skeleton_new ();
+
+		g_signal_connect_object (prompter_oauth2->priv->oauth2_response_skeleton,
+			"handle-response-uri", G_CALLBACK (cpi_oauth2_handle_response_uri), prompter_oauth2, 0);
+
+		prompter_oauth2->priv->bus_owner_id = g_bus_own_name (
+			G_BUS_TYPE_SESSION,
+			OAUTH2_RESPONSE_DBUS_SERVICE_NAME,
+			G_BUS_NAME_OWNER_FLAGS_DO_NOT_QUEUE,
+			cpi_oauth2_bus_acquired_cb,
+			NULL,
+			NULL,
+			e_weak_ref_new (prompter_oauth2),
+			(GDestroyNotify) e_weak_ref_free);
+	}
+}
+
+static void
 cpi_oauth2_url_entry_icon_release_cb (GtkEntry *entry,
 				      GtkEntryIconPosition icon_position,
 				      #if !GTK_CHECK_VERSION (4, 0, 0)
@@ -859,6 +957,19 @@ cpi_oauth2_url_entry_icon_release_cb (GtkEntry *entry,
 
 		g_clear_error (&error);
 		#endif
+
+		if (gtk_notebook_get_current_page (prompter_oauth2->priv->notebook) == 0) {
+			#ifdef WITH_WEBKITGTK
+			if (prompter_oauth2->priv->url_entry_text_binding &&
+			    prompter_oauth2->priv->url_entry_tooltip_text_binding) {
+				g_clear_pointer (&prompter_oauth2->priv->url_entry_text_binding, g_binding_unbind);
+				g_clear_pointer (&prompter_oauth2->priv->url_entry_tooltip_text_binding, g_binding_unbind);
+			}
+			#endif
+			_libedataserverui_entry_set_text (prompter_oauth2->priv->url_entry, uri);
+			cpi_oauth2_maybe_prepare_oauth2_service (prompter_oauth2);
+		}
+
 		g_free (uri);
 	}
 }
@@ -868,25 +979,8 @@ cpi_oauth2_manual_continue_clicked_cb (GtkButton *button,
 				       gpointer user_data)
 {
 	ECredentialsPrompterImplOAuth2 *prompter_oauth2 = user_data;
-	gchar *authorization_code = NULL;
-	const gchar *entered_text;
 
-	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
-
-	entered_text = _libedataserverui_entry_get_text (prompter_oauth2->priv->auth_code_entry);
-
-	if (cpi_oauth2_get_debug ())
-		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", entered_text);
-
-	/* when the entered text looks like a URL, try to extract the code out of it */
-	if (entered_text && g_ascii_strncasecmp (entered_text, "https://", 8) == 0 &&
-	    e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
-		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
-		NULL, entered_text, NULL, &authorization_code)) {
-		cpi_oauth2_test_authorization_code (prompter_oauth2, authorization_code);
-	} else {
-		cpi_oauth2_test_authorization_code (prompter_oauth2, g_strdup (entered_text));
-	}
+	cpi_oauth2_test_authorization_code_from_gui (prompter_oauth2);
 }
 
 static void
@@ -1074,6 +1168,8 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 #else
 	_libedataserverui_box_pack_start (GTK_BOX (hbox), url_entry, TRUE, TRUE, 2);
 #endif
+
+	prompter_oauth2->priv->url_entry = GTK_ENTRY (url_entry);
 
 	widget = gtk_notebook_new ();
 	g_object_set (
@@ -1269,12 +1365,24 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	prompter_oauth2->priv->web_view = WEBKIT_WEB_VIEW (widget);
 
-	e_binding_bind_property (
+#if GTK_CHECK_VERSION(4, 0, 0)
+	{
+		GtkEntryBuffer *buffer;
+
+		buffer = gtk_entry_get_buffer (GTK_ENTRY (url_entry));
+		prompter_oauth2->priv->url_entry_text_binding = e_binding_bind_property (
+			prompter_oauth2->priv->web_view, "uri",
+			buffer, "text",
+			G_BINDING_DEFAULT);
+	}
+#else
+	prompter_oauth2->priv->url_entry_text_binding = e_binding_bind_property (
 		prompter_oauth2->priv->web_view, "uri",
 		url_entry, "text",
 		G_BINDING_DEFAULT);
+#endif
 
-	e_binding_bind_property (
+	prompter_oauth2->priv->url_entry_tooltip_text_binding = e_binding_bind_property (
 		prompter_oauth2->priv->web_view, "uri",
 		url_entry, "tooltip-text",
 		G_BINDING_DEFAULT);
@@ -1325,6 +1433,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		webkit_web_view_load_uri (web_view, uri);
 #else /* WITH_WEBKITGTK */
 		_libedataserverui_entry_set_text (GTK_ENTRY (url_entry), uri);
+		cpi_oauth2_maybe_prepare_oauth2_service (prompter_oauth2);
 #endif /* WITH_WEBKITGTK */
 
 		success = _libedataserverui_dialog_run (prompter_oauth2->priv->dialog) == GTK_RESPONSE_OK;
@@ -1370,12 +1479,18 @@ e_credentials_prompter_impl_oauth2_free_prompt_data (ECredentialsPrompterImplOAu
 	g_clear_object (&prompter_oauth2->priv->auth_source);
 	g_clear_object (&prompter_oauth2->priv->cred_source);
 	g_clear_object (&prompter_oauth2->priv->service);
+	g_clear_object (&prompter_oauth2->priv->oauth2_response_skeleton);
 
 	g_free (prompter_oauth2->priv->error_text);
 	prompter_oauth2->priv->error_text = NULL;
 
 	e_named_parameters_free (prompter_oauth2->priv->credentials);
 	prompter_oauth2->priv->credentials = NULL;
+
+	if (prompter_oauth2->priv->bus_owner_id) {
+		g_bus_unown_name (prompter_oauth2->priv->bus_owner_id);
+		prompter_oauth2->priv->bus_owner_id = 0;
+	}
 }
 
 static gboolean

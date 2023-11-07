@@ -43,6 +43,7 @@ set(DEPENDENCIES
 	camel
 	ecal
 	edataserver
+	edbus-private
 )
 
 add_library(edataserverui SHARED
@@ -83,7 +84,9 @@ target_compile_options(edataserverui PUBLIC
 target_include_directories(edataserverui PUBLIC
 	${CMAKE_BINARY_DIR}
 	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_CURRENT_BINARY_DIR}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${CAMEL_INCLUDE_DIRS}
@@ -201,6 +204,7 @@ set(DEPENDENCIES
 	camel
 	ecal
 	edataserver
+	edbus-private
 )
 
 add_library(edataserverui${UI_VERSION} SHARED
@@ -241,7 +245,9 @@ target_compile_options(edataserverui${UI_VERSION} PUBLIC
 target_include_directories(edataserverui${UI_VERSION} PUBLIC
 	${CMAKE_BINARY_DIR}
 	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_CURRENT_BINARY_DIR}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${CAMEL_INCLUDE_DIRS}
