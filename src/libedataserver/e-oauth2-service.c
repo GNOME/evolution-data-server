@@ -2162,6 +2162,37 @@ e_oauth2_service_util_compile_value (const gchar *compile_value,
 gint
 main (void)
 {
+	#if defined(DECODE_KEY) && defined(DECODE_TO_FILE)
+	static gchar buff[128] = { 0, };
+	const gchar *processed;
+	GError *error = NULL;
+
+	processed = e_oauth2_service_util_compile_value (DECODE_KEY, buff, sizeof (buff));
+	#ifdef DECODE_REVERSED
+	{
+		gchar **strv = g_strsplit (processed, ".", -1);
+		gchar *joined;
+		guint ii, end = g_strv_length (strv) - 1;
+
+		for (ii = 0; ii < end; ii++, end--) {
+			gchar *tmp = strv[ii];
+			strv[ii] = strv[end];
+			strv[end] = tmp;
+		}
+
+		joined = g_strjoinv (".", strv);
+		strcpy (buff, joined);
+		g_strfreev (strv);
+		g_free (joined);
+
+		processed = buff;
+	}
+	#endif
+	if (!g_file_set_contents (DECODE_TO_FILE, processed, strlen (processed), &error))
+		g_warning ("Failed to save to '%s': %s", DECODE_TO_FILE, error ? error->message : "Unknown error");
+	g_clear_error (&error);
+
+	#else
 	gchar chr;
 	GString *str;
 
@@ -2231,6 +2262,7 @@ main (void)
 	}
 
 	g_string_free (str, TRUE);
+	#endif
 
 	return 0;
 }

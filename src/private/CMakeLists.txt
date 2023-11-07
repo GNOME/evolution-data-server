@@ -160,6 +160,18 @@ gdbus_codegen(org.gnome.evolution.dataserver.CalendarView.xml
 	e-dbus-calendar-view
 	GENERATED_DBUS_CALENDAR_VIEW)
 
+set(GENERATED_DBUS_OAUTH2_RESPONSE
+	e-dbus-oauth2-response.c
+	e-dbus-oauth2-response.h
+	e-dbus-oauth2-response-org.gnome.evolution.dataserver.OAuth2Response.xml
+)
+
+gdbus_codegen(org.gnome.evolution.dataserver.OAuth2Response.xml
+	org.gnome.evolution.dataserver.
+	E_DBus
+	e-dbus-oauth2-response
+	GENERATED_DBUS_OAUTH2_RESPONSE)
+
 set(GENERATED_DBUS_SUBPROCESS_BACKEND
 	e-dbus-subprocess-backend.c
 	e-dbus-subprocess-backend.h
@@ -188,6 +200,7 @@ add_library(edbus-private SHARED
 	${GENERATED_DBUS_CALENDAR_VIEW}
 	${GENERATED_DBUS_USER_PROMPTER}
 	${GENERATED_DBUS_SUBPROCESS_BACKEND}
+	${GENERATED_DBUS_OAUTH2_RESPONSE}
 )
 
 set_target_properties(edbus-private PROPERTIES

@@ -36,6 +36,9 @@
 /* D-Bus service name for the user prompter */
 #define USER_PROMPTER_DBUS_SERVICE_NAME "@USER_PROMPTER_DBUS_SERVICE_NAME@"
 
+/* D-Bus service name for the private OAuth2 response */
+#define OAUTH2_RESPONSE_DBUS_SERVICE_NAME "@OAUTH2_RESPONSE_DBUS_SERVICE_NAME@"
+
 /* Define Google OAuth 2.0 Client ID to use */
 #define GOOGLE_CLIENT_ID "@WITH_GOOGLE_CLIENT_ID@"
 
