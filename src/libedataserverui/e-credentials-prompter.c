@@ -693,16 +693,23 @@ credentials_prompter_prompt_finished_cb (ECredentialsPrompterImpl *prompter_impl
 static gboolean
 credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 						 LookupSourceDetailsData *data,
-						 const gchar *error_text,
-						 ECredentialsPrompterPromptFlags flags,
-						 GSimpleAsyncResult *async_result)
+						 ProcessPromptData *prompt_data)
 {
 	ECredentialsPrompterImpl *prompter_impl = NULL;
 	gchar *method = NULL;
 	gboolean success = TRUE;
+	const gchar *error_text = NULL;
+	ECredentialsPrompterPromptFlags flags = 0;
+	GSimpleAsyncResult *async_result = NULL;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
+
+	if (prompt_data) {
+		error_text = prompt_data->error_text;
+		flags = prompt_data->flags;
+		async_result = prompt_data->async_result;
+	}
 
 	if (e_source_has_extension (data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *authentication = e_source_get_extension (data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
@@ -760,7 +767,10 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 	} else {
 		/* Shoud not happen, because the password prompter is added as the default prompter. */
 		g_warning ("%s: No prompter impl found for an authentication method '%s'", G_STRFUNC, method ? method : "");
-		success = FALSE;
+		if (prompt_data) {
+			/* To not finish the async_result multiple times */
+			g_clear_object (&prompt_data->async_result);
+		}
 	}
 
 	g_clear_object (&prompter_impl);
@@ -788,11 +798,7 @@ credentials_prompter_lookup_source_details_before_prompt_cb (GObject *source_obj
 		return;
 	}
 
-	if (credentials_prompter_prompt_with_source_details (prompter, data, prompt_data->error_text,
-		prompt_data->flags, prompt_data->async_result)) {
-		/* To not finish the async_result multiple times */
-		g_clear_object (&prompt_data->async_result);
-	}
+	credentials_prompter_prompt_with_source_details (prompter, data, prompt_data);
 
 	g_clear_object (&prompter);
 
@@ -825,7 +831,7 @@ credentials_prompter_lookup_source_details_cb (GObject *source_object,
 	if (data->credentials) {
 		e_source_invoke_authenticate (E_SOURCE (data->auth_source), data->credentials, prompter->priv->cancellable, credentials_prompter_invoke_authenticate_cb, NULL);
 	} else {
-		credentials_prompter_prompt_with_source_details (prompter, data, NULL, 0, NULL);
+		credentials_prompter_prompt_with_source_details (prompter, data, NULL);
 	}
 
 	lookup_source_details_data_free (data);
