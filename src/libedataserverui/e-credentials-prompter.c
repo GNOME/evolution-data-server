@@ -37,7 +37,7 @@ typedef struct _ProcessPromptData {
 	gulong notify_handler_id;
 	gchar *error_text;
 	ENamedParameters *credentials;
-	gboolean allow_source_save;
+	ECredentialsPrompterPromptFlags flags;
 	GSimpleAsyncResult *async_result;
 } ProcessPromptData;
 
@@ -401,7 +401,7 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 					   ESource *cred_source,
 					   const gchar *error_text,
 					   const ENamedParameters *credentials,
-					   gboolean allow_source_save,
+					   ECredentialsPrompterPromptFlags flags,
 					   GSimpleAsyncResult *async_result)
 {
 	GSList *link;
@@ -439,7 +439,7 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 		ppd->connection_status = e_source_get_connection_status (ppd->auth_source);
 		ppd->error_text = g_strdup (error_text);
 		ppd->credentials = e_named_parameters_new_clone (credentials);
-		ppd->allow_source_save = allow_source_save;
+		ppd->flags = flags;
 		ppd->async_result = async_result ? g_object_ref (async_result) : NULL;
 
 		/* If the prompter doesn't auto-prompt, then it should not auto-close the prompt as well. */
@@ -561,6 +561,7 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 {
 	ESource *cred_source;
 	gboolean changed = FALSE;
+	gboolean allow_source_save;
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter));
 	g_return_if_fail (ppd != NULL);
@@ -569,6 +570,7 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 		return;
 
 	cred_source = ppd->cred_source;
+	allow_source_save = ppd->flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE ? TRUE : FALSE;
 
 	if (e_source_has_extension (cred_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension = e_source_get_extension (cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
@@ -590,7 +592,7 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 					credentials_prompter_update_username_for_children (
 						e_credentials_prompter_get_registry (prompter),
 						cred_source,
-						ppd->allow_source_save,
+						allow_source_save,
 						old_username,
 						username,
 						prompter->priv->cancellable);
@@ -607,7 +609,7 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 						auth_extension = e_source_get_extension (ppd->auth_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 						e_source_authentication_set_user (auth_extension, username);
 
-						if (ppd->allow_source_save && e_source_get_writable (ppd->auth_source)) {
+						if (allow_source_save && e_source_get_writable (ppd->auth_source)) {
 							e_source_write (ppd->auth_source, prompter->priv->cancellable,
 								credentials_prompter_source_write_cb, NULL);
 						}
@@ -641,7 +643,7 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 		}
 	}
 
-	if (ppd->allow_source_save && e_source_get_writable (cred_source) &&
+	if (allow_source_save && e_source_get_writable (cred_source) &&
 	    (changed || (e_credentials_prompter_eval_remember_password (ppd->cred_source) ? 1 : 0) != (e_credentials_prompter_eval_remember_password (cred_source) ? 1 : 0))) {
 		e_source_write (cred_source, prompter->priv->cancellable,
 			credentials_prompter_source_write_cb, NULL);
@@ -773,10 +775,12 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 				g_simple_async_result_complete_in_idle (async_result);
 			}
 		} else {
+			if (!async_result)
+				flags |= E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE;
+
 			e_credentials_prompter_manage_impl_prompt (prompter, prompter_impl,
 				data->auth_source, data->cred_source, error_text, credentials,
-				!async_result || (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE) != 0,
-				async_result);
+				flags, async_result);
 		}
 
 		e_named_parameters_free (credentials);
