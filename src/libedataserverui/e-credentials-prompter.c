@@ -58,7 +58,7 @@ struct _ECredentialsPrompterPrivate {
 	GRecMutex queue_lock;		/* guards all queue and schedule related properties */
 	GSList *queue;			/* ProcessPromptData * */
 	ProcessPromptData *processing_prompt;
-	gulong schedule_idle_id;
+	guint schedule_idle_id;
 };
 
 enum {
@@ -86,8 +86,7 @@ process_prompt_data_free (gpointer ptr)
 	ProcessPromptData *ppd = ptr;
 
 	if (ppd) {
-		if (ppd->notify_handler_id > 0)
-			g_signal_handler_disconnect (ppd->auth_source, ppd->notify_handler_id);
+		g_clear_signal_handler (&ppd->notify_handler_id, ppd->auth_source);
 
 		if (ppd->async_result) {
 			g_simple_async_result_set_error (ppd->async_result, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
@@ -97,8 +96,8 @@ process_prompt_data_free (gpointer ptr)
 		g_clear_object (&ppd->prompter_impl);
 		g_clear_object (&ppd->auth_source);
 		g_clear_object (&ppd->cred_source);
-		g_free (ppd->error_text);
-		e_named_parameters_free (ppd->credentials);
+		g_clear_pointer (&ppd->error_text, g_free);
+		g_clear_pointer (&ppd->credentials, e_named_parameters_free);
 		g_slice_free (ProcessPromptData, ppd);
 	}
 }
@@ -117,7 +116,7 @@ lookup_source_details_data_free (gpointer ptr)
 	if (data) {
 		g_clear_object (&data->auth_source);
 		g_clear_object (&data->cred_source);
-		e_named_parameters_free (data->credentials);
+		g_clear_pointer (&data->credentials, e_named_parameters_free);
 		g_slice_free (LookupSourceDetailsData, data);
 	}
 }
@@ -149,23 +148,19 @@ credentials_prompter_lookup_source_details_thread (GTask *task,
 
 	/* Interested only in the cancelled error, which means the prompter is freed. */
 	if (local_error != NULL && g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		g_task_return_error (task, local_error);
-		local_error = NULL;
+		g_task_return_error (task, g_steal_pointer (&local_error));
 	} else {
 		LookupSourceDetailsData *data;
 
 		data = g_slice_new0 (LookupSourceDetailsData);
 		data->auth_source = g_object_ref (source);
 		data->cred_source = g_object_ref (cred_source ? cred_source : source); /* always set both, for simplicity */
-		data->credentials = credentials; /* NULL for no credentials available */
-
-		/* To not be freed below. */
-		credentials = NULL;
+		data->credentials = g_steal_pointer (&credentials); /* NULL for no credentials available */
 
 		g_task_return_pointer (task, data, lookup_source_details_data_free);
 	}
 
-	e_named_parameters_free (credentials);
+	g_clear_pointer (&credentials, e_named_parameters_free);
 	g_clear_object (&cred_source);
 	g_clear_object (&prompter);
 	g_clear_error (&local_error);
@@ -256,7 +251,7 @@ credentials_prompt_data_free (gpointer ptr)
 		}
 
 		g_clear_object (&data->source);
-		g_free (data->error_text);
+		g_clear_pointer (&data->error_text, g_free);
 		g_slice_free (CredentialsPromptData, data);
 	}
 }
@@ -1022,10 +1017,7 @@ credentials_prompter_dispose (GObject *object)
 
 	g_rec_mutex_lock (&prompter->priv->queue_lock);
 
-	if (prompter->priv->schedule_idle_id) {
-		g_source_remove (prompter->priv->schedule_idle_id);
-		prompter->priv->schedule_idle_id = 0;
-	}
+	g_clear_handle_id (&prompter->priv->schedule_idle_id, g_source_remove);
 
 	g_rec_mutex_unlock (&prompter->priv->queue_lock);
 
