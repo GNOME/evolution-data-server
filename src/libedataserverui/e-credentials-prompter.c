@@ -34,7 +34,6 @@ typedef struct _ProcessPromptData {
 	ESource *auth_source;
 	ESource *cred_source;
 	ESourceConnectionStatus connection_status; /* of the auth_source */
-	gboolean remember_password; /* of the cred_source, to check for changes */
 	gulong notify_handler_id;
 	gchar *error_text;
 	ENamedParameters *credentials;
@@ -443,7 +442,6 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 		ppd->auth_source = g_object_ref (auth_source);
 		ppd->cred_source = g_object_ref (cred_source);
 		ppd->connection_status = e_source_get_connection_status (ppd->auth_source);
-		ppd->remember_password = e_credentials_prompter_eval_remember_password (ppd->cred_source);
 		ppd->error_text = g_strdup (error_text);
 		ppd->credentials = e_named_parameters_new_clone (credentials);
 		ppd->allow_source_save = allow_source_save;
@@ -649,7 +647,7 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 	}
 
 	if (ppd->allow_source_save && e_source_get_writable (cred_source) &&
-	    (changed || (ppd->remember_password ? 1 : 0) != (e_credentials_prompter_eval_remember_password (cred_source) ? 1 : 0))) {
+	    (changed || (e_credentials_prompter_eval_remember_password (ppd->cred_source) ? 1 : 0) != (e_credentials_prompter_eval_remember_password (cred_source) ? 1 : 0))) {
 		e_source_write (cred_source, prompter->priv->cancellable,
 			credentials_prompter_source_write_cb, NULL);
 	}
