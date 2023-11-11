@@ -228,33 +228,6 @@ credentials_prompter_invoke_authenticate_cb (GObject *source_object,
 	g_clear_error (&error);
 }
 
-typedef struct _CredentialsPromptData {
-	ESource *source;
-	gchar *error_text;
-	ECredentialsPrompterPromptFlags flags;
-	GTask *complete_task;
-	GSimpleAsyncResult *async_result;
-} CredentialsPromptData;
-
-static void
-credentials_prompt_data_free (gpointer ptr)
-{
-	CredentialsPromptData *data = ptr;
-
-	if (data) {
-		if (data->async_result) {
-			g_simple_async_result_set_error (data->async_result,
-				G_IO_ERROR, G_IO_ERROR_CANCELLED, "%s", _("Credentials prompt was cancelled"));
-			g_simple_async_result_complete_in_idle (data->async_result);
-			g_clear_object (&data->async_result);
-		}
-
-		g_clear_object (&data->source);
-		g_clear_pointer (&data->error_text, g_free);
-		g_slice_free (CredentialsPromptData, data);
-	}
-}
-
 typedef struct _CredentialsResultData {
 	ESource *source;
 	ENamedParameters *credentials;
@@ -801,7 +774,7 @@ credentials_prompter_lookup_source_details_before_prompt_cb (GObject *source_obj
 							     GAsyncResult *result,
 							     gpointer user_data)
 {
-	CredentialsPromptData *prompt_data = user_data;
+	ProcessPromptData *prompt_data = user_data;
 	ECredentialsPrompter *prompter = NULL;
 	LookupSourceDetailsData *data = NULL;
 	GError *error = NULL;
@@ -811,7 +784,7 @@ credentials_prompter_lookup_source_details_before_prompt_cb (GObject *source_obj
 
 	if (!credentials_prompter_lookup_source_details_finish (E_SOURCE (source_object), result, &prompter, &data, &error)) {
 		g_clear_error (&error);
-		credentials_prompt_data_free (prompt_data);
+		process_prompt_data_free (prompt_data);
 		return;
 	}
 
@@ -823,7 +796,7 @@ credentials_prompter_lookup_source_details_before_prompt_cb (GObject *source_obj
 
 	g_clear_object (&prompter);
 
-	credentials_prompt_data_free (prompt_data);
+	process_prompt_data_free (prompt_data);
 	lookup_source_details_data_free (data);
 }
 
@@ -1680,13 +1653,13 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
 			       GAsyncReadyCallback callback,
 			       gpointer user_data)
 {
-	CredentialsPromptData *prompt_data;
+	ProcessPromptData *prompt_data;
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	prompt_data = g_slice_new0 (CredentialsPromptData);
-	prompt_data->source = g_object_ref (source);
+	prompt_data = g_slice_new0 (ProcessPromptData);
+	prompt_data->auth_source = g_object_ref (source);
 	prompt_data->error_text = g_strdup (error_text);
 	prompt_data->flags = flags;
 	prompt_data->async_result = callback ? g_simple_async_result_new (G_OBJECT (prompter),
