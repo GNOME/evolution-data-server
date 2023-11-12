@@ -700,13 +700,11 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 	ECredentialsPrompterImpl *prompter_impl = NULL;
 	gchar *method = NULL;
 	gboolean success = TRUE;
-	ECredentialsPrompterPromptFlags flags = 0;
 	GSimpleAsyncResult *async_result = NULL;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter), FALSE);
 	g_return_val_if_fail (prompt_data != NULL, FALSE);
 
-	flags = prompt_data->flags;
 	async_result = prompt_data->async_result;
 
 	if (e_source_has_extension (prompt_data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
@@ -733,7 +731,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 		if (prompt_data->credentials)
 			e_named_parameters_assign (credentials, prompt_data->credentials);
 
-		if (async_result && prompt_data->credentials && (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS) != 0) {
+		if (async_result && prompt_data->credentials && (prompt_data->flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS) != 0) {
 			CredentialsResultData *result;
 
 			result = g_slice_new0 (CredentialsResultData);
@@ -753,12 +751,9 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 				g_simple_async_result_complete_in_idle (async_result);
 			}
 		} else {
-			if (!async_result)
-				flags |= E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE;
-
 			e_credentials_prompter_manage_impl_prompt (prompter, prompter_impl,
 				prompt_data->auth_source, prompt_data->cred_source, prompt_data->error_text, prompt_data->credentials,
-				flags, async_result);
+				prompt_data->flags, async_result);
 		}
 
 		e_named_parameters_free (credentials);
@@ -879,6 +874,7 @@ credentials_prompter_credentials_required_cb (ESourceRegistry *registry,
 		ProcessPromptData *prompt_data;
 		prompt_data = g_slice_new0 (ProcessPromptData);
 		prompt_data->auth_source = g_object_ref (source);
+		prompt_data->flags |= E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE;
 		credentials_prompter_lookup_source_details (source, prompter,
 			credentials_prompter_lookup_source_details_cb, prompt_data);
 		return;
@@ -1668,6 +1664,9 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
 	prompt_data->flags = flags;
 	prompt_data->async_result = callback ? g_simple_async_result_new (G_OBJECT (prompter),
 		callback, user_data, e_credentials_prompter_prompt) : NULL;
+
+	if (!callback)
+		prompt_data->flags |= E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE;
 
 	/* Just it can be shown in the UI as a prefilled value and the right source (collection) is used. */
 	credentials_prompter_lookup_source_details (source, prompter,
