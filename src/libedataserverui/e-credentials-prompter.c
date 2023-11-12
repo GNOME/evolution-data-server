@@ -189,14 +189,14 @@ static gboolean
 credentials_prompter_lookup_source_details_finish (ESource *source,
 						   GAsyncResult *result,
 						   ECredentialsPrompter **out_prompter, /* will be referenced, if not NULL */
-						   LookupSourceDetailsData **out_data,
+						   ProcessPromptData *prompt_data,
 						   GError **error)
 {
 	LookupSourceDetailsData *data;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (out_prompter != NULL, FALSE);
-	g_return_val_if_fail (out_data != NULL, FALSE);
+	g_return_val_if_fail (prompt_data != NULL, FALSE);
 	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
 
 	g_return_val_if_fail (
@@ -207,8 +207,11 @@ credentials_prompter_lookup_source_details_finish (ESource *source,
 	if (!data)
 		return FALSE;
 
-	*out_data = data;
 	*out_prompter = g_weak_ref_get (g_task_get_task_data (G_TASK (result)));
+	g_clear_pointer (&prompt_data->credentials, e_named_parameters_free);
+	prompt_data->credentials = g_steal_pointer (&data->credentials);
+	g_clear_object (&prompt_data->cred_source);
+	prompt_data->cred_source = g_steal_pointer (&data->cred_source);
 
 	return TRUE;
 }
@@ -692,27 +695,22 @@ credentials_prompter_prompt_finished_cb (ECredentialsPrompterImpl *prompter_impl
 
 static gboolean
 credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
-						 LookupSourceDetailsData *data,
 						 ProcessPromptData *prompt_data)
 {
 	ECredentialsPrompterImpl *prompter_impl = NULL;
 	gchar *method = NULL;
 	gboolean success = TRUE;
-	const gchar *error_text = NULL;
 	ECredentialsPrompterPromptFlags flags = 0;
 	GSimpleAsyncResult *async_result = NULL;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter), FALSE);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (prompt_data != NULL, FALSE);
 
-	if (prompt_data) {
-		error_text = prompt_data->error_text;
-		flags = prompt_data->flags;
-		async_result = prompt_data->async_result;
-	}
+	flags = prompt_data->flags;
+	async_result = prompt_data->async_result;
 
-	if (e_source_has_extension (data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
-		ESourceAuthentication *authentication = e_source_get_extension (data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	if (e_source_has_extension (prompt_data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *authentication = e_source_get_extension (prompt_data->cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
 		method = e_source_authentication_dup_method (authentication);
 	}
@@ -732,25 +730,25 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 		ENamedParameters *credentials;
 
 		credentials = e_named_parameters_new ();
-		if (data->credentials)
-			e_named_parameters_assign (credentials, data->credentials);
+		if (prompt_data->credentials)
+			e_named_parameters_assign (credentials, prompt_data->credentials);
 
-		if (async_result && data->credentials && (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS) != 0) {
+		if (async_result && prompt_data->credentials && (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS) != 0) {
 			CredentialsResultData *result;
 
 			result = g_slice_new0 (CredentialsResultData);
-			result->source = g_object_ref (data->auth_source);
+			result->source = g_object_ref (prompt_data->auth_source);
 			result->credentials = e_named_parameters_new_clone (credentials);
 
 			g_simple_async_result_set_op_res_gpointer (async_result, result, credentials_result_data_free);
 			g_simple_async_result_complete_in_idle (async_result);
-		} else if (!e_source_credentials_provider_can_prompt (prompter->priv->provider, data->auth_source)) {
+		} else if (!e_source_credentials_provider_can_prompt (prompter->priv->provider, prompt_data->auth_source)) {
 			/* This source cannot be asked for credentials, thus end with a 'not supported' error. */
 			if (async_result) {
 				g_simple_async_result_set_error (async_result,
 				G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 				_("Source “%s” doesn’t support prompt for credentials"),
-				e_source_get_display_name (data->cred_source));
+				e_source_get_display_name (prompt_data->cred_source));
 
 				g_simple_async_result_complete_in_idle (async_result);
 			}
@@ -759,7 +757,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 				flags |= E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE;
 
 			e_credentials_prompter_manage_impl_prompt (prompter, prompter_impl,
-				data->auth_source, data->cred_source, error_text, credentials,
+				prompt_data->auth_source, prompt_data->cred_source, prompt_data->error_text, prompt_data->credentials,
 				flags, async_result);
 		}
 
@@ -773,6 +771,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 		}
 	}
 
+	process_prompt_data_free (prompt_data);
 	g_clear_object (&prompter_impl);
 	g_free (method);
 
@@ -786,24 +785,20 @@ credentials_prompter_lookup_source_details_before_prompt_cb (GObject *source_obj
 {
 	ProcessPromptData *prompt_data = user_data;
 	ECredentialsPrompter *prompter = NULL;
-	LookupSourceDetailsData *data = NULL;
 	GError *error = NULL;
 
 	g_return_if_fail (prompt_data != NULL);
 	g_return_if_fail (E_IS_SOURCE (source_object));
 
-	if (!credentials_prompter_lookup_source_details_finish (E_SOURCE (source_object), result, &prompter, &data, &error)) {
+	if (!credentials_prompter_lookup_source_details_finish (E_SOURCE (source_object), result, &prompter, prompt_data, &error)) {
 		g_clear_error (&error);
 		process_prompt_data_free (prompt_data);
 		return;
 	}
 
-	credentials_prompter_prompt_with_source_details (prompter, data, prompt_data);
+	credentials_prompter_prompt_with_source_details (prompter, g_steal_pointer (&prompt_data));
 
 	g_clear_object (&prompter);
-
-	process_prompt_data_free (prompt_data);
-	lookup_source_details_data_free (data);
 }
 
 static void
@@ -811,7 +806,7 @@ credentials_prompter_lookup_source_details_cb (GObject *source_object,
 					       GAsyncResult *result,
 					       gpointer user_data)
 {
-	LookupSourceDetailsData *data = NULL;
+	ProcessPromptData *prompt_data = user_data;
 	ECredentialsPrompter *prompter = NULL;
 	ESource *source;
 	GError *error = NULL;
@@ -820,21 +815,21 @@ credentials_prompter_lookup_source_details_cb (GObject *source_object,
 
 	source = E_SOURCE (source_object);
 
-	if (!credentials_prompter_lookup_source_details_finish (source, result, &prompter, &data, &error)) {
+	if (!credentials_prompter_lookup_source_details_finish (source, result, &prompter, prompt_data, &error)) {
 		g_clear_error (&error);
+		process_prompt_data_free (prompt_data);
 		return;
 	}
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter));
-	g_return_if_fail (data != NULL);
 
-	if (data->credentials) {
-		e_source_invoke_authenticate (E_SOURCE (data->auth_source), data->credentials, prompter->priv->cancellable, credentials_prompter_invoke_authenticate_cb, NULL);
+	if (prompt_data->credentials) {
+		e_source_invoke_authenticate (prompt_data->auth_source, prompt_data->credentials, prompter->priv->cancellable, credentials_prompter_invoke_authenticate_cb, NULL);
+		process_prompt_data_free (prompt_data);
 	} else {
-		credentials_prompter_prompt_with_source_details (prompter, data, NULL);
+		credentials_prompter_prompt_with_source_details (prompter, g_steal_pointer (&prompt_data));
 	}
 
-	lookup_source_details_data_free (data);
 	g_clear_object (&prompter);
 }
 
@@ -881,8 +876,11 @@ credentials_prompter_credentials_required_cb (ESourceRegistry *registry,
 	}
 
 	if (reason == E_SOURCE_CREDENTIALS_REASON_REQUIRED) {
+		ProcessPromptData *prompt_data;
+		prompt_data = g_slice_new0 (ProcessPromptData);
+		prompt_data->auth_source = g_object_ref (source);
 		credentials_prompter_lookup_source_details (source, prompter,
-			credentials_prompter_lookup_source_details_cb, NULL);
+			credentials_prompter_lookup_source_details_cb, prompt_data);
 		return;
 	}
 
