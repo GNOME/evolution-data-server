@@ -372,22 +372,17 @@ e_credentials_prompter_eval_remember_password (ESource *source)
 
 static void
 e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
-					   ECredentialsPrompterImpl *prompter_impl,
-					   ESource *auth_source,
-					   ESource *cred_source,
-					   const gchar *error_text,
-					   const ENamedParameters *credentials,
-					   ECredentialsPrompterPromptFlags flags,
-					   GSimpleAsyncResult *async_result)
+					   ProcessPromptData *prompt_data)
 {
 	GSList *link;
 	gboolean success = TRUE;
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter));
-	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL (prompter_impl));
-	g_return_if_fail (E_IS_SOURCE (auth_source));
-	g_return_if_fail (E_IS_SOURCE (cred_source));
-	g_return_if_fail (credentials != NULL);
+	g_return_if_fail (prompt_data != NULL);
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL (prompt_data->prompter_impl));
+	g_return_if_fail (E_IS_SOURCE (prompt_data->auth_source));
+	g_return_if_fail (E_IS_SOURCE (prompt_data->cred_source));
+	g_return_if_fail (prompt_data->credentials != NULL);
 
 	g_rec_mutex_lock (&prompter->priv->queue_lock);
 
@@ -396,47 +391,33 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 
 		g_warn_if_fail (ppd != NULL);
 
-		if (ppd && e_source_equal (ppd->auth_source, auth_source)) {
+		if (ppd && e_source_equal (ppd->auth_source, prompt_data->auth_source)) {
 			break;
 		}
 	}
 
 	if (link != NULL || (prompter->priv->processing_prompt &&
-	    e_source_equal (prompter->priv->processing_prompt->auth_source, auth_source))) {
+	    e_source_equal (prompter->priv->processing_prompt->auth_source, prompt_data->auth_source))) {
 		/* have queued or already asking for credentials for this source */
 		success = FALSE;
 	} else {
-		ProcessPromptData *ppd;
-
-		ppd = g_slice_new0 (ProcessPromptData);
-		ppd->prompter_impl = g_object_ref (prompter_impl);
-		ppd->auth_source = g_object_ref (auth_source);
-		ppd->cred_source = g_object_ref (cred_source);
-		ppd->connection_status = e_source_get_connection_status (ppd->auth_source);
-		ppd->error_text = g_strdup (error_text);
-		ppd->credentials = e_named_parameters_new_clone (credentials);
-		ppd->flags = flags;
-		ppd->async_result = async_result ? g_object_ref (async_result) : NULL;
-
 		/* If the prompter doesn't auto-prompt, then it should not auto-close the prompt as well. */
 		if (e_credentials_prompter_get_auto_prompt (prompter)) {
-			ppd->notify_handler_id = g_signal_connect (ppd->auth_source, "notify::connection-status",
+			prompt_data->notify_handler_id = g_signal_connect (prompt_data->auth_source, "notify::connection-status",
 				G_CALLBACK (credentials_prompter_connection_status_changed_cb), prompter);
 		} else {
-			ppd->notify_handler_id = 0;
+			prompt_data->notify_handler_id = 0;
 		}
 
-		prompter->priv->queue = g_slist_append (prompter->priv->queue, ppd);
+		prompter->priv->queue = g_slist_append (prompter->priv->queue, g_steal_pointer (&prompt_data));
 
 		credentials_prompter_schedule_process_next_prompt (prompter);
 	}
 
 	g_rec_mutex_unlock (&prompter->priv->queue_lock);
 
-	if (!success && async_result) {
-		g_simple_async_result_set_error (async_result, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
-		g_simple_async_result_complete_in_idle (async_result);
-	}
+	if (!success)
+		g_clear_pointer (&prompt_data, process_prompt_data_free);
 }
 
 static void
@@ -697,7 +678,6 @@ static gboolean
 credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 						 ProcessPromptData *prompt_data)
 {
-	ECredentialsPrompterImpl *prompter_impl = NULL;
 	gchar *method = NULL;
 	gboolean success = TRUE;
 	GSimpleAsyncResult *async_result = NULL;
@@ -715,16 +695,16 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 
 	g_mutex_lock (&prompter->priv->prompters_lock);
 
-	prompter_impl = g_hash_table_lookup (prompter->priv->prompters, method ? method : "");
-	if (!prompter_impl && method && *method)
-		prompter_impl = g_hash_table_lookup (prompter->priv->prompters, "");
+	prompt_data->prompter_impl = g_hash_table_lookup (prompter->priv->prompters, method ? method : "");
+	if (!prompt_data->prompter_impl && method && *method)
+		prompt_data->prompter_impl = g_hash_table_lookup (prompter->priv->prompters, "");
 
-	if (prompter_impl)
-		g_object_ref (prompter_impl);
+	if (prompt_data->prompter_impl)
+		g_object_ref (prompt_data->prompter_impl);
 
 	g_mutex_unlock (&prompter->priv->prompters_lock);
 
-	if (prompter_impl) {
+	if (prompt_data->prompter_impl) {
 		ENamedParameters *credentials;
 
 		credentials = e_named_parameters_new ();
@@ -751,9 +731,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 				g_simple_async_result_complete_in_idle (async_result);
 			}
 		} else {
-			e_credentials_prompter_manage_impl_prompt (prompter, prompter_impl,
-				prompt_data->auth_source, prompt_data->cred_source, prompt_data->error_text, prompt_data->credentials,
-				prompt_data->flags, async_result);
+			e_credentials_prompter_manage_impl_prompt (prompter, g_steal_pointer (&prompt_data));
 		}
 
 		e_named_parameters_free (credentials);
@@ -766,8 +744,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 		}
 	}
 
-	process_prompt_data_free (prompt_data);
-	g_clear_object (&prompter_impl);
+	g_clear_pointer (&prompt_data, process_prompt_data_free);
 	g_free (method);
 
 	return success;
@@ -874,6 +851,7 @@ credentials_prompter_credentials_required_cb (ESourceRegistry *registry,
 		ProcessPromptData *prompt_data;
 		prompt_data = g_slice_new0 (ProcessPromptData);
 		prompt_data->auth_source = g_object_ref (source);
+		prompt_data->connection_status = e_source_get_connection_status (source);
 		prompt_data->flags |= E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE;
 		credentials_prompter_lookup_source_details (source, prompter,
 			credentials_prompter_lookup_source_details_cb, prompt_data);
@@ -1660,6 +1638,7 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
 
 	prompt_data = g_slice_new0 (ProcessPromptData);
 	prompt_data->auth_source = g_object_ref (source);
+	prompt_data->connection_status = e_source_get_connection_status (source);
 	prompt_data->error_text = g_strdup (error_text);
 	prompt_data->flags = flags;
 	prompt_data->async_result = callback ? g_simple_async_result_new (G_OBJECT (prompter),
