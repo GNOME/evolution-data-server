@@ -2367,8 +2367,8 @@ generate_instances (ECalClient *client,
 	else
 		default_zone = i_cal_timezone_get_utc_timezone ();
 
-	starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, NULL);
-	endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, NULL);
+	starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, i_cal_timezone_get_utc_timezone ());
+	endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, i_cal_timezone_get_utc_timezone ());
 
 	for (l = objects; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
 		ECalComponent *comp;

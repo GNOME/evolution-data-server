@@ -733,6 +733,82 @@ test_recur_duration (ETestServerFixture *fixture,
 	g_object_unref (comp);
 }
 
+static void
+setup_cal_reminders (ECalClient *cal_client)
+{
+	ICalComponent *icomp;
+	gboolean success;
+	gchar *uid = NULL;
+	GError *error = NULL;
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DTSTAMP:20231113T090259Z\r\n"
+		"DTSTART;TZID=Pacific/Auckland:20231114T045100\r\n"
+		"DTEND;TZID=Pacific/Auckland:20231114T045500\r\n"
+		"SUMMARY:test\r\n"
+		"CREATED:20231113T090627Z\r\n"
+		"LAST-MODIFIED:20231113T132152Z\r\n"
+		"BEGIN:VALARM\r\n"
+		"X-EVOLUTION-ALARM-UID:a1\r\n"
+		"ACTION:DISPLAY\r\n"
+		"DESCRIPTION:test\r\n"
+		"TRIGGER;RELATED=START:-PT50M\r\n"
+		"END:VALARM\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	if (!e_cal_client_remove_object_sync (cal_client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error)) {
+		g_assert_error (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+		g_clear_error (&error);
+	} else {
+		g_assert_no_error (error);
+	}
+
+	success = e_cal_client_create_object_sync (cal_client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (uid);
+
+	g_object_unref (icomp);
+	g_free (uid);
+}
+
+static void
+test_recur_reminders (ETestServerFixture *fixture,
+		      gconstpointer user_data)
+{
+	ECalClient *client;
+	ECalComponentAlarmAction omit[] = { -1 };
+	ECalComponentAlarms *alarms;
+	ICalTime *start, *end;
+	ICalTimezone *default_timezone;
+	GError *error = NULL;
+
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	default_timezone = i_cal_timezone_get_utc_timezone ();
+	start = i_cal_time_new_from_string ("20231113T132001Z");
+	end = i_cal_time_new_from_string ("20231113T235000Z");
+
+	e_cal_client_set_default_timezone (client, default_timezone);
+	setup_cal_reminders (client);
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+
+	e_cal_component_alarms_free (alarms);
+	g_object_unref (start);
+	g_object_unref (end);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -774,6 +850,13 @@ main (gint argc,
 		&test_closure,
 		e_test_server_utils_setup,
 		test_recur_midnight,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/Reminders",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_reminders,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
