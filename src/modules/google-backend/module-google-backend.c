@@ -447,10 +447,8 @@ google_add_task_list (ECollectionBackend *collection,
 	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_ALARMS);
 	e_source_alarms_set_include_me (E_SOURCE_ALARMS (extension), FALSE);
 
-	if (is_new) {
+	if (is_new)
 		e_source_registry_server_add_source (server, source);
-		g_object_unref (server);
-	}
 
 	g_object_unref (source);
 	g_object_unref (server);
