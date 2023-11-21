@@ -379,7 +379,7 @@ client_set_last_notification_time (ECalClient *client,
 	tt_dt = g_date_time_new_from_unix_utc (tt);
 	now = g_date_time_new_now_utc ();
 
-	if (last_notified_dt &&
+	if (!last_notified_dt ||
 	    (g_date_time_compare (tt_dt, last_notified_dt) > 0 || g_date_time_compare (last_notified_dt, now) > 0)) {
 		iso8601 = g_date_time_format_iso8601 (tt_dt);
 		e_source_alarms_set_last_notified (alarms_extension, iso8601);
