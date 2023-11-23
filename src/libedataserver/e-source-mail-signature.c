@@ -603,6 +603,7 @@ e_source_mail_signature_load_finish (ESource *source,
                                      GError **error)
 {
 	GBytes *bytes;
+	gsize len = 0;
 
 	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
 	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_mail_signature_load), FALSE);
@@ -611,7 +612,10 @@ e_source_mail_signature_load_finish (ESource *source,
 	if (!bytes)
 		return FALSE;
 
-	*contents = g_bytes_unref_to_data (bytes, length);
+	*contents = g_bytes_unref_to_data (bytes, &len);
+	if (length)
+		*length = len;
+
 	return TRUE;
 }
 
