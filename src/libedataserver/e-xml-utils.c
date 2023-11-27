@@ -30,6 +30,7 @@
 #include <libxml/catalog.h>
 #include <libxml/tree.h>
 #include <libxml/xpathInternals.h>
+#include <libxml/globals.h>
 
 #include <glib/gstdio.h>
 
