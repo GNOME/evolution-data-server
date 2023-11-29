@@ -37,13 +37,15 @@
 
 struct _ESourceAlarmsPrivate {
 	gboolean include_me;
+	gboolean for_every_event;
 	gchar *last_notified;
 };
 
 enum {
 	PROP_0,
 	PROP_INCLUDE_ME,
-	PROP_LAST_NOTIFIED
+	PROP_LAST_NOTIFIED,
+	PROP_FOR_EVERY_EVENT
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -69,6 +71,12 @@ source_alarms_set_property (GObject *object,
 				E_SOURCE_ALARMS (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_FOR_EVERY_EVENT:
+			e_source_alarms_set_for_every_event (
+				E_SOURCE_ALARMS (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -92,6 +100,13 @@ source_alarms_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_alarms_dup_last_notified (
+				E_SOURCE_ALARMS (object)));
+			return;
+
+		case PROP_FOR_EVERY_EVENT:
+			g_value_set_boolean (
+				value,
+				e_source_alarms_get_for_every_event (
 				E_SOURCE_ALARMS (object)));
 			return;
 	}
@@ -148,6 +163,20 @@ e_source_alarms_class_init (ESourceAlarmsClass *class)
 			"LastNotified",
 			"Last alarm notification (in ISO 8601 format)",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FOR_EVERY_EVENT,
+		g_param_spec_boolean (
+			"for-every-event",
+			"ForEveryEvent",
+			"Show a notification before every event in this source",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -316,4 +345,53 @@ e_source_alarms_set_last_notified (ESourceAlarms *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "last-notified");
+}
+
+/**
+ * e_source_alarms_get_for_every_event:
+ * @extension: an #ESourceAlarms
+ *
+ * Returns whether the user should be alerted about all upcoming appointments
+ * in the calendar described by the #ESource to which @extension belongs.
+ *
+ * This is used in addition to the GSettings key defall-reminder-enabled
+ * in org.gnome.evolution-data-server.calendar.
+ *
+ * Returns: whether to show alarms for every event
+ *
+ * Since: 3.52
+ **/
+gboolean
+e_source_alarms_get_for_every_event (ESourceAlarms *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_ALARMS (extension), FALSE);
+
+	return extension->priv->for_every_event;
+}
+
+/**
+ * e_source_alarms_set_for_every_event:
+ * @extension: an #ESourceAlarms
+ * @for_every_event: whether to show alarms for every event
+ *
+ * Sets whether the user should be alerted about every event in
+ * the calendar described by the #ESource to which @extension belongs.
+ *
+ * This is used in addition to the GSettings key defall-reminder-enabled
+ * in org.gnome.evolution-data-server.calendar.
+ *
+ * Since: 3.52
+ **/
+void
+e_source_alarms_set_for_every_event (ESourceAlarms *extension,
+				     gboolean for_every_event)
+{
+	g_return_if_fail (E_IS_SOURCE_ALARMS (extension));
+
+	if ((extension->priv->for_every_event ? 1 : 0) == (for_every_event ? 1 : 0))
+		return;
+
+	extension->priv->for_every_event = for_every_event;
+
+	g_object_notify (G_OBJECT (extension), "for-every-event");
 }

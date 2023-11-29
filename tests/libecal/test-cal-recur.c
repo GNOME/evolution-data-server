@@ -734,7 +734,8 @@ test_recur_duration (ETestServerFixture *fixture,
 }
 
 static void
-setup_cal_reminders (ECalClient *cal_client)
+setup_cal_reminders (ECalClient *cal_client,
+		     gboolean keep_alarm)
 {
 	ICalComponent *icomp;
 	gboolean success;
@@ -759,6 +760,15 @@ setup_cal_reminders (ECalClient *cal_client)
 		"END:VEVENT\r\n");
 	g_assert_nonnull (icomp);
 
+	if (!keep_alarm) {
+		ICalComponent *alarm_comp;
+
+		while (alarm_comp = i_cal_component_get_first_component (icomp, I_CAL_VALARM_COMPONENT), alarm_comp) {
+			i_cal_component_remove_component (icomp, alarm_comp);
+			g_clear_object (&alarm_comp);
+		}
+	}
+
 	if (!e_cal_client_remove_object_sync (cal_client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error)) {
 		g_assert_error (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
 		g_clear_error (&error);
@@ -782,6 +792,7 @@ test_recur_reminders (ETestServerFixture *fixture,
 	ECalClient *client;
 	ECalComponentAlarmAction omit[] = { -1 };
 	ECalComponentAlarms *alarms;
+	ECalComponentAlarmInstance *instance;
 	ICalTime *start, *end;
 	ICalTimezone *default_timezone;
 	GError *error = NULL;
@@ -793,16 +804,160 @@ test_recur_reminders (ETestServerFixture *fixture,
 	end = i_cal_time_new_from_string ("20231113T235000Z");
 
 	e_cal_client_set_default_timezone (client, default_timezone);
-	setup_cal_reminders (client);
+	setup_cal_reminders (client, TRUE);
 
+	/* without default alarm */
 	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
 		i_cal_time_as_timet (start),
 		i_cal_time_as_timet (end),
-		omit, e_cal_client_tzlookup_cb, client, default_timezone,
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
 		NULL, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (alarms);
 	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "a1");
+
+	e_cal_component_alarms_free (alarms);
+
+	/* with default alarm 50 minutes before start, which matches existing alarm, thus it does not apply */
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 50 * 60,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "a1");
+
+	e_cal_component_alarms_free (alarms);
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* with default alarm one day before start */
+	start = i_cal_time_new_from_string ("20231112T150001Z");
+	end = i_cal_time_new_from_string ("20231112T160000Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 24 * 60 * 60,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "x-evolution-default-alarm");
+
+	e_cal_component_alarms_free (alarms);
+
+	/* with default alarm at the event start, but out-of-range */
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 0,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_null (alarms);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* with default alarm at the event start, with expected range */
+	start = i_cal_time_new_from_string ("20231113T153001Z");
+	end = i_cal_time_new_from_string ("20231113T160000Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 0,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "x-evolution-default-alarm");
+
+	e_cal_component_alarms_free (alarms);
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* remove all alarms from the component to try with default alarm only */
+	setup_cal_reminders (client, FALSE);
+
+	start = i_cal_time_new_from_string ("20231113T132001Z");
+	end = i_cal_time_new_from_string ("20231113T235000Z");
+
+	/* without default alarm */
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_null (alarms);
+
+	/* with default alarm 50 minutes before start */
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 50 * 60,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "x-evolution-default-alarm");
+
+	e_cal_component_alarms_free (alarms);
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* with default alarm one day before start */
+	start = i_cal_time_new_from_string ("20231112T150001Z");
+	end = i_cal_time_new_from_string ("20231112T160000Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 24 * 60 * 60,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "x-evolution-default-alarm");
+
+	e_cal_component_alarms_free (alarms);
+
+	/* with default alarm at the event start, but out-of-range */
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 0,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_null (alarms);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* with default alarm at the event start, with expected range */
+	start = i_cal_time_new_from_string ("20231113T153001Z");
+	end = i_cal_time_new_from_string ("20231113T160000Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, 0,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	instance = e_cal_component_alarms_get_instances (alarms)->data;
+	g_assert_cmpstr (e_cal_component_alarm_instance_get_uid (instance), ==, "x-evolution-default-alarm");
 
 	e_cal_component_alarms_free (alarms);
 	g_object_unref (start);

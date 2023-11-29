@@ -300,6 +300,7 @@ ECalComponentAlarms *
 						 ECalRecurResolveTimezoneCb resolve_tzid,
 						 gpointer user_data,
 						 ICalTimezone *default_timezone,
+						 gint def_reminder_before_start_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
 const gchar *	e_cal_util_priority_to_string	(gint priority);

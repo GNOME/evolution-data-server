@@ -23,6 +23,21 @@
       <summary>Birthday and anniversary reminder units</summary>
       <description>Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”</description>
     </key>
+    <key name="defall-reminder-enabled" type="b">
+      <default>false</default>
+      <summary>Default reminder for all events in chosen calendars</summary>
+      <description>Whether to show a specified reminder for all events in chosen calendars</description>
+    </key>
+    <key name="defall-reminder-interval" type="i">
+      <default>15</default>
+      <summary>Interval of the default reminder for all events in chosen calendars</summary>
+      <description>Number of units for determining the reminder</description>
+    </key>
+    <key name="defall-reminder-units" enum='org.gnome.evolution-data-server.calendar.Duration'>
+      <default>'minutes'</default>
+      <summary>Units of the default reminder for all events in chosen calendars</summary>
+      <description>Units for the default reminder for all events in chosen calendars, “minutes”, “hours” or “days”</description>
+    </key>
 
     <key name="reminders-past" type="as">
       <default>['']</default>

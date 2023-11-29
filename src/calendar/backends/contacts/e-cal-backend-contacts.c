@@ -35,13 +35,6 @@
 #define EC_ERROR(_code) e_client_error_create (_code, NULL)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
 
-typedef enum
-{
-	CAL_DAYS,
-	CAL_HOURS,
-	CAL_MINUTES
-} CalUnits;
-
 /* Private part of the ECalBackendContacts structure */
 struct _ECalBackendContactsPrivate {
 
@@ -59,7 +52,7 @@ struct _ECalBackendContactsPrivate {
 	guint update_alarms_id;
 	gboolean alarm_enabled;
 	gint alarm_interval;
-	CalUnits alarm_units;
+	ECalIntervalUnits alarm_units;
 
 	ESourceRegistryWatcher *registry_watcher;
 };
@@ -810,8 +803,6 @@ setup_alarm (ECalBackendContacts *cbc,
 	g_return_if_fail (cbc != NULL);
 
 	if (!comp || cbc->priv->alarm_interval == -1) {
-		gchar *str;
-
 		if (cbc->priv->alarm_interval == -1) {
 			/* initial setup, hook callback for changes too */
 			cbc->priv->notifyid = g_signal_connect (cbc->priv->settings,
@@ -820,16 +811,7 @@ setup_alarm (ECalBackendContacts *cbc,
 
 		cbc->priv->alarm_enabled = g_settings_get_boolean (cbc->priv->settings, BA_CONF_ENABLED);
 		cbc->priv->alarm_interval = g_settings_get_int (cbc->priv->settings, BA_CONF_INTERVAL);
-
-		str = g_settings_get_string (cbc->priv->settings, BA_CONF_UNITS);
-		if (str && !strcmp (str, "days"))
-			cbc->priv->alarm_units = CAL_DAYS;
-		else if (str && !strcmp (str, "hours"))
-			cbc->priv->alarm_units = CAL_HOURS;
-		else
-			cbc->priv->alarm_units = CAL_MINUTES;
-
-		g_free (str);
+		cbc->priv->alarm_units = g_settings_get_enum (cbc->priv->settings, BA_CONF_UNITS);
 
 		if (cbc->priv->alarm_interval <= 0)
 			cbc->priv->alarm_interval = 1;
@@ -854,15 +836,15 @@ setup_alarm (ECalBackendContacts *cbc,
 	i_cal_duration_set_is_neg (duration, TRUE);
 
 	switch (cbc->priv->alarm_units) {
-	case CAL_MINUTES:
+	case E_CAL_INTERVAL_UNIT_MINUTES:
 		i_cal_duration_set_minutes (duration, cbc->priv->alarm_interval);
 		break;
 
-	case CAL_HOURS:
+	case E_CAL_INTERVAL_UNIT_HOURS:
 		i_cal_duration_set_hours (duration, cbc->priv->alarm_interval);
 		break;
 
-	case CAL_DAYS:
+	case E_CAL_INTERVAL_UNIT_DAYS:
 		i_cal_duration_set_days (duration, cbc->priv->alarm_interval);
 		break;
 
@@ -1392,7 +1374,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	cbc->priv->update_alarms_id = 0;
 	cbc->priv->alarm_enabled = FALSE;
 	cbc->priv->alarm_interval = -1;
-	cbc->priv->alarm_units = CAL_MINUTES;
+	cbc->priv->alarm_units = E_CAL_INTERVAL_UNIT_MINUTES;
 
 	g_signal_connect (
 		cbc, "notify::online",

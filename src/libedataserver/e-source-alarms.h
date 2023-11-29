@@ -88,6 +88,11 @@ gchar *		e_source_alarms_dup_last_notified
 void		e_source_alarms_set_last_notified
 						(ESourceAlarms *extension,
 						 const gchar *last_notified);
+gboolean	e_source_alarms_get_for_every_event
+						(ESourceAlarms *extension);
+void		e_source_alarms_set_for_every_event
+						(ESourceAlarms *extension,
+						 gboolean for_every_event);
 
 G_END_DECLS
 

@@ -235,6 +235,24 @@ typedef enum { /*< flags >*/
 	E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE	= (1 << 4)
 } ECalOperationFlags;
 
+/**
+ * ECalIntervalUnits:
+ * @E_CAL_INTERVAL_UNIT_NONE: No unit is set
+ * @E_CAL_INTERVAL_UNIT_MINUTES: interval is in minutes
+ * @E_CAL_INTERVAL_UNIT_HOURS: interval is in hours
+ * @E_CAL_INTERVAL_UNIT_DAYS: interval is in days
+ *
+ * Declares interval units.
+ *
+ * Since: 3.52
+ **/
+typedef enum {
+	E_CAL_INTERVAL_UNIT_NONE	= -1,
+	E_CAL_INTERVAL_UNIT_MINUTES	= 0,
+	E_CAL_INTERVAL_UNIT_HOURS	= 1,
+	E_CAL_INTERVAL_UNIT_DAYS	= 2
+} ECalIntervalUnits;
+
 G_END_DECLS
 
 #endif /* E_CAL_ENUMS_H */

@@ -392,6 +392,7 @@ struct alarm_occurrence_data {
 	time_t start;
 	time_t end;
 	ECalComponentAlarmAction *omit;
+	gint def_reminder_before_start_seconds;
 	gboolean only_check;
 	gboolean any_exists;
 
@@ -425,6 +426,65 @@ add_trigger (struct alarm_occurrence_data *aod,
 	aod->triggers = g_slist_prepend (aod->triggers, instance);
 }
 
+static void
+e_cal_util_add_alarm_before_start (ECalComponent *comp,
+				   gint before_start_seconds)
+{
+	ECalComponentAlarm *alarm;
+	ECalComponentAlarmTrigger *trigger;
+	ECalComponentText *summary;
+	ICalDuration *duration;
+	GSList *alarms, *link;
+
+	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+	g_return_if_fail (before_start_seconds >= 0);
+
+	e_cal_component_remove_alarm (comp, "x-evolution-default-alarm");
+
+	alarms = e_cal_component_get_all_alarms	(comp);
+	for (link = alarms; link; link = g_slist_next (link)) {
+		alarm = link->data;
+
+		if (e_cal_component_alarm_get_action (alarm) != E_CAL_COMPONENT_ALARM_DISPLAY)
+			continue;
+
+		trigger = e_cal_component_alarm_get_trigger (alarm);
+		if (!trigger ||
+		    e_cal_component_alarm_trigger_get_kind (trigger) != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
+			continue;
+
+		duration = e_cal_component_alarm_trigger_get_duration (trigger);
+		if (!duration || !i_cal_duration_is_neg (duration))
+			continue;
+
+		if (i_cal_duration_as_int (duration) == (-1) * before_start_seconds)
+			break;
+	}
+
+	g_slist_free_full (alarms, e_cal_component_alarm_free);
+
+	/* Found existing alarm at the same time, skip this one */
+	if (link != NULL)
+		return;
+
+	alarm = e_cal_component_alarm_new ();
+	e_cal_component_alarm_set_uid (alarm, "x-evolution-default-alarm");
+	summary = e_cal_component_get_summary (comp);
+	e_cal_component_alarm_take_description (alarm, summary);
+	e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
+
+	duration = i_cal_duration_new_from_int (before_start_seconds);
+	i_cal_duration_set_is_neg (duration, TRUE);
+
+	trigger = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START, duration);
+
+	g_object_unref (duration);
+
+	e_cal_component_alarm_take_trigger (alarm, trigger);
+	e_cal_component_add_alarm (comp, alarm);
+	e_cal_component_alarm_free (alarm);
+}
+
 /* Callback used from cal_recur_generate_instances(); generates triggers for all
  * of a component's RELATIVE alarms.
  */
@@ -442,10 +502,13 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 	GSList *link;
 	gchar *rid;
 
-	if (aod->comp)
+	if (aod->comp) {
 		comp = g_object_ref (aod->comp);
-	else
+	} else {
 		comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (icalcomp));
+		if (aod->def_reminder_before_start_seconds >= 0 && comp)
+			e_cal_util_add_alarm_before_start (comp, aod->def_reminder_before_start_seconds);
+	}
 
 	g_return_val_if_fail (comp != NULL, FALSE);
 
@@ -906,10 +969,16 @@ e_cal_util_generate_alarms_for_list (GList *comps,
  * @resolve_tzid: (closure user_data) (scope call): Callback for resolving timezones
  * @user_data: (closure): Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME values
+ * @def_reminder_before_start_seconds: add default reminder before start in seconds, when not negative value
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Generates alarm instances for a calendar component with UID @uid,
  * which is stored within the @client. In contrast to e_cal_util_generate_alarms_for_comp(),
  * this function handles detached instances of recurring events properly.
+ *
+ * The @def_reminder_before_start_seconds, if not negative, causes addition of an alarm,
+ * which will trigger a "display" alarm these seconds before start of the event.
  *
  * Returns the instances structure, or %NULL if no alarm instances occurred in the specified
  * time range. Free the returned structure with e_cal_component_alarms_free(),
@@ -929,6 +998,7 @@ e_cal_util_generate_alarms_for_uid_sync (ECalClient *client,
 					 ECalRecurResolveTimezoneCb resolve_tzid,
 					 gpointer user_data,
 					 ICalTimezone *default_timezone,
+					 gint def_reminder_before_start_seconds,
 					 GCancellable *cancellable,
 					 GError **error)
 {
@@ -949,7 +1019,12 @@ e_cal_util_generate_alarms_for_uid_sync (ECalClient *client,
 
 	for (link = objects; link; link = g_slist_next (link)) {
 		ECalComponent *comp = link->data;
-		GSList *auids = e_cal_component_get_alarm_uids (comp);
+		GSList *auids;
+
+		if (def_reminder_before_start_seconds >= 0)
+			e_cal_util_add_alarm_before_start (comp, def_reminder_before_start_seconds);
+
+		auids = e_cal_component_get_alarm_uids (comp);
 
 		if (auids) {
 			GSList *alink;
@@ -976,6 +1051,7 @@ e_cal_util_generate_alarms_for_uid_sync (ECalClient *client,
 	aod.start = start;
 	aod.end = end;
 	aod.omit = omit;
+	aod.def_reminder_before_start_seconds = def_reminder_before_start_seconds;
 	aod.only_check = FALSE;
 	aod.any_exists = FALSE;
 	aod.triggers = NULL;
