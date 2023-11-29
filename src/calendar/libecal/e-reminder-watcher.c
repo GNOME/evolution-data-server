@@ -3187,7 +3187,7 @@ e_reminder_watcher_describe_data (EReminderWatcher *watcher,
 			gchar *timestrptr = timestr;
 			ICalTimezone *zone;
 			ICalTime *itt;
-			gboolean is_date = FALSE;
+			gboolean is_date = FALSE, is_floating = FALSE;
 
 			if (e_cal_component_alarm_instance_get_occur_end (rd->instance) > e_cal_component_alarm_instance_get_occur_start (rd->instance)) {
 				timediff = e_cal_util_seconds_to_string (
@@ -3201,11 +3201,26 @@ e_reminder_watcher_describe_data (EReminderWatcher *watcher,
 			}
 
 			itt = i_cal_component_get_dtstart (icalcomp);
-			if (itt && i_cal_time_is_valid_time (itt) && !i_cal_time_is_null_time (itt))
+			if (itt && i_cal_time_is_valid_time (itt) && !i_cal_time_is_null_time (itt)) {
 				is_date = i_cal_time_is_date (itt);
+				is_floating = !i_cal_time_get_timezone (itt);
+
+				if (is_floating) {
+					ICalProperty *prop;
+					ICalParameter *param;
+
+					prop = i_cal_component_get_first_property (icalcomp, I_CAL_DTSTART_PROPERTY);
+					param = prop ? i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER) : NULL;
+
+					is_floating = !param;
+
+					g_clear_object (&param);
+					g_clear_object (&prop);
+				}
+			}
 			g_clear_object (&itt);
 
-			itt = i_cal_time_new_from_timet_with_zone (e_cal_component_alarm_instance_get_occur_start (rd->instance), is_date, zone);
+			itt = i_cal_time_new_from_timet_with_zone (e_cal_component_alarm_instance_get_occur_start (rd->instance), is_date, is_floating  ? NULL : zone);
 
 			g_signal_emit (watcher, signals[FORMAT_TIME], 0, rd, itt, &timestrptr, 254, NULL);
 
