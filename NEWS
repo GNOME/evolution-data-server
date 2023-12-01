@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.50.2 2023-12-01
+---------------------------------------
+
+Bug Fixes:
+	I#505 - alarm-notify: Some reminders could be lost
+	I#506 - alarm-notify: Birthday floating date shifted by one day
+	M!139 - CamelGpgContext: Don't leak istream in gpg_sign_sync() (Guido Günther)
+	M!145 - e-xml-utils: Fix build with libxml2 2.12 (Jürg Billeter)
+
+Miscellaneous:
+	OAuth2: Add scheme handler for OAuth2 prompts in external browser
+	EReminderWatcher: Last-notified time not always set
+
+Translations:
+	Boyuan Yang (zh_CN)
+	Florentina Mușat (ro)
+
 Evolution-Data-Server 3.50.1 2023-10-20
 ---------------------------------------
 
