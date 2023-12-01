@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-09-16 12:00+0000\n"
-"PO-Revision-Date: 2023-11-07 13:32-0500\n"
+"POT-Creation-Date: 2023-11-07 18:33+0000\n"
+"PO-Revision-Date: 2023-12-01 10:48-0500\n"
 "Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
@@ -191,8 +191,8 @@ msgstr "将旧数据库“%s”改名为“%s”失败：%s"
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1025
 #: src/libedataserver/e-soup-session.c:1905
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:272
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -3057,31 +3057,27 @@ msgstr "加密失败：未找到收件人 %s 的公钥。"
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1639
-#, fuzzy, c-format
-#| msgid "Failed to encrypt: No valid recipients specified."
+#, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
-msgstr "加密失败：没有指定有效的收件人。"
+msgstr "加密失败：收件人 %s 的密钥已被吊销。"
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1646
-#, fuzzy, c-format
-#| msgid "Failed to encrypt: No valid recipients specified."
+#, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
-msgstr "加密失败：没有指定有效的收件人。"
+msgstr "加密失败：收件人 %s 的密钥已过期。"
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1653
-#, fuzzy, c-format
-#| msgid "Failed to encrypt: No valid recipients specified."
+#, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
-msgstr "加密失败：没有指定有效的收件人。"
+msgstr "加密失败：收件人 %s 的密钥不可信。"
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1660
-#, fuzzy, c-format
-#| msgid "Failed to encrypt: No valid recipients specified."
+#, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
-msgstr "加密失败：没有指定有效的收件人。"
+msgstr "加密失败：收件人 %s 的密钥已被禁用。"
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
@@ -3106,71 +3102,71 @@ msgstr "无法将命令传递至 GPG：%s"
 msgid "Could not generate signing data: "
 msgstr "无法生成签名数据："
 
-#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2877
-#: src/camel/camel-gpg-context.c:3018 src/camel/camel-gpg-context.c:3195
-#: src/camel/camel-gpg-context.c:3550 src/camel/camel-gpg-context.c:3637
-#: src/camel/camel-gpg-context.c:3930 src/camel/camel-gpg-context.c:4028
-#: src/camel/camel-gpg-context.c:4113 src/camel/camel-gpg-context.c:4180
+#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2878
+#: src/camel/camel-gpg-context.c:3019 src/camel/camel-gpg-context.c:3196
+#: src/camel/camel-gpg-context.c:3551 src/camel/camel-gpg-context.c:3638
+#: src/camel/camel-gpg-context.c:3931 src/camel/camel-gpg-context.c:4029
+#: src/camel/camel-gpg-context.c:4114 src/camel/camel-gpg-context.c:4181
 msgid "Failed to execute gpg."
 msgstr "执行 gpg 失败。"
 
-#: src/camel/camel-gpg-context.c:2745 src/camel/camel-gpg-context.c:2753
-#: src/camel/camel-gpg-context.c:2761 src/camel/camel-gpg-context.c:2781
+#: src/camel/camel-gpg-context.c:2746 src/camel/camel-gpg-context.c:2754
+#: src/camel/camel-gpg-context.c:2762 src/camel/camel-gpg-context.c:2782
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "无法校验消息签名：消息格式不对"
 
-#: src/camel/camel-gpg-context.c:2827
+#: src/camel/camel-gpg-context.c:2828
 msgid "Cannot verify message signature: "
 msgstr "无法校验消息签名："
 
-#: src/camel/camel-gpg-context.c:2976
+#: src/camel/camel-gpg-context.c:2977
 msgid "Could not generate encrypting data: "
 msgstr "无法生成加密数据："
 
-#: src/camel/camel-gpg-context.c:3058
+#: src/camel/camel-gpg-context.c:3059
 msgid "This is a digitally encrypted message part"
 msgstr "这是消息的数字加密部分"
 
-#: src/camel/camel-gpg-context.c:3118 src/camel/camel-gpg-context.c:3127
-#: src/camel/camel-gpg-context.c:3150
+#: src/camel/camel-gpg-context.c:3119 src/camel/camel-gpg-context.c:3128
+#: src/camel/camel-gpg-context.c:3151
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "无法解密消息：消息格式不对"
 
-#: src/camel/camel-gpg-context.c:3138
+#: src/camel/camel-gpg-context.c:3139
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "解密 MIME 部分失败：协议错误"
 
-#: src/camel/camel-gpg-context.c:3210
+#: src/camel/camel-gpg-context.c:3211
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "解密 MIME 部分失败：未找到密钥"
 
-#: src/camel/camel-gpg-context.c:3247
+#: src/camel/camel-gpg-context.c:3248
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG blob 包含未加密的文本：%s"
 
-#: src/camel/camel-gpg-context.c:3249 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:3250 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "加密内容"
 
-#: src/camel/camel-gpg-context.c:3557 src/camel/camel-gpg-context.c:3644
-#: src/camel/camel-gpg-context.c:3937 src/camel/camel-gpg-context.c:3948
+#: src/camel/camel-gpg-context.c:3558 src/camel/camel-gpg-context.c:3645
+#: src/camel/camel-gpg-context.c:3938 src/camel/camel-gpg-context.c:3949
 #, fuzzy, c-format
 #| msgid "Object “%s” not found"
 msgid "Public key “%s” was not found"
 msgstr "未找到对象“%s”"
 
-#: src/camel/camel-gpg-context.c:4035
+#: src/camel/camel-gpg-context.c:4036
 msgid "No public key was found in the provided data"
 msgstr ""
 
-#: src/camel/camel-gpg-context.c:4048
+#: src/camel/camel-gpg-context.c:4049
 msgid "Key information was not found in the provided data"
 msgstr ""
 
@@ -4225,7 +4221,7 @@ msgstr "命名空间："
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Ignore other users namespace"
-msgstr ""
+msgstr "忽略其他用户的命名空间"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:78
 #, fuzzy
@@ -4276,7 +4272,7 @@ msgstr ""
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:97
 msgid "Single client mode"
-msgstr ""
+msgstr "单客户端模式"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:103
 msgid "Default IMAP port"
@@ -6093,7 +6089,7 @@ msgstr "用户定义的休眠时间，以分钟为单位"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:103
 msgid "Delete meeting from calendar on Decline"
-msgstr ""
+msgstr "拒绝时从日历删除会议"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:5
 msgid "Whether the migration of old setting was already done"
@@ -6306,7 +6302,7 @@ msgstr ""
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:91
 msgid "Whether to limit operations in Power Saver mode"
-msgstr ""
+msgstr "是否在节电模式下限制操作"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:92
 msgid ""
@@ -6808,7 +6804,7 @@ msgstr "认证失败"
 
 #: src/libedataserver/e-soup-session.c:1753
 msgid "Too many redirects"
-msgstr ""
+msgstr "重定向过多"
 
 #: src/libedataserver/e-source.c:772
 #, c-format
@@ -7220,10 +7216,8 @@ msgid "Key Encipherment"
 msgstr "密钥加密"
 
 #: src/libedataserverui/e-certificate-widget.c:411
-#, fuzzy
-#| msgid "PGP Certificate"
 msgid "Certificate"
-msgstr "PGP 证书"
+msgstr "证书"
 
 #: src/libedataserverui/e-certificate-widget.c:411
 #, fuzzy
@@ -7255,10 +7249,8 @@ msgstr "公用名(CN)"
 
 #: src/libedataserverui/e-certificate-widget.c:416
 #: src/libedataserverui/e-certificate-widget.c:425
-#, fuzzy
-#| msgid "Email 1"
 msgid "Email"
-msgstr "电子邮件 1"
+msgstr "电子邮件"
 
 #: src/libedataserverui/e-certificate-widget.c:418
 #: src/libedataserverui/e-certificate-widget.c:427
@@ -7298,10 +7290,8 @@ msgstr ""
 
 #: src/libedataserverui/e-certificate-widget.c:432
 #: src/libedataserverui/e-certificate-widget.c:440
-#, fuzzy
-#| msgid "SHA1 Fingerprint"
 msgid "SHA-256 Fingerprint"
-msgstr "SHA1 指纹"
+msgstr "SHA-256 指纹"
 
 #: src/libedataserverui/e-certificate-widget.c:433
 msgid "Details"
@@ -7334,10 +7324,8 @@ msgid "Key ID"
 msgstr ""
 
 #: src/libedataserverui/e-certificate-widget.c:439
-#, fuzzy
-#| msgid "Signature algorithm unknown"
 msgid "Signature Algorithm"
-msgstr "签名算法未知"
+msgstr "签名算法"
 
 #: src/libedataserverui/e-certificate-widget.c:441
 #, fuzzy
@@ -7346,10 +7334,8 @@ msgid "Public Key"
 msgstr "证书持有者的公钥"
 
 #: src/libedataserverui/e-certificate-widget.c:441
-#, fuzzy
-#| msgid "Algorithm Identifier"
 msgid "Algorithm"
-msgstr "算法标识"
+msgstr "算法"
 
 #: src/libedataserverui/e-credentials-prompter.c:260
 #: src/libedataserverui/e-credentials-prompter.c:1755
@@ -7362,12 +7348,12 @@ msgstr "提示请求凭据失败"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "源“%s”不支持提示请求凭据"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:270
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "无法从地址“%s”获取访问令牌：%s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:301
 #, fuzzy
 #| msgid "Requesting access token, please wait..."
 msgid "Requesting access token, please wait…"
@@ -7375,35 +7361,35 @@ msgstr "正在请求访问令牌，请稍候…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s 地址簿认证请求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:580
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s 日历认证请求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:585
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s 备忘录列表认证请求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s 任务列表认证请求"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:596
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s 邮件认证请求"
@@ -7411,7 +7397,7 @@ msgstr "%s 邮件认证请求"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:601
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s 帐号认证请求"
@@ -7419,7 +7405,7 @@ msgstr "%s 帐号认证请求"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:615
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7429,7 +7415,7 @@ msgstr "登录到您的 %s 帐户并接受条款，以便访问您的通讯簿�
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:622
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7439,7 +7425,7 @@ msgstr "登录您的 %s 帐户并接受条款，以便访问您的日历“%s”
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:629
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7449,7 +7435,7 @@ msgstr "登录到您的 %s 帐户并接受条款，以便访问您的邮件帐�
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:636
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7459,7 +7445,7 @@ msgstr "登录到 %s 帐户并接受条款，以便访问邮件传输“%s”。
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:643
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -7469,7 +7455,7 @@ msgstr "登录您的 %s 帐户并接受条款，以便访问您的备忘录列�
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:650
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -7479,45 +7465,45 @@ msgstr "登录到 %s 帐户并接受条款，以便访问任务列表“%s”。
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr "登录到您的 %s 帐户并接受条款，以便访问您的帐户“%s”。"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "打开浏览器失败：%s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1048
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "取消(_C)"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1130
 msgid "URL:"
 msgstr "URL："
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1160
 msgid "Click here to open the URL"
-msgstr ""
+msgstr "单击此处打开该 URL 地址"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1200
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1237
 msgid "_Authorization code:"
-msgstr ""
+msgstr "授权码(_A)："
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1250
 msgid "C_ontinue"
 msgstr "继续(_O)"
 
