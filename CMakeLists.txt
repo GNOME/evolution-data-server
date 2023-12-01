@@ -963,7 +963,7 @@ set(CMAKE_REQUIRED_LIBRARIES ${CALENDAR_LDFLAGS})
 CHECK_C_SOURCE_COMPILES("#define LIBICAL_GLIB_UNSTABLE_API 1
 			#include <libical-glib/libical-glib.h>
 			int main(void) {
-				icalparameter *param;
+				ICalParameter *param;
 				param = i_cal_property_get_first_parameter (NULL, I_CAL_EMAIL_PARAMETER);
 				i_cal_parameter_get_email (param);
 				i_cal_parameter_new_email (NULL);
