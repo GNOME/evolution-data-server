@@ -446,9 +446,6 @@ init_sqlite_vfs (void)
 
 	sqlite3_vfs_register (&vfs, 1);
 
-	if (g_getenv ("CAMEL_SQLITE_SHARED_CACHE"))
-		sqlite3_enable_shared_cache (TRUE);
-
 	return NULL;
 }
 
