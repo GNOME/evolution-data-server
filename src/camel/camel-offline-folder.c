@@ -186,6 +186,7 @@ offline_folder_downsync_background (CamelSession *session,
 		uid_added = data->changes->uid_added;
 
 		for (ii = 0; success && ii < uid_added->len; ii++) {
+			GError *local_error = NULL;
 			const gchar *uid;
 			gint percent;
 
@@ -210,8 +211,27 @@ offline_folder_downsync_background (CamelSession *session,
 					continue;
 			}
 
-			success = offline_folder_synchronize_message_wrapper_sync (
-				data->folder, uid, cancellable, error);
+			success = offline_folder_synchronize_message_wrapper_sync (data->folder, uid, cancellable, &local_error);
+
+			if (!success) {
+				if (g_error_matches (local_error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
+					/* The message can be moved away before the offline download gets to it */
+					success = TRUE;
+				}
+
+				if (camel_debug ("downsync")) {
+					printf ("[downsync]          %p: (%s : %s): failed to download uid '%s' with error '%s', will %s\n",
+						camel_folder_get_parent_store (data->folder),
+						camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (data->folder))),
+						camel_folder_get_full_name (data->folder),
+						uid,
+						local_error ? local_error->message : "Unknown error",
+						success ? "continue" : "stop");
+				}
+			}
+
+			/* Do not bother the user with background for-offline download errors */
+			g_clear_error (&local_error);
 		}
 	} else {
 		gchar *expression = NULL;
