@@ -87,6 +87,8 @@ void camel_smime_context_set_sign_mode (CamelSMIMEContext *context, CamelSMIMESi
 
 guint32 camel_smime_context_describe_part (CamelSMIMEContext *context, struct _CamelMimePart *part);
 
+const gchar *camel_smime_context_util_nss_error_to_string (gint nss_error_code);
+
 G_END_DECLS
 
 #endif /* CAMEL_SMIME_CONTEXT_H */
