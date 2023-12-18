@@ -56,7 +56,7 @@
 /* Try pipelining fetch requests, 'in bits' */
 #define MULTI_SIZE (32768 * 8)
 
-#define MAX_COMMAND_LEN 1000
+#define MAX_UIDSET_ITEMS 100
 
 /* Allow up to this number of message infos in a folder with message headers
    stored in memory, to not use too much memory when fetching new messages. */
@@ -4763,7 +4763,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 		struct _uidset_state uidset;
 		gint last_index = ii;
 
-		imapx_uidset_init (&uidset, 0, MAX_COMMAND_LEN);
+		imapx_uidset_init (&uidset, 0, MAX_UIDSET_ITEMS);
 
 		if (use_move_command)
 			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_MOVE_MESSAGE, "UID MOVE ");
@@ -5465,7 +5465,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 		GSList *link;
 
 		ic = NULL;
-		imapx_uidset_init (&uidset, 0, 100);
+		imapx_uidset_init (&uidset, 0, MAX_UIDSET_ITEMS);
 
 		camel_operation_push_message (cancellable,
 			/* Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -6205,7 +6205,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
-	imapx_uidset_init (&uidset_expunge, 0, 100);
+	imapx_uidset_init (&uidset_expunge, 0, MAX_UIDSET_ITEMS);
 
 	has_uidplus_capability = CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UIDPLUS);
 	expunge_deleted = is_real_trash_folder && !remove_deleted_flags;
@@ -6225,7 +6225,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				continue;
 
 			c (is->priv->tagprefix, "checking/storing %s flags '%s'\n", on ? "on" : "off", flags_table[jj].name);
-			imapx_uidset_init (&uidset, 0, 100);
+			imapx_uidset_init (&uidset, 0, MAX_UIDSET_ITEMS);
 			for (i = 0; i < changed_uids->len && success; i++) {
 				CamelMessageInfo *info;
 				CamelIMAPXMessageInfo *xinfo;
@@ -6379,7 +6379,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			for (jj = 0; jj < user_set->len && success; jj++) {
 				struct _imapx_flag_change *c = &g_array_index (user_set, struct _imapx_flag_change, jj);
 
-				imapx_uidset_init (&uidset, 0, 100);
+				imapx_uidset_init (&uidset, 0, MAX_UIDSET_ITEMS);
 				for (i = 0; i < c->infos->len; i++) {
 					CamelMessageInfo *info = c->infos->pdata[i];
 
