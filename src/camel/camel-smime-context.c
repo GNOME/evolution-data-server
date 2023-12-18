@@ -318,7 +318,7 @@ set_nss_error (GError **error,
 
 		err_str = nss_error_to_string (err_code);
 		if (!err_str)
-			err_str = _("Uknown error.");
+			err_str = _("Unknown error.");
 
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
