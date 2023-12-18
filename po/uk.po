@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues\n"
-"POT-Creation-Date: 2023-12-15 08:04+0000\n"
-"PO-Revision-Date: 2023-12-15 23:13+0200\n"
+"POT-Creation-Date: 2023-12-18 08:34+0000\n"
+"PO-Revision-Date: 2023-12-18 16:57+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -3843,17 +3843,14 @@ msgstr ""
 "захисна бібліотека: неналежне форматування повідомлення у кодуванні DER."
 
 #: src/camel/camel-smime-context.c:121
-#| msgid "The certificate has expired."
 msgid "Peer's certificate has an invalid signature."
 msgstr "Сертифікат однорівневого вузла має некоректний підпис."
 
 #: src/camel/camel-smime-context.c:122
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has expired."
 msgstr "Строк дії сертифіката однорівневого вузла вичерпано."
 
 #: src/camel/camel-smime-context.c:123
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has been revoked."
 msgstr "Сертифікат однорангового вузла було відкликано."
 
@@ -3888,8 +3885,8 @@ msgstr "захисна бібліотека: помилка під час роз
 #: src/camel/camel-smime-context.c:131
 msgid "Peer's certificate issuer has been marked as not trusted by the user."
 msgstr ""
-"Видавця сертифіката однорангового вузла позначено як ненадійного"
-" користувачем."
+"Видавця сертифіката однорангового вузла позначено як ненадійного "
+"користувачем."
 
 #: src/camel/camel-smime-context.c:132
 msgid "Peer's certificate has been marked as not trusted by the user."
@@ -3902,11 +3899,10 @@ msgstr "Сертифікат вже зберігається у вашій ба�
 #: src/camel/camel-smime-context.c:134
 msgid "Downloaded certificate's name duplicates one already in your database."
 msgstr ""
-"Назва отриманого сертифіката збігається з назвою сертифіката у вашій базі"
-" даних."
+"Назва отриманого сертифіката збігається з назвою сертифіката у вашій базі "
+"даних."
 
 #: src/camel/camel-smime-context.c:135
-#| msgid "Signing certificate not trusted"
 msgid "Error adding certificate to database."
 msgstr "Помилка під час спроби додати сертифікат до бази даних."
 
@@ -3920,12 +3916,10 @@ msgstr ""
 "Не вдалося знайти закритий ключ для цього сертифіката у базі даних ключів"
 
 #: src/camel/camel-smime-context.c:138
-#| msgid "The certificate has expired."
 msgid "This certificate is valid."
 msgstr "Цей сертифікат є чинним."
 
 #: src/camel/camel-smime-context.c:139
-#| msgid "The certificate has expired."
 msgid "This certificate is not valid."
 msgstr "Цей сертифікат є нечинним."
 
@@ -3938,16 +3932,16 @@ msgid ""
 "The certificate issuer's certificate has expired.  Check your system date "
 "and time."
 msgstr ""
-"Строк дії сертифікат видавця сертифікатів вичерпано. Перевірте, чи правильно"
-" вказано дату і час у вашій системі."
+"Строк дії сертифікат видавця сертифікатів вичерпано. Перевірте, чи правильно "
+"вказано дату і час у вашій системі."
 
 #: src/camel/camel-smime-context.c:142
 msgid ""
 "The CRL for the certificate's issuer has expired.  Update it or check your "
 "system date and time."
 msgstr ""
-"Строк дії CRL для видавця сертифіката вичерпано. Оновіть його або скоригуйте"
-" дату і час у вашій системі."
+"Строк дії CRL для видавця сертифіката вичерпано. Оновіть його або скоригуйте "
+"дату і час у вашій системі."
 
 #: src/camel/camel-smime-context.c:143
 msgid "The CRL for the certificate's issuer has an invalid signature."
@@ -3958,27 +3952,22 @@ msgid "New CRL has an invalid format."
 msgstr "Новий CRL має некоректний формат."
 
 #: src/camel/camel-smime-context.c:145
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate extension value is invalid."
 msgstr "Значення розширення сертифіката є некоректним."
 
 #: src/camel/camel-smime-context.c:146
-#| msgid "Signing certificate not found"
 msgid "Certificate extension not found."
 msgstr "На знайдено розширення сертифіката."
 
 #: src/camel/camel-smime-context.c:147
-#| msgid "The certificate has expired."
 msgid "Issuer certificate is invalid."
 msgstr "Сертифікат видавця є некоректним."
 
 #: src/camel/camel-smime-context.c:148
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate path length constraint is invalid."
 msgstr "Обмеження довжини шляху сертифіката є некоректним."
 
 #: src/camel/camel-smime-context.c:149
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate usages field is invalid."
 msgstr "Поле використання сертифіката є некоректним."
 
@@ -3987,7 +3976,6 @@ msgid "**Internal ONLY module**"
 msgstr "**ЛИШЕ внутрішній модуль**"
 
 #: src/camel/camel-smime-context.c:151
-#| msgid "The backend does not support bulk additions"
 msgid "The key does not support the requested operation."
 msgstr "Для ключа не передбачено підтримки потрібної вам дії."
 
@@ -4002,8 +3990,8 @@ msgstr "Новий CRL не є пізнішим за поточний."
 #: src/camel/camel-smime-context.c:154
 msgid "Not encrypted or signed: you do not yet have an email certificate."
 msgstr ""
-"Не зашифровано або не підписано: у вас ще немає сертифіката електронної"
-" пошти."
+"Не зашифровано або не підписано: у вас ще немає сертифіката електронної "
+"пошти."
 
 #: src/camel/camel-smime-context.c:155
 msgid ""
@@ -4015,23 +4003,23 @@ msgid ""
 "Cannot decrypt: you are not a recipient, or matching certificate and private "
 "key not found."
 msgstr ""
-"Не вдалося розшифрувати: ви не є отримувачем або не знайдено відповідного"
-" сертифіката і закритого ключа."
+"Не вдалося розшифрувати: ви не є отримувачем або не знайдено відповідного "
+"сертифіката і закритого ключа."
 
 #: src/camel/camel-smime-context.c:157
 msgid ""
 "Cannot decrypt: key encryption algorithm does not match your certificate."
 msgstr ""
-"Не вдалося розшифрувати: алгоритм шифрування ключа не відповідає вашому"
-" сертифікату."
+"Не вдалося розшифрувати: алгоритм шифрування ключа не відповідає вашому "
+"сертифікату."
 
 #: src/camel/camel-smime-context.c:158
 msgid ""
 "Signature verification failed: no signer found, too many signers found, or "
 "improper or corrupted data."
 msgstr ""
-"Не вдалося перевірити підпис: не знайдено підписувача, знайдено занадто"
-" багато підписувачів або неналежні чи пошкоджені дані."
+"Не вдалося перевірити підпис: не знайдено підписувача, знайдено занадто "
+"багато підписувачів або неналежні чи пошкоджені дані."
 
 #: src/camel/camel-smime-context.c:159
 msgid "Unsupported or unknown key algorithm."
@@ -4040,23 +4028,22 @@ msgstr "Непідтримуваний або невідомий алгорит�
 #: src/camel/camel-smime-context.c:160
 msgid "Cannot decrypt: encrypted using a disallowed algorithm or key size."
 msgstr ""
-"Не вдалося розшифрувати: зашифровано за допомогою забороненого алгоритму або"
-" розміру ключа."
+"Не вдалося розшифрувати: зашифровано за допомогою забороненого алгоритму або "
+"розміру ключа."
 
 #: src/camel/camel-smime-context.c:161
 msgid ""
 "Fortezza card has not been properly initialized.  Please remove it and "
 "return it to your issuer."
 msgstr ""
-"Картку Fortezza не було належним чином ініціалізовано. Будь ласка, вилучіть"
-" її і поверніть її до вашого видавця."
+"Картку Fortezza не було належним чином ініціалізовано. Будь ласка, вилучіть "
+"її і поверніть її до вашого видавця."
 
 #: src/camel/camel-smime-context.c:162
 msgid "No Fortezza cards Found"
 msgstr "Не знайдено карток Fortezza"
 
 #: src/camel/camel-smime-context.c:163
-#| msgid "No reminder is selected."
 msgid "No Fortezza card selected"
 msgstr "Не вибрано картки Fortezza"
 
@@ -4066,7 +4053,6 @@ msgstr ""
 "Будь ласка, виберіть особу для отримання додаткових відомостей щодо неї"
 
 #: src/camel/camel-smime-context.c:165
-#| msgid "Contact not found"
 msgid "Personality not found"
 msgstr "Особу не знайдено"
 
@@ -4075,7 +4061,6 @@ msgid "No more information on that Personality"
 msgstr "Немає додаткових відомостей щодо цієї особи"
 
 #: src/camel/camel-smime-context.c:167
-#| msgid "Invalid range"
 msgid "Invalid Pin"
 msgstr "Некоректний пін-код"
 
@@ -4088,7 +4073,6 @@ msgid "No KRL for this site's certificate has been found."
 msgstr "Не знайдено KRL для сертифіката цього сайта."
 
 #: src/camel/camel-smime-context.c:170
-#| msgid "The certificate has expired."
 msgid "The KRL for this site's certificate has expired."
 msgstr "Строк дії KRL для цього сертифіката сайта вичерпано."
 
@@ -4097,7 +4081,6 @@ msgid "The KRL for this site's certificate has an invalid signature."
 msgstr "KRL для сертифіката цього сайта має некоректний підпис."
 
 #: src/camel/camel-smime-context.c:172
-#| msgid "The certificate has expired."
 msgid "The key for this site's certificate has been revoked."
 msgstr "Ключ для цього сертифіката сайта було відкликано."
 
@@ -4120,15 +4103,14 @@ msgid ""
 "The security card or token does not exist, needs to be initialized, or has "
 "been removed."
 msgstr ""
-"Картки або жетона захисту не існує, їх потрібно ініціалізувати або їх було"
-" вилучено."
+"Картки або жетона захисту не існує, їх потрібно ініціалізувати або їх було "
+"вилучено."
 
 #: src/camel/camel-smime-context.c:177
 msgid "security library: read-only database."
 msgstr "захисна бібліотека: базу даних призначено лише для читання."
 
 #: src/camel/camel-smime-context.c:178
-#| msgid "No reminder is selected."
 msgid "No slot or token was selected."
 msgstr "Не вибрано слота або жетона."
 
@@ -4141,7 +4123,6 @@ msgid "A key with the same nickname already exists."
 msgstr "Ключ із таким самим псевдонімом вже існує."
 
 #: src/camel/camel-smime-context.c:181
-#| msgid "Error creating folder"
 msgid "error while creating safe object"
 msgstr "помилка під час створення безпечного об'єкта"
 
@@ -4150,22 +4131,18 @@ msgid "error while creating baggage object"
 msgstr "помилка під час створення багажного об'єкта"
 
 #: src/camel/camel-smime-context.c:183
-#| msgid "Could not open the link."
 msgid "Couldn't remove the principal"
 msgstr "Не вдалося вилучити реєстраційний запис"
 
 #: src/camel/camel-smime-context.c:184
-#| msgid "Could not create cache file"
 msgid "Couldn't delete the privilege"
 msgstr "Не вдалося вилучити ці привілеї"
 
 #: src/camel/camel-smime-context.c:185
-#| msgid "Temporarily reject the certificate"
 msgid "This principal doesn't have a certificate"
 msgstr "Для цього реєстраційного запису немає сертифіката"
 
 #: src/camel/camel-smime-context.c:186
-#| msgid "Signature algorithm disabled"
 msgid "Required algorithm is not allowed."
 msgstr "Потрібний вам алгоритм заборонено."
 
@@ -4184,11 +4161,10 @@ msgstr "Не вдалося імпортувати. Помилка декоду�
 #: src/camel/camel-smime-context.c:190
 msgid "Unable to import.  Invalid MAC.  Incorrect password or corrupt file."
 msgstr ""
-"Не вдалося імпортувати. Некоректна MAC. Помилковий пароль або пошкоджений"
-" файл."
+"Не вдалося імпортувати. Некоректна MAC. Помилковий пароль або пошкоджений "
+"файл."
 
 #: src/camel/camel-smime-context.c:191
-#| msgid "Signature algorithm unsupported"
 msgid "Unable to import.  MAC algorithm not supported."
 msgstr "Не вдалося імпортувати. Не передбачено підтримки MAC-алгоритму."
 
@@ -4196,8 +4172,8 @@ msgstr "Не вдалося імпортувати. Не передбачено 
 msgid ""
 "Unable to import.  Only password integrity and privacy modes supported."
 msgstr ""
-"Не вдалося імпортувати. Передбачено підтримку лише режиму цілісності пароля"
-" та закритого режиму."
+"Не вдалося імпортувати. Передбачено підтримку лише режиму цілісності пароля "
+"та закритого режиму."
 
 #: src/camel/camel-smime-context.c:193
 msgid "Unable to import.  File structure is corrupt."
@@ -4209,7 +4185,6 @@ msgstr ""
 "Не вдалося імпортувати. Не передбачено підтримки алгоритму шифрування."
 
 #: src/camel/camel-smime-context.c:195
-#| msgid "Credentials store is not supported"
 msgid "Unable to import.  File version not supported."
 msgstr "Не вдалося імпортувати. Підтримки версії файла не передбачено."
 
@@ -4230,15 +4205,14 @@ msgid "Not imported, already in database."
 msgstr "Не імпортовано, вже є у базі даних."
 
 #: src/camel/camel-smime-context.c:200
-#| msgid "Message Storage"
 msgid "Message not sent."
 msgstr "Повідомлення не надіслано."
 
 #: src/camel/camel-smime-context.c:201
 msgid "Certificate key usage inadequate for attempted operation."
 msgstr ""
-"Використання ключа сертифікації є неадекватним до дії, яку ви намагаєтеся"
-" виконати."
+"Використання ключа сертифікації є неадекватним до дії, яку ви намагаєтеся "
+"виконати."
 
 #: src/camel/camel-smime-context.c:202
 msgid "Certificate type not approved for application."
@@ -4248,8 +4222,8 @@ msgstr "Тип сертифіката не затверджено для зас�
 msgid ""
 "Address in signing certificate does not match address in message headers."
 msgstr ""
-"Адреса у сертифікаті підписування не збігається з адресою у заголовках"
-" повідомлення."
+"Адреса у сертифікаті підписування не збігається з адресою у заголовках "
+"повідомлення."
 
 #: src/camel/camel-smime-context.c:204
 msgid "Unable to import.  Error attempting to import private key."
@@ -4259,14 +4233,14 @@ msgstr ""
 #: src/camel/camel-smime-context.c:205
 msgid "Unable to import.  Error attempting to import certificate chain."
 msgstr ""
-"Не вдалося імпортувати. Помилка під час спроби імпортувати ланцюжок"
-" сертифікатів."
+"Не вдалося імпортувати. Помилка під час спроби імпортувати ланцюжок "
+"сертифікатів."
 
 #: src/camel/camel-smime-context.c:206
 msgid "Unable to export.  Unable to locate certificate or key by nickname."
 msgstr ""
-"Не вдалося експортувати. Не вдалося знайти сертифікат або ключ за"
-" псевдонімом."
+"Не вдалося експортувати. Не вдалося знайти сертифікат або ключ за "
+"псевдонімом."
 
 #: src/camel/camel-smime-context.c:207
 msgid "Unable to export.  Private Key could not be located and exported."
@@ -4288,7 +4262,6 @@ msgid "Unable to export.  Key database corrupt or deleted."
 msgstr "Не вдалося експортувати. Базу даних ключів пошкоджено або вилучено."
 
 #: src/camel/camel-smime-context.c:211
-#| msgid "Unable to create cache path"
 msgid "Unable to generate public/private key pair."
 msgstr "Не вдалося створити пару відкритий/закритий ключ."
 
@@ -4301,7 +4274,6 @@ msgid "Old password entered incorrectly.  Please try again."
 msgstr "Старий пароль введено з помилками. Будь ласка, повторіть спробу."
 
 #: src/camel/camel-smime-context.c:214
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate nickname already in use."
 msgstr "Псевдонім сертифіката вже використано."
 
@@ -4314,7 +4286,6 @@ msgid "A sensitive key cannot be moved to the slot where it is needed."
 msgstr "Чутливий ключ не може бути пересунуто до слоту, де він потрібен."
 
 #: src/camel/camel-smime-context.c:217
-#| msgid "Invalid query: "
 msgid "Invalid module name."
 msgstr "Некоректна назва модуля."
 
@@ -4323,12 +4294,10 @@ msgid "Invalid module path/filename"
 msgstr "Некоректний шлях/назва файла модуля"
 
 #: src/camel/camel-smime-context.c:219
-#| msgid "Failed to read resource"
 msgid "Unable to add module"
 msgstr "Не вдалося додати модуль"
 
 #: src/camel/camel-smime-context.c:220
-#| msgid "Failed to delete resource"
 msgid "Unable to delete module"
 msgstr "Не вдалося вилучити модуль"
 
@@ -4339,25 +4308,22 @@ msgstr "Новий KRL не є пізнішим за поточний."
 #: src/camel/camel-smime-context.c:222
 msgid "New CKL has different issuer than current CKL.  Delete current CKL."
 msgstr ""
-"Новий CKL має іншого видавця, не такого, як поточний CKL. Вилучіть поточний"
-" CKL."
+"Новий CKL має іншого видавця, не такого, як поточний CKL. Вилучіть поточний "
+"CKL."
 
 #: src/camel/camel-smime-context.c:223
 msgid ""
 "The Certifying Authority for this certificate is not permitted to issue a "
 "certificate with this name."
 msgstr ""
-"Служба сертифікації для цього сертифікати не уповноважена на видання"
-" сертифіката з цією назвою."
+"Служба сертифікації для цього сертифікати не уповноважена на видання "
+"сертифіката з цією назвою."
 
 #: src/camel/camel-smime-context.c:224
 msgid "The key revocation list for this certificate is not yet valid."
 msgstr "Список відкликання ключів для цього сертифікат ще не набув чинності."
 
 #: src/camel/camel-smime-context.c:225
-#| msgid ""
-#| "The certificate has been revoked according to the connection’s "
-#| "certificate revocation list."
 msgid "The certificate revocation list for this certificate is not yet valid."
 msgstr ""
 "Список відкликання сертифікатів для цього сертифікат ще не набув чинності."
@@ -4367,7 +4333,6 @@ msgid "The requested certificate could not be found."
 msgstr "Не вдалося знайти потрібний вам сертифікат."
 
 #: src/camel/camel-smime-context.c:227
-#| msgid "Signing certificate not found"
 msgid "The signer's certificate could not be found."
 msgstr "Не вдалося знайти сертифікат підписувача."
 
@@ -4378,8 +4343,8 @@ msgstr "Місце для сервера стану сертифіката ма�
 #: src/camel/camel-smime-context.c:229
 msgid "The OCSP response cannot be fully decoded; it is of an unknown type."
 msgstr ""
-"Відповідь OCSP не може бути повністю декодовано; вона належить до невідомого"
-" типу."
+"Відповідь OCSP не може бути повністю декодовано; вона належить до невідомого "
+"типу."
 
 #: src/camel/camel-smime-context.c:230
 msgid "The OCSP server returned unexpected/invalid HTTP data."
@@ -4416,7 +4381,6 @@ msgid "The OCSP server has no status for the certificate."
 msgstr "У сервера OCSP немає стану для сертифіката."
 
 #: src/camel/camel-smime-context.c:238
-#| msgid "You must be working online to complete this operation"
 msgid "You must enable OCSP before performing this operation."
 msgstr "Перед виконанням цієї дії слід увімкнути OCSP."
 
@@ -4435,8 +4399,8 @@ msgid ""
 "The signer of the OCSP response is not authorized to give status for this "
 "certificate."
 msgstr ""
-"Підписувача відповіді OCSP не уповноважено на надання стану для цього"
-" сертифіката."
+"Підписувача відповіді OCSP не уповноважено на надання стану для цього "
+"сертифіката."
 
 #: src/camel/camel-smime-context.c:242
 msgid "The OCSP response is not yet valid (contains a date in the future)."
@@ -4458,8 +4422,8 @@ msgstr "Підтримки типу повідомлення CMS або PKCS #7 
 #: src/camel/camel-smime-context.c:246
 msgid "PKCS #11 module could not be removed because it is still in use."
 msgstr ""
-"Не вдалося вилучити модуль PKCS #11, оскільки він ще перебуває у"
-" користуванні."
+"Не вдалося вилучити модуль PKCS #11, оскільки він ще перебуває у "
+"користуванні."
 
 #: src/camel/camel-smime-context.c:247
 msgid "Could not decode ASN.1 data. Specified template was invalid."
@@ -4474,8 +4438,8 @@ msgid ""
 "You are attempting to import a cert with the same issuer/serial as an "
 "existing cert, but that is not the same cert."
 msgstr ""
-"Ви намагаєтеся імпортувати сертифікат із тим самим видавцем або серійним"
-" номером, що і наявний сертифікат, але це не той самий сертифікат."
+"Ви намагаєтеся імпортувати сертифікат із тим самим видавцем або серійним "
+"номером, що і наявний сертифікат, але це не той самий сертифікат."
 
 #: src/camel/camel-smime-context.c:250
 msgid "NSS could not shutdown. Objects are still in use."
@@ -4487,12 +4451,10 @@ msgid "DER-encoded message contained extra unused data."
 msgstr "Закодоване DER повідомлення містить зайві невикористані дані."
 
 #: src/camel/camel-smime-context.c:252
-#| msgid "Unsupported security layer."
 msgid "Unsupported elliptic curve."
 msgstr "Непідтримувана еліптична крива."
 
 #: src/camel/camel-smime-context.c:253
-#| msgid "Unsupported security layer."
 msgid "Unsupported elliptic curve point form."
 msgstr "Непідтримувана точкова форма еліптичної кривої."
 
@@ -4501,14 +4463,10 @@ msgid "Unrecognized Object Identifier."
 msgstr "Нерозпізнаний ідентифікатор об'єкта."
 
 #: src/camel/camel-smime-context.c:255
-#| msgid "Signing certificate not trusted"
 msgid "Invalid OCSP signing certificate in OCSP response."
 msgstr "Некоректний сертифікат підписування OCSP у відповіді OCSP."
 
 #: src/camel/camel-smime-context.c:256
-#| msgid ""
-#| "The certificate has been revoked according to the connection’s "
-#| "certificate revocation list."
 msgid "Certificate is revoked in issuer's certificate revocation list."
 msgstr "Сертифікат відкликано у списку відкликання видавця сертифікатів."
 
@@ -4543,7 +4501,6 @@ msgid "No new slot event is available at this time."
 msgstr "На цей момент немає жодної нової події слоту."
 
 #: src/camel/camel-smime-context.c:264
-#| msgid "Folder already exists"
 msgid "CRL already exists."
 msgstr "CRL вже існує."
 
@@ -4554,15 +4511,14 @@ msgstr "NSS не ініціалізовано."
 #: src/camel/camel-smime-context.c:266
 msgid "The operation failed because the PKCS#11 token is not logged in."
 msgstr ""
-"Спроба виконати дію зазнала невдачі, оскільки не було здійснено вхід до"
-" жетона PKCS#11."
+"Спроба виконати дію зазнала невдачі, оскільки не було здійснено вхід до "
+"жетона PKCS#11."
 
 #: src/camel/camel-smime-context.c:267
 msgid "Configured OCSP responder's certificate is invalid."
 msgstr "Налаштований сертифікат відповідача OCSP є некоректним."
 
 #: src/camel/camel-smime-context.c:268
-#| msgid "No signed data in signature"
 msgid "OCSP response has an invalid signature."
 msgstr "Відповідь OCSP має некоректний підпис."
 
@@ -4591,7 +4547,6 @@ msgid "Server returned bad LDAP response"
 msgstr "Сервером повернуто відповідь щодо помилкового LDAP"
 
 #: src/camel/camel-smime-context.c:277
-#| msgid "Failed to add data to CMS encoder"
 msgid "Failed to encode data with ASN1 encoder"
 msgstr "Не вдалося закодувати дані за допомогою кодувальника ASN1"
 
@@ -4609,8 +4564,8 @@ msgid ""
 "A PKCS #11 module returned CKR_GENERAL_ERROR, indicating that an "
 "unrecoverable error has occurred."
 msgstr ""
-"Модулем PKCS #11 повернуто CKR_GENERAL_ERROR, що вказує на те, що сталася"
-" критична помилка."
+"Модулем PKCS #11 повернуто CKR_GENERAL_ERROR, що вказує на те, що сталася "
+"критична помилка."
 
 #: src/camel/camel-smime-context.c:281
 msgid ""
@@ -4618,30 +4573,27 @@ msgid ""
 "requested function could not be performed.  Trying the same operation again "
 "might succeed."
 msgstr ""
-"Модулем PKCS #11 повернуто CKR_FUNCTION_FAILED, що вказує на те, що потрібну"
-" дію не вдалося виконати. Повторення спроби виконати ту саму дію може"
-" призвести до успіху."
+"Модулем PKCS #11 повернуто CKR_FUNCTION_FAILED, що вказує на те, що потрібну "
+"дію не вдалося виконати. Повторення спроби виконати ту саму дію може "
+"призвести до успіху."
 
 #: src/camel/camel-smime-context.c:282
 msgid ""
 "A PKCS #11 module returned CKR_DEVICE_ERROR, indicating that a problem has "
 "occurred with the token or slot."
 msgstr ""
-"Модулем PKCS #11 повернуто CKR_DEVICE_ERROR, що вказує на те, що виникли"
-" проблеми з жетоном або слотом."
+"Модулем PKCS #11 повернуто CKR_DEVICE_ERROR, що вказує на те, що виникли "
+"проблеми з жетоном або слотом."
 
 #: src/camel/camel-smime-context.c:286
-#| msgid "Expires on"
 msgid "Expired password"
 msgstr "Строк дії пароля вичерпано"
 
 #: src/camel/camel-smime-context.c:287
-#| msgid "Password"
 msgid "Locked password"
 msgstr "Заблокований пароль"
 
 #: src/camel/camel-smime-context.c:288
-#| msgid "Unknown error"
 msgid "Unknown PKCS11 error"
 msgstr "Невідома помилка PKCS11"
 
@@ -4658,13 +4610,12 @@ msgid "Signature algorithm disabled"
 msgstr "Алгоритм підписування вимкнено"
 
 #: src/camel/camel-smime-context.c:292
-#| msgid "Algorithm"
 msgid "Algorithm mismatch"
 msgstr "Невідповідність алгоритмів"
 
 #: src/camel/camel-smime-context.c:321
 #| msgid "Unknown error"
-msgid "Uknown error."
+msgid "Unknown error."
 msgstr "Невідома помилка."
 
 #: src/camel/camel-smime-context.c:353
@@ -9328,6 +9279,10 @@ msgstr "У інтернеті"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Нотатки WebDAV"
+
+#~| msgid "Unknown error"
+#~ msgid "Uknown error."
+#~ msgstr "Невідома помилка."
 
 #~ msgid "[vcard|csv]"
 #~ msgstr "[vcard|csv]"
