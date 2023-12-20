@@ -96,13 +96,13 @@ test_certificates (TypesFixture *fixture,
 	EContactCert *cert;
 
 	cert = e_contact_cert_new ();
-	cert->data = g_memdup (pgp_blob, pgp_blob_length);
+	cert->data = g_memdup2 (pgp_blob, pgp_blob_length);
 	cert->length = pgp_blob_length;
 	e_contact_set (fixture->contact, E_CONTACT_PGP_CERT, cert);
 	e_contact_cert_free (cert);
 
 	cert = e_contact_cert_new ();
-	cert->data = g_memdup (x509_blob, x509_blob_length);
+	cert->data = g_memdup2 (x509_blob, x509_blob_length);
 	cert->length = x509_blob_length;
 	e_contact_set (fixture->contact, E_CONTACT_X509_CERT, cert);
 	e_contact_cert_free (cert);

@@ -719,7 +719,7 @@ test_one_photo (EBookMetaBackend *meta_backend,
 	mime_type = g_strdup (e_contact_photo_get_mime_type (photo));
 	g_assert_nonnull (mime_type);
 
-	orig_content = g_memdup (orig_content, (guint) orig_len);
+	orig_content = g_memdup2 (orig_content, (guint) orig_len);
 
 	e_contact_photo_free (photo);
 

@@ -4210,8 +4210,8 @@ e_book_client_get_cursor_with_context (EBookClient *client,
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->sexp = g_strdup (sexp);
-	async_context->sort_fields = g_memdup (sort_fields, sizeof (EContactField) * n_fields);
-	async_context->sort_types = g_memdup (sort_types, sizeof (EBookCursorSortType) * n_fields);
+	async_context->sort_fields = g_memdup2 (sort_fields, sizeof (EContactField) * n_fields);
+	async_context->sort_types = g_memdup2 (sort_types, sizeof (EBookCursorSortType) * n_fields);
 	async_context->n_sort_fields = n_fields;
 	async_context->context = g_main_context_ref (context);
 
