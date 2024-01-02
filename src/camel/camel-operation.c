@@ -456,6 +456,57 @@ camel_operation_pop_message (GCancellable *cancellable)
 }
 
 /**
+ * camel_operation_dup_message:
+ * @cancellable: a #GCancellable or %NULL
+ *
+ * Duplicates current operation message, or returns %NULL, if no such is available.
+ * The message as the last text set by camel_operation_push_message().
+ *
+ * Free the returned text with g_free(), when no longer needed.
+ *
+ * This function only works if @cancellable is a #CamelOperation cast as a
+ * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
+ * function does nothing and returns silently.
+ *
+ * Returns: (transfer full) (nullable): a copy of the last text set by camel_operation_push_message(),
+ *    or %NULL, when none is set.
+ *
+ * Since: 3.52
+ **/
+gchar *
+camel_operation_dup_message (GCancellable *cancellable)
+{
+	CamelOperation *operation;
+	gchar *res = NULL;
+
+	if (cancellable == NULL)
+		return NULL;
+
+	if (G_OBJECT_TYPE (cancellable) == G_TYPE_CANCELLABLE)
+		return NULL;
+
+	g_return_val_if_fail (CAMEL_IS_OPERATION (cancellable), NULL);
+
+	operation = CAMEL_OPERATION (cancellable);
+
+	if (operation->priv->proxying) {
+		res = camel_operation_dup_message (operation->priv->proxying);
+	} else {
+		StatusNode *node;
+
+		LOCK ();
+
+		node = g_queue_peek_head (&operation->priv->status_stack);
+		if (node)
+			res = g_strdup (node->message);
+
+		UNLOCK ();
+	}
+
+	return res;
+}
+
+/**
  * camel_operation_progress:
  * @cancellable: a #GCancellable or %NULL
  * @percent: percent complete, 0 to 100.

@@ -80,6 +80,7 @@ void		camel_operation_push_message	(GCancellable *cancellable,
 						 const gchar *format,
 						 ...) G_GNUC_PRINTF (2, 3);
 void		camel_operation_pop_message	(GCancellable *cancellable);
+gchar *		camel_operation_dup_message	(GCancellable *cancellable);
 void		camel_operation_progress	(GCancellable *cancellable,
 						 gint percent);
 
