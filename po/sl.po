@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-08-07 13:21+0000\n"
-"PO-Revision-Date: 2023-09-11 19:10+0200\n"
+"POT-Creation-Date: 2023-09-16 12:00+0000\n"
+"PO-Revision-Date: 2024-01-04 21:09+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -48,7 +48,7 @@ msgstr "Prejet predmet ni veljavna kartica vCard."
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. You can try to remove it and restart background evolution-data-"
@@ -171,11 +171,11 @@ msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 #: src/calendar/libecal/e-cal-client.c:6648
 #: src/calendar/libecal/e-cal-client.c:6872
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
-#: src/camel/providers/imapx/camel-imapx-server.c:3330
+#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
 #: src/camel/providers/imapx/camel-imapx-server.c:3336
-#: src/camel/providers/imapx/camel-imapx-server.c:3346
-#: src/camel/providers/imapx/camel-imapx-server.c:3358
+#: src/camel/providers/imapx/camel-imapx-server.c:3342
+#: src/camel/providers/imapx/camel-imapx-server.c:3352
+#: src/camel/providers/imapx/camel-imapx-server.c:3364
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1025
@@ -1221,7 +1221,6 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1424
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
-#, fuzzy
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
 "Osveževanje preskočeno zaradi onemogočenosti na omrežni povezavi z "
@@ -2452,14 +2451,14 @@ msgstr[1] "%d sekunda"
 msgstr[2] "%d sekundi"
 msgstr[3] "%d sekunde"
 
-#: src/calendar/libecal/e-reminder-watcher.c:2946
+#: src/calendar/libecal/e-reminder-watcher.c:3010
 msgid "No Summary"
 msgstr "Brez povzetka"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2962
+#: src/calendar/libecal/e-reminder-watcher.c:3026
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2468,7 +2467,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:2967
+#: src/calendar/libecal/e-reminder-watcher.c:3031
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2477,7 +2476,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:2972
+#: src/calendar/libecal/e-reminder-watcher.c:3036
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2629,7 +2628,6 @@ msgid "Received object for UID “%s” doesn’t contain any expected component
 msgstr "Prejet predmet za UID »%s« ne vsebuje pričakovanih sestavnih delov"
 
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1971
-#, fuzzy
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2765,89 +2763,89 @@ msgstr "Ni mogoče preimenovati »%s« v %s: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-filter-driver.c:264
+#: src/camel/camel-filter-driver.c:266
 #, c-format
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Poteka prenašanje filtriranih sporočil iz »%s : %s«"
 
-#: src/camel/camel-filter-driver.c:1160 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1233 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Ustvarjanje podrejenega opravila »%s« je spodletelo: %s"
 
-#: src/camel/camel-filter-driver.c:1214
+#: src/camel/camel-filter-driver.c:1287
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Neveljaven tok sporočil, sprejet iz %s: %s"
 
-#: src/camel/camel-filter-driver.c:1438 src/camel/camel-filter-driver.c:1451
+#: src/camel/camel-filter-driver.c:1511 src/camel/camel-filter-driver.c:1524
 msgid "Syncing folders"
 msgstr "Usklajevanje mape"
 
-#: src/camel/camel-filter-driver.c:1559
+#: src/camel/camel-filter-driver.c:1632
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Napaka med razčlenjevanem filtra: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1570
+#: src/camel/camel-filter-driver.c:1643
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Napaka filtriranja: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1668
+#: src/camel/camel-filter-driver.c:1741
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Ni mogoče odprti vrstilne mape"
 
-#: src/camel/camel-filter-driver.c:1680
+#: src/camel/camel-filter-driver.c:1753
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Ni mogoče obdelati vrstilne mape"
 
-#: src/camel/camel-filter-driver.c:1708
+#: src/camel/camel-filter-driver.c:1781
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Pridobivanje sporočila %d (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1717 src/camel/camel-filter-driver.c:1740
+#: src/camel/camel-filter-driver.c:1790 src/camel/camel-filter-driver.c:1813
 #, c-format
 msgid "Failed on message %d"
 msgstr "Spodletelo opravilo na sporočilu %d"
 
-#: src/camel/camel-filter-driver.c:1758 src/camel/camel-filter-driver.c:1887
+#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Prenos sporočil je spodletel: %s"
 
-#: src/camel/camel-filter-driver.c:1768 src/camel/camel-filter-driver.c:1912
+#: src/camel/camel-filter-driver.c:1841 src/camel/camel-filter-driver.c:1985
 msgid "Syncing folder"
 msgstr "Usklajevanje mape"
 
-#: src/camel/camel-filter-driver.c:1773 src/camel/camel-filter-driver.c:1920
+#: src/camel/camel-filter-driver.c:1846 src/camel/camel-filter-driver.c:1993
 msgid "Complete"
 msgstr "Končano"
 
-#: src/camel/camel-filter-driver.c:1841
+#: src/camel/camel-filter-driver.c:1914
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Dobivanje sporočila %d od %d"
 
-#: src/camel/camel-filter-driver.c:1859
+#: src/camel/camel-filter-driver.c:1932
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Opravilo je spodletelo pri sporočilu %d od %d"
 
-#: src/camel/camel-filter-driver.c:2076 src/camel/camel-filter-driver.c:2100
+#: src/camel/camel-filter-driver.c:2149 src/camel/camel-filter-driver.c:2173
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Uveljavljanje filtra »%s« je spodletelo:"
 
-#: src/camel/camel-filter-driver.c:2090
+#: src/camel/camel-filter-driver.c:2163
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Napaka razčlenjevanja filtra »%s«: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2109
+#: src/camel/camel-filter-driver.c:2182
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Napaka filtriranja »%s«: %s: %s"
@@ -3036,18 +3034,18 @@ msgstr "Sprosti neuporabljen pomnilnik za mapo »%s : %s«"
 msgid "Output from %s:"
 msgstr "Odvod %s:"
 
-#: src/camel/camel-gpg-context.c:1177 src/camel/camel-gpg-context.c:1182
-#: src/camel/camel-gpg-context.c:2061
+#: src/camel/camel-gpg-context.c:1179 src/camel/camel-gpg-context.c:1184
+#: src/camel/camel-gpg-context.c:2063
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Izvajanje gpg je spodletelo: %s"
 
-#: src/camel/camel-gpg-context.c:1182
+#: src/camel/camel-gpg-context.c:1184
 #: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "neznano"
 
-#: src/camel/camel-gpg-context.c:1294
+#: src/camel/camel-gpg-context.c:1296
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3058,17 +3056,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1330
+#: src/camel/camel-gpg-context.c:1332
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Razčlenjevanje namiga za userid gpg je spodletelo."
 
-#: src/camel/camel-gpg-context.c:1355 src/camel/camel-gpg-context.c:1370
+#: src/camel/camel-gpg-context.c:1357 src/camel/camel-gpg-context.c:1372
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Razčlenjevanje zahteve za šifrirno geslo gpg je spodletelo."
 
-#: src/camel/camel-gpg-context.c:1397
+#: src/camel/camel-gpg-context.c:1399
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3077,7 +3075,7 @@ msgstr ""
 "Zahtevana je koda PIN za odklepanje ključa\n"
 "pametne kartice: Ukaz »%s«"
 
-#: src/camel/camel-gpg-context.c:1401
+#: src/camel/camel-gpg-context.c:1403
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3086,12 +3084,12 @@ msgstr ""
 "Za odklepanje ključa uporabnika potrebujete\n"
 "šifrirno geslo: »%s«"
 
-#: src/camel/camel-gpg-context.c:1407
+#: src/camel/camel-gpg-context.c:1409
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Nepričakovana zahteva GnuPG za »%s«"
 
-#: src/camel/camel-gpg-context.c:1419
+#: src/camel/camel-gpg-context.c:1421
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3099,33 +3097,33 @@ msgstr ""
 "Šifrirana vsebina ne vsebuje podatkov o prejemniku, zato bo sistem zahteval "
 "geslo za vsak shranjen zasebni ključ."
 
-#: src/camel/camel-gpg-context.c:1450 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1452 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Preklicano"
 
-#: src/camel/camel-gpg-context.c:1472
+#: src/camel/camel-gpg-context.c:1474
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Odklepanje tajnega ključa je spodletelo: trije napačni vnosi šifrirnega "
 "gesla."
 
-#: src/camel/camel-gpg-context.c:1485
+#: src/camel/camel-gpg-context.c:1487
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Nepričakovan odziv vstavka GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1602
+#: src/camel/camel-gpg-context.c:1604
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Šifriranje je spodletelo: ni navedenih veljavnih prejemnikov."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1623
+#: src/camel/camel-gpg-context.c:1625
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3135,39 +3133,39 @@ msgstr ""
 "v %s ni ustreznega javnega ključa za tega prejemnika."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1630
+#: src/camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr ""
 "Šifriranje je spodletelo: javnega ključa za prejemnika %s ni mogoče najti."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1637
+#: src/camel/camel-gpg-context.c:1639
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Šifriranje je spodletelo: ključ za prejemnika %s je preklican."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1644
+#: src/camel/camel-gpg-context.c:1646
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Šifriranje je spodletelo: ključ za prejemnika %s je potekel."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1651
+#: src/camel/camel-gpg-context.c:1653
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Šifriranje je spodletelo: ključ za prejemnika %s ni zaupanja vreden."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1658
+#: src/camel/camel-gpg-context.c:1660
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Šifriranje je spodletelo: ključ za prejemnika %s je onemogočen."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1666
+#: src/camel/camel-gpg-context.c:1668
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3176,79 +3174,79 @@ msgstr ""
 "Šifriranje je spodletelo: naveden je neustrezen prejemnik %s (koda %d). "
 "Splošna napaka je, da v %s ni ustreznega javnega ključa za tega prejemnika."
 
-#: src/camel/camel-gpg-context.c:1727 src/camel/camel-gpg-context.c:1738
+#: src/camel/camel-gpg-context.c:1729 src/camel/camel-gpg-context.c:1740
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Posredovanje ukaza h GPG je spodletelo: %s"
 
-#: src/camel/camel-gpg-context.c:2585 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:2587 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Ni mogoče ustvariti podatkov za podpis:"
 
-#: src/camel/camel-gpg-context.c:2636 src/camel/camel-gpg-context.c:2875
-#: src/camel/camel-gpg-context.c:3016 src/camel/camel-gpg-context.c:3193
-#: src/camel/camel-gpg-context.c:3548 src/camel/camel-gpg-context.c:3635
-#: src/camel/camel-gpg-context.c:3928 src/camel/camel-gpg-context.c:4026
-#: src/camel/camel-gpg-context.c:4111 src/camel/camel-gpg-context.c:4178
+#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2877
+#: src/camel/camel-gpg-context.c:3018 src/camel/camel-gpg-context.c:3195
+#: src/camel/camel-gpg-context.c:3550 src/camel/camel-gpg-context.c:3637
+#: src/camel/camel-gpg-context.c:3930 src/camel/camel-gpg-context.c:4028
+#: src/camel/camel-gpg-context.c:4113 src/camel/camel-gpg-context.c:4180
 msgid "Failed to execute gpg."
 msgstr "Izvajanje gpg je spodletelo."
 
-#: src/camel/camel-gpg-context.c:2743 src/camel/camel-gpg-context.c:2751
-#: src/camel/camel-gpg-context.c:2759 src/camel/camel-gpg-context.c:2779
+#: src/camel/camel-gpg-context.c:2745 src/camel/camel-gpg-context.c:2753
+#: src/camel/camel-gpg-context.c:2761 src/camel/camel-gpg-context.c:2781
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Ni mogoče preveriti podpisa sporočila: neveljavna oblika sporočila"
 
-#: src/camel/camel-gpg-context.c:2825
+#: src/camel/camel-gpg-context.c:2827
 msgid "Cannot verify message signature: "
 msgstr "Ni mogoče preveriti veljavnosti podpisa sporočila:"
 
-#: src/camel/camel-gpg-context.c:2974
+#: src/camel/camel-gpg-context.c:2976
 msgid "Could not generate encrypting data: "
 msgstr "Ni mogoče ustvariti podatkov za šifriranje:"
 
-#: src/camel/camel-gpg-context.c:3056
+#: src/camel/camel-gpg-context.c:3058
 msgid "This is a digitally encrypted message part"
 msgstr "To je digitalno podpisan del sporočila"
 
-#: src/camel/camel-gpg-context.c:3116 src/camel/camel-gpg-context.c:3125
-#: src/camel/camel-gpg-context.c:3148
+#: src/camel/camel-gpg-context.c:3118 src/camel/camel-gpg-context.c:3127
+#: src/camel/camel-gpg-context.c:3150
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Ni mogoče odšifrirati sporočila: neveljavna oblika sporočila"
 
-#: src/camel/camel-gpg-context.c:3136
+#: src/camel/camel-gpg-context.c:3138
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Odšifriranje dela MIME je spodletelo: napaka protokola"
 
-#: src/camel/camel-gpg-context.c:3208
+#: src/camel/camel-gpg-context.c:3210
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Dešifriranje MIME je spodletelo: skrivnega ključa ni mogoče najti"
 
-#: src/camel/camel-gpg-context.c:3245
+#: src/camel/camel-gpg-context.c:3247
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "Paket GPG vsebuje nešifrirano besedilo: %s"
 
-#: src/camel/camel-gpg-context.c:3247 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:3249 src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Šifrirana vsebina"
 
-#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
-#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:3946
+#: src/camel/camel-gpg-context.c:3557 src/camel/camel-gpg-context.c:3644
+#: src/camel/camel-gpg-context.c:3937 src/camel/camel-gpg-context.c:3948
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "Javnega ključa »%s« ni mogoče najti"
 
-#: src/camel/camel-gpg-context.c:4033
+#: src/camel/camel-gpg-context.c:4035
 msgid "No public key was found in the provided data"
 msgstr "V posredovanih podatkih javnega ključa ni mogoče najti"
 
-#: src/camel/camel-gpg-context.c:4046
+#: src/camel/camel-gpg-context.c:4048
 msgid "Key information was not found in the provided data"
 msgstr "V posredovanih podatkih podatkov o ključu ni mogoče najti"
 
@@ -3782,7 +3780,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Vpisan je neveljaven predmet GType za protokol »%s«"
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3251
+#: src/camel/providers/imapx/camel-imapx-server.c:3257
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
 #: src/camel/providers/smtp/camel-smtp-transport.c:700
@@ -4158,7 +4156,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Za dokončanje tega opravila je treba biti povezan v omrežje (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3423
+#: src/camel/providers/imapx/camel-imapx-server.c:3429
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4391,41 +4389,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Za branje in hranjenje pošte na strežnikih IMAP."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1157
+#: src/camel/providers/imapx/camel-imapx-server.c:1158
 msgid "Error writing to cache stream"
 msgstr "Napaka med pisanjem v predpomnilnik pretoka"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3046
-#: src/camel/providers/imapx/camel-imapx-server.c:3133
-#: src/camel/providers/imapx/camel-imapx-server.c:3456
+#: src/camel/providers/imapx/camel-imapx-server.c:3052
+#: src/camel/providers/imapx/camel-imapx-server.c:3139
+#: src/camel/providers/imapx/camel-imapx-server.c:3462
 msgid "Failed to get capabilities"
 msgstr "Napaka med pridobivanjem podatkov funkcionalnosti"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3065
+#: src/camel/providers/imapx/camel-imapx-server.c:3071
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3066
+#: src/camel/providers/imapx/camel-imapx-server.c:3072
 #: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ni podprt"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3075
+#: src/camel/providers/imapx/camel-imapx-server.c:3081
 msgid "Failed to issue STARTTLS"
 msgstr "Izvajanje ukaza STARTTLS je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3122
+#: src/camel/providers/imapx/camel-imapx-server.c:3128
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela:"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3238
+#: src/camel/providers/imapx/camel-imapx-server.c:3244
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Strežnik IMAP %s ne podpira zahtevanega načina overitve %s."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3264
+#: src/camel/providers/imapx/camel-imapx-server.c:3270
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4434,180 +4432,180 @@ msgstr ""
 "Besedilna overitev ne dovoljena na varnih povezavah. Spremeniti je treba "
 "šifriranje na STARTTLS or TLS za račun »%s«."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3277
+#: src/camel/providers/imapx/camel-imapx-server.c:3283
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Brez uporabniškega imena ni mogoče overiti povezave."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3286
+#: src/camel/providers/imapx/camel-imapx-server.c:3292
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Geslo za overitev ni na voljo."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3296
-#: src/camel/providers/imapx/camel-imapx-server.c:3309
+#: src/camel/providers/imapx/camel-imapx-server.c:3302
+#: src/camel/providers/imapx/camel-imapx-server.c:3315
 msgid "Failed to authenticate"
 msgstr "Overitev je spodletela"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3381
+#: src/camel/providers/imapx/camel-imapx-server.c:3387
 msgid "Failed to issue ID"
 msgstr "Izvajanje določila ID je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3483
+#: src/camel/providers/imapx/camel-imapx-server.c:3489
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Spodletela je uporaba možnosti ENABLE UTF8=ACCEPT"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3505
+#: src/camel/providers/imapx/camel-imapx-server.c:3511
 msgid "Failed to issue NAMESPACE"
 msgstr "Izvajanje ukaza NAMESPACE je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3523
+#: src/camel/providers/imapx/camel-imapx-server.c:3529
 msgid "Failed to enable QResync"
 msgstr "Omogočanje QResync je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3560
+#: src/camel/providers/imapx/camel-imapx-server.c:3566
 msgid "Failed to issue NOTIFY"
 msgstr "Izvajanje ukaza NOTIFY je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4039
+#: src/camel/providers/imapx/camel-imapx-server.c:4046
 msgid "Failed to select mailbox"
 msgstr "Napaka izbiranja poštnega predala"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4139
+#: src/camel/providers/imapx/camel-imapx-server.c:4147
 msgid "Cannot issue command, no stream available"
 msgstr "Ni mogoče izvesti ukaza. Pretok ni na voljo."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4405
+#: src/camel/providers/imapx/camel-imapx-server.c:4414
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ni mogoče dobiti sporočila zID %s: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4406
+#: src/camel/providers/imapx/camel-imapx-server.c:4415
 msgid "No such message available."
 msgstr "Na voljo ni takšnega sporočila."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4455
-#: src/camel/providers/imapx/camel-imapx-server.c:4480
-#: src/camel/providers/imapx/camel-imapx-server.c:4519
+#: src/camel/providers/imapx/camel-imapx-server.c:4464
+#: src/camel/providers/imapx/camel-imapx-server.c:4489
+#: src/camel/providers/imapx/camel-imapx-server.c:4528
 msgid "Error fetching message"
 msgstr "Napaka med pridobivanjem sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4497
-#: src/camel/providers/imapx/camel-imapx-server.c:5270
+#: src/camel/providers/imapx/camel-imapx-server.c:4506
+#: src/camel/providers/imapx/camel-imapx-server.c:5279
 msgid "Error performing NOOP"
 msgstr "Napaka med izvajanjem ukaza NOOP"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4512
+#: src/camel/providers/imapx/camel-imapx-server.c:4521
 msgid "Failed to close the tmp stream"
 msgstr "Zapiranje pretoka tmp je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4543
+#: src/camel/providers/imapx/camel-imapx-server.c:4552
 msgid "Failed to copy the tmp file"
 msgstr "Kopiranje datoteke tmp je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4781
+#: src/camel/providers/imapx/camel-imapx-server.c:4790
 msgid "Error moving messages"
 msgstr "Napaka med premikanjem sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4781
+#: src/camel/providers/imapx/camel-imapx-server.c:4790
 msgid "Error copying messages"
 msgstr "Napaka med kopiranjem sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5060
-#: src/camel/providers/imapx/camel-imapx-server.c:5081
+#: src/camel/providers/imapx/camel-imapx-server.c:5069
+#: src/camel/providers/imapx/camel-imapx-server.c:5090
 msgid "Cannot create spool file: "
 msgstr "Ni mogoče ustvariti vrstilne datoteke:"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5167
+#: src/camel/providers/imapx/camel-imapx-server.c:5176
 msgid "Error appending message"
 msgstr "Napaka med pripenjanjem sporočila"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5438
+#: src/camel/providers/imapx/camel-imapx-server.c:5447
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Preiskovanje za spremenjena sporočila v »%s : %s«"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5442
+#: src/camel/providers/imapx/camel-imapx-server.c:5451
 msgid "Error scanning changes"
 msgstr "Napaka preiskovanja sprememb"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5465
+#: src/camel/providers/imapx/camel-imapx-server.c:5474
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Pridobivanje podatkov povzetka za nova sporočila v »%s : %s«."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5492
+#: src/camel/providers/imapx/camel-imapx-server.c:5501
 msgid "Error fetching message info"
 msgstr "Napaka med pridobivanjem podrobnosti sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5675
+#: src/camel/providers/imapx/camel-imapx-server.c:5685
 msgid "Error running STATUS"
 msgstr "Napaka zagona ukaza STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6270
-#: src/camel/providers/imapx/camel-imapx-server.c:6325
-#: src/camel/providers/imapx/camel-imapx-server.c:6408
+#: src/camel/providers/imapx/camel-imapx-server.c:6289
+#: src/camel/providers/imapx/camel-imapx-server.c:6344
+#: src/camel/providers/imapx/camel-imapx-server.c:6427
 msgid "Error syncing changes"
 msgstr "Napaka med usklajevanjem sprememb"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6283
-#: src/camel/providers/imapx/camel-imapx-server.c:6335
-#: src/camel/providers/imapx/camel-imapx-server.c:6427
-#: src/camel/providers/imapx/camel-imapx-server.c:6568
+#: src/camel/providers/imapx/camel-imapx-server.c:6302
+#: src/camel/providers/imapx/camel-imapx-server.c:6354
+#: src/camel/providers/imapx/camel-imapx-server.c:6446
+#: src/camel/providers/imapx/camel-imapx-server.c:6587
 msgid "Error expunging message"
 msgstr "Napaka med uničevanjem sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6650
+#: src/camel/providers/imapx/camel-imapx-server.c:6669
 msgid "Error fetching folders"
 msgstr "Napaka med pridobivanjem map"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6658
+#: src/camel/providers/imapx/camel-imapx-server.c:6677
 msgid "Error fetching subscribed folders"
 msgstr "Napaka pridobivanja naročenih map"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6715
+#: src/camel/providers/imapx/camel-imapx-server.c:6734
 msgid "Error creating folder"
 msgstr "Napaka med ustvarjanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6765
+#: src/camel/providers/imapx/camel-imapx-server.c:6784
 msgid "Error deleting folder"
 msgstr "Napaka med brisanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6811
+#: src/camel/providers/imapx/camel-imapx-server.c:6830
 msgid "Error renaming folder"
 msgstr "Napaka med preimenovanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6843
+#: src/camel/providers/imapx/camel-imapx-server.c:6862
 msgid "Error subscribing to folder"
 msgstr "Napaka naročanja na mapo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6879
+#: src/camel/providers/imapx/camel-imapx-server.c:6898
 msgid "Error unsubscribing from folder"
 msgstr "Napaka odjavljanja naročnine na mapo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6919
+#: src/camel/providers/imapx/camel-imapx-server.c:6938
 msgid "IMAP server does not support quotas"
 msgstr "Strežnik IMAP ne podpira količinskih omejitev"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6931
+#: src/camel/providers/imapx/camel-imapx-server.c:6950
 msgid "Error retrieving quota information"
 msgstr "Napaka pridobivanja podatkov količinske omejitve"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6996
+#: src/camel/providers/imapx/camel-imapx-server.c:7015
 msgid "Search failed"
 msgstr "Iskanje je spodletelo"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7124
+#: src/camel/providers/imapx/camel-imapx-server.c:7143
 msgid "Error running IDLE"
 msgstr "Napaka med zagonom IDLE"
 
@@ -6219,9 +6217,8 @@ msgid "User-defined snooze times, in minutes"
 msgstr "Uporabniško določen čas dremeža v minutah"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:103
-#, fuzzy
 msgid "Delete meeting from calendar on Decline"
-msgstr "Izbriši sestanek iz koledarja ob Zavrni"
+msgstr "Izbriši sestanek iz koledarja ob zavrnitvi"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:5
 msgid "Whether the migration of old setting was already done"
@@ -8194,17 +8191,13 @@ msgstr "Naštej krajevne mape imenikov"
 msgid "Show cards as vcard or csv file"
 msgstr "Pokaži kartice kot vcard ali datoteke csv"
 
-#: src/tools/addressbook-export/addressbook-export.c:930
-msgid "[vcard|csv]"
-msgstr "[vcard|csv]"
-
-#: src/tools/addressbook-export/addressbook-export.c:978
+#: src/tools/addressbook-export/addressbook-export.c:979
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Napaka argumentov ukazne vrstice. Uporabite možnost --help za ogled uporabe."
 
-#: src/tools/addressbook-export/addressbook-export.c:992
+#: src/tools/addressbook-export/addressbook-export.c:993
 msgid "Only support csv or vcard format."
 msgstr "Podpira le zapisa csv ali vcard."
 
