@@ -124,8 +124,6 @@ set(sqlite_minimum_version 3.7.17)
 # Optional Packages
 set(goa_minimum_version 3.8)
 set(gweather_minimum_version 3.91)
-set(libaccounts_glib_minimum_version 1.4)
-set(libsignon_glib_minimum_version 1.8)
 set(json_glib_minimum_version 1.0.4)
 set(webkit2gtk_minimum_version 2.34.0)
 set(webkit2gtk4_minimum_version 2.36.0)
