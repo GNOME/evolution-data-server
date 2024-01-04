@@ -771,7 +771,7 @@ do_copy (struct _CamelSExp *f,
 				driver->priv->message = camel_folder_get_message_sync (
 					driver->priv->source,
 					driver->priv->uid, NULL,
-					&driver->priv->error);
+					NULL);
 
 			if (!driver->priv->message)
 				continue;
@@ -827,7 +827,7 @@ do_move (struct _CamelSExp *f,
 				if (driver->priv->message == NULL)
 					/* FIXME Pass a GCancellable */
 					driver->priv->message = camel_folder_get_message_sync (
-						driver->priv->source, driver->priv->uid, NULL, &driver->priv->error);
+						driver->priv->source, driver->priv->uid, NULL, NULL);
 
 				if (!driver->priv->message)
 					continue;
@@ -1203,9 +1203,16 @@ pipe_to_system (struct _CamelSExp *f,
 	if (driver->priv->message == NULL) {
 		/* FIXME Pass a GCancellable */
 		driver->priv->message = camel_folder_get_message_sync (
-			driver->priv->source, driver->priv->uid, NULL, &driver->priv->error);
-		if (driver->priv->message == NULL)
+			driver->priv->source, driver->priv->uid, NULL, &error);
+		if (driver->priv->message == NULL) {
+			if (g_error_matches (error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
+				g_clear_error (&error);
+				return 0;
+			}
+			if (error)
+				driver->priv->error = g_steal_pointer (&error);
 			return -1;
+		}
 	}
 
 	args = g_ptr_array_new ();
@@ -1926,6 +1933,12 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		if (camel_folder_has_summary_capability (folder))
 			g_clear_object (&info);
 
+		if (g_error_matches (local_error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
+			g_clear_error (&local_error);
+			status = 0;
+			continue;
+		}
+
 		if (local_error != NULL || status == -1) {
 			report_status (
 				driver, CAMEL_FILTER_STATUS_END, 100,
@@ -2144,6 +2157,11 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 			camel_filter_driver_log (driver, FILTER_LOG_INFO, "   Execution of filter '%s' failed: %s\n",
 				rule->name, driver->priv->error ? driver->priv->error->message : "Unknown error");
 
+			if (g_error_matches (driver->priv->error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
+				g_clear_error (&driver->priv->error);
+				goto message_gone;
+			}
+
 			g_prefix_error (
 				&driver->priv->error,
 				_("Execution of filter “%s” failed: "),
@@ -2261,6 +2279,7 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 		}
 	}
 
+ message_gone:
 	if (driver->priv->message)
 		g_object_unref (driver->priv->message);
 
