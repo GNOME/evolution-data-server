@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.50.3 2024-01-05
+---------------------------------------
+
+Bug Fixes:
+	I#507 - sqlite3_enable_shared_cache is deprecated
+	I#511 - Camel: Hide errors from for-offline download
+	I#512 - IMAP: Copy/move messages in smaller batches
+
+Miscellaneous:
+	Camel: Ignore errors about missing messages during filtering
+
+Translations:
+	Boyuan Yang (zh_CN)
+	Martin (sl)
+
 Evolution-Data-Server 3.50.2 2023-12-01
 ---------------------------------------
 
