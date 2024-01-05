@@ -1,3 +1,62 @@
+Evolution-Data-Server 3.51.1 2024-01-05
+---------------------------------------
+
+Bug Fixes:
+	I#494 - Update default calendar colors
+	I#505 - alarm-notify: Some reminders could be lost
+	I#506 - alarm-notify: Birthday floating date shifted by one day
+	I#507 - sqlite3_enable_shared_cache is deprecated
+	I#511 - Camel: Hide errors from for-offline download
+	I#512 - IMAP: Copy/move messages in smaller batches
+	M!123 - libebackend: Replace GSimpleAsyncResult with GTask (Corentin Noël)
+	M!127 - Port EBookClient to the GTask API (Corentin Noël)
+	M!131 - Port EClient to the GTask API (Corentin Noël)
+	M!132 - EUserPrompter: Replace GSimpleAsyncResult with GTask (Corentin Noël)
+	M!133 - libedataserver: Recognize schedule-inbox and schedule-outbox Collections (Дилян Палаузов)
+	M!135 - goa: Add support for WebDAV provider (Mara Lasker)
+	M!137 - Replace several GSimpleAsyncResult occurences with GTask (Corentin Noël)
+	M!138 - e_webdav_discover_split_resources() remove unnecessary code (Дилян Палаузов)
+	M!139 - CamelGpgContext: Don't leak istream in gpg_sign_sync() (Guido Günther)
+	M!140 - docs: Add index.html (Corentin Noël)
+	M!141 - libedata-cal/book: Replace GSimpleAsyncResult with GTask (Corentin Noël)
+	M!142 - camel-net-utils: Replace deprecated unicode function (Corentin Noël)
+	M!145 - e-xml-utils: Fix build with libxml2 2.12 (Jürg Billeter)
+	M!146 - ECredentialsPrompter: Remove GSimpleAsyncResult from the public API (Corentin Noël)
+	M!147 - Replace g_memdup with g_memdup2 everywhere (Corentin Noël)
+	M!148 - build: remove references to unused optional dependencies (maxine)
+	evo-I#935 - Mail: Preview message body in the message list
+	evo-I#1436 - Mail: Correct conversion of UTF-16 encoded text files
+	evo-I#1842 - Add option to show reminder before every event in calendar
+	evo-I#2609 - S/MIME error message - part of string not localized
+
+Miscellaneous:
+	camel-message-info-base: Sanitize 'preview' property value on set
+	IMAPx: Remove sanity check when reading PREVIEW result
+	IMAPx: Remove forgotten debug print
+	misc: Update description of the provided libraries
+	build: Use -Wshadow build option, if available
+	addressbook-export: Fix two memory leaks
+	OAuth2: Add scheme handler for OAuth2 prompts in external browser
+	module-google-backend: Fix a ref/unref imbalance found by Coverity Scan
+	EReminderWatcher: Last-notified time not always set
+	ESourceMailSignature: Signature load can fail on runtime warning
+	build: Correct incompatible type warning from check for I_CAL_EMAIL_PARAMETER
+	camel-smime-context: Fix a typo in a localized string
+	CamelOperation: Add function to dupe current message
+	Camel: Ignore errors about missing messages during filtering
+
+Translations:
+	Alan Mortensen (da)
+	Artur S0 (ru)
+	Boyuan Yang (zh_CN)
+	Ekaterine Papava (ka)
+	Florentina Mușat (ro)
+	Jürgen Benvenuti (de)
+	Kukuh Syafaat (id)
+	Martin (sl)
+	Sabri Ünal (tr)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.50.0 2023-09-15
 ---------------------------------------
 
