@@ -38,7 +38,7 @@ mime_filter_preview_run (CamelMimeFilter *mime_filter,
 
 		chr = g_utf8_get_char_validated (ptr, end - ptr);
 
-		if (chr != ((gunichar) -1) || chr != ((gunichar) -2)) {
+		if (chr != ((gunichar) -1) && chr != ((gunichar) -2)) {
 			if (g_unichar_isspace (chr)) {
 				if (!self->priv->last_was_space && self->priv->text->len > 0) {
 					g_string_append_c (self->priv->text, ' ');
