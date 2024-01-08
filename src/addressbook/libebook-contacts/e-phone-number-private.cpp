@@ -183,7 +183,7 @@ _e_phone_number_cxx_from_string (const gchar *phone_number,
 	g_return_val_if_fail (NULL != phone_number, NULL);
 
 	const std::string valid_region = _e_phone_number_cxx_make_region_code (region_code);
-	std::auto_ptr<EPhoneNumber> parsed_number(new EPhoneNumber);
+	std::unique_ptr<EPhoneNumber> parsed_number(new EPhoneNumber);
 
 	if (!_e_phone_number_cxx_parse (
 		phone_number, valid_region, &parsed_number->priv, error))
