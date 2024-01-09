@@ -39,39 +39,41 @@ settings_clone (CamelSettings *settings)
 {
 	CamelSettingsClass *class;
 	GParamSpec **properties;
-	GParameter *parameters;
-	CamelSettings *clone;
+	const gchar **names;
+	GValue *values;
+	GObject *clone;
 	guint ii, n_properties;
 
 	class = CAMEL_SETTINGS_GET_CLASS (settings);
 	g_return_val_if_fail (class != NULL, NULL);
 
 	properties = camel_settings_class_list_settings (class, &n_properties);
-
-	parameters = g_new0 (GParameter, n_properties);
+	names = g_new0 (const gchar *, n_properties);
+	values = g_new0 (GValue, n_properties);
 
 	for (ii = 0; ii < n_properties; ii++) {
-		parameters[ii].name = properties[ii]->name;
+		names[ii] = properties[ii]->name;
 		g_value_init (
-			&parameters[ii].value,
+			&values[ii],
 			properties[ii]->value_type);
 		g_object_get_property (
 			G_OBJECT (settings),
-			parameters[ii].name,
-			&parameters[ii].value);
+			names[ii],
+			&values[ii]);
 	}
 
-	clone = g_object_newv (
+	clone = g_object_new_with_properties (
 		G_OBJECT_TYPE (settings),
-		n_properties, parameters);
+		n_properties, names, values);
 
 	for (ii = 0; ii < n_properties; ii++)
-		g_value_unset (&parameters[ii].value);
+		g_value_unset (&values[ii]);
 
-	g_free (parameters);
+	g_free (names);
+	g_free (values);
 	g_free (properties);
 
-	return clone;
+	return CAMEL_SETTINGS (clone);
 }
 
 static gboolean
