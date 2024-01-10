@@ -3180,10 +3180,13 @@ e_cal_util_inline_local_attachments_sync (ICalComponent *component,
 
 		attach = i_cal_property_get_attach (prop);
 		if (attach && i_cal_attach_get_is_url (attach)) {
-			const gchar *url;
+			const gchar *url_data;
+			gchar *url = NULL;
 
-			url = i_cal_attach_get_url (attach);
-			if (g_str_has_prefix (url, "file://")) {
+			url_data = i_cal_attach_get_url (attach);
+			url = url_data ? i_cal_value_decode_ical_string (url_data) : NULL;
+
+			if (url && g_str_has_prefix (url, "file://")) {
 				GFile *file;
 				gchar *basename;
 				gchar *content;
@@ -3231,6 +3234,8 @@ e_cal_util_inline_local_attachments_sync (ICalComponent *component,
 				g_object_unref (file);
 				g_free (basename);
 			}
+
+			g_free (url);
 		}
 
 		g_clear_object (&attach);
