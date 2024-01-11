@@ -1006,9 +1006,9 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 #ifdef WITH_WEBKITGTK
 	GtkScrolledWindow *scrolled_window;
 	GtkWidget *progress_bar;
+	WebKitCookieManager *cookie_manager;
 	WebKitSettings *webkit_settings;
 	WebKitWebContext *web_context;
-	WebKitCookieManager *cookie_manager;
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
 	WebKitNetworkSession *network_session;
 #else
@@ -1327,18 +1327,19 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		NULL);
 
 	web_context = webkit_web_context_new ();
-	cookie_manager = webkit_web_context_get_cookie_manager (web_context);
-	webkit_cookie_manager_set_accept_policy (cookie_manager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 #if !GTK_CHECK_VERSION(4, 0, 0) || !WEBKIT_CHECK_VERSION(2, 39, 5)
 	webkit_web_context_set_sandbox_enabled (web_context, TRUE);
 #endif
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
 	network_session = webkit_network_session_new (NULL, NULL);
+	cookie_manager = webkit_network_session_get_cookie_manager (network_session);
 	credentials_prompter_impl_oauth2_set_proxy (network_session, e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
 #else
+	cookie_manager = webkit_web_context_get_cookie_manager (web_context);
 	data_manager = webkit_web_context_get_website_data_manager (web_context);
 	credentials_prompter_impl_oauth2_set_proxy (data_manager, e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
 #endif
+	webkit_cookie_manager_set_accept_policy (cookie_manager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 
 	widget = g_object_new (WEBKIT_TYPE_WEB_VIEW,
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
