@@ -1008,6 +1008,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	GtkWidget *progress_bar;
 	WebKitSettings *webkit_settings;
 	WebKitWebContext *web_context;
+	WebKitCookieManager *cookie_manager;
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
 	WebKitNetworkSession *network_session;
 #else
@@ -1316,9 +1317,9 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	webkit_settings = webkit_settings_new_with_settings (
 		"auto-load-images", TRUE,
 		"default-charset", "utf-8",
-		"enable-html5-database", FALSE,
 		"enable-dns-prefetching", FALSE,
-		"enable-html5-local-storage", FALSE,
+		"enable-html5-database", TRUE,
+		"enable-html5-local-storage", TRUE,
 		"enable-offline-web-application-cache", FALSE,
 		"enable-page-cache", FALSE,
 		"media-playback-allows-inline", FALSE,
@@ -1326,6 +1327,8 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		NULL);
 
 	web_context = webkit_web_context_new ();
+	cookie_manager = webkit_web_context_get_cookie_manager (web_context);
+	webkit_cookie_manager_set_accept_policy (cookie_manager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 #if !GTK_CHECK_VERSION(4, 0, 0) || !WEBKIT_CHECK_VERSION(2, 39, 5)
 	webkit_web_context_set_sandbox_enabled (web_context, TRUE);
 #endif
