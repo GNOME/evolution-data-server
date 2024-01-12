@@ -277,10 +277,16 @@ install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libedataserverui${UI_VERSION}
 )
 
-# create libedataserverui4/... in the build dir, thus .gir can find it
-file(COPY ${HEADERS} ${SOURCES}
-	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}/
-)
+# create libedataserverui4/... in the build dir, thus .gir can find it;
+# do it this way, to satisfy Ninja generator (see CMP0058)
+foreach(_item IN LISTS HEADERS SOURCES)
+	if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_item}")
+		file(GENERATE
+			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libedataserverui${UI_VERSION}/${_item}
+			INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${_item}
+		)
+	endif()
+endforeach()
 
 set(INSTALLED_GIR_SOURCES)
 foreach(_item IN LISTS HEADERS SOURCES)
