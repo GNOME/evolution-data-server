@@ -39,7 +39,7 @@ typedef struct _ProcessPromptData {
 	gchar *error_text;
 	ENamedParameters *credentials;
 	gboolean allow_source_save;
-	GSimpleAsyncResult *async_result;
+	GTask *task;
 } ProcessPromptData;
 
 struct _ECredentialsPrompterPrivate {
@@ -88,9 +88,9 @@ process_prompt_data_free (gpointer ptr)
 	if (ppd) {
 		g_clear_signal_handler (&ppd->notify_handler_id, ppd->auth_source);
 
-		if (ppd->async_result) {
-			g_simple_async_result_set_error (ppd->async_result, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
-			g_simple_async_result_complete_in_idle (ppd->async_result);
+		if (ppd->task) {
+			g_task_return_new_error (ppd->task, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
+			g_clear_object (&ppd->task);
 		}
 
 		g_clear_object (&ppd->prompter_impl);
@@ -233,8 +233,7 @@ typedef struct _CredentialsPromptData {
 	ESource *source;
 	gchar *error_text;
 	ECredentialsPrompterPromptFlags flags;
-	GTask *complete_task;
-	GSimpleAsyncResult *async_result;
+	GTask *task;
 } CredentialsPromptData;
 
 static void
@@ -243,11 +242,10 @@ credentials_prompt_data_free (gpointer ptr)
 	CredentialsPromptData *data = ptr;
 
 	if (data) {
-		if (data->async_result) {
-			g_simple_async_result_set_error (data->async_result,
+		if (data->task) {
+			g_task_return_new_error (data->task,
 				G_IO_ERROR, G_IO_ERROR_CANCELLED, "%s", _("Credentials prompt was cancelled"));
-			g_simple_async_result_complete_in_idle (data->async_result);
-			g_clear_object (&data->async_result);
+			g_clear_object (&data->task);
 		}
 
 		g_clear_object (&data->source);
@@ -403,7 +401,7 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 					   const gchar *error_text,
 					   const ENamedParameters *credentials,
 					   gboolean allow_source_save,
-					   GSimpleAsyncResult *async_result)
+					   GTask *task)
 {
 	GSList *link;
 	gboolean success = TRUE;
@@ -442,7 +440,7 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 		ppd->error_text = g_strdup (error_text);
 		ppd->credentials = e_named_parameters_new_clone (credentials);
 		ppd->allow_source_save = allow_source_save;
-		ppd->async_result = async_result ? g_object_ref (async_result) : NULL;
+		ppd->task = task ? g_object_ref (task) : NULL;
 
 		/* If the prompter doesn't auto-prompt, then it should not auto-close the prompt as well. */
 		if (e_credentials_prompter_get_auto_prompt (prompter)) {
@@ -459,9 +457,8 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 
 	g_rec_mutex_unlock (&prompter->priv->queue_lock);
 
-	if (!success && async_result) {
-		g_simple_async_result_set_error (async_result, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
-		g_simple_async_result_complete_in_idle (async_result);
+	if (!success && task) {
+		g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
 	}
 }
 
@@ -649,18 +646,17 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 			credentials_prompter_source_write_cb, NULL);
 	}
 
-	if (ppd->async_result) {
+	if (ppd->task) {
 		CredentialsResultData *result;
 
 		result = g_slice_new0 (CredentialsResultData);
 		result->source = g_object_ref (ppd->auth_source);
 		result->credentials = e_named_parameters_new_clone (credentials);
 
-		g_simple_async_result_set_op_res_gpointer (ppd->async_result, result, credentials_result_data_free);
-		g_simple_async_result_complete_in_idle (ppd->async_result);
+		g_task_return_pointer (ppd->task, result, credentials_result_data_free);
 
 		/* To not be completed multiple times */
-		g_clear_object (&ppd->async_result);
+		g_clear_object (&ppd->task);
 	} else {
 		e_source_invoke_authenticate (ppd->auth_source, credentials, prompter->priv->cancellable,
 			credentials_prompter_invoke_authenticate_cb, NULL);
@@ -722,7 +718,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 						 LookupSourceDetailsData *data,
 						 const gchar *error_text,
 						 ECredentialsPrompterPromptFlags flags,
-						 GSimpleAsyncResult *async_result)
+						 GTask *task)
 {
 	ECredentialsPrompterImpl *prompter_impl = NULL;
 	gchar *method = NULL;
@@ -755,30 +751,27 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 		if (data->credentials)
 			e_named_parameters_assign (credentials, data->credentials);
 
-		if (async_result && data->credentials && (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS) != 0) {
+		if (task && data->credentials && (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_STORED_CREDENTIALS) != 0) {
 			CredentialsResultData *result;
 
 			result = g_slice_new0 (CredentialsResultData);
 			result->source = g_object_ref (data->auth_source);
 			result->credentials = e_named_parameters_new_clone (credentials);
 
-			g_simple_async_result_set_op_res_gpointer (async_result, result, credentials_result_data_free);
-			g_simple_async_result_complete_in_idle (async_result);
+			g_task_return_pointer (task, result, credentials_result_data_free);
 		} else if (!e_source_credentials_provider_can_prompt (prompter->priv->provider, data->auth_source)) {
 			/* This source cannot be asked for credentials, thus end with a 'not supported' error. */
-			if (async_result) {
-				g_simple_async_result_set_error (async_result,
+			if (task) {
+				g_task_return_new_error (task,
 					G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 					_("Source “%s” doesn’t support prompt for credentials"),
 					e_source_get_display_name (data->cred_source));
-
-				g_simple_async_result_complete_in_idle (async_result);
 			}
 		} else {
 			e_credentials_prompter_manage_impl_prompt (prompter, prompter_impl,
 				data->auth_source, data->cred_source, error_text, credentials,
-				!async_result || (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE) != 0,
-				async_result);
+				!task || (flags & E_CREDENTIALS_PROMPTER_PROMPT_FLAG_ALLOW_SOURCE_SAVE) != 0,
+				task);
 		}
 
 		e_named_parameters_free (credentials);
@@ -814,9 +807,9 @@ credentials_prompter_lookup_source_details_before_prompt_cb (GObject *source_obj
 	}
 
 	if (credentials_prompter_prompt_with_source_details (prompter, data, prompt_data->error_text,
-		prompt_data->flags, prompt_data->async_result)) {
-		/* To not finish the async_result multiple times */
-		g_clear_object (&prompt_data->async_result);
+		prompt_data->flags, prompt_data->task)) {
+		/* To not finish the task multiple times */
+		g_clear_object (&prompt_data->task);
 	}
 
 	g_clear_object (&prompter);
@@ -1687,8 +1680,10 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
 	prompt_data->source = g_object_ref (source);
 	prompt_data->error_text = g_strdup (error_text);
 	prompt_data->flags = flags;
-	prompt_data->async_result = callback ? g_simple_async_result_new (G_OBJECT (prompter),
-		callback, user_data, e_credentials_prompter_prompt) : NULL;
+	if (callback) {
+		prompt_data->task = g_task_new (prompter, NULL, callback, user_data);
+		g_task_set_source_tag (prompt_data->task, e_credentials_prompter_prompt);
+	}
 
 	/* Just it can be shown in the UI as a prefilled value and the right source (collection) is used. */
 	credentials_prompter_lookup_source_details (source, prompter,
@@ -1700,7 +1695,7 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
  * @prompter: an #ECredentialsPrompter
  * @result: a #GAsyncResult
  * @out_source: (transfer full) (out) (optional) (nullable): optionally set to an #ESource, on which the prompt was started; can be %NULL
- * @out_credentials: (transfer full) (out) (nullable): set to an #ENamedParameters with provied credentials
+ * @out_credentials: (transfer full) (out) (nullable): set to an #ENamedParameters with provided credentials
  * @error: return location for a #GError, or %NULL
  *
  * Finishes a credentials prompt previously started with e_credentials_prompter_prompt().
@@ -1724,19 +1719,17 @@ e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
 	CredentialsResultData *data;
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter), FALSE);
-	g_return_val_if_fail (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result))
-		== e_credentials_prompter_prompt, FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, prompter), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_credentials_prompter_prompt), FALSE);
 	g_return_val_if_fail (out_credentials, FALSE);
 
 	if (out_source)
 		*out_source = NULL;
 	*out_credentials = NULL;
 
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
+	data = g_task_propagate_pointer (G_TASK (result), error);
+	if (!data)
 		return FALSE;
-
-	data = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-	g_return_val_if_fail (data != NULL, FALSE);
 
 	if (data->credentials) {
 		if (out_source)
@@ -1744,10 +1737,11 @@ e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
 		*out_credentials = e_named_parameters_new_clone (data->credentials);
 	} else {
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Credentials prompt was cancelled"));
-
+		g_clear_pointer (&data, credentials_result_data_free);
 		return FALSE;
 	}
 
+	g_clear_pointer (&data, credentials_result_data_free);
 	return TRUE;
 }
 
