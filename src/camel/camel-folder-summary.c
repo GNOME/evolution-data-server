@@ -92,6 +92,7 @@ struct _CamelFolderSummaryPrivate {
 	guint32 visible_count;
 
 	GHashTable *uids; /* uids of all known message infos; the 'value' are used flags for the message info */
+	GPtrArray *uids_array;
 	GHashTable *loaded_infos; /* uid->CamelMessageInfo *, those currently in memory */
 
 	struct _CamelFolder *folder; /* parent folder, for events */
@@ -107,11 +108,6 @@ struct _CamelFolderSummaryPrivate {
 #define w(x)
 
 #define CAMEL_FOLDER_SUMMARY_VERSION (14)
-
-/* trivial lists, just because ... */
-struct _node {
-	struct _node *next;
-};
 
 static void cfs_schedule_info_release_timer (CamelFolderSummary *summary);
 
@@ -147,7 +143,11 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
+static void camel_folder_summary_list_model_init (GListModelInterface *iface);
+
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (CamelFolderSummary, camel_folder_summary, CAMEL_TYPE_OBJECT,
+	G_ADD_PRIVATE (CamelFolderSummary)
+	G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL, camel_folder_summary_list_model_init))
 
 /* Private function */
 void _camel_message_info_unset_summary (CamelMessageInfo *mi);
@@ -232,6 +232,7 @@ folder_summary_finalize (GObject *object)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (object);
 
+	g_ptr_array_unref (summary->priv->uids_array);
 	g_hash_table_destroy (summary->priv->uids);
 	remove_all_loaded (summary);
 	g_hash_table_destroy (summary->priv->loaded_infos);
@@ -624,6 +625,48 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 	return changed;
 }
 
+static GType
+camel_folder_summary_get_item_type (GListModel *list)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (list), G_TYPE_INVALID);
+
+	return CAMEL_TYPE_MESSAGE_INFO;
+}
+
+static guint
+camel_folder_summary_get_n_items (GListModel *list)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (list), 0);
+
+	return camel_folder_summary_count (CAMEL_FOLDER_SUMMARY (list));
+}
+
+static gpointer
+camel_folder_summary_get_item (GListModel *list,
+                               guint       position)
+{
+	CamelFolderSummary *summary;
+	CamelMessageInfo *info = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (list), NULL);
+	summary = CAMEL_FOLDER_SUMMARY (list);
+
+	camel_folder_summary_lock (summary);
+	if (position < summary->priv->uids_array->len)
+		info = camel_folder_summary_get (summary, g_ptr_array_index (summary->priv->uids_array, position));
+	camel_folder_summary_unlock (summary);
+
+	return g_steal_pointer (&info);
+}
+
+static void
+camel_folder_summary_list_model_init (GListModelInterface *iface)
+{
+	iface->get_item_type = camel_folder_summary_get_item_type;
+	iface->get_n_items = camel_folder_summary_get_n_items;
+	iface->get_item = camel_folder_summary_get_item;
+}
+
 static void
 camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 {
@@ -785,6 +828,7 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 
 	summary->priv->nextuid = 1;
 	summary->priv->uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
+	summary->priv->uids_array = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 	summary->priv->loaded_infos = g_hash_table_new (g_str_hash, g_str_equal);
 
 	g_rec_mutex_init (&summary->priv->summary_lock);
@@ -1169,7 +1213,7 @@ camel_folder_summary_count (CamelFolderSummary *summary)
 {
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	return g_hash_table_size (summary->priv->uids);
+	return summary->priv->uids_array->len;
 }
 
 /**
@@ -1232,11 +1276,14 @@ camel_folder_summary_get_array (CamelFolderSummary *summary)
 
 	camel_folder_summary_lock (summary);
 
-	/* Do not set free_func on the array, it would break IMAPx code */
-	res = g_ptr_array_sized_new (g_hash_table_size (summary->priv->uids));
-	g_hash_table_foreach (summary->priv->uids, folder_summary_dupe_uids_to_array, res);
+	res = g_ptr_array_copy (summary->priv->uids_array,
+	                        (GCopyFunc) camel_pstring_strdup,
+	                        NULL);
 
 	camel_folder_summary_unlock (summary);
+
+	/* Do not set free_func on the array, it would break IMAPx code */
+	g_ptr_array_set_free_func (res, NULL);
 
 	return res;
 }
@@ -2393,6 +2440,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 			  gboolean force_keep_uid)
 {
 	CamelMessageInfo *loaded_info;
+	const gchar *uid;
 
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
@@ -2407,10 +2455,8 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 		return;
 	}
 
+	uid = camel_message_info_get_uid (info);
 	if (force_keep_uid) {
-		const gchar *uid;
-
-		uid = camel_message_info_get_uid (info);
 		if (!uid || !*uid) {
 			g_warning ("%s: Cannot add message info without UID, when disabled to assign new UID; skipping it", G_STRFUNC);
 			camel_folder_summary_unlock (summary);
@@ -2424,13 +2470,15 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 
 	g_hash_table_insert (
 		summary->priv->uids,
-		(gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)),
+		(gpointer) camel_pstring_strdup (uid),
 		GUINT_TO_POINTER (camel_message_info_get_flags (info)));
+	g_ptr_array_add (summary->priv->uids_array, (gpointer) camel_pstring_strdup (uid));
+	g_list_model_items_changed (G_LIST_MODEL (summary), summary->priv->uids_array->len - 2, 0, 1);
 
 	/* Summary always holds a ref for the loaded infos */
 	g_object_ref (info);
 
-	loaded_info = g_hash_table_lookup (summary->priv->loaded_infos, camel_message_info_get_uid (info));
+	loaded_info = g_hash_table_lookup (summary->priv->loaded_infos, uid);
 	if (loaded_info) {
 		/* Dirty hack, to have CamelWeakRefGroup properly cleared,
 		   when the message info leaks due to ref/unref imbalance. */
@@ -2439,7 +2487,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 		g_clear_object (&loaded_info);
 	}
 
-	g_hash_table_insert (summary->priv->loaded_infos, (gpointer) camel_message_info_get_uid (info), info);
+	g_hash_table_insert (summary->priv->loaded_infos, (gpointer) uid, info);
 
 	camel_folder_summary_touch (summary);
 
@@ -2647,16 +2695,19 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	CamelDB *cdb;
 	const gchar *folder_name;
 	gboolean res;
+	guint count;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
 	camel_folder_summary_lock (summary);
-	if (camel_folder_summary_count (summary) == 0) {
+	count = camel_folder_summary_count (summary);
+	if (count == 0) {
 		camel_folder_summary_unlock (summary);
 		return TRUE;
 	}
 
 	g_hash_table_remove_all (summary->priv->uids);
+	g_ptr_array_remove_range (summary->priv->uids_array, 0, summary->priv->uids_array->len);
 	remove_all_loaded (summary);
 	g_hash_table_remove_all (summary->priv->loaded_infos);
 
@@ -2692,6 +2743,8 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	g_object_notify (summary_object, "junk-not-deleted-count");
 	g_object_notify (summary_object, "visible-count");
 	g_object_thaw_notify (summary_object);
+
+	g_list_model_items_changed (G_LIST_MODEL (summary), 0, count, 0);
 
 	camel_folder_summary_unlock (summary);
 
@@ -2736,6 +2789,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	const gchar *full_name;
 	const gchar *uid_copy;
 	gboolean res = TRUE;
+	guint uid_pos = 0;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -2750,6 +2804,9 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 
 	uid_copy = camel_pstring_strdup (uid);
 	g_hash_table_remove (summary->priv->uids, uid_copy);
+	g_ptr_array_find (summary->priv->uids_array, uid_copy, &uid_pos);
+	g_ptr_array_remove_index (summary->priv->uids_array, uid_pos);
+	g_list_model_items_changed (G_LIST_MODEL (summary), uid_pos, 1, 0);
 
 	mi = g_hash_table_lookup (summary->priv->loaded_infos, uid_copy);
 	g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
@@ -2777,6 +2834,19 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	return res;
 }
 
+static gint
+sort_integers (gconstpointer a, gconstpointer b)
+{
+	const guint index_a = GPOINTER_TO_UINT (*(gconstpointer *) a);
+	const guint index_b = GPOINTER_TO_UINT (*(gconstpointer *) b);
+
+	if (index_a < index_b)
+		return -1;
+	if (index_a > index_b)
+		return 1;
+	return 0;
+}
+
 /**
  * camel_folder_summary_remove_uids:
  * @summary: a #CamelFolderSummary object
@@ -2796,6 +2866,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	const gchar *full_name;
 	GList *l;
 	gboolean res = TRUE;
+	GPtrArray *removed_uids_loc;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
@@ -2803,14 +2874,18 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	g_object_freeze_notify (G_OBJECT (summary));
 	camel_folder_summary_lock (summary);
 
+	removed_uids_loc = g_ptr_array_new ();
 	for (l = g_list_first (uids); l; l = g_list_next (l)) {
 		gpointer ptr_uid = NULL, ptr_flags = NULL;
 		if (g_hash_table_lookup_extended (summary->priv->uids, l->data, &ptr_uid, &ptr_flags)) {
 			const gchar *uid_copy = camel_pstring_strdup (l->data);
 			CamelMessageInfo *mi;
+			guint uid_loc = 0;
 
 			folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), UPDATE_COUNTS_SUB);
 			g_hash_table_remove (summary->priv->uids, uid_copy);
+			g_ptr_array_find (summary->priv->uids_array, uid_copy, &uid_loc);
+			g_ptr_array_add (removed_uids_loc, GUINT_TO_POINTER (uid_loc));
 
 			mi = g_hash_table_lookup (summary->priv->loaded_infos, uid_copy);
 			g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
@@ -2825,6 +2900,32 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 			camel_pstring_free (uid_copy);
 		}
 	}
+
+	/* Propagate the GListModel changed events by contiguous sequences */
+	if (G_LIKELY (removed_uids_loc->len > 0)) {
+		guint ii, first_index, last_index = G_MAXUINT;
+		gboolean new_sequence = TRUE;
+		g_ptr_array_sort (removed_uids_loc, sort_integers);
+		for (ii = removed_uids_loc->len; ii > 0; ii--) {
+			guint cur_index = GPOINTER_TO_UINT (g_ptr_array_index (removed_uids_loc, ii - 1));
+			g_ptr_array_remove_index (summary->priv->uids_array, cur_index);
+			if (new_sequence) {
+				last_index = cur_index;
+				first_index = cur_index;
+				new_sequence = FALSE;
+			} else if (cur_index == first_index - 1) {
+				first_index = cur_index;
+			} else {
+				g_list_model_items_changed (G_LIST_MODEL (summary),
+				                            first_index,
+				                            last_index - first_index + 1,
+				                            0);
+				new_sequence = TRUE;
+			}
+		}
+	}
+
+	g_clear_pointer (&removed_uids_loc, g_ptr_array_unref);
 
 	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
