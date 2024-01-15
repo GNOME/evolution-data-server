@@ -49,17 +49,8 @@ typedef struct _CamelFolderThread {
 } CamelFolderThread;
 
 GType		camel_folder_thread_messages_get_type		(void);
-/* interface 1: using uid's */
 CamelFolderThread *camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean thread_subject);
 void camel_folder_thread_messages_apply (CamelFolderThread *thread, GPtrArray *uids);
-
-/* interface 2: using messageinfo's.  Currently disabled. */
-#if 0
-/* new improved interface */
-CamelFolderThread *camel_folder_thread_messages_new_summary (GPtrArray *summary);
-void camel_folder_thread_messages_add (CamelFolderThread *thread, GPtrArray *summary);
-void camel_folder_thread_messages_remove (CamelFolderThread *thread, GPtrArray *uids);
-#endif
 
 CamelFolderThread *camel_folder_thread_messages_ref (CamelFolderThread *thread);
 void camel_folder_thread_messages_unref (CamelFolderThread *thread);
