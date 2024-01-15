@@ -2183,7 +2183,7 @@ swrite (CamelMimePart *sigpart,
 	return path;
 }
 
-static const gchar *
+static gchar *
 gpg_context_find_photo (GHashTable *photos, /* keyid ~> filename in tmp */
 			GHashTable *signers_keyid, /* signer ~> keyid */
 			const gchar *name,
@@ -2206,35 +2206,26 @@ gpg_context_find_photo (GHashTable *photos, /* keyid ~> filename in tmp */
 	}
 
 	if (keyid) {
-		const gchar *filename;
+		gchar *filename;
 
 		filename = g_hash_table_lookup (photos, keyid);
-		if (filename)
-			return camel_pstring_strdup (filename);
+		return g_atomic_rc_box_acquire (filename);
 	}
 
 	return NULL;
 }
 
 static void
-camel_gpg_context_free_photo_filename (gpointer ptr)
+camel_gpg_context_on_photo_filename_freed (gpointer ptr)
 {
-	gchar *tmp_filename = g_strdup (ptr);
-
-	camel_pstring_free (ptr);
-
-	if (!camel_pstring_contains (tmp_filename) &&
-	    g_file_test (tmp_filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
-		g_unlink (tmp_filename);
-	}
-
-	g_free (tmp_filename);
+	if (g_file_test ((gchar *) ptr, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
+		g_unlink ((gchar *) ptr);
 }
 
-static gpointer
-camel_gpg_context_clone_photo_filename (gpointer ptr)
+static void
+camel_gpg_context_free_photo_filename (gpointer ptr)
 {
-	return (gpointer) camel_pstring_strdup (ptr);
+	g_atomic_rc_box_release_full (ptr, camel_gpg_context_on_photo_filename_freed);
 }
 
 static CamelInternetAddress *
@@ -2326,6 +2317,7 @@ add_signers (CamelCipherValidity *validity,
 		/* A short file is expected */
 		gchar *content = NULL;
 		GError *error = NULL;
+		GHashTable *photo_files = NULL;
 
 		if (g_file_get_contents (photos_filename, &content, NULL, &error)) {
 			gchar **lines;
@@ -2346,10 +2338,22 @@ add_signers (CamelCipherValidity *validity,
 				}
 
 				if (filename && g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
-					if (!photos)
-						photos = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, camel_gpg_context_free_photo_filename);
+					gpointer rcbox = NULL;
 
-					g_hash_table_insert (photos, g_strdup (line), (gpointer) camel_pstring_strdup (filename));
+					if (!photos) {
+						photos = g_hash_table_new_full (g_str_hash, g_str_equal,
+						                                g_free, camel_gpg_context_free_photo_filename);
+						photo_files = g_hash_table_new_full (g_str_hash, g_str_equal,
+						                                     camel_gpg_context_free_photo_filename, NULL);
+					}
+
+					/* Deduplicate the files as they are going to be removed afterwards */
+					if (!g_hash_table_lookup_extended (photo_files, filename, NULL, &rcbox)) {
+						rcbox = g_atomic_rc_box_dup (sizeof (char) * strlen (filename) + 1, filename);
+						g_hash_table_add (photo_files, rcbox);
+					}
+
+					g_hash_table_insert (photos, g_strdup (line), g_rc_box_acquire (rcbox));
 				}
 			}
 
@@ -2360,12 +2364,13 @@ add_signers (CamelCipherValidity *validity,
 
 		g_free (content);
 		g_clear_error (&error);
+		g_clear_pointer (&photo_files, g_hash_table_unref);
 	}
 
 	count = camel_address_decode (CAMEL_ADDRESS (address), signers->str);
 	for (i = 0; i < count; i++) {
 		const gchar *name = NULL, *email = NULL;
-		const gchar *photo_filename; /* allocated on the string pool */
+		gchar *photo_filename; /* Using g_atomic_rc_box */
 		gint index;
 
 		if (!camel_internet_address_get (address, i, &name, &email))
@@ -2376,16 +2381,15 @@ add_signers (CamelCipherValidity *validity,
 
 		if (index != -1 && photo_filename) {
 			camel_cipher_validity_set_certinfo_property (validity, CAMEL_CIPHER_VALIDITY_SIGN, index,
-				CAMEL_CIPHER_CERT_INFO_PROPERTY_PHOTO_FILENAME, (gpointer) photo_filename,
-				camel_gpg_context_free_photo_filename, camel_gpg_context_clone_photo_filename);
+				CAMEL_CIPHER_CERT_INFO_PROPERTY_PHOTO_FILENAME, g_steal_pointer (&photo_filename),
+				camel_gpg_context_free_photo_filename, g_atomic_rc_box_acquire);
 		} else if (photo_filename) {
-			camel_gpg_context_free_photo_filename ((gpointer) photo_filename);
+			g_clear_pointer (&photo_filename, camel_gpg_context_free_photo_filename);
 		}
 	}
 
-	if (photos)
-		g_hash_table_destroy (photos);
-	g_object_unref (address);
+	g_clear_pointer (&photos, g_hash_table_unref);
+	g_clear_object (&address);
 
 	if (diagnostics && !g_queue_is_empty (&validity->sign.signers)) {
 		CamelInternetAddress *signers_alt_emails;
