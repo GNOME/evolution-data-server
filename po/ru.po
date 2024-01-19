@@ -11,22 +11,106 @@
 # Yuri Myasoedov <ymyasoedov@yandex.ru>, 2012, 2013, 2015.
 # Stas Solovey <whats_up@tut.by>, 2015, 2016.
 # Дронова Юлия <juliette.tux@gmail.com>, 2023.
+# Павел Куликов (Pavel Koulikov) <koulikov403@gmail.com>, 2023.
+#
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
+# SPDX-FileCopyrightText: 2024 SPDX-FileCopyrightText :
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
-"issues\n"
-"POT-Creation-Date: 2023-11-29 09:15+0000\n"
-"PO-Revision-Date: 2023-11-29 14:23+0300\n"
-"Last-Translator: Artur So <arturios2005@mail.ru>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
+"ues\n"
+"POT-Creation-Date: 2024-01-12 16:41+0000\n"
+"PO-Revision-Date: 2024-01-19 18:30+0300\n"
+"Last-Translator: Дронова Юлия <juliette.tux@gmail.com>\n"
 "Language-Team: RU\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.4.1\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"X-Generator: Lokalize 23.08.1\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
 #, c-format
@@ -58,9 +142,10 @@ msgid ""
 "or broken. You can try to remove it and restart background evolution-data-"
 "server processes. Cache file: %s"
 msgstr ""
-"Отсутствует информация об URL компонента, возможно, локальный кэш неполный "
-"или поврежден. Вы можете попробовать удалить его и перезапустить фоновые "
-"процессы evolution-data-server. Файл кэша: %s"
+"Отсутствуют сведения об URL, локальный кэш может быть неполным или "
+"недействительным. Можно попробовать удалить этот кэш и перезапустить фоновые"
+" процессы "
+"evolution-data-server. Файл кэша: %s"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
 msgid "Object to save is not a valid vCard"
@@ -79,7 +164,7 @@ msgstr "Не удалось создать каталог %s: %s"
 #: src/addressbook/backends/file/e-book-backend-file.c:630
 #, c-format
 msgid "Failed to create hardlink for resource “%s”: %s"
-msgstr "Не удалось создать жесткую ссылку для ресурса «%s»: %s"
+msgstr "Не удалось создать жёсткую ссылку для ресурса «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:735
 #: src/addressbook/backends/file/e-book-backend-file.c:1502
@@ -103,7 +188,7 @@ msgstr "Поиск…"
 #: src/addressbook/backends/file/e-book-backend-file.c:1530
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
-msgstr "Попытка изменить контакт «%s» с рассинхронизированной ревизией"
+msgstr "Попытка изменения контакта “%s” с не синхронизированной ревизией"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
@@ -134,7 +219,7 @@ msgstr "Запрошено удаление несвязанного курсо�
 #: src/addressbook/backends/file/e-book-backend-file.c:2387
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
-msgstr "Не удалось переименовать базу данных из «%s» в «%s»: %s"
+msgstr "Не удалось переименовать старую базу данных из «%s» в «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1148
@@ -175,7 +260,7 @@ msgstr "Не удалось переименовать базу данных и�
 #: src/calendar/libecal/e-cal-client.c:6376
 #: src/calendar/libecal/e-cal-client.c:6581
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #: src/camel/providers/imapx/camel-imapx-server.c:3360
 #: src/camel/providers/imapx/camel-imapx-server.c:3366
 #: src/camel/providers/imapx/camel-imapx-server.c:3376
@@ -213,7 +298,7 @@ msgstr "Недопустимый синтаксис в отличительно�
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4713
 #, c-format
 msgid "LDAP error 0x%x (%s)"
-msgstr "Ошибка в LDAP 0x%x (%s)"
+msgstr "Ошибка LDAP 0x%x (%s)"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1798
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2146
@@ -1011,7 +1096,7 @@ msgstr "Ошибка разбора регулярного выражения"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
 #: src/addressbook/libedata-book/e-book-cache.c:4838
-#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
+#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:827
 #, c-format
 msgid "Insufficient memory"
 msgstr "Недостаточно памяти"
@@ -2436,14 +2521,14 @@ msgstr[0] "%d секунда"
 msgstr[1] "%d секунды"
 msgstr[2] "%d секунд"
 
-#: src/calendar/libecal/e-reminder-watcher.c:3221
+#: src/calendar/libecal/e-reminder-watcher.c:3236
 msgid "No Summary"
 msgstr "Нет сводки"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3237
+#: src/calendar/libecal/e-reminder-watcher.c:3252
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2452,7 +2537,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:3242
+#: src/calendar/libecal/e-reminder-watcher.c:3257
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2461,7 +2546,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3247
+#: src/calendar/libecal/e-reminder-watcher.c:3262
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2742,7 +2827,7 @@ msgstr "Кэш-файл пуст"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Не удалось удалить кэшированный элемент: %s: %s"
 
-#: src/camel/camel-db.c:884 src/camel/providers/local/camel-mbox-store.c:913
+#: src/camel/camel-db.c:881 src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Не удалось переименовать «%s» в %s: %s"
@@ -2755,84 +2840,84 @@ msgstr "Не удалось переименовать «%s» в %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Передача отфильтрованных сообщений в формате «%s : %s»"
 
-#: src/camel/camel-filter-driver.c:1233 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1240 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Сбой при создании дочернего процесса «%s»: %s"
 
-#: src/camel/camel-filter-driver.c:1287
+#: src/camel/camel-filter-driver.c:1294
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Неверный поток сообщений получен из %s: %s"
 
-#: src/camel/camel-filter-driver.c:1511 src/camel/camel-filter-driver.c:1524
+#: src/camel/camel-filter-driver.c:1518 src/camel/camel-filter-driver.c:1531
 msgid "Syncing folders"
 msgstr "Синхронизация папок"
 
-#: src/camel/camel-filter-driver.c:1632
+#: src/camel/camel-filter-driver.c:1639
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Не удалось разобрать фильтр: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1643
+#: src/camel/camel-filter-driver.c:1650
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Ошибка выполнения фильтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1741
+#: src/camel/camel-filter-driver.c:1748
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Не удалось открыть папку спула"
 
-#: src/camel/camel-filter-driver.c:1753
+#: src/camel/camel-filter-driver.c:1760
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Не удалось обработать папку спула"
 
-#: src/camel/camel-filter-driver.c:1781
+#: src/camel/camel-filter-driver.c:1788
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Получение сообщения %d (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1790 src/camel/camel-filter-driver.c:1813
+#: src/camel/camel-filter-driver.c:1797 src/camel/camel-filter-driver.c:1820
 #, c-format
 msgid "Failed on message %d"
 msgstr "Сбой на сообщении %d"
 
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Не удалось передать сообщения: %s"
 
-#: src/camel/camel-filter-driver.c:1841 src/camel/camel-filter-driver.c:1985
+#: src/camel/camel-filter-driver.c:1848 src/camel/camel-filter-driver.c:1998
 msgid "Syncing folder"
 msgstr "Синхронизация папки"
 
-#: src/camel/camel-filter-driver.c:1846 src/camel/camel-filter-driver.c:1993
+#: src/camel/camel-filter-driver.c:1853 src/camel/camel-filter-driver.c:2006
 msgid "Complete"
 msgstr "Завершена"
 
-#: src/camel/camel-filter-driver.c:1914
+#: src/camel/camel-filter-driver.c:1921
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Получение сообщения %d из %d"
 
-#: src/camel/camel-filter-driver.c:1932
+#: src/camel/camel-filter-driver.c:1945
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Сбой на сообщении %d из %d"
 
-#: src/camel/camel-filter-driver.c:2149 src/camel/camel-filter-driver.c:2173
+#: src/camel/camel-filter-driver.c:2167 src/camel/camel-filter-driver.c:2191
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Ошибка выполнения фильтра «%s»: "
 
-#: src/camel/camel-filter-driver.c:2163
+#: src/camel/camel-filter-driver.c:2181
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Ошибка разбора фильтра «%s»: %s; %s"
 
-#: src/camel/camel-filter-driver.c:2182
+#: src/camel/camel-filter-driver.c:2200
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Ошибка выполнения фильтра «%s»: %s; %s"
@@ -3388,7 +3473,7 @@ msgstr "Загрузка новых сообщений для автономно
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:260
+#: src/camel/camel-offline-folder.c:294
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr "Проверка загрузки новых сообщений для автономного режима в «%s : %s»"
@@ -3396,7 +3481,7 @@ msgstr "Проверка загрузки новых сообщений для �
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:336
+#: src/camel/camel-offline-folder.c:370
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Синхронизация сообщений в папке «%s : %s» на диск"
@@ -3406,12 +3491,12 @@ msgstr "Синхронизация сообщений в папке «%s : %s» 
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:430
+#: src/camel/camel-offline-folder.c:464
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Синхронизация сообщения %d от %d в папке «%s : %s» на диск"
 
-#: src/camel/camel-offline-folder.c:484
+#: src/camel/camel-offline-folder.c:527
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "Скопировать содержимое папки на локальную машину для _автономной работы"
@@ -3782,6 +3867,857 @@ msgstr "Сбой при проверке подлинности %s"
 msgid "Forwarding messages is not supported"
 msgstr "Перенаправление сообщений не поддерживается"
 
+#: src/camel/camel-smime-context.c:111
+msgid "An I/O error occurred during security authorization."
+msgstr "В момент безопасной авторизации произошла ошибка ввода/вывода."
+
+#: src/camel/camel-smime-context.c:112
+msgid "security library failure."
+msgstr "сбой security library."
+
+#: src/camel/camel-smime-context.c:113
+msgid "security library: received bad data."
+msgstr "security library: получены неверные данные."
+
+#: src/camel/camel-smime-context.c:114
+msgid "security library: output length error."
+msgstr "security library: ошибка длины вывода."
+
+#: src/camel/camel-smime-context.c:115
+msgid "security library has experienced an input length error."
+msgstr "security library: ошибка длины ввода."
+
+#: src/camel/camel-smime-context.c:116
+msgid "security library: invalid arguments."
+msgstr "security library: недействительные аргументы."
+
+#: src/camel/camel-smime-context.c:117
+msgid "security library: invalid algorithm."
+msgstr "security library: недействительный алгоритм."
+
+#: src/camel/camel-smime-context.c:118
+msgid "security library: invalid AVA."
+msgstr "security library: недействительный AVA."
+
+#: src/camel/camel-smime-context.c:119
+msgid "Improperly formatted time string."
+msgstr "Неверный формат строки времени."
+
+#: src/camel/camel-smime-context.c:120
+msgid "security library: improperly formatted DER-encoded message."
+msgstr "security library: неверный формат сообщения в формате шифрования DER"
+
+#: src/camel/camel-smime-context.c:121
+#| msgid "The certificate has expired."
+msgid "Peer's certificate has an invalid signature."
+msgstr "Недействительная подпись сертификата узла"
+
+#: src/camel/camel-smime-context.c:122
+#| msgid "The certificate has expired."
+msgid "Peer's Certificate has expired."
+msgstr "Истёк срок действия сертификата узла"
+
+#: src/camel/camel-smime-context.c:123
+#| msgid "The certificate has expired."
+msgid "Peer's Certificate has been revoked."
+msgstr "Сертификат узла был отозван"
+
+#: src/camel/camel-smime-context.c:124
+msgid "Peer's Certificate issuer is not recognized."
+msgstr "Не удалось распознать издателя сертификата узла."
+
+#: src/camel/camel-smime-context.c:125
+msgid "Peer's public key is invalid."
+msgstr "Недействительный открытый ключ узла"
+
+#: src/camel/camel-smime-context.c:126
+msgid "The security password entered is incorrect."
+msgstr "Введён неправильный пароль"
+
+#: src/camel/camel-smime-context.c:127
+msgid "New password entered incorrectly.  Please try again."
+msgstr "Новый пароль введён неверно. Повторите попытку."
+
+#: src/camel/camel-smime-context.c:128
+msgid "security library: no nodelock."
+msgstr "security library: отсутствует привязка к узлу."
+
+#: src/camel/camel-smime-context.c:129
+msgid "security library: bad database."
+msgstr "security library: неверная база данных."
+
+#: src/camel/camel-smime-context.c:130
+msgid "security library: memory allocation failure."
+msgstr "security library: сбой резервирования памяти."
+
+#: src/camel/camel-smime-context.c:131
+msgid "Peer's certificate issuer has been marked as not trusted by the user."
+msgstr "Издатель сертификата был помечен пользователем как недоверенный"
+
+#: src/camel/camel-smime-context.c:132
+msgid "Peer's certificate has been marked as not trusted by the user."
+msgstr "Сертификат узла был помечен пользователем как недоверенный"
+
+#: src/camel/camel-smime-context.c:133
+msgid "Certificate already exists in your database."
+msgstr "Этот сертификат уже присутствует в БД"
+
+#: src/camel/camel-smime-context.c:134
+msgid "Downloaded certificate's name duplicates one already in your database."
+msgstr "Имя загруженного сертификата совпадает с уже имеющимся в БД."
+
+#: src/camel/camel-smime-context.c:135
+#| msgid "Signing certificate not trusted"
+msgid "Error adding certificate to database."
+msgstr "Ошибка добавления сертификата в БД."
+
+#: src/camel/camel-smime-context.c:136
+msgid "Error refiling the key for this certificate."
+msgstr "Ошибка повторного введения ключа для этого сертификата."
+
+#: src/camel/camel-smime-context.c:137
+msgid "The private key for this certificate cannot be found in key database"
+msgstr "Не удалось найти закрытый ключ для этого сертификата в БД ключей"
+
+#: src/camel/camel-smime-context.c:138
+#| msgid "The certificate has expired."
+msgid "This certificate is valid."
+msgstr "Этот сертификат действителен"
+
+#: src/camel/camel-smime-context.c:139
+#| msgid "The certificate has expired."
+msgid "This certificate is not valid."
+msgstr "Этот сертификат недействителен"
+
+#: src/camel/camel-smime-context.c:140
+msgid "Cert Library: No Response"
+msgstr "Cert Library: нет ответа"
+
+#: src/camel/camel-smime-context.c:141
+msgid ""
+"The certificate issuer's certificate has expired.  Check your system date "
+"and time."
+msgstr ""
+"Истёк срок действия сертификата издателя сертификата. Проверьте системную"
+" дату и время."
+
+#: src/camel/camel-smime-context.c:142
+msgid ""
+"The CRL for the certificate's issuer has expired.  Update it or check your "
+"system date and time."
+msgstr ""
+"Список отозванных сертификатов издателя сертификата просрочен. "
+"Обновите его, либо проверьте системную дату и время."
+
+#: src/camel/camel-smime-context.c:143
+msgid "The CRL for the certificate's issuer has an invalid signature."
+msgstr ""
+"Недействительная подпись списка отозванных сертификатов издателя сертификата."
+
+#: src/camel/camel-smime-context.c:144
+msgid "New CRL has an invalid format."
+msgstr "Новый список отозванных сертификатов имеет неверный формат"
+
+#: src/camel/camel-smime-context.c:145
+#| msgid "Certificate signature algorithm disabled"
+msgid "Certificate extension value is invalid."
+msgstr "Недействительное значение расширения сертификата"
+
+#: src/camel/camel-smime-context.c:146
+#| msgid "Signing certificate not found"
+msgid "Certificate extension not found."
+msgstr "Расширение сертификата не найдено"
+
+#: src/camel/camel-smime-context.c:147
+#| msgid "The certificate has expired."
+msgid "Issuer certificate is invalid."
+msgstr "Сертификат издателя является недействительным"
+
+#: src/camel/camel-smime-context.c:148
+#| msgid "Certificate signature algorithm disabled"
+msgid "Certificate path length constraint is invalid."
+msgstr "Недействительное ограничение на длину пути до сертификата"
+
+#: src/camel/camel-smime-context.c:149
+#| msgid "Certificate signature algorithm disabled"
+msgid "Certificate usages field is invalid."
+msgstr "Поле использования сертификата недействительно"
+
+#: src/camel/camel-smime-context.c:150
+msgid "**Internal ONLY module**"
+msgstr "**ТОЛЬКО внутренний модуль**"
+
+#: src/camel/camel-smime-context.c:151
+#| msgid "The backend does not support bulk additions"
+msgid "The key does not support the requested operation."
+msgstr "Ключ не поддерживает запрошенное действие"
+
+#: src/camel/camel-smime-context.c:152
+msgid "Certificate contains unknown critical extension."
+msgstr "Сертификат содержит неизвестное критически важное расширение"
+
+#: src/camel/camel-smime-context.c:153
+msgid "New CRL is not later than the current one."
+msgstr ""
+"Новый список отозванных сертификатов не является обновлённым относительно"
+" текущего"
+
+#: src/camel/camel-smime-context.c:154
+msgid "Not encrypted or signed: you do not yet have an email certificate."
+msgstr "Без шифрования, без подписи: почтовый сертификат отсутствует"
+
+#: src/camel/camel-smime-context.c:155
+msgid "Not encrypted: you do not have certificates for each of the recipients."
+msgstr "Без шифрования: отсутствуют сертификаты для каждого из получателей"
+
+#: src/camel/camel-smime-context.c:156
+msgid ""
+"Cannot decrypt: you are not a recipient, or matching certificate and private "
+"key not found."
+msgstr ""
+"Расшифровка невозможна: вы не являетесь получателем, либо соответствующий "
+"сертификат и закрытый ключ не найдены"
+
+#: src/camel/camel-smime-context.c:157
+msgid ""
+"Cannot decrypt: key encryption algorithm does not match your certificate."
+msgstr ""
+"Расшифровка невозможна: алгоритм шифрования ключа не соответствует сертификату"
+
+#: src/camel/camel-smime-context.c:158
+msgid ""
+"Signature verification failed: no signer found, too many signers found, or "
+"improper or corrupted data."
+msgstr ""
+"Сбой проверки подписи: подписывающий сертификат не найден, найдено "
+"слишком много подписывающих, либо данные являются неправильными/повреждёнными."
+
+#: src/camel/camel-smime-context.c:159
+msgid "Unsupported or unknown key algorithm."
+msgstr "Алгоритм ключа не поддерживается, либо неизвестен"
+
+#: src/camel/camel-smime-context.c:160
+msgid "Cannot decrypt: encrypted using a disallowed algorithm or key size."
+msgstr ""
+"Расшифровка невозможна: зашифровано с использованием запрещённого алгоритма "
+"или размера ключа."
+
+#: src/camel/camel-smime-context.c:161
+msgid ""
+"Fortezza card has not been properly initialized.  Please remove it and "
+"return it to your issuer."
+msgstr ""
+"Карта Fortezza не была инициализирована правильно. Удалите её и верните"
+" издателю."
+
+#: src/camel/camel-smime-context.c:162
+msgid "No Fortezza cards Found"
+msgstr "Карт Fortezza не обнаружено."
+
+#: src/camel/camel-smime-context.c:163
+#| msgid "No reminder is selected."
+msgid "No Fortezza card selected"
+msgstr "Карта Fortezza не выбрана."
+
+#: src/camel/camel-smime-context.c:164
+msgid "Please select a personality to get more info on"
+msgstr "Выберите персоналию для получения подробных сведений"
+
+#: src/camel/camel-smime-context.c:165
+#| msgid "Contact not found"
+msgid "Personality not found"
+msgstr "Персоналия не найдена"
+
+#: src/camel/camel-smime-context.c:166
+msgid "No more information on that Personality"
+msgstr "По этой персоналии больше нет сведений"
+
+#: src/camel/camel-smime-context.c:167
+#| msgid "Invalid range"
+msgid "Invalid Pin"
+msgstr "Недействительный пин-код"
+
+#: src/camel/camel-smime-context.c:168
+msgid "Couldn't initialize Fortezza personalities."
+msgstr "Не удалось инициализировать персоналии Fortezza."
+
+#: src/camel/camel-smime-context.c:169
+msgid "No KRL for this site's certificate has been found."
+msgstr "Список отозванных ключей для сертификата этого сайта не найден"
+
+#: src/camel/camel-smime-context.c:170
+#| msgid "The certificate has expired."
+msgid "The KRL for this site's certificate has expired."
+msgstr ""
+"Истёк срок действия списка отозванных ключей для сертификата этого сайта"
+
+#: src/camel/camel-smime-context.c:171
+msgid "The KRL for this site's certificate has an invalid signature."
+msgstr ""
+"Подпись списка отозванных ключей для сертификата этого сайта недействительна"
+
+#: src/camel/camel-smime-context.c:172
+#| msgid "The certificate has expired."
+msgid "The key for this site's certificate has been revoked."
+msgstr "Ключ сертификата этого сайта был отозван"
+
+#: src/camel/camel-smime-context.c:173
+msgid "New KRL has an invalid format."
+msgstr "Недействительный формат нового списка отозванных ключей"
+
+#: src/camel/camel-smime-context.c:174
+msgid "security library: need random data."
+msgstr "security library: требуются случайные данные."
+
+#: src/camel/camel-smime-context.c:175
+msgid ""
+"security library: no security module can perform the requested operation."
+msgstr "security library: нет модуля для выполнения запрошенной операции."
+
+#: src/camel/camel-smime-context.c:176
+msgid ""
+"The security card or token does not exist, needs to be initialized, or has "
+"been removed."
+msgstr ""
+"Карта или маркёр безопасности не существует, нуждается в инициализации "
+"или была удалена."
+
+#: src/camel/camel-smime-context.c:177
+msgid "security library: read-only database."
+msgstr "security library: БД доступна только для чтения."
+
+#: src/camel/camel-smime-context.c:178
+#| msgid "No reminder is selected."
+msgid "No slot or token was selected."
+msgstr "Слот или маркёр не выбраны."
+
+#: src/camel/camel-smime-context.c:179
+msgid "A certificate with the same nickname already exists."
+msgstr "Сертификат с таким псевдонимом уже существует."
+
+#: src/camel/camel-smime-context.c:180
+msgid "A key with the same nickname already exists."
+msgstr "Ключ с таким псевдонимом уже существует."
+
+#: src/camel/camel-smime-context.c:181
+#| msgid "Error creating folder"
+msgid "error while creating safe object"
+msgstr "ошибка во время создания защищённого объекта"
+
+#: src/camel/camel-smime-context.c:182
+msgid "error while creating baggage object"
+msgstr "ошибка во время создания объекта baggage"
+
+#: src/camel/camel-smime-context.c:183
+#| msgid "Could not open the link."
+msgid "Couldn't remove the principal"
+msgstr "Не удалось удалить принципал"
+
+#: src/camel/camel-smime-context.c:184
+#| msgid "Could not create cache file"
+msgid "Couldn't delete the privilege"
+msgstr "Не удалось удалить привилегию"
+
+#: src/camel/camel-smime-context.c:185
+#| msgid "Temporarily reject the certificate"
+msgid "This principal doesn't have a certificate"
+msgstr "У этого принципала нет сертификата"
+
+#: src/camel/camel-smime-context.c:186
+#| msgid "Signature algorithm disabled"
+msgid "Required algorithm is not allowed."
+msgstr "Требуемый алгоритм не допускается"
+
+#: src/camel/camel-smime-context.c:187
+msgid "Error attempting to export certificates."
+msgstr "Ошибка при попытке экспорта сертификатов."
+
+#: src/camel/camel-smime-context.c:188
+msgid "Error attempting to import certificates."
+msgstr "Ошибка при попытке импорта сертификатов."
+
+#: src/camel/camel-smime-context.c:189
+msgid "Unable to import.  Decoding error.  File not valid."
+msgstr "Импорт невозможен.  Ошибка расшифровки.  Файл недействителен."
+
+#: src/camel/camel-smime-context.c:190
+msgid "Unable to import.  Invalid MAC.  Incorrect password or corrupt file."
+msgstr ""
+"Импорт невозможен.  Недействительный MAC.  Неверный пароль, либо повреждён"
+" файл."
+
+#: src/camel/camel-smime-context.c:191
+#| msgid "Signature algorithm unsupported"
+msgid "Unable to import.  MAC algorithm not supported."
+msgstr "Импорт невозможен.  Алгоритм MAC не поддерживается."
+
+#: src/camel/camel-smime-context.c:192
+msgid "Unable to import.  Only password integrity and privacy modes supported."
+msgstr ""
+"Импорт невозможен.  Поддерживаются только режимы конфиденциальности и "
+"целостности пароля."
+
+#: src/camel/camel-smime-context.c:193
+msgid "Unable to import.  File structure is corrupt."
+msgstr "Импорт невозможен.  Повреждена структура файла."
+
+#: src/camel/camel-smime-context.c:194
+msgid "Unable to import.  Encryption algorithm not supported."
+msgstr "Импорт невозможен.  Алгоритм шифрования не поддерживается."
+
+#: src/camel/camel-smime-context.c:195
+#| msgid "Credentials store is not supported"
+msgid "Unable to import.  File version not supported."
+msgstr "Импорт невозможен.  Версия файла не поддерживается."
+
+#: src/camel/camel-smime-context.c:196
+msgid "Unable to import.  Incorrect privacy password."
+msgstr "Импорт невозможен.  Неверный пароль конфиденциальности."
+
+#: src/camel/camel-smime-context.c:197
+msgid "Unable to import.  Same nickname already exists in database."
+msgstr "Импорт невозможен.  Такой псевдоним в базе данных уже существует."
+
+#: src/camel/camel-smime-context.c:198
+msgid "The user pressed cancel."
+msgstr "Пользователь нажал клавишу Cancel."
+
+#: src/camel/camel-smime-context.c:199
+msgid "Not imported, already in database."
+msgstr "Импорт невозможен, уже присутствует в БД."
+
+#: src/camel/camel-smime-context.c:200
+#| msgid "Message Storage"
+msgid "Message not sent."
+msgstr "Сообщение не отправлено."
+
+#: src/camel/camel-smime-context.c:201
+msgid "Certificate key usage inadequate for attempted operation."
+msgstr ""
+"Использование сертификата ключа для выполнения данной операции недостаточно."
+
+#: src/camel/camel-smime-context.c:202
+msgid "Certificate type not approved for application."
+msgstr "Тип сертификата не одобрен для этого приложения."
+
+#: src/camel/camel-smime-context.c:203
+msgid ""
+"Address in signing certificate does not match address in message headers."
+msgstr ""
+"Адрес в сертификате для подписи не совпадает с адресом в заголовках сообщения."
+
+#: src/camel/camel-smime-context.c:204
+msgid "Unable to import.  Error attempting to import private key."
+msgstr "Импорт невозможен.  Ошибка при попытке импорта закрытого ключа."
+
+#: src/camel/camel-smime-context.c:205
+msgid "Unable to import.  Error attempting to import certificate chain."
+msgstr "Импорт невозможен.  Ошибка при попытке импорта цепочки сертификатов."
+
+#: src/camel/camel-smime-context.c:206
+msgid "Unable to export.  Unable to locate certificate or key by nickname."
+msgstr ""
+"Экспорт невозможен.  Не удалось найти сертификат или ключ по псевдониму."
+
+#: src/camel/camel-smime-context.c:207
+msgid "Unable to export.  Private Key could not be located and exported."
+msgstr ""
+"Экспорт невозможен.  Закрытый ключ не найден и не может быть экспортирован."
+
+#: src/camel/camel-smime-context.c:208
+msgid "Unable to export.  Unable to write the export file."
+msgstr "Экспорт невозможен.  Не удалось записать файл экспорта."
+
+#: src/camel/camel-smime-context.c:209
+msgid "Unable to import.  Unable to read the import file."
+msgstr "Импорт невозможен.  Не удалось прочесть файл импорта."
+
+#: src/camel/camel-smime-context.c:210
+msgid "Unable to export.  Key database corrupt or deleted."
+msgstr "Экспорт невозможен.  База данных ключей повреждена, или удалена."
+
+#: src/camel/camel-smime-context.c:211
+#| msgid "Unable to create cache path"
+msgid "Unable to generate public/private key pair."
+msgstr "Не удалось создать пару ключей «открытый/закрытый»."
+
+#: src/camel/camel-smime-context.c:212
+msgid "Password entered is invalid.  Please pick a different one."
+msgstr "Введённый пароль недействителен. Выберите другой пароль."
+
+#: src/camel/camel-smime-context.c:213
+msgid "Old password entered incorrectly.  Please try again."
+msgstr "Был введён неверный старый пароль. Повторите попытку."
+
+#: src/camel/camel-smime-context.c:214
+#| msgid "Certificate signature algorithm disabled"
+msgid "Certificate nickname already in use."
+msgstr "Псевдоним сертификата уже используется."
+
+#: src/camel/camel-smime-context.c:215
+msgid "Peer FORTEZZA chain has a non-FORTEZZA Certificate."
+msgstr ""
+"В цепочке узлов FORTEZZA присутствует сертификат, не относящийся к FORTEZZA."
+
+#: src/camel/camel-smime-context.c:216
+msgid "A sensitive key cannot be moved to the slot where it is needed."
+msgstr "Невозможно переместить секретный ключ в необходимый слот."
+
+#: src/camel/camel-smime-context.c:217
+#| msgid "Invalid query: "
+msgid "Invalid module name."
+msgstr "Недействительное название модуля."
+
+#: src/camel/camel-smime-context.c:218
+msgid "Invalid module path/filename"
+msgstr "Недопустимые имя файла/путь модуля"
+
+#: src/camel/camel-smime-context.c:219
+#| msgid "Failed to read resource"
+msgid "Unable to add module"
+msgstr "Невозможно добавить модуль"
+
+#: src/camel/camel-smime-context.c:220
+#| msgid "Failed to delete resource"
+msgid "Unable to delete module"
+msgstr "Невозможно удалить модуль"
+
+#: src/camel/camel-smime-context.c:221
+msgid "New KRL is not later than the current one."
+msgstr ""
+"Новый список отозванных ключей не является обновлённым относительно текущего"
+
+#: src/camel/camel-smime-context.c:222
+msgid "New CKL has different issuer than current CKL.  Delete current CKL."
+msgstr ""
+"Издатель нового списка скомпрометированных ключей отличается от издателя "
+"текущего списка. Удалите текущий список."
+
+#: src/camel/camel-smime-context.c:223
+msgid ""
+"The Certifying Authority for this certificate is not permitted to issue a "
+"certificate with this name."
+msgstr "ЦС этого сертификата не допущен к выпуску сертификата с таким именем."
+
+#: src/camel/camel-smime-context.c:224
+msgid "The key revocation list for this certificate is not yet valid."
+msgstr "Список отозванных ключей для этого сертификата ещё не действителен."
+
+#: src/camel/camel-smime-context.c:225
+#| msgid ""
+#| "The certificate has been revoked according to the connection’s "
+#| "certificate revocation list."
+msgid "The certificate revocation list for this certificate is not yet valid."
+msgstr ""
+"Список отозванных сертификатов для этого сертификата ещё не действителен."
+
+#: src/camel/camel-smime-context.c:226
+msgid "The requested certificate could not be found."
+msgstr "Не удалось найти запрашиваемый сертификат."
+
+#: src/camel/camel-smime-context.c:227
+msgid "The signer's certificate could not be found."
+msgstr "Не удалось найти подписывающий сертификат."
+
+#: src/camel/camel-smime-context.c:228
+msgid "The location for the certificate status server has invalid format."
+msgstr "Недействительный формат местоположения сервера статусов сертификатов."
+
+#: src/camel/camel-smime-context.c:229
+msgid "The OCSP response cannot be fully decoded; it is of an unknown type."
+msgstr "Не удалось полностью расшифровать ответ OCSP; неизвестный тип ответа."
+
+#: src/camel/camel-smime-context.c:230
+msgid "The OCSP server returned unexpected/invalid HTTP data."
+msgstr "Сервер OCSP вернул непредвиденные/недействительные данные HTTP."
+
+#: src/camel/camel-smime-context.c:231
+msgid "The OCSP server found the request to be corrupted or improperly formed."
+msgstr ""
+"Сервер OCSP обнаружил, что запрос повреждён, либо имеет неверный формат."
+
+#: src/camel/camel-smime-context.c:232
+msgid "The OCSP server experienced an internal error."
+msgstr "На сервере OCSP возникла внутренняя ошибка."
+
+#: src/camel/camel-smime-context.c:233
+msgid "The OCSP server suggests trying again later."
+msgstr "Сервер OCSP просит повторить попытку позже."
+
+#: src/camel/camel-smime-context.c:234
+msgid "The OCSP server requires a signature on this request."
+msgstr "Серверу OCSP требуется подпись в этом запросе."
+
+#: src/camel/camel-smime-context.c:235
+msgid "The OCSP server has refused this request as unauthorized."
+msgstr "Сервер OCSP отклонил этот запрос как неавторизованный."
+
+#: src/camel/camel-smime-context.c:236
+msgid "The OCSP server returned an unrecognizable status."
+msgstr "Сервер OCSP вернул нераспознанный статус."
+
+#: src/camel/camel-smime-context.c:237
+msgid "The OCSP server has no status for the certificate."
+msgstr "На сервере OCSP отсутствует статус для этого сертификата."
+
+#: src/camel/camel-smime-context.c:238
+#| msgid "You must be working online to complete this operation"
+msgid "You must enable OCSP before performing this operation."
+msgstr ""
+"Перед выполнением этого действия необходимо включить использование OCSP."
+
+#: src/camel/camel-smime-context.c:239
+msgid ""
+"You must set the OCSP default responder before performing this operation."
+msgstr ""
+"Перед выполнением этого действия необходимо настроить ответчик "
+"OCSP по умолчанию."
+
+#: src/camel/camel-smime-context.c:240
+msgid "The response from the OCSP server was corrupted or improperly formed."
+msgstr "Ответ сервера OCSP повреждён, либо имеет неверный формат."
+
+#: src/camel/camel-smime-context.c:241
+msgid ""
+"The signer of the OCSP response is not authorized to give status for this "
+"certificate."
+msgstr ""
+"Владелец подписи ответа OCSP не авторизован на предоставление "
+"статуса этого сертификата."
+
+#: src/camel/camel-smime-context.c:242
+msgid "The OCSP response is not yet valid (contains a date in the future)."
+msgstr "Ответ OCSP ещё недействителен (содержит дату в будущем)."
+
+#: src/camel/camel-smime-context.c:243
+msgid "The OCSP response contains out-of-date information."
+msgstr "Ответ OCSP содержит устаревшие данные."
+
+#: src/camel/camel-smime-context.c:244
+msgid "The CMS or PKCS #7 Digest was not found in signed message."
+msgstr ""
+"В подписанном сообщении не было найдено ни дайджеста системы CMS, "
+"ни дайджеста стандарта PKSC #7."
+
+#: src/camel/camel-smime-context.c:245
+msgid "The CMS or PKCS #7 Message type is unsupported."
+msgstr ""
+"Типы сообщений системы CMS, либо сообщений стандарта PKCS #7 не"
+" поддерживаются."
+
+#: src/camel/camel-smime-context.c:246
+msgid "PKCS #11 module could not be removed because it is still in use."
+msgstr ""
+"Невозможно удалить модуль стандарта PKCS #11, он находится в использовании."
+
+#: src/camel/camel-smime-context.c:247
+msgid "Could not decode ASN.1 data. Specified template was invalid."
+msgstr ""
+"Не удалось расшифровать данные ASN.1. Был указан недействительный шаблон."
+
+#: src/camel/camel-smime-context.c:248
+msgid "No matching CRL was found."
+msgstr "Соответствующих списков отозванных сертификатов не найдено."
+
+#: src/camel/camel-smime-context.c:249
+msgid ""
+"You are attempting to import a cert with the same issuer/serial as an "
+"existing cert, but that is not the same cert."
+msgstr ""
+"Попытка импорта сертификата с таким же издателем/серийным номером, что "
+"и у существующего сертификата, но это разные сертификаты."
+
+#: src/camel/camel-smime-context.c:250
+msgid "NSS could not shutdown. Objects are still in use."
+msgstr "Не удалось остановить работу NSS. Объекты ещё используются."
+
+#: src/camel/camel-smime-context.c:251
+msgid "DER-encoded message contained extra unused data."
+msgstr ""
+"Шифрованное сообщение в формате DER содержало дополнительные неиспользуемые"
+" данные."
+
+#: src/camel/camel-smime-context.c:252
+#| msgid "Unsupported security layer."
+msgid "Unsupported elliptic curve."
+msgstr "Неподдерживаемая эллиптическая криптосистема."
+
+#: src/camel/camel-smime-context.c:253
+#| msgid "Unsupported security layer."
+msgid "Unsupported elliptic curve point form."
+msgstr "Неподдерживаемый вид точек эллиптической криптосистемы."
+
+#: src/camel/camel-smime-context.c:254
+msgid "Unrecognized Object Identifier."
+msgstr "Нераспознанный идентификатор объекта"
+
+#: src/camel/camel-smime-context.c:255
+#| msgid "Signing certificate not trusted"
+msgid "Invalid OCSP signing certificate in OCSP response."
+msgstr ""
+"В ответе OCSP присутствует недействительный подписывающий сертификат OCSP."
+
+#: src/camel/camel-smime-context.c:256
+#| msgid ""
+#| "The certificate has been revoked according to the connection’s "
+#| "certificate revocation list."
+msgid "Certificate is revoked in issuer's certificate revocation list."
+msgstr ""
+"В списке отозванных сертификатов издателя этот сертификат является отозванным"
+
+#: src/camel/camel-smime-context.c:257
+msgid "Issuer's OCSP responder reports certificate is revoked."
+msgstr "Ответчик OCSP издателя сообщает, что этот сертификат отозван."
+
+#: src/camel/camel-smime-context.c:258
+msgid "Issuer's Certificate Revocation List has an unknown version number."
+msgstr "Неизвестный номер версии списка отозванных сертификатов издателя"
+
+#: src/camel/camel-smime-context.c:259
+msgid "Issuer's V1 Certificate Revocation List has a critical extension."
+msgstr ""
+"В версии 1 списка отозванных сертификатов издателя присутствует "
+"критически важное расширение."
+
+#: src/camel/camel-smime-context.c:260
+msgid ""
+"Issuer's V2 Certificate Revocation List has an unknown critical extension."
+msgstr ""
+"В версии 2 списка отозванных сертификатов издателя присутствует "
+"неизвестное критически важное расширение."
+
+#: src/camel/camel-smime-context.c:261
+msgid "Unknown object type specified."
+msgstr "Указан неизвестный тип объекта."
+
+#: src/camel/camel-smime-context.c:262
+msgid "PKCS #11 driver violates the spec in an incompatible way."
+msgstr "Драйвер PKCS #11 нарушает спецификацию и является несовместимым"
+
+#: src/camel/camel-smime-context.c:263
+msgid "No new slot event is available at this time."
+msgstr "На данный момент нет доступных событий слотов."
+
+#: src/camel/camel-smime-context.c:264
+#| msgid "Folder already exists"
+msgid "CRL already exists."
+msgstr "Список отозванных сертификатов уже существует."
+
+#: src/camel/camel-smime-context.c:265
+msgid "NSS is not initialized."
+msgstr "NSS не инициализирован."
+
+#: src/camel/camel-smime-context.c:266
+msgid "The operation failed because the PKCS#11 token is not logged in."
+msgstr "Операция не выполнена, т.к. маркёр PKCS#11 не выполнил вход в систему."
+
+#: src/camel/camel-smime-context.c:267
+msgid "Configured OCSP responder's certificate is invalid."
+msgstr "Сертификат настроенного ответчика OCSP является недействительным."
+
+#: src/camel/camel-smime-context.c:268
+#| msgid "No signed data in signature"
+msgid "OCSP response has an invalid signature."
+msgstr "Недействительная подпись ответа OCSP."
+
+#: src/camel/camel-smime-context.c:271
+msgid "Cert validation search is out of search limits"
+msgstr "Поиск проверки подлинности сертификата выходит за границы поиска"
+
+#: src/camel/camel-smime-context.c:272
+msgid "Policy mapping contains anypolicy"
+msgstr "Отображение политики содержит anypolicy"
+
+#: src/camel/camel-smime-context.c:273
+msgid "Cert chain fails policy validation"
+msgstr "Цепочка сертификатов не прошла проверку политики."
+
+#: src/camel/camel-smime-context.c:274
+msgid "Unknown location type in cert AIA extension"
+msgstr "Неизвестный тип местоположения в расширении AIA сертификата."
+
+#: src/camel/camel-smime-context.c:275
+msgid "Server returned bad HTTP response"
+msgstr "Сервер вернул неблагоприятный ответ HTTP"
+
+#: src/camel/camel-smime-context.c:276
+msgid "Server returned bad LDAP response"
+msgstr "Сервер вернул неблагоприятный ответ LDAP"
+
+#: src/camel/camel-smime-context.c:277
+#| msgid "Failed to add data to CMS encoder"
+msgid "Failed to encode data with ASN1 encoder"
+msgstr "Не удалось зашифровать данные в формате ASN1"
+
+#: src/camel/camel-smime-context.c:278
+msgid "Bad information access location in cert extension"
+msgstr "Неверные сведения о доступе к местоположению в расширении сертификата"
+
+#: src/camel/camel-smime-context.c:279
+msgid "Libpkix internal error occurred during cert validation."
+msgstr "Во время проверки сертификата произошла внутренняя ошибка Libpkix."
+
+#: src/camel/camel-smime-context.c:280
+msgid ""
+"A PKCS #11 module returned CKR_GENERAL_ERROR, indicating that an "
+"unrecoverable error has occurred."
+msgstr ""
+"Модуль PKCS #11 вернул ошибку CKR_GENERAL_ERROR, что указывает "
+"на возникшую неустранимую ошибку."
+
+#: src/camel/camel-smime-context.c:281
+msgid ""
+"A PKCS #11 module returned CKR_FUNCTION_FAILED, indicating that the "
+"requested function could not be performed.  Trying the same operation again "
+"might succeed."
+msgstr ""
+"Модуль PKCS #11 вернул ошибку CKR_FUNCTION_FAILED, что указывает на "
+"невозможность выполнить запрошенную функцию.  Повторная попытка выполнения "
+"этого действия может оказаться успешной."
+
+#: src/camel/camel-smime-context.c:282
+msgid ""
+"A PKCS #11 module returned CKR_DEVICE_ERROR, indicating that a problem has "
+"occurred with the token or slot."
+msgstr ""
+"Модуль PKCS #11 вернул ошибку CKR_DEVICE_ERROR, указывающую на проблему "
+"с маркёром или слотом."
+
+#: src/camel/camel-smime-context.c:286
+#| msgid "Expires on"
+msgid "Expired password"
+msgstr "Срок действия пароля истёк"
+
+#: src/camel/camel-smime-context.c:287
+#| msgid "Password"
+msgid "Locked password"
+msgstr "Пароль заблокирован"
+
+#: src/camel/camel-smime-context.c:288
+#| msgid "Unknown error"
+msgid "Unknown PKCS11 error"
+msgstr "Неизвестная ошибка PKCS11"
+
+#: src/camel/camel-smime-context.c:289 src/camel/camel-smime-context.c:822
+msgid "Certificate signature algorithm disabled"
+msgstr "Алгоритм подписи сертификата отключён"
+
+#: src/camel/camel-smime-context.c:290
+msgid "Legacy database"
+msgstr "Устаревшая БД"
+
+#: src/camel/camel-smime-context.c:291 src/camel/camel-smime-context.c:819
+msgid "Signature algorithm disabled"
+msgstr "Алгоритм подписи отключён"
+
+#: src/camel/camel-smime-context.c:292
+msgid "Algorithm mismatch"
+msgstr "Алгоритмы не совпадают"
+
+#: src/camel/camel-smime-context.c:321
+msgid "Unknown error."
+msgstr "Неизвестная ошибка."
+
 #: src/camel/camel-smime-context.c:353
 #, c-format
 msgid "Cannot find certificate for “%s”"
@@ -3912,14 +4848,6 @@ msgstr "В сообщении только сертификаты, сертиф�
 msgid "Cannot find signature digests"
 msgstr "Не удалось найти дайджесты подписи"
 
-#: src/camel/camel-smime-context.c:819
-msgid "Signature algorithm disabled"
-msgstr "Алгоритм подписи отключён"
-
-#: src/camel/camel-smime-context.c:822
-msgid "Certificate signature algorithm disabled"
-msgstr "Алгоритм подписи сертификата отключён"
-
 #: src/camel/camel-smime-context.c:831
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
@@ -3952,7 +4880,7 @@ msgstr "Не удалось найти общий алгоритм шифров�
 
 #: src/camel/camel-smime-context.c:1523
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "Не удалось распределить слот для ключа общего шифрования"
+msgstr "Не удалось выделить слот для ключа пакетного шифрования"
 
 #: src/camel/camel-smime-context.c:1534
 msgid "Cannot create CMS Message"
@@ -7536,13 +8464,14 @@ msgstr "Открытый ключ"
 msgid "Algorithm"
 msgstr "Алгоритм"
 
-#: src/libedataserverui/e-credentials-prompter.c:260
-#: src/libedataserverui/e-credentials-prompter.c:1755
-#: src/libedataserverui/e-credentials-prompter.c:1799
+#: src/libedataserverui/e-credentials-prompter.c:92
+#: src/libedataserverui/e-credentials-prompter.c:247
+#: src/libedataserverui/e-credentials-prompter.c:461
+#: src/libedataserverui/e-credentials-prompter.c:1739
 msgid "Credentials prompt was cancelled"
 msgstr "Запрос учётных данных был отменён"
 
-#: src/libedataserverui/e-credentials-prompter.c:776
+#: src/libedataserverui/e-credentials-prompter.c:767
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Источник «%s» не поддерживает запрос учётных данных"
@@ -7688,22 +8617,22 @@ msgstr ""
 msgid "Failed to open browser: %s"
 msgstr "Не удалось открыть браузер: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1048
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1049
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Отменить"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1130
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1131
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1160
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1161
 msgid "Click here to open the URL"
 msgstr "Нажмите, чтобы перейти по ссылке"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1200
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -7713,11 +8642,11 @@ msgstr ""
 "Скопируйте полученный код авторизации или URL-адрес, на котором мастер "
 "OAuth2 завершил работу, ниже, чтобы продолжить процесс аутентификации."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1237
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1238
 msgid "_Authorization code:"
 msgstr "Код _авторизации:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1250
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1251
 msgid "C_ontinue"
 msgstr "П_родолжить"
 
@@ -8073,7 +9002,7 @@ msgstr "Не удалось найти элемент Account"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Не удалось найти ASUrl и OABUrl в ответе автообнаружения"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1431
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1434
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -8082,7 +9011,7 @@ msgstr ""
 "Не удалось найти соответствующую запись в службе org.gnome.OnlineAccounts, с "
 "помощью которой можно получить маркер доступа для «%s»"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1481
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1484
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Не удалось получить маркер доступа для «%s»: "
@@ -8466,3 +9395,5 @@ msgstr "Заметки WebDAV"
 
 #~ msgid "Cannot rewind input stream: Not supported"
 #~ msgstr "Невозможно перемотать входной поток: Не поддерживается"
+
+
