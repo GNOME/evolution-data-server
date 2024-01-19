@@ -1740,7 +1740,7 @@ e_vcard_remove_attributes (EVCard *evc,
 		next_attr = attr->next;
 
 		if (((!attr_group || *attr_group == '\0') ||
-		     (attr_group && !g_ascii_strcasecmp (attr_group, a->group))) &&
+		     (a->group && !g_ascii_strcasecmp (attr_group, a->group))) &&
 		    ((!a->name) || !g_ascii_strcasecmp (attr_name, a->name))) {
 
 			/* matches, remove/delete the attribute */
