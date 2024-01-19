@@ -40,6 +40,7 @@ eos_google_guess_can_process (EOAuth2Service *service,
 {
 	return hostname && (
 		e_util_utf8_strstrcase (hostname, ".google.com") ||
+		e_util_utf8_strstrcase (hostname, ".googleapis.com") ||
 		e_util_utf8_strstrcase (hostname, ".googlemail.com") ||
 		e_util_utf8_strstrcase (hostname, ".googleusercontent.com") ||
 		e_util_utf8_strstrcase (hostname, ".gmail.com"));

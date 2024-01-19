@@ -100,8 +100,9 @@ ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
 		return;
 
 	cbdav->priv->is_google = g_uri_get_host (parsed_uri) && (
-		g_ascii_strcasecmp (g_uri_get_host (parsed_uri), "www.google.com") == 0 ||
-		g_ascii_strcasecmp (g_uri_get_host (parsed_uri), "apidata.googleusercontent.com") == 0);
+		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".google.com") == 0 ||
+		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".googleapis.com") == 0 ||
+		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".googleusercontent.com") == 0);
 
 	cbdav->priv->is_icloud = g_uri_get_host (parsed_uri) &&
 		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".icloud.com");

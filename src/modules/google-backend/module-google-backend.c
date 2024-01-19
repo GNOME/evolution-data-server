@@ -154,7 +154,9 @@ google_backend_is_google_host (ESourceAuthentication *auth_extension,
 
 	host = e_source_authentication_dup_host (auth_extension);
 
-	requires_oauth2 = host && host_ends_with (host, "googleusercontent.com");
+	requires_oauth2 = host && (
+		host_ends_with (host, "googleapis.com") ||
+		host_ends_with (host, "googleusercontent.com"));
 
 	is_google = requires_oauth2 || (host && (
 		host_ends_with (host, "gmail.com") ||
