@@ -495,6 +495,9 @@ static void tokenize_free (CamelHTMLParserPrivate *p)
 	for (i = 0; i < p->values->len; i++)
 		g_string_free (p->values->pdata[i], TRUE);
 
+	g_ptr_array_free (p->attrs, TRUE);
+	g_ptr_array_free (p->values, TRUE);
+
 	g_free (p);
 }
 

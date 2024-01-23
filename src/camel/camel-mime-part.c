@@ -36,11 +36,13 @@
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-filter-html.h"
 #include "camel-mime-filter-preview.h"
+#include "camel-mime-filter-windows.h"
 #include "camel-mime-parser.h"
 #include "camel-mime-part-utils.h"
 #include "camel-mime-part.h"
 #include "camel-mime-utils.h"
 #include "camel-multipart.h"
+#include "camel-null-output-stream.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 #include "camel-stream-null.h"
@@ -1003,6 +1005,35 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	return success;
 }
 
+static gboolean
+mime_part_data_is_utf16 (CamelMimePart *part,
+			 gboolean *out_be_variant)
+{
+	CamelStream *filtered_stream;
+	CamelMimeFilter *filter;
+	CamelStream *stream;
+	const gchar *charset;
+	gboolean is_utf16;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (part), FALSE);
+
+	stream = camel_stream_null_new ();
+	filtered_stream = camel_stream_filter_new (stream);
+	filter = camel_mime_filter_bestenc_new (CAMEL_BESTENC_GET_CHARSET);
+	camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), CAMEL_MIME_FILTER (filter));
+	camel_data_wrapper_decode_to_stream_sync (camel_medium_get_content (CAMEL_MEDIUM (part)), filtered_stream, NULL, NULL);
+	g_object_unref (filtered_stream);
+	g_object_unref (stream);
+
+	charset = camel_mime_filter_bestenc_get_best_charset (CAMEL_MIME_FILTER_BESTENC (filter));
+	*out_be_variant = g_strcmp0 (charset, "UTF-16BE") == 0;
+	is_utf16 = *out_be_variant || g_strcmp0 (charset, "UTF-16LE") == 0;
+
+	g_object_unref (filter);
+
+	return is_utf16;
+}
+
 static gchar *
 mime_part_generate_preview (CamelMimePart *mime_part,
 			    CamelGeneratePreviewFunc func,
@@ -1027,15 +1058,56 @@ mime_part_generate_preview (CamelMimePart *mime_part,
 			CamelStream *base;
 			CamelStream *filtered_stream;
 			CamelMimeFilter *filter;
+			CamelMimeFilter *windows = NULL;
 			const gchar *text;
+			const gchar *charset = NULL;
+			gboolean utf16_be_variant = FALSE;
 
 			base = camel_stream_null_new ();
 			filtered_stream = camel_stream_filter_new (base);
+
+			if (mime_part_data_is_utf16 (mime_part, &utf16_be_variant)) {
+				if (utf16_be_variant)
+					charset = "UTF-16BE";
+				else
+					charset = "UTF-16LE";
+			} else if ((charset = camel_content_type_param (ct, "charset")) &&
+				   g_ascii_strncasecmp (charset, "iso-8859-", 9) == 0) {
+				GOutputStream *null_stream;
+				GOutputStream *filter_stream;
+
+				/* Since a few Windows mailers like to claim they sent
+				 * out iso-8859-# encoded text when they really sent
+				 * out windows-cp125#, do some simple sanity checking
+				 * before we move on... */
+
+				null_stream = camel_null_output_stream_new ();
+				windows = camel_mime_filter_windows_new (charset);
+				filter_stream = camel_filter_output_stream_new (null_stream, windows);
+				g_filter_output_stream_set_close_base_stream (G_FILTER_OUTPUT_STREAM (filter_stream), FALSE);
+
+				camel_data_wrapper_decode_to_output_stream_sync (CAMEL_DATA_WRAPPER (mime_part),
+					filter_stream, NULL, NULL);
+				g_output_stream_flush (filter_stream, NULL, NULL);
+
+				g_object_unref (filter_stream);
+				g_object_unref (null_stream);
+
+				charset = camel_mime_filter_windows_real_charset (CAMEL_MIME_FILTER_WINDOWS (windows));
+			}
 
 			if (camel_content_type_is (ct, "text", "html")) {
 				filter = camel_mime_filter_html_new ();
 				camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
 				g_clear_object (&filter);
+			}
+
+			if (charset != NULL) {
+				filter = camel_mime_filter_charset_new (charset, "UTF-8");
+				if (filter != NULL) {
+					camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
+					g_clear_object (&filter);
+				}
 			}
 
 			filter = camel_mime_filter_preview_new (CAMEL_MAX_PREVIEW_LENGTH);
@@ -1050,6 +1122,7 @@ mime_part_generate_preview (CamelMimePart *mime_part,
 				preview = g_strdup (text);
 
 			g_clear_object (&filtered_stream);
+			g_clear_object (&windows);
 			g_clear_object (&filter);
 			g_clear_object (&base);
 		} else if (ct && content && CAMEL_IS_MULTIPART (content)) {

@@ -207,11 +207,84 @@ test_data_messages (void)
 	return TRUE;
 }
 
+static void
+test_message_preview_data (const gchar *data,
+			   const gchar *expected)
+{
+	CamelMimePart *part;
+	CamelMimeParser *parser;
+	GBytes *bytes;
+	gchar *preview;
+
+	parser = camel_mime_parser_new ();
+	camel_mime_parser_scan_from (parser, FALSE);
+	camel_mime_parser_scan_pre_from (parser, FALSE);
+
+	bytes = g_bytes_new_static (data, strlen (data));
+	camel_mime_parser_init_with_bytes (parser, bytes);
+	g_bytes_unref (bytes);
+
+	part = camel_mime_part_new ();
+	camel_mime_part_construct_from_parser_sync (part, parser, NULL, NULL);
+
+	g_clear_object (&parser);
+
+	preview = camel_mime_part_generate_preview (part, NULL, NULL);
+
+	check_msg ((g_strcmp0 (preview, expected) == 0), "expected '%s' received '%s'", expected, preview);
+
+	g_clear_object (&part);
+	g_free (preview);
+}
+
+static void
+test_message_preview (void)
+{
+	struct _cases {
+		const gchar *test;
+		const gchar *expected;
+		const gchar *data;
+	} cases[] = {
+		{ "Preview text/plain UTF-8", "ěščřžýáíé ĚŠČŘŽÝÁÍÉ ",
+		  "Content-Type: text/plain; charset=\"UTF-8\"\r\n"
+		  "Content-Transfer-Encoding: base64\r\n"
+		  "\r\n"
+		  "xJvFocSNxZnFvsO9w6HDrcOpCsSaxaDEjMWYxb3DncOBw43DiQo=\r\n" },
+		{ "Preview text/html UTF-8", "ěščřžýáíéĚŠČŘŽÝÁÍÉ ",
+		  "Content-Type: text/html; charset=\"utf-8\"\r\n"
+		  "Content-Transfer-Encoding: quoted-printable\r\n"
+		  "\r\n"
+		  "<html><head></head><body><div>=C4=9B=C5=A1=C4=8D=C5=99=C5=BE=C3=BD=C3=A1=C3=AD=\r\n"
+		  "=C3=A9</div><div>=C4=9A=C5=A0=C4=8C=C5=98=C5=BD=C3=9D=C3=81=C3=8D=C3=89</di=\r\n"
+		  "v></body></html>\r\n" },
+		{ "Preview text/plain ISO-8859-2", "ěščřžýáíé ĚŠČŘŽÝÁÍÉ ",
+		  "Content-Type: text/plain; charset=\"ISO-8859-2\"\r\n"
+		  "Content-Transfer-Encoding: base64\r\n"
+		  "\r\n"
+		  "7Lno+L794e3pCsypyNiu3cHNyQoK\r\n" },
+		{ "Preview text/html ISO-8859-2", "ěščřžýáíéĚŠČŘŽÝÁÍÉ ",
+		  "Content-Type: text/html; charset=\"iso-8859-2\"\r\n"
+		  "Content-Transfer-Encoding: quoted-printable\r\n"
+		  "\r\n"
+		  "<html><head></head><body><div>=EC=B9=E8=F8=BE=FD=E1=ED=E9=\r\n"
+		  "</div><div>=CC=A9=C8=D8=AE=DD=C1=CD=C9</di=\r\n"
+		  "v></body></html>\r\n" },
+	};
+	guint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases); ii++) {
+		camel_test_start (cases[ii].test);
+		test_message_preview_data (cases[ii].data, cases[ii].expected);
+		camel_test_end ();
+	}
+}
+
 gint main (gint argc, gchar **argv)
 {
 	camel_test_init (argc, argv);
 
 	test_message_parser ();
+	test_message_preview ();
 
 	if (!test_data_messages ())
 		return 77;
