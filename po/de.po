@@ -22,41 +22,48 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues\n"
-"POT-Creation-Date: 2023-12-20 16:11+0000\n"
-"PO-Revision-Date: 2023-12-29 20:21+0100\n"
-"Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
+"POT-Creation-Date: 2024-01-23 14:17+0000\n"
+"PO-Revision-Date: 2024-01-28 14:38+0100\n"
+"Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Project-Style: gnome\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:97
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:237
+#: src/addressbook/libebook-contacts/e-contact.c:312
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
+msgid "Anniversary"
+msgstr "Jahrestag"
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:489
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Die angegebene Adresse »%s« referenziert kein CardDAV-Adressbuch"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1397
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1377
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
 msgid "Server didn’t return object’s href"
 msgstr "Server gab kein href des Objekts zurück"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1399
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1379
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Server gab kein ETag des Objekts zurück"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1401
 msgid "Received object is not a valid vCard"
 msgstr "Empfangenes Objekt ist keine gültige vCard"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1523
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1519
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
 #, c-format
 msgid ""
@@ -69,7 +76,7 @@ msgstr ""
 "entfernen, und evolution-data-server-Hintergrundprozesse neu starten. "
 "Zwischenspeicherdatei: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1529
 msgid "Object to save is not a valid vCard"
 msgstr "Zu speicherndes Objekt ist keine gültige vCard"
 
@@ -182,7 +189,7 @@ msgstr "Umbenennen der alten Datenbank von »%s« in »%s« schlug fehl: %s"
 #: src/calendar/libecal/e-cal-client.c:6376
 #: src/calendar/libecal/e-cal-client.c:6581
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #: src/camel/providers/imapx/camel-imapx-server.c:3360
 #: src/camel/providers/imapx/camel-imapx-server.c:3366
 #: src/camel/providers/imapx/camel-imapx-server.c:3376
@@ -796,11 +803,6 @@ msgstr "Listenanzeige der Adressen"
 msgid "Birth Date"
 msgstr "Geburtsdatum"
 
-#: src/addressbook/libebook-contacts/e-contact.c:312
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
-msgid "Anniversary"
-msgstr "Jahrestag"
-
 #. Security fields
 #: src/addressbook/libebook-contacts/e-contact.c:315
 msgid "X.509 Certificate"
@@ -1349,12 +1351,12 @@ msgstr "Nicht abgeglichene Revision beim Bewegen des Zeigers"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Der alphabetische Index wurde auf eine falsche Sprachumgebung gesetzt"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:258
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Die angegebene Adresse »%s« referenziert keinen CalDAV-Kalender"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2042
 msgid "Failed to parse response data"
 msgstr "Antwortdaten konnten nicht ausgewertet werden"
 
@@ -2763,84 +2765,84 @@ msgstr "%s konnte nicht in %s umbenannt werden: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Gefilterte Nachrichten werden in »%s : %s« übertragen"
 
-#: src/camel/camel-filter-driver.c:1233 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1240 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Kindprozess »%s« konnte nicht erstellt werden: %s"
 
-#: src/camel/camel-filter-driver.c:1287
+#: src/camel/camel-filter-driver.c:1294
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Ungültiger Nachrichten-Datenstrom von %s erhalten: %s"
 
-#: src/camel/camel-filter-driver.c:1511 src/camel/camel-filter-driver.c:1524
+#: src/camel/camel-filter-driver.c:1518 src/camel/camel-filter-driver.c:1531
 msgid "Syncing folders"
 msgstr "Ordner werden abgeglichen"
 
-#: src/camel/camel-filter-driver.c:1632
+#: src/camel/camel-filter-driver.c:1639
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Fehler beim Analysieren der Filtersyntax: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1643
+#: src/camel/camel-filter-driver.c:1650
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Fehler beim Ausführen des Filters: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1741
+#: src/camel/camel-filter-driver.c:1748
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Der Spool-Ordner konnte nicht geöffnet werden"
 
-#: src/camel/camel-filter-driver.c:1753
+#: src/camel/camel-filter-driver.c:1760
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Der Spool-Ordner konnte nicht verarbeitet werden"
 
-#: src/camel/camel-filter-driver.c:1781
+#: src/camel/camel-filter-driver.c:1788
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Nachricht %d wird abgerufen (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1790 src/camel/camel-filter-driver.c:1813
+#: src/camel/camel-filter-driver.c:1797 src/camel/camel-filter-driver.c:1820
 #, c-format
 msgid "Failed on message %d"
 msgstr "Fehlgeschlagen bei Nachricht %d"
 
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Übertragung der Nachrichten ist fehlgeschlagen: %s"
 
-#: src/camel/camel-filter-driver.c:1841 src/camel/camel-filter-driver.c:1985
+#: src/camel/camel-filter-driver.c:1848 src/camel/camel-filter-driver.c:1998
 msgid "Syncing folder"
 msgstr "Ordner wird abgeglichen"
 
-#: src/camel/camel-filter-driver.c:1846 src/camel/camel-filter-driver.c:1993
+#: src/camel/camel-filter-driver.c:1853 src/camel/camel-filter-driver.c:2006
 msgid "Complete"
 msgstr "Abgeschlossen"
 
-#: src/camel/camel-filter-driver.c:1914
+#: src/camel/camel-filter-driver.c:1921
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Nachricht %d von %d wird abgerufen"
 
-#: src/camel/camel-filter-driver.c:1932
+#: src/camel/camel-filter-driver.c:1945
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Fehlgeschlagen bei Nachricht %d von %d"
 
-#: src/camel/camel-filter-driver.c:2149 src/camel/camel-filter-driver.c:2173
+#: src/camel/camel-filter-driver.c:2167 src/camel/camel-filter-driver.c:2191
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Ausführen des Filters »%s« ist gescheitert: "
 
-#: src/camel/camel-filter-driver.c:2163
+#: src/camel/camel-filter-driver.c:2181
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Fehler beim Analysieren des Filters »%s«: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2182
+#: src/camel/camel-filter-driver.c:2200
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Fehler beim Ausführen des Filters »%s«: %s: %s"
@@ -3416,7 +3418,7 @@ msgstr "Neue Nachrichten werden für Offline-Modus in »%s : %s« abgerufen"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:280
+#: src/camel/camel-offline-folder.c:294
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3426,7 +3428,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:356
+#: src/camel/camel-offline-folder.c:370
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Nachrichten im Ordner »%s : %s« werden auf Festplatte abgeglichen"
@@ -3436,13 +3438,13 @@ msgstr "Nachrichten im Ordner »%s : %s« werden auf Festplatte abgeglichen"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:450
+#: src/camel/camel-offline-folder.c:464
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr ""
 "Nachricht %d von %d im Ordner »%s : %s« wird auf Festplatte abgeglichen"
 
-#: src/camel/camel-offline-folder.c:504
+#: src/camel/camel-offline-folder.c:527
 msgid "Copy folder content locally for _offline operation"
 msgstr "Den Ordnerinhalt lokal zum Arbeiten im _Offline-Modus kopieren"
 
@@ -3870,22 +3872,16 @@ msgid "security library: improperly formatted DER-encoded message."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:121
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's certificate has an invalid signature."
-msgstr "Das Zertifikat ist abgelaufen."
+msgstr "Das Zertifikat der Gegenseite hat eine ungültige Signatur."
 
 #: src/camel/camel-smime-context.c:122
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has expired."
-msgstr "Das Zertifikat ist abgelaufen."
+msgstr "Das Zertifikat der Gegenseite ist abgelaufen."
 
 #: src/camel/camel-smime-context.c:123
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has been revoked."
-msgstr "Das Zertifikat ist abgelaufen."
+msgstr "Das Zertifikat der Gegenseite wurde widerrufen."
 
 #: src/camel/camel-smime-context.c:124
 msgid "Peer's Certificate issuer is not recognized."
@@ -3998,20 +3994,16 @@ msgid "Certificate path length constraint is invalid."
 msgstr "Zertifikatssignaturalgorithmus deaktiviert"
 
 #: src/camel/camel-smime-context.c:149
-#, fuzzy
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate usages field is invalid."
-msgstr "Zertifikatssignaturalgorithmus deaktiviert"
+msgstr "Das Verwendungsfeld des Zertifikats ist ungültig."
 
 #: src/camel/camel-smime-context.c:150
 msgid "**Internal ONLY module**"
 msgstr ""
 
 #: src/camel/camel-smime-context.c:151
-#, fuzzy
-#| msgid "The backend does not support bulk additions"
 msgid "The key does not support the requested operation."
-msgstr "Das Backend unterstützt keine Massenhinzufügungen"
+msgstr "Der Schlüssel unterstützt nicht den angeforderten Vorgang."
 
 #: src/camel/camel-smime-context.c:152
 msgid "Certificate contains unknown critical extension."
@@ -4085,10 +4077,8 @@ msgid "No more information on that Personality"
 msgstr ""
 
 #: src/camel/camel-smime-context.c:167
-#, fuzzy
-#| msgid "Invalid range"
 msgid "Invalid Pin"
-msgstr "Ungültiger Bereich"
+msgstr "Ungültige PIN"
 
 #: src/camel/camel-smime-context.c:168
 msgid "Couldn't initialize Fortezza personalities."
@@ -4145,11 +4135,11 @@ msgstr "Es wurde keine Erinnerung ausgewählt."
 
 #: src/camel/camel-smime-context.c:179
 msgid "A certificate with the same nickname already exists."
-msgstr ""
+msgstr "Es ist bereits ein Zertifikat mit diesem Spitznamen vorhanden."
 
 #: src/camel/camel-smime-context.c:180
 msgid "A key with the same nickname already exists."
-msgstr ""
+msgstr "Es ist bereits ein Schlüssel mit diesem Spitznamen vorhanden."
 
 #: src/camel/camel-smime-context.c:181
 #, fuzzy
@@ -4180,10 +4170,8 @@ msgid "This principal doesn't have a certificate"
 msgstr "Das Zertifikat vorübergehend ablehnen"
 
 #: src/camel/camel-smime-context.c:186
-#, fuzzy
-#| msgid "Signature algorithm disabled"
 msgid "Required algorithm is not allowed."
-msgstr "Signaturalgorithmus deaktiviert"
+msgstr "Der benötigte Algorithmus ist nicht erlaubt."
 
 #: src/camel/camel-smime-context.c:187
 msgid "Error attempting to export certificates."
@@ -4202,10 +4190,10 @@ msgid "Unable to import.  Invalid MAC.  Incorrect password or corrupt file."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:191
-#, fuzzy
-#| msgid "Signature algorithm unsupported"
 msgid "Unable to import.  MAC algorithm not supported."
-msgstr "Signaturalgorithmus nicht unterstützt"
+msgstr ""
+"Das Importieren ist fehlgeschlagen. Der MAC-Algorithmus wird nicht "
+"unterstützt."
 
 #: src/camel/camel-smime-context.c:192
 msgid "Unable to import.  Only password integrity and privacy modes supported."
@@ -4220,10 +4208,9 @@ msgid "Unable to import.  Encryption algorithm not supported."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:195
-#, fuzzy
-#| msgid "Credentials store is not supported"
 msgid "Unable to import.  File version not supported."
-msgstr "Speichern von Anmeldedaten wird nicht unterstützt"
+msgstr ""
+"Das Importieren ist fehlgeschlagen. Die Dateiversion wird nicht unterstützt."
 
 #: src/camel/camel-smime-context.c:196
 msgid "Unable to import.  Incorrect privacy password."
@@ -4232,6 +4219,8 @@ msgstr ""
 #: src/camel/camel-smime-context.c:197
 msgid "Unable to import.  Same nickname already exists in database."
 msgstr ""
+"Importieren ist fehlgeschlagen.  Der Spitzname ist bereits in der Datenbank "
+"enthalten."
 
 #: src/camel/camel-smime-context.c:198
 msgid "The user pressed cancel."
@@ -4242,10 +4231,8 @@ msgid "Not imported, already in database."
 msgstr "Nicht importiert, bereits in der Datenbank."
 
 #: src/camel/camel-smime-context.c:200
-#, fuzzy
-#| msgid "Message Storage"
 msgid "Message not sent."
-msgstr "Nachrichtenspeicher"
+msgstr "Die Nachricht wurde nicht gesendet."
 
 #: src/camel/camel-smime-context.c:201
 msgid "Certificate key usage inadequate for attempted operation."
@@ -4263,36 +4250,48 @@ msgstr ""
 #: src/camel/camel-smime-context.c:204
 msgid "Unable to import.  Error attempting to import private key."
 msgstr ""
+"Importieren ist fehlgeschlagen.  Fehler beim Versuch, den geheimen Schlüssel "
+"zu importieren."
 
 #: src/camel/camel-smime-context.c:205
 msgid "Unable to import.  Error attempting to import certificate chain."
 msgstr ""
+"Importieren ist fehlgeschlagen.  Fehler beim Versuch, die Zertifikatskette "
+"zu importieren."
 
+# "Change the -n parameter to specify a nickname that identifies this certificate in the database."(https://kb.mozillazine.org/Creating_SMIME_certificates_with_Mozilla_NSS)
 #: src/camel/camel-smime-context.c:206
 msgid "Unable to export.  Unable to locate certificate or key by nickname."
 msgstr ""
+"Exportieren ist fehlgeschlagen.  Zertifikat oder Schlüssel kann nicht anhand "
+"des Spitznamens ermittelt werden."
 
 #: src/camel/camel-smime-context.c:207
 msgid "Unable to export.  Private Key could not be located and exported."
 msgstr ""
+"Exportieren ist fehlgeschlagen.  Der geheime Schlüssel konnte nicht gefunden "
+"und exportiert werden."
 
 #: src/camel/camel-smime-context.c:208
 msgid "Unable to export.  Unable to write the export file."
 msgstr ""
+"Exportieren ist fehlgeschlagen.  Die Export-Datei kann nicht geschrieben "
+"werden."
 
 #: src/camel/camel-smime-context.c:209
 msgid "Unable to import.  Unable to read the import file."
 msgstr ""
+"Importieren ist fehlgeschlagen.  Die Import-Datei kann nicht gelesen werden."
 
 #: src/camel/camel-smime-context.c:210
 msgid "Unable to export.  Key database corrupt or deleted."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:211
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Unable to generate public/private key pair."
-msgstr "Cache-Pfad konnte nicht angelegt werden"
+msgstr ""
+"Das Schlüsselpaar (öffentlicher und geheimer Schlüssel) konnte nicht erzeugt "
+"werden."
 
 #: src/camel/camel-smime-context.c:212
 msgid "Password entered is invalid.  Please pick a different one."
@@ -4304,10 +4303,8 @@ msgstr ""
 "Das alte Passwort wurde falsch eingegeben. Bitte versuchen Sie es erneut."
 
 #: src/camel/camel-smime-context.c:214
-#, fuzzy
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate nickname already in use."
-msgstr "Zertifikatssignaturalgorithmus deaktiviert"
+msgstr "Zertifikat-Spitzname bereits in Verwendung."
 
 #: src/camel/camel-smime-context.c:215
 msgid "Peer FORTEZZA chain has a non-FORTEZZA Certificate."
@@ -4355,23 +4352,17 @@ msgstr ""
 "Die Schlüssel-Rückrufliste ist für dieses Zertifikat noch nicht gültig."
 
 #: src/camel/camel-smime-context.c:225
-#, fuzzy
-#| msgid ""
-#| "The certificate has been revoked according to the connection’s "
-#| "certificate revocation list."
 msgid "The certificate revocation list for this certificate is not yet valid."
 msgstr ""
-"Das Zertifikat wurde gemäß der Widerrufsliste der Verbindung zurückgezogen."
+"Die Zertifikat-Widerrufsliste für dieses Zertifikat ist noch nicht gültig."
 
 #: src/camel/camel-smime-context.c:226
 msgid "The requested certificate could not be found."
 msgstr "Das angeforderte Zertifikat wurde nicht gefunden."
 
 #: src/camel/camel-smime-context.c:227
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "The signer's certificate could not be found."
-msgstr "Signaturzertifikat nicht gefunden"
+msgstr "Das Zertifikat des Signierers konnte nicht gefunden werden."
 
 #: src/camel/camel-smime-context.c:228
 msgid "The location for the certificate status server has invalid format."
@@ -4414,10 +4405,8 @@ msgid "The OCSP server has no status for the certificate."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:238
-#, fuzzy
-#| msgid "You must be working online to complete this operation"
 msgid "You must enable OCSP before performing this operation."
-msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen"
+msgstr "Sie müssen für diesen Vorgang OCSP einschalten."
 
 #: src/camel/camel-smime-context.c:239
 msgid ""
@@ -4437,6 +4426,8 @@ msgstr ""
 #: src/camel/camel-smime-context.c:242
 msgid "The OCSP response is not yet valid (contains a date in the future)."
 msgstr ""
+"Die OCSP-Antwort ist noch nicht gültig (sie enthält ein Datum in der "
+"Zukunft)."
 
 #: src/camel/camel-smime-context.c:243
 msgid "The OCSP response contains out-of-date information."
@@ -4470,11 +4461,11 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:250
 msgid "NSS could not shutdown. Objects are still in use."
-msgstr ""
+msgstr "NSS konnte nicht beenden. Es sind noch Objekte in Verwendung."
 
 #: src/camel/camel-smime-context.c:251
 msgid "DER-encoded message contained extra unused data."
-msgstr ""
+msgstr "Die DER-codierte Nachricht enthielt zusätzliche, ungenutzte Daten."
 
 #: src/camel/camel-smime-context.c:252
 msgid "Unsupported elliptic curve."
@@ -4491,10 +4482,8 @@ msgid "Unrecognized Object Identifier."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:255
-#, fuzzy
-#| msgid "Signing certificate not trusted"
 msgid "Invalid OCSP signing certificate in OCSP response."
-msgstr "Signaturzertifikat nicht vertrauenswürdig"
+msgstr "Ungültiges OCSP-Signaturzertifikat in OCSP-Antwort."
 
 #: src/camel/camel-smime-context.c:256
 #, fuzzy
@@ -4548,13 +4537,11 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:267
 msgid "Configured OCSP responder's certificate is invalid."
-msgstr ""
+msgstr "Das Zertifikat des eingestellten OCSP-Antworters ist ungültig."
 
 #: src/camel/camel-smime-context.c:268
-#, fuzzy
-#| msgid "No signed data in signature"
 msgid "OCSP response has an invalid signature."
-msgstr "Keine signierten Daten in Signatur"
+msgstr "Die OCSP-Antwort hat eine ungültige Signatur."
 
 #: src/camel/camel-smime-context.c:271
 msgid "Cert validation search is out of search limits"
@@ -4581,10 +4568,8 @@ msgid "Server returned bad LDAP response"
 msgstr "Der Server lieferte eine ungültige LDAP-Anwort."
 
 #: src/camel/camel-smime-context.c:277
-#, fuzzy
-#| msgid "Failed to add data to CMS encoder"
 msgid "Failed to encode data with ASN1 encoder"
-msgstr "Daten konnten nicht zu CMS-Kodierer hinzugefügt werden"
+msgstr "Daten konnten nicht mit dem ASN1-Codierer codiert werden"
 
 #: src/camel/camel-smime-context.c:278
 msgid "Bad information access location in cert extension"
@@ -4631,17 +4616,15 @@ msgstr "Zertifikatssignaturalgorithmus deaktiviert"
 
 #: src/camel/camel-smime-context.c:290
 msgid "Legacy database"
-msgstr ""
+msgstr "Veraltete Datenbank"
 
 #: src/camel/camel-smime-context.c:291 src/camel/camel-smime-context.c:819
 msgid "Signature algorithm disabled"
 msgstr "Signaturalgorithmus deaktiviert"
 
 #: src/camel/camel-smime-context.c:292
-#, fuzzy
-#| msgid "Algorithm"
 msgid "Algorithm mismatch"
-msgstr "Algorithmus"
+msgstr "Algorithmen stimmen nicht überein"
 
 #: src/camel/camel-smime-context.c:321
 msgid "Unknown error."
@@ -7884,7 +7867,7 @@ msgstr ""
 "Bitte melden Sie sich erneut am Server an."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: src/libedataserver/e-oauth2-service-google.c:58
+#: src/libedataserver/e-oauth2-service-google.c:59
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -8439,13 +8422,13 @@ msgid "Algorithm"
 msgstr "Algorithmus"
 
 #: src/libedataserverui/e-credentials-prompter.c:92
-#: src/libedataserverui/e-credentials-prompter.c:248
-#: src/libedataserverui/e-credentials-prompter.c:463
-#: src/libedataserverui/e-credentials-prompter.c:1746
+#: src/libedataserverui/e-credentials-prompter.c:247
+#: src/libedataserverui/e-credentials-prompter.c:461
+#: src/libedataserverui/e-credentials-prompter.c:1739
 msgid "Credentials prompt was cancelled"
 msgstr "Abfrage der Anmeldedaten wurde abgebrochen"
 
-#: src/libedataserverui/e-credentials-prompter.c:772
+#: src/libedataserverui/e-credentials-prompter.c:767
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Die Quelle »%s« unterstützt das Anfragen von Anmeldedaten nicht"
@@ -8591,23 +8574,23 @@ msgstr ""
 msgid "Failed to open browser: %s"
 msgstr "Browser konnte nicht geöffnet werden: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1048
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1049
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1130
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1131
 msgid "URL:"
 msgstr "Adresse:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1160
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1161
 msgid "Click here to open the URL"
 msgstr "Klicken Sie hier, um die Adresse zu öffnen"
 
 # »Seine Arbeit« kommt nicht im Original vor, aber ohne irgendein Objekt vor »finished/abgeschlossen« ist dieser Nebensatz kaum verständlich, finde ich. Bessere Versionen werden wie immer gerne angenommen. - jb
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1200
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8618,11 +8601,11 @@ msgstr ""
 "die Adresse, mit der der OAuth2-Assistent seine Arbeit abgeschlossen hat, "
 "unterhalb ein, um den Legitimierungsvorgang fortzusetzen."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1237
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1238
 msgid "_Authorization code:"
 msgstr "_Legitimierungs-Code:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1250
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1251
 msgid "C_ontinue"
 msgstr "F_ortfahren"
 
