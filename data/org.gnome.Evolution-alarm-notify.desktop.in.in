@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Evolution Alarm Notify
-Comment=Calendar event notifications
-Icon=appointment-soon
+Name=Events and Tasks Reminders
+Comment=Event and task notifications
+Icon=org.gnome.Evolution-alarm-notify
 Exec=@privlibexecdir@/evolution-alarm-notify
 Terminal=false
 Categories=

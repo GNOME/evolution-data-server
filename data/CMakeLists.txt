@@ -4,6 +4,7 @@
 
 set(autostartdir ${SYSCONF_INSTALL_DIR}/xdg/autostart)
 set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
+set(alarm_notify_icon hicolor_apps_scalable_org.gnome.Evolution-alarm-notify.svg)
 
 configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
 	org.gnome.Evolution-alarm-notify.desktop.in
@@ -20,6 +21,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.deskt
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
 	DESTINATION ${desktopdir}
 )
+
+add_icon_cache_files("${SHARE_INSTALL_PREFIX}" alarm_notify_icon)
 
 # ********************************
 # OAuth2 Handler helper
