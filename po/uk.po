@@ -7,14 +7,14 @@
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003.
 # wanderlust <wanderlust@ukr.net>, 2009.
 # Andriy Bandura <andriykopanytsia@gmail.com>, 2014.
-# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2022, 2023.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2022, 2023, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
-"sues\n"
-"POT-Creation-Date: 2023-12-18 08:34+0000\n"
-"PO-Revision-Date: 2023-12-18 16:57+0200\n"
+"sues/\n"
+"POT-Creation-Date: 2024-02-01 10:33+0000\n"
+"PO-Revision-Date: 2024-02-01 19:06+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -23,31 +23,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 23.04.1\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:97
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:237
+#: src/addressbook/libebook-contacts/e-contact.c:312
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
+msgid "Anniversary"
+msgstr "Річниця"
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:489
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Вказана адреса, «%s» не є адресою адресної книги CardDAV"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1397
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1377
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
 msgid "Server didn’t return object’s href"
 msgstr "Сервер не повернув посилання об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1399
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1379
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Сервер не повернув ETag об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1401
 msgid "Received object is not a valid vCard"
 msgstr "Отриманий об'єкт не є коректною vCard"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1523
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1519
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
 #, c-format
 msgid ""
@@ -59,7 +66,7 @@ msgstr ""
 "пошкоджений. Ви можете спробувати вилучити його і перезапустити фонові "
 "процеси evolution-data-server. Файл кешу: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1529
 msgid "Object to save is not a valid vCard"
 msgstr "Об'єкт для збереження не є коректною візитною карткою vCard"
 
@@ -172,7 +179,7 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/calendar/libecal/e-cal-client.c:6376
 #: src/calendar/libecal/e-cal-client.c:6581
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #: src/camel/providers/imapx/camel-imapx-server.c:3360
 #: src/camel/providers/imapx/camel-imapx-server.c:3366
 #: src/camel/providers/imapx/camel-imapx-server.c:3376
@@ -790,11 +797,6 @@ msgstr "Список показує адреси"
 msgid "Birth Date"
 msgstr "Дата народження"
 
-#: src/addressbook/libebook-contacts/e-contact.c:312
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
-msgid "Anniversary"
-msgstr "Річниця"
-
 #. Security fields
 #: src/addressbook/libebook-contacts/e-contact.c:315
 msgid "X.509 Certificate"
@@ -1332,12 +1334,12 @@ msgstr "Версія розсинхронізувалася під час пер
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Алфавітний індекс був встановлений для нечинної локалі"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:258
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Наданий URL «%s» не посилається на календар CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2042
 msgid "Failed to parse response data"
 msgstr "Не вдалося проаналізувати дані відповіді"
 
@@ -2773,84 +2775,84 @@ msgstr "Не вдалося перейменувати «%s»: у %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Передавання відфільтрованих повідомлень у «%s : %s»"
 
-#: src/camel/camel-filter-driver.c:1233 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1240 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Не вдалося створити дочірній процес «%s»: %s"
 
-#: src/camel/camel-filter-driver.c:1287
+#: src/camel/camel-filter-driver.c:1294
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Отримано неправильний потік повідомлень з %s: %s"
 
-#: src/camel/camel-filter-driver.c:1511 src/camel/camel-filter-driver.c:1524
+#: src/camel/camel-filter-driver.c:1518 src/camel/camel-filter-driver.c:1531
 msgid "Syncing folders"
 msgstr "Синхронізація тек"
 
-#: src/camel/camel-filter-driver.c:1632
+#: src/camel/camel-filter-driver.c:1639
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Помилка аналізу фільтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1643
+#: src/camel/camel-filter-driver.c:1650
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Помилка виконання фільтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1741
+#: src/camel/camel-filter-driver.c:1748
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Не вдалося відкрити буферну теку"
 
-#: src/camel/camel-filter-driver.c:1753
+#: src/camel/camel-filter-driver.c:1760
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Не вдалося обробити буферну теку"
 
-#: src/camel/camel-filter-driver.c:1781
+#: src/camel/camel-filter-driver.c:1788
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Отримання повідомлення %d (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1790 src/camel/camel-filter-driver.c:1813
+#: src/camel/camel-filter-driver.c:1797 src/camel/camel-filter-driver.c:1820
 #, c-format
 msgid "Failed on message %d"
 msgstr "Помилка на повідомленні %d"
 
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Не вдалося перенести повідомлення: %s"
 
-#: src/camel/camel-filter-driver.c:1841 src/camel/camel-filter-driver.c:1985
+#: src/camel/camel-filter-driver.c:1848 src/camel/camel-filter-driver.c:1998
 msgid "Syncing folder"
 msgstr "Синхронізація теки"
 
-#: src/camel/camel-filter-driver.c:1846 src/camel/camel-filter-driver.c:1993
+#: src/camel/camel-filter-driver.c:1853 src/camel/camel-filter-driver.c:2006
 msgid "Complete"
 msgstr "Виконано"
 
-#: src/camel/camel-filter-driver.c:1914
+#: src/camel/camel-filter-driver.c:1921
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Отримання повідомлення %d з %d"
 
-#: src/camel/camel-filter-driver.c:1932
+#: src/camel/camel-filter-driver.c:1945
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Помилка на повідомленні %d з %d"
 
-#: src/camel/camel-filter-driver.c:2149 src/camel/camel-filter-driver.c:2173
+#: src/camel/camel-filter-driver.c:2167 src/camel/camel-filter-driver.c:2191
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Помилка виконання фільтра «%s»: "
 
-#: src/camel/camel-filter-driver.c:2163
+#: src/camel/camel-filter-driver.c:2181
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Помилка аналізу фільтра «%s»: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2182
+#: src/camel/camel-filter-driver.c:2200
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Помилка виконання фільтра «%s»: %s: %s"
@@ -3408,7 +3410,7 @@ msgstr "Отримуємо нові повідомлення для автоно
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:280
+#: src/camel/camel-offline-folder.c:294
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3417,7 +3419,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:356
+#: src/camel/camel-offline-folder.c:370
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Синхронізація повідомлень у теці «%s : %s» на диск"
@@ -3427,12 +3429,12 @@ msgstr "Синхронізація повідомлень у теці «%s : %s�
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:450
+#: src/camel/camel-offline-folder.c:464
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Синхронізація повідомлення %d з %d у теці «%s : %s» на диск"
 
-#: src/camel/camel-offline-folder.c:504
+#: src/camel/camel-offline-folder.c:527
 msgid "Copy folder content locally for _offline operation"
 msgstr "Скопіювати вміст теки на локальну машину для _автономної роботи"
 
@@ -4614,7 +4616,6 @@ msgid "Algorithm mismatch"
 msgstr "Невідповідність алгоритмів"
 
 #: src/camel/camel-smime-context.c:321
-#| msgid "Unknown error"
 msgid "Unknown error."
 msgstr "Невідома помилка."
 
@@ -7405,12 +7406,13 @@ msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Застаріле) URL автоматичного налаштування проксі"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:4
-msgid "Evolution Alarm Notify"
-msgstr "Сповіщення сигналами у Evolution"
+msgid "Events and Tasks Reminders"
+msgstr "Нагадування про події та завдання"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:5
-msgid "Calendar event notifications"
-msgstr "Сповіщення щодо подій календаря"
+#| msgid "Enable desktop notifications"
+msgid "Event and task notifications"
+msgstr "Сповіщення про події та завдання"
 
 #: src/libebackend/e-cache.c:750
 msgid "Out of memory"
@@ -7814,7 +7816,7 @@ msgstr ""
 "сервер знову, будь ласка."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: src/libedataserver/e-oauth2-service-google.c:58
+#: src/libedataserver/e-oauth2-service-google.c:59
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -8364,13 +8366,14 @@ msgstr "Відкритий ключ"
 msgid "Algorithm"
 msgstr "Алгоритм"
 
-#: src/libedataserverui/e-credentials-prompter.c:260
-#: src/libedataserverui/e-credentials-prompter.c:1755
-#: src/libedataserverui/e-credentials-prompter.c:1799
+#: src/libedataserverui/e-credentials-prompter.c:92
+#: src/libedataserverui/e-credentials-prompter.c:247
+#: src/libedataserverui/e-credentials-prompter.c:461
+#: src/libedataserverui/e-credentials-prompter.c:1739
 msgid "Credentials prompt was cancelled"
 msgstr "Запит щодо реєстраційних даних було скасовано"
 
-#: src/libedataserverui/e-credentials-prompter.c:776
+#: src/libedataserverui/e-credentials-prompter.c:767
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Джерело «%s» не підтримує запит облікових даних"
@@ -8516,22 +8519,22 @@ msgstr ""
 msgid "Failed to open browser: %s"
 msgstr "Не вдалося відкрити браузер: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1048
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1049
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1130
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1131
 msgid "URL:"
 msgstr "Адреса:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1160
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1161
 msgid "Click here to open the URL"
 msgstr "Натисніть, щоб відкрити URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1200
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8542,11 +8545,11 @@ msgstr ""
 "завершив роботу майстер OAuth2, до наведеного нижче поля і продовжіть "
 "процедуру розпізнавання."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1237
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1238
 msgid "_Authorization code:"
 msgstr "Код _уповноваження:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1250
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1251
 msgid "C_ontinue"
 msgstr "Пр_одовжити"
 
@@ -9279,6 +9282,12 @@ msgstr "У інтернеті"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Нотатки WebDAV"
+
+#~ msgid "Evolution Alarm Notify"
+#~ msgstr "Сповіщення сигналами у Evolution"
+
+#~ msgid "Calendar event notifications"
+#~ msgstr "Сповіщення щодо подій календаря"
 
 #~| msgid "Unknown error"
 #~ msgid "Uknown error."
