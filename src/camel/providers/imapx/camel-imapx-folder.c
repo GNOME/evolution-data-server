@@ -584,6 +584,40 @@ exit:
 	return success;
 }
 
+static void
+imapx_set_attachment_flag (CamelMimeMessage *msg,
+                           CamelMessageInfo *mi)
+{
+	CamelMessageFlags flags;
+	gboolean has_attachment;
+
+	flags = camel_message_info_get_flags (mi);
+	has_attachment = camel_mime_message_has_attachment (msg);
+	if (((flags & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+	    ((flags & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+		camel_message_info_set_flags (
+			mi, CAMEL_MESSAGE_ATTACHMENTS,
+			has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
+	}
+}
+
+static void
+imapx_set_preview_sync (CamelMimeMessage *msg,
+			CamelMessageInfo *mi)
+{
+	gchar *preview;
+
+	if (camel_message_info_get_preview (mi))
+		return;
+
+	preview = camel_mime_part_generate_preview (CAMEL_MIME_PART (msg), NULL, NULL);
+	if (preview) {
+		if (*preview)
+			camel_message_info_set_preview (mi, preview);
+		g_free (preview);
+	}
+}
+
 static CamelMimeMessage *
 imapx_message_from_stream_sync (CamelIMAPXFolder *imapx_folder,
 				CamelStream *stream,
@@ -641,6 +675,17 @@ imapx_get_message_cached (CamelFolder *folder,
 		msg = imapx_message_from_stream_sync (imapx_folder, stream, cancellable, NULL);
 
 		g_object_unref (stream);
+	}
+
+	if (msg != NULL) {
+		CamelMessageInfo *mi;
+
+		mi = camel_folder_summary_get (camel_folder_get_folder_summary (folder), message_uid);
+		if (mi != NULL) {
+			imapx_set_preview_sync (msg, mi);
+
+			g_clear_object (&mi);
+		}
 	}
 
 	return msg;
@@ -714,27 +759,8 @@ imapx_get_message_sync (CamelFolder *folder,
 
 		mi = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
 		if (mi != NULL) {
-			CamelMessageFlags flags;
-			gboolean has_attachment;
-
-			flags = camel_message_info_get_flags (mi);
-			has_attachment = camel_mime_message_has_attachment (msg);
-			if (((flags & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
-			    ((flags & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
-				camel_message_info_set_flags (
-					mi, CAMEL_MESSAGE_ATTACHMENTS,
-					has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
-			}
-
-			if (!camel_message_info_get_preview (mi)) {
-				gchar *preview;
-
-				preview = camel_mime_part_generate_preview (CAMEL_MIME_PART (msg), NULL, NULL);
-				if (preview && *preview)
-					camel_message_info_set_preview (mi, preview);
-
-				g_free (preview);
-			}
+			imapx_set_attachment_flag (msg, mi);
+			imapx_set_preview_sync (msg, mi);
 
 			g_clear_object (&mi);
 		}
