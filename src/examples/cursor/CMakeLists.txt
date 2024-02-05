@@ -52,10 +52,4 @@ target_link_libraries(cursor-example
 	${EXAMPLES_LDFLAGS}
 )
 
-set(UI_FILES
-	cursor-example.ui
-	cursor-search.ui
-	cursor-slot.ui
-)
-
-glib_compile_resources(${CMAKE_CURRENT_SOURCE_DIR} cursor-example-resources _cursor_example cursor-example.gresources.xml ${UI_FILES})
+glib_compile_resources(${CMAKE_CURRENT_SOURCE_DIR} cursor-example-resources _cursor_example cursor-example.gresources.xml)

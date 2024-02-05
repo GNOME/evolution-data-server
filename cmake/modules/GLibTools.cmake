@@ -281,16 +281,31 @@ if(NOT GLIB_COMPILE_RESOURCES)
 endif(NOT GLIB_COMPILE_RESOURCES)
 
 macro(glib_compile_resources _sourcedir _outputprefix _cname _inxml)
+	set(${_outputprefix}_EXPLICIT_DEPS ${ARGN})
+	execute_process(
+		COMMAND ${GLIB_COMPILE_RESOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/${_inxml} --sourcedir=${_sourcedir} --generate-dependencies
+		OUTPUT_VARIABLE ${_outputprefix}_DEPS
+	)
+	string(REGEX REPLACE "\n" ";" ${_outputprefix}_DEPS "${${_outputprefix}_DEPS}")
+	foreach(OUTPUT_DEP ${${_outputprefix}_DEPS})
+		get_filename_component(OUTPUT_DEP_BASENAME ${OUTPUT_DEP} NAME)
+		foreach(EXPLICIT_DEP ${${_outputprefix}_EXPLICIT_DEPS})
+			get_filename_component(EXPLICIT_DEP_BASENAME ${EXPLICIT_DEP} NAME)
+			if(${OUTPUT_DEP_BASENAME} STREQUAL ${EXPLICIT_DEP_BASENAME})
+				list(REMOVE_ITEM ${_outputprefix}_DEPS ${OUTPUT_DEP})
+			endif()
+		endforeach()
+	endforeach()
 	add_custom_command(
 		OUTPUT ${_outputprefix}.h
 		COMMAND ${GLIB_COMPILE_RESOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/${_inxml} --target=${_outputprefix}.h --sourcedir=${_sourcedir} --c-name ${_cname} --generate-header
-		DEPENDS ${_inxml} ${ARGN}
+		DEPENDS ${_inxml} ${${_outputprefix}_DEPS} ${${_outputprefix}_EXPLICIT_DEPS}
 		VERBATIM
 	)
 	add_custom_command(
 		OUTPUT ${_outputprefix}.c
 		COMMAND ${GLIB_COMPILE_RESOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/${_inxml} --target=${_outputprefix}.c --sourcedir=${_sourcedir} --c-name ${_cname} --generate-source
-		DEPENDS ${_inxml} ${ARGN}
+		DEPENDS ${_inxml} ${${_outputprefix}_DEPS} ${${_outputprefix}_EXPLICIT_DEPS}
 		VERBATIM
 	)
 endmacro(glib_compile_resources)
