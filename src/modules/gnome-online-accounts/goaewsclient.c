@@ -350,21 +350,6 @@ ews_create_autodiscover_xml (const gchar *email)
 	return doc;
 }
 
-static GBytes *
-libxml_output_buffer_to_gbytes (xmlOutputBuffer *buf)
-{
-	GBytes *bytes;
-#ifdef LIBXML2_NEW_BUFFER
-	gsize len = xmlOutputBufferGetSize (buf);
-	bytes = g_bytes_new_with_free_func (xmlOutputBufferGetContent (buf), len,
-	                                    (GDestroyNotify) xmlOutputBufferClose, buf);
-#else
-	bytes = g_bytes_new_with_free_func (buf->buffer->content, buf->buffer->use,
-	                                    (GDestroyNotify) xmlOutputBufferClose, buf);
-#endif
-	return bytes;
-}
-
 static void
 ews_post_restarted_cb (SoupMessage *msg,
                        gpointer data)
@@ -434,7 +419,8 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	AutodiscoverData *data;
 	gchar *urls[AUTODISCOVER_MESSAGES];
 	xmlDoc *doc;
-	xmlOutputBuffer *buf;
+	xmlChar *xml_body = NULL;
+	gint xml_body_size = 0;
 	gchar *email;
 	gchar *username;
 	gchar *host;
@@ -476,10 +462,10 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	g_clear_object (&goa_account);
 
 	doc = ews_create_autodiscover_xml (email);
-	buf = xmlAllocOutputBuffer (NULL);
-	xmlNodeDumpOutput (buf, doc, xmlDocGetRootElement (doc), 0, 1, NULL);
-	xmlOutputBufferFlush (buf);
-	bytes = libxml_output_buffer_to_gbytes (g_steal_pointer (&buf));
+	xmlDocDumpMemory (doc, &xml_body, &xml_body_size);
+	bytes = g_bytes_new_with_free_func (xml_body, xml_body_size,
+	                                    (GDestroyNotify) xmlFree, xml_body);
+
 	g_clear_pointer (&doc, xmlFreeDoc);
 	g_clear_pointer (&email, g_free);
 
