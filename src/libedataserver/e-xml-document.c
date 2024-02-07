@@ -155,28 +155,26 @@ gchar *
 e_xml_document_get_content (const EXmlDocument *xml,
 			    gsize *out_length)
 {
-	xmlOutputBufferPtr xmlbuffer;
-	gsize length;
+	xmlChar *xml_body = NULL;
+	gint xml_body_size = -1;
 	gchar *text;
 
 	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), NULL);
 
-	xmlbuffer = xmlAllocOutputBuffer (NULL);
-	xmlNodeDumpOutput (xmlbuffer, xml->priv->doc, xml->priv->root, 0, 0, NULL);
-	xmlOutputBufferFlush (xmlbuffer);
+	xmlDocDumpMemory (xml->priv->doc, &xml_body, &xml_body_size);
 
-#ifdef LIBXML2_NEW_BUFFER
-	length = xmlOutputBufferGetSize (xmlbuffer);
-	text = g_strndup ((const gchar *) xmlOutputBufferGetContent (xmlbuffer), length);
-#else
-	length = xmlbuffer->buffer->use;
-	text = g_strndup ((const gchar *) xmlbuffer->buffer->content, length);
-#endif
+	if (xml_body_size >= 0) {
+		text = g_strndup ((const gchar *) xml_body, xml_body_size);
+		if (out_length)
+			*out_length = (gsize) xml_body_size;
+	} else {
+		text = NULL;
+		if (out_length)
+			*out_length = 0;
+	}
 
-	xmlOutputBufferClose (xmlbuffer);
-
-	if (out_length)
-		*out_length = length;
+	if (xml_body)
+		xmlFree (xml_body);
 
 	return text;
 }
