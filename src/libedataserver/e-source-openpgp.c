@@ -50,6 +50,7 @@ struct _ESourceOpenPGPPrivate {
 	gboolean locate_keys;
 	gboolean send_public_key;
 	gboolean send_prefer_encrypt;
+	gboolean ask_send_public_key;
 };
 
 enum {
@@ -63,7 +64,8 @@ enum {
 	PROP_PREFER_INLINE,
 	PROP_LOCATE_KEYS,
 	PROP_SEND_PUBLIC_KEY,
-	PROP_SEND_PREFER_ENCRYPT
+	PROP_SEND_PREFER_ENCRYPT,
+	PROP_ASK_SEND_PUBLIC_KEY
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -134,6 +136,12 @@ source_openpgp_set_property (GObject *object,
 
 		case PROP_SEND_PREFER_ENCRYPT:
 			e_source_openpgp_set_send_prefer_encrypt (
+				E_SOURCE_OPENPGP (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_ASK_SEND_PUBLIC_KEY:
+			e_source_openpgp_set_ask_send_public_key (
 				E_SOURCE_OPENPGP (object),
 				g_value_get_boolean (value));
 			return;
@@ -216,6 +224,13 @@ source_openpgp_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_openpgp_get_send_prefer_encrypt (
+				E_SOURCE_OPENPGP (object)));
+			return;
+
+		case PROP_ASK_SEND_PUBLIC_KEY:
+			g_value_set_boolean (
+				value,
+				e_source_openpgp_get_ask_send_public_key (
 				E_SOURCE_OPENPGP (object)));
 			return;
 	}
@@ -390,6 +405,21 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ASK_SEND_PUBLIC_KEY,
+		g_param_spec_boolean (
+			"ask-send-public-key",
+			"Ask Send Public Key",
+			"Ask before sending public key in messages",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
 }
 
 static void
@@ -828,9 +858,9 @@ e_source_openpgp_set_locate_keys (ESourceOpenPGP *extension,
  * e_source_openpgp_get_send_public_key:
  * @extension: an #ESourceOpenPGP
  *
- * Returns, whether should send GPG public key in messages. The default is %TRUE.
+ * Returns, whether should send PGP public key in messages. The default is %TRUE.
  *
- * Returns: whether should send GPG public key in messages
+ * Returns: whether should send PGP public key in messages
  *
  * Since: 3.50
  **/
@@ -909,4 +939,46 @@ e_source_openpgp_set_send_prefer_encrypt (ESourceOpenPGP *extension,
 	extension->priv->send_prefer_encrypt = send_prefer_encrypt;
 
 	g_object_notify (G_OBJECT (extension), "send-prefer-encrypt");
+}
+
+/**
+ * e_source_openpgp_get_ask_send_public_key:
+ * @extension: an #ESourceOpenPGP
+ *
+ * Returns, whether should ask before sending PGP public key in messages. The default is %TRUE.
+ *
+ * Returns: whether should ask before sending PGP public key in messages
+ *
+ * Since: 3.52
+ **/
+gboolean
+e_source_openpgp_get_ask_send_public_key (ESourceOpenPGP *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_OPENPGP (extension), FALSE);
+
+	return extension->priv->ask_send_public_key;
+}
+
+/**
+ * e_source_openpgp_set_ask_send_public_key:
+ * @extension: an #ESourceOpenPGP
+ * @ask_send_public_key: value to set
+ *
+ * Sets the @ask_send_public_key on the @extension, which tells the client to
+ * ask before user sends public key in the messages in an Autocrypt header.
+ *
+ * Since: 3.52
+ **/
+void
+e_source_openpgp_set_ask_send_public_key (ESourceOpenPGP *extension,
+					  gboolean ask_send_public_key)
+{
+	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
+
+	if (!extension->priv->ask_send_public_key == !ask_send_public_key)
+		return;
+
+	extension->priv->ask_send_public_key = ask_send_public_key;
+
+	g_object_notify (G_OBJECT (extension), "ask-send-public-key");
 }

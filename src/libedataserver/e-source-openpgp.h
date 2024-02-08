@@ -127,6 +127,11 @@ gboolean	e_source_openpgp_get_send_prefer_encrypt
 void		e_source_openpgp_set_send_prefer_encrypt
 						(ESourceOpenPGP *extension,
 						 gboolean send_prefer_encrypt);
+gboolean	e_source_openpgp_get_ask_send_public_key
+						(ESourceOpenPGP *extension);
+void		e_source_openpgp_set_ask_send_public_key
+						(ESourceOpenPGP *extension,
+						 gboolean ask_send_public_key);
 
 G_END_DECLS
 
