@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.51.2 2024-02-09
+---------------------------------------
+
+Bug Fixes:
+	I#513 - ephonenumber: Switch from 'std::auto_ptr' to 'std::unique_ptr'
+	I#514 - Calendar: Decode attachment URI before inline it
+	I#515 - OAuth2: Enable HTML5 database and local storage features for web view
+	I#517 - Anniversary field from Google Contacts doesn't sync
+	I#520 - Evolution Alarm Notify: Ship app icon
+	I#521 - Camel: Convert text to UTF-8 when creating message preview
+	I#525 - EXmlDocument: Save content with xml header
+	M!143 - ECredentialsPrompter: Port to GTask (Corentin Noël)
+	M!149 - camel-lock-helper: Change id to actually hold a guint32 (Corentin Noël)
+	M!149 - CamelSettings: Remove the use of the deprecated GParameter (Corentin Noël)
+	M!151 - CamelFolderThread: Remove unused possible future API (Corentin Noël)
+	M!153 - IMAPX: Ensure preview has been cached (Cédric Bellegarde)
+	M!154 - GLibTools: Automatically get the dependencies of a GResource (Corentin Noël)
+
+Miscellaneous:
+	build: Don't set CFLAGS returned by pkg-config as CMAKE_REQUIRED_FLAGS
+	build: Bump CMake version requirement to 3.15 and change libedataserverui4 .h files copy
+	camel-mime-filter-preview: Correct an 'if' statement
+	vcard: Fix check for group name in e_vcard_remove_attributes()
+	Update Google server names in checks for "is Google server"
+	ESourceOpenPGP: Add "ask-send-public-key" option
+
+Translations:
+	Artur S0 (ru)
+	Christian Kirbach (de)
+	Julia Dronova (ru)
+	Juliano de Souza Camargo (pt_BR)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.51.1 2024-01-05
 ---------------------------------------
 
