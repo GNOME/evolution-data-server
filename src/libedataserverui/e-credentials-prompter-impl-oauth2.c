@@ -1006,6 +1006,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 #ifdef WITH_WEBKITGTK
 	GtkScrolledWindow *scrolled_window;
 	GtkWidget *progress_bar;
+	WebKitCookieManager *cookie_manager;
 	WebKitSettings *webkit_settings;
 	WebKitWebContext *web_context;
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
@@ -1316,9 +1317,9 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	webkit_settings = webkit_settings_new_with_settings (
 		"auto-load-images", TRUE,
 		"default-charset", "utf-8",
-		"enable-html5-database", FALSE,
 		"enable-dns-prefetching", FALSE,
-		"enable-html5-local-storage", FALSE,
+		"enable-html5-database", TRUE,
+		"enable-html5-local-storage", TRUE,
 		"enable-offline-web-application-cache", FALSE,
 		"enable-page-cache", FALSE,
 		"media-playback-allows-inline", FALSE,
@@ -1331,11 +1332,14 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 #endif
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
 	network_session = webkit_network_session_new (NULL, NULL);
+	cookie_manager = webkit_network_session_get_cookie_manager (network_session);
 	credentials_prompter_impl_oauth2_set_proxy (network_session, e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
 #else
+	cookie_manager = webkit_web_context_get_cookie_manager (web_context);
 	data_manager = webkit_web_context_get_website_data_manager (web_context);
 	credentials_prompter_impl_oauth2_set_proxy (data_manager, e_credentials_prompter_get_registry (prompter), prompter_oauth2->priv->auth_source);
 #endif
+	webkit_cookie_manager_set_accept_policy (cookie_manager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 
 	widget = g_object_new (WEBKIT_TYPE_WEB_VIEW,
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
