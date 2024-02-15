@@ -5267,7 +5267,7 @@ camel_header_address_fold (const gchar *in,
 			/* strip trailing space */
 			if (out->len > 0 && out->str[out->len - 1] == ' ')
 				g_string_truncate (out, out->len - 1);
-			g_string_append (out, "\n\t");
+			g_string_append (out, "\n ");
 			outlen = 1;
 		}
 
@@ -5340,7 +5340,7 @@ camel_header_fold (const gchar *in,
 		if (outlen + len > CAMEL_FOLD_SIZE) {
 			d (printf ("outlen = %d wordlen = %d\n", outlen, len));
 			/* strip trailing space */
-			if (out->len > 0 && (out->str[out->len - 1] == ' ' || out->str[out->len - 1] == '\t')) {
+			if (out->len > 0 && outlen > 2 && (out->str[out->len - 1] == ' ' || out->str[out->len - 1] == '\t')) {
 				spc = out->str[out->len - 1];
 				g_string_truncate (out, out->len - 1);
 				g_string_append_c (out, '\n');
@@ -5352,7 +5352,7 @@ camel_header_fold (const gchar *in,
 			while (outlen + len > CAMEL_FOLD_MAX_SIZE) {
 				tmplen = CAMEL_FOLD_MAX_SIZE - outlen;
 				g_string_append_len (out, inptr, tmplen);
-				g_string_append (out, "\n\t");
+				g_string_append (out, "\n ");
 				inptr += tmplen;
 				len -= tmplen;
 				outlen = 1;

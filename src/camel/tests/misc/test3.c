@@ -117,6 +117,126 @@ convert_hostname_bad_chars_url (void)
 	camel_test_end ();
 }
 
+static void
+header_folding (void)
+{
+	struct _data {
+		const gchar *value;
+		const gchar *folded;
+		const gchar *unfolded;  /* NULL when expecting the same as `value` */
+		const gchar *folded2; /* NULL when expecting the same as `folded` */
+	} data[] = {
+		{ "Short: header value",
+		  "Short: header value",
+		  NULL, NULL },
+		{ "Long: 789_123456789_123456789_123456789_1234567895123456789_123456789_123456789_123456789_1234567890",
+		  "Long:\n"
+		  " 789_123456789_123456789_123456789_1234567895123456789_123456789_123456789_123456789_1234567890",
+		  NULL, NULL },
+		{ "Long: 789_123456789_123456789_123456789_1234567895"
+		  "123456789_123456789_123456789_123456789_123456789 "
+		  "123456789_123456789_123456789_123456789_1234567895"
+		  "123456789_123456789_123456789_123456789_1234567890",
+		  "Long:\n"
+		  " 789_123456789_123456789_123456789_1234567895123456789_123456789_123456789_123456789_123456789\n"
+		  " 123456789_123456789_123456789_123456789_1234567895123456789_123456789_123456789_123456789_1234567890",
+		  NULL, NULL },
+		{ "Aaaaaaaaa: aaaa=aaaa@aa.aaaaa; aaaaaa-aaaaaaa=aaaaaa; aaaaaaa=xXXxXXXxxxXXXXXxoxxxxXXXxXxxXXXxXxxXxxxXxxXoXoXXXxXXxXXxXoXoxxxXX/"
+		  "XxxXoXxXxxXoxXxoxxXxX/xx/oXoxxoXoxxXXxxxxxxXoxxxXXXXxxXxXXXXXoooxXxxoxXxXXXXxxXXxXXoxoXxxXxxo/XxxXoXooXXxxXoxxX/XXXXXxoxXxxXXXxX"
+		  "XXXoXooxXoXxoxxXXXxXXX/xxXooxxoXxo/+xXxoxXXoXxxxXXXooXXXxxXXXxoxxxXxxxoxXxxxoxxxxxXxxxxXXXXoxoXXX/XxxxXXXo+/oxxxxXXxXxXXxxXXoXXX"
+		  "xxX+XXxxXxoxxxXxxXXoXXxXXxXxox+XxoXxxXxoXXoXXxoxoxoXXXXXoXxXXXXXXoXXXoXxXXoxXXoXXxXXxoxXxXxXXoxxoXxXXxXXoxxxXXxoXxxxXXXXxXxxXXoX"
+		  "XxoxxXxxXXooXXXxXxxxxXXxxXX/XX+XX+xXx+xoXxxXooxXXxXoxxxxXXXxxxxxXxxoxX+/XxxXooxxxxxooxoxxXxxxxXXxxXxooxXooxoxxxxXxXXxxXXoxXoXxXX"
+		  "XxXxXxXXxxxXxxXXoxxxxxXXXxXXxxxXoxxoo+xXXXXxXXXXXXXxXxxxXXXxXXXxxXXxXXXXXXXXXXXxXXXXXxXXXXxXXXXXXoXXo+ooXxXXXoXXxXoxxxoXxoXoxXXX"
+		  "xxXXxxxxxoxxXxxXXooXxxxoxxxoXoxXXxxoooxxxoXxoXXx+xxXXXXXXXxXXXoXxxxXxXxXXxxXxXoxXxoXXXXx+xXoxxxXXxXoxXoxXoxoXXxxxxoxXXxxxXXxx+oX"
+		  "XXXXxXXXXX/xXXxoXXxxxxXxoxxXxXxoxoxXxXXxXxxxxooxoXxoxXxXxXxXXX/XXxxXXxxxXxxXxx+xxXo+oxoxXxxxxxXoXxooxxXXxxxxX+XXxXxXxXXxxxXoXXxX"
+		  "XXxxxXoxxxoxoooxXxXoxoXxXXXxxxXXoXoXxXxxXoXXXXXxxXXxX+xxxxXXoxxxXxXxxXxxXXxo+oxooxxoxxoXxxx/+XoXxoxXxxXXxxXXxxXxxxXoxxxXxxooxxxX"
+		  "XXxXxxxxxXxoxXXxxX/xxoooxoXXXXxXxXoXooxx+xXXxXXXXXxxoXxoXXxxxoXXxxXx+xxxXxXXxXXxxxXXXxXXoXXXXoxo+xxXXXoXxxXoXx/X+XXXxxXXxxxxXXxX"
+		  "xxoXXox/X/xxxoxXxxXXxXxxXxXXxXxxXxXoXxxoxX+XXXXXoXxxxxxxXXoxxxoxxxXoXXXxXoXxXoXxxXXXxXoXXXxXo/oxxxoXxxXXXXxxXxxXoxX+XXXx+xXXXXxx"
+		  "x/xXooxx+xxxxxXxoXoXooXXXxXxxooxXxXxxXXXxxxxoXoXxxxoxXxX+xXxXoXXxxoxxXxxXXxXxXXXoXXxxXXXxoXXxXXxXxxXxxoXxXXXXXXXXXXXXXXx+xxXXxXX"
+		  "XXXXXoXXo+ooXxXxxXXXoXxoxxxoxXXxXxxxXoxxoXxXXXxXXxXXXxXoxx/x+xxxxXxXxxxxoXXXX=",
+		  "Aaaaaaaaa: aaaa=aaaa@aa.aaaaa; aaaaaa-aaaaaaa=aaaaaa;\n"
+		  " aaaaaaa=xXXxXXXxxxXXXXXxoxxxxXXXxXxxXXXxXxxXxxxXxxXoXoXXXxXXxXXxXoXoxxxXX/XxxXoXxXxxXoxXxoxxXxX/xx/oXoxxoXoxxXXxxxxxxXoxxxXXXXx"
+		  "xXxXXXXXoooxXxxoxXxXXXXxxXXxXXoxoXxxXxxo/XxxXoXooXXxxXoxxX/XXXXXxoxXxxXXXxXXXXoXooxXoXxoxxXXXxXXX/xxXooxxoXxo/+xXxoxXXoXxxxXXXoo"
+		  "XXXxxXXXxoxxxXxxxoxXxxxoxxxxxXxxxxXXXXoxoXXX/XxxxXXXo+/oxxxxXXxXxXXxxXXoXXXxxX+XXxxXxoxxxXxxXXoXXxXXxXxox+XxoXxxXxoXXoXXxoxoxoXX"
+		  "XXXoXxXXXXXXoXXXoXxXXoxXXoXXxXXxoxXxXxXXoxxoXxXXxXXoxxxXXxoXxxxXXXXxXxxXXoXXxoxxXxxXXooXXXxXxxxxXXxxXX/XX+XX+xXx+xoXxxXooxXXxXox"
+		  "xxxXXXxxxxxXxxoxX+/XxxXooxxxxxooxoxxXxxxxXXxxXxooxXooxoxxxxXxXXxxXXoxXoXxXXXxXxXxXXxxxXxxXXoxxxxxXXXxXXxxxXoxxoo+xXXXXxXXXXXXXxX"
+		  "xxxXXXxXXXxxXXxXXXXXXXXXXXxXXXXXxXXXXxXXXXXXoXXo+ooXxXXXoXXxXoxxxoXxoXoxXXXxxXXxxxxxoxxXxxXXooXxxxoxxxoXoxXXxxoooxxxoXxoXXx+xxXX"
+		  "XXXXXxXXXoXxxxXxXxXXxxXxXoxXxoXXXXx+xXoxxxXXxXoxXoxXoxoXXxxxxoxXXxxxXXxx+oXXXXXxXXXXX/xXXxoXXxxxxXxoxxXxXxoxoxXxXXxXxxxxooxoXxox"
+		  "XxXxXxXXX/XXxxXXxxxXxxXxx+xxXo+oxoxXxxxxxXoXxooxxXXxxxxX+XXxXxXxXXxxxXoXXxXXXxxxXoxxxoxoooxXxXoxoXxXXX\n"
+		  " xxxXXoXoXxXxxXoXXXXXxxXXxX+xxxxXXoxxxXxXxxXxxXXxo+oxooxxoxxoXxxx/+XoXxoxXxxXXxxXXxxXxxxXoxxxXxxooxxxXXXxXxxxxxXxoxXXxxX/xxooox"
+		  "oXXXXxXxXoXooxx+xXXxXXXXXxxoXxoXXxxxoXXxxXx+xxxXxXXxXXxxxXXXxXXoXXXXoxo+xxXXXoXxxXoXx/X+XXXxxXXxxxxXXxXxxoXXox/X/xxxoxXxxXXxXxxX"
+		  "xXXxXxxXxXoXxxoxX+XXXXXoXxxxxxxXXoxxxoxxxXoXXXxXoXxXoXxxXXXxXoXXXxXo/oxxxoXxxXXXXxxXxxXoxX+XXXx+xXXXXxxx/xXooxx+xxxxxXxoXoXooXXX"
+		  "xXxxooxXxXxxXXXxxxxoXoXxxxoxXxX+xXxXoXXxxoxxXxxXXxXxXXXoXXxxXXXxoXXxXXxXxxXxxoXxXXXXXXXXXXXXXXx+xxXXxXXXXXXXoXXo+ooXxXxxXXXoXxox"
+		  "xxoxXXxXxxxXoxxoXxXXXxXXxXXXxXoxx/x+xxxxXxXxxxxoXXXX=",
+		  "Aaaaaaaaa: aaaa=aaaa@aa.aaaaa; aaaaaa-aaaaaaa=aaaaaa;"
+		  " aaaaaaa=xXXxXXXxxxXXXXXxoxxxxXXXxXxxXXXxXxxXxxxXxxXoXoXXXxXXxXXxXoXoxxxXX/XxxXoXxXxxXoxXxoxxXxX/xx/oXoxxoXoxxXXxxxxxxXoxxxXXXXx"
+		  "xXxXXXXXoooxXxxoxXxXXXXxxXXxXXoxoXxxXxxo/XxxXoXooXXxxXoxxX/XXXXXxoxXxxXXXxXXXXoXooxXoXxoxxXXXxXXX/xxXooxxoXxo/+xXxoxXXoXxxxXXXoo"
+		  "XXXxxXXXxoxxxXxxxoxXxxxoxxxxxXxxxxXXXXoxoXXX/XxxxXXXo+/oxxxxXXxXxXXxxXXoXXXxxX+XXxxXxoxxxXxxXXoXXxXXxXxox+XxoXxxXxoXXoXXxoxoxoXX"
+		  "XXXoXxXXXXXXoXXXoXxXXoxXXoXXxXXxoxXxXxXXoxxoXxXXxXXoxxxXXxoXxxxXXXXxXxxXXoXXxoxxXxxXXooXXXxXxxxxXXxxXX/XX+XX+xXx+xoXxxXooxXXxXox"
+		  "xxxXXXxxxxxXxxoxX+/XxxXooxxxxxooxoxxXxxxxXXxxXxooxXooxoxxxxXxXXxxXXoxXoXxXXXxXxXxXXxxxXxxXXoxxxxxXXXxXXxxxXoxxoo+xXXXXxXXXXXXXxX"
+		  "xxxXXXxXXXxxXXxXXXXXXXXXXXxXXXXXxXXXXxXXXXXXoXXo+ooXxXXXoXXxXoxxxoXxoXoxXXXxxXXxxxxxoxxXxxXXooXxxxoxxxoXoxXXxxoooxxxoXxoXXx+xxXX"
+		  "XXXXXxXXXoXxxxXxXxXXxxXxXoxXxoXXXXx+xXoxxxXXxXoxXoxXoxoXXxxxxoxXXxxxXXxx+oXXXXXxXXXXX/xXXxoXXxxxxXxoxxXxXxoxoxXxXXxXxxxxooxoXxox"
+		  "XxXxXxXXX/XXxxXXxxxXxxXxx+xxXo+oxoxXxxxxxXoXxooxxXXxxxxX+XXxXxXxXXxxxXoXXxXXXxxxXoxxxoxoooxXxXoxoXxXXX"
+		  " xxxXXoXoXxXxxXoXXXXXxxXXxX+xxxxXXoxxxXxXxxXxxXXxo+oxooxxoxxoXxxx/+XoXxoxXxxXXxxXXxxXxxxXoxxxXxxooxxxXXXxXxxxxxXxoxXXxxX/xxooox"
+		  "oXXXXxXxXoXooxx+xXXxXXXXXxxoXxoXXxxxoXXxxXx+xxxXxXXxXXxxxXXXxXXoXXXXoxo+xxXXXoXxxXoXx/X+XXXxxXXxxxxXXxXxxoXXox/X/xxxoxXxxXXxXxxX"
+		  "xXXxXxxXxXoXxxoxX+XXXXXoXxxxxxxXXoxxxoxxxXoXXXxXoXxXoXxxXXXxXoXXXxXo/oxxxoXxxXXXXxxXxxXoxX+XXXx+xXXXXxxx/xXooxx+xxxxxXxoXoXooXXX"
+		  "xXxxooxXxXxxXXXxxxxoXoXxxxoxXxX+xXxXoXXxxoxxXxxXXxXxXXXoXXxxXXXxoXXxXXxXxxXxxoXxXXXXXXXXXXXXXXx+xxXXxXXXXXXXoXXo+ooXxXxxXXXoXxox"
+		  "xxoxXXxXxxxXoxxoXxXXXxXXxXXXxXoxx/x+xxxxXxXxxxxoXXXX=",
+		  "Aaaaaaaaa: aaaa=aaaa@aa.aaaaa; aaaaaa-aaaaaaa=aaaaaa;\n"
+		  " aaaaaaa=xXXxXXXxxxXXXXXxoxxxxXXXxXxxXXXxXxxXxxxXxxXoXoXXXxXXxXXxXoXoxxxXX/XxxXoXxXxxXoxXxoxxXxX/xx/oXoxxoXoxxXXxxxxxxXoxxxXXXXx"
+		  "xXxXXXXXoooxXxxoxXxXXXXxxXXxXXoxoXxxXxxo/XxxXoXooXXxxXoxxX/XXXXXxoxXxxXXXxXXXXoXooxXoXxoxxXXXxXXX/xxXooxxoXxo/+xXxoxXXoXxxxXXXoo"
+		  "XXXxxXXXxoxxxXxxxoxXxxxoxxxxxXxxxxXXXXoxoXXX/XxxxXXXo+/oxxxxXXxXxXXxxXXoXXXxxX+XXxxXxoxxxXxxXXoXXxXXxXxox+XxoXxxXxoXXoXXxoxoxoXX"
+		  "XXXoXxXXXXXXoXXXoXxXXoxXXoXXxXXxoxXxXxXXoxxoXxXXxXXoxxxXXxoXxxxXXXXxXxxXXoXXxoxxXxxXXooXXXxXxxxxXXxxXX/XX+XX+xXx+xoXxxXooxXXxXox"
+		  "xxxXXXxxxxxXxxoxX+/XxxXooxxxxxooxoxxXxxxxXXxxXxooxXooxoxxxxXxXXxxXXoxXoXxXXXxXxXxXXxxxXxxXXoxxxxxXXXxXXxxxXoxxoo+xXXXXxXXXXXXXxX"
+		  "xxxXXXxXXXxxXXxXXXXXXXXXXXxXXXXXxXXXXxXXXXXXoXXo+ooXxXXXoXXxXoxxxoXxoXoxXXXxxXXxxxxxoxxXxxXXooXxxxoxxxoXoxXXxxoooxxxoXxoXXx+xxXX"
+		  "XXXXXxXXXoXxxxXxXxXXxxXxXoxXxoXXXXx+xXoxxxXXxXoxXoxXoxoXXxxxxoxXXxxxXXxx+oXXXXXxXXXXX/xXXxoXXxxxxXxoxxXxXxoxoxXxXXxXxxxxooxoXxox"
+		  "XxXxXxXXX/XXxxXXxxxXxxXxx+xxXo+oxoxXxxxxxXoXxooxxXXxxxxX+XXxXxXxXXxxxXoXXxXXXxxxXoxxxoxoooxXxXoxoXxXXX\n"
+		  "  xxxXXoXoXxXxxXoXXXXXxxXXxX+xxxxXXoxxxXxXxxXxxXXxo+oxooxxoxxoXxxx/+XoXxoxXxxXXxxXXxxXxxxXoxxxXxxooxxxXXXxXxxxxxXxoxXXxxX/xxooox"
+		  "oXXXXxXxXoXooxx+xXXxXXXXXxxoXxoXXxxxoXXxxXx+xxxXxXXxXXxxxXXXxXXoXXXXoxo+xxXXXoXxxXoXx/X+XXXxxXXxxxxXXxXxxoXXox/X/xxxoxXxxXXxXxxX"
+		  "xXXxXxxXxXoXxxoxX+XXXXXoXxxxxxxXXoxxxoxxxXoXXXxXoXxXoXxxXXXxXoXXXxXo/oxxxoXxxXXXXxxXxxXoxX+XXXx+xXXXXxxx/xXooxx+xxxxxXxoXoXooXXX"
+		  "xXxxooxXxXxxXXXxxxxoXoXxxxoxXxX+xXxXoXXxxoxxXxxXXxXxXXXoXXxxXXXxoXXxXXxXxxXxxoXxXXXXXXXXXXXXXXx+xxXXxXXXXXXXoXXo+ooXxXxxXXXoXxox"
+		  "xxoxXXxXxxxXoxxoXxXXXxXXxXXXxXoxx/x+xxxxXxXxxxxoXXXX=" }
+	};
+	gint ii;
+
+	camel_test_start ("Header folding");
+
+	for (ii = 0; ii < G_N_ELEMENTS (data); ii++) {
+		gchar *folded, *folded2, *folded3, *unfolded;
+		const gchar *expected_unfolded;
+		const gchar *expected_folded2;
+
+		folded = camel_header_fold (data[ii].value, strchr (data[ii].value, ':') - data[ii].value - 1);
+		check_msg (g_strcmp0 (folded, data[ii].folded) == 0,
+			"Failed on [%d] (%s): returns '%s', expected '%s'", ii, data[ii].value, folded, data[ii].folded);
+
+		expected_unfolded = data[ii].unfolded;
+		if (!expected_unfolded)
+			expected_unfolded = data[ii].value;
+		unfolded = camel_header_unfold (folded);
+		check_msg (g_strcmp0 (unfolded, expected_unfolded) == 0,
+			"Failed to unfold on [%d]: returns '%s', expected '%s'", ii, unfolded, expected_unfolded);
+		g_free (unfolded);
+
+		expected_folded2 = data[ii].folded2;
+		if (!expected_folded2)
+			expected_folded2 = folded;
+		folded2 = camel_header_fold (folded, strchr (folded, ':') - folded - 1);
+		check_msg (g_strcmp0 (folded2, expected_folded2) == 0,
+			"Failed fold2 of folded on [%d]: returns '%s', expected '%s'", ii, folded2, expected_folded2);
+
+		folded3 = camel_header_fold (folded2, strchr (folded2, ':') - folded2 - 1);
+		check_msg (g_strcmp0 (folded3, expected_folded2) == 0,
+			"Failed fold3 of folded on [%d]: returns '%s', expected '%s'", ii, folded3, expected_folded2);
+
+		g_free (folded);
+		g_free (folded2);
+		g_free (folded3);
+	}
+
+	camel_test_end ();
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -127,6 +247,7 @@ main (gint argc,
 	detect_hostname_bad_chars ();
 	convert_hostname_bad_chars_email ();
 	convert_hostname_bad_chars_url ();
+	header_folding ();
 
 	return 0;
 }
