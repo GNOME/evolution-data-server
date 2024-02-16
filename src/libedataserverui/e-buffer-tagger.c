@@ -114,7 +114,7 @@ typedef struct _MagicInsertMatch MagicInsertMatch;
 
 static MagicInsertMatch mim[] = {
 	/* prefixed expressions */
-	{ "(news|telnet|nntp|file|http|ftp|sftp|https|webcal)://([-a-z0-9]+(:[-a-z0-9]+)?@)?[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(([.])?/[-a-z0-9_$.+!*(),;:@%&=?/~#']*[^]'.}>\\) \n\r\t,?!;:\"]?)?", NULL, NULL },
+	{ "(news|telnet|nntp|file|http|ftp|sftp|https|webcal|webcals)://([-a-z0-9]+(:[-a-z0-9]+)?@)?[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(([.])?/[-a-z0-9_$.+!*(),;:@%&=?/~#']*[^]'.}>\\) \n\r\t,?!;:\"]?)?", NULL, NULL },
 	{ "(sip|h323|callto|tel):([-_a-z0-9.'\\+]+(:[0-9]{1,5})?(/[-_a-z0-9.']+)?)(@([-_a-z0-9.%=?]+|([0-9]{1,3}.){3}[0-9]{1,3})?)?(:[0-9]{1,5})?", NULL, NULL },
 	{ "mailto:[-_a-z0-9.'\\+]+@[-_a-z0-9.%=?]+", NULL, NULL },
 	/* not prefixed expression */

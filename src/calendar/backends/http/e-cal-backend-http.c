@@ -50,10 +50,11 @@ static gchar *
 ecb_http_webcal_to_http_method (const gchar *webcal_str,
 				gboolean secure)
 {
-	if (secure && (
-	    g_str_has_prefix (webcal_str, "http://") ||
-	    g_str_has_prefix (webcal_str, "webcal://")))
+	if (secure && g_str_has_prefix (webcal_str, "http://"))
 		return g_strconcat ("https://", webcal_str + sizeof ("http://") - 1, NULL);
+
+	if (g_str_has_prefix (webcal_str, "webcals://"))
+		return g_strconcat ("https://", webcal_str + strlen ("webcals://"), NULL);
 
 	if (!g_str_has_prefix (webcal_str, "webcal://"))
 		return g_strdup (webcal_str);
