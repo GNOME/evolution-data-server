@@ -210,7 +210,7 @@ unlock_id (guint32 lockid)
 	d (fprintf (stderr, "unlocking id '%d'\n", lockid));
 
 	p = lock_info_list;
-	info = p->next;
+	info = p;
 	while (info) {
 		if (info->id == lockid) {
 			d (fprintf (stderr, "found id %d path '%s'\n", lockid, info->path));
@@ -229,7 +229,10 @@ unlock_id (guint32 lockid)
 #endif
 					camel_unlock_dot (info->path);
 
-				p->next = info->next;
+				if (info == lock_info_list)
+					lock_info_list = info->next;
+				else
+					p->next = info->next;
 				free (info);
 			}
 
