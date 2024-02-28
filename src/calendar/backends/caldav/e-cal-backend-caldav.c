@@ -49,6 +49,8 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* TRUE when 'calendar-schedule' supported on the server */
 	gboolean calendar_schedule;
+	/* TRUE when 'calendar-auto-schedule' supported on the server */
+	gboolean calendar_auto_schedule;
 	/* with 'calendar-schedule' supported, here's an outbox url
 	 * for queries of free/busy information */
 	gchar *schedule_outbox_url;
@@ -64,6 +66,8 @@ struct _ECalBackendCalDAVPrivate {
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_META_BACKEND)
+
+static gchar *ecb_caldav_get_backend_property (ECalBackend *backend, const gchar *prop_name);
 
 static EWebDAVSession *
 ecb_caldav_ref_session (ECalBackendCalDAV *cbdav)
@@ -232,17 +236,32 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 	if (success) {
 		ESourceWebdav *webdav_extension;
 		GUri *parsed_uri;
-		gboolean calendar_access;
+		gboolean calendar_access, calendar_schedule, calendar_auto_schedule;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		parsed_uri = e_source_webdav_dup_uri (webdav_extension);
 
-		cbdav->priv->calendar_schedule = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
-			(!capabilities || g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE) ||
-			g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE));
+		calendar_auto_schedule = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
+			capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE);
+		calendar_schedule = calendar_auto_schedule ||
+			(e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) != I_CAL_VJOURNAL_COMPONENT &&
+			(!capabilities || g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE)));
 		calendar_access = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_ACCESS);
 
 		if (calendar_access) {
+			if ((!calendar_schedule) != (!cbdav->priv->calendar_schedule) ||
+			    (!calendar_auto_schedule) != (!cbdav->priv->calendar_auto_schedule)) {
+				ECalBackend *cal_backend = E_CAL_BACKEND (cbdav);
+				gchar *value;
+
+				cbdav->priv->calendar_schedule = calendar_schedule;
+				cbdav->priv->calendar_auto_schedule = calendar_auto_schedule;
+
+				value = ecb_caldav_get_backend_property (cal_backend, CLIENT_BACKEND_PROPERTY_CAPABILITIES);
+				e_cal_backend_notify_property_changed (cal_backend, CLIENT_BACKEND_PROPERTY_CAPABILITIES, value);
+				g_free (value);
+			}
+
 			e_cal_backend_set_writable (E_CAL_BACKEND (cbdav), is_writable);
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
@@ -1251,6 +1270,45 @@ ecb_caldav_store_component_etag (ICalComponent *icomp,
 }
 
 static gboolean
+ecb_caldav_get_save_schedules_enabled (ECalBackendCalDAV *cbdav)
+{
+	ESourceWebdav *extension;
+	ESource *source;
+
+	if ((!cbdav->priv->calendar_schedule && !cbdav->priv->calendar_auto_schedule) ||
+	    e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)) == I_CAL_VJOURNAL_COMPONENT) {
+		return FALSE;
+	}
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+	return e_source_webdav_get_calendar_auto_schedule (extension);
+}
+
+static void
+ecb_cbdav_set_property_schedule_agent (ICalComponent *comp,
+				       ICalPropertyKind kind,
+				       ICalParameterScheduleagent value)
+{
+	ICalProperty *prop;
+
+	for (prop = i_cal_component_get_first_property (comp, kind);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (comp, kind)) {
+		i_cal_property_remove_parameter_by_kind (prop, I_CAL_SCHEDULEAGENT_PARAMETER);
+
+		/* use the I_CAL_SCHEDULEAGENT_X to remove any existing parameters */
+		if (value != I_CAL_SCHEDULEAGENT_X) {
+			ICalParameter *param;
+
+			param = i_cal_parameter_new_scheduleagent (value);
+			i_cal_property_take_parameter (prop, param);
+		}
+	}
+}
+
+static gboolean
 ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 				const gchar *uid,
 				const gchar *extra,
@@ -1422,6 +1480,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	ICalComponent *vcalendar, *subcomp;
 	gchar *href = NULL, *etag = NULL, *uid = NULL;
 	gchar *ical_string = NULL;
+	gboolean disable_scheduling;
 	gboolean success;
 	GError *local_error = NULL;
 
@@ -1434,6 +1493,10 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 	vcalendar = e_cal_meta_backend_merge_instances (meta_backend, instances, TRUE);
 	g_return_val_if_fail (vcalendar != NULL, FALSE);
+
+	disable_scheduling = cbdav->priv->calendar_auto_schedule && (
+		(opflags & E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE) != 0 ||
+		!ecb_caldav_get_save_schedules_enabled (cbdav));
 
 	for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
 	     subcomp;
@@ -1449,6 +1512,12 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				uid = g_strdup (i_cal_component_get_uid (subcomp));
 
 			e_cal_util_component_remove_x_property (subcomp, E_CALDAV_X_ETAG);
+
+			if (disable_scheduling) {
+				/* this way the server should not send any messages on its own */
+				ecb_cbdav_set_property_schedule_agent (subcomp, I_CAL_ORGANIZER_PROPERTY, I_CAL_SCHEDULEAGENT_CLIENT);
+				ecb_cbdav_set_property_schedule_agent (subcomp, I_CAL_ATTENDEE_PROPERTY, I_CAL_SCHEDULEAGENT_CLIENT);
+			}
 		}
 	}
 
@@ -1487,6 +1556,22 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				gchar *tmp;
 
 				ecb_caldav_store_component_etag (vcalendar, new_etag);
+
+				if (disable_scheduling) {
+					for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
+					     subcomp;
+					     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
+						ICalComponentKind kind = i_cal_component_isa (subcomp);
+
+						if (kind == I_CAL_VEVENT_COMPONENT ||
+						    kind == I_CAL_VJOURNAL_COMPONENT ||
+						    kind == I_CAL_VTODO_COMPONENT) {
+							/* remote the added scheduling agent parameters */
+							ecb_cbdav_set_property_schedule_agent (subcomp, I_CAL_ORGANIZER_PROPERTY, I_CAL_SCHEDULEAGENT_X);
+							ecb_cbdav_set_property_schedule_agent (subcomp, I_CAL_ATTENDEE_PROPERTY, I_CAL_SCHEDULEAGENT_X);
+						}
+					}
+				}
 
 				g_free (ical_string);
 				ical_string = i_cal_component_as_ical_string (vcalendar);
@@ -1592,7 +1677,8 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
-	if ((opflags & E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE) != 0) {
+	if ((opflags & E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE) != 0 ||
+	    !ecb_caldav_get_save_schedules_enabled (cbdav)) {
 		extra_headers = soup_message_headers_new (SOUP_MESSAGE_HEADERS_REQUEST);
 
 		soup_message_headers_append (extra_headers, "Schedule-Reply", "F");
@@ -2329,8 +2415,6 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		ECalBackendCalDAV *cbdav = E_CAL_BACKEND_CALDAV (backend);
-		ESourceWebdav *extension;
-		ESource *source;
 		GString *caps;
 		gchar *usermail;
 
@@ -2348,11 +2432,7 @@ ecb_caldav_get_backend_property (ECalBackend *backend,
 			g_string_append (caps, "," E_CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
 		g_free (usermail);
 
-		source = e_backend_get_source (E_BACKEND (backend));
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-
-		if (e_cal_backend_get_kind (backend) != I_CAL_VJOURNAL_COMPONENT &&
-		    e_source_webdav_get_calendar_auto_schedule (extension)) {
+		if (ecb_caldav_get_save_schedules_enabled (cbdav)) {
 			g_string_append (
 				caps,
 				"," E_CAL_STATIC_CAPABILITY_CREATE_MESSAGES
