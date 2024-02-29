@@ -2021,13 +2021,22 @@ imapx_parse_fetch_preview (CamelIMAPXInputStream *stream,
 			   GError **error)
 {
 	gboolean success;
+	GError *local_error = NULL;
 
-	success = camel_imapx_input_stream_nstring_bytes (
-		stream, &finfo->preview, FALSE, cancellable, error);
+	success = camel_imapx_input_stream_nstring_bytes (stream, &finfo->preview, FALSE, cancellable, &local_error);
 
 	/* the preview can be NIL */
 	if (success && finfo->preview)
 		finfo->got |= FETCH_PREVIEW;
+
+	if (!success) {
+		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED))
+			g_set_error_literal (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_PREVIEW_BROKEN, local_error->message);
+		else if (local_error)
+			g_propagate_error (error, g_steal_pointer (&local_error));
+	}
+
+	g_clear_error (&local_error);
 
 	return success;
 }

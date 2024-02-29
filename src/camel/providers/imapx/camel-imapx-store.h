@@ -85,6 +85,11 @@ gboolean	camel_imapx_store_get_bodystructure_enabled
 void		camel_imapx_store_set_bodystructure_enabled
 						(CamelIMAPXStore *store,
 						 gboolean enabled);
+gboolean	camel_imapx_store_get_preview_enabled
+						(CamelIMAPXStore *store);
+void		camel_imapx_store_set_preview_enabled
+						(CamelIMAPXStore *store,
+						 gboolean enabled);
 CamelIMAPXConnManager *
 		camel_imapx_store_get_conn_manager
 						(CamelIMAPXStore *store);

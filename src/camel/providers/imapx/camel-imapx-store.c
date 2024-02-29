@@ -79,6 +79,7 @@ struct _CamelIMAPXStorePrivate {
 	GMutex mailboxes_lock;
 
 	gboolean bodystructure_enabled;
+	gboolean preview_enabled;
 };
 
 enum {
@@ -2603,6 +2604,24 @@ camel_imapx_store_set_bodystructure_enabled (CamelIMAPXStore *store,
 		store->priv->bodystructure_enabled = enabled;
 }
 
+gboolean
+camel_imapx_store_get_preview_enabled (CamelIMAPXStore *store)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), FALSE);
+
+	return store->priv->preview_enabled;
+}
+
+void
+camel_imapx_store_set_preview_enabled (CamelIMAPXStore *store,
+				       gboolean enabled)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
+
+	if ((!store->priv->preview_enabled) != (!enabled))
+		store->priv->preview_enabled = enabled;
+}
+
 static gchar *
 imapx_find_folder_for_initial_setup (CamelFolderInfo *root,
 				     const gchar *path)
@@ -3411,6 +3430,7 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 	g_mutex_init (&store->priv->settings_lock);
 
 	store->priv->bodystructure_enabled = TRUE;
+	store->priv->preview_enabled = TRUE;
 
 	imapx_utils_init ();
 

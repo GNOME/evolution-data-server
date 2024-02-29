@@ -1097,13 +1097,31 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 {
 	struct _fetch_info *finfo;
 	gboolean got_body_header;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	finfo = imapx_parse_fetch (
-		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
+	finfo = imapx_parse_fetch (CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, &local_error);
 	if (finfo == NULL) {
+		CamelIMAPXStore *imapx_store;
+
+		imapx_store = camel_imapx_server_ref_store (is);
+
 		imapx_free_fetch (finfo);
+
+		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_PREVIEW_BROKEN) &&
+		    imapx_store && camel_imapx_store_get_preview_enabled (imapx_store)) {
+			g_set_error (error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
+				"Broken response for PREVIEW token, disabling PREVIEW fetch; original error: %s", local_error->message);
+			g_clear_error (&local_error);
+
+			camel_imapx_store_set_preview_enabled (imapx_store, FALSE);
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+
+		g_clear_object (&imapx_store);
+
 		return FALSE;
 	}
 
@@ -3583,7 +3601,8 @@ preauthed:
 			" SubscriptionChange))"
 
 		/* XXX The list of FETCH attributes is negotiable. */
-		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, PREVIEW)) {
+		if (camel_imapx_store_get_preview_enabled (store) &&
+		    CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, PREVIEW)) {
 			if (camel_imapx_store_get_bodystructure_enabled (store))
 				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, NOTIFY_CMD (" BODYSTRUCTURE PREVIEW"));
 			else
@@ -5488,6 +5507,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	if (success && fetch_summary_uids) {
 		CamelIMAPXStore *imapx_store;
 		gboolean bodystructure_enabled;
+		gboolean preview_enabled;
 		struct _uidset_state uidset;
 		GSList *link;
 
@@ -5504,6 +5524,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 
 		imapx_store = camel_imapx_server_ref_store (is);
 		bodystructure_enabled = imapx_store && camel_imapx_store_get_bodystructure_enabled (imapx_store);
+		preview_enabled = imapx_store && camel_imapx_store_get_preview_enabled (imapx_store);
 		is->priv->fetch_changes_with_headers = imapx_server_slist_length_not_more_than (fetch_summary_uids, MAX_N_MESSAGES_WITH_HEADERS);
 
 		fetch_summary_uids = g_slist_sort (fetch_summary_uids, imapx_uids_desc_cmp);
@@ -5520,7 +5541,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 			if (imapx_uidset_add (&uidset, ic, uid) == 1 || (!link->next && ic && imapx_uidset_done (&uidset, ic))) {
 				GError *local_error = NULL;
 
-				if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, PREVIEW)) {
+				if (preview_enabled && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, PREVIEW)) {
 					if (bodystructure_enabled)
 						camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE PREVIEW FLAGS)");
 					else
