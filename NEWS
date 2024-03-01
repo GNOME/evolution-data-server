@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.51.3 2024-03-01
+---------------------------------------
+
+Bug Fixes:
+	I#139 - CalDAV Scheduling - utilize SCHEDULE-AGENT property parameter
+	I#522 - build: Make sure tests run in serial
+	I#526 - IMAPx: Disable PREVIEW fetch on error
+	I#527 - Camel: Long header folding should not add empty folding line
+	I#528 - Camel: Fix possible busy loop in camel-lock-helper
+	evo-I#2675 - Support webcals: URI
+
+Translations:
+	Asier Sarasua Garmendia (eu)
+
 Evolution-Data-Server 3.51.2 2024-02-09
 ---------------------------------------
 
