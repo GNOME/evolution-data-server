@@ -535,12 +535,19 @@ backend_source_authenticate_thread (gpointer user_data)
 static void
 backend_source_authenticate_cb (ESource *source,
 				const ENamedParameters *credentials,
-				EBackend *backend)
+				gpointer user_data)
 {
-	g_return_if_fail (E_IS_BACKEND (backend));
+	GWeakRef *weak_ref = user_data;
+	EBackend *backend;
+
+	g_return_if_fail (weak_ref != NULL);
 	g_return_if_fail (credentials != NULL);
 
-	e_backend_schedule_authenticate	(backend, credentials);
+	backend = g_weak_ref_get (weak_ref);
+	if (backend) {
+		e_backend_schedule_authenticate	(backend, credentials);
+		g_object_unref (backend);
+	}
 }
 
 static void
@@ -552,7 +559,9 @@ backend_set_source (EBackend *backend,
 
 	backend->priv->source = g_object_ref (source);
 
-	g_signal_connect (backend->priv->source, "authenticate", G_CALLBACK (backend_source_authenticate_cb), backend);
+	g_signal_connect_data (backend->priv->source, "authenticate",
+		G_CALLBACK (backend_source_authenticate_cb), e_weak_ref_new (backend),
+		(GClosureNotify) e_weak_ref_free, 0);
 }
 
 static void
