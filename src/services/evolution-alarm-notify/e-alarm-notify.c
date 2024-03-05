@@ -332,7 +332,7 @@ e_alarm_notify_display (EAlarmNotify *an,
 		notification = g_notification_new (_("Reminders"));
 		g_notification_set_body (notification, description);
 
-		icon = g_themed_icon_new ("appointment-soon");
+		icon = g_themed_icon_new ("appointment-soon-symbolic");
 		if (icon) {
 			g_notification_set_icon (notification, icon);
 			g_object_unref (icon);
