@@ -24,6 +24,7 @@
 #include "e-cal-backend-webdav-notes.h"
 
 #define E_WEBDAV_NOTES_X_ETAG "X-EVOLUTION-WEBDAV-NOTES-ETAG"
+#define E_WEBDAV_NOTES_X_IS_MARKDOWN "X-EVOLUTION-IS-MARKDOWN"
 
 #define EC_ERROR(_code) e_client_error_create (_code, NULL)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
@@ -493,6 +494,10 @@ ecb_webdav_notes_new_icomp (glong creation_date,
 	} else if (summary && *summary) {
 		i_cal_component_set_summary (icomp, summary);
 	}
+
+	if ((uid && g_str_has_suffix (uid, ".md")) ||
+	    (summary && g_str_has_suffix (summary, ".md")))
+		e_cal_util_component_set_x_property (icomp, E_WEBDAV_NOTES_X_IS_MARKDOWN, "1");
 
 	if (description && *description) {
 		const gchar *current_summary;
@@ -1203,11 +1208,12 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 		}
 
 		if (success) {
+			ICalComponent *icomp_copy = NULL;
+
 			/* Only if both are returned and it's not a weak ETag */
 			if (new_extra && *new_extra && new_etag && *new_etag &&
 			    g_ascii_strncasecmp (new_etag, "W/", 2) != 0) {
-				ICalComponent *icomp_copy;
-				gchar *tmp = NULL, *ical_string;
+				gchar *tmp = NULL;
 				glong now = (glong) time (NULL);
 				gint len = 0;
 
@@ -1218,6 +1224,29 @@ ecb_webdav_notes_save_component_sync (ECalMetaBackend *meta_backend,
 					tmp ? tmp : uid, description);
 
 				g_free (tmp);
+			} else if (out_new_extra && new_extra && *new_extra) {
+				gchar *is_markdown_str;
+
+				is_markdown_str = e_cal_util_component_dup_x_property (icomp, E_WEBDAV_NOTES_X_IS_MARKDOWN);
+
+				/* add or remove is-markdown notice, if needed */
+				if (g_str_has_suffix (uid, ".md")) {
+					if (g_strcmp0 (is_markdown_str, "1") != 0) {
+						icomp_copy = i_cal_component_clone (icomp);
+						e_cal_util_component_set_x_property (icomp_copy, E_WEBDAV_NOTES_X_IS_MARKDOWN, "1");
+					}
+				} else if (g_strcmp0 (is_markdown_str, "1") == 0) {
+					icomp_copy = i_cal_component_clone (icomp);
+					while (e_cal_util_component_remove_x_property (icomp_copy, E_WEBDAV_NOTES_X_IS_MARKDOWN)) {
+						/* remove all */
+					}
+				}
+
+				g_free (is_markdown_str);
+			}
+
+			if (icomp_copy != NULL) {
+				gchar *tmp, *ical_string;
 
 				ical_string = i_cal_component_as_ical_string (icomp_copy);
 

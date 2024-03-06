@@ -3480,16 +3480,21 @@ locale_equals_language (const gchar *locale,
 }
 
 /**
- * e_cal_util_component_find_property_for_locale:
+ * e_cal_util_component_find_property_for_locale_filtered:
  * @icalcomp: an #ICalComponent
  * @prop_kind: an #ICalPropertyKind to traverse
  * @locale: (nullable): a locale identifier, or %NULL
+ * @func: (scope call) (nullable): an #ECalUtilFilterPropertyFunc, to determine whether a property can be considered
+ * @user_data: user data for the @func
  *
- * Searches properties of kind @prop_kind in the @icalcomp and returns
- * one, which is usable for the @locale. When @locale is %NULL,
- * the current locale is assumed. If no such property for the locale
- * exists either the one with no language parameter or the first
+ * Searches properties of kind @prop_kind in the @icalcomp, which can
+ * be filtered by the @func, and returns one, which is usable for the @locale.
+ * When @locale is %NULL, the current locale is assumed. If no such property
+ * for the locale exists either the one with no language parameter or the first
  * found is returned.
+ *
+ * The @func is called before checking of the applicability for the @locale.
+ * When the @func is %NULL, all the properties of the @prop_kind are considered.
  *
  * Free the returned non-NULL #ICalProperty with g_object_unref(),
  * when no longer needed.
@@ -3497,13 +3502,14 @@ locale_equals_language (const gchar *locale,
  * Returns: (transfer full) (nullable): a property of kind @prop_kind for the @locale,
  *    %NULL if no such property is set on the @comp.
  *
- * Since: 3.46
-
+ * Since: 3.52
  **/
 ICalProperty *
-e_cal_util_component_find_property_for_locale (ICalComponent *icalcomp,
-					       ICalPropertyKind prop_kind,
-					       const gchar *locale)
+e_cal_util_component_find_property_for_locale_filtered (ICalComponent *icalcomp,
+							ICalPropertyKind prop_kind,
+							const gchar *locale,
+							ECalUtilFilterPropertyFunc func,
+							gpointer user_data)
 {
 	ICalProperty *prop;
 	ICalProperty *result = NULL;
@@ -3528,6 +3534,9 @@ e_cal_util_component_find_property_for_locale (ICalComponent *icalcomp,
 	     prop;
 	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, prop_kind)) {
 		ICalParameter *param;
+
+		if (func != NULL && !func (prop, user_data))
+			continue;
 
 		param = i_cal_property_get_first_parameter (prop, I_CAL_LANGUAGE_PARAMETER);
 		if (param) {
@@ -3584,6 +3593,36 @@ e_cal_util_component_find_property_for_locale (ICalComponent *icalcomp,
 	g_clear_pointer (&locale_variants, g_strfreev);
 
 	return result;
+}
+
+/**
+ * e_cal_util_component_find_property_for_locale:
+ * @icalcomp: an #ICalComponent
+ * @prop_kind: an #ICalPropertyKind to traverse
+ * @locale: (nullable): a locale identifier, or %NULL
+ *
+ * Searches properties of kind @prop_kind in the @icalcomp and returns
+ * one, which is usable for the @locale. When @locale is %NULL,
+ * the current locale is assumed. If no such property for the locale
+ * exists either the one with no language parameter or the first
+ * found is returned.
+ *
+ * Free the returned non-NULL #ICalProperty with g_object_unref(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): a property of kind @prop_kind for the @locale,
+ *    %NULL if no such property is set on the @comp.
+ *
+ * Since: 3.46
+ **/
+ICalProperty *
+e_cal_util_component_find_property_for_locale (ICalComponent *icalcomp,
+					       ICalPropertyKind prop_kind,
+					       const gchar *locale)
+{
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icalcomp), NULL);
+
+	return e_cal_util_component_find_property_for_locale_filtered (icalcomp, prop_kind, locale, NULL, NULL);
 }
 
 /**

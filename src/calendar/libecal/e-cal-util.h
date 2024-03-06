@@ -422,6 +422,26 @@ void		e_cal_util_clamp_vtimezone	(ICalComponent *vtimezone,
 void		e_cal_util_clamp_vtimezone_by_component
 						(ICalComponent *vtimezone,
 						 ICalComponent *component);
+/**
+ * ECalUtilFilterPropertyFunc:
+ * @prop: an #ICalProperty
+ * @user_data: user data for the function
+ *
+ * Function used to determine whether the given property @prop
+ * should be considered.
+ *
+ * Returns: %TRUE, when the @prop should be considered, %FALSE to skip it
+ *
+ * Since: 3.52
+ **/
+typedef gboolean (* ECalUtilFilterPropertyFunc)	(ICalProperty *prop,
+						 gpointer user_data);
+ICalProperty *	e_cal_util_component_find_property_for_locale_filtered
+						(ICalComponent *icalcomp,
+						 ICalPropertyKind prop_kind,
+						 const gchar *locale,
+						 ECalUtilFilterPropertyFunc func,
+						 gpointer user_data);
 ICalProperty *	e_cal_util_component_find_property_for_locale
 						(ICalComponent *icalcomp,
 						 ICalPropertyKind prop_kind,
