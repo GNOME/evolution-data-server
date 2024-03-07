@@ -3837,7 +3837,7 @@ test_component_url (void)
 	const gchar *values[] = {
 		"https://www.gnome.org",
 		NULL,
-		"https://wiki.gnome.org/Apps/Evolution"
+		"https://gitlab.gnome.org/GNOME/evolution/-/wikis/home"
 	};
 	ECalComponent *comp;
 	gint ii;
