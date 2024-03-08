@@ -16,6 +16,83 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * CamelInternetAddress:
+ *
+ * RFC822 and address parser and encoder.
+ *
+ * This is an RFC822 address type. It could be called CamelRFC822Address, I guess.
+ * Each address consists of an optional 'real-name' part, together with a required 'addr-spec' part.
+ *
+ * The encoded version of a `CamelInternetAddress` is encoded as per RFC822 and RFC2047, with one
+ * caveat. Address groups are not supported; they are flattened into the base address list by the
+ * decoding method. If you need more control, you could use the underlying `CamelMimeUtils`
+ * functions for your parsing and formatting. Those functions will also be slightly more efficient,
+ * so you may prefer to use them if you are working with large amounts of data.
+ * 
+ * You can add addresses to the end of the list, or retrieve addresses by index.
+ * The [method@Camel.InternetAddress.get] method returns whether that index exists, so is a
+ * convenient way to write a loop without having to keep track of the count and length of the
+ * address. %NULL is used to indicate no real-name part for an address. The `name` is supplied
+ * in UTF-8.
+ * 
+ * Addresses can be looked up by name or address. The corresponding address or name part can be
+ * retrieved, or the return value used to indicate the index of the match.
+ * 
+ * And finally there are some class-static functions which can be used by other code to perform
+ * encoding ([func@Camel.InternetAddress.encode_address]) or formatting
+ * ([func@Camel.InternetAddress.format_address]) functions of individual address parts.
+ *
+ * ## Example: Creating a mail address header
+ *
+ * This example shows how an address can be built up, and then converted into a raw header for
+ * mail creation.
+ *
+ * ```c
+ * #include <camel/camel.h>
+ *
+ * CamelInternetAddress *cia;
+ * char *enc;
+ *
+ * cia = camel_internet_address_new ();
+ * camel_internet_address_add (cia, "Not Zed", "notzed@somecompany.com"); 
+ * camel_internet_address_add (cia, "Not Him", "nothim@some.othercompany.com");
+ * enc = camel_address_encode (CAMEL_ADDRESS (cia));
+ * camel_medium_add_header (medium, "X-List-CC", enc);
+ * g_free (enc);
+ * g_object_unref (cia);
+ * ```
+ * Note that you would always use the normal address interfaces in a [type@Camel.MimeMessage] for
+ * adding the standard headers, but this could be used to add custom headers.
+ *
+ * ## Example: Creating a mail address header
+ *
+ * This example whos how you could reverse the process in the previous example.
+ *
+ * ```c
+ * #include <camel/camel.h>
+ *
+ * CamelInternetAddress *cia;
+ * const char *name, *addr;
+ * int i;
+ *
+ * cia = camel_internet_address_new ();
+ * camel_address_decode (CAMEL_ADDRESS (cia), enc);
+ * printf ("Addresses:\n");
+ * for (i = 0; camel_internet_address_get (cia, i, &name, &addr); i++) {
+ *   printf ("addr=%s", addr);
+ *   if (name)
+ *     printf (" name=%s\n", name);
+ *   else
+ *     printf ("\n");
+ * }
+ *
+ * g_object_unref (cia);
+ * ```
+ * It also shows how the accessor method can be used in loops, and how to convert a single raw
+ * address 
+ **/
+
 #include <stdio.h>
 #include <string.h>
 

@@ -16,6 +16,14 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * CamelNNTPAddress:
+ *
+ * Object used for storing/parsing/formatting lists of newsgroup names.
+ *
+ * These are just ASCII based, so no encoding is required.
+ */
+
 #include <stdio.h>
 #include <string.h>
 

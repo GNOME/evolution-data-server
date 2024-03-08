@@ -16,6 +16,36 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * CamelAddress:
+ *
+ * Common base abstract api to wrap various address types.
+ *
+ * #CamelAddress is a simple object used to wrap various address types in a common base abstract
+ * api. It provides structured access to an indexed array/list of addresses.
+ *
+ * An existing address can be copied using [ctor@Camel.Address.new_clone], this will create
+ * a matching instance of the address and copy its content accross.
+ *
+ * There are some other utility functions for concatenating addresses ([method@Camel.Address.cat]),
+ * or copying the contents of addresses ([method@Camel.Address.copy]).
+ *
+ * It is up to the implementing sub-classes to add accessor methods, but the base class provides
+ * a [vfunc@Camel.Address.length] accessor and a [vfunc@Camel.Address.remove] method.
+ * Addresses can be removed by index, or use `-1` to remove all addresses.
+ *
+ * There are two ways most addresses are used. Either for display purposes for the user, or in a
+ * raw internet form. In `CamelAddress` these are known as the `formatted` form or the `encoded`
+ * form respectively.
+ *
+ * The formatted form is a UTF-8 string representation of the addresses contained in the object.
+ * The formatting is not guaranteed to be reversible, but an `unformat` function will try to
+ * reconstruct the original address list from the string.
+ *
+ * The encoded format depends on the address type. This represents the raw transmission version of
+ * the address, and the encoding process should be fully bi-directional.
+ **/
+
 #include "camel-address.h"
 
 struct _CamelAddressPrivate {
