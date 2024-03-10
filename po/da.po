@@ -11,7 +11,7 @@
 # Kris Thomsen <lakristho@gmail.com>, 2011.
 # flemming christensen <fc@stromata.dk>, 2012, 2013.
 # Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 2010, 2014, 2015, 16, 17, 18, 22.
-# Alan Mortensen <alanmortensen.am@gmail.com>, 2018-19, 2021, 2023.
+# Alan Mortensen <alanmortensen.am@gmail.com>, 2018-19, 2021, 2023-24.
 #
 # message -> brev
 # trash, trash folder -> papirkurv
@@ -33,9 +33,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
-"issues\n"
-"POT-Creation-Date: 2023-09-16 11:59+0000\n"
-"PO-Revision-Date: 2023-10-09 16:41+0200\n"
+"issues/\n"
+"POT-Creation-Date: 2024-02-13 17:25+0000\n"
+"PO-Revision-Date: 2024-02-21 19:32+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -45,29 +45,36 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:276
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:97
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:237
+#: src/addressbook/libebook-contacts/e-contact.c:312
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
+msgid "Anniversary"
+msgstr "Mærkedag"
+
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:489
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Den givne URL “%s” refererer ikke en CardDAV-adressebog"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1163
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1376
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1397
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1377
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
 msgid "Server didn’t return object’s href"
 msgstr "Serveren returnerede ikke objektets href"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1165
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1378
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1399
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1379
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
 msgid "Server didn’t return object’s ETag"
 msgstr "Serveren returnerede ikke objektets ETag"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1167
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1401
 msgid "Received object is not a valid vCard"
 msgstr "Det modtagne objekt er ikke et gyldigt vCard"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1288
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1518
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1523
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1519
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
 #, c-format
 msgid ""
@@ -79,7 +86,7 @@ msgstr ""
 "ufuldstændig eller ødelagt. Du kan prøve at fjerne den og genstarte "
 "baggrundsprocesserne evolution-data-server. Cachefil: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1294
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1529
 msgid "Object to save is not a valid vCard"
 msgstr "Objektet der skal gemmes er ikke et gyldigt vCard"
 
@@ -113,7 +120,7 @@ msgid "Loading..."
 msgstr "Indlæser …"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1204
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4833
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4831
 msgid "Searching..."
 msgstr "Søger …"
 
@@ -155,54 +162,54 @@ msgstr "Kunne ikke ændre den gamle database fra “%s” til “%s”: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1148
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4716
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4714
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: src/addressbook/libebook-contacts/e-phone-number.c:54
 #: src/addressbook/libebook/e-book.c:1067
 #: src/addressbook/libebook/e-book-client.c:2066
 #: src/addressbook/libebook/e-book-client.c:2234
-#: src/addressbook/libebook/e-book-client.c:2444
-#: src/addressbook/libebook/e-book-client.c:2569
-#: src/addressbook/libebook/e-book-client.c:2722
-#: src/addressbook/libebook/e-book-client.c:2851
-#: src/addressbook/libebook/e-book-client.c:2976
-#: src/addressbook/libebook/e-book-client.c:3126
-#: src/addressbook/libebook/e-book-client.c:3306
-#: src/addressbook/libebook/e-book-client.c:3512
+#: src/addressbook/libebook/e-book-client.c:2443
+#: src/addressbook/libebook/e-book-client.c:2568
+#: src/addressbook/libebook/e-book-client.c:2721
+#: src/addressbook/libebook/e-book-client.c:2850
+#: src/addressbook/libebook/e-book-client.c:2975
+#: src/addressbook/libebook/e-book-client.c:3125
+#: src/addressbook/libebook/e-book-client.c:3305
+#: src/addressbook/libebook/e-book-client.c:3511
 #: src/addressbook/libedata-book/e-book-backend-sexp.c:898
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:288
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:281
 #: src/calendar/backends/http/e-cal-backend-http.c:312
-#: src/calendar/libecal/e-cal-client.c:257
-#: src/calendar/libecal/e-cal-client.c:3270
-#: src/calendar/libecal/e-cal-client.c:3443
-#: src/calendar/libecal/e-cal-client.c:3716
-#: src/calendar/libecal/e-cal-client.c:3954
-#: src/calendar/libecal/e-cal-client.c:4146
-#: src/calendar/libecal/e-cal-client.c:4329
-#: src/calendar/libecal/e-cal-client.c:4564
-#: src/calendar/libecal/e-cal-client.c:4741
-#: src/calendar/libecal/e-cal-client.c:4949
-#: src/calendar/libecal/e-cal-client.c:5105
-#: src/calendar/libecal/e-cal-client.c:5303
-#: src/calendar/libecal/e-cal-client.c:5469
-#: src/calendar/libecal/e-cal-client.c:5696
-#: src/calendar/libecal/e-cal-client.c:5853
-#: src/calendar/libecal/e-cal-client.c:6081
-#: src/calendar/libecal/e-cal-client.c:6280
-#: src/calendar/libecal/e-cal-client.c:6648
-#: src/calendar/libecal/e-cal-client.c:6872
+#: src/calendar/libecal/e-cal-client.c:244
+#: src/calendar/libecal/e-cal-client.c:3216
+#: src/calendar/libecal/e-cal-client.c:3373
+#: src/calendar/libecal/e-cal-client.c:3634
+#: src/calendar/libecal/e-cal-client.c:3858
+#: src/calendar/libecal/e-cal-client.c:4036
+#: src/calendar/libecal/e-cal-client.c:4206
+#: src/calendar/libecal/e-cal-client.c:4428
+#: src/calendar/libecal/e-cal-client.c:4595
+#: src/calendar/libecal/e-cal-client.c:4792
+#: src/calendar/libecal/e-cal-client.c:4935
+#: src/calendar/libecal/e-cal-client.c:5120
+#: src/calendar/libecal/e-cal-client.c:5273
+#: src/calendar/libecal/e-cal-client.c:5487
+#: src/calendar/libecal/e-cal-client.c:5643
+#: src/calendar/libecal/e-cal-client.c:5858
+#: src/calendar/libecal/e-cal-client.c:6046
+#: src/calendar/libecal/e-cal-client.c:6376
+#: src/calendar/libecal/e-cal-client.c:6581
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
-#: src/camel/providers/imapx/camel-imapx-server.c:3336
-#: src/camel/providers/imapx/camel-imapx-server.c:3342
-#: src/camel/providers/imapx/camel-imapx-server.c:3352
-#: src/camel/providers/imapx/camel-imapx-server.c:3364
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
+#: src/camel/providers/imapx/camel-imapx-server.c:3360
+#: src/camel/providers/imapx/camel-imapx-server.c:3366
+#: src/camel/providers/imapx/camel-imapx-server.c:3376
+#: src/camel/providers/imapx/camel-imapx-server.c:3388
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1025
 #: src/libedataserver/e-soup-session.c:1905
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:266
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:272
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -227,36 +234,36 @@ msgid "Invalid DN syntax"
 msgstr "Ugyldig domænenavnssyntaks"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1145
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4715
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4713
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-fejl 0x%x (%s)"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1798
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2148
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2161
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2146
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2159
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: returnerede NULL fra ldap_first_entry"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2077
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2217
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2075
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2215
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: returnerede ikke-håndteret type %d"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2358
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2494
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6289
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2356
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2492
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6287
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: returnerede ikke-håndteret søgeresultat %d"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2652
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2650
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP-kontaktlister kan ikke være tomme."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2690
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2688
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -271,46 +278,46 @@ msgstr[1] ""
 "Kontaktlister i LDAP-adressebøger kræver, at alle medlemmer er fra den samme "
 "adressebog, men %d medlemmer blev ikke genkendt."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4662
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4660
 msgid "Receiving LDAP search results..."
 msgstr "Modtager LDAP-søgeresultater …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4859
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4857
 msgid "Error performing search"
 msgstr "Fejl under søgning"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5006
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5004
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Henter kontakter (%d) …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5111
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5109
 #: src/addressbook/libedata-book/e-book-meta-backend.c:883
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:768
 msgid "Refreshing…"
 msgstr "Opdaterer …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5596
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5594
 msgid "The backend does not support bulk additions"
 msgstr "Motoren understøtter ikke massetilføjelser"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5691
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5689
 msgid "Adding contact to LDAP server..."
 msgstr "Føjer visitkort til LDAP-server …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5753
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5751
 msgid "The backend does not support bulk modifications"
 msgstr "Motoren understøtter ikke masseredigering"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5775
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5773
 msgid "Modifying contact from LDAP server..."
 msgstr "Ændrer visitkort fra LDAP-server …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5847
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5845
 msgid "Removing contact from LDAP server..."
 msgstr "Fjerner visitkort fra LDAP-server …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6486
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6484
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Kunne ikke hente DN for bruger “%s”"
@@ -805,11 +812,6 @@ msgstr "Liste viser adresser"
 msgid "Birth Date"
 msgstr "Fødselsdato"
 
-#: src/addressbook/libebook-contacts/e-contact.c:312
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:957
-msgid "Anniversary"
-msgstr "Mærkedag"
-
 #. Security fields
 #: src/addressbook/libebook-contacts/e-contact.c:315
 msgid "X.509 Certificate"
@@ -995,8 +997,8 @@ msgstr "Kan ikke ændre værdien for bogegenskaben “%s”"
 #: src/addressbook/libebook/e-book-client.c:1375
 #: src/addressbook/libebook/e-book-client.c:1575
 #: src/addressbook/libebook/e-book-client.c:1831
-#: src/calendar/libecal/e-cal-client.c:1714
-#: src/calendar/libecal/e-cal-client.c:1952
+#: src/calendar/libecal/e-cal-client.c:1681
+#: src/calendar/libecal/e-cal-client.c:1898
 #, c-format
 msgid "Unable to connect to “%s”: "
 msgstr "Kunne ikke tilslutte til “%s”: "
@@ -1007,7 +1009,7 @@ msgstr "Kunne ikke tilslutte til “%s”: "
 msgid "Client disappeared"
 msgstr "Klient forsvundet"
 
-#: src/addressbook/libedata-book/e-book-backend.c:3600
+#: src/addressbook/libedata-book/e-book-backend.c:3385
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Adressebogsmotoren understøtter ikke markører"
@@ -1026,7 +1028,7 @@ msgstr "Fejl ved fortolkning af regulært udtryk"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1550
 #: src/addressbook/libedata-book/e-book-cache.c:4838
-#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:830
+#: src/addressbook/libedata-book/e-book-sqlite.c:1911 src/camel/camel-db.c:827
 #, c-format
 msgid "Insufficient memory"
 msgstr "Utilstrækkelig hukommelse"
@@ -1079,8 +1081,8 @@ msgstr ""
 "understøttes kun sammenfatning af forespørgsel."
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4394
-#: src/addressbook/libedata-book/e-data-book.c:868
-#: src/calendar/libedata-cal/e-data-cal.c:1143
+#: src/addressbook/libedata-book/e-data-book.c:869
+#: src/calendar/libedata-cal/e-data-cal.c:1144
 #: src/libedataserver/e-client.c:170
 #, c-format
 msgid "Invalid query"
@@ -1176,9 +1178,9 @@ msgstr "Kan ikke åbne databasen %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
 #: src/calendar/libedata-cal/e-cal-cache.c:3012
 #: src/calendar/libedata-cal/e-cal-cache.c:3183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1464
-#: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2348
-#: src/libebackend/e-cache.c:2388
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1463
+#: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2346
+#: src/libebackend/e-cache.c:2386
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Objektet “%s” blev ikke fundet"
@@ -1215,19 +1217,19 @@ msgid "Contact field “%s” not in summary"
 msgstr "Kontaktfelt “%s” er ikke i resume"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1179
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1175
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1174
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Forudindlæst objekt for UID “%s” er ugyldigt"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1187
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1183
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1182
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Det modtagne objekt for UID “%s” er ugyldigt"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1418
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1412
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1411
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1236,7 +1238,7 @@ msgstr ""
 "strømsparetilstand og gentag handlingen."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1424
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1418
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1417
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
 "Opdatering blev ikke gennemført, da opdatering er deaktiveret på "
@@ -1244,7 +1246,7 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2062
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2561
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3436
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3435
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Kunne ikke oprette cache “%s”:"
@@ -1266,53 +1268,53 @@ msgstr "Ugyldig forespørgsel for EbSqlCursor"
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "Mindst ét sorteringsfelt skal angives for at bruge en EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-data-book.c:893
-#: src/calendar/libedata-cal/e-data-cal.c:1168
+#: src/addressbook/libedata-book/e-data-book.c:894
+#: src/calendar/libedata-cal/e-data-cal.c:1169
 msgid "Invalid query: "
 msgstr "Ugyldig forespørgsel: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1192
+#: src/addressbook/libedata-book/e-data-book.c:1193
 msgid "Cannot open book: "
 msgstr "Kan ikke åbne bog: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1230
+#: src/addressbook/libedata-book/e-data-book.c:1231
 msgid "Cannot refresh address book: "
 msgstr "Kan ikke genopfriske adressebog: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1271
+#: src/addressbook/libedata-book/e-data-book.c:1270
 msgid "Cannot get contact: "
 msgstr "Kan ikke hente kontakt: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1316
+#: src/addressbook/libedata-book/e-data-book.c:1319
 msgid "Cannot get contact list: "
 msgstr "Kan ikke hente kontaktliste: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1368
+#: src/addressbook/libedata-book/e-data-book.c:1378
 msgid "Cannot get contact list uids: "
 msgstr "Kan ikke hente uid'er for kontaktlister: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1419
+#: src/addressbook/libedata-book/e-data-book.c:1427
 msgid "Cannot add contact: "
 msgstr "Kan ikke tilføje kontakt: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1470
+#: src/addressbook/libedata-book/e-data-book.c:1476
 msgid "Cannot modify contacts: "
 msgstr "Kan ikke ændre kontaktpersoner: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1522
+#: src/addressbook/libedata-book/e-data-book.c:1526
 msgid "Cannot remove contacts: "
 msgstr "Kan ikke fjerne kontakter: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1569
+#: src/addressbook/libedata-book/e-data-book.c:1573
 msgid "Cannot find email address: "
 msgstr "Kan Ikke finde e-mailadresse: "
 
@@ -1343,25 +1345,25 @@ msgstr "Usynkroniseret revision ved flytning af markør"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabetisk indeks blev sat for forkerte regionsindstillinger"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:257
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:258
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Givne URL “%s” refererer ikke en CalDAV-kalender"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2041
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2042
 msgid "Failed to parse response data"
 msgstr "Kunne ikke fortolke svardata"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:959
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:941
 msgid "Birthday"
 msgstr "Fødselsdag"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:995
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:977
 #, c-format
 msgid "Birthday: %s"
 msgstr "Fødselsdag: %s"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1026
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1008
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Mærkedag: %s"
@@ -1396,7 +1398,7 @@ msgstr "Filen “%s” er ikke en VCALENDAR-komponent"
 #: src/calendar/backends/file/e-cal-backend-file.c:3749
 #: src/calendar/backends/file/e-cal-backend-file.c:3755
 #: src/calendar/backends/file/e-cal-backend-file.c:3782
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2663
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2662
 msgid "Unsupported method"
 msgstr "Ikke-understøttet metode"
 
@@ -1500,36 +1502,36 @@ msgstr "Kunne ikke oprette mellemlagerfil: "
 msgid "New note"
 msgstr "Ny note"
 
-#: src/calendar/libecal/e-cal-client.c:244
+#: src/calendar/libecal/e-cal-client.c:231
 msgid "No such calendar"
 msgstr "Sådan en kalender findes ikke"
 
-#: src/calendar/libecal/e-cal-client.c:246
+#: src/calendar/libecal/e-cal-client.c:233
 msgid "Object not found"
 msgstr "Objektet blev ikke fundet"
 
-#: src/calendar/libecal/e-cal-client.c:248
+#: src/calendar/libecal/e-cal-client.c:235
 msgid "Invalid object"
 msgstr "Ugyldigt objekt"
 
-#: src/calendar/libecal/e-cal-client.c:250
+#: src/calendar/libecal/e-cal-client.c:237
 msgid "Unknown user"
 msgstr "Ukendt bruger"
 
-#: src/calendar/libecal/e-cal-client.c:252
+#: src/calendar/libecal/e-cal-client.c:239
 msgid "Object ID already exists"
 msgstr "Object-id eksisterer allerede"
 
-#: src/calendar/libecal/e-cal-client.c:254
+#: src/calendar/libecal/e-cal-client.c:241
 msgid "Invalid range"
 msgstr "Ugyldigt interval"
 
-#: src/calendar/libecal/e-cal-client.c:1073
+#: src/calendar/libecal/e-cal-client.c:1049
 #, c-format
 msgid "Unknown calendar property “%s”"
 msgstr "Ukendt kalenderegenskab “%s”"
 
-#: src/calendar/libecal/e-cal-client.c:1088
+#: src/calendar/libecal/e-cal-client.c:1064
 #, c-format
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Kan ikke ændre værdi af kalenderegenskab “%s”"
@@ -2364,31 +2366,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1025
-#: src/calendar/libecal/e-cal-util.c:1052
+#: src/calendar/libecal/e-cal-util.c:1101
+#: src/calendar/libecal/e-cal-util.c:1128
 msgctxt "Priority"
 msgid "High"
 msgstr "Høj"
 
-#: src/calendar/libecal/e-cal-util.c:1027
-#: src/calendar/libecal/e-cal-util.c:1054
+#: src/calendar/libecal/e-cal-util.c:1103
+#: src/calendar/libecal/e-cal-util.c:1130
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normal"
 
-#: src/calendar/libecal/e-cal-util.c:1029
-#: src/calendar/libecal/e-cal-util.c:1056
+#: src/calendar/libecal/e-cal-util.c:1105
+#: src/calendar/libecal/e-cal-util.c:1132
 msgctxt "Priority"
 msgid "Low"
 msgstr "Lav"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1050
+#: src/calendar/libecal/e-cal-util.c:1126
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Udefineret"
 
-#: src/calendar/libecal/e-cal-util.c:1092
+#: src/calendar/libecal/e-cal-util.c:1168
 #: src/libedataserverui/e-reminders-widget.c:337
 #, c-format
 msgid "%d week"
@@ -2396,7 +2398,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d uge"
 msgstr[1] "%d uger"
 
-#: src/calendar/libecal/e-cal-util.c:1101
+#: src/calendar/libecal/e-cal-util.c:1177
 #: src/libedataserverui/e-reminders-widget.c:333
 #, c-format
 msgid "%d day"
@@ -2404,7 +2406,7 @@ msgid_plural "%d days"
 msgstr[0] "%d dag"
 msgstr[1] "%d dage"
 
-#: src/calendar/libecal/e-cal-util.c:1110
+#: src/calendar/libecal/e-cal-util.c:1186
 #: src/libedataserverui/e-reminders-widget.c:329
 #, c-format
 msgid "%d hour"
@@ -2412,7 +2414,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d time"
 msgstr[1] "%d timer"
 
-#: src/calendar/libecal/e-cal-util.c:1119
+#: src/calendar/libecal/e-cal-util.c:1195
 #: src/libedataserverui/e-reminders-widget.c:325
 #, c-format
 msgid "%d minute"
@@ -2421,21 +2423,21 @@ msgstr[0] "%d minut"
 msgstr[1] "%d minutter"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1124
+#: src/calendar/libecal/e-cal-util.c:1200
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
 msgstr[1] "%d sekunder"
 
-#: src/calendar/libecal/e-reminder-watcher.c:3010
+#: src/calendar/libecal/e-reminder-watcher.c:3236
 msgid "No Summary"
 msgstr "Intet sammendrag"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3026
+#: src/calendar/libecal/e-reminder-watcher.c:3252
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2444,7 +2446,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:3031
+#: src/calendar/libecal/e-reminder-watcher.c:3257
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2453,7 +2455,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3036
+#: src/calendar/libecal/e-reminder-watcher.c:3262
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -2601,13 +2603,13 @@ msgstr "Kan ikke tilføje tidszone uden komponent"
 msgid "Cannot add timezone with invalid component"
 msgstr "Kan ikke tilføje tidszone med ugyldig komponent"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1230
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1229
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Det modtagne objekt for UID “%s” indeholder ikke nogen forventet komponent"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1971
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1970
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2615,77 +2617,77 @@ msgstr ""
 "Kan ikke ændre alle instanser fra en løsrevet instans. Ændr en serieinstans "
 "i stedet."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4336
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4335
 msgid "attachment.dat"
 msgstr "bilag.dat"
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1362
+#: src/calendar/libedata-cal/e-data-cal.c:1363
 msgid "Cannot open calendar: "
 msgstr "Kan ikke åbne kalender: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1400
+#: src/calendar/libedata-cal/e-data-cal.c:1401
 msgid "Cannot refresh calendar: "
 msgstr "Kan ikke genopfriske kalender: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1442
+#: src/calendar/libedata-cal/e-data-cal.c:1441
 msgid "Cannot retrieve calendar object path: "
 msgstr "Kan ikke indhente kalenderens objektsti: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1495
+#: src/calendar/libedata-cal/e-data-cal.c:1490
 msgid "Cannot retrieve calendar object list: "
 msgstr "Kan ikke indhente kalenderens objektliste: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1553
+#: src/calendar/libedata-cal/e-data-cal.c:1546
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Kan ikke indhente kalenderens ledig/optaget-liste: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1604
+#: src/calendar/libedata-cal/e-data-cal.c:1598
 msgid "Cannot create calendar object: "
 msgstr "Kan ikke oprette kalenderobjekt: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1673
+#: src/calendar/libedata-cal/e-data-cal.c:1658
 msgid "Cannot modify calendar object: "
 msgstr "Kan ikke ændre kalenderobjekt: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1752
+#: src/calendar/libedata-cal/e-data-cal.c:1725
 msgid "Cannot remove calendar object: "
 msgstr "Kan ikke fjerne kalenderobjekt: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1839
+#: src/calendar/libedata-cal/e-data-cal.c:1796
 msgid "Cannot receive calendar objects: "
 msgstr "Kan ikke modtage kalenderobjekter: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1883
+#: src/calendar/libedata-cal/e-data-cal.c:1838
 msgid "Cannot send calendar objects: "
 msgstr "Kan ikke sende kalenderobjekter: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1936
+#: src/calendar/libedata-cal/e-data-cal.c:1890
 msgid "Could not retrieve attachment uris: "
 msgstr "Kunne ikke indhente uri'er for bilag: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:1982
+#: src/calendar/libedata-cal/e-data-cal.c:1938
 msgid "Could not discard reminder: "
 msgstr "Kunne ikke forkaste påmindelse: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:2024
+#: src/calendar/libedata-cal/e-data-cal.c:1978
 msgid "Could not retrieve calendar time zone: "
 msgstr "Kunne ikke indhente kalenderens tidszone: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/calendar/libedata-cal/e-data-cal.c:2065
+#: src/calendar/libedata-cal/e-data-cal.c:2017
 msgid "Could not add calendar time zone: "
 msgstr "Kunne ikke tilføje tidszone for kalender: "
 
@@ -2735,7 +2737,7 @@ msgstr "Tom mellemlagerfil"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Kunne ikke fjerne cacheindgangen: %s: %s"
 
-#: src/camel/camel-db.c:884 src/camel/providers/local/camel-mbox-store.c:913
+#: src/camel/camel-db.c:881 src/camel/providers/local/camel-mbox-store.c:913
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Kunne ikke omdøbe “%s” til %s: %s"
@@ -2748,84 +2750,84 @@ msgstr "Kunne ikke omdøbe “%s” til %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Overfører filtrerede breve i “%s : %s”"
 
-#: src/camel/camel-filter-driver.c:1233 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1240 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Oprettelse af barneprocessen “%s” mislykkedes: %s"
 
-#: src/camel/camel-filter-driver.c:1287
+#: src/camel/camel-filter-driver.c:1294
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Ugyldig beskedstrøm modtaget fra %s: %s"
 
-#: src/camel/camel-filter-driver.c:1511 src/camel/camel-filter-driver.c:1524
+#: src/camel/camel-filter-driver.c:1518 src/camel/camel-filter-driver.c:1531
 msgid "Syncing folders"
 msgstr "Synkroniserer mapper"
 
-#: src/camel/camel-filter-driver.c:1632
+#: src/camel/camel-filter-driver.c:1639
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Fejl under læsning af filter: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1643
+#: src/camel/camel-filter-driver.c:1650
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Fejl under kørsel af filter: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1741
+#: src/camel/camel-filter-driver.c:1748
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Kunne ikke åbne spool-mappen"
 
-#: src/camel/camel-filter-driver.c:1753
+#: src/camel/camel-filter-driver.c:1760
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Kan ikke behandle spool-mappen"
 
-#: src/camel/camel-filter-driver.c:1781
+#: src/camel/camel-filter-driver.c:1788
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Henter brev %d (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1790 src/camel/camel-filter-driver.c:1813
+#: src/camel/camel-filter-driver.c:1797 src/camel/camel-filter-driver.c:1820
 #, c-format
 msgid "Failed on message %d"
 msgstr "Slog fejl ved brev %d"
 
-#: src/camel/camel-filter-driver.c:1831 src/camel/camel-filter-driver.c:1960
+#: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Kunne ikke overføre breve: %s"
 
-#: src/camel/camel-filter-driver.c:1841 src/camel/camel-filter-driver.c:1985
+#: src/camel/camel-filter-driver.c:1848 src/camel/camel-filter-driver.c:1998
 msgid "Syncing folder"
 msgstr "Synkroniserer mappe"
 
-#: src/camel/camel-filter-driver.c:1846 src/camel/camel-filter-driver.c:1993
+#: src/camel/camel-filter-driver.c:1853 src/camel/camel-filter-driver.c:2006
 msgid "Complete"
 msgstr "Fuldført"
 
-#: src/camel/camel-filter-driver.c:1914
+#: src/camel/camel-filter-driver.c:1921
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Henter brev %d af %d"
 
-#: src/camel/camel-filter-driver.c:1932
+#: src/camel/camel-filter-driver.c:1945
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Slog fejl ved brev %d af %d"
 
-#: src/camel/camel-filter-driver.c:2149 src/camel/camel-filter-driver.c:2173
+#: src/camel/camel-filter-driver.c:2167 src/camel/camel-filter-driver.c:2191
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Udførelse af filter “%s” slog fejl: "
 
-#: src/camel/camel-filter-driver.c:2163
+#: src/camel/camel-filter-driver.c:2181
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Fejl under tolkning af filter “%s”: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2182
+#: src/camel/camel-filter-driver.c:2200
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Fejl under kørsel af filter “%s”: %s: %s"
@@ -3160,70 +3162,71 @@ msgstr "Kunne ikke sende kommando til GPG: %s"
 msgid "Could not generate signing data: "
 msgstr "Kunne ikke generere underskrivnings-data: "
 
-#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2877
-#: src/camel/camel-gpg-context.c:3018 src/camel/camel-gpg-context.c:3195
-#: src/camel/camel-gpg-context.c:3550 src/camel/camel-gpg-context.c:3637
-#: src/camel/camel-gpg-context.c:3930 src/camel/camel-gpg-context.c:4028
-#: src/camel/camel-gpg-context.c:4113 src/camel/camel-gpg-context.c:4180
+#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2876
+#: src/camel/camel-gpg-context.c:3017 src/camel/camel-gpg-context.c:3194
+#: src/camel/camel-gpg-context.c:3549 src/camel/camel-gpg-context.c:3636
+#: src/camel/camel-gpg-context.c:3929 src/camel/camel-gpg-context.c:4027
+#: src/camel/camel-gpg-context.c:4112 src/camel/camel-gpg-context.c:4179
 msgid "Failed to execute gpg."
 msgstr "Kunne ikke køre gpg."
 
-#: src/camel/camel-gpg-context.c:2745 src/camel/camel-gpg-context.c:2753
-#: src/camel/camel-gpg-context.c:2761 src/camel/camel-gpg-context.c:2781
+#: src/camel/camel-gpg-context.c:2746 src/camel/camel-gpg-context.c:2754
+#: src/camel/camel-gpg-context.c:2762 src/camel/camel-gpg-context.c:2782
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Kan ikke verificere brevsignatur: Ugyldigt brevformat"
 
-#: src/camel/camel-gpg-context.c:2827
+#: src/camel/camel-gpg-context.c:2828
 msgid "Cannot verify message signature: "
 msgstr "Kan ikke verificere brevsignatur: "
 
-#: src/camel/camel-gpg-context.c:2976
+#: src/camel/camel-gpg-context.c:2975
 msgid "Could not generate encrypting data: "
 msgstr "Kunne ikke generere krypteringsdata: "
 
-#: src/camel/camel-gpg-context.c:3058
+#: src/camel/camel-gpg-context.c:3057
 msgid "This is a digitally encrypted message part"
 msgstr "Dette er en digitalt krypteret del af brevet"
 
-#: src/camel/camel-gpg-context.c:3118 src/camel/camel-gpg-context.c:3127
-#: src/camel/camel-gpg-context.c:3150
+#: src/camel/camel-gpg-context.c:3117 src/camel/camel-gpg-context.c:3126
+#: src/camel/camel-gpg-context.c:3149
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Kan ikke dekryptere brev: Ugyldigt brevformat"
 
-#: src/camel/camel-gpg-context.c:3138
+#: src/camel/camel-gpg-context.c:3137
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Kunne ikke dekryptere MIME-del: protokolfejl"
 
-#: src/camel/camel-gpg-context.c:3210
+#: src/camel/camel-gpg-context.c:3209
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Kunne ikke dekryptere MIME-del: Hemmelig nøgle blev ikke fundet"
 
-#: src/camel/camel-gpg-context.c:3247
+#: src/camel/camel-gpg-context.c:3246
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "GPG-blob indeholder ukrypteret tekst: %s"
 
-#: src/camel/camel-gpg-context.c:3249 src/camel/camel-smime-context.c:1724
+#: src/camel/camel-gpg-context.c:3248 src/camel/camel-multipart-encrypted.c:36
+#: src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Krypteret indhold"
 
-#: src/camel/camel-gpg-context.c:3557 src/camel/camel-gpg-context.c:3644
-#: src/camel/camel-gpg-context.c:3937 src/camel/camel-gpg-context.c:3948
+#: src/camel/camel-gpg-context.c:3556 src/camel/camel-gpg-context.c:3643
+#: src/camel/camel-gpg-context.c:3936 src/camel/camel-gpg-context.c:3947
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "Den offentlige nøgle “%s” blev ikke fundet"
 
-#: src/camel/camel-gpg-context.c:4035
+#: src/camel/camel-gpg-context.c:4034
 msgid "No public key was found in the provided data"
 msgstr "Der blev ikke fundet nogen offentlig nøgle i de leverede data"
 
-#: src/camel/camel-gpg-context.c:4048
+#: src/camel/camel-gpg-context.c:4047
 msgid "Key information was not found in the provided data"
 msgstr "Nøgleoplysninger blev ikke fundet i de leverede data"
 
@@ -3320,7 +3323,7 @@ msgstr "Fejl under læsning af postfil: %s"
 msgid "Error writing mail temp file: %s"
 msgstr "Fejl under skrivning af midlertidig postfil: %s"
 
-#: src/camel/camel-movemail.c:499 src/camel/camel-movemail.c:573
+#: src/camel/camel-movemail.c:502 src/camel/camel-movemail.c:576
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "Fejl under kopiering midlertidig postfil: %s"
@@ -3378,7 +3381,7 @@ msgstr "Henter nye breve for afkoblet tilstand i “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:260
+#: src/camel/camel-offline-folder.c:294
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr "Kontrollerer hentning af nye breve til afkoblet tilstand i “%s : %s”"
@@ -3386,7 +3389,7 @@ msgstr "Kontrollerer hentning af nye breve til afkoblet tilstand i “%s : %s”
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:336
+#: src/camel/camel-offline-folder.c:370
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Synkroniserer breve i mappen “%s : %s” til disken"
@@ -3396,12 +3399,12 @@ msgstr "Synkroniserer breve i mappen “%s : %s” til disken"
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:430
+#: src/camel/camel-offline-folder.c:464
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Synkroniserer brev %d af %d i mappen “%s : %s” til disken"
 
-#: src/camel/camel-offline-folder.c:484
+#: src/camel/camel-offline-folder.c:527
 msgid "Copy folder content locally for _offline operation"
 msgstr "Kopiér mappeindh_old lokalt til afkoblet brug"
 
@@ -3479,7 +3482,7 @@ msgstr ""
 
 #: src/camel/camel-sasl-anonymous.c:115 src/libedataserver/e-client.c:135
 msgid "Invalid argument"
-msgstr "Ugyldige argumenter"
+msgstr "Ugyldigt argument"
 
 #: src/camel/camel-sasl-cram-md5.c:37
 msgid "CRAM-MD5"
@@ -3758,7 +3761,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Ugyldig GType registreret for protokol “%s”"
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3257
+#: src/camel/providers/imapx/camel-imapx-server.c:3281
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
 #: src/camel/providers/smtp/camel-smtp-transport.c:700
@@ -3774,6 +3777,820 @@ msgstr "%s-godkendelse mislykkedes"
 #: src/camel/camel-session.c:592
 msgid "Forwarding messages is not supported"
 msgstr "Videresendelse af breve understøttes ikke"
+
+#: src/camel/camel-smime-context.c:111
+msgid "An I/O error occurred during security authorization."
+msgstr "Der opstod en I/O-fejl under sikkerhedsgodkendelsen."
+
+#: src/camel/camel-smime-context.c:112
+msgid "security library failure."
+msgstr "sikkerhedsbibliotek fejlede."
+
+#: src/camel/camel-smime-context.c:113
+msgid "security library: received bad data."
+msgstr "sikkerhedsbibliotek: Modtog ugyldige data."
+
+#: src/camel/camel-smime-context.c:114
+msgid "security library: output length error."
+msgstr "sikkerhedsbibliotek: fejl i outputlængden."
+
+#: src/camel/camel-smime-context.c:115
+msgid "security library has experienced an input length error."
+msgstr "sikkerhedsbiblioteket opdagede en fejl i inputlængden."
+
+#: src/camel/camel-smime-context.c:116
+msgid "security library: invalid arguments."
+msgstr "sikkerhedsbibliotek: ugyldige argumenter."
+
+#: src/camel/camel-smime-context.c:117
+msgid "security library: invalid algorithm."
+msgstr "sikkerhedsbibliotek: ugyldig algoritme."
+
+#: src/camel/camel-smime-context.c:118
+msgid "security library: invalid AVA."
+msgstr "sikkerhedsbibliotek: ugyldig AVA."
+
+#: src/camel/camel-smime-context.c:119
+msgid "Improperly formatted time string."
+msgstr "Tidsstrengen er forkert formateret."
+
+#: src/camel/camel-smime-context.c:120
+msgid "security library: improperly formatted DER-encoded message."
+msgstr "sikkerhedsbibliotek: DER-kodet meddelelse formateret forkert."
+
+#: src/camel/camel-smime-context.c:121
+msgid "Peer's certificate has an invalid signature."
+msgstr "Peers certifikat har en ugyldig underskrift."
+
+#: src/camel/camel-smime-context.c:122
+msgid "Peer's Certificate has expired."
+msgstr "Peers certifikat er udløbet."
+
+#: src/camel/camel-smime-context.c:123
+msgid "Peer's Certificate has been revoked."
+msgstr "Peers certifikat er blevet tilbagekaldt."
+
+#: src/camel/camel-smime-context.c:124
+msgid "Peer's Certificate issuer is not recognized."
+msgstr "Peers certifikatudsteder kunne ikke genkendes."
+
+#: src/camel/camel-smime-context.c:125
+msgid "Peer's public key is invalid."
+msgstr "Peers offentlige nøgle er ugyldig."
+
+#: src/camel/camel-smime-context.c:126
+msgid "The security password entered is incorrect."
+msgstr "Den indtastede sikkerhedsadgangskode er forkert."
+
+#: src/camel/camel-smime-context.c:127
+msgid "New password entered incorrectly.  Please try again."
+msgstr "Ny adgangskode indtastet forkert. Prøv venligst igen."
+
+#: src/camel/camel-smime-context.c:128
+msgid "security library: no nodelock."
+msgstr "sikkerhedsbibliotek: ingen knudepunktslås."
+
+#: src/camel/camel-smime-context.c:129
+msgid "security library: bad database."
+msgstr "sikkerhedsbibliotek: ugyldig database."
+
+#: src/camel/camel-smime-context.c:130
+msgid "security library: memory allocation failure."
+msgstr "sikkerhedsbibliotek: fejl ved tildeling af hukommelse."
+
+#: src/camel/camel-smime-context.c:131
+msgid "Peer's certificate issuer has been marked as not trusted by the user."
+msgstr ""
+"Peers certifikatudsteder er markeret som en, brugeren ikke har tillid til."
+
+#: src/camel/camel-smime-context.c:132
+msgid "Peer's certificate has been marked as not trusted by the user."
+msgstr "Peers certifikat er markeret som et, brugeren ikke har tillid til."
+
+#: src/camel/camel-smime-context.c:133
+msgid "Certificate already exists in your database."
+msgstr "Certifikatet findes allerede i din database."
+
+#: src/camel/camel-smime-context.c:134
+msgid "Downloaded certificate's name duplicates one already in your database."
+msgstr ""
+"Navnet på det hentede certifikat er det samme som et allerede i din database."
+
+#: src/camel/camel-smime-context.c:135
+msgid "Error adding certificate to database."
+msgstr "Der opstod en fejl, da certifikatet skulle tilføjes til databasen."
+
+#: src/camel/camel-smime-context.c:136
+msgid "Error refiling the key for this certificate."
+msgstr "Der opstod en fejl, da dette certifikats nøgle skulle genregistreres."
+
+# De andre har også .
+#: src/camel/camel-smime-context.c:137
+msgid "The private key for this certificate cannot be found in key database"
+msgstr "Dette certifikats private nøgle kunne ikke findes i nøgledatabasen."
+
+#: src/camel/camel-smime-context.c:138
+msgid "This certificate is valid."
+msgstr "Certifikatet er gyldigt."
+
+#: src/camel/camel-smime-context.c:139
+msgid "This certificate is not valid."
+msgstr "Certifikatet er ugyldigt."
+
+#: src/camel/camel-smime-context.c:140
+msgid "Cert Library: No Response"
+msgstr "Certifikatbibliotek: intet svar"
+
+#: src/camel/camel-smime-context.c:141
+msgid ""
+"The certificate issuer's certificate has expired.  Check your system date "
+"and time."
+msgstr ""
+"Certifikatudstederens certifikat er udløbet. Tjek dit systems dato og tid."
+
+# Certificate revocation list
+#: src/camel/camel-smime-context.c:142
+msgid ""
+"The CRL for the certificate's issuer has expired.  Update it or check your "
+"system date and time."
+msgstr ""
+"Certifikatudstederens liste over tilbagekaldte certifikater (CRL) er "
+"udløbet. Opdatér den, eller tjek dit systems dato og tid."
+
+#: src/camel/camel-smime-context.c:143
+msgid "The CRL for the certificate's issuer has an invalid signature."
+msgstr ""
+"Certifikatudstederens liste over tilbagekaldte certifikater (CRL) har en "
+"ugyldig underskrift."
+
+#: src/camel/camel-smime-context.c:144
+msgid "New CRL has an invalid format."
+msgstr "Ny liste over tilbagekaldte certifikater (CRL) har et ugyldigt format."
+
+#: src/camel/camel-smime-context.c:145
+msgid "Certificate extension value is invalid."
+msgstr "Certifikatforlængelsens værdi er ugyldig."
+
+#: src/camel/camel-smime-context.c:146
+msgid "Certificate extension not found."
+msgstr "Certifikatforlængelse blev ikke fundet."
+
+#: src/camel/camel-smime-context.c:147
+msgid "Issuer certificate is invalid."
+msgstr "Udstedercertifikatet er ugyldigt."
+
+#: src/camel/camel-smime-context.c:148
+msgid "Certificate path length constraint is invalid."
+msgstr "Certifikatets stilængdebegrænsning er ugyldig."
+
+#: src/camel/camel-smime-context.c:149
+msgid "Certificate usages field is invalid."
+msgstr "Certifikatets brugsfelt er ugyldigt."
+
+#: src/camel/camel-smime-context.c:150
+msgid "**Internal ONLY module**"
+msgstr "**KUN internt modul**"
+
+#: src/camel/camel-smime-context.c:151
+msgid "The key does not support the requested operation."
+msgstr "Nøglen understøtter ikke den handling, der blev anmodet om."
+
+#: src/camel/camel-smime-context.c:152
+msgid "Certificate contains unknown critical extension."
+msgstr "Certifikatet indeholder ukendt kritisk forlængelse."
+
+#: src/camel/camel-smime-context.c:153
+msgid "New CRL is not later than the current one."
+msgstr ""
+"Ny liste over tilbagekaldte certifikater (CRL) er ikke senere end den "
+"nuværende."
+
+#: src/camel/camel-smime-context.c:154
+msgid "Not encrypted or signed: you do not yet have an email certificate."
+msgstr ""
+"Ikke krypteret eller underskrevet: Du har endnu ikke et e-mailcertifikat."
+
+#: src/camel/camel-smime-context.c:155
+msgid "Not encrypted: you do not have certificates for each of the recipients."
+msgstr "Ikke krypteret: Du har ikke certifikater til alle modtagerne."
+
+#: src/camel/camel-smime-context.c:156
+msgid ""
+"Cannot decrypt: you are not a recipient, or matching certificate and private "
+"key not found."
+msgstr ""
+"Kan ikke dekryptere: Du er ikke en modtager, eller matchende certifikat og "
+"privat nøgle blev ikke fundet."
+
+#: src/camel/camel-smime-context.c:157
+msgid ""
+"Cannot decrypt: key encryption algorithm does not match your certificate."
+msgstr ""
+"Kan ikke dekryptere: Nøgledekrypteringsalgoritmen matcher ikke dit "
+"certifikat."
+
+#: src/camel/camel-smime-context.c:158
+msgid ""
+"Signature verification failed: no signer found, too many signers found, or "
+"improper or corrupted data."
+msgstr ""
+"Bekræftelse af underskrift mislykkedes: Ingen underskriver fundet, for mange "
+"underskrivere fundet, eller forkerte eller ødelagte data."
+
+#: src/camel/camel-smime-context.c:159
+msgid "Unsupported or unknown key algorithm."
+msgstr "Nøglealgoritmen understøttes ikke eller er ukendt."
+
+#: src/camel/camel-smime-context.c:160
+msgid "Cannot decrypt: encrypted using a disallowed algorithm or key size."
+msgstr ""
+"Kan ikke dekryptere: Krypteret med en algoritme eller nøglestørrelse, som "
+"ikke er tilladt."
+
+#: src/camel/camel-smime-context.c:161
+msgid ""
+"Fortezza card has not been properly initialized.  Please remove it and "
+"return it to your issuer."
+msgstr ""
+"Fortezza-kort er ikke blevet rigtigt initialiseret. Fjern det og returnér "
+"det til din udsteder."
+
+#: src/camel/camel-smime-context.c:162
+msgid "No Fortezza cards Found"
+msgstr "Intet Fortezza-kort fundet"
+
+#: src/camel/camel-smime-context.c:163
+msgid "No Fortezza card selected"
+msgstr "Intet Fortezza-kort valgt"
+
+#: src/camel/camel-smime-context.c:164
+msgid "Please select a personality to get more info on"
+msgstr "Vælg en personlighed, du vil have flere oplysninger om"
+
+#: src/camel/camel-smime-context.c:165
+msgid "Personality not found"
+msgstr "Personligheden blev ikke fundet"
+
+#: src/camel/camel-smime-context.c:166
+msgid "No more information on that Personality"
+msgstr "Ikke flere oplysninger om den personlighed"
+
+#: src/camel/camel-smime-context.c:167
+msgid "Invalid Pin"
+msgstr "Ugyldig PIN-kode"
+
+#: src/camel/camel-smime-context.c:168
+msgid "Couldn't initialize Fortezza personalities."
+msgstr "Kunne ikke initialisere Fortezza-personligheder."
+
+#: src/camel/camel-smime-context.c:169
+msgid "No KRL for this site's certificate has been found."
+msgstr ""
+"Der blev ikke fundet nogen liste over tilbagekaldte nøgler (KRL) for dette "
+"sites certifikat."
+
+#: src/camel/camel-smime-context.c:170
+msgid "The KRL for this site's certificate has expired."
+msgstr ""
+"Listen over tilbagekaldte nøgler (KRL) for dette sites certifikat er udløbet."
+
+#: src/camel/camel-smime-context.c:171
+msgid "The KRL for this site's certificate has an invalid signature."
+msgstr ""
+"Listen over tilbagekaldte nøgler (KRL) for dette sites certifikat har en "
+"ugyldig underskrift."
+
+#: src/camel/camel-smime-context.c:172
+msgid "The key for this site's certificate has been revoked."
+msgstr "Nøglen for dette sites certifikat er blevet tilbagekaldt."
+
+#: src/camel/camel-smime-context.c:173
+msgid "New KRL has an invalid format."
+msgstr "Den nye liste over tilbagekaldte nøgler (KRL) har et ugyldigt format."
+
+#: src/camel/camel-smime-context.c:174
+msgid "security library: need random data."
+msgstr "sikkerhedsbibliotek: Har brug for tilfældige data."
+
+#: src/camel/camel-smime-context.c:175
+msgid ""
+"security library: no security module can perform the requested operation."
+msgstr ""
+"sikkerhedsbibliotek: Intet sikkerhedsmodul kan udføre den handling, der blev "
+"anmodet om."
+
+#: src/camel/camel-smime-context.c:176
+msgid ""
+"The security card or token does not exist, needs to be initialized, or has "
+"been removed."
+msgstr ""
+"Sikkerhedskortet eller -symbolet findes ikke, skal initialiseres eller er "
+"blevet fjernet."
+
+#: src/camel/camel-smime-context.c:177
+msgid "security library: read-only database."
+msgstr "sikkerhedsbibliotek: skrivebeskyttet database."
+
+#: src/camel/camel-smime-context.c:178
+msgid "No slot or token was selected."
+msgstr "Ingen port eller symbol valgt."
+
+#: src/camel/camel-smime-context.c:179
+msgid "A certificate with the same nickname already exists."
+msgstr "Der findes allerede et certifikat med det samme kaldenavn."
+
+#: src/camel/camel-smime-context.c:180
+msgid "A key with the same nickname already exists."
+msgstr "Der findes allerede en nøgle med det samme kaldenavn."
+
+#: src/camel/camel-smime-context.c:181
+msgid "error while creating safe object"
+msgstr "fejl under oprettelse af sikkert objekt"
+
+#: src/camel/camel-smime-context.c:182
+msgid "error while creating baggage object"
+msgstr "fejl under oprettelse af bagageobjekt"
+
+#: src/camel/camel-smime-context.c:183
+msgid "Couldn't remove the principal"
+msgstr "Kunne ikke fjerne principal"
+
+#: src/camel/camel-smime-context.c:184
+msgid "Couldn't delete the privilege"
+msgstr "Kunne ikke slette rettigheden"
+
+#: src/camel/camel-smime-context.c:185
+msgid "This principal doesn't have a certificate"
+msgstr "Principalen har ikke et certifikat"
+
+#: src/camel/camel-smime-context.c:186
+msgid "Required algorithm is not allowed."
+msgstr "Den krævede algoritme er ikke tilladt."
+
+#: src/camel/camel-smime-context.c:187
+msgid "Error attempting to export certificates."
+msgstr "Der opstod en fejl under forsøget på at eksportere certifikater."
+
+#: src/camel/camel-smime-context.c:188
+msgid "Error attempting to import certificates."
+msgstr "Der opstod en fejl under forsøget på at importere certifikater."
+
+#: src/camel/camel-smime-context.c:189
+msgid "Unable to import.  Decoding error.  File not valid."
+msgstr "Kunne ikke importere. Afkodningsfejl. Filen er ikke gyldig."
+
+#: src/camel/camel-smime-context.c:190
+msgid "Unable to import.  Invalid MAC.  Incorrect password or corrupt file."
+msgstr ""
+"Kunne ikke importere. Ugyldig MAC. Forkert adgangskode eller ødelagt fil."
+
+#: src/camel/camel-smime-context.c:191
+msgid "Unable to import.  MAC algorithm not supported."
+msgstr "Kunne ikke importere. MAC-algoritmen understøttes ikke."
+
+#: src/camel/camel-smime-context.c:192
+msgid "Unable to import.  Only password integrity and privacy modes supported."
+msgstr ""
+"Kunne ikke importere. Kun adgangskodeintegritet og privatlivstilstande "
+"understøttes."
+
+#: src/camel/camel-smime-context.c:193
+msgid "Unable to import.  File structure is corrupt."
+msgstr "Kunne ikke importere. Filstrukturen er ødelagt."
+
+#: src/camel/camel-smime-context.c:194
+msgid "Unable to import.  Encryption algorithm not supported."
+msgstr "Kunne ikke importere. Krypteringsalgoritmen understøttes ikke."
+
+#: src/camel/camel-smime-context.c:195
+msgid "Unable to import.  File version not supported."
+msgstr "Kunne ikke importere. Filversionen understøttes ikke."
+
+#: src/camel/camel-smime-context.c:196
+msgid "Unable to import.  Incorrect privacy password."
+msgstr "Kunne ikke importere. Forkert privatlivsadgangskode."
+
+#: src/camel/camel-smime-context.c:197
+msgid "Unable to import.  Same nickname already exists in database."
+msgstr "Kunne ikke importere. Samme kaldenavn findes allerede i databasen."
+
+#: src/camel/camel-smime-context.c:198
+msgid "The user pressed cancel."
+msgstr "Brugeren trykkede annullér."
+
+#: src/camel/camel-smime-context.c:199
+msgid "Not imported, already in database."
+msgstr "Blev ikke importeret, er allerede i databasen."
+
+#: src/camel/camel-smime-context.c:200
+msgid "Message not sent."
+msgstr "Brevet blev ikke sendt."
+
+#: src/camel/camel-smime-context.c:201
+msgid "Certificate key usage inadequate for attempted operation."
+msgstr ""
+"Brug af certifikatnøgle utilstrækkelig til handlingen, der blev forsøgt."
+
+#: src/camel/camel-smime-context.c:202
+msgid "Certificate type not approved for application."
+msgstr "Certifikattypen er ikke godkendt til anvendelsen."
+
+#: src/camel/camel-smime-context.c:203
+msgid ""
+"Address in signing certificate does not match address in message headers."
+msgstr ""
+"Adressen i underskriftscertifikatet matcher ikke adressen i brevhovederne."
+
+#: src/camel/camel-smime-context.c:204
+msgid "Unable to import.  Error attempting to import private key."
+msgstr "Kunne ikke importere. Der opstod en fejl under import af privat nøgle."
+
+#: src/camel/camel-smime-context.c:205
+msgid "Unable to import.  Error attempting to import certificate chain."
+msgstr ""
+"Kunne ikke importere. Der opstod en fejl under import af certifikatkæde."
+
+#: src/camel/camel-smime-context.c:206
+msgid "Unable to export.  Unable to locate certificate or key by nickname."
+msgstr ""
+"Kunne ikke eksportere. Kunne ikke lokalisere certifikat eller nøgle på "
+"baggrund af kaldenavnet."
+
+#: src/camel/camel-smime-context.c:207
+msgid "Unable to export.  Private Key could not be located and exported."
+msgstr ""
+"Kunne ikke eksportere. Privat nøgle kunne ikke lokaliseres og eksporteres."
+
+#: src/camel/camel-smime-context.c:208
+msgid "Unable to export.  Unable to write the export file."
+msgstr "Kunne ikke eksportere. Kunne ikke skrive eksportfilen."
+
+#: src/camel/camel-smime-context.c:209
+msgid "Unable to import.  Unable to read the import file."
+msgstr "Kunne ikke eksportere. Kunne ikke læse importfilen."
+
+#: src/camel/camel-smime-context.c:210
+msgid "Unable to export.  Key database corrupt or deleted."
+msgstr "Kunne ikke eksportere. Nøgledatabasen er ødelagt eller slettet."
+
+#: src/camel/camel-smime-context.c:211
+msgid "Unable to generate public/private key pair."
+msgstr "Kan ikke oprette offentlig/privat nøglepar."
+
+#: src/camel/camel-smime-context.c:212
+msgid "Password entered is invalid.  Please pick a different one."
+msgstr "Den indtastede adgangskode er ugyldig. Vælg en anden."
+
+#: src/camel/camel-smime-context.c:213
+msgid "Old password entered incorrectly.  Please try again."
+msgstr "Gammel adgangskode indtastet forkert. Prøv venligst igen."
+
+#: src/camel/camel-smime-context.c:214
+msgid "Certificate nickname already in use."
+msgstr "Certifikatets kaldenavn er allerede i brug."
+
+#: src/camel/camel-smime-context.c:215
+msgid "Peer FORTEZZA chain has a non-FORTEZZA Certificate."
+msgstr "Peers FORTEZZA-kæde har et ikke-FORTEZZA-certifikat."
+
+#: src/camel/camel-smime-context.c:216
+msgid "A sensitive key cannot be moved to the slot where it is needed."
+msgstr "En følsom nøgle kan ikke flyttes til porten, hvor der er brug for den."
+
+#: src/camel/camel-smime-context.c:217
+msgid "Invalid module name."
+msgstr "Ugyldigt modulnavn."
+
+#: src/camel/camel-smime-context.c:218
+msgid "Invalid module path/filename"
+msgstr "Ugyldig modulsti/-filnavn."
+
+#: src/camel/camel-smime-context.c:219
+msgid "Unable to add module"
+msgstr "Kunne ikke tilføje modul"
+
+#: src/camel/camel-smime-context.c:220
+msgid "Unable to delete module"
+msgstr "Kunne ikke slette modul"
+
+#: src/camel/camel-smime-context.c:221
+msgid "New KRL is not later than the current one."
+msgstr ""
+"Ny liste over tilbagekaldte nøgler (KRL) er ikke senere end den nuværende."
+
+# compromised key list
+#: src/camel/camel-smime-context.c:222
+msgid "New CKL has different issuer than current CKL.  Delete current CKL."
+msgstr ""
+"Ny liste over kompromitterede nøgler (CKL) har en anden udsteder end "
+"nuværende CKL. Slet nuværende CKL."
+
+#: src/camel/camel-smime-context.c:223
+msgid ""
+"The Certifying Authority for this certificate is not permitted to issue a "
+"certificate with this name."
+msgstr ""
+"Certificeringsmyndigheden for dette certifikat har ikke tilladelse til at "
+"udstede et certifikat med dette navn."
+
+#: src/camel/camel-smime-context.c:224
+msgid "The key revocation list for this certificate is not yet valid."
+msgstr ""
+"Listen over tilbagekaldte nøgler til dette certifikat er endnu ikke gyldig."
+
+#: src/camel/camel-smime-context.c:225
+msgid "The certificate revocation list for this certificate is not yet valid."
+msgstr ""
+"Listen over tilbagekaldte certifikater til dette certifikat er endnu ikke "
+"gyldig."
+
+#: src/camel/camel-smime-context.c:226
+msgid "The requested certificate could not be found."
+msgstr "Det anmodede certifikat kunne ikke findes."
+
+#: src/camel/camel-smime-context.c:227
+msgid "The signer's certificate could not be found."
+msgstr "Underskriverens certifikat blev ikke fundet."
+
+#: src/camel/camel-smime-context.c:228
+msgid "The location for the certificate status server has invalid format."
+msgstr "Certifikatstatusserverens placering har et ugyldigt format."
+
+#: src/camel/camel-smime-context.c:229
+msgid "The OCSP response cannot be fully decoded; it is of an unknown type."
+msgstr "OCSP-svaret kan ikke afkodes fuldt ud; typen er ukendt."
+
+#: src/camel/camel-smime-context.c:230
+msgid "The OCSP server returned unexpected/invalid HTTP data."
+msgstr "OCSP-serveren returnerede uventede/ugyldige HTTP-data."
+
+#: src/camel/camel-smime-context.c:231
+msgid "The OCSP server found the request to be corrupted or improperly formed."
+msgstr "OCSP-serveren fandt, at anmodningen er ødelagt eller forkert udformet."
+
+#: src/camel/camel-smime-context.c:232
+msgid "The OCSP server experienced an internal error."
+msgstr "OCSP-serveren stødte på en intern fejl."
+
+#: src/camel/camel-smime-context.c:233
+msgid "The OCSP server suggests trying again later."
+msgstr "OCSP-serveren foreslår at prøve igen senere."
+
+#: src/camel/camel-smime-context.c:234
+msgid "The OCSP server requires a signature on this request."
+msgstr "OCSP-serveren kræver en underskrift på denne anmodning."
+
+#: src/camel/camel-smime-context.c:235
+msgid "The OCSP server has refused this request as unauthorized."
+msgstr "OCSP-serveren har afvist denne anmodning som uautoriseret."
+
+#: src/camel/camel-smime-context.c:236
+msgid "The OCSP server returned an unrecognizable status."
+msgstr "OCSP-serveren returnerede en status, som ikke kunne genkendes."
+
+#: src/camel/camel-smime-context.c:237
+msgid "The OCSP server has no status for the certificate."
+msgstr "OCSP-serveren har ingen status for certifikatet."
+
+#: src/camel/camel-smime-context.c:238
+msgid "You must enable OCSP before performing this operation."
+msgstr "Du skal aktivere OCSP for at udføre denne handling."
+
+#: src/camel/camel-smime-context.c:239
+msgid ""
+"You must set the OCSP default responder before performing this operation."
+msgstr ""
+"Du skal indstille OCSP-standardsvareren, før du udfører denne handling."
+
+#: src/camel/camel-smime-context.c:240
+msgid "The response from the OCSP server was corrupted or improperly formed."
+msgstr "Svaret fra OCSP-serveren var ødelagt eller forkert udformet."
+
+#: src/camel/camel-smime-context.c:241
+msgid ""
+"The signer of the OCSP response is not authorized to give status for this "
+"certificate."
+msgstr ""
+"Underskriveren af OCSP-svaret er ikke godkendt til at give status for dette "
+"certifikat."
+
+#: src/camel/camel-smime-context.c:242
+msgid "The OCSP response is not yet valid (contains a date in the future)."
+msgstr "OCSP-svaret er endnu ikke gyldigt (indeholder en dato i fremtiden)."
+
+#: src/camel/camel-smime-context.c:243
+msgid "The OCSP response contains out-of-date information."
+msgstr "OCSP-svaret indeholder forældet information."
+
+#: src/camel/camel-smime-context.c:244
+msgid "The CMS or PKCS #7 Digest was not found in signed message."
+msgstr "CMS- eller PKCS #7-kontrolsum blev ikke fundet i underskrevet brev."
+
+#: src/camel/camel-smime-context.c:245
+msgid "The CMS or PKCS #7 Message type is unsupported."
+msgstr "CMS- eller PKCS #7-brevtypen understøttes ikke."
+
+#: src/camel/camel-smime-context.c:246
+msgid "PKCS #11 module could not be removed because it is still in use."
+msgstr "PKCS #11-modulet kunne ikke fjernes, fordi det stadig er i brug."
+
+#: src/camel/camel-smime-context.c:247
+msgid "Could not decode ASN.1 data. Specified template was invalid."
+msgstr "Kunne ikke afkode ASN.1-data. Angivet skabelon var ugyldig."
+
+#: src/camel/camel-smime-context.c:248
+msgid "No matching CRL was found."
+msgstr ""
+"Der blev ikke fundet en matchende liste over tilbagekaldte certifikater."
+
+#: src/camel/camel-smime-context.c:249
+msgid ""
+"You are attempting to import a cert with the same issuer/serial as an "
+"existing cert, but that is not the same cert."
+msgstr ""
+"Du forsøger at importere et certifikat med samme udsteder/serie som et "
+"eksisterende certifikat, men det er ikke det samme certifikat."
+
+#: src/camel/camel-smime-context.c:250
+msgid "NSS could not shutdown. Objects are still in use."
+msgstr "NSS kunne ikke lukke ned. Objekter er stadig i brug."
+
+#: src/camel/camel-smime-context.c:251
+msgid "DER-encoded message contained extra unused data."
+msgstr "DER-kodet brev indeholdte ekstra ubrugte data."
+
+#: src/camel/camel-smime-context.c:252
+msgid "Unsupported elliptic curve."
+msgstr "Elliptisk kurve understøttes ikke."
+
+#: src/camel/camel-smime-context.c:253
+msgid "Unsupported elliptic curve point form."
+msgstr "Elliptisk kurvepunktform understøttes ikke."
+
+#: src/camel/camel-smime-context.c:254
+msgid "Unrecognized Object Identifier."
+msgstr "Objektidentifikator ikke genkendt."
+
+#: src/camel/camel-smime-context.c:255
+msgid "Invalid OCSP signing certificate in OCSP response."
+msgstr "Ugyldigt OCSP-underskriftscertifikat i OCSP-svaret."
+
+#: src/camel/camel-smime-context.c:256
+msgid "Certificate is revoked in issuer's certificate revocation list."
+msgstr ""
+"Certifikatet er tilbagekaldt i udstederens liste over tilbagekaldte "
+"certifikater."
+
+#: src/camel/camel-smime-context.c:257
+msgid "Issuer's OCSP responder reports certificate is revoked."
+msgstr "Udstederens OCSP-svarer rapporterer, at certifikatet er tilbagekaldt."
+
+#: src/camel/camel-smime-context.c:258
+msgid "Issuer's Certificate Revocation List has an unknown version number."
+msgstr ""
+"Udstederens liste over tilbagekaldte certifikater har et ukendt "
+"versionsnummer."
+
+#: src/camel/camel-smime-context.c:259
+msgid "Issuer's V1 Certificate Revocation List has a critical extension."
+msgstr ""
+"Udstederens liste over tilbagekaldte V1-certifikater har en kritisk "
+"forlængelse."
+
+#: src/camel/camel-smime-context.c:260
+msgid ""
+"Issuer's V2 Certificate Revocation List has an unknown critical extension."
+msgstr ""
+"Udstederens liste over tilbagekaldte V2-certifikater har en ukendt kritisk "
+"forlængelse."
+
+#: src/camel/camel-smime-context.c:261
+msgid "Unknown object type specified."
+msgstr "Ukendt objekttype angivet."
+
+#: src/camel/camel-smime-context.c:262
+msgid "PKCS #11 driver violates the spec in an incompatible way."
+msgstr ""
+"PKCS #11-driveren forbryder sig mod specifikationerne på en inkompatibel "
+"måde."
+
+#: src/camel/camel-smime-context.c:263
+msgid "No new slot event is available at this time."
+msgstr "Der er ingen ny portbegivenhed tilgængelig lige nu."
+
+#: src/camel/camel-smime-context.c:264
+msgid "CRL already exists."
+msgstr "Liste over tilbagekaldte certifikater findes allerede."
+
+#: src/camel/camel-smime-context.c:265
+msgid "NSS is not initialized."
+msgstr "NSS er ikke initialiseret."
+
+#: src/camel/camel-smime-context.c:266
+msgid "The operation failed because the PKCS#11 token is not logged in."
+msgstr "Handlingen mislykkedes, fordi PKCS #11-symbolet ikke er logget ind."
+
+#: src/camel/camel-smime-context.c:267
+msgid "Configured OCSP responder's certificate is invalid."
+msgstr "Konfigureret OCSP-svarers certifikat er ugyldigt."
+
+#: src/camel/camel-smime-context.c:268
+msgid "OCSP response has an invalid signature."
+msgstr "OCSP-svaret har en ugyldig underskrift."
+
+#: src/camel/camel-smime-context.c:271
+msgid "Cert validation search is out of search limits"
+msgstr "Certifikatvalideringssøgningen er uden for søgegrænserne"
+
+#: src/camel/camel-smime-context.c:272
+msgid "Policy mapping contains anypolicy"
+msgstr "Politiktilknytning indeholder anypolicy"
+
+#: src/camel/camel-smime-context.c:273
+msgid "Cert chain fails policy validation"
+msgstr "Certifikatkæden fejler politikvalidering"
+
+#: src/camel/camel-smime-context.c:274
+msgid "Unknown location type in cert AIA extension"
+msgstr "Ukendt placeringstype i certifikatets AIA-udvidelse"
+
+#: src/camel/camel-smime-context.c:275
+msgid "Server returned bad HTTP response"
+msgstr "Server returnerede et ugyldigt HTTP-svar"
+
+#: src/camel/camel-smime-context.c:276
+msgid "Server returned bad LDAP response"
+msgstr "Server returnerede et ugyldigt LDAP-svar"
+
+#: src/camel/camel-smime-context.c:277
+msgid "Failed to encode data with ASN1 encoder"
+msgstr "Kunne ikke kode data med ASN1-koderen"
+
+#: src/camel/camel-smime-context.c:278
+msgid "Bad information access location in cert extension"
+msgstr "Dårlig placering af informationsadgang i certifikatudvidelse"
+
+#: src/camel/camel-smime-context.c:279
+msgid "Libpkix internal error occurred during cert validation."
+msgstr "Der opstod en intern libpkix-fejl under validering af certifikat."
+
+#: src/camel/camel-smime-context.c:280
+msgid ""
+"A PKCS #11 module returned CKR_GENERAL_ERROR, indicating that an "
+"unrecoverable error has occurred."
+msgstr ""
+"Et PKCS #11-modul returnerede CKR_GENERAL_ERROR, hvilket angiver, at der "
+"er opstået en uoprettelig fejl."
+
+#: src/camel/camel-smime-context.c:281
+msgid ""
+"A PKCS #11 module returned CKR_FUNCTION_FAILED, indicating that the "
+"requested function could not be performed.  Trying the same operation again "
+"might succeed."
+msgstr ""
+"Et PKCS #11-modul returnerede CKR_FUNCTION_FAILED, hvilket angiver, at den "
+"ønskede funktion ikke kunne udføres. Hvis du prøver den samme handling igen, "
+"kan det være, det lykkes."
+
+#: src/camel/camel-smime-context.c:282
+msgid ""
+"A PKCS #11 module returned CKR_DEVICE_ERROR, indicating that a problem has "
+"occurred with the token or slot."
+msgstr ""
+"Et PKCS #11-modul returnerede CKR_DEVICE_ERROR, hvilket angiver, at der er "
+"opstået et problem med symbolet eller porten."
+
+#: src/camel/camel-smime-context.c:286
+msgid "Expired password"
+msgstr "Adgangskode udløbet"
+
+#: src/camel/camel-smime-context.c:287
+msgid "Locked password"
+msgstr "Låst adgangskode"
+
+#: src/camel/camel-smime-context.c:288
+msgid "Unknown PKCS11 error"
+msgstr "Ukendt PKCS #11-fejl"
+
+#: src/camel/camel-smime-context.c:289 src/camel/camel-smime-context.c:822
+msgid "Certificate signature algorithm disabled"
+msgstr "Certifikatsignaturalgoritmen er deaktiveret"
+
+#: src/camel/camel-smime-context.c:290
+msgid "Legacy database"
+msgstr "Forældet database"
+
+#: src/camel/camel-smime-context.c:291 src/camel/camel-smime-context.c:819
+msgid "Signature algorithm disabled"
+msgstr "Signaturalgoritmen er deaktiveret"
+
+#: src/camel/camel-smime-context.c:292
+msgid "Algorithm mismatch"
+msgstr "Algoritmen stemmer ikke overens"
+
+#: src/camel/camel-smime-context.c:321
+msgid "Unknown error."
+msgstr "Ukendt fejl."
 
 #: src/camel/camel-smime-context.c:353
 #, c-format
@@ -3905,14 +4722,6 @@ msgstr ""
 msgid "Cannot find signature digests"
 msgstr "Kan ikke finde signatur-sammendrag"
 
-#: src/camel/camel-smime-context.c:819
-msgid "Signature algorithm disabled"
-msgstr "Signaturalgoritmen er deaktiveret"
-
-#: src/camel/camel-smime-context.c:822
-msgid "Certificate signature algorithm disabled"
-msgstr "Certifikatsignaturalgoritmen er deaktiveret"
-
 #: src/camel/camel-smime-context.c:831
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
@@ -4030,7 +4839,7 @@ msgstr "Kan ikke skrive uden basisstrøm"
 msgid "Stream type “%s” is not seekable"
 msgstr "Strømtypen “%s” understøtter ikke søgning"
 
-#: src/camel/camel-stream-filter.c:339
+#: src/camel/camel-stream-filter.c:354
 msgid "Only reset to beginning is supported with CamelStreamFilter"
 msgstr "Kun nulstilling til begyndelsen er understøttet med CamelStreamFilter"
 
@@ -4135,15 +4944,15 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Du skal arbejde opkoblet for at fuldføre denne operation (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3429
+#: src/camel/providers/imapx/camel-imapx-server.c:3453
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
-#: src/camel/providers/nntp/camel-nntp-store.c:2311
+#: src/camel/providers/nntp/camel-nntp-store.c:2309
 #: src/camel/providers/pop3/camel-pop3-folder.c:447
 #: src/camel/providers/pop3/camel-pop3-folder.c:630
-#: src/camel/providers/pop3/camel-pop3-folder.c:916
-#: src/camel/providers/pop3/camel-pop3-folder.c:1130
+#: src/camel/providers/pop3/camel-pop3-folder.c:915
+#: src/camel/providers/pop3/camel-pop3-folder.c:1129
 #: src/camel/providers/pop3/camel-pop3-store.c:293
 #: src/camel/providers/pop3/camel-pop3-store.c:528
 #: src/camel/providers/pop3/camel-pop3-store.c:576
@@ -4175,7 +4984,7 @@ msgstr "Kunne ikke flytte breve til indbakken"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:780
+#: src/camel/providers/imapx/camel-imapx-folder.c:816
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Ingen kvoteinformation for mappen “%s : %s”"
@@ -4184,26 +4993,26 @@ msgstr "Ingen kvoteinformation for mappen “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1047
+#: src/camel/providers/imapx/camel-imapx-folder.c:1083
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Gemmer udløbede cachefiler i mappen “%s : %s”"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1139
+#: src/camel/providers/imapx/camel-imapx-folder.c:1175
 #: src/camel/providers/nntp/camel-nntp-folder.c:832
 msgid "Apply message _filters to this folder"
 msgstr "Anvend brev_filtre i denne mappe"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1151
+#: src/camel/providers/imapx/camel-imapx-folder.c:1187
 msgid "Always check for _new mail in this folder"
 msgstr "Se altid efter _ny post i denne mappe"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1278
+#: src/camel/providers/imapx/camel-imapx-folder.c:1314
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Kunne ikke danne mappesammendrag for %s"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1290
+#: src/camel/providers/imapx/camel-imapx-folder.c:1326
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Kunne ikke danne mellemlager for %s: "
@@ -4211,7 +5020,7 @@ msgstr "Kunne ikke danne mellemlager for %s: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1490
+#: src/camel/providers/imapx/camel-imapx-folder.c:1526
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Ingen IMAP-postboks tilgængelig for mappen “%s : %s”"
@@ -4372,37 +5181,37 @@ msgstr "For læsning og lagring af e-mail på IMAP-servere."
 msgid "Error writing to cache stream"
 msgstr "Fejl under skrivning til mellemlagerstrøm"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3052
-#: src/camel/providers/imapx/camel-imapx-server.c:3139
-#: src/camel/providers/imapx/camel-imapx-server.c:3462
+#: src/camel/providers/imapx/camel-imapx-server.c:3076
+#: src/camel/providers/imapx/camel-imapx-server.c:3163
+#: src/camel/providers/imapx/camel-imapx-server.c:3486
 msgid "Failed to get capabilities"
 msgstr "Kunne ikke hente egenskaber"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3071
+#: src/camel/providers/imapx/camel-imapx-server.c:3095
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke tilslutte IMAP-serveren %s i sikker tilstand: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3072
+#: src/camel/providers/imapx/camel-imapx-server.c:3096
 #: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS understøttes ikke"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3081
+#: src/camel/providers/imapx/camel-imapx-server.c:3105
 msgid "Failed to issue STARTTLS"
 msgstr "Kunne ikke sende STARTTLS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3128
+#: src/camel/providers/imapx/camel-imapx-server.c:3152
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Kunne ikke tilslutte IMAP-serveren %s i sikker tilstand: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3244
+#: src/camel/providers/imapx/camel-imapx-server.c:3268
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-server %s understøtter ikke godkendelsestype %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3270
+#: src/camel/providers/imapx/camel-imapx-server.c:3294
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -4411,180 +5220,180 @@ msgstr ""
 "Godkendelse i klartekst er ikke tilladt på usikre forbindelser. Skift "
 "kryptering for kontoen “%s” til STARTTLS eller TLS."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3283
+#: src/camel/providers/imapx/camel-imapx-server.c:3307
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Kan ikke godkende uden et brugernavn"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3292
+#: src/camel/providers/imapx/camel-imapx-server.c:3316
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Adgangskode til godkendelse ikke tilgængelig"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3302
-#: src/camel/providers/imapx/camel-imapx-server.c:3315
+#: src/camel/providers/imapx/camel-imapx-server.c:3326
+#: src/camel/providers/imapx/camel-imapx-server.c:3339
 msgid "Failed to authenticate"
 msgstr "Kunne ikke godkende"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3387
+#: src/camel/providers/imapx/camel-imapx-server.c:3411
 msgid "Failed to issue ID"
 msgstr "Kunne ikke udstede id"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3489
+#: src/camel/providers/imapx/camel-imapx-server.c:3513
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Kunne ikke sende ENABLE UTF8=ACCEPT"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3511
+#: src/camel/providers/imapx/camel-imapx-server.c:3535
 msgid "Failed to issue NAMESPACE"
 msgstr "Kunne ikke sende NAMESPACE"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3529
+#: src/camel/providers/imapx/camel-imapx-server.c:3553
 msgid "Failed to enable QResync"
 msgstr "Kunne ikke aktivere QResync"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3566
+#: src/camel/providers/imapx/camel-imapx-server.c:3597
 msgid "Failed to issue NOTIFY"
 msgstr "Kunne ikke sende NOTIFY"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4046
+#: src/camel/providers/imapx/camel-imapx-server.c:4077
 msgid "Failed to select mailbox"
 msgstr "Kunne ikke vælge e-mailbakke"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4147
+#: src/camel/providers/imapx/camel-imapx-server.c:4178
 msgid "Cannot issue command, no stream available"
 msgstr "Kan ikke sende kommando, ingen strøm tilgængelig"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4414
+#: src/camel/providers/imapx/camel-imapx-server.c:4445
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente brev med besked-id %s: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4415
+#: src/camel/providers/imapx/camel-imapx-server.c:4446
 msgid "No such message available."
 msgstr "Intet sådant brev tilgængeligt."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4464
-#: src/camel/providers/imapx/camel-imapx-server.c:4489
-#: src/camel/providers/imapx/camel-imapx-server.c:4528
+#: src/camel/providers/imapx/camel-imapx-server.c:4495
+#: src/camel/providers/imapx/camel-imapx-server.c:4520
+#: src/camel/providers/imapx/camel-imapx-server.c:4559
 msgid "Error fetching message"
 msgstr "Fejl under hentning af brev"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4506
-#: src/camel/providers/imapx/camel-imapx-server.c:5279
+#: src/camel/providers/imapx/camel-imapx-server.c:4537
+#: src/camel/providers/imapx/camel-imapx-server.c:5306
 msgid "Error performing NOOP"
 msgstr "Fejl under udførelse af NOOP"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4521
+#: src/camel/providers/imapx/camel-imapx-server.c:4552
 msgid "Failed to close the tmp stream"
 msgstr "Kunne ikke lukke tmp-strømmen"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4552
+#: src/camel/providers/imapx/camel-imapx-server.c:4583
 msgid "Failed to copy the tmp file"
 msgstr "Kunne ikke kopiere tmp-filen"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4790
+#: src/camel/providers/imapx/camel-imapx-server.c:4821
 msgid "Error moving messages"
 msgstr "Fejl ved flytning af breve"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4790
+#: src/camel/providers/imapx/camel-imapx-server.c:4821
 msgid "Error copying messages"
 msgstr "Fejl under kopiering af breve"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5069
-#: src/camel/providers/imapx/camel-imapx-server.c:5090
+#: src/camel/providers/imapx/camel-imapx-server.c:5096
+#: src/camel/providers/imapx/camel-imapx-server.c:5117
 msgid "Cannot create spool file: "
 msgstr "Kan ikke oprette spool-fil: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5176
+#: src/camel/providers/imapx/camel-imapx-server.c:5203
 msgid "Error appending message"
 msgstr "Fejl under tilføjelse af brev"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5447
+#: src/camel/providers/imapx/camel-imapx-server.c:5474
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Søger efter ændrede breve i “%s : %s”"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5451
+#: src/camel/providers/imapx/camel-imapx-server.c:5478
 msgid "Error scanning changes"
 msgstr "Fejl under søgning efter ændringer"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5474
+#: src/camel/providers/imapx/camel-imapx-server.c:5501
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Henter sammendragsinformation for nye breve i “%s : %s”"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5501
+#: src/camel/providers/imapx/camel-imapx-server.c:5535
 msgid "Error fetching message info"
 msgstr "Fejl under indhentning af brevinfo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5685
+#: src/camel/providers/imapx/camel-imapx-server.c:5719
 msgid "Error running STATUS"
 msgstr "Fejl ved kørsel af STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6289
-#: src/camel/providers/imapx/camel-imapx-server.c:6344
-#: src/camel/providers/imapx/camel-imapx-server.c:6427
+#: src/camel/providers/imapx/camel-imapx-server.c:6324
+#: src/camel/providers/imapx/camel-imapx-server.c:6379
+#: src/camel/providers/imapx/camel-imapx-server.c:6462
 msgid "Error syncing changes"
 msgstr "Fejl under synkronisering af ændringer"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6302
-#: src/camel/providers/imapx/camel-imapx-server.c:6354
-#: src/camel/providers/imapx/camel-imapx-server.c:6446
-#: src/camel/providers/imapx/camel-imapx-server.c:6587
+#: src/camel/providers/imapx/camel-imapx-server.c:6337
+#: src/camel/providers/imapx/camel-imapx-server.c:6389
+#: src/camel/providers/imapx/camel-imapx-server.c:6481
+#: src/camel/providers/imapx/camel-imapx-server.c:6622
 msgid "Error expunging message"
 msgstr "Fejl under udrensning af brev"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6669
+#: src/camel/providers/imapx/camel-imapx-server.c:6704
 msgid "Error fetching folders"
 msgstr "Fejl under hentning af mapper"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6677
+#: src/camel/providers/imapx/camel-imapx-server.c:6712
 msgid "Error fetching subscribed folders"
 msgstr "Fejl under hentning af abonnerede mapper"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6734
+#: src/camel/providers/imapx/camel-imapx-server.c:6769
 msgid "Error creating folder"
 msgstr "Fejl under oprettelse af mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6784
+#: src/camel/providers/imapx/camel-imapx-server.c:6819
 msgid "Error deleting folder"
 msgstr "Fejl under sletning af mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6830
+#: src/camel/providers/imapx/camel-imapx-server.c:6865
 msgid "Error renaming folder"
 msgstr "Fejl under omdøbning af mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6862
+#: src/camel/providers/imapx/camel-imapx-server.c:6897
 msgid "Error subscribing to folder"
 msgstr "Fejl under abonnering på mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6898
+#: src/camel/providers/imapx/camel-imapx-server.c:6933
 msgid "Error unsubscribing from folder"
 msgstr "Fejl ved annullering af abonnement på mappe"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6938
+#: src/camel/providers/imapx/camel-imapx-server.c:6973
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-serveren understøtter ikke kvoter"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6950
+#: src/camel/providers/imapx/camel-imapx-server.c:6985
 msgid "Error retrieving quota information"
 msgstr "Fejl under hentning af kvoteinformation"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7015
+#: src/camel/providers/imapx/camel-imapx-server.c:7050
 msgid "Search failed"
 msgstr "Søgning slog fejl"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7143
+#: src/camel/providers/imapx/camel-imapx-server.c:7176
 msgid "Error running IDLE"
 msgstr "Fejl under kørsel af IDLE"
 
@@ -5010,12 +5819,12 @@ msgid "Could not scan folder “%s”: %s"
 msgstr "Kunne ikke gennemsøge mappen “%s”: %s"
 
 #: src/camel/providers/local/camel-maildir-summary.c:494
-#: src/camel/providers/local/camel-maildir-summary.c:636
+#: src/camel/providers/local/camel-maildir-summary.c:635
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Kan ikke åbne maildir mappesti: %s: %s"
 
-#: src/camel/providers/local/camel-maildir-summary.c:627
+#: src/camel/providers/local/camel-maildir-summary.c:626
 msgid "Checking folder consistency"
 msgstr "Kontrollerer mappekonsistens"
 
@@ -5319,7 +6128,7 @@ msgstr "Intern fejl: uid i ugyldigt format: %s"
 #: src/camel/providers/nntp/camel-nntp-folder.c:280
 #: src/camel/providers/nntp/camel-nntp-folder.c:285
 #: src/camel/providers/pop3/camel-pop3-folder.c:572
-#: src/camel/providers/pop3/camel-pop3-folder.c:1086
+#: src/camel/providers/pop3/camel-pop3-folder.c:1085
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Kan ikke hente brevet %s: %s"
@@ -5491,12 +6300,12 @@ msgid "NNTP Command failed: "
 msgstr "NNTP-kommandoen mislykkedes: "
 
 #: src/camel/providers/nntp/camel-nntp-store.c:2213
-#: src/camel/providers/nntp/camel-nntp-store.c:2248
+#: src/camel/providers/nntp/camel-nntp-store.c:2246
 #, c-format
 msgid "Not connected."
 msgstr "Ingen forbindelse."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2325
+#: src/camel/providers/nntp/camel-nntp-store.c:2323
 #, c-format
 msgid "No such folder: %s"
 msgstr "Der findes ingen sådan mappe: %s"
@@ -5551,19 +6360,19 @@ msgstr "Ukendt årsag"
 msgid "Retrieving POP summary"
 msgstr "Henter POP-sammendrag"
 
-#: src/camel/providers/pop3/camel-pop3-folder.c:698
-#: src/camel/providers/pop3/camel-pop3-folder.c:701
-#: src/camel/providers/pop3/camel-pop3-folder.c:714
-#: src/camel/providers/pop3/camel-pop3-folder.c:727
-#: src/camel/providers/pop3/camel-pop3-folder.c:741
+#: src/camel/providers/pop3/camel-pop3-folder.c:697
+#: src/camel/providers/pop3/camel-pop3-folder.c:700
+#: src/camel/providers/pop3/camel-pop3-folder.c:713
+#: src/camel/providers/pop3/camel-pop3-folder.c:726
+#: src/camel/providers/pop3/camel-pop3-folder.c:740
 msgid "Cannot get POP summary: "
 msgstr "Kan ikke hente POP-sammenfatning: "
 
-#: src/camel/providers/pop3/camel-pop3-folder.c:889
+#: src/camel/providers/pop3/camel-pop3-folder.c:888
 msgid "Expunging old messages"
 msgstr "Udrenser gamle meddelelser"
 
-#: src/camel/providers/pop3/camel-pop3-folder.c:921
+#: src/camel/providers/pop3/camel-pop3-folder.c:920
 msgid "Expunging deleted messages"
 msgstr "Udrenser slettede breve"
 
@@ -6090,15 +6899,47 @@ msgstr ""
 "Enheder for en påmindelse om fødselsdag eller mærkedag, “minutter”, “timer” "
 "eller “dage”"
 
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:28
+msgid "Default reminder for all events in chosen calendars"
+msgstr "Standardpåmindelse for alle begivenheder i valgte kalendere"
+
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:29
+msgid "Whether to show a specified reminder for all events in chosen calendars"
+msgstr ""
+"Om der skal vises en bestemt påmindelse for alle begivenheder i de valgte "
+"kalendere"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
+msgid "Interval of the default reminder for all events in chosen calendars"
+msgstr ""
+"Interval for standardpåmindelse for alle begivenheder i valgte kalendere"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:34
+msgid "Number of units for determining the reminder"
+msgstr "Antal enheder til bestemmelse af påmindelsen"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:38
+msgid "Units of the default reminder for all events in chosen calendars"
+msgstr ""
+"Enheder for standardpåmindelsen for alle begivenheder i de valgte kalendere"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:39
+msgid ""
+"Units for the default reminder for all events in chosen calendars, "
+"“minutes”, “hours” or “days”"
+msgstr ""
+"Enheder for standardpåmindelsen for alle begivenheder i de valgte kalendere "
+"(“minutter”, “timer” eller “dage”)"
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:44
 msgid "Past reminders for EReminderWatcher"
 msgstr "Tidligere påmindelser for EReminderWatcher"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:48
 msgid "Snoozed reminders for EReminderWatcher"
 msgstr "Udsatte påmindelser for EReminderWatcher"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:37
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:52
 msgid ""
 "How many days the reminders-past can hold back. Reminders older than these "
 "days are automatically removed from the list of the past reminders. Use '0' "
@@ -6108,37 +6949,37 @@ msgstr ""
 "er ældre end disse, fjernes automatisk fra listen over de tidligere "
 "påmindelser. Brug “0” for ikke at fjerne gamle påmindelser."
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:42
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:57
 msgid "Reminder programs"
 msgstr "Påmindelsesprogrammer"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:43
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:58
 msgid "Programs that are allowed to be run by reminders"
 msgstr "Programmer som påmindelser må køre"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:47
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:62
 msgid "Enable desktop notifications"
 msgstr "Slå skrivebordspåmindelser til"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:48
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:63
 msgid "When set to true, the desktop/system notifications are shown"
 msgstr "Når sat til sand, vises skrivebords-/systempåmindelser"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:52
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:67
 msgid "Enable audio notifications"
 msgstr "Slå lydpåmindelser til"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:53
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:68
 msgid ""
 "When set to true, the audio reminders will be played, otherwise audio "
 "reminders will be silently ignored"
 msgstr "Når sand afspilles lydpåmindelserne. Ellers ignoreres de uden videre"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:57
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:72
 msgid "Show reminders in notification tray only"
 msgstr "Vis kun påmindelser i statusfeltet"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:58
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:73
 msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
@@ -6146,11 +6987,11 @@ msgstr ""
 "Når sand vises påmindelserne kun i statusfeltet. Ellers vises "
 "påmindelsesdialogen med det samme"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:62
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:77
 msgid "Show reminder notification dialog always on top"
 msgstr "Vis altid påmindelsesdialogen øverst"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:63
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:78
 msgid ""
 "Whether or not to show reminder notification dialog always on top. Note this "
 "works only as a hint for the window manager, which may or may not obey it."
@@ -6158,43 +6999,43 @@ msgstr ""
 "Om påmindelsesdialogen altid skal vises øverst. Bemærk at dette kun udgør en "
 "anmodning, som vindueshåndteringen kan vælge at ignorere."
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:67
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:82
 msgid "X position of the reminder notification dialog"
 msgstr "X-position af påmindelsesdialogen"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:71
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:86
 msgid "Y position of the reminder notification dialog"
 msgstr "Y-position af påmindelsesdialogen"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:75
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:90
 msgid "Width of the reminder notification dialog"
 msgstr "Bredden på påmindelsesdialogen"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:79
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:94
 msgid "Height of the reminder notification dialog"
 msgstr "Højden på påmindelsesdialogen"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:83
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:98
 msgid "Size in pixels of the event list in the reminder notification dialog"
 msgstr "Størrelse i pixels på begivenhedslisten i påmindelsesdialogen"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:87
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:102
 msgid "Show reminder notification for completed tasks"
 msgstr "Vis påmindelse for fuldførte opgaver"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:91
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:106
 msgid "Show reminder notification for past events"
 msgstr "Vis påmindelse for tidligere begivenheder"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:95
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:110
 msgid "The last used snooze time, in minutes"
 msgstr "Sidst brugte udsættelsestid i minutter"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:99
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:114
 msgid "User-defined snooze times, in minutes"
 msgstr "Brugertilpasset udsættelsestid i minutter"
 
-#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:103
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:118
 msgid "Delete meeting from calendar on Decline"
 msgstr "Slet møde fra kalenderen ved afvisning"
 
@@ -6522,12 +7363,12 @@ msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Forældet) URL til automatisk proxy-konfiguration"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:4
-msgid "Evolution Alarm Notify"
-msgstr "Påmindelse fra Evolution"
+msgid "Events and Tasks Reminders"
+msgstr "Påmindelser for begivenheder og opgaver"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:5
-msgid "Calendar event notifications"
-msgstr "Påmindelse om begivenheder i kalender"
+msgid "Event and task notifications"
+msgstr "Påmindelser for begivenheder og opgaver"
 
 #: src/libebackend/e-cache.c:750
 msgid "Out of memory"
@@ -6538,12 +7379,12 @@ msgstr "Ikke mere ledig hukommelse"
 msgid "Can not make parent directory: %s"
 msgstr "Kunne ikke oprette ophavsmappe: %s"
 
-#: src/libebackend/e-collection-backend.c:1112
+#: src/libebackend/e-collection-backend.c:1110
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s understøtter ikke oprettelsen af eksterne ressourcer"
 
-#: src/libebackend/e-collection-backend.c:1168
+#: src/libebackend/e-collection-backend.c:1166
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s understøtter ikke sletning af eksterne ressourcer"
@@ -6569,7 +7410,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Kunne ikke slå legitimationsoplysninger op: "
 
 #: src/libebackend/e-server-side-source.c:1373
-#: src/libedataserver/e-source.c:1601
+#: src/libedataserver/e-source.c:1582
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Datakilden “%s” understøtter ikke oprettelsen af eksterne ressourcer"
@@ -6583,7 +7424,7 @@ msgstr ""
 "ressource"
 
 #: src/libebackend/e-server-side-source.c:1415
-#: src/libedataserver/e-source.c:1714
+#: src/libedataserver/e-source.c:1678
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Datakilden “%s” understøtter ikke sletning af eksterne ressourcer"
@@ -6598,7 +7439,7 @@ msgstr ""
 
 #: src/libebackend/e-server-side-source.c:1468
 #: src/libebackend/e-source-registry-server.c:1038
-#: src/libedataserver/e-source.c:1843
+#: src/libedataserver/e-source.c:1799
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Datakilde “%s” understøtter ikke OAuth 2.0-godkendelse"
@@ -6920,7 +7761,7 @@ msgstr ""
 "serveren igen."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: src/libedataserver/e-oauth2-service-google.c:58
+#: src/libedataserver/e-oauth2-service-google.c:59
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -6950,22 +7791,22 @@ msgstr "Kunne ikke indstille godkendelse"
 msgid "Too many redirects"
 msgstr "For mange omdirigeringer"
 
-#: src/libedataserver/e-source.c:772
+#: src/libedataserver/e-source.c:769
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Kildefilen mangler en [%s]-gruppe"
 
-#: src/libedataserver/e-source.c:1381
+#: src/libedataserver/e-source.c:1378
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Datakilden “%s” kan ikke fjernes"
 
-#: src/libedataserver/e-source.c:1504
+#: src/libedataserver/e-source.c:1493
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Der kan ikke skrives til datakilden “%s”"
 
-#: src/libedataserver/e-source.c:2249
+#: src/libedataserver/e-source.c:2167
 msgid "Unnamed"
 msgstr "Unavngivet"
 
@@ -6985,12 +7826,12 @@ msgstr "Sletning af legitimationsoplysninger er ikke understøttet"
 msgid "Password not found"
 msgstr "Adgangskoden blev ikke fundet"
 
-#: src/libedataserver/e-source-mail-signature.c:473
+#: src/libedataserver/e-source-mail-signature.c:456
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Signaturskriptet skal være en lokal fil"
 
-#: src/libedataserver/e-source-proxy.c:1651
+#: src/libedataserver/e-source-proxy.c:1635
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "Datakilden “%s” understøtter ikke proxyopslag"
@@ -7134,7 +7975,7 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%H"
 
-#: src/libedataserver/e-webdav-discover.c:345
+#: src/libedataserver/e-webdav-discover.c:339
 msgid "Notes"
 msgstr "Kommentarer"
 
@@ -7468,58 +8309,59 @@ msgstr "Offentlig nøgle"
 msgid "Algorithm"
 msgstr "Algoritme"
 
-#: src/libedataserverui/e-credentials-prompter.c:260
-#: src/libedataserverui/e-credentials-prompter.c:1755
-#: src/libedataserverui/e-credentials-prompter.c:1799
+#: src/libedataserverui/e-credentials-prompter.c:92
+#: src/libedataserverui/e-credentials-prompter.c:247
+#: src/libedataserverui/e-credentials-prompter.c:461
+#: src/libedataserverui/e-credentials-prompter.c:1739
 msgid "Credentials prompt was cancelled"
 msgstr "Forespørgsel om legitimationsoplysninger annulleret"
 
-#: src/libedataserverui/e-credentials-prompter.c:776
+#: src/libedataserverui/e-credentials-prompter.c:767
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr ""
 "Datakilden “%s” understøtter ikke forespørgsel om legitimationsoplysninger"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:264
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:270
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Kunne ikke få noget adgangssymbol fra adressen “%s”: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:295
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:301
 msgid "Requesting access token, please wait…"
 msgstr "Forespørger om adgangssymbol; vent venligst …"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:569
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Anmodning om godkendelse af %s-adressebogen"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:574
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:580
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Anmodning om godkendelse af %s-kalenderen"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:579
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:585
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Anmodning om godkendelse af %s-memolisten"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:584
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Anmodning om godkendelse af %s-opgavelisten"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:596
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "Anmodning om godkendelse af %s-mail"
@@ -7527,7 +8369,7 @@ msgstr "Anmodning om godkendelse af %s-mail"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:595
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:601
 #, c-format
 msgid "%s account authentication request"
 msgstr "Anmodning om godkendelse af %s-konto"
@@ -7535,7 +8377,7 @@ msgstr "Anmodning om godkendelse af %s-konto"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:615
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7547,7 +8389,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:622
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7559,7 +8401,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:629
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7571,7 +8413,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:636
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -7583,7 +8425,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:643
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -7595,7 +8437,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:650
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -7607,7 +8449,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -7616,27 +8458,27 @@ msgstr ""
 "Log ind på din %s-konto og acceptér betingelserne for at kunne tilgå din "
 "konto “%s”."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:853
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Kunne ikke åbne browser: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:954
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1049
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Annullér"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1036
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1131
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1066
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1161
 msgid "Click here to open the URL"
 msgstr "Klik her for at åbne URL'en"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1104
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -7646,11 +8488,11 @@ msgstr ""
 "resulterende godkendelseskode eller den URL, som OAuth2-guiden afsluttede "
 "med, nedenfor for at fortsætte godkendelsesprocessen."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1141
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1238
 msgid "_Authorization code:"
 msgstr "_Godkendelseskode:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1154
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1251
 msgid "C_ontinue"
 msgstr "_Fortsæt"
 
@@ -7972,42 +8814,42 @@ msgid "Failed to get password from GOA: "
 msgstr "Kunne ikke hente adgangskode fra GOA: "
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:240
+#: src/modules/gnome-online-accounts/goaewsclient.c:227
 #, c-format
 msgid "Code: %u — Unexpected response from server"
 msgstr "Kode: %u — Uventet svar fra serveren"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:263
+#: src/modules/gnome-online-accounts/goaewsclient.c:249
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Kunne ikke fortolke autodetektionssvarets XML"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:272
+#: src/modules/gnome-online-accounts/goaewsclient.c:258
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Kunne ikke finde autodetektionselementet"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:284
+#: src/modules/gnome-online-accounts/goaewsclient.c:270
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Kunne ikke finde svarelement"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:296
+#: src/modules/gnome-online-accounts/goaewsclient.c:282
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Kunne ikke finde kontoelement"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:310
+#: src/modules/gnome-online-accounts/goaewsclient.c:301
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Kunne ikke finde ASUrl og OABUrl i autodetektionssvaret"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1431
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1434
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -8016,7 +8858,7 @@ msgstr ""
 "Kan ikke finde nogen tilsvarende konto i org.gnome.OnlineAccounts-tjenesten, "
 "hvorfra man kan få et adgangssymbol til “%s”"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1481
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1484
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Kunne ikke få noget adgangssymbol til “%s”: "
@@ -8122,7 +8964,7 @@ msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Overflyt ikke brugerdata fra tidligere udgaver af evolution"
 
 #: src/tools/addressbook-export/addressbook-export.c:69
-#: src/tools/addressbook-export/addressbook-export.c:781
+#: src/tools/addressbook-export/addressbook-export.c:754
 msgid "Can not open file"
 msgstr "Kan ikke åbne fil"
 
@@ -8131,33 +8973,33 @@ msgstr "Kan ikke åbne fil"
 msgid "Failed to open client “%s”: %s"
 msgstr "Kunne ikke åbne klienten “%s”: %s"
 
-#: src/tools/addressbook-export/addressbook-export.c:889
+#: src/tools/addressbook-export/addressbook-export.c:863
 msgid "Unhandled error"
 msgstr "Uhåndteret fejl"
 
-#: src/tools/addressbook-export/addressbook-export.c:922
+#: src/tools/addressbook-export/addressbook-export.c:896
 msgid "Specify the output file instead of standard output"
 msgstr "Angiv outputfil i stedet for standard-ud"
 
-#: src/tools/addressbook-export/addressbook-export.c:923
+#: src/tools/addressbook-export/addressbook-export.c:897
 msgid "OUTPUTFILE"
 msgstr "OUTPUTFIL"
 
-#: src/tools/addressbook-export/addressbook-export.c:926
+#: src/tools/addressbook-export/addressbook-export.c:900
 msgid "List local address book folders"
 msgstr "Vis lokale adressebogsmapper"
 
-#: src/tools/addressbook-export/addressbook-export.c:929
+#: src/tools/addressbook-export/addressbook-export.c:903
 msgid "Show cards as vcard or csv file"
 msgstr "Vis kort som vcard eller csv-fil"
 
-#: src/tools/addressbook-export/addressbook-export.c:979
+#: src/tools/addressbook-export/addressbook-export.c:955
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Fejl i kommandolinjeargument. Se venligst brugsinfo med tilvalget --help."
 
-#: src/tools/addressbook-export/addressbook-export.c:993
+#: src/tools/addressbook-export/addressbook-export.c:969
 msgid "Only support csv or vcard format."
 msgstr "Understøt kun csv- eller vcard-format."
 
@@ -8380,6 +9222,12 @@ msgstr "På nettet"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "WebDAV-noter"
+
+#~ msgid "Evolution Alarm Notify"
+#~ msgstr "Påmindelse fra Evolution"
+
+#~ msgid "Calendar event notifications"
+#~ msgstr "Påmindelse om begivenheder i kalender"
 
 #~ msgid ""
 #~ "Missing information about vCard URL, local cache is possibly incomplete "
