@@ -204,7 +204,7 @@
     This interface is used by data sources that support
     <ulink url="http://oauth.net/2/">OAuth 2.0</ulink> authentication,
     usually backed by a desktop-wide authentication service such as
-    <ulink url="http://live.gnome.org/GnomeOnlineAccounts">GNOME Online
+    <ulink url="https://wiki.gnome.org/Projects/GnomeOnlineAccounts">GNOME Online
     Accounts</ulink>.
 -->
 <interface name="org.gnome.evolution.dataserver.Source.OAuth2Support">
