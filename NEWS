@@ -1,3 +1,28 @@
+Evolution-Data-Server 3.52.0 2024-03-15
+---------------------------------------
+
+Bug Fixes:
+	I#523 - addressbook: Crash on authenticate and finalize in two threads
+	evo-I#2672 - Calendar: Prefer html/markdown description in preview
+
+Miscellaneous:
+	SetupBuildFlags.cmake: Remove "-Wl,--no-undefined" from compiler flags
+	Replace https://wiki.gnome.org/Apps/Evolution in the sources
+	Replace live.gnome.org with wiki.gnome.org URI (Andre Klapper)
+
+Translations:
+	Aefgh Threenine (th)
+	Alan Mortensen (da)
+	Anders Jonsson (sv)
+	Andi Chandler (en_GB)
+	Balázs Úr (hu)
+	Bruce Cowan (en_GB)
+	Daniel Mustieles (es)
+	Daniel Rusek (cs)
+	Emin Tufan Çetin (tr)
+	Jean-Marc Tissières (fr)
+	Rūdolfs Mazurs (lv)
+
 Evolution-Data-Server 3.51.3 2024-03-01
 ---------------------------------------
 
