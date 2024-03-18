@@ -53,9 +53,11 @@ if(NOT WITH_GOOGLE_CLIENT_ID STREQUAL "")
 endif(NOT WITH_GOOGLE_CLIENT_ID STREQUAL "")
 
 configure_file(org.gnome.evolution-data-server.OAuth2-handler.desktop.in
-	org.gnome.evolution-data-server.OAuth2-handler.desktop
+	org.gnome.evolution-data-server.OAuth2-handler.desktop.in
 	@ONLY
 )
+
+i18n_merge_file(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.evolution-data-server.OAuth2-handler.desktop.in org.gnome.evolution-data-server.OAuth2-handler.desktop ${CMAKE_SOURCE_DIR}/po)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.evolution-data-server.OAuth2-handler.desktop
 	DESTINATION ${desktopdir}
@@ -87,6 +89,7 @@ add_custom_command(OUTPUT gschemas.compiled
 add_custom_target(data-files ALL
 	DEPENDS gschemas.compiled
 		org.gnome.Evolution-alarm-notify.desktop
+		org.gnome.evolution-data-server.OAuth2-handler.desktop
 )
 
 add_gsettings_schemas(data-files ${BUILT_SCHEMAS})

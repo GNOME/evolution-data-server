@@ -183,6 +183,7 @@ data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 data/org.gnome.evolution-data-server.gschema.xml.in
 data/org.gnome.evolution.shell.network-config.gschema.xml.in
 data/org.gnome.Evolution-alarm-notify.desktop.in.in
+data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in
 src/libebackend/e-backend.c
 src/libebackend/e-cache.c
 src/libebackend/e-collection-backend.c
