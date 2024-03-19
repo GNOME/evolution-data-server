@@ -468,12 +468,9 @@ imapx_get_filename (CamelFolder *folder,
                     const gchar *uid,
                     GError **error)
 {
-	CamelIMAPXFolder *imapx_folder;
+	CamelIMAPXFolder *imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-
-	return camel_data_cache_get_filename (
-		imapx_folder->cache, "cache", uid);
+	return camel_data_cache_get_filename (imapx_folder->cache, "cur", uid);
 }
 
 static gboolean
