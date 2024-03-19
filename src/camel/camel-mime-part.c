@@ -321,20 +321,23 @@ mime_part_process_header (CamelMedium *medium,
 	header_type = (CamelHeaderType) GPOINTER_TO_INT (g_hash_table_lookup (header_name_table, name));
 	switch (header_type) {
 	case HEADER_DESCRIPTION: /* raw header->utf8 conversion */
-		g_free (mime_part->priv->description);
-		if (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (mime_part))) {
-			charset = camel_content_type_param (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (mime_part)), "charset");
-			charset = camel_iconv_charset_name (charset);
-		} else
-			charset = NULL;
-		mime_part->priv->description = g_strstrip (camel_header_decode_string (value, charset));
+		g_clear_pointer (&mime_part->priv->description, g_free);
+		if (value) {
+			if (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (mime_part))) {
+				charset = camel_content_type_param (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (mime_part)), "charset");
+				charset = camel_iconv_charset_name (charset);
+			} else
+				charset = NULL;
+			mime_part->priv->description = g_strstrip (camel_header_decode_string (value, charset));
+		}
 		break;
 	case HEADER_DISPOSITION:
 		mime_part_set_disposition (mime_part, value);
 		break;
 	case HEADER_CONTENT_ID:
-		g_free (mime_part->priv->content_id);
-		mime_part->priv->content_id = camel_header_contentid_decode (value);
+		g_clear_pointer (&mime_part->priv->content_id, g_free);
+		if (value)
+			mime_part->priv->content_id = camel_header_contentid_decode (value);
 		break;
 	case HEADER_ENCODING:
 		text = camel_header_token_decode (value);
@@ -346,13 +349,16 @@ mime_part_process_header (CamelMedium *medium,
 		mime_part->priv->content_md5 = g_strdup (value);
 		break;
 	case HEADER_CONTENT_LOCATION:
-		g_free (mime_part->priv->content_location);
-		mime_part->priv->content_location = camel_header_location_decode (value);
+		g_clear_pointer (&mime_part->priv->content_location, g_free);
+		if (value)
+			mime_part->priv->content_location = camel_header_location_decode (value);
 		break;
 	case HEADER_CONTENT_TYPE:
-		content_type = camel_content_type_decode (value);
-		if (content_type)
-			camel_data_wrapper_take_mime_type_field (CAMEL_DATA_WRAPPER (mime_part), content_type);
+		if (value) {
+			content_type = camel_content_type_decode (value);
+			if (content_type)
+				camel_data_wrapper_take_mime_type_field (CAMEL_DATA_WRAPPER (mime_part), content_type);
+		}
 		break;
 	default:
 		return FALSE;
