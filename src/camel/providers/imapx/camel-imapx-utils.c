@@ -3646,7 +3646,7 @@ imapx_splice_with_progress (GOutputStream *output_stream,
 	g_return_val_if_fail (G_IS_INPUT_STREAM (input_stream), -1);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		return FALSE;
+		return -1;
 
 	file_offset = 0;
 	bytes_copied = 0;
