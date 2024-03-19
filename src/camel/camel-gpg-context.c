@@ -988,6 +988,9 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 		g_ptr_array_add (argv, (guint8 *) "--export");
 		g_ptr_array_add (argv, (guint8 *) "--export-options");
 		g_ptr_array_add (argv, (guint8 *) "export-minimal,no-export-attributes");
+		g_ptr_array_add (argv, (guint8 *) "--export-filter");
+		g_ptr_array_add (argv, (guint8 *) "drop-subkey='expired -t || revoked -t || disabled -t || usage!~e'");
+
 		if (gpg->userids) {
 			GSList *uiter;
 
