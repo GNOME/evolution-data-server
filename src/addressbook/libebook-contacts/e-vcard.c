@@ -258,33 +258,73 @@ strstr_nocase (const gchar *haystack,
 #endif
 }
 
+/* Stolen from glib/glib/gconvert.c */
+static GString *
+make_utf8_valid (GString **inout_str)
+{
+	GString *string;
+	const gchar *remainder, *invalid;
+	gint remaining_bytes, valid_bytes;
+
+	string = NULL;
+	remainder = (*inout_str)->str;
+	remaining_bytes = (*inout_str)->len;
+
+	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
+			break;
+		valid_bytes = invalid - remainder;
+
+		if (string == NULL)
+			string = g_string_sized_new (remaining_bytes + 3);
+
+		g_string_append_len (string, remainder, valid_bytes);
+		/* append U+FFFD REPLACEMENT CHARACTER */
+		g_string_append (string, "\357\277\275");
+
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
+	}
+
+	if (string == NULL)
+		return *inout_str;
+
+	g_string_append (string, remainder);
+
+	g_warn_if_fail (g_utf8_validate (string->str, -1, NULL));
+
+	g_string_free (*inout_str, TRUE);
+	*inout_str = string;
+
+	return *inout_str;
+}
+
 /*  Skip newline characters and return the next character.
  *  This function takes care of folding lines, skipping
  *  newline characters if found, taking care of equal characters
  *  and other strange things.
  */
-static gchar *
-skip_newline (gchar *str,
+static const gchar *
+skip_newline (const gchar *str,
               gboolean quoted_printable)
 {
-	gchar *p;
-	gchar *next;
-	gchar *next2;
+	const gchar *p, *next, *next2;
+
 	p = str;
 
 	/* -- swallow equal signs at end of line for quoted printable */
 	/* note: a quoted_printable linefolding is an equal sign followed by
 	 * one or more newline characters and optional a whitespace */
 	if (quoted_printable && *p == '=' ) {
-		next = g_utf8_next_char (p);
+		next = p + 1;
 		if (*next == '\r' || *next == '\n') {
-			p = g_utf8_next_char (next); /* swallow equal and newline */
+			p = next + 1; /* swallow equal and newline */
 
 			if ((*p == '\r' || *p == '\n') && *p != *next ) {
-				p = g_utf8_next_char (p); /* swallow second newline */
+				p = p + 1; /* swallow second newline */
 
 				if (*p == ' ' || *p == '\t') {
-					p = g_utf8_next_char (p); /* swallow whitespace */
+					p = p + 1; /* swallow whitespace */
 				}
 			}
 
@@ -293,16 +333,16 @@ skip_newline (gchar *str,
 	/* -- swallow newline and (if present) following whitespaces */
 	} else if (*p == '\r' || *p == '\n') {
 
-		next = g_utf8_next_char (p);
+		next = p + 1;
 		if ((*next == '\n' || *next == '\r') && *p != *next) {
 
-			next2 = g_utf8_next_char (next);
+			next2 = next + 1;
 			if (*next2 == ' ' || *next2 == '\t') {
-				p = g_utf8_next_char (next2); /* we found a line folding */
+				p = next2 + 1; /* we found a line folding */
 			}
 
 		} else if (*next == ' ' || *next == '\t') {
-			p = g_utf8_next_char (next);  /* we found a line folding */
+			p = next + 1;  /* we found a line folding */
 		}
 	}
 
@@ -311,16 +351,16 @@ skip_newline (gchar *str,
 
 /* skip forward until we hit the CRLF, or \0 */
 static void
-skip_to_next_line (gchar **p)
+skip_to_next_line (const gchar **p)
 {
-	gchar *lp = *p;
+	const gchar *lp = *p;
 
 	while (*lp != '\n' && *lp != '\r' && *lp != '\0')
-		lp = g_utf8_next_char (lp);
+		lp++;
 
 	/* -- skip over the endline */
 	while (*lp == '\r' || *lp == '\n') {
-		lp = g_utf8_next_char (lp);
+		lp++;
 	}
 
 	*p = lp;
@@ -329,18 +369,18 @@ skip_to_next_line (gchar **p)
 /* skip forward until we hit a character in @s, CRLF, or \0.  leave *p
  * pointing at the character that causes us to stop */
 static void
-skip_until (gchar **p,
+skip_until (const gchar **p,
             const gchar *s)
 {
-	gchar *lp;
+	const gchar *lp;
 
 	lp = *p;
 
 	while (*lp != '\r' && *lp != '\0') {
 		gboolean s_matches = FALSE;
 		const gchar *ls;
-		for (ls = s; *ls; ls = g_utf8_next_char (ls)) {
-			if (g_utf8_get_char (ls) == g_utf8_get_char (lp)) {
+		for (ls = s; *ls; ls++) {
+			if (*ls == *lp) {
 				s_matches = TRUE;
 				break;
 			}
@@ -348,7 +388,7 @@ skip_until (gchar **p,
 
 		if (s_matches)
 			break;
-		lp = g_utf8_next_char (lp);
+		lp++;
 	}
 
 	*p = lp;
@@ -356,11 +396,11 @@ skip_until (gchar **p,
 
 static void
 read_attribute_value (EVCardAttribute *attr,
-                      gchar **p,
+                      const gchar **p,
                       gboolean quoted_printable,
                       const gchar *charset)
 {
-	gchar *lp = *p;
+	const gchar *lp = *p;
 	const gchar *chunk_start = NULL;
 	gboolean is_singlevalue_type;
 	gboolean is_categories;
@@ -382,7 +422,7 @@ read_attribute_value (EVCardAttribute *attr,
 	     lp = skip_newline ( lp, quoted_printable ) ) {
 
 		if (*lp == '=' && quoted_printable) {
-			gunichar a, b;
+			gchar a, b;
 
 			WRITE_CHUNK ();
 
@@ -390,38 +430,38 @@ read_attribute_value (EVCardAttribute *attr,
 			lp++;
 			lp = skip_newline (lp, quoted_printable);
 
-			a = g_utf8_get_char (lp);
-			lp = g_utf8_next_char (lp);
+			a = *lp;
+			lp++;
 			if (a == '\0')
 				break;
 
 			lp = skip_newline (lp, quoted_printable);
 
-			b = g_utf8_get_char (lp);
+			b = *lp;
 			if (b == '\0')
 				break;
-			lp = g_utf8_next_char (lp);
+			lp++;
 
-			if (g_unichar_isxdigit (a) && g_unichar_isxdigit (b)) {
+			if (g_ascii_isxdigit (a) && g_ascii_isxdigit (b)) {
 				gchar c;
 
-				gint a_bin = g_unichar_xdigit_value (a);
-				gint b_bin = g_unichar_xdigit_value (b);
+				gint a_bin = g_ascii_xdigit_value (a);
+				gint b_bin = g_ascii_xdigit_value (b);
 
 				c = (a_bin << 4) | b_bin;
 
 				g_string_append_c (str, c); /* add decoded byte (this is not a unicode yet) */
 			} else {
 				g_string_append_c (str, '=');
-				g_string_insert_unichar (str, -1, a);
-				g_string_insert_unichar (str, -1, b);
+				g_string_append_c (str, a);
+				g_string_append_c (str, b);
 			}
 		} else if (*lp == '\\') {
 			WRITE_CHUNK ();
 
 			/* convert back to the non-escaped version of
 			 * the characters */
-			lp = g_utf8_next_char (lp);
+			lp++;
 			if (*lp == '\0') {
 				g_string_append_c (str, '\\');
 				break;
@@ -441,12 +481,12 @@ read_attribute_value (EVCardAttribute *attr,
 			case ',': g_string_append_c (str, ','); break;
 			case '\\': g_string_append_c (str, '\\'); break;
 			default:
-				g_warning ("invalid escape, passing it through");
+				d (g_warning ("invalid escape, passing it through"));
 				g_string_append_c (str, '\\');
 				chunk_start = lp;
 				break;
 			}
-			lp = g_utf8_next_char (lp);
+			lp++;
 		}
 		else if ((*lp == ';' && !is_singlevalue_type) ||
 			 (*lp == ',' && is_categories)) {
@@ -461,15 +501,15 @@ read_attribute_value (EVCardAttribute *attr,
 				}
 			}
 
-			e_vcard_attribute_add_value (attr, str->str);
+			e_vcard_attribute_add_value (attr, make_utf8_valid (&str)->str);
 			g_string_set_size (str, 0);
-			lp = g_utf8_next_char (lp);
+			lp++;
 		}
 		else {
 			if (!chunk_start)
 				chunk_start = lp;
 
-			lp = g_utf8_next_char (lp);
+			lp++;
 		}
 
 		if (*lp == '\n' || *lp == '\r')
@@ -491,7 +531,7 @@ read_attribute_value (EVCardAttribute *attr,
 			}
 		}
 
-		e_vcard_attribute_add_value (attr, str->str);
+		e_vcard_attribute_add_value (attr, make_utf8_valid (&str)->str);
 		g_string_free (str, TRUE);
 	}
 
@@ -502,11 +542,11 @@ read_attribute_value (EVCardAttribute *attr,
 
 static void
 read_attribute_params (EVCardAttribute *attr,
-                       gchar **p,
+                       const gchar **p,
                        gboolean *quoted_printable,
                        gchar **charset)
 {
-	gchar *lp;
+	const gchar *lp;
 	const gchar *chunk_start = NULL;
 	GString *str;
 	EVCardAttributeParam *param = NULL;
@@ -522,18 +562,16 @@ read_attribute_params (EVCardAttribute *attr,
 	for (lp = skip_newline ( *p, *quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, *quoted_printable ) ) {
-		gunichar uc;
-
 		if (*lp == '"') {
 			WRITE_CHUNK ();
 
 			in_quote = !in_quote;
-			lp = g_utf8_next_char (lp);
-		} else  if (uc = g_utf8_get_char (lp), in_quote || *lp == '-' || *lp == '_' || g_unichar_isalnum (uc)) {
+			lp++;
+		} else  if (in_quote || *lp == '-' || *lp == '_' || g_ascii_isalnum (*lp)) {
 			WRITE_CHUNK ();
 
-			g_string_insert_unichar (str, -1, uc);
-			lp = g_utf8_next_char (lp);
+			g_string_append_c (str, *lp);
+			lp++;
 		}
 		/* accumulate until we hit the '=' or ';'.  If we hit
 		 * a '=' the string contains the parameter name.  if
@@ -545,14 +583,14 @@ read_attribute_params (EVCardAttribute *attr,
 			WRITE_CHUNK ();
 
 			if (str->len > 0) {
-				param = e_vcard_attribute_param_new (str->str);
+				param = e_vcard_attribute_param_new (make_utf8_valid (&str)->str);
 				g_string_set_size (str, 0);
-				lp = g_utf8_next_char (lp);
+				lp++;
 			}
 			else {
 				skip_until (&lp, ":;");
 				if (*lp == ';') {
-					lp = g_utf8_next_char (lp);
+					lp++;
 
 				} else if (*lp == ':') {
 					/* do nothing */
@@ -571,10 +609,10 @@ read_attribute_params (EVCardAttribute *attr,
 
 			if (param) {
 				if (str->len > 0) {
-					e_vcard_attribute_param_add_value (param, str->str);
+					e_vcard_attribute_param_add_value (param, make_utf8_valid (&str)->str);
 					g_string_set_size (str, 0);
 					if (!colon)
-						lp = g_utf8_next_char (lp);
+						lp++;
 				}
 				else {
 					/* we've got a parameter of the form:
@@ -589,9 +627,9 @@ read_attribute_params (EVCardAttribute *attr,
 						e_vcard_attribute_param_free (param);
 						param = NULL;
 						if (!colon)
-							lp = g_utf8_next_char (lp);
+							lp++;
 					} else if (!colon) {
-						lp = g_utf8_next_char (lp);
+						lp++;
 					}
 				}
 
@@ -630,10 +668,10 @@ read_attribute_params (EVCardAttribute *attr,
 					}
 
 					param = e_vcard_attribute_param_new (param_name);
-					e_vcard_attribute_param_add_value (param, str->str);
+					e_vcard_attribute_param_add_value (param, make_utf8_valid (&str)->str);
 					g_string_set_size (str, 0);
 					if (!colon)
-						lp = g_utf8_next_char (lp);
+						lp++;
 				}
 				else {
 					/* we've got an attribute with a truly empty
@@ -649,7 +687,7 @@ read_attribute_params (EVCardAttribute *attr,
 					 * continue through the loop again if we hit a ';',
 					 * or we'll break out correct below if it was a ':' */
 					if (!colon)
-						lp = g_utf8_next_char (lp);
+						lp++;
 				}
 			}
 			if (param && !comma) {
@@ -664,14 +702,12 @@ read_attribute_params (EVCardAttribute *attr,
 			if (!chunk_start)
 				chunk_start = lp;
 
-			lp = g_utf8_next_char (lp);
+			lp++;
 		} else {
-			g_warning ("invalid character (%c/0x%02x) found in parameter spec (%s)", *lp, *lp, lp);
+			d (g_warning ("invalid character (%c/0x%02x) found in parameter spec (%s)", *lp, *lp, lp));
 			chunk_start = NULL;
 			g_string_set_size (str, 0);
-			/*			skip_until (&lp, ":;"); */
-
-			skip_to_next_line ( &lp );
+			skip_until (&lp, ":;");
 		}
 
 		if (*lp == '\n' || *lp == '\r')
@@ -689,13 +725,13 @@ read_attribute_params (EVCardAttribute *attr,
 /* reads an entire attribute from the input buffer, leaving p pointing
  * at the start of the next line (past the \r\n) */
 static EVCardAttribute *
-read_attribute (gchar **p)
+read_attribute (const gchar **p)
 {
 	gchar *attr_group = NULL;
 	gchar *attr_name = NULL;
 	EVCardAttribute *attr = NULL;
 	GString *str;
-	gchar *lp;
+	const gchar *lp;
 	gboolean is_qp = FALSE;
 	gchar *charset = NULL;
 
@@ -704,12 +740,11 @@ read_attribute (gchar **p)
 	for (lp = skip_newline ( *p, is_qp);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, is_qp ) ) {
-		gunichar uc;
-
 		if (*lp == ':' || *lp == ';') {
 			if (str->len != 0) {
 				/* we've got a name, break out to the value/attribute parsing */
-				attr_name = g_string_free (str, FALSE);
+				attr_name = g_string_free (make_utf8_valid (&str), FALSE);
+				str = NULL;
 				break;
 			}
 			else {
@@ -721,6 +756,7 @@ read_attribute (gchar **p)
 				 * and try again.
 				 */
 				g_string_free (str, TRUE);
+				str = NULL;
 				*p = lp;
 				skip_to_next_line (p);
 				goto lose;
@@ -728,28 +764,32 @@ read_attribute (gchar **p)
 		}
 		else if (*lp == '.') {
 			if (attr_group) {
-				g_warning (
-					"extra `.' in attribute specification.  ignoring extra group `%s'",
-					str->str);
+				d (g_warning ("extra `.' in attribute specification.  ignoring extra group `%s'", str->str));
 				g_string_set_size (str, 0);
 			}
 			if (str->len != 0) {
-				attr_group = g_string_free (str, FALSE);
+				attr_group = g_string_free (make_utf8_valid (&str), FALSE);
 				str = g_string_sized_new (16);
 			}
 		}
-		else if (uc = g_utf8_get_char (lp), *lp == '-' || *lp == '_' || g_unichar_isalnum (uc)) {
-			g_string_insert_unichar (str, -1, uc);
+		else if (*lp == '-' || *lp == '_' || g_ascii_isalnum (*lp)) {
+			g_string_append_c (str, *lp);
 		}
 		else {
-			g_warning ("invalid character found in attribute group/name");
+			d (g_warning ("invalid character found in attribute group/name"));
 			g_string_free (str, TRUE);
+			str = NULL;
 			*p = lp;
 			skip_to_next_line (p);
 			goto lose;
 		}
 
-		lp = g_utf8_next_char (lp);
+		lp++;
+	}
+
+	if (str) {
+		g_string_free (str, TRUE);
+		str = NULL;
 	}
 
 	if (!attr_name) {
@@ -759,17 +799,19 @@ read_attribute (gchar **p)
 
 	/* This consumes (takes) both strings */
 	attr = e_vcard_attribute_new_take (attr_group, attr_name);
+	attr_group = NULL;
+	attr_name = NULL;
 
 	if (*lp == ';') {
 		/* skip past the ';' */
-		lp = g_utf8_next_char (lp);
+		lp++;
 		read_attribute_params (attr, &lp, &is_qp, &charset);
 		if (is_qp)
 			attr->encoding = EVC_ENCODING_RAW;
 	}
 	if (*lp == ':') {
 		/* skip past the ':' */
-		lp = g_utf8_next_char (lp);
+		lp++;
 		read_attribute_value (attr, &lp, is_qp, charset);
 	}
 
@@ -782,47 +824,17 @@ read_attribute (gchar **p)
 
 	return attr;
  lose:
+
+	if (str)
+		g_string_free (str, TRUE);
+
 	if (attr)
 		e_vcard_attribute_free (attr);
+
+	g_free (attr_group);
+	g_free (attr_name);
+
 	return NULL;
-}
-
-/* Stolen from glib/glib/gconvert.c */
-static gchar *
-make_valid_utf8 (const gchar *name)
-{
-	GString *string;
-	const gchar *remainder, *invalid;
-	gint remaining_bytes, valid_bytes;
-
-	string = NULL;
-	remainder = name;
-	remaining_bytes = strlen (name);
-
-	while (remaining_bytes != 0) {
-		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
-			break;
-	      valid_bytes = invalid - remainder;
-
-		if (string == NULL)
-			string = g_string_sized_new (remaining_bytes);
-
-		g_string_append_len (string, remainder, valid_bytes);
-		/* append U+FFFD REPLACEMENT CHARACTER */
-		g_string_append (string, "\357\277\275");
-
-		remaining_bytes -= valid_bytes + 1;
-		remainder = invalid + 1;
-	}
-
-	if (string == NULL)
-		return g_strdup (name);
-
-	g_string_append (string, remainder);
-
-	g_return_val_if_fail (g_utf8_validate (string->str, -1, NULL), g_string_free (string, TRUE));
-
-	return g_string_free (string, FALSE);
 }
 
 /* we try to be as forgiving as we possibly can here - this isn't a
@@ -834,22 +846,16 @@ parse (EVCard *evc,
        const gchar *str,
        gboolean ignore_uid)
 {
-	gchar *buf;
-	gchar *p;
+	const gchar *p;
 	EVCardAttribute *attr;
 
-	buf = make_valid_utf8 (str);
+	d (printf ("vCard parse input:\n%s\n", str));
 
-	d (printf ("BEFORE FOLDING:\n"));
-	d (printf (str));
-	d (printf ("\n\nAFTER FOLDING:\n"));
-	d (printf (buf));
-
-	p = buf;
+	p = str;
 
 	attr = read_attribute (&p);
 	if (!attr || attr->group || g_ascii_strcasecmp (attr->name, "begin")) {
-		g_warning ("vcard began without a BEGIN:VCARD (%s)\n", str);
+		d (g_warning ("vcard began without a BEGIN:VCARD (%s)\n", str));
 	}
 	if (attr && !g_ascii_strcasecmp (attr->name, "begin")) {
 		e_vcard_attribute_free (attr);
@@ -879,13 +885,11 @@ parse (EVCard *evc,
 	}
 
 	if (!attr || attr->group || g_ascii_strcasecmp (attr->name, "end")) {
-		g_warning ("vcard ended without END:VCARD (%s)\n", str);
+		d (g_warning ("vcard ended without END:VCARD (%s)\n", str));
 	}
 
 	if (attr && !g_ascii_strcasecmp (attr->name, "end"))
 		e_vcard_attribute_free (attr);
-
-	g_free (buf);
 
 	evc->priv->attributes = g_list_reverse (evc->priv->attributes);
 }
@@ -1010,7 +1014,7 @@ e_vcard_unescape_string (const gchar *s)
 			case ',':  g_string_append_c (str, ','); break;
 			case '\\': g_string_append_c (str, '\\'); break;
 			default:
-				g_warning ("invalid escape, passing it through");
+				d (g_warning ("invalid escape, passing it through"));
 				g_string_append_c (str, '\\');
 				g_string_append_c (str, *p);
 				break;

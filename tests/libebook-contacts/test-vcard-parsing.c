@@ -392,6 +392,254 @@ test_vcard_quoted_printable (void)
 	g_assert_true (test_vcard_qp_3_0_saving (expected_text));
 }
 
+static void
+test_vcard_charset (void)
+{
+	const gchar *vcard_str =
+		"BEGIN:VCARD\r\n"
+		"VERSION:2.1\r\n"
+		"N;LANGUAGE=ru;CHARSET=windows-1251:\xCF\xF3\xEF\xEA\xE8\xED;\xC2\xE0\xF1\xE8\xEB\xE8\xE9\r\n"
+		"FN;CHARSET=windows-1251:\xC2\xE0\xF1\xE8\xEB\xE8\xE9 \xCF\xF3\xEF\xEA\xE8\xED\r\n"
+		"TEL;WORK;VOICE:12-34-56\r\n"
+		"ADR;WORK;PREF;CHARSET=windows-1251:;;\xCB\xE5\xED\xE8\xED\xE0 \xE4\x2E 1\r\n"
+		"LABEL;WORK;PREF;CHARSET=windows-1251:\xCB\xE5\xED\xE8\xED\xE0 \xE4\x2E 1\r\n"
+		"EMAIL;PREF;INTERNET:test@test.ru\r\n"
+		"REV:20230906T132316Z\r\n"
+		"END:VCARD\r\n";
+	const gchar *expected_vcard_str =
+		"BEGIN:VCARD\r\n"
+		"VERSION:3.0\r\n"
+		"N;LANGUAGE=ru:Пупкин;Василий\r\n"
+		"FN:Василий Пупкин\r\n"
+		"TEL;TYPE=WORK,VOICE:12-34-56\r\n"
+		"ADR;TYPE=WORK,PREF:;;Ленина д. 1\r\n"
+		"LABEL;TYPE=WORK,PREF:Ленина д. 1\r\n"
+		"EMAIL;TYPE=PREF,INTERNET:test@test.ru\r\n"
+		"REV:20230906T132316Z\r\n"
+		"END:VCARD";
+	const gchar *expected_N_1 = "Пупкин";
+	const gchar *expected_N_2 = "Василий";
+	const gchar *expected_FN = "Василий Пупкин";
+	const gchar *expected_ADR = "Ленина д. 1";
+	const gchar *expected_LABEL = "Ленина д. 1";
+	EVCard *vcard;
+	EVCardAttribute *attr;
+	GList *values;
+	GString *value;
+	gchar *tmp;
+
+	vcard = e_vcard_new_from_string (vcard_str);
+	g_assert_nonnull (vcard);
+
+	attr = e_vcard_get_attribute (vcard, EVC_N);
+	g_assert_nonnull (attr);
+	values = e_vcard_attribute_get_values_decoded (attr);
+	g_assert_cmpint (g_list_length (values), ==, 2);
+	g_assert_cmpstr (((GString *) values->data)->str, ==, expected_N_1);
+	g_assert_cmpstr (((GString *) values->next->data)->str, ==, expected_N_2);
+
+	attr = e_vcard_get_attribute (vcard, EVC_FN);
+	g_assert_nonnull (attr);
+	values = e_vcard_attribute_get_values_decoded (attr);
+	g_assert_cmpint (g_list_length (values), ==, 1);
+	g_assert_cmpstr (((GString *) values->data)->str, ==, expected_FN);
+
+	attr = e_vcard_get_attribute (vcard, EVC_ADR);
+	g_assert_nonnull (attr);
+	values = e_vcard_attribute_get_values_decoded (attr);
+	g_assert_cmpint (g_list_length (values), ==, 3);
+	g_assert_cmpstr (((GString *) values->next->next->data)->str, ==, expected_ADR);
+
+	attr = e_vcard_get_attribute (vcard, EVC_LABEL);
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_cmpstr (value->str, ==, expected_LABEL);
+	g_string_free (value, TRUE);
+
+	tmp = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+	g_assert_nonnull (tmp);
+	g_assert_true (g_utf8_validate (tmp, -1, NULL));
+	g_assert_cmpstr (tmp, ==, expected_vcard_str);
+	g_free (tmp);
+
+	g_clear_object (&vcard);
+}
+
+
+#define verify_attr_simple(_name, _expected) { \
+	EVCardAttribute *_attr; \
+	GString *_value; \
+	_attr = e_vcard_get_attribute (vcard, _name); \
+	g_assert_nonnull (_attr); \
+	_value = e_vcard_attribute_get_value_decoded (_attr); \
+	g_assert_nonnull (_value); \
+	g_assert_cmpstr (_value->str, ==, _expected); \
+	g_string_free (_value, TRUE); \
+	}
+
+static void
+test_vcard_charset_mixed (void)
+{
+	const gchar *vcard_str =
+		"BEGIN:VCARD\r\n"
+		"VERSION:3.0\r\n"
+		"X-WIN1251;LANGUAGE=ru;CHARSET=windows-1251:\xCF\xF3\xEF\xEA\xE8\xED,\xC2\xE0\xF1\xE8\xEB\xE8\xE9\r\n"
+		"X-CP1250;CHARSET=cp1250:\xEC\x9A\xE8\xF8\x9E\xFD\xE1\xED\xE9\xFA\xF9\xA7\r\n"
+		"X-UTF8;CHARSET=UTF-8:§ĚŠČŘŽÝÁÍÉÚŮ\r\n"
+		"X-ASCII;CHARSET=us-ascii:qwertyuiop\r\n"
+		"X-NONE:qwerty§ĚŠČŘŽÝÁÍÉÚŮuiop\r\n"
+		"END:VCARD\r\n";
+	EVCard *vcard;
+
+	vcard = e_vcard_new_from_string (vcard_str);
+	g_assert_nonnull (vcard);
+
+	verify_attr_simple ("X-WIN1251", "Пупкин,Василий");
+	verify_attr_simple ("X-CP1250", "ěščřžýáíéúů§");
+	verify_attr_simple ("X-UTF8", "§ĚŠČŘŽÝÁÍÉÚŮ");
+	verify_attr_simple ("X-ASCII", "qwertyuiop");
+	verify_attr_simple ("X-NONE", "qwerty§ĚŠČŘŽÝÁÍÉÚŮuiop");
+
+	g_clear_object (&vcard);
+}
+
+static void
+test_vcard_charset_broken (void)
+{
+	const gchar *vcard_str =
+		"BEGIN:VCARD\r\n"
+		"VERSION:3.0\r\n" /* ascii with no group */
+		"group.X-ATTR1:good group and attr\r\n"
+		"g\xFF" "roup.X-ATTR2:broken group\r\n"
+		"group.X-AT\xFFTR3:broken attr\r\n"
+		"g\xFF" "roup.X-AT\xFF" "TR4:broken group and attr\r\n"
+		"X-ATTR5:brok\xFF" "en value\r\n"
+		"X-ATTR6;CHARSET=cp1250:broken value wi\xFF" "th charset \xEC\x9A\xE8\xF8\x9E\xFD\xE1\xED\xE9\xFA\xF9\xA7\r\n"
+		"X-ATTR7;X-PARAM=žšř:utf-8 param value\r\n"
+		"X-ATTR8;X-PARAMžšř=zsr:utf-8 param name\r\n"
+		"X-ATTR9;X-PARAMžšř=žšř:utf-8 param name and value\r\n"
+		"X-ATTR10;X-PA\xFF" "RAM=zsr:broken param name\r\n"
+		"X-ATTR11;X-PARAM=zs\xFF" "r:broken param value\r\n"
+		"X-ATTR12;X-PA\xFF" "RAM=zs\xFF" "r:broken param name and value\r\n"
+		"X-ATTR13;X-PARAM1=1p;X-PA\xFF" "RAM2=2p;X-PARAM3=3\xFF" "p;X-PA\xFF" "RAM4=4\xFF" "p:multiple params\r\n"
+		"END:VCARD\r\n";
+	EVCard *vcard;
+	EVCardAttribute *attr;
+	GList *param;
+	GString *value;
+
+	vcard = e_vcard_new_from_string (vcard_str);
+	g_assert_nonnull (vcard);
+
+	/* attributes with broken name or parameter are dropped */
+	g_assert_cmpint (g_list_length (e_vcard_get_attributes (vcard)), ==, 11);
+
+	verify_attr_simple ("VERSION", "3.0");
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR1");
+	g_assert_nonnull (attr);
+	g_assert_cmpstr (e_vcard_attribute_get_group (attr), ==, "group");
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "good group and attr");
+	g_string_free (value, TRUE);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR5");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "brok�en value");
+	g_string_free (value, TRUE);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR6");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "broken value wi˙th charset ěščřžýáíéúů§");
+	g_string_free (value, TRUE);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR7");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "utf-8 param value");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 1);
+	param = e_vcard_attribute_get_param (attr, "X-PARAM");
+	g_assert_cmpint (g_list_length (param), ==, 1);
+	g_assert_cmpstr (param->data, ==, "žšř");
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR8");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "utf-8 param name");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 0);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR9");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "utf-8 param name and value");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 0);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR10");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "broken param name");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 0);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR11");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "broken param value");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 1);
+	param = e_vcard_attribute_get_param (attr, "X-PARAM");
+	g_assert_cmpint (g_list_length (param), ==, 1);
+	g_assert_cmpstr (param->data, ==, "zs�r");
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR12");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "broken param name and value");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 0);
+
+	attr = e_vcard_get_attribute (vcard, "X-ATTR13");
+	g_assert_nonnull (attr);
+	value = e_vcard_attribute_get_value_decoded (attr);
+	g_assert_nonnull (value);
+	g_assert_true (g_utf8_validate (value->str, value->len, NULL));
+	g_assert_cmpstr (value->str, ==, "multiple params");
+	g_string_free (value, TRUE);
+	g_assert_cmpint (g_list_length (e_vcard_attribute_get_params (attr)), ==, 2);
+	param = e_vcard_attribute_get_param (attr, "X-PARAM1");
+	g_assert_cmpint (g_list_length (param), ==, 1);
+	g_assert_cmpstr (param->data, ==, "1p");
+	param = e_vcard_attribute_get_param (attr, "X-PARAM3");
+	g_assert_cmpint (g_list_length (param), ==, 1);
+	g_assert_cmpstr (param->data, ==, "3�p");
+
+	g_clear_object (&vcard);
+}
+
 static const gchar *test_vcard_no_uid_str =
 	"BEGIN:VCARD\r\n"
 	"VERSION:3.0\r\n"
@@ -595,6 +843,9 @@ main (gint argc,
 	g_test_add_func ("/Parsing/VCard/WithUID", test_vcard_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_vcard_without_uid);
 	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
+	g_test_add_func ("/Parsing/VCard/Charset", test_vcard_charset);
+	g_test_add_func ("/Parsing/VCard/CharsetMixed", test_vcard_charset_mixed);
+	g_test_add_func ("/Parsing/VCard/CharsetBroken", test_vcard_charset_broken);
 	g_test_add_func ("/Parsing/Contact/WithUID", test_contact_with_uid);
 	g_test_add_func ("/Parsing/Contact/WithoutUID", test_contact_without_uid);
 	g_test_add_func ("/Parsing/Contact/EmptyValue", test_contact_empty_value);
