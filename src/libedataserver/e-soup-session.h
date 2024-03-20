@@ -93,6 +93,11 @@ ENamedParameters *
 void		e_soup_session_set_force_http1		(ESoupSession *session,
 							 gboolean force_http1);
 gboolean	e_soup_session_get_force_http1		(ESoupSession *session);
+void		e_soup_session_set_handle_backoff_responses
+							(ESoupSession *session,
+							 gboolean handle_backoff_responses);
+gboolean	e_soup_session_get_handle_backoff_responses
+							(ESoupSession *session);
 gboolean	e_soup_session_get_authentication_requires_credentials
 							(ESoupSession *session);
 gboolean	e_soup_session_get_ssl_error_details	(ESoupSession *session,

@@ -39,6 +39,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include "camel/camel.h"
+
 #include "e-book-backend-sexp.h"
 #include "e-book-backend.h"
 #include "e-data-book-cursor-cache.h"
@@ -3885,6 +3887,19 @@ e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
 	return success;
 }
 
+static void
+e_book_meta_backend_notify_status_cb (CamelOperation *opetarion,
+				      const gchar *what,
+				      gint percent,
+				      gpointer user_data)
+{
+	EBookBackend *book_backend = user_data;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
+
+	e_book_backend_foreach_view_notify_progress (book_backend, FALSE, percent, what);
+}
+
 /**
  * e_book_meta_backend_connect_sync:
  * @meta_backend: an #EBookMetaBackend
@@ -3936,6 +3951,9 @@ e_book_meta_backend_connect_sync (EBookMetaBackend *meta_backend,
 				  GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gboolean success;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 
@@ -3943,7 +3961,18 @@ e_book_meta_backend_connect_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->connect_sync != NULL, FALSE);
 
-	return klass->connect_sync (meta_backend, credentials, out_auth_result, out_certificate_pem, out_certificate_errors, cancellable, error);
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
+
+	success = klass->connect_sync (meta_backend, credentials, out_auth_result, out_certificate_pem, out_certificate_errors, use_cancellable, error);
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
+
+	return success;
 }
 
 /**
@@ -3969,6 +3998,9 @@ e_book_meta_backend_disconnect_sync (EBookMetaBackend *meta_backend,
 				     GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gboolean success;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 
@@ -3976,7 +4008,18 @@ e_book_meta_backend_disconnect_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->disconnect_sync != NULL, FALSE);
 
-	return klass->disconnect_sync (meta_backend, cancellable, error);
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
+
+	success = klass->disconnect_sync (meta_backend, use_cancellable, error);
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
+
+	return success;
 }
 
 /**
@@ -4044,6 +4087,8 @@ e_book_meta_backend_get_changes_sync (EBookMetaBackend *meta_backend,
 	EBookMetaBackendClass *klass;
 	gint repeat_count = 0;
 	gboolean success = FALSE;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
@@ -4057,6 +4102,10 @@ e_book_meta_backend_get_changes_sync (EBookMetaBackend *meta_backend,
 	klass = E_BOOK_META_BACKEND_GET_CLASS (meta_backend);
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->get_changes_sync != NULL, FALSE);
+
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
 
 	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
 		guint wait_credentials_stamp;
@@ -4076,12 +4125,17 @@ e_book_meta_backend_get_changes_sync (EBookMetaBackend *meta_backend,
 			out_created_objects,
 			out_modified_objects,
 			out_removed_objects,
-			cancellable,
+			use_cancellable,
 			&local_error);
 
-		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, use_cancellable))
 			break;
 	}
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
 
 	if (local_error)
 		g_propagate_error (error, local_error);
@@ -4125,6 +4179,8 @@ e_book_meta_backend_list_existing_sync (EBookMetaBackend *meta_backend,
 	EBookMetaBackendClass *klass;
 	gint repeat_count = 0;
 	gboolean success = FALSE;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
@@ -4134,6 +4190,9 @@ e_book_meta_backend_list_existing_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->list_existing_sync != NULL, FALSE);
 
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
 
 	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
 		guint wait_credentials_stamp;
@@ -4145,11 +4204,16 @@ e_book_meta_backend_list_existing_sync (EBookMetaBackend *meta_backend,
 		g_clear_error (&local_error);
 		repeat_count++;
 
-		success = klass->list_existing_sync (meta_backend, out_new_sync_tag, out_existing_objects, cancellable, &local_error);
+		success = klass->list_existing_sync (meta_backend, out_new_sync_tag, out_existing_objects, use_cancellable, &local_error);
 
-		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, use_cancellable))
 			break;
 	}
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
 
 	if (local_error)
 		g_propagate_error (error, local_error);
@@ -4193,6 +4257,8 @@ e_book_meta_backend_load_contact_sync (EBookMetaBackend *meta_backend,
 	EBookMetaBackendClass *klass;
 	gint repeat_count = 0;
 	gboolean success = FALSE;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
@@ -4204,6 +4270,9 @@ e_book_meta_backend_load_contact_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->load_contact_sync != NULL, FALSE);
 
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
 
 	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
 		guint wait_credentials_stamp;
@@ -4215,11 +4284,16 @@ e_book_meta_backend_load_contact_sync (EBookMetaBackend *meta_backend,
 		g_clear_error (&local_error);
 		repeat_count++;
 
-		success = klass->load_contact_sync (meta_backend, uid, extra, out_contact, out_extra, cancellable, &local_error);
+		success = klass->load_contact_sync (meta_backend, uid, extra, out_contact, out_extra, use_cancellable, &local_error);
 
-		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, use_cancellable))
 			break;
 	}
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
 
 	if (local_error)
 		g_propagate_error (error, local_error);
@@ -4283,6 +4357,8 @@ e_book_meta_backend_save_contact_sync (EBookMetaBackend *meta_backend,
 	EBookMetaBackendClass *klass;
 	gint repeat_count = 0;
 	gboolean success = FALSE;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
@@ -4298,6 +4374,9 @@ e_book_meta_backend_save_contact_sync (EBookMetaBackend *meta_backend,
 		return FALSE;
 	}
 
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
 
 	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
 		guint wait_credentials_stamp;
@@ -4317,12 +4396,17 @@ e_book_meta_backend_save_contact_sync (EBookMetaBackend *meta_backend,
 			opflags,
 			out_new_uid,
 			out_new_extra,
-			cancellable,
+			use_cancellable,
 			&local_error);
 
-		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, use_cancellable))
 			break;
 	}
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
 
 	if (local_error)
 		g_propagate_error (error, local_error);
@@ -4364,6 +4448,8 @@ e_book_meta_backend_remove_contact_sync (EBookMetaBackend *meta_backend,
 	EBookMetaBackendClass *klass;
 	gint repeat_count = 0;
 	gboolean success = FALSE;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
@@ -4377,6 +4463,9 @@ e_book_meta_backend_remove_contact_sync (EBookMetaBackend *meta_backend,
 		return FALSE;
 	}
 
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
 
 	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
 		guint wait_credentials_stamp;
@@ -4388,11 +4477,16 @@ e_book_meta_backend_remove_contact_sync (EBookMetaBackend *meta_backend,
 		g_clear_error (&local_error);
 		repeat_count++;
 
-		success = klass->remove_contact_sync (meta_backend, conflict_resolution, uid, extra, object, opflags, cancellable, &local_error);
+		success = klass->remove_contact_sync (meta_backend, conflict_resolution, uid, extra, object, opflags, use_cancellable, &local_error);
 
-		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, use_cancellable))
 			break;
 	}
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
 
 	if (local_error)
 		g_propagate_error (error, local_error);
@@ -4434,6 +4528,9 @@ e_book_meta_backend_search_sync (EBookMetaBackend *meta_backend,
 				 GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gboolean success;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
@@ -4442,7 +4539,18 @@ e_book_meta_backend_search_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->search_sync != NULL, FALSE);
 
-	return klass->search_sync (meta_backend, expr, meta_contact, out_contacts, cancellable, error);
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
+
+	success = klass->search_sync (meta_backend, expr, meta_contact, out_contacts, use_cancellable, error);
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
+
+	return success;
 }
 
 /**
@@ -4477,6 +4585,9 @@ e_book_meta_backend_search_uids_sync (EBookMetaBackend *meta_backend,
 				      GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gboolean success;
+	gulong status_handler_id;
+	GCancellable *use_cancellable;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (out_uids != NULL, FALSE);
@@ -4485,7 +4596,18 @@ e_book_meta_backend_search_uids_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->search_uids_sync != NULL, FALSE);
 
-	return klass->search_uids_sync (meta_backend, expr, out_uids, cancellable, error);
+	use_cancellable = camel_operation_new_proxy (cancellable);
+	status_handler_id = g_signal_connect (use_cancellable, "status",
+		G_CALLBACK (e_book_meta_backend_notify_status_cb), meta_backend);
+
+	success = klass->search_uids_sync (meta_backend, expr, out_uids, use_cancellable, error);
+
+	if (status_handler_id)
+		g_signal_handler_disconnect (use_cancellable, status_handler_id);
+
+	g_clear_object (&use_cancellable);
+
+	return success;
 }
 
 /**

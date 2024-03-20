@@ -29,7 +29,10 @@
 #include <stdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel/camel.h"
+
 #include "e-data-server-util.h"
+#include "e-flag.h"
 #include "e-oauth2-services.h"
 #include "e-soup-auth-bearer.h"
 #include "e-soup-ssl-trust.h"
@@ -61,13 +64,16 @@ struct _ESoupSessionPrivate {
 
 	gboolean auth_prefilled; /* When TRUE, the first 'retrying' is ignored in the "authenticate" handler */
 	gboolean force_http1;
+	gboolean handle_backoff_responses;
+	gint64 backoff_for_usec;
 };
 
 enum {
 	PROP_0,
 	PROP_SOURCE,
 	PROP_CREDENTIALS,
-	PROP_FORCE_HTTP1
+	PROP_FORCE_HTTP1,
+	PROP_HANDLE_BACKOFF_RESPONSES
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
@@ -522,6 +528,12 @@ e_soup_session_set_property (GObject *object,
 				E_SOUP_SESSION (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_HANDLE_BACKOFF_RESPONSES:
+			e_soup_session_set_handle_backoff_responses (
+				E_SOUP_SESSION (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -552,6 +564,13 @@ e_soup_session_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_soup_session_get_force_http1 (
+				E_SOUP_SESSION (object)));
+			return;
+
+		case PROP_HANDLE_BACKOFF_RESPONSES:
+			g_value_set_boolean (
+				value,
+				e_soup_session_get_handle_backoff_responses (
 				E_SOUP_SESSION (object)));
 			return;
 	}
@@ -648,6 +667,29 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * ESoupSession:handle-backoff-responses:
+	 *
+	 * Set to %TRUE, which is the default, to automatically handle backoff responses
+	 * from the server, that is, when the server requests the client to retry later.
+	 *
+	 * Note: This handles only the synchronous functions to send the messages. Clients
+	 * using the asynchronous API need to handle the backoff responses on their own.
+	 *
+	 * Since: 3.54
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_HANDLE_BACKOFF_RESPONSES,
+		g_param_spec_boolean (
+			"handle-backoff-responses",
+			"Handle Backoff Responses",
+			NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -658,6 +700,8 @@ e_soup_session_init (ESoupSession *session)
 	session->priv->ssl_info_set = FALSE;
 	session->priv->log_level = SOUP_LOGGER_LOG_NONE;
 	session->priv->auth_prefilled = FALSE;
+	session->priv->handle_backoff_responses = TRUE;
+	session->priv->backoff_for_usec = 0;
 
 	g_mutex_init (&session->priv->property_lock);
 	g_rec_mutex_init (&session->priv->session_lock);
@@ -907,6 +951,53 @@ e_soup_session_get_force_http1 (ESoupSession *session)
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
 
 	return session->priv->force_http1;
+}
+
+/**
+ * e_soup_session_set_handle_backoff_responses:
+ * @session: an #ESoupSession
+ * @handle_backoff_responses: the value to set
+ *
+ * Sets whether to automatically handle backoff responses from the server,
+ * that is, when the server requests the client to retry later.
+ *
+ * Note: This handles only the synchronous functions to send the messages. Clients
+ * using the asynchronous API need to handle the backoff responses on their own.
+ *
+ * Since: 3.54
+ **/
+void
+e_soup_session_set_handle_backoff_responses (ESoupSession *session,
+					     gboolean handle_backoff_responses)
+{
+	g_return_if_fail (E_IS_SOUP_SESSION (session));
+
+	if ((session->priv->handle_backoff_responses ? 1 : 0) == (handle_backoff_responses ? 1 : 0))
+		return;
+
+	session->priv->handle_backoff_responses = handle_backoff_responses;
+
+	g_object_notify (G_OBJECT (session), "handle-backoff-responses");
+}
+
+/**
+ * e_soup_session_get_handle_backoff_responses:
+ * @session: an #ESoupSession
+ *
+ * Returns whether the @session can handle backoff responses from the server.
+ * See e_soup_session_set_handle_backoff_responses() for more information about
+ * the limitations.
+ *
+ * Returns: whether the @session handles backoff responses
+ *
+ * Since: 3.54
+ **/
+gboolean
+e_soup_session_get_handle_backoff_responses (ESoupSession *session)
+{
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+
+	return session->priv->handle_backoff_responses;
 }
 
 /**
@@ -1664,6 +1755,89 @@ e_soup_session_send_message_finish (ESoupSession *session,
 	return input_stream;
 }
 
+static void
+e_soup_session_backoff_policy_wait_cancelled_cb (GCancellable *cancellable,
+						 gpointer user_data)
+{
+	EFlag *flag = user_data;
+
+	g_return_if_fail (flag != NULL);
+
+	e_flag_set (flag);
+}
+
+static gboolean
+e_soup_session_handle_backoff_policy (ESoupSession *session,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	g_mutex_lock (&session->priv->property_lock);
+
+	if (session->priv->handle_backoff_responses && session->priv->backoff_for_usec) {
+		EFlag *flag;
+		gint64 wait_ms;
+		gulong handler_id = 0;
+
+		wait_ms = session->priv->backoff_for_usec / G_TIME_SPAN_MILLISECOND;
+
+		g_mutex_unlock (&session->priv->property_lock);
+
+		flag = e_flag_new ();
+
+		if (cancellable) {
+			handler_id = g_cancellable_connect (cancellable, G_CALLBACK (e_soup_session_backoff_policy_wait_cancelled_cb),
+				flag, NULL);
+		}
+
+		while (wait_ms > 0 && !g_cancellable_is_cancelled (cancellable)) {
+			gint64 now = g_get_monotonic_time ();
+			gint left_minutes, left_seconds;
+
+			left_minutes = wait_ms / 60000;
+			left_seconds = (wait_ms / 1000) % 60;
+
+			if (left_minutes > 0) {
+				camel_operation_push_message (cancellable,
+					g_dngettext (GETTEXT_PACKAGE,
+						"Server is busy, waiting to retry (%d:%02d minute)",
+						"Server is busy, waiting to retry (%d:%02d minutes)", left_minutes),
+					left_minutes, left_seconds);
+			} else {
+				camel_operation_push_message (cancellable,
+					g_dngettext (GETTEXT_PACKAGE,
+						"Server is busy, waiting to retry (%d second)",
+						"Server is busy, waiting to retry (%d seconds)", left_seconds),
+					left_seconds);
+			}
+
+			e_flag_wait_until (flag, now + (G_TIME_SPAN_MILLISECOND * (wait_ms > 1000 ? 1000 : wait_ms)));
+			e_flag_clear (flag);
+
+			now = g_get_monotonic_time () - now;
+			now = now / G_TIME_SPAN_MILLISECOND;
+
+			if (now >= wait_ms)
+				wait_ms = 0;
+			wait_ms -= now;
+
+			camel_operation_pop_message (cancellable);
+		}
+
+		if (handler_id)
+			g_cancellable_disconnect (cancellable, handler_id);
+
+		e_flag_free (flag);
+
+		g_mutex_lock (&session->priv->property_lock);
+	}
+
+	session->priv->backoff_for_usec = 0;
+
+	g_mutex_unlock (&session->priv->property_lock);
+
+	return !g_cancellable_set_error_if_cancelled (cancellable, error);
+}
+
 /**
  * e_soup_session_send_message_sync:
  * @session: an #ESoupSession
@@ -1707,10 +1881,11 @@ e_soup_session_send_message_sync (ESoupSession *session,
 				  GCancellable *cancellable,
 				  GError **error)
 {
-	GInputStream *input_stream;
+	GInputStream *input_stream = NULL;
 	gboolean redirected;
 	gboolean caught_bearer_expired = FALSE;
 	gint resend_count = 0;
+	gint need_retry_seconds = 5;
 	gulong authenticate_id = 0;
 	gulong restarted_id = 0;
 	GError *local_error = NULL;
@@ -1731,7 +1906,8 @@ e_soup_session_send_message_sync (ESoupSession *session,
 	while (redirected) {
 		redirected = FALSE;
 
-		if (!e_soup_session_prepare_message_send_phase2_sync (session, message, cancellable, error)) {
+		if (!e_soup_session_handle_backoff_policy (session, cancellable, error) ||
+		    !e_soup_session_prepare_message_send_phase2_sync (session, message, cancellable, error)) {
 			if (authenticate_id)
 				g_signal_handler_disconnect (message, authenticate_id);
 			if (restarted_id)
@@ -1783,6 +1959,47 @@ e_soup_session_send_message_sync (ESoupSession *session,
 				g_clear_error (&local_error);
 			}
 			g_mutex_unlock (&session->priv->property_lock);
+		}
+
+		if (!redirected && !caught_bearer_expired && soup_message_get_status (message) == SOUP_STATUS_SERVICE_UNAVAILABLE) {
+			gboolean handle_backoff_responses;
+
+			g_mutex_lock (&session->priv->property_lock);
+			handle_backoff_responses = session->priv->handle_backoff_responses;
+			g_mutex_unlock (&session->priv->property_lock);
+
+			if (handle_backoff_responses) {
+				const gchar *retry_after_str;
+				gint64 retry_after;
+
+				retry_after_str = soup_message_get_response_headers (message) ?
+					soup_message_headers_get_one (soup_message_get_response_headers (message), "Retry-After") : NULL;
+
+				if (retry_after_str && *retry_after_str)
+					retry_after = g_ascii_strtoll (retry_after_str, NULL, 10);
+				else
+					retry_after = 0;
+
+				if (retry_after > 0)
+					need_retry_seconds = retry_after;
+				else if (need_retry_seconds < 120)
+					need_retry_seconds *= 2;
+
+				g_rec_mutex_lock (&session->priv->session_lock);
+				soup_session_abort (SOUP_SESSION (session));
+				g_rec_mutex_unlock (&session->priv->session_lock);
+
+				g_mutex_lock (&session->priv->property_lock);
+
+				if (session->priv->backoff_for_usec < need_retry_seconds * G_USEC_PER_SEC)
+					session->priv->backoff_for_usec = need_retry_seconds * G_USEC_PER_SEC;
+
+				g_signal_emit_by_name (message, "restarted");
+				resend_count++;
+				g_clear_error (&local_error);
+
+				g_mutex_unlock (&session->priv->property_lock);
+			}
 		}
 	}
 
