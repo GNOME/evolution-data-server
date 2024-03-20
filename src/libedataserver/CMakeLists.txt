@@ -295,7 +295,7 @@ install(FILES ${HEADERS}
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
-set(gir_includes GObject-2.0 Gio-2.0 Soup-3.0 libxml2-2.0 Json-1.0)
+set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0 Soup-3.0 libxml2-2.0 Json-1.0)
 set(gir_cflags
 	-DLIBEDATASERVER_COMPILATION
 )

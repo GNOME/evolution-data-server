@@ -73,6 +73,8 @@ set(gir_dirs
 )
 
 set(vala_deps
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libxml-2.0
 	posix
@@ -104,6 +106,8 @@ set(gir_dirs
 
 set(vala_deps
 	*camel-${API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libsoup-3.0
 	libxml-2.0
@@ -136,6 +140,8 @@ set(gir_dirs
 
 set(vala_deps
 	*libedataserver-${API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libsoup-3.0
 	libxml-2.0
@@ -167,6 +173,8 @@ set(gir_dirs
 set(vala_deps
 	*camel-${API_VERSION}
 	*libedataserver-${API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libsoup-3.0
 	libxml-2.0
@@ -202,6 +210,8 @@ set(vala_deps
 	*camel-${API_VERSION}
 	*libedataserver-${API_VERSION}
 	*libebook-contacts-${API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libsoup-3.0
 	libxml-2.0
@@ -237,6 +247,8 @@ set(vala_deps
 	*libedataserver-${API_VERSION}
 	*libebackend-${API_VERSION}
 	*libebook-contacts-${API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libsoup-3.0
 	libxml-2.0
@@ -269,6 +281,8 @@ set(gir_dirs
 set(vala_deps
 	*camel-${API_VERSION}
 	*libedataserver-${API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libical-glib
 	libsoup-3.0
@@ -306,6 +320,8 @@ set(vala_deps
 	*libedataserver-${API_VERSION}
 	*libebackend-${API_VERSION}
 	*libecal-${CAL_API_VERSION}
+	glib-2.0
+	gobject-2.0
 	gio-2.0
 	libical-glib
 	libsoup-3.0
@@ -340,6 +356,8 @@ if(ENABLE_GTK)
 	set(vala_deps
 		*libedataserver-${API_VERSION}
 		*libecal-${CAL_API_VERSION}
+		glib-2.0
+		gobject-2.0
 		gio-2.0
 		gtk+-3.0
 		libsoup-3.0
@@ -371,6 +389,8 @@ if(ENABLE_GTK4)
 	set(vala_deps
 		*libedataserver-${API_VERSION}
 		*libecal-${CAL_API_VERSION}
+		glib-2.0
+		gobject-2.0
 		gio-2.0
 		gtk4
 		libsoup-3.0

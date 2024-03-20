@@ -356,7 +356,7 @@ add_pkgconfig_file(camel.pc.in camel-${API_VERSION}.pc)
 
 set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes Camel camel)
-set(gir_includes GObject-2.0 Gio-2.0 libxml2-2.0)
+set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0 libxml2-2.0)
 set(gir_cflags -DCAMEL_COMPILATION)
 set(gir_libdirs)
 set(gir_libs camel)
