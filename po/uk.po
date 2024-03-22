@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2024-03-20 07:26+0000\n"
-"PO-Revision-Date: 2024-03-20 12:07+0200\n"
+"POT-Creation-Date: 2024-03-22 10:26+0000\n"
+"PO-Revision-Date: 2024-03-22 18:26+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -5005,9 +5005,10 @@ msgstr "Не вдалося перемістити повідомлення сп
 msgid "Unable to move deleted messages"
 msgstr "Не вдалося перемістити вилучені повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
-msgid "Unable to move messages to Inbox"
-msgstr "Неможливо перенести повідомлення до теки «Вхідні»"
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1825
+#| msgid "Unable to move junk messages"
+msgid "Unable to move Not-Junk messages"
+msgstr "Не вдалося перемістити повідомлення неспаму"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -7854,8 +7855,6 @@ msgstr "Не вдалося налаштувати розпізнавання"
 
 #: src/libedataserver/e-soup-session.c:1802
 #, c-format
-#| msgid "Google server is busy, waiting to retry (%d:%02d minute)"
-#| msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] "Сервер зайнято, очікуємо на повторну спробу (%d:%02d хвилина)"
@@ -7865,8 +7864,6 @@ msgstr[3] "Сервер зайнято, очікуємо на повторну �
 
 #: src/libedataserver/e-soup-session.c:1808
 #, c-format
-#| msgid "Google server is busy, waiting to retry (%d second)"
-#| msgid_plural "Google server is busy, waiting to retry (%d seconds)"
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
 msgstr[0] "Сервер зайнято, чекаємо на повторну спробу (%d секунду)"
@@ -9314,6 +9311,9 @@ msgstr "У інтернеті"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Нотатки WebDAV"
+
+#~ msgid "Unable to move messages to Inbox"
+#~ msgstr "Неможливо перенести повідомлення до теки «Вхідні»"
 
 #~ msgid "Evolution Alarm Notify"
 #~ msgstr "Сповіщення сигналами у Evolution"
