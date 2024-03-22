@@ -6125,7 +6125,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		if (can_influence_flags) {
 			gboolean move_to_real_junk;
 			gboolean move_to_real_trash;
-			gboolean move_to_inbox;
+			gboolean move_to_not_junk;
 
 			/* Some servers can leave the Junk flag even it had been unset, thus check also the NotJunk flag
 			   to avoid move back to the Junk folder. */
@@ -6138,7 +6138,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				use_real_trash_path && remove_deleted_flags &&
 				(flags & CAMEL_MESSAGE_DELETED);
 
-			move_to_inbox = is_real_junk_folder &&
+			move_to_not_junk = is_real_junk_folder &&
 				!move_to_real_junk &&
 				!move_to_real_trash &&
 				(camel_message_info_get_flags (info) & CAMEL_MESSAGE_NOTJUNK) != 0;
@@ -6151,8 +6151,8 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				camel_imapx_folder_add_move_to_real_trash (
 					CAMEL_IMAPX_FOLDER (folder), uid);
 
-			if (move_to_inbox)
-				camel_imapx_folder_add_move_to_inbox (
+			if (move_to_not_junk)
+				camel_imapx_folder_add_move_to_not_junk (
 					CAMEL_IMAPX_FOLDER (folder), uid);
 		}
 

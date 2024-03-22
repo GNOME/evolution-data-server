@@ -26,6 +26,7 @@ struct _CamelIMAPXSettingsPrivate {
 	GMutex property_lock;
 	gchar *namespace;
 	gchar *real_junk_path;
+	gchar *real_not_junk_path;
 	gchar *real_trash_path;
 	gchar *shell_command;
 
@@ -41,6 +42,7 @@ struct _CamelIMAPXSettingsPrivate {
 	gboolean use_namespace;
 	gboolean use_qresync;
 	gboolean use_real_junk_path;
+	gboolean use_real_not_junk_path;
 	gboolean use_real_trash_path;
 	gboolean use_shell_command;
 	gboolean use_subscriptions;
@@ -68,6 +70,7 @@ enum {
 	PROP_NAMESPACE,
 	PROP_PORT,
 	PROP_REAL_JUNK_PATH,
+	PROP_REAL_NOT_JUNK_PATH,
 	PROP_REAL_TRASH_PATH,
 	PROP_SECURITY_METHOD,
 	PROP_SHELL_COMMAND,
@@ -76,6 +79,7 @@ enum {
 	PROP_USE_NAMESPACE,
 	PROP_USE_QRESYNC,
 	PROP_USE_REAL_JUNK_PATH,
+	PROP_USE_REAL_NOT_JUNK_PATH,
 	PROP_USE_REAL_TRASH_PATH,
 	PROP_USE_SHELL_COMMAND,
 	PROP_USE_SUBSCRIPTIONS,
@@ -179,6 +183,12 @@ imapx_settings_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
+		case PROP_REAL_NOT_JUNK_PATH:
+			camel_imapx_settings_set_real_not_junk_path (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_REAL_TRASH_PATH:
 			camel_imapx_settings_set_real_trash_path (
 				CAMEL_IMAPX_SETTINGS (object),
@@ -223,6 +233,12 @@ imapx_settings_set_property (GObject *object,
 
 		case PROP_USE_REAL_JUNK_PATH:
 			camel_imapx_settings_set_use_real_junk_path (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_USE_REAL_NOT_JUNK_PATH:
+			camel_imapx_settings_set_use_real_not_junk_path (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -377,6 +393,13 @@ imapx_settings_get_property (GObject *object,
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
+		case PROP_REAL_NOT_JUNK_PATH:
+			g_value_take_string (
+				value,
+				camel_imapx_settings_dup_real_not_junk_path (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
 		case PROP_REAL_TRASH_PATH:
 			g_value_take_string (
 				value,
@@ -430,6 +453,13 @@ imapx_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_imapx_settings_get_use_real_junk_path (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USE_REAL_NOT_JUNK_PATH:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_use_real_not_junk_path (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
@@ -506,6 +536,7 @@ imapx_settings_finalize (GObject *object)
 	g_free (priv->shell_command);
 	g_free (priv->real_trash_path);
 	g_free (priv->real_junk_path);
+	g_free (priv->real_not_junk_path);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_settings_parent_class)->finalize (object);
@@ -674,6 +705,19 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_REAL_NOT_JUNK_PATH,
+		g_param_spec_string (
+			"real-not-junk-path",
+			"Real Not Junk Path",
+			"Path to restore Not-Junk messages from a non-virtual Junk folder",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_REAL_TRASH_PATH,
 		g_param_spec_string (
 			"real-trash-path",
@@ -756,6 +800,19 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"use-real-junk-path",
 			"Use Real Junk Path",
 			"Whether to use a non-virtual Junk folder",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_REAL_NOT_JUNK_PATH,
+		g_param_spec_boolean (
+			"use-real-not-junk-path",
+			"Use Real Not Junk Path",
+			"Whether to use a special folder to restore Not-Junk messages from non-virtual Junk folder to",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -2092,4 +2149,127 @@ camel_imapx_settings_set_single_client_mode (CamelIMAPXSettings *settings,
 	settings->priv->single_client_mode = single_client_mode;
 
 	g_object_notify (G_OBJECT (settings), "single-client-mode");
+}
+
+/**
+ * camel_imapx_settings_get_real_not_junk_path:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns the path to a folder where Not-Junk messages from non-virtual Junk folder
+ * should be restored.
+ *
+ * Returns: (nullable): path to a real Not-Junk folder
+ *
+ * Since: 3.54
+ **/
+const gchar *
+camel_imapx_settings_get_real_not_junk_path (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
+
+	return settings->priv->real_not_junk_path;
+}
+
+/**
+ * camel_imapx_settings_dup_real_not_junk_path:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Thread-safe variation of camel_imapx_settings_get_real_not_junk_path().
+ * Use this function when accessing @settings from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: (nullable): a newly-allocated copy of #CamelIMAPXSettings:real-not-junk-path
+ *
+ * Since: 3.54
+ **/
+gchar *
+camel_imapx_settings_dup_real_not_junk_path (CamelIMAPXSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
+
+	g_mutex_lock (&settings->priv->property_lock);
+
+	protected = camel_imapx_settings_get_real_not_junk_path (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
+ * camel_imapx_settings_set_real_not_junk_path:
+ * @settings: a #CamelIMAPXSettings
+ * @real_not_junk_path: (nullable): path to a real Junk folder, or %NULL
+ *
+ * Sets a path to a folder where Not-Junk messages from non-virtual Junk folder
+ * should be restored.
+ *
+ * Since: 3.54
+ **/
+void
+camel_imapx_settings_set_real_not_junk_path (CamelIMAPXSettings *settings,
+					     const gchar *real_not_junk_path)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	/* An empty string is equivalent to NULL. */
+	if (real_not_junk_path != NULL && *real_not_junk_path == '\0')
+		real_not_junk_path = NULL;
+
+	g_mutex_lock (&settings->priv->property_lock);
+
+	g_free (settings->priv->real_not_junk_path);
+	settings->priv->real_not_junk_path = g_strdup (real_not_junk_path);
+
+	g_mutex_unlock (&settings->priv->property_lock);
+
+	g_object_notify (G_OBJECT (settings), "real-not-junk-path");
+}
+
+/**
+ * camel_imapx_settings_get_use_real_not_junk_path:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to use a real Not-Junk folder, instead of Inbox, to restore
+ * Not-Junk messages from real Junk folder to.
+ *
+ * Returns: whether to use a real Not-Junk folder
+ *
+ * Since: 3.54
+ **/
+gboolean
+camel_imapx_settings_get_use_real_not_junk_path (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_real_not_junk_path;
+}
+
+/**
+ * camel_imapx_settings_set_use_real_not_junk_path:
+ * @settings: a #CamelIMAPXSettings
+ * @use_real_not_junk_path: whether to use a real Not-Junk folder
+ *
+ * Sets whether to use a real Not-Junk folder, instead of Inbox, to restore
+ * Not-Junk messages from real Junk folder to.
+ *
+ * Since: 3.54
+ **/
+void
+camel_imapx_settings_set_use_real_not_junk_path (CamelIMAPXSettings *settings,
+						 gboolean use_real_not_junk_path)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((!settings->priv->use_real_not_junk_path) == (!use_real_not_junk_path))
+		return;
+
+	settings->priv->use_real_not_junk_path = use_real_not_junk_path;
+
+	g_object_notify (G_OBJECT (settings), "use-real-not-junk-path");
 }

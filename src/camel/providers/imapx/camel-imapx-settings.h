@@ -186,6 +186,18 @@ gboolean	camel_imapx_settings_get_single_client_mode
 void		camel_imapx_settings_set_single_client_mode
 						(CamelIMAPXSettings *settings,
 						 gboolean single_client_mode);
+gboolean	camel_imapx_settings_get_use_real_not_junk_path
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_use_real_not_junk_path
+						(CamelIMAPXSettings *settings,
+						 gboolean use_real_not_junk_path);
+const gchar *	camel_imapx_settings_get_real_not_junk_path
+						(CamelIMAPXSettings *settings);
+gchar *		camel_imapx_settings_dup_real_not_junk_path
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_real_not_junk_path
+						(CamelIMAPXSettings *settings,
+						 const gchar *real_not_junk_path);
 
 G_END_DECLS
 

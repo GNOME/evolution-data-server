@@ -1752,11 +1752,11 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 }
 
 static gboolean
-imapx_conn_manager_move_to_inbox_sync (CamelIMAPXConnManager *conn_man,
-				       CamelFolder *folder,
-				       GCancellable *cancellable,
-				       gboolean *out_need_to_expunge,
-				       GError **error)
+imapx_conn_manager_move_to_not_junk_sync (CamelIMAPXConnManager *conn_man,
+					  CamelFolder *folder,
+					  GCancellable *cancellable,
+					  gboolean *out_need_to_expunge,
+					  GError **error)
 {
 	CamelIMAPXFolder *imapx_folder;
 	CamelIMAPXMailbox *mailbox;
@@ -1773,19 +1773,35 @@ imapx_conn_manager_move_to_inbox_sync (CamelIMAPXConnManager *conn_man,
 
 	uids_to_copy = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
-	camel_imapx_folder_claim_move_to_inbox_uids (CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+	camel_imapx_folder_claim_move_to_not_junk_uids (CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
 
 	if (uids_to_copy->len > 0) {
+		CamelFolder *dest_folder = NULL;
 		CamelIMAPXStore *imapx_store;
 		CamelIMAPXMailbox *destination = NULL;
+		CamelIMAPXSettings *settings;
 
 		imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
+		settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (imapx_store)));
+		if (camel_imapx_settings_get_use_real_not_junk_path (settings)) {
+			gchar *real_not_junk_path;
 
-		folder = camel_store_get_inbox_folder_sync (CAMEL_STORE (imapx_store), cancellable, error);
+			real_not_junk_path = camel_imapx_settings_dup_real_not_junk_path (settings);
+			if (real_not_junk_path && *real_not_junk_path) {
+				dest_folder = camel_store_get_folder_sync (CAMEL_STORE (imapx_store),
+					real_not_junk_path, 0, cancellable, NULL);
+			}
+			g_free (real_not_junk_path);
+		}
+		g_clear_object (&settings);
 
-		if (folder != NULL) {
-			destination = camel_imapx_folder_list_mailbox (CAMEL_IMAPX_FOLDER (folder), cancellable, error);
-			g_object_unref (folder);
+		/* fallback to Inbox */
+		if (!dest_folder)
+			dest_folder = camel_store_get_inbox_folder_sync (CAMEL_STORE (imapx_store), cancellable, error);
+
+		if (dest_folder) {
+			destination = camel_imapx_folder_list_mailbox (CAMEL_IMAPX_FOLDER (dest_folder), cancellable, error);
+			g_clear_object (&dest_folder);
 		}
 
 		/* Avoid duplicating messages in the Inbox folder. */
@@ -1806,7 +1822,7 @@ imapx_conn_manager_move_to_inbox_sync (CamelIMAPXConnManager *conn_man,
 		if (!success) {
 			g_prefix_error (
 				error, "%s: ",
-				_("Unable to move messages to Inbox"));
+				_("Unable to move Not-Junk messages"));
 		}
 
 		g_clear_object (&imapx_store);
@@ -1930,7 +1946,7 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 	}
 
 	if (success) {
-		success = imapx_conn_manager_move_to_inbox_sync (
+		success = imapx_conn_manager_move_to_not_junk_sync (
 			conn_man, folder, cancellable,
 			&need_to_expunge, error);
 		expunge |= need_to_expunge;
