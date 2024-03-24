@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
 "POT-Creation-Date: 2024-03-22 10:26+0000\n"
-"PO-Revision-Date: 2024-03-24 15:26+0100\n"
+"PO-Revision-Date: 2024-03-24 16:50+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -4124,18 +4124,16 @@ msgid "error while creating baggage object"
 msgstr "Napaka pri ustvarjanju predmeta prtljage"
 
 #: src/camel/camel-smime-context.c:183
-#, fuzzy
 msgid "Couldn't remove the principal"
-msgstr "Ni mogoče odstraniti glavnega"
+msgstr "Upravnika varnosti ni bilo mogoče odstraniti"
 
 #: src/camel/camel-smime-context.c:184
 msgid "Couldn't delete the privilege"
 msgstr "Pravice ni bilo mogoče izbrisati"
 
 #: src/camel/camel-smime-context.c:185
-#, fuzzy
 msgid "This principal doesn't have a certificate"
-msgstr "Glavni nima potrdila"
+msgstr "Ta upravnik varnosti nima potrdila"
 
 #: src/camel/camel-smime-context.c:186
 msgid "Required algorithm is not allowed."
