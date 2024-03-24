@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
 "POT-Creation-Date: 2024-03-22 10:26+0000\n"
-"PO-Revision-Date: 2024-03-24 15:07+0100\n"
+"PO-Revision-Date: 2024-03-24 15:26+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -3841,32 +3841,24 @@ msgid "security library: improperly formatted DER-encoded message."
 msgstr "Varnostna knjižnica: nepravilno oblikovano sporočilo, kodirano z DER."
 
 #: src/camel/camel-smime-context.c:121
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's certificate has an invalid signature."
-msgstr "Potrdilo je poteklo."
+msgstr "Potrdilo vrstnika ima neveljaven podpis."
 
 #: src/camel/camel-smime-context.c:122
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has expired."
-msgstr "Potrdilo je poteklo."
+msgstr "Potrdilo vrstnika je poteklo."
 
 #: src/camel/camel-smime-context.c:123
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has been revoked."
-msgstr "Potrdilo je poteklo."
+msgstr "Potrdilo vrstnika je bilo preklicano."
 
 #: src/camel/camel-smime-context.c:124
-#, fuzzy
 msgid "Peer's Certificate issuer is not recognized."
-msgstr "Izdajatelj medsebojnega potrdila ni prepoznan."
+msgstr "Izdajatelj potrdila vrstnika ni prepoznan."
 
 #: src/camel/camel-smime-context.c:125
-#, fuzzy
 msgid "Peer's public key is invalid."
-msgstr "Javni ključ vrstnikov ni veljaven."
+msgstr "Javni ključ vrstnik ni veljaven."
 
 #: src/camel/camel-smime-context.c:126
 msgid "The security password entered is incorrect."
@@ -3889,16 +3881,14 @@ msgid "security library: memory allocation failure."
 msgstr "Varnostna knjižnica: napaka pri dodeljevanju pomnilnika."
 
 #: src/camel/camel-smime-context.c:131
-#, fuzzy
 msgid "Peer's certificate issuer has been marked as not trusted by the user."
 msgstr ""
-"Izdajatelj medsebojnih potrdil je bil označen kot nezaupanja vreden s strani "
+"Izdajatelj potrdila vrstnika je bil označen kot nezaupanja vreden s strani "
 "uporabnika."
 
 #: src/camel/camel-smime-context.c:132
-#, fuzzy
 msgid "Peer's certificate has been marked as not trusted by the user."
-msgstr "Vzajemno potrdilo je bilo označeno kot nezaupanja vredno."
+msgstr "Potrdilo vstnika je bilo označeno kot ne zaupanja vredno."
 
 #: src/camel/camel-smime-context.c:133
 msgid "Certificate already exists in your database."
@@ -3958,16 +3948,12 @@ msgid "New CRL has an invalid format."
 msgstr "Novi CRL ima neveljavno obliko."
 
 #: src/camel/camel-smime-context.c:145
-#, fuzzy
-#| msgid "Certificate signature algorithm disabled"
 msgid "Certificate extension value is invalid."
-msgstr "Onemogočen algoritem podpisa potrdila"
+msgstr "Vrednost razširitve potrdila ni veljavna."
 
 #: src/camel/camel-smime-context.c:146
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "Certificate extension not found."
-msgstr "Potrdila za podpisovanje ni mogoče najti"
+msgstr "Razširitve potrdila ni bilo mogoče najti."
 
 #: src/camel/camel-smime-context.c:147
 msgid "Issuer certificate is invalid."
@@ -3990,9 +3976,8 @@ msgid "The key does not support the requested operation."
 msgstr "Ključ ne podpira zahtevane operacije."
 
 #: src/camel/camel-smime-context.c:152
-#, fuzzy
 msgid "Certificate contains unknown critical extension."
-msgstr "Potrdilo vsebuje neznano kritično pripono."
+msgstr "Potrdilo vsebuje neznano kritično razširitev."
 
 #: src/camel/camel-smime-context.c:153
 msgid "New CRL is not later than the current one."
@@ -4140,21 +4125,17 @@ msgstr "Napaka pri ustvarjanju predmeta prtljage"
 
 #: src/camel/camel-smime-context.c:183
 #, fuzzy
-#| msgid "Could not open the link."
 msgid "Couldn't remove the principal"
-msgstr "Ni mogoče odpreti povezave."
+msgstr "Ni mogoče odstraniti glavnega"
 
 #: src/camel/camel-smime-context.c:184
-#, fuzzy
-#| msgid "Could not create cache file"
 msgid "Couldn't delete the privilege"
-msgstr "Ni mogoče ustvariti datoteke predpomnilnika"
+msgstr "Pravice ni bilo mogoče izbrisati"
 
 #: src/camel/camel-smime-context.c:185
 #, fuzzy
-#| msgid "Temporarily reject the certificate"
 msgid "This principal doesn't have a certificate"
-msgstr "Začasno zavrni potrdilo"
+msgstr "Glavni nima potrdila"
 
 #: src/camel/camel-smime-context.c:186
 msgid "Required algorithm is not allowed."
@@ -4277,9 +4258,8 @@ msgid "Certificate nickname already in use."
 msgstr "Vzdevek potrdila je že v uporabi."
 
 #: src/camel/camel-smime-context.c:215
-#, fuzzy
 msgid "Peer FORTEZZA chain has a non-FORTEZZA Certificate."
-msgstr "Veriga vrstnikov FORTEZZA vsebuje potrdilo, ki ni FORTEZZA."
+msgstr "Veriga vrstnikov FORTEZZA vsebuje potrdilo, ki ni vrste FORTEZZA."
 
 #: src/camel/camel-smime-context.c:216
 msgid "A sensitive key cannot be moved to the slot where it is needed."
@@ -4312,21 +4292,18 @@ msgstr ""
 "CKL."
 
 #: src/camel/camel-smime-context.c:223
-#, fuzzy
 msgid ""
 "The Certifying Authority for this certificate is not permitted to issue a "
 "certificate with this name."
 msgstr "Overitveni organ za to potrdilo ne sme izdati potrdila s tem imenom."
 
 #: src/camel/camel-smime-context.c:224
-#, fuzzy
 msgid "The key revocation list for this certificate is not yet valid."
 msgstr "Seznam preklicanih ključev za to potrdilo še ni veljaven."
 
 #: src/camel/camel-smime-context.c:225
-#, fuzzy
 msgid "The certificate revocation list for this certificate is not yet valid."
-msgstr "Seznam preklica potrdil za to potrdilo še ni veljaven."
+msgstr "Seznam preklicanih potrdil za to potrdilo še ni veljaven."
 
 #: src/camel/camel-smime-context.c:226
 msgid "The requested certificate could not be found."
@@ -4407,9 +4384,8 @@ msgid "The OCSP response contains out-of-date information."
 msgstr "Odgovor OCSP vsebuje zastarele informacije."
 
 #: src/camel/camel-smime-context.c:244
-#, fuzzy
 msgid "The CMS or PKCS #7 Digest was not found in signed message."
-msgstr "CMS ali PKCS #7 Digest ni bilo mogoče najti v podpisanem sporočilu."
+msgstr "Povzetka CMS ali PKCS #7 ni bilo mogoče najti v podpisanem sporočilu."
 
 #: src/camel/camel-smime-context.c:245
 msgid "The CMS or PKCS #7 Message type is unsupported."
@@ -4461,13 +4437,9 @@ msgid "Invalid OCSP signing certificate in OCSP response."
 msgstr "Neveljavno potrdilo za podpisovanje OCSP v odgovoru OCSP."
 
 #: src/camel/camel-smime-context.c:256
-#, fuzzy
-#| msgid ""
-#| "The certificate has been revoked according to the connection’s "
-#| "certificate revocation list."
 msgid "Certificate is revoked in issuer's certificate revocation list."
 msgstr ""
-"Potrdilo je bilo preklicano glede na seznam preklicanih potrdil povezave."
+"Potrdilo je bilo preklicano na seznamu preklicanih potrdil izdajatelja."
 
 #: src/camel/camel-smime-context.c:257
 msgid "Issuer's OCSP responder reports certificate is revoked."
@@ -4479,17 +4451,15 @@ msgstr ""
 "Izdajateljev seznam preklicanih potrdil ima neznano številko različice."
 
 #: src/camel/camel-smime-context.c:259
-#, fuzzy
 msgid "Issuer's V1 Certificate Revocation List has a critical extension."
 msgstr ""
-"Izdajateljev seznam preklicanih potrdil V1 ima neznano kritično pripono."
+"Izdajateljev seznam preklicanih potrdil V1 ima neznano kritično razširitev."
 
 #: src/camel/camel-smime-context.c:260
-#, fuzzy
 msgid ""
 "Issuer's V2 Certificate Revocation List has an unknown critical extension."
 msgstr ""
-"Izdajateljev seznam preklicanih potrdil V2 ima neznano kritično pripono."
+"Izdajateljev seznam preklicanih potrdil V2 ima neznano kritično razširitev."
 
 #: src/camel/camel-smime-context.c:261
 msgid "Unknown object type specified."
@@ -4528,12 +4498,10 @@ msgid "Cert validation search is out of search limits"
 msgstr "Iskanje veljavnosti potrdila je izven omejitev iskanja"
 
 #: src/camel/camel-smime-context.c:272
-#, fuzzy
 msgid "Policy mapping contains anypolicy"
-msgstr "Preslikava pravilnika vsebuje poljubne pravilnike"
+msgstr "Preslikava pravilnika vsebuje vse pravilnike"
 
 #: src/camel/camel-smime-context.c:273
-#, fuzzy
 msgid "Cert chain fails policy validation"
 msgstr "Veriga potrdila ne ustreza potrditvenemu pravilniku"
 
@@ -4554,9 +4522,8 @@ msgid "Failed to encode data with ASN1 encoder"
 msgstr "Kodiranje podatkov s kodirnikom ASN1 ni uspelo"
 
 #: src/camel/camel-smime-context.c:278
-#, fuzzy
 msgid "Bad information access location in cert extension"
-msgstr "Slabo mesto dostopa do informacij v razširitvi cert"
+msgstr "Mesto dostopa do slabih informacij v razširitvi potrdila"
 
 #: src/camel/camel-smime-context.c:279
 msgid "Libpkix internal error occurred during cert validation."
@@ -7402,13 +7369,11 @@ msgid "Evolution Data Server OAuth2 Handler"
 msgstr "Rutina za obravnavo podatkovnega strežnika Evolution OAuth2"
 
 #: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:5
-#, fuzzy
 msgid ""
 "Handles OAuth2 responses and passes them to the OAuth2 prompter "
 "implementation"
 msgstr ""
-"Obravnava odgovore OAuth2 in jih posreduje implementaciji sprotnih odgovorov "
-"OAuth2"
+"Obravnava odgovore OAuth2 in jih posreduje implementaciji odzivnika OAuth2"
 
 #: src/libebackend/e-cache.c:750
 msgid "Out of memory"
@@ -7839,30 +7804,22 @@ msgid "Failed to setup authentication"
 msgstr "Nastavitev preverjanja pristnosti je spodletela"
 
 #: src/libedataserver/e-soup-session.c:1802
-#, fuzzy, c-format
-#| msgid "Google server is busy, waiting to retry (%d:%02d minute)"
-#| msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
+#, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
-msgstr[0] ""
-"Strežnik Google je zaseden in čaka na ponoven poskus (%d:%02d minut)"
-msgstr[1] ""
-"Strežnik Google je zaseden in čaka na ponoven poskus (%d:%02d minuta)"
-msgstr[2] ""
-"Strežnik Google je zaseden in čaka na ponoven poskus (%d:%02d minuti)"
-msgstr[3] ""
-"Strežnik Google je zaseden in čaka na ponoven poskus (%d:%02d minute)"
+msgstr[0] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minut)"
+msgstr[1] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minuta)"
+msgstr[2] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minuti)"
+msgstr[3] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minute)"
 
 #: src/libedataserver/e-soup-session.c:1808
-#, fuzzy, c-format
-#| msgid "Google server is busy, waiting to retry (%d second)"
-#| msgid_plural "Google server is busy, waiting to retry (%d seconds)"
+#, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
-msgstr[0] "Strežnik Google je zaseden in čaka na ponoven poskus (%d s)"
-msgstr[1] "Strežnik Google je zaseden in čaka na ponoven poskus (%d s)"
-msgstr[2] "Strežnik Google je zaseden in čaka na ponoven poskus (%d s)"
-msgstr[3] "Strežnik Google je zaseden in čaka na ponoven poskus (%d s)"
+msgstr[0] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
+msgstr[1] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
+msgstr[2] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
+msgstr[3] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
 
 #: src/libedataserver/e-soup-session.c:1929
 msgid "Too many redirects"
