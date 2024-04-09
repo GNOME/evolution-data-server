@@ -883,6 +883,7 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 				  GError **error)
 {
 	ECalBackendGTasks *cbgtasks;
+	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
@@ -893,9 +894,17 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
 
-	success = e_gdata_session_tasks_delete_sync (cbgtasks->priv->gdata, cbgtasks->priv->tasklist_id, uid, cancellable, error);
+	success = e_gdata_session_tasks_delete_sync (cbgtasks->priv->gdata, cbgtasks->priv->tasklist_id, uid, cancellable, &local_error);
 
 	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
+
+	if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		g_clear_error (&local_error);
+		success = TRUE;
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return success;
 }
