@@ -1,3 +1,19 @@
+Evolution-Data-Server 3.52.1 2024-04-19
+---------------------------------------
+
+Bug Fixes:
+	I#531 - Camel: Sanitize exported OpenPGP public key before transfer
+	I#534 - Google Task stale item cannot be deleted
+
+Miscellaneous:
+	EOAuth2ServiceOutlook: Cannot be used with IMAP
+	IMAPx: Correct return value of imapx_splice_with_progress() when cancelled
+	IMAPX: Correct path returned by imapx_get_filename()
+
+Translations:
+	Martin (sl)
+	Piotr Drąg (pl)
+
 Evolution-Data-Server 3.52.0 2024-03-15
 ---------------------------------------
 
