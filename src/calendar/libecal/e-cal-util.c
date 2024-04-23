@@ -2131,6 +2131,10 @@ check_first_instance_cb (ICalComponent *icalcomp,
 
 	g_return_val_if_fail (ifs != NULL, FALSE);
 
+	ifs->matches = i_cal_time_compare ((ICalTime *) ifs->rid, instance_start) == 0;
+	if (ifs->matches)
+		return FALSE;
+
 	prop = i_cal_component_get_first_property (icalcomp, I_CAL_RECURRENCEID_PROPERTY);
 	if (prop) {
 		rid = i_cal_property_get_recurrenceid (prop);
