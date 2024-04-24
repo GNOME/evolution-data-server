@@ -73,6 +73,13 @@
 					"type": "git",
 					"url": "git://git.0pointer.net/libcanberra.git",
 					"branch": "master"
+				},
+				{
+					"type": "script",
+					"dest-filename": "test",
+					"commands": [
+						"vapigen --version"
+					]
 				}
 			]
 		},
