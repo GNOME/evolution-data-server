@@ -3,16 +3,9 @@
 	"runtime": "org.gnome.Platform",
 	"runtime-version": "master",
 	"sdk": "org.gnome.Sdk",
-	"sdk-extensions" : [
-		"org.freedesktop.Sdk.Extension.vala"
-	],
 	"branch": "master",
 	"command": "/usr/libexec/evolution-source-registry",
 	"tags": [ "devel" ],
-	"build-options" : {
-		"prepend-path" : "/usr/lib/sdk/vala/bin/",
-		"prepend-ld-library-path" : "/usr/lib/sdk/vala/lib"
-	},
 	"cleanup": [
 		"*.la",
 		"*.a"
