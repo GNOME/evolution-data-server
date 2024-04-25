@@ -11,6 +11,7 @@
 	"tags": [ "devel" ],
 	"build-options" : {
 		"prepend-path" : "/usr/lib/sdk/vala/bin/",
+		"prepend-pkg-config-path" : "/usr/lib/sdk/vala/lib/pkgconfig/",
 		"prepend-ld-library-path" : "/usr/lib/sdk/vala/lib"
 	},
 	"cleanup": [
