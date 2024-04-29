@@ -19,8 +19,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-02-01 10:33+0000\n"
-"PO-Revision-Date: 2024-02-02 18:08+0300\n"
+"POT-Creation-Date: 2024-03-22 10:26+0000\n"
+"PO-Revision-Date: 2024-04-27 14:21+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: RU\n"
 "Language: ru\n"
@@ -44,14 +44,14 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Указанный URL «%s» не ссылается на адресную книгу CardDAV"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1397
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1377
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:994
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1435
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:999
 msgid "Server didn’t return object’s href"
 msgstr "Сервер не вернул href объекта"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1399
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1379
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:996
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1437
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1001
 msgid "Server didn’t return object’s ETag"
 msgstr "Сервер не вернул ETag объекта"
 
@@ -60,8 +60,8 @@ msgid "Received object is not a valid vCard"
 msgstr "Полученный объект не является действительной vCard"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1523
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1519
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1254
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1604
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -137,7 +137,7 @@ msgid "Invalid Query “%s”"
 msgstr "Недопустимый запрос «%s»"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2192
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2194
 msgid "Requested to delete an unrelated cursor"
 msgstr "Запрошено удаление несвязанного курсора"
 
@@ -164,7 +164,7 @@ msgstr "Не удалось переименовать старую базу д�
 #: src/addressbook/libebook/e-book-client.c:3511
 #: src/addressbook/libedata-book/e-book-backend-sexp.c:898
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:281
-#: src/calendar/backends/http/e-cal-backend-http.c:312
+#: src/calendar/backends/http/e-cal-backend-http.c:313
 #: src/calendar/libecal/e-cal-client.c:244
 #: src/calendar/libecal/e-cal-client.c:3216
 #: src/calendar/libecal/e-cal-client.c:3373
@@ -186,14 +186,14 @@ msgstr "Не удалось переименовать старую базу д�
 #: src/calendar/libecal/e-cal-client.c:6581
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
-#: src/camel/providers/imapx/camel-imapx-server.c:3360
-#: src/camel/providers/imapx/camel-imapx-server.c:3366
-#: src/camel/providers/imapx/camel-imapx-server.c:3376
-#: src/camel/providers/imapx/camel-imapx-server.c:3388
+#: src/camel/providers/imapx/camel-imapx-server.c:3378
+#: src/camel/providers/imapx/camel-imapx-server.c:3384
+#: src/camel/providers/imapx/camel-imapx-server.c:3394
+#: src/camel/providers/imapx/camel-imapx-server.c:3406
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1025
-#: src/libedataserver/e-soup-session.c:1905
+#: src/libedataserver/e-soup-session.c:1116
+#: src/libedataserver/e-soup-session.c:2122
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:272
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -281,8 +281,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Загрузка контактов (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5109
-#: src/addressbook/libedata-book/e-book-meta-backend.c:883
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:768
+#: src/addressbook/libedata-book/e-book-meta-backend.c:885
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:770
 msgid "Refreshing…"
 msgstr "Обновляю…"
 
@@ -1168,7 +1168,7 @@ msgstr "Не удается открыть базу данных %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2949
 #: src/calendar/libedata-cal/e-cal-cache.c:3012
 #: src/calendar/libedata-cal/e-cal-cache.c:3183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1463
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1465
 #: src/libebackend/e-cache.c:1370 src/libebackend/e-cache.c:2346
 #: src/libebackend/e-cache.c:2386
 #, c-format
@@ -1207,20 +1207,20 @@ msgstr "Невозможно отсортировать по полю, кото�
 msgid "Contact field “%s” not in summary"
 msgstr "В сводке отсутствует поле контакта «%s»"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1179
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1174
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1181
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1176
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Предварительно загруженный объект для UID «%s» недействителен"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1187
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1182
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1189
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1184
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Полученный объект для UID «%s» недействителен"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1418
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1411
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1420
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1413
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1228,15 +1228,15 @@ msgstr ""
 "Обновление пропущено из-за включенного режима энергосбережения. Отключите "
 "режим энергосбережения и повторите действие."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1424
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1417
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1426
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1419
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
 "Обновление пропущено, так как оно отключено в сетях с ограниченным трафиком."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2062
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2561
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3435
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2064
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2563
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3437
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Не удалось создать кэш «%s»:"
@@ -1337,12 +1337,12 @@ msgstr "Ревизия рассинхронизировалась во врем�
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Алфавитный индекс был установлен для неверной локали"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:258
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:277
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Указанный URL «%s» не ссылается на календарь CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2042
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2128
 msgid "Failed to parse response data"
 msgstr "Не удалось разобрать данные ответа"
 
@@ -1390,25 +1390,25 @@ msgstr "Файл «%s» не является компонентом VCALENDAR"
 #: src/calendar/backends/file/e-cal-backend-file.c:3749
 #: src/calendar/backends/file/e-cal-backend-file.c:3755
 #: src/calendar/backends/file/e-cal-backend-file.c:3782
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2662
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2664
 msgid "Unsupported method"
 msgstr "Неподдерживаемый метод"
 
-#: src/calendar/backends/http/e-cal-backend-http.c:222
+#: src/calendar/backends/http/e-cal-backend-http.c:223
 msgid "URI not set"
 msgstr "URI не установлен"
 
-#: src/calendar/backends/http/e-cal-backend-http.c:311
+#: src/calendar/backends/http/e-cal-backend-http.c:312
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "Некорректный URI «%s»: %s"
 
-#: src/calendar/backends/http/e-cal-backend-http.c:445
+#: src/calendar/backends/http/e-cal-backend-http.c:446
 #, c-format
 msgid "Bad file format."
 msgstr "Неверный формат файла."
 
-#: src/calendar/backends/http/e-cal-backend-http.c:454
+#: src/calendar/backends/http/e-cal-backend-http.c:455
 #, c-format
 msgid "Not a calendar."
 msgstr "Не является календарём."
@@ -1489,8 +1489,8 @@ msgstr "Не удалось создать файл кэша"
 msgid "Could not create cache file: "
 msgstr "Не удалось создать файл кэша: "
 
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1037
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1066
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1042
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1071
 msgid "New note"
 msgstr "Новая заметка"
 
@@ -2614,12 +2614,12 @@ msgstr "Невозможно добавить часовой пояс без к�
 msgid "Cannot add timezone with invalid component"
 msgstr "Невозможно добавить часовой пояс с недопустимым компонентом"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1229
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1231
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Полученный объект для UID «%s» не содержит ожидаемого компонента"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1970
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2627,7 +2627,7 @@ msgstr ""
 "Невозможно изменить все экземпляры из независимого экземпляра. Вместо этого "
 "вы должны внести изменения в экземпляр серии."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4335
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4337
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -3023,18 +3023,18 @@ msgstr "Освободите неиспользуемую память для п
 msgid "Output from %s:"
 msgstr "Вывод из %s:"
 
-#: src/camel/camel-gpg-context.c:1179 src/camel/camel-gpg-context.c:1184
-#: src/camel/camel-gpg-context.c:2063
+#: src/camel/camel-gpg-context.c:1182 src/camel/camel-gpg-context.c:1187
+#: src/camel/camel-gpg-context.c:2066
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Сбой при исполнении gpg: %s"
 
-#: src/camel/camel-gpg-context.c:1184
+#: src/camel/camel-gpg-context.c:1187
 #: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/camel/camel-gpg-context.c:1296
+#: src/camel/camel-gpg-context.c:1299
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3045,17 +3045,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1332
+#: src/camel/camel-gpg-context.c:1335
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Ошибка при обработке подсказки gpg userid."
 
-#: src/camel/camel-gpg-context.c:1357 src/camel/camel-gpg-context.c:1372
+#: src/camel/camel-gpg-context.c:1360 src/camel/camel-gpg-context.c:1375
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Ошибка при обработке запроса парольной фразы gpg."
 
-#: src/camel/camel-gpg-context.c:1399
+#: src/camel/camel-gpg-context.c:1402
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3064,7 +3064,7 @@ msgstr ""
 "Вам нужен PIN-код, чтобы разблокировать ключ для вашей\n"
 "смарт-карты: «%s»"
 
-#: src/camel/camel-gpg-context.c:1403
+#: src/camel/camel-gpg-context.c:1406
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3073,12 +3073,12 @@ msgstr ""
 "Для разблокировки ключа необходима парольная фраза для\n"
 "пользователя: «%s»"
 
-#: src/camel/camel-gpg-context.c:1409
+#: src/camel/camel-gpg-context.c:1412
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Неожиданный запрос от GnuPG для «%s»"
 
-#: src/camel/camel-gpg-context.c:1421
+#: src/camel/camel-gpg-context.c:1424
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3087,26 +3087,26 @@ msgstr ""
 "получателе, поэтому для каждого хранимого закрытого ключа будет "
 "запрашиваться пароль."
 
-#: src/camel/camel-gpg-context.c:1452 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1455 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Отменено"
 
-#: src/camel/camel-gpg-context.c:1474
+#: src/camel/camel-gpg-context.c:1477
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Сбой при разблокировании секретного ключа: указано 3 некорректных парольных "
 "фразы."
 
-#: src/camel/camel-gpg-context.c:1487
+#: src/camel/camel-gpg-context.c:1490
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Неожиданный ответ от GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1604
+#: src/camel/camel-gpg-context.c:1607
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr ""
@@ -3114,7 +3114,7 @@ msgstr ""
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1625
+#: src/camel/camel-gpg-context.c:1628
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3125,38 +3125,38 @@ msgstr ""
 "получателя."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1632
+#: src/camel/camel-gpg-context.c:1635
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Не удалось зашифровать: Открытый ключ для получателя %s не найден."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1639
+#: src/camel/camel-gpg-context.c:1642
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Не удалось зашифровать: Ключ для получателя %s отозван."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1646
+#: src/camel/camel-gpg-context.c:1649
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Не удалось зашифровать: Ключ для получателя %s истек."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1653
+#: src/camel/camel-gpg-context.c:1656
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Не удалось зашифровать: Ключ для получателя %s не является доверенным."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1660
+#: src/camel/camel-gpg-context.c:1663
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Не удалось зашифровать: Ключ для получателя %s отключен."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1668
+#: src/camel/camel-gpg-context.c:1671
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3166,80 +3166,80 @@ msgstr ""
 "проблема заключается в том, что у %s нет импортированного открытого ключа "
 "для этого получателя."
 
-#: src/camel/camel-gpg-context.c:1729 src/camel/camel-gpg-context.c:1740
+#: src/camel/camel-gpg-context.c:1732 src/camel/camel-gpg-context.c:1743
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Не удалось передать GPG команду: %s"
 
-#: src/camel/camel-gpg-context.c:2587 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:2590 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "Не удалось создать данные подписи: "
 
-#: src/camel/camel-gpg-context.c:2638 src/camel/camel-gpg-context.c:2876
-#: src/camel/camel-gpg-context.c:3017 src/camel/camel-gpg-context.c:3194
-#: src/camel/camel-gpg-context.c:3549 src/camel/camel-gpg-context.c:3636
-#: src/camel/camel-gpg-context.c:3929 src/camel/camel-gpg-context.c:4027
-#: src/camel/camel-gpg-context.c:4112 src/camel/camel-gpg-context.c:4179
+#: src/camel/camel-gpg-context.c:2641 src/camel/camel-gpg-context.c:2879
+#: src/camel/camel-gpg-context.c:3020 src/camel/camel-gpg-context.c:3197
+#: src/camel/camel-gpg-context.c:3552 src/camel/camel-gpg-context.c:3639
+#: src/camel/camel-gpg-context.c:3932 src/camel/camel-gpg-context.c:4030
+#: src/camel/camel-gpg-context.c:4115 src/camel/camel-gpg-context.c:4182
 msgid "Failed to execute gpg."
 msgstr "Сбой при исполнении gpg."
 
-#: src/camel/camel-gpg-context.c:2746 src/camel/camel-gpg-context.c:2754
-#: src/camel/camel-gpg-context.c:2762 src/camel/camel-gpg-context.c:2782
+#: src/camel/camel-gpg-context.c:2749 src/camel/camel-gpg-context.c:2757
+#: src/camel/camel-gpg-context.c:2765 src/camel/camel-gpg-context.c:2785
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Не удалось проверить подпись сообщения: Неверный формат сообщения"
 
-#: src/camel/camel-gpg-context.c:2828
+#: src/camel/camel-gpg-context.c:2831
 msgid "Cannot verify message signature: "
 msgstr "Не удалось проверить подпись сообщения: "
 
-#: src/camel/camel-gpg-context.c:2975
+#: src/camel/camel-gpg-context.c:2978
 msgid "Could not generate encrypting data: "
 msgstr "Не удалось создать данные шифрования: "
 
-#: src/camel/camel-gpg-context.c:3057
+#: src/camel/camel-gpg-context.c:3060
 msgid "This is a digitally encrypted message part"
 msgstr "Это зашифрованная часть сообщения"
 
-#: src/camel/camel-gpg-context.c:3117 src/camel/camel-gpg-context.c:3126
-#: src/camel/camel-gpg-context.c:3149
+#: src/camel/camel-gpg-context.c:3120 src/camel/camel-gpg-context.c:3129
+#: src/camel/camel-gpg-context.c:3152
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Не удалось декодировать сообщение: Неверный формат сообщения"
 
-#: src/camel/camel-gpg-context.c:3137
+#: src/camel/camel-gpg-context.c:3140
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Сбой при декодировании части MIME: ошибка протокола"
 
-#: src/camel/camel-gpg-context.c:3209
+#: src/camel/camel-gpg-context.c:3212
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Сбой при декодировании части MIME: секретный ключ не найден"
 
-#: src/camel/camel-gpg-context.c:3246
+#: src/camel/camel-gpg-context.c:3249
 #, c-format
 msgid "GPG blob contains unencrypted text: %s"
 msgstr "Блок GPG содержит незашифрованный текст: %s"
 
-#: src/camel/camel-gpg-context.c:3248 src/camel/camel-multipart-encrypted.c:36
+#: src/camel/camel-gpg-context.c:3251 src/camel/camel-multipart-encrypted.c:36
 #: src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Зашифрованное содержимое"
 
-#: src/camel/camel-gpg-context.c:3556 src/camel/camel-gpg-context.c:3643
-#: src/camel/camel-gpg-context.c:3936 src/camel/camel-gpg-context.c:3947
+#: src/camel/camel-gpg-context.c:3559 src/camel/camel-gpg-context.c:3646
+#: src/camel/camel-gpg-context.c:3939 src/camel/camel-gpg-context.c:3950
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "Открытый ключ «%s» не найден"
 
-#: src/camel/camel-gpg-context.c:4034
+#: src/camel/camel-gpg-context.c:4037
 msgid "No public key was found in the provided data"
 msgstr "В предоставленных данных не найдено открытого ключа"
 
-#: src/camel/camel-gpg-context.c:4047
+#: src/camel/camel-gpg-context.c:4050
 msgid "Key information was not found in the provided data"
 msgstr "В предоставленных данных не найдена информация о ключе"
 
@@ -3770,7 +3770,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Некорректный зарегистрированный GType для протокола «%s»"
 
 #: src/camel/camel-session.c:508
-#: src/camel/providers/imapx/camel-imapx-server.c:3281
+#: src/camel/providers/imapx/camel-imapx-server.c:3299
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
 #: src/camel/providers/smtp/camel-smtp-transport.c:700
@@ -4945,7 +4945,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Для завершения данной операции необходимо подключение к сети (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:987
-#: src/camel/providers/imapx/camel-imapx-server.c:3453
+#: src/camel/providers/imapx/camel-imapx-server.c:3471
 #: src/camel/providers/nntp/camel-nntp-store.c:348
 #: src/camel/providers/nntp/camel-nntp-store.c:1343
 #: src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -4978,14 +4978,14 @@ msgstr "Не удалось переместить сообщения, соде�
 msgid "Unable to move deleted messages"
 msgstr "Не удалось переместить удалённые сообщения"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
-msgid "Unable to move messages to Inbox"
-msgstr "Невозможно переместить сообщения в папку Входящие"
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1825
+msgid "Unable to move Not-Junk messages"
+msgstr "Не удалось переместить сообщения, не содержащие спам"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:790
+#: src/camel/providers/imapx/camel-imapx-folder.c:813
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Нет информации о квоте для папки «%s : %s»"
@@ -4994,26 +4994,26 @@ msgstr "Нет информации о квоте для папки «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1057
+#: src/camel/providers/imapx/camel-imapx-folder.c:1080
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Удаление устаревших файлов кэша в папке «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1149
+#: src/camel/providers/imapx/camel-imapx-folder.c:1172
 #: src/camel/providers/nntp/camel-nntp-folder.c:832
 msgid "Apply message _filters to this folder"
 msgstr "Применять _фильтры сообщений к этой папке"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1161
+#: src/camel/providers/imapx/camel-imapx-folder.c:1184
 msgid "Always check for _new mail in this folder"
 msgstr "Всегда проверять эту папку на наличие новых сообщений"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1288
+#: src/camel/providers/imapx/camel-imapx-folder.c:1311
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Не удалось создать краткую информацию по папке %s"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1300
+#: src/camel/providers/imapx/camel-imapx-folder.c:1323
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Не удалось создать кэш для %s: "
@@ -5021,7 +5021,7 @@ msgstr "Не удалось создать кэш для %s: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1500
+#: src/camel/providers/imapx/camel-imapx-folder.c:1523
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Нет доступного почтового ящика IMAP для папки «%s : %s»"
@@ -5182,41 +5182,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Для чтения и хранения почты на серверах IMAP."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1158
+#: src/camel/providers/imapx/camel-imapx-server.c:1176
 msgid "Error writing to cache stream"
 msgstr "Ошибка записи в поток кэша"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3076
-#: src/camel/providers/imapx/camel-imapx-server.c:3163
-#: src/camel/providers/imapx/camel-imapx-server.c:3486
+#: src/camel/providers/imapx/camel-imapx-server.c:3094
+#: src/camel/providers/imapx/camel-imapx-server.c:3181
+#: src/camel/providers/imapx/camel-imapx-server.c:3504
 msgid "Failed to get capabilities"
 msgstr "Не удалось получить возможности"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3095
+#: src/camel/providers/imapx/camel-imapx-server.c:3113
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Не удалось подключиться к IMAP-серверу %s в защищённом режиме:%s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3096
+#: src/camel/providers/imapx/camel-imapx-server.c:3114
 #: src/camel/providers/smtp/camel-smtp-transport.c:287
 msgid "STARTTLS not supported"
 msgstr "STARTTLS не поддерживается"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3105
+#: src/camel/providers/imapx/camel-imapx-server.c:3123
 msgid "Failed to issue STARTTLS"
 msgstr "Не удалось оформить STARTTLS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3152
+#: src/camel/providers/imapx/camel-imapx-server.c:3170
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Не удалось подключиться к IMAP-серверу %s в защищённом режиме: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3268
+#: src/camel/providers/imapx/camel-imapx-server.c:3286
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Сервер IMAP %s не поддерживает аутентификацию %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3294
+#: src/camel/providers/imapx/camel-imapx-server.c:3312
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -5225,185 +5225,185 @@ msgstr ""
 "Аутентификация обычным текстом запрещена на небезопасных соединениях. "
 "Измените шифрование на STARTTLS или TLS для учетной записи «%s»."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3307
+#: src/camel/providers/imapx/camel-imapx-server.c:3325
 #: src/camel/providers/nntp/camel-nntp-store.c:454
 #: src/camel/providers/nntp/camel-nntp-store.c:596
 msgid "Cannot authenticate without a username"
 msgstr "Невозможно выполнить проверку подлинности без имени пользователя"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3316
+#: src/camel/providers/imapx/camel-imapx-server.c:3334
 #: src/camel/providers/nntp/camel-nntp-store.c:605
 #: src/camel/providers/pop3/camel-pop3-store.c:709
 #: src/camel/providers/pop3/camel-pop3-store.c:747
 msgid "Authentication password not available"
 msgstr "Пароль аутентификации недоступен"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3326
-#: src/camel/providers/imapx/camel-imapx-server.c:3339
+#: src/camel/providers/imapx/camel-imapx-server.c:3344
+#: src/camel/providers/imapx/camel-imapx-server.c:3357
 msgid "Failed to authenticate"
 msgstr "Не удалось выполнить аутентификацию"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3411
+#: src/camel/providers/imapx/camel-imapx-server.c:3429
 msgid "Failed to issue ID"
 msgstr "Не удалось оформить ID"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3513
+#: src/camel/providers/imapx/camel-imapx-server.c:3531
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Не удалось выдать ENABLE UTF8=ACCEPT"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3535
+#: src/camel/providers/imapx/camel-imapx-server.c:3553
 msgid "Failed to issue NAMESPACE"
 msgstr "Не удалось оформить NAMESPACE"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3553
+#: src/camel/providers/imapx/camel-imapx-server.c:3571
 msgid "Failed to enable QResync"
 msgstr "Не удалось включить QResync"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3597
+#: src/camel/providers/imapx/camel-imapx-server.c:3616
 msgid "Failed to issue NOTIFY"
 msgstr "Не удалось оформить NOTIFY"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4077
+#: src/camel/providers/imapx/camel-imapx-server.c:4096
 msgid "Failed to select mailbox"
 msgstr "Не удалось выбрать почтовый ящик"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4178
+#: src/camel/providers/imapx/camel-imapx-server.c:4197
 msgid "Cannot issue command, no stream available"
 msgstr "Невозможно оформить команду, нет доступного потока"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4445
+#: src/camel/providers/imapx/camel-imapx-server.c:4464
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не удалось получить сообщение с идентификатором %s: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4446
+#: src/camel/providers/imapx/camel-imapx-server.c:4465
 msgid "No such message available."
 msgstr "Нет такого сообщения."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4495
-#: src/camel/providers/imapx/camel-imapx-server.c:4520
-#: src/camel/providers/imapx/camel-imapx-server.c:4559
+#: src/camel/providers/imapx/camel-imapx-server.c:4514
+#: src/camel/providers/imapx/camel-imapx-server.c:4539
+#: src/camel/providers/imapx/camel-imapx-server.c:4578
 msgid "Error fetching message"
 msgstr "Ошибка при получении сообщения"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4537
-#: src/camel/providers/imapx/camel-imapx-server.c:5306
+#: src/camel/providers/imapx/camel-imapx-server.c:4556
+#: src/camel/providers/imapx/camel-imapx-server.c:5325
 msgid "Error performing NOOP"
 msgstr "Ошибка выполнения команды NOOP"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4552
+#: src/camel/providers/imapx/camel-imapx-server.c:4571
 msgid "Failed to close the tmp stream"
 msgstr "Сбой при закрытии временного потока"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4583
+#: src/camel/providers/imapx/camel-imapx-server.c:4602
 msgid "Failed to copy the tmp file"
 msgstr "Сбой при копировании временного файла"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4821
+#: src/camel/providers/imapx/camel-imapx-server.c:4840
 msgid "Error moving messages"
 msgstr "Ошибка при перемещении сообщений"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4821
+#: src/camel/providers/imapx/camel-imapx-server.c:4840
 msgid "Error copying messages"
 msgstr "Ошибка при копировании сообщений"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5096
-#: src/camel/providers/imapx/camel-imapx-server.c:5117
+#: src/camel/providers/imapx/camel-imapx-server.c:5115
+#: src/camel/providers/imapx/camel-imapx-server.c:5136
 msgid "Cannot create spool file: "
 msgstr "Не удалось создать файл спула: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5203
+#: src/camel/providers/imapx/camel-imapx-server.c:5222
 msgid "Error appending message"
 msgstr "Ошибка при присоединении сообщения"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5474
+#: src/camel/providers/imapx/camel-imapx-server.c:5493
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Поиск изменённых сообщений в «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5478
+#: src/camel/providers/imapx/camel-imapx-server.c:5497
 msgid "Error scanning changes"
 msgstr "Ошибка при сканировании изменений"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5501
+#: src/camel/providers/imapx/camel-imapx-server.c:5521
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Получение сводной информации для новых сообщений в «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5535
+#: src/camel/providers/imapx/camel-imapx-server.c:5556
 msgid "Error fetching message info"
 msgstr "Ошибка при получении информацию сообщения"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5719
+#: src/camel/providers/imapx/camel-imapx-server.c:5740
 msgid "Error running STATUS"
 msgstr "Ошибка выполнения STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6324
-#: src/camel/providers/imapx/camel-imapx-server.c:6379
-#: src/camel/providers/imapx/camel-imapx-server.c:6462
+#: src/camel/providers/imapx/camel-imapx-server.c:6345
+#: src/camel/providers/imapx/camel-imapx-server.c:6400
+#: src/camel/providers/imapx/camel-imapx-server.c:6483
 msgid "Error syncing changes"
 msgstr "Ошибка при синхронизации изменений"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6337
-#: src/camel/providers/imapx/camel-imapx-server.c:6389
-#: src/camel/providers/imapx/camel-imapx-server.c:6481
-#: src/camel/providers/imapx/camel-imapx-server.c:6622
+#: src/camel/providers/imapx/camel-imapx-server.c:6358
+#: src/camel/providers/imapx/camel-imapx-server.c:6410
+#: src/camel/providers/imapx/camel-imapx-server.c:6502
+#: src/camel/providers/imapx/camel-imapx-server.c:6643
 msgid "Error expunging message"
 msgstr "Ошибка уничтожения сообщений"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6704
+#: src/camel/providers/imapx/camel-imapx-server.c:6725
 msgid "Error fetching folders"
 msgstr "Ошибка при получении папок"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6712
+#: src/camel/providers/imapx/camel-imapx-server.c:6733
 msgid "Error fetching subscribed folders"
 msgstr "Ошибка при получении подписных папок"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6769
+#: src/camel/providers/imapx/camel-imapx-server.c:6790
 msgid "Error creating folder"
 msgstr "Ошибка при создании папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6819
+#: src/camel/providers/imapx/camel-imapx-server.c:6840
 msgid "Error deleting folder"
 msgstr "Ошибка при удалении папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6865
+#: src/camel/providers/imapx/camel-imapx-server.c:6886
 msgid "Error renaming folder"
 msgstr "Ошибка при переименовании папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6897
+#: src/camel/providers/imapx/camel-imapx-server.c:6918
 msgid "Error subscribing to folder"
 msgstr "Ошибка подписывания на папку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6933
+#: src/camel/providers/imapx/camel-imapx-server.c:6954
 msgid "Error unsubscribing from folder"
 msgstr "Ошибка отписывания от папки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6973
+#: src/camel/providers/imapx/camel-imapx-server.c:6994
 msgid "IMAP server does not support quotas"
 msgstr "Сервер IMAP не поддерживает квоты"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6985
+#: src/camel/providers/imapx/camel-imapx-server.c:7006
 msgid "Error retrieving quota information"
 msgstr "Ошибка получения информации о квоте"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7050
+#: src/camel/providers/imapx/camel-imapx-server.c:7071
 msgid "Search failed"
 msgstr "Ошибка поиска"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7176
+#: src/camel/providers/imapx/camel-imapx-server.c:7197
 msgid "Error running IDLE"
 msgstr "Ошибка выполнения IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: src/camel/providers/imapx/camel-imapx-store.c:349
+#: src/camel/providers/imapx/camel-imapx-store.c:350
 #: src/camel/providers/local/camel-maildir-folder.c:485
 #: src/camel/providers/local/camel-maildir-store.c:342
 #: src/camel/providers/local/camel-maildir-store.c:824
@@ -5413,49 +5413,49 @@ msgstr "Ошибка выполнения IDLE"
 msgid "Inbox"
 msgstr "Входящие"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:958
+#: src/camel/providers/imapx/camel-imapx-store.c:959
 #, c-format
 msgid "IMAP server %s"
 msgstr "Сервер IMAP %s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:961
+#: src/camel/providers/imapx/camel-imapx-store.c:962
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Сервис IMAP для %s на %s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1052
+#: src/camel/providers/imapx/camel-imapx-store.c:1053
 msgid "No IMAPx connection object provided"
 msgstr "Нет предоставленных объектов соединения IMAPx"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1069
+#: src/camel/providers/imapx/camel-imapx-store.c:1070
 #: src/camel/providers/nntp/camel-nntp-provider.c:95
 #: src/camel/providers/pop3/camel-pop3-provider.c:82
 msgid "Password"
 msgstr "Пароль"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1071
+#: src/camel/providers/imapx/camel-imapx-store.c:1072
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Подключение к серверу IMAP будет производиться с использованием "
 "незашифрованного пароля."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1155
+#: src/camel/providers/imapx/camel-imapx-store.c:1156
 #, c-format
 msgid "No such folder %s"
 msgstr "Нет папки с именем %s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1639
+#: src/camel/providers/imapx/camel-imapx-store.c:1640
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Нет пространства имён IMAP для папки с путём «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1909
-#: src/camel/providers/imapx/camel-imapx-store.c:2104
+#: src/camel/providers/imapx/camel-imapx-store.c:1910
+#: src/camel/providers/imapx/camel-imapx-store.c:2105
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Получение списка папок для «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2347
+#: src/camel/providers/imapx/camel-imapx-store.c:2348
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
@@ -5463,7 +5463,7 @@ msgstr ""
 "Учетная запись не поддерживает иерархию папок. Вместо этого создайте папку "
 "на уровне учетной записи."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2394
+#: src/camel/providers/imapx/camel-imapx-store.c:2395
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Недопустимое имя папки «%s»: имя содержит символ «%c»"
@@ -5473,97 +5473,97 @@ msgstr "Недопустимое имя папки «%s»: имя содержи
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2789
+#: src/camel/providers/imapx/camel-imapx-store.c:2808
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Черновики"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2790
+#: src/camel/providers/imapx/camel-imapx-store.c:2809
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Черновики"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2791
+#: src/camel/providers/imapx/camel-imapx-store.c:2810
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Черновик"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2794
+#: src/camel/providers/imapx/camel-imapx-store.c:2813
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2797
+#: src/camel/providers/imapx/camel-imapx-store.c:2816
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Архив"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2800
+#: src/camel/providers/imapx/camel-imapx-store.c:2819
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Отправленные"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2801
+#: src/camel/providers/imapx/camel-imapx-store.c:2820
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Отправленные"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2802
+#: src/camel/providers/imapx/camel-imapx-store.c:2821
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Отправленные объекты"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2803
+#: src/camel/providers/imapx/camel-imapx-store.c:2822
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Отправленные сообщения"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2806
+#: src/camel/providers/imapx/camel-imapx-store.c:2825
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2807
+#: src/camel/providers/imapx/camel-imapx-store.c:2826
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2808
+#: src/camel/providers/imapx/camel-imapx-store.c:2827
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Нежелательная почта"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2809
+#: src/camel/providers/imapx/camel-imapx-store.c:2828
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Нежелательная почта"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2810
+#: src/camel/providers/imapx/camel-imapx-store.c:2829
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2811
+#: src/camel/providers/imapx/camel-imapx-store.c:2830
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Массовые рассылки"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2814
+#: src/camel/providers/imapx/camel-imapx-store.c:2833
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Корзина"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2815
+#: src/camel/providers/imapx/camel-imapx-store.c:2834
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Корзина"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2816
+#: src/camel/providers/imapx/camel-imapx-store.c:2835
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Удаленные объекты"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2817
+#: src/camel/providers/imapx/camel-imapx-store.c:2836
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Удаленные сообщения"
@@ -7398,6 +7398,17 @@ msgstr "Напоминания о событиях и задачах"
 msgid "Event and task notifications"
 msgstr "Уведомления о событиях и задачах"
 
+#: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:4
+msgid "Evolution Data Server OAuth2 Handler"
+msgstr "Обработчик OAuth2 сервера данных Evolution"
+
+#: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:5
+msgid ""
+"Handles OAuth2 responses and passes them to the OAuth2 prompter "
+"implementation"
+msgstr ""
+"Обрабатывает ответы OAuth2 и передает их в реализацию подсказчика OAuth2"
+
 #: src/libebackend/e-cache.c:750
 msgid "Out of memory"
 msgstr "Недостаточно памяти"
@@ -7795,7 +7806,7 @@ msgid "Google"
 msgstr "Google"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
-#: src/libedataserver/e-oauth2-service-outlook.c:58
+#: src/libedataserver/e-oauth2-service-outlook.c:62
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
@@ -7806,16 +7817,32 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1270
+#: src/libedataserver/e-soup-session.c:1361
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Отказ с ошибкой HTTP %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1346
+#: src/libedataserver/e-soup-session.c:1437
 msgid "Failed to setup authentication"
 msgstr "Не удалось установить аутентификацию"
 
-#: src/libedataserver/e-soup-session.c:1753
+#: src/libedataserver/e-soup-session.c:1802
+#, c-format
+msgid "Server is busy, waiting to retry (%d:%02d minute)"
+msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
+msgstr[0] "Сервер занят, ожидание повторной попытки (%d:%02d минута)"
+msgstr[1] "Сервер занят, ожидание повторной попытки (%d:%02d минуты)"
+msgstr[2] "Сервер занят, ожидание повторной попытки (%d:%02d минут)"
+
+#: src/libedataserver/e-soup-session.c:1808
+#, c-format
+msgid "Server is busy, waiting to retry (%d second)"
+msgid_plural "Server is busy, waiting to retry (%d seconds)"
+msgstr[0] "Сервер занят, ожидание повторной попытки (%d секунда)"
+msgstr[1] "Сервер занят, ожидание повторной попытки (%d секунды)"
+msgstr[2] "Сервер занят, ожидание повторной попытки (%d секунд)"
+
+#: src/libedataserver/e-soup-session.c:1929
 msgid "Too many redirects"
 msgstr "Слишком много переадресаций"
 
@@ -9251,6 +9278,9 @@ msgstr "В Веб-браузере"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Заметки WebDAV"
+
+#~ msgid "Unable to move messages to Inbox"
+#~ msgstr "Невозможно переместить сообщения в папку Входящие"
 
 #~ msgid "Evolution Alarm Notify"
 #~ msgstr "Уведомление о сигнале Evolution"
