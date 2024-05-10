@@ -145,9 +145,13 @@ process_header (CamelMedium *medium,
 		} else
 			charset = NULL;
 
-		unfolded = camel_header_unfold (value);
-		message->priv->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
-		g_free (unfolded);
+		if (value) {
+			unfolded = camel_header_unfold (value);
+			message->priv->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
+			g_free (unfolded);
+		} else {
+			message->priv->subject = NULL;
+		}
 		break;
 	case HEADER_TO:
 	case HEADER_CC:
