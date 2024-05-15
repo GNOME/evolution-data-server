@@ -757,6 +757,28 @@ e_util_ensure_gdbus_string (const gchar *str,
 }
 
 /**
+ * e_util_host_is_in_domain:
+ * @host: (nullable): The hostname to check.
+ * @domain: (nullable): The domain name.
+ *
+ * Check whether the hostname @host is equal to or a subdomain of @domain.
+ * Both @host and @domain are UTF-8 strings and can be IDNs (which will be
+ * punycode-encoded for comparison).
+ *
+ * Returns: %TRUE if @host is a subdomain of @domain (or the same domain).
+ *          %FALSE if not, or if either argument is null or in some way
+ *          invalid as a domain/hostname.
+ *
+ * Since: 3.54
+ **/
+gboolean
+e_util_host_is_in_domain (const gchar *host,
+                          const gchar *domain)
+{
+	return camel_hostname_utils_host_is_in_domain (host, domain);
+}
+
+/**
  * e_strftime:
  * @string: The string array to store the result in.
  * @max: The size of array @s.

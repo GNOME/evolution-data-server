@@ -31,6 +31,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel/camel.h"
 #include "camel-smtp-settings.h"
 #include "camel-smtp-transport.h"
 
@@ -253,7 +254,7 @@ connect_to_server (CamelService *service,
 	} while (*(respbuf+3) == '-'); /* if we got "220-" then loop again */
 	g_free (respbuf);
 
-	ignore_8bitmime = host && camel_strstrcase (host, "yahoo.com");
+	ignore_8bitmime = camel_hostname_utils_host_is_in_domain (host, "yahoo.com");
 
 	/* Try sending EHLO */
 	transport->flags |= CAMEL_SMTP_TRANSPORT_IS_ESMTP;

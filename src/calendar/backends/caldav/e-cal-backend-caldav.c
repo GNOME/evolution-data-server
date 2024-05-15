@@ -104,12 +104,12 @@ ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
 		return;
 
 	cbdav->priv->is_google = g_uri_get_host (parsed_uri) && (
-		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".google.com") == 0 ||
-		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".googleapis.com") == 0 ||
-		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".googleusercontent.com") == 0);
+		e_util_host_is_in_domain (g_uri_get_host (parsed_uri), "google.com") ||
+		e_util_host_is_in_domain (g_uri_get_host (parsed_uri), "googleapis.com") ||
+		e_util_host_is_in_domain (g_uri_get_host (parsed_uri), "googleusercontent.com"));
 
 	cbdav->priv->is_icloud = g_uri_get_host (parsed_uri) &&
-		e_util_utf8_strstrcase (g_uri_get_host (parsed_uri), ".icloud.com");
+		e_util_host_is_in_domain (g_uri_get_host (parsed_uri), "icloud.com");
 
 	g_uri_unref (parsed_uri);
 }

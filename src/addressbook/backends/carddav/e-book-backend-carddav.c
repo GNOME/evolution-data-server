@@ -385,7 +385,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 		if (g_uri) {
 			if (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_NOT_FOUND) &&
 			    g_uri_get_host (g_uri) && *g_uri_get_path (g_uri) &&
-			    e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".icloud.com")) {
+			    e_util_host_is_in_domain (g_uri_get_host (g_uri), "icloud.com")) {
 				/* Try parent directory */
 				gchar *path;
 				gint len = strlen (g_uri_get_path (g_uri));
@@ -416,9 +416,9 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 				g_free (path);
 			} else if (g_uri_get_host (g_uri) && (
-				   e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".google.com") ||
-				   e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".googleapis.com") ||
-				   e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".googleusercontent.com"))) {
+				   e_util_host_is_in_domain (g_uri_get_host (g_uri), "google.com") ||
+				   e_util_host_is_in_domain (g_uri_get_host (g_uri), "googleapis.com") ||
+				   e_util_host_is_in_domain (g_uri_get_host (g_uri), "googleusercontent.com"))) {
 				g_clear_error (&local_error);
 				success = TRUE;
 
@@ -476,9 +476,9 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 
 			bbdav->priv->is_google = g_uri && g_uri_get_host (g_uri) && (
-				e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".google.com") ||
-				e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".googleapis.com") ||
-				e_util_utf8_strstrcase (g_uri_get_host (g_uri), ".googleusercontent.com"));
+				e_util_host_is_in_domain (g_uri_get_host (g_uri), "google.com") ||
+				e_util_host_is_in_domain (g_uri_get_host (g_uri), "googleapis.com") ||
+				e_util_host_is_in_domain (g_uri_get_host (g_uri), "googleusercontent.com"));
 		} else {
 			gchar *uri;
 

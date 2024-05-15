@@ -39,11 +39,11 @@ eos_google_guess_can_process (EOAuth2Service *service,
 			      const gchar *hostname)
 {
 	return hostname && (
-		e_util_utf8_strstrcase (hostname, ".google.com") ||
-		e_util_utf8_strstrcase (hostname, ".googleapis.com") ||
-		e_util_utf8_strstrcase (hostname, ".googlemail.com") ||
-		e_util_utf8_strstrcase (hostname, ".googleusercontent.com") ||
-		e_util_utf8_strstrcase (hostname, ".gmail.com"));
+		e_util_host_is_in_domain (hostname, "google.com") ||
+		e_util_host_is_in_domain (hostname, "googleapis.com") ||
+		e_util_host_is_in_domain (hostname, "googlemail.com") ||
+		e_util_host_is_in_domain (hostname, "googleusercontent.com") ||
+		e_util_host_is_in_domain (hostname, "gmail.com"));
 }
 
 static const gchar *

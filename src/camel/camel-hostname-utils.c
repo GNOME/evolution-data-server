@@ -680,3 +680,52 @@ camel_hostname_utils_requires_ascii (const gchar *hostname)
 
 	return needs_conversion;
 }
+
+/**
+ * camel_hostname_utils_host_is_in_domain:
+ * @host: (nullable): The hostname to check.
+ * @domain: (nullable): The domain name.
+ *
+ * Check whether the hostname @host is equal to or a subdomain of @domain.
+ * Both @host and @domain are UTF-8 strings and can be IDNs (which will be
+ * punycode-encoded for comparison).
+ *
+ * Returns: %TRUE if @host is a subdomain of @domain (or the same domain).
+ *          %FALSE if not, or if either argument is null or in some way
+ *          invalid as a domain/hostname.
+ *
+ * Since: 3.54
+ **/
+gboolean
+camel_hostname_utils_host_is_in_domain (const gchar *host,
+                                        const gchar *domain)
+{
+	gchar *norm_host, *norm_domain, *dot_domain;
+	gboolean rv;
+
+	if (host == NULL || domain == NULL)
+		return FALSE;
+
+	/* Normalize the domain names.  This takes care of case-folding too. */
+
+	norm_host = g_hostname_to_ascii (host);
+	if (norm_host == NULL)
+		return FALSE;
+
+	norm_domain = g_hostname_to_ascii (domain);
+	if (norm_domain == NULL) {
+		g_free (norm_host);
+		return FALSE;
+	}
+
+	dot_domain = g_strconcat (".", norm_domain, NULL);
+
+	rv = g_str_has_suffix (host, dot_domain) ||
+		g_str_equal (host, norm_domain);
+
+	g_free (dot_domain);
+	g_free (norm_domain);
+	g_free (norm_host);
+
+	return rv;
+}

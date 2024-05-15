@@ -65,6 +65,8 @@ gchar *		e_util_utf8_data_make_valid	(const gchar *data,
 gchar *         e_util_utf8_normalize           (const gchar *str);
 const gchar *   e_util_ensure_gdbus_string	(const gchar *str,
 						 gchar **gdbus_str);
+gboolean	e_util_host_is_in_domain	(const gchar *host,
+						 const gchar *domain);
 guint64		e_util_gthread_id		(GThread *thread);
 void		e_filename_make_safe		(gchar *string);
 gchar *		e_filename_mkdir_encoded	(const gchar *basepath,

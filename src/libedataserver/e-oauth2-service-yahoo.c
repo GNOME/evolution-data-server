@@ -38,7 +38,7 @@ eos_yahoo_guess_can_process (EOAuth2Service *service,
 			      const gchar *hostname)
 {
 	return hostname &&
-		e_util_utf8_strstrcase (hostname, ".yahoo.com");
+		e_util_host_is_in_domain (hostname, "yahoo.com");
 }
 
 static const gchar *

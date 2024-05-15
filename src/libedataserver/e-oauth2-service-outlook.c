@@ -45,8 +45,8 @@ eos_outlook_guess_can_process (EOAuth2Service *service,
 	return hostname && protocol && (
 		g_ascii_strcasecmp (protocol, "imapx") == 0 ||
 		g_ascii_strcasecmp (protocol, "smtp") == 0) && (
-		e_util_utf8_strstrcase (hostname, ".outlook.com") ||
-		e_util_utf8_strstrcase (hostname, ".office365.com"));
+		e_util_host_is_in_domain (hostname, "outlook.com") ||
+		e_util_host_is_in_domain (hostname, "office365.com"));
 }
 
 static const gchar *
