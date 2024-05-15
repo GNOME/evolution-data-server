@@ -249,8 +249,7 @@ G_BEGIN_DECLS
  * E_CAL_STATIC_CAPABILITY_RETRACT_SUPPORTED:
  *
  * Set, when the backend supports retract. That's a way to ask for a meeting
- * deletion with a comment, which is stored in a component as
- * X-EVOLUTION-RETRACT-COMMENT property.
+ * deletion with a comment, which is stored in a component as the COMMENT property.
  *
  * Since: 3.50
  **/
