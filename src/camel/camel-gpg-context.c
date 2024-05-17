@@ -325,7 +325,7 @@ struct _GpgCtx {
 	gchar *photos_filename;
 	gchar *viewer_cmd;
 
-	GString *decrypt_extra_text; /* Text received during decryption, which is in the blob, but is not encrypted */
+	gchar *bad_decrypt_error;
 
 	gint exit_status;
 
@@ -354,7 +354,6 @@ struct _GpgCtx {
 	guint trust : 3;
 	guint processing : 1;
 	guint bad_decrypt : 1;
-	guint in_decrypt_stage : 1;
 	guint noseckey : 1;
 	GString *signers;
 	GHashTable *signers_keyid;
@@ -432,14 +431,13 @@ gpg_ctx_new (CamelCipherContext *context,
 	gpg->trust = GPG_TRUST_NONE;
 	gpg->processing = FALSE;
 	gpg->bad_decrypt = FALSE;
-	gpg->in_decrypt_stage = FALSE;
 	gpg->noseckey = FALSE;
 	gpg->signers = NULL;
 	gpg->signers_keyid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	gpg->istream = NULL;
 	gpg->ostream = NULL;
-	gpg->decrypt_extra_text = NULL;
+	gpg->bad_decrypt_error = NULL;
 
 	gpg->diagbuf = g_byte_array_new ();
 	gpg->diagflushed = FALSE;
@@ -723,8 +721,7 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	g_free (gpg->photos_filename);
 	g_free (gpg->viewer_cmd);
 
-	if (gpg->decrypt_extra_text)
-		g_string_free (gpg->decrypt_extra_text, TRUE);
+	g_free (gpg->bad_decrypt_error);
 
 	g_slice_free (struct _GpgCtx, gpg);
 }
@@ -1543,18 +1540,18 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		case GPG_CTX_MODE_DECRYPT:
 			if (!strncmp ((gchar *) status, "BEGIN_DECRYPTION", 16)) {
 				gpg->bad_decrypt = FALSE;
-				/* Mark it's expected to get decrypted data on stdout */
-				gpg->in_decrypt_stage = TRUE;
 				break;
 			} else if (!strncmp ((gchar *) status, "END_DECRYPTION", 14)) {
-				/* Mark to no longer expect decrypted data */
-				gpg->in_decrypt_stage = FALSE;
 				break;
 			} else if (!strncmp ((gchar *) status, "NO_SECKEY ", 10)) {
 				gpg->noseckey = TRUE;
 				break;
 			} else if (!strncmp ((gchar *) status, "DECRYPTION_FAILED", 17)) {
 				gpg->bad_decrypt = TRUE;
+				break;
+			} else if (!strncmp ((gchar *) status, "ERROR ", 6)) {
+				gpg->bad_decrypt = TRUE;
+				gpg->bad_decrypt_error = g_strdup ((const gchar *) status + 6);
 				break;
 			}
 			/* let if fall through to verify possible signatures too */
@@ -1827,7 +1824,6 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	GPollFD polls[6];
 	gint status, i;
 	gboolean read_data = FALSE, wrote_data = FALSE;
-	gboolean was_in_decrypt_stage;
 
 	for (i = 0; i < 6; i++) {
 		polls[i].fd = -1;
@@ -1880,8 +1876,6 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	 * can to all of them. If one fails along the way, return
 	 * -1. */
 
-	was_in_decrypt_stage = gpg->in_decrypt_stage;
-
 	if (polls[2].revents & (G_IO_IN | G_IO_HUP)) {
 		/* read the status message and decide what to do... */
 		gchar buffer[4096];
@@ -1920,41 +1914,34 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 			goto exception;
 
 		if (nread > 0) {
-			if (gpg->mode != GPG_CTX_MODE_DECRYPT ||
-			    gpg->in_decrypt_stage || was_in_decrypt_stage) {
-				gboolean done = FALSE;
+			gboolean done = FALSE;
 
-				while (!done) {
-					gsize written = camel_stream_write (
-						gpg->ostream, buffer, (gsize)
-						nread, cancellable, error);
-					if (written != nread)
-						return -1;
+			while (!done) {
+				gsize written = camel_stream_write (
+					gpg->ostream, buffer, (gsize)
+					nread, cancellable, error);
+				if (written != nread)
+					return -1;
 
-					done = TRUE;
+				done = TRUE;
 
-					/* Read everything cached */
+				/* Read everything cached */
+				do {
+					polls[0].revents = 0;
+					status = g_poll (polls, 1, 5);
+				} while (status == -1 && errno == EINTR);
+
+				if (status != -1 && status != 0 && (polls[0].revents & (G_IO_IN | G_IO_HUP))) {
 					do {
-						polls[0].revents = 0;
-						status = g_poll (polls, 1, 5);
-					} while (status == -1 && errno == EINTR);
+						nread = read (gpg->stdout_fd, buffer, sizeof (buffer));
+						d (printf ("   cached read %d bytes (%.*s)\n", (gint) nread, (gint) nread, buffer));
+					} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
 
-					if (status != -1 && status != 0 && (polls[0].revents & (G_IO_IN | G_IO_HUP))) {
-						do {
-							nread = read (gpg->stdout_fd, buffer, sizeof (buffer));
-							d (printf ("   cached read %d bytes (%.*s)\n", (gint) nread, (gint) nread, buffer));
-						} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
+					if (nread == -1)
+						goto exception;
 
-						if (nread == -1)
-							goto exception;
-
-						done = !nread;
-					}
+					done = !nread;
 				}
-			} else {
-				if (!gpg->decrypt_extra_text)
-					gpg->decrypt_extra_text = g_string_new ("");
-				g_string_append_len (gpg->decrypt_extra_text, buffer, nread);
 			}
 		} else {
 			gpg->seen_eof1 = TRUE;
@@ -3210,6 +3197,12 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to decrypt MIME part: Secret key not found"));
+	} else if (gpg->bad_decrypt) {
+		success = FALSE;
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Failed to decrypt MIME part: %s"),
+			(gpg->bad_decrypt_error && *gpg->bad_decrypt_error) ? gpg->bad_decrypt_error : _("Unknown error"));
 	} else if (camel_content_type_is (ct, "multipart", "encrypted")) {
 		CamelDataWrapper *dw;
 		CamelStream *null = camel_stream_null_new ();
@@ -3245,10 +3238,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 
 	if (success) {
 		valid = camel_cipher_validity_new ();
-		if (gpg->decrypt_extra_text)
-			valid->encrypt.description = g_strdup_printf (_("GPG blob contains unencrypted text: %s"), gpg->decrypt_extra_text->str);
-		else
-			valid->encrypt.description = g_strdup (_("Encrypted content"));
+		valid->encrypt.description = g_strdup (_("Encrypted content"));
 		valid->encrypt.status = CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED;
 
 		if (gpg->hadsig) {
