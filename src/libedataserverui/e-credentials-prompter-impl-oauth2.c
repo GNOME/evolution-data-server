@@ -998,10 +998,11 @@ cpi_oauth2_auth_code_entry_changed_cb (GtkEntry *entry,
 static gboolean
 e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 {
-	GtkWidget *dialog, *content_area, *widget, *vbox, *hbox, *url_entry;
+	GtkWidget *content_area, *widget, *vbox, *hbox, *url_entry;
 	GtkStyleContext *style_context;
 	GtkGrid *grid;
 	GtkWindow *dialog_parent;
+	gpointer dialog;
 	ECredentialsPrompter *prompter;
 #ifdef WITH_WEBKITGTK
 	GtkScrolledWindow *scrolled_window;
@@ -1415,20 +1416,21 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	gtk_notebook_set_current_page (prompter_oauth2->priv->notebook, -1);
 #endif /* WITH_WEBKITGTK */
 
+	g_object_add_weak_pointer (G_OBJECT (dialog), &dialog);
+
 	uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
 	if (!uri) {
 		success = FALSE;
 	} else {
 #ifdef WITH_WEBKITGTK
 		WebKitWebView *web_view = prompter_oauth2->priv->web_view;
-		gulong decide_policy_handler_id, load_finished_handler_id, progress_handler_id;
 
-		decide_policy_handler_id = g_signal_connect (web_view, "decide-policy",
-			G_CALLBACK (cpi_oauth2_decide_policy_cb), prompter_oauth2);
-		load_finished_handler_id = g_signal_connect (web_view, "load-changed",
-			G_CALLBACK (cpi_oauth2_document_load_changed_cb), prompter_oauth2);
-		progress_handler_id = g_signal_connect (web_view, "notify::estimated-load-progress",
-			G_CALLBACK (cpi_oauth2_notify_estimated_load_progress_cb), progress_bar);
+		g_signal_connect_object (web_view, "decide-policy",
+			G_CALLBACK (cpi_oauth2_decide_policy_cb), prompter_oauth2, 0);
+		g_signal_connect_object (web_view, "load-changed",
+			G_CALLBACK (cpi_oauth2_document_load_changed_cb), prompter_oauth2, 0);
+		g_signal_connect_object (web_view, "notify::estimated-load-progress",
+			G_CALLBACK (cpi_oauth2_notify_estimated_load_progress_cb), progress_bar, 0);
 
 		if (cpi_oauth2_get_debug ()) {
 			e_util_debug_print ("OAuth2", "Loading URI: '%s'\n", uri);
@@ -1441,15 +1443,6 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 #endif /* WITH_WEBKITGTK */
 
 		success = _libedataserverui_dialog_run (prompter_oauth2->priv->dialog) == GTK_RESPONSE_OK;
-
-#ifdef WITH_WEBKITGTK
-		if (decide_policy_handler_id)
-			g_signal_handler_disconnect (web_view, decide_policy_handler_id);
-		if (load_finished_handler_id)
-			g_signal_handler_disconnect (web_view, load_finished_handler_id);
-		if (progress_handler_id)
-			g_signal_handler_disconnect (web_view, progress_handler_id);
-#endif /* WITH_WEBKITGTK */
 	}
 
 	g_free (uri);
@@ -1461,11 +1454,15 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	prompter_oauth2->priv->web_view = NULL;
 #endif /* WITH_WEBKITGTK */
 	prompter_oauth2->priv->dialog = NULL;
+
+	if (dialog) {
+		g_object_remove_weak_pointer (G_OBJECT (dialog), &dialog);
 #if GTK_CHECK_VERSION(4, 0, 0)
-	gtk_window_destroy (GTK_WINDOW (dialog));
+		gtk_window_destroy (GTK_WINDOW (dialog));
 #else
-	gtk_widget_destroy (dialog);
+		gtk_widget_destroy (dialog);
 #endif
+	}
 
 	g_string_free (info_markup, TRUE);
 	g_free (title);
