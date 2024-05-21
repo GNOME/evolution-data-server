@@ -31,6 +31,7 @@
 #define E_WEBDAV_MAX_MULTIGET_AMOUNT 100 /* what's the maximum count of items to fetch within a multiget request */
 
 #define E_WEBDAV_X_ETAG "X-EVOLUTION-WEBDAV-ETAG"
+#define E_WEBDAV_X_IMG_URL "X-EVOLUTION-WEBDAV-IMG-URL"
 #define E_GOOGLE_ANNIVERSARY_ITEM "X-EVOLUTION-GOOGLE-ANNIVERSARY-ITEM"
 
 #define EC_ERROR(_code) e_client_error_create (_code, NULL)
@@ -56,9 +57,169 @@ struct _EBookBackendCardDAVPrivate {
 
 G_DEFINE_TYPE_WITH_PRIVATE (EBookBackendCardDAV, e_book_backend_carddav, E_TYPE_BOOK_META_BACKEND)
 
+static void
+ebb_carddav_debug_print (const gchar *format,
+			 ...) G_GNUC_PRINTF (1, 2);
+
+static void
+ebb_carddav_debug_print (const gchar *format,
+			 ...)
+{
+	static gint debug_enabled = -1;
+	va_list args;
+
+	if (debug_enabled == -1)
+		debug_enabled = g_strcmp0 (g_getenv ("CARDDAV_DEBUG"), "0") != 0 ? 1 : 0;
+
+	if (!debug_enabled)
+		return;
+
+	va_start (args, format);
+	e_util_debug_printv ("CardDAV", format, args);
+	va_end (args);
+}
+
+static gboolean
+ebb_carddav_finish_load_photologo (EBookBackendCardDAV *bbdav,
+				   EWebDAVSession *webdav,
+				   EVCardAttribute *attr,
+				   GCancellable *cancellable,
+				   gpointer user_data)
+{
+	GList *values;
+	gboolean can_continue = TRUE;
+
+	if (!webdav)
+		return can_continue;
+
+	values = e_vcard_attribute_get_param (attr, EVC_VALUE);
+	if (values && g_ascii_strcasecmp (values->data, "uri") == 0) {
+		gchar *uri;
+
+		uri = e_vcard_attribute_get_value (attr);
+		if (uri && (
+		    g_ascii_strncasecmp (uri, "http://", 7) == 0 ||
+		    g_ascii_strncasecmp (uri, "https://", 8) == 0)) {
+			gchar *bytes = NULL;
+			gsize length = 0;
+			GError *local_error = NULL;
+
+			if (e_webdav_session_get_data_sync (webdav, uri, NULL, NULL, NULL, &bytes, &length, cancellable, &local_error) && bytes) {
+				if (length > 0) {
+					gchar *mime_type = NULL, *content_type;
+					const gchar *image_type, *pp;
+
+					content_type = g_content_type_guess (uri, (const guchar *) bytes, length, NULL);
+
+					if (content_type)
+						mime_type = g_content_type_get_mime_type (content_type);
+
+					g_free (content_type);
+
+					if (mime_type && (pp = strchr (mime_type, '/'))) {
+						image_type = pp + 1;
+					} else {
+						image_type = "X-EVOLUTION-UNKNOWN";
+					}
+
+					e_vcard_attribute_remove_param (attr, EVC_TYPE);
+					e_vcard_attribute_remove_param (attr, EVC_ENCODING);
+					e_vcard_attribute_remove_param (attr, EVC_VALUE);
+					e_vcard_attribute_remove_param (attr, E_WEBDAV_X_IMG_URL);
+					e_vcard_attribute_remove_values (attr);
+
+					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), image_type);
+					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
+					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (E_WEBDAV_X_IMG_URL), uri);
+					e_vcard_attribute_add_value_decoded (attr, bytes, length);
+
+					g_free (mime_type);
+				}
+			} else {
+				ebb_carddav_debug_print ("Failed to download '%s': %s\n", uri, local_error ? local_error->message : "Unknown error");
+				can_continue = !g_cancellable_is_cancelled (cancellable);
+			}
+
+			g_clear_error (&local_error);
+			g_free (bytes);
+		}
+
+		g_free (uri);
+	}
+
+	return can_continue;
+}
+
+static gboolean
+ebb_carddav_prepare_save_photologo (EBookBackendCardDAV *bbdav,
+				    EWebDAVSession *webdav,
+				    EVCardAttribute *attr,
+				    GCancellable *cancellable,
+				    gpointer user_data)
+{
+	GList *values;
+
+	values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
+	if (values && (g_ascii_strcasecmp (values->data, "b") == 0 || g_ascii_strcasecmp (values->data, "base64") == 0)) {
+		values = e_vcard_attribute_get_param (attr, E_WEBDAV_X_IMG_URL);
+		if (values) {
+			const gchar *const_uri = values->data;
+
+			if (const_uri && (
+			    g_ascii_strncasecmp (const_uri, "http://", 7) == 0 ||
+			    g_ascii_strncasecmp (const_uri, "https://", 8) == 0)) {
+				gchar *uri = g_strdup (g_steal_pointer (&const_uri));
+				e_vcard_attribute_remove_param (attr, EVC_TYPE);
+				e_vcard_attribute_remove_param (attr, EVC_ENCODING);
+				e_vcard_attribute_remove_param (attr, EVC_VALUE);
+				e_vcard_attribute_remove_param (attr, E_WEBDAV_X_IMG_URL);
+				e_vcard_attribute_remove_values (attr);
+
+				/* return back the original URI */
+				e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
+				e_vcard_attribute_add_value (attr, uri);
+
+				g_free (uri);
+			}
+		}
+	}
+
+	return TRUE;
+}
+
+static void
+ebb_carddav_foreach_photologo (EBookBackendCardDAV *bbdav,
+			       EContact *contact,
+			       EWebDAVSession *webdav,
+			       GCancellable *cancellable,
+			       gboolean (* func) (EBookBackendCardDAV *bbdav,
+						  EWebDAVSession *webdav,
+						  EVCardAttribute *attr,
+						  GCancellable *cancellable,
+						  gpointer user_data),
+			       gpointer user_data)
+{
+	GList *link;
+
+	for (link = e_vcard_get_attributes (E_VCARD (contact)); link; link = g_list_next (link)) {
+		EVCardAttribute *attr = link->data;
+
+		if (!e_vcard_attribute_get_name (attr))
+			continue;
+
+		if (g_ascii_strcasecmp (e_vcard_attribute_get_name (attr), EVC_PHOTO) == 0 ||
+		    g_ascii_strcasecmp (e_vcard_attribute_get_name (attr), EVC_LOGO) == 0) {
+			if (!func (bbdav, webdav, attr, cancellable, user_data))
+				break;
+		}
+	}
+}
+
 static EContact *
 ebb_carddav_contact_from_string (EBookBackendCardDAV *bbdav,
-				 const gchar *vcard_str)
+				 const gchar *vcard_str,
+				 EWebDAVSession *webdav,
+				 GCancellable *cancellable)
 {
 	EContact *contact;
 
@@ -150,12 +311,15 @@ ebb_carddav_contact_from_string (EBookBackendCardDAV *bbdav,
 			e_contact_date_free (dt);
 	}
 
+	ebb_carddav_foreach_photologo (bbdav, contact, webdav, cancellable, ebb_carddav_finish_load_photologo, NULL);
+
 	return contact;
 }
 
 static EContact * /* (transfer full) */
 ebb_carddav_prepare_save (EBookBackendCardDAV *bbdav,
-			  /* const */ EContact *in_contact)
+			  /* const */ EContact *in_contact,
+			  GCancellable *cancellable)
 {
 	EContact *contact;
 	EVCard *vcard;
@@ -259,6 +423,8 @@ ebb_carddav_prepare_save (EBookBackendCardDAV *bbdav,
 		e_contact_set (contact, E_CONTACT_ANNIVERSARY, NULL);
 		e_vcard_util_set_x_attribute (vcard, E_GOOGLE_ANNIVERSARY_ITEM, NULL);
 	}
+
+	ebb_carddav_foreach_photologo (bbdav, contact, NULL, cancellable, ebb_carddav_prepare_save_photologo, NULL);
 
 	e_vcard_util_set_x_attribute (vcard, E_WEBDAV_X_ETAG, NULL);
 
@@ -656,10 +822,11 @@ ebb_carddav_ensure_uid (EContact *contact,
 	g_free (new_uid);
 }
 
-typedef struct _BackendSListPair {
+typedef struct _GetContactData {
 	EBookBackendCardDAV *bbdav;
+	GCancellable *cancellable;
 	GSList **inout_slist;
-} BackendSListPair;
+} GetContactData;
 
 static gboolean
 ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
@@ -669,12 +836,12 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 				  guint status_code,
 				  gpointer user_data)
 {
-	BackendSListPair *bsp = user_data;
+	GetContactData *gcd = user_data;
 	GSList **from_link;
 
-	g_return_val_if_fail (bsp != NULL, FALSE);
+	g_return_val_if_fail (gcd != NULL, FALSE);
 
-	from_link = bsp->inout_slist;
+	from_link = gcd->inout_slist;
 	g_return_val_if_fail (from_link != NULL, FALSE);
 
 	if (status_code == SOUP_STATUS_OK) {
@@ -693,7 +860,7 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 		if (address_data) {
 			EContact *contact;
 
-			contact = ebb_carddav_contact_from_string (bsp->bbdav, (const gchar *) address_data);
+			contact = ebb_carddav_contact_from_string (gcd->bbdav, (const gchar *) address_data, webdav, gcd->cancellable);
 			if (contact) {
 				const gchar *uid;
 
@@ -825,14 +992,15 @@ ebb_carddav_multiget_from_sets_sync (EBookBackendCardDAV *bbdav,
 	}
 
 	if (left_to_go != E_WEBDAV_MAX_MULTIGET_AMOUNT && success) {
-		BackendSListPair bsp;
+		GetContactData gcd = { 0, };
 		GSList *from_link = *in_link;
 
-		bsp.bbdav = bbdav;
-		bsp.inout_slist = &from_link;
+		gcd.bbdav = bbdav;
+		gcd.cancellable = cancellable;
+		gcd.inout_slist = &from_link;
 
 		success = e_webdav_session_report_sync (webdav, NULL, NULL, xml,
-			ebb_carddav_multiget_response_cb, &bsp, NULL, NULL, cancellable, error);
+			ebb_carddav_multiget_response_cb, &gcd, NULL, NULL, cancellable, error);
 	}
 
 	g_object_unref (xml);
@@ -1102,12 +1270,12 @@ ebb_carddav_extract_existing_cb (EWebDAVSession *webdav,
 				 guint status_code,
 				 gpointer user_data)
 {
-	BackendSListPair *bsp = user_data;
+	GetContactData *gcd = user_data;
 	GSList **out_existing_objects;
 
-	g_return_val_if_fail (bsp != NULL, FALSE);
+	g_return_val_if_fail (gcd != NULL, FALSE);
 
-	out_existing_objects = bsp->inout_slist;
+	out_existing_objects = gcd->inout_slist;
 	g_return_val_if_fail (out_existing_objects != NULL, FALSE);
 
 	if (status_code == SOUP_STATUS_OK) {
@@ -1126,7 +1294,7 @@ ebb_carddav_extract_existing_cb (EWebDAVSession *webdav,
 		if (address_data) {
 			EContact *contact;
 
-			contact = ebb_carddav_contact_from_string (bsp->bbdav, (const gchar *) address_data);
+			contact = ebb_carddav_contact_from_string (gcd->bbdav, (const gchar *) address_data, webdav, gcd->cancellable);
 			if (contact) {
 				const gchar *uid;
 
@@ -1163,7 +1331,7 @@ ebb_carddav_list_existing_sync (EBookMetaBackend *meta_backend,
 	EBookBackendCardDAV *bbdav;
 	EWebDAVSession *webdav;
 	EXmlDocument *xml;
-	BackendSListPair bsp;
+	GetContactData gcd = { 0, };
 	GError *local_error = NULL;
 	gboolean success;
 
@@ -1193,11 +1361,12 @@ ebb_carddav_list_existing_sync (EBookMetaBackend *meta_backend,
 
 	webdav = ebb_carddav_ref_session (bbdav);
 
-	bsp.bbdav = bbdav;
-	bsp.inout_slist = out_existing_objects;
+	gcd.bbdav = bbdav;
+	gcd.cancellable = cancellable;
+	gcd.inout_slist = out_existing_objects;
 
 	success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
-		ebb_carddav_extract_existing_cb, &bsp, NULL, NULL, cancellable, &local_error);
+		ebb_carddav_extract_existing_cb, &gcd, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
 
@@ -1305,7 +1474,10 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 		if (newline && newline[1] && newline != extra) {
 			EContact *contact;
 
-			contact = ebb_carddav_contact_from_string (bbdav, newline + 1);
+			webdav = ebb_carddav_ref_session (bbdav);
+			contact = ebb_carddav_contact_from_string (bbdav, newline + 1, webdav, cancellable);
+			g_clear_object (&webdav);
+
 			if (contact) {
 				*out_extra = g_strndup (extra, newline - extra);
 				*out_contact = contact;
@@ -1383,7 +1555,7 @@ ebb_carddav_load_contact_sync (EBookMetaBackend *meta_backend,
 		if (href && etag && bytes && length != ((gsize) -1)) {
 			EContact *contact;
 
-			contact = ebb_carddav_contact_from_string (bbdav, bytes);
+			contact = ebb_carddav_contact_from_string (bbdav, bytes, webdav, cancellable);
 			if (contact) {
 				e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, etag);
 				*out_contact = contact;
@@ -1456,7 +1628,7 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 	uid = e_contact_get (in_contact, E_CONTACT_UID);
 	etag = e_vcard_util_dup_x_attribute (E_VCARD (in_contact), E_WEBDAV_X_ETAG);
 
-	contact = ebb_carddav_prepare_save (bbdav, in_contact);
+	contact = ebb_carddav_prepare_save (bbdav, in_contact, cancellable);
 
 	vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
