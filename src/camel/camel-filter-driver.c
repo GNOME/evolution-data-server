@@ -1800,7 +1800,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		}
 
 		headers = camel_medium_get_headers (CAMEL_MEDIUM (mime_part));
-		info = camel_message_info_new_from_headers (NULL, headers);
+		info = camel_message_info_new_from_message (NULL, message);
 		/* Try and see if it has X-Evolution headers */
 		xev = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "X-Evolution");
 		if (xev)
@@ -2067,8 +2067,6 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 	g_return_val_if_fail (message != NULL || (source != NULL && uid != NULL), -1);
 
 	if (info == NULL) {
-		const CamelNameValueArray *headers;
-
 		if (message) {
 			g_object_ref (message);
 		} else {
@@ -2078,8 +2076,7 @@ filter_driver_filter_message_internal (CamelFilterDriver *driver,
 				return -1;
 		}
 
-		headers = camel_medium_get_headers (CAMEL_MEDIUM (message));
-		info = camel_message_info_new_from_headers (NULL, headers);
+		info = camel_message_info_new_from_message (NULL, message);
 		freeinfo = TRUE;
 	} else {
 		if (camel_message_info_get_flags (info) & CAMEL_MESSAGE_DELETED)

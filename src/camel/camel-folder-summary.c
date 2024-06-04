@@ -116,7 +116,7 @@ struct _node {
 static void cfs_schedule_info_release_timer (CamelFolderSummary *summary);
 
 static void summary_traverse_content_with_parser (CamelFolderSummary *summary, CamelMessageInfo *msginfo, CamelMimeParser *mp);
-static void summary_traverse_content_with_part (CamelFolderSummary *summary, CamelMessageInfo *msginfo, CamelMimePart *object);
+static void summary_traverse_content_with_part (CamelFolderSummary *summary, CamelMessageInfo *msginfo, CamelMimePart *object, gboolean with_indexing);
 
 static CamelMessageInfo * message_info_new_from_headers (CamelFolderSummary *, const CamelNameValueArray *);
 static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
@@ -2552,19 +2552,10 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
 	return info;
 }
 
-/**
- * camel_folder_summary_info_new_from_message: (virtual message_info_new_from_message)
- * @summary: a #CamelFolderSummary object
- * @message: a #CamelMimeMessage object
- *
- * Create a summary item from a message.
- *
- * Returns: (transfer full): a newly created #CamelMessageInfo. Unref it
- *   with g_object_unref(), when done with it.
- **/
-CamelMessageInfo *
-camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
-                                            CamelMimeMessage *msg)
+static CamelMessageInfo *
+camel_folder_summary_info_new_from_message_internal (CamelFolderSummary *summary,
+						     CamelMimeMessage *msg,
+						     gboolean with_indexing)
 {
 	CamelFolderSummaryClass *klass;
 	CamelMessageInfo *info;
@@ -2581,12 +2572,12 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
 
 	/* assign a unique uid, this is slightly 'wrong' as we do not really
 	 * know if we are going to store this in the summary, but we need it set for indexing */
-	if (summary->priv->index)
+	if (with_indexing && summary->priv->index)
 		summary_assign_uid (summary, info);
 
 	g_rec_mutex_lock (&summary->priv->filter_lock);
 
-	if (summary->priv->index) {
+	if (with_indexing && summary->priv->index) {
 		if (summary->priv->filter_index == NULL)
 			summary->priv->filter_index = camel_mime_filter_index_new (summary->priv->index);
 		camel_index_delete_name (summary->priv->index, camel_message_info_get_uid (info));
@@ -2601,7 +2592,7 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
 		}
 	}
 
-	summary_traverse_content_with_part (summary, info, (CamelMimePart *) msg);
+	summary_traverse_content_with_part (summary, info, (CamelMimePart *) msg, with_indexing);
 
 	if (name) {
 		camel_index_write_name (summary->priv->index, name);
@@ -2612,6 +2603,26 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
 	g_rec_mutex_unlock (&summary->priv->filter_lock);
 
 	return info;
+}
+
+/**
+ * camel_folder_summary_info_new_from_message: (virtual message_info_new_from_message)
+ * @summary: a #CamelFolderSummary object
+ * @message: a #CamelMimeMessage object
+ *
+ * Create a summary item from a message.
+ *
+ * Returns: (transfer full): a newly created #CamelMessageInfo. Unref it
+ *   with g_object_unref(), when done with it.
+ **/
+CamelMessageInfo *
+camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
+                                            CamelMimeMessage *msg)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (msg), NULL);
+
+	return camel_folder_summary_info_new_from_message_internal (summary, msg, TRUE);
 }
 
 /**
@@ -2872,6 +2883,28 @@ message_info_new_from_parser (CamelFolderSummary *summary,
 	return mi;
 }
 
+static void
+update_message_info_from_message (CamelMessageInfo *mi,
+				  CamelMimeMessage *msg)
+{
+	if (!mi)
+		return;
+
+	if (!camel_message_info_get_preview (mi)) {
+		gchar *preview;
+
+		preview = camel_mime_part_generate_preview (CAMEL_MIME_PART (msg), NULL, NULL);
+
+		if (preview) {
+			camel_message_info_set_preview (mi, preview);
+			g_free (preview);
+		}
+	}
+
+	if (camel_mime_message_has_attachment (msg))
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, CAMEL_MESSAGE_ATTACHMENTS);
+}
+
 static CamelMessageInfo *
 message_info_new_from_message (CamelFolderSummary *summary,
                                CamelMimeMessage *msg)
@@ -2887,16 +2920,7 @@ message_info_new_from_message (CamelFolderSummary *summary,
 
 	mi = klass->message_info_new_from_headers (summary, camel_medium_get_headers (CAMEL_MEDIUM (msg)));
 
-	if (mi && !camel_message_info_get_preview (mi)) {
-		gchar *preview;
-
-		preview = camel_mime_part_generate_preview (CAMEL_MIME_PART (msg), NULL, NULL);
-
-		if (preview) {
-			camel_message_info_set_preview (mi, preview);
-			g_free (preview);
-		}
-	}
+	update_message_info_from_message (mi, msg);
 
 	return mi;
 }
@@ -3257,7 +3281,8 @@ summary_traverse_content_with_parser (CamelFolderSummary *summary,
 static void
 summary_traverse_content_with_part (CamelFolderSummary *summary,
                                     CamelMessageInfo *msginfo,
-                                    CamelMimePart *object)
+                                    CamelMimePart *object,
+				    gboolean with_indexing)
 {
 	CamelDataWrapper *containee;
 	gint parts, i;
@@ -3328,13 +3353,12 @@ summary_traverse_content_with_part (CamelFolderSummary *summary,
 		for (i = 0; i < parts; i++) {
 			CamelMimePart *part = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 			g_return_if_fail (part);
-			summary_traverse_content_with_part (summary, msginfo, part);
+			summary_traverse_content_with_part (summary, msginfo, part, with_indexing);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* for messages we only look at its contents */
-		summary_traverse_content_with_part (summary, msginfo, (CamelMimePart *) containee);
-	} else if (summary->priv->filter_stream
-		   && camel_content_type_is (ct, "text", "*")) {
+		summary_traverse_content_with_part (summary, msginfo, (CamelMimePart *) containee, with_indexing);
+	} else if (with_indexing && summary && summary->priv->filter_stream && camel_content_type_is (ct, "text", "*")) {
 		gint html_id = -1, idx_id = -1;
 
 		/* pre-attach html filter if required, otherwise just index filter */
@@ -3479,4 +3503,41 @@ camel_folder_summary_unlock (CamelFolderSummary *summary)
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
+}
+
+/**
+ * camel_message_info_new_from_message:
+ * @summary: (nullable): a #CamelFolderSummary or %NULL
+ * @message: a #CamelMimeMessage
+ *
+ * Create a new #CamelMessageInfo pre-populated with info from
+ * @message.
+ *
+ * Returns: (transfer full): a new #CamelMessageInfo
+ *
+ * Since: 3.54
+ **/
+CamelMessageInfo *
+camel_message_info_new_from_message (CamelFolderSummary *summary,
+				     CamelMimeMessage *message)
+{
+	CamelMessageInfo *mi;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
+
+	if (summary) {
+		mi = camel_folder_summary_info_new_from_message_internal (summary, message, FALSE);
+	} else {
+		const CamelNameValueArray *headers;
+
+		headers = camel_medium_get_headers (CAMEL_MEDIUM (message));
+		mi = message_info_new_from_headers (NULL, headers);
+
+		if (mi)
+			summary_traverse_content_with_part (NULL, mi, CAMEL_MIME_PART (message), FALSE);
+	}
+
+	update_message_info_from_message (mi, message);
+
+	return mi;
 }
