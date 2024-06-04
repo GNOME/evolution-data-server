@@ -270,6 +270,10 @@ CamelMessageInfo *
 		camel_message_info_new_from_headers
 						(CamelFolderSummary *summary,
 						 const CamelNameValueArray *headers);
+CamelMessageInfo *
+		camel_message_info_new_from_message
+						(CamelFolderSummary *summary,
+						 CamelMimeMessage *message);
 G_END_DECLS
 
 #endif /* CAMEL_FOLDER_SUMMARY_H */

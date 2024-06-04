@@ -616,9 +616,7 @@ folder_transfer_message_to (CamelFolder *source,
 		info = camel_message_info_clone (minfo, NULL);
 		g_clear_object (&minfo);
 	} else {
-		const CamelNameValueArray *headers = camel_medium_get_headers (CAMEL_MEDIUM (msg));
-
-		info = camel_message_info_new_from_headers (NULL, headers);
+		info = camel_message_info_new_from_message (NULL, msg);
 	}
 
 	/* unset deleted flag when transferring from trash folder */
