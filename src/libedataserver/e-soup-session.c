@@ -502,6 +502,15 @@ e_soup_session_set_source (ESoupSession *session,
 	g_return_if_fail (!session->priv->source);
 
 	session->priv->source = source ? g_object_ref (source) : NULL;
+
+	if (session->priv->source) {
+		ESourceWebdav *extension;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		e_binding_bind_property (extension, "timeout",
+					 session, "timeout",
+					 G_BINDING_SYNC_CREATE);
+	}
 }
 
 static void

@@ -152,6 +152,9 @@ void		e_source_webdav_set_ssl_trust_response
 guint		e_source_webdav_get_order	(ESourceWebdav *extension);
 void		e_source_webdav_set_order	(ESourceWebdav *extension,
 						 guint order);
+guint		e_source_webdav_get_timeout	(ESourceWebdav *extension);
+void		e_source_webdav_set_timeout	(ESourceWebdav *extension,
+						 guint timeout);
 
 G_END_DECLS
 

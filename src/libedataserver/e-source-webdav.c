@@ -69,6 +69,7 @@ struct _ESourceWebdavPrivate {
 	gboolean calendar_auto_schedule;
 	GUri *uri;
 	guint order;
+	guint timeout;
 };
 
 enum {
@@ -82,7 +83,8 @@ enum {
 	PROP_RESOURCE_QUERY,
 	PROP_URI,
 	PROP_SSL_TRUST,
-	PROP_ORDER
+	PROP_ORDER,
+	PROP_TIMEOUT
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -335,6 +337,12 @@ source_webdav_set_property (GObject *object,
 				E_SOURCE_WEBDAV (object),
 				g_value_get_uint (value));
 			return;
+
+		case PROP_TIMEOUT:
+			e_source_webdav_set_timeout (
+				E_SOURCE_WEBDAV (object),
+				g_value_get_uint (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -414,6 +422,13 @@ source_webdav_get_property (GObject *object,
 			g_value_set_uint (
 				value,
 				e_source_webdav_get_order (
+				E_SOURCE_WEBDAV (object)));
+			return;
+
+		case PROP_TIMEOUT:
+			g_value_set_uint (
+				value,
+				e_source_webdav_get_timeout (
 				E_SOURCE_WEBDAV (object)));
 			return;
 	}
@@ -650,6 +665,20 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"Order",
 			"A sorting order of the resource",
 			0, G_MAXUINT, (guint) -1,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_TIMEOUT,
+		g_param_spec_uint (
+			"timeout",
+			"Timeout",
+			"Connection timeout, in seconds",
+			0, G_MAXUINT, 90,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1662,4 +1691,44 @@ e_source_webdav_set_order (ESourceWebdav *extension,
 	extension->priv->order = order;
 
 	g_object_notify (G_OBJECT (extension), "order");
+}
+
+/**
+ * e_source_webdav_get_timeout:
+ * @extension: an #ESourceWebdav
+ *
+ * Returns: the connection timeout, in seconds. The default
+ *    is 90 seconds.
+ *
+ * Since: 3.54
+ **/
+guint
+e_source_webdav_get_timeout (ESourceWebdav *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), 90);
+
+	return extension->priv->timeout;
+}
+
+/**
+ * e_source_webdav_set_timeout:
+ * @extension: an #ESourceWebdav
+ * @timeout: a timeout, in seconds
+ *
+ * Set the connection timeout, in seconds.
+ *
+ * Since: 3.54
+ **/
+void
+e_source_webdav_set_timeout (ESourceWebdav *extension,
+			     guint timeout)
+{
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if (extension->priv->timeout == timeout)
+		return;
+
+	extension->priv->timeout = timeout;
+
+	g_object_notify (G_OBJECT (extension), "timeout");
 }
