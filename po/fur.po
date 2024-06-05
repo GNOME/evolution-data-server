@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
 "POT-Creation-Date: 2024-05-17 07:29+0000\n"
-"PO-Revision-Date: 2024-06-02 20:24+0200\n"
+"PO-Revision-Date: 2024-06-05 17:16+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -1226,6 +1226,8 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1419
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
+"Al è stât evitât l'inzornament par vie che al è disabilitât su conessions a "
+"consum."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2064
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2563
@@ -3771,27 +3773,27 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:113
 msgid "security library: received bad data."
-msgstr ""
+msgstr "librarie di sigurece: ricevûts dâts sbaliâts."
 
 #: src/camel/camel-smime-context.c:114
 msgid "security library: output length error."
-msgstr ""
+msgstr "librarie di sigurece: erôr de lungjece dal output."
 
 #: src/camel/camel-smime-context.c:115
 msgid "security library has experienced an input length error."
-msgstr ""
+msgstr "la librarie di sigurece e à cjatât un erôr di lungjece dal input."
 
 #: src/camel/camel-smime-context.c:116
 msgid "security library: invalid arguments."
-msgstr ""
+msgstr "librarie di sigurece: parametris no valits."
 
 #: src/camel/camel-smime-context.c:117
 msgid "security library: invalid algorithm."
-msgstr ""
+msgstr "librarie di sigurece: algoritmi no valit."
 
 #: src/camel/camel-smime-context.c:118
 msgid "security library: invalid AVA."
-msgstr ""
+msgstr "librarie di sigurece: AVA no valit."
 
 #: src/camel/camel-smime-context.c:119
 msgid "Improperly formatted time string."
@@ -3799,7 +3801,7 @@ msgstr "Stringhe di ore formatade mâl."
 
 #: src/camel/camel-smime-context.c:120
 msgid "security library: improperly formatted DER-encoded message."
-msgstr ""
+msgstr "librarie di sigurece: messaç codificât in DER formatât mâl."
 
 #: src/camel/camel-smime-context.c:121
 #, fuzzy
@@ -3833,19 +3835,19 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:127
 msgid "New password entered incorrectly.  Please try again."
-msgstr ""
+msgstr "E je stade inseride mâl la gnove password.  Torne prove."
 
 #: src/camel/camel-smime-context.c:128
 msgid "security library: no nodelock."
-msgstr ""
+msgstr "librarie di sigurece: nissune nodelock."
 
 #: src/camel/camel-smime-context.c:129
 msgid "security library: bad database."
-msgstr ""
+msgstr "librarie di sigurece: base di dâts sbaliade."
 
 #: src/camel/camel-smime-context.c:130
 msgid "security library: memory allocation failure."
-msgstr ""
+msgstr "librarie di sigurece: erôr te assegnazion de memorie."
 
 #: src/camel/camel-smime-context.c:131
 msgid "Peer's certificate issuer has been marked as not trusted by the user."
@@ -3898,6 +3900,8 @@ msgid ""
 "The certificate issuer's certificate has expired.  Check your system date "
 "and time."
 msgstr ""
+"Il certificât dal emitent di certificâts al è scjadût.  Controle la date e "
+"la ore dal to sisteme."
 
 #: src/camel/camel-smime-context.c:142
 msgid ""
@@ -3911,7 +3915,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:144
 msgid "New CRL has an invalid format."
-msgstr ""
+msgstr "Il gnûf CRL nol à un formât valit."
 
 #: src/camel/camel-smime-context.c:145
 msgid "Certificate extension value is invalid."
@@ -3955,7 +3959,7 @@ msgstr "Il certificât al conten une estension critiche no cognossude"
 
 #: src/camel/camel-smime-context.c:153
 msgid "New CRL is not later than the current one."
-msgstr ""
+msgstr "Il gnûf CRL nol è sucessîf di chel atuâl."
 
 #: src/camel/camel-smime-context.c:154
 msgid "Not encrypted or signed: you do not yet have an email certificate."
@@ -3985,6 +3989,8 @@ msgid ""
 "Signature verification failed: no signer found, too many signers found, or "
 "improper or corrupted data."
 msgstr ""
+"Erôr te verifiche de firme: nissun firmatari cjatât, masse firmataris "
+"cjatâts, o dâts inadats o ruvinâts."
 
 #: src/camel/camel-smime-context.c:159
 msgid "Unsupported or unknown key algorithm."
@@ -4040,7 +4046,7 @@ msgstr "Impussibil inizializâ lis personalitâts di Fortezza."
 
 #: src/camel/camel-smime-context.c:169
 msgid "No KRL for this site's certificate has been found."
-msgstr ""
+msgstr "Nol è stât cjatât nissun KRL pal certificât di chest sît."
 
 #: src/camel/camel-smime-context.c:170
 #, fuzzy
@@ -4060,16 +4066,18 @@ msgstr "Il certificât al è scjadût."
 
 #: src/camel/camel-smime-context.c:173
 msgid "New KRL has an invalid format."
-msgstr ""
+msgstr "Il gnûf KRL nol à un formât valit."
 
 #: src/camel/camel-smime-context.c:174
 msgid "security library: need random data."
-msgstr ""
+msgstr "librarie di sigurece: a coventin dâts casuâi."
 
 #: src/camel/camel-smime-context.c:175
 msgid ""
 "security library: no security module can perform the requested operation."
 msgstr ""
+"librarie di sigurece: nissun modul di sigurece al rive a eseguî la operazion "
+"domandade."
 
 #: src/camel/camel-smime-context.c:176
 msgid ""
@@ -4079,7 +4087,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:177
 msgid "security library: read-only database."
-msgstr ""
+msgstr "librarie di sigurece: base di dâts in dome-leture."
 
 #: src/camel/camel-smime-context.c:178
 #, fuzzy
@@ -4103,7 +4111,7 @@ msgstr "Erôr tal creâ la cartele"
 
 #: src/camel/camel-smime-context.c:182
 msgid "error while creating baggage object"
-msgstr ""
+msgstr "erôr dilunc la creazion dal ogjet bagai"
 
 #: src/camel/camel-smime-context.c:183
 #, fuzzy
@@ -4287,17 +4295,21 @@ msgstr "No si è rivâts a eliminâ la risorse"
 
 #: src/camel/camel-smime-context.c:221
 msgid "New KRL is not later than the current one."
-msgstr ""
+msgstr "Il gnûf KRL nol è sucessîf di chel atuâl."
 
 #: src/camel/camel-smime-context.c:222
 msgid "New CKL has different issuer than current CKL.  Delete current CKL."
 msgstr ""
+"Il gnûf CKL al à un emitent diviers di chel dal CKL atuâl.  Elimine il CKL "
+"atuâl."
 
 #: src/camel/camel-smime-context.c:223
 msgid ""
 "The Certifying Authority for this certificate is not permitted to issue a "
 "certificate with this name."
 msgstr ""
+"La CA (autoritât di certificazion) par chest certificât no à i permès par "
+"emeti un certificât cun chest non."
 
 #: src/camel/camel-smime-context.c:224
 msgid "The key revocation list for this certificate is not yet valid."
@@ -4462,19 +4474,26 @@ msgstr ""
 #: src/camel/camel-smime-context.c:257
 msgid "Issuer's OCSP responder reports certificate is revoked."
 msgstr ""
+"Il certificât dai rapuarts dal rispuindidôr OCSP dal emitent al è revocât."
 
 #: src/camel/camel-smime-context.c:258
 msgid "Issuer's Certificate Revocation List has an unknown version number."
 msgstr ""
+"La liste dal emitent pe revoche dai certificâts e à un numar di version no "
+"cognossût."
 
 #: src/camel/camel-smime-context.c:259
 msgid "Issuer's V1 Certificate Revocation List has a critical extension."
 msgstr ""
+"La liste dal emitent pe revoche dai certificâts V1 e à une estension "
+"critiche."
 
 #: src/camel/camel-smime-context.c:260
 msgid ""
 "Issuer's V2 Certificate Revocation List has an unknown critical extension."
 msgstr ""
+"La liste pe revoche dai certificâts V2 e à une estension critiche no "
+"cognossude."
 
 #: src/camel/camel-smime-context.c:261
 msgid "Unknown object type specified."
@@ -4529,11 +4548,11 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:275
 msgid "Server returned bad HTTP response"
-msgstr ""
+msgstr "Il servidôr al à tornât une rispueste HTTP sbaliade"
 
 #: src/camel/camel-smime-context.c:276
 msgid "Server returned bad LDAP response"
-msgstr ""
+msgstr "Il servidôr al à tornât une rispueste LDAP sbaliade"
 
 #: src/camel/camel-smime-context.c:277
 #, fuzzy
@@ -4548,6 +4567,7 @@ msgstr "Informazions sbaliadis di posizion di acès te estension dal certificât
 #: src/camel/camel-smime-context.c:279
 msgid "Libpkix internal error occurred during cert validation."
 msgstr ""
+"Al è capitât un erôr interni di Libpkix dilunc la convalide dal certificât."
 
 #: src/camel/camel-smime-context.c:280
 msgid ""
