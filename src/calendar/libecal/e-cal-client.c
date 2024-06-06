@@ -2168,6 +2168,21 @@ add_instance_cb (ICalComponent *icomp,
 		dtstart = e_cal_component_datetime_new (start, i_cal_time_get_tzid (start));
 		e_cal_component_set_dtstart (ci->comp, dtstart);
 
+		if (!i_cal_time_is_date (start) && i_cal_time_get_tzid (start) != NULL) {
+			/* convert into UTC, to have RECURRENCE-ID in a fixed timezone,
+			   thus ECalComponetId can be safely compared; some servers convert
+			   the value to UTC on their own too */
+			ICalTimezone *utc = i_cal_timezone_get_utc_timezone ();
+			ICalTime *in_utc;
+
+			in_utc = i_cal_time_convert_to_zone (start, utc);
+			if (in_utc) {
+				i_cal_time_set_timezone (in_utc, utc);
+				e_cal_component_datetime_take_value (dtstart, in_utc);
+				e_cal_component_datetime_set_tzid (dtstart, "UTC");
+			}
+		}
+
 		/* set the RECUR-ID for the instance */
 		range = e_cal_component_range_new (E_CAL_COMPONENT_RANGE_SINGLE, dtstart);
 
