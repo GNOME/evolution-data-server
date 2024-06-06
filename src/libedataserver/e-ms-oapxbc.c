@@ -127,7 +127,7 @@ ensure_broker_is_running_sync (EMsOapxbc *self,
  *
  * Synchronously create a new #EMsOapxbc.
  * This initiates the communication with a locally running Microsoft Identity broker service
- * via DBus. In case the broker is not running, it is started. If no broker is registered,
+ * via D-Bus. In case the broker is not running, it is started. If no broker is registered,
  * this function will fail (return %NULL).
  *
  * Returns: (nullable) (transfer full): a new #EMsOapxbc
@@ -150,7 +150,7 @@ e_ms_oapxbc_new_sync (const gchar *client_id,
 	self->connection = g_bus_get_sync (G_BUS_TYPE_SESSION, cancellable, error);
 
 	if (!self->connection) {
-		g_prefix_error (error, _("Failed to get seesion bus: "));
+		g_prefix_error (error, _("Failed to get session bus: "));
 		g_clear_object (&self);
 
 		return NULL;

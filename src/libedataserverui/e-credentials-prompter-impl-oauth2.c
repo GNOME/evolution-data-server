@@ -817,6 +817,123 @@ credentials_prompter_impl_oauth2_set_proxy (
 
 	g_clear_object (&proxy_source);
 }
+
+typedef struct {
+	ESource *cred_source;
+	EOAuth2Service *service;
+	WebKitCookieManager *cookie_manager;
+	WebKitWebView *web_view;
+	gchar *uri;
+	GSList *cookies /* SoupCookie */;
+	GCancellable *cancellable;
+	/* cookie injection state */
+	GError *first_error;
+	gint ncookies_pending;
+} PrepareWebViewData;
+
+static void
+cpi_oauth2_prepare_web_view_data_free (gpointer user_data)
+{
+	PrepareWebViewData *td = user_data;
+
+	if (td) {
+		g_object_unref (td->cred_source);
+		g_object_unref (td->service);
+		g_object_unref (td->cookie_manager);
+		g_object_unref (td->web_view);
+		g_free (td->uri);
+		g_slist_free_full (td->cookies, (GDestroyNotify) soup_cookie_free);
+		g_object_unref (td->cancellable);
+		g_clear_error (&td->first_error);
+		g_free (td);
+	}
+}
+
+static void
+cpi_oauth2_web_view_cookie_injected_finish_cb (gpointer user_data,
+					       GError *error /* (transfer full) */)
+{
+	PrepareWebViewData *td = user_data;
+
+	if (error) {
+		if (!td->first_error)
+			td->first_error = error;
+		else
+			g_clear_error (&error);
+	}
+
+	if (!g_atomic_int_dec_and_test (&td->ncookies_pending))
+		return;
+
+	if (td->first_error && cpi_oauth2_get_debug ()) {
+		e_util_debug_print ("OAuth2", "%s: failed to inject cookies into login UI: %s\n",
+			G_STRFUNC, td->first_error->message);
+	}
+
+	webkit_web_view_load_uri (td->web_view, td->uri);
+	cpi_oauth2_prepare_web_view_data_free (td);
+}
+
+static void
+cpi_oauth2_web_view_cookie_injected_cb (GObject* source_object,
+					GAsyncResult* res,
+					gpointer user_data)
+{
+	PrepareWebViewData *td = user_data;
+	GError *local_error = NULL;
+
+	if (!webkit_cookie_manager_add_cookie_finish (td->cookie_manager, res, &local_error))
+		cpi_oauth2_web_view_cookie_injected_finish_cb (td, local_error);
+	else
+		cpi_oauth2_web_view_cookie_injected_finish_cb (td, NULL);
+}
+
+static gboolean
+cpi_oauth2_web_view_inject_cookies_start (gpointer user_data)
+{
+	PrepareWebViewData *td = user_data;
+	GSList *cookie_it = NULL;
+	SoupCookie *cookie = NULL;
+
+	td->ncookies_pending = 1;
+
+	/* wait for cookies to be injected. Last callback invocation starts the webview */
+	for (cookie_it = td->cookies; cookie_it; cookie_it = g_slist_next (cookie_it)) {
+		cookie = cookie_it->data;
+		g_atomic_int_inc (&td->ncookies_pending);
+		webkit_cookie_manager_add_cookie (td->cookie_manager, cookie,
+			td->cancellable, cpi_oauth2_web_view_cookie_injected_cb, user_data);
+	}
+
+	/* decrement initial pending (ensures call in case of no cookies) */
+	cpi_oauth2_web_view_cookie_injected_finish_cb (user_data, NULL);
+
+	return G_SOURCE_REMOVE;
+}
+
+static gpointer
+cpi_oauth2_prepare_web_view_thread (gpointer user_data)
+{
+	PrepareWebViewData *td = user_data;
+
+	g_return_val_if_fail (td != NULL, NULL);
+
+	if (cpi_oauth2_get_debug ())
+		e_util_debug_print ("OAuth2", "%s: request cookies to inject into OAuth2 login UI\n", G_STRFUNC);
+
+	td->cookies = e_oauth2_service_dup_credentials_prompter_cookies_sync (td->service, td->cred_source, td->cancellable);
+
+	if (cpi_oauth2_get_debug ()) {
+		e_util_debug_print ("OAuth2", "%s: inject %u cookie(s) into OAuth2 login UI\n",
+			G_STRFUNC, g_slist_length (td->cookies));
+	}
+
+	/* inject cookies and start web view */
+	g_idle_add (cpi_oauth2_web_view_inject_cookies_start, td /* (transfer full) */);
+
+	return NULL;
+}
+
 #endif /* WITH_WEBKITGTK */
 
 static void
@@ -1571,6 +1688,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	} else {
 #ifdef WITH_WEBKITGTK
 		WebKitWebView *web_view = prompter_oauth2->priv->web_view;
+		EOAuth2ServiceInterface *iface;
 
 		g_signal_connect_object (web_view, "decide-policy",
 			G_CALLBACK (cpi_oauth2_decide_policy_cb), prompter_oauth2, 0);
@@ -1583,7 +1701,31 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 			e_util_debug_print ("OAuth2", "Loading URI: '%s'\n", uri);
 		}
 
-		webkit_web_view_load_uri (web_view, uri);
+		iface = E_OAUTH2_SERVICE_GET_INTERFACE (prompter_oauth2->priv->service);
+		if (iface && iface->dup_credentials_prompter_cookies_sync) {
+			GThread *prepare_web_view_thread;
+			PrepareWebViewData *web_view_thread_data;
+
+			cpi_oauth2_show_info (prompter_oauth2,
+					       _("Preparing request, please wait…"),
+					       _("Preparing request, please wait…"));
+
+			web_view_thread_data = g_new0 (PrepareWebViewData, 1);
+			web_view_thread_data->cred_source = g_object_ref (prompter_oauth2->priv->cred_source);
+			web_view_thread_data->service = g_object_ref (prompter_oauth2->priv->service);
+			web_view_thread_data->cookie_manager = g_object_ref (cookie_manager);
+			web_view_thread_data->web_view = g_object_ref (web_view);
+			web_view_thread_data->uri = g_strdup (uri);
+			web_view_thread_data->cancellable = g_object_ref (prompter_oauth2->priv->cancellable);
+
+			prepare_web_view_thread = g_thread_new ("oauth2-prepare-web-view",
+				cpi_oauth2_prepare_web_view_thread,
+				web_view_thread_data /* transfer full */);
+			g_thread_unref (prepare_web_view_thread);
+		} else {
+			webkit_web_view_load_uri (web_view, uri);
+		}
+
 #else /* WITH_WEBKITGTK */
 		_libedataserverui_entry_set_text (GTK_ENTRY (url_entry), uri);
 		cpi_oauth2_maybe_prepare_oauth2_service (prompter_oauth2);

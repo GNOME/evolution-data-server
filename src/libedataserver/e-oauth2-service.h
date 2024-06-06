@@ -162,9 +162,12 @@ struct _EOAuth2ServiceInterface {
 							 const gchar *page_uri,
 							 const gchar *page_content,
 							 gchar **out_error_message);
-
+	GSList*		(* dup_credentials_prompter_cookies_sync)
+							(EOAuth2Service *service,
+							 ESource *source,
+							 GCancellable *cancellable);
 	/* Padding for future expansion */
-	gpointer reserved[9];
+	gpointer reserved[8];
 };
 
 GType		e_oauth2_service_get_type		(void) G_GNUC_CONST;
@@ -225,7 +228,10 @@ void		e_oauth2_service_prepare_refresh_token_message
 							(EOAuth2Service *service,
 							 ESource *source,
 							 SoupMessage *message);
-
+GSList*		e_oauth2_service_dup_credentials_prompter_cookies_sync
+							(EOAuth2Service *service,
+							 ESource *source,
+							 GCancellable *cancellable);
 gboolean	e_oauth2_service_receive_and_store_token_sync
 							(EOAuth2Service *service,
 							 ESource *source,
