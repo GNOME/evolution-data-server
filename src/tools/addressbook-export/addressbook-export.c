@@ -33,15 +33,18 @@
 #define SUCCESS 0
 #define FAILED  -1
 
-#define ACTION_NOTHING       0
-#define ACTION_LIST_FOLDERS  1
-#define ACTION_LIST_CARDS    2
+typedef enum {
+	ACTION_NOTHING = 0,
+	ACTION_LIST,
+	ACTION_LIST_WITH_COUNT,
+	ACTION_EXPORT
+} ActionType;
 
 #define DEFAULT_SIZE_NUMBER 100
 
 struct _ActionContext {
 	GMainLoop *main_loop;
-	guint action_type;
+	ActionType action_type;
 
 	ESourceRegistry *registry;
 	const gchar *output_file;
@@ -54,12 +57,68 @@ struct _ActionContext {
 
 typedef struct _ActionContext ActionContext;
 
+typedef struct _SortData {
+	ESourceRegistry *registry;
+	GHashTable *parents; /* gchar *parent_uid ~> gchar *display_name */
+} SortData;
+
+static const gchar *
+sort_sources_get_parent_display_name (SortData *sd,
+				      ESource *source)
+{
+	const gchar *parent_uid, *res;
+
+	if (!sd || !source)
+		return NULL;
+
+	parent_uid = e_source_get_parent (source);
+	if (!parent_uid)
+		parent_uid = "";
+
+	res = g_hash_table_lookup (sd->parents, parent_uid);
+	if (!res) {
+		ESource *parent;
+		gchar *display_name;
+
+		parent = e_source_registry_ref_source (sd->registry, parent_uid);
+		display_name = parent ? e_source_dup_display_name (parent) : g_strdup (parent_uid);
+		g_clear_object (&parent);
+
+		g_hash_table_insert (sd->parents, g_strdup (parent_uid), display_name);
+
+		res = display_name;
+	}
+
+	return res;
+}
+
+static gint
+sort_sources_by_parent_cb (gconstpointer aa,
+			   gconstpointer bb,
+			   gpointer user_data)
+{
+	SortData *sd = user_data;
+	ESource *source_a = (ESource *) aa;
+	ESource *source_b = (ESource *) bb;
+	gint res;
+
+	res = g_strcmp0 (sort_sources_get_parent_display_name (sd, source_a),
+			 sort_sources_get_parent_display_name (sd, source_b));
+
+	if (res == 0)
+		res = g_strcmp0 (e_source_get_display_name (source_a), e_source_get_display_name (source_b));
+
+	return res;
+}
+
 static void
-action_list_folders_init (ActionContext *p_actctx)
+action_list_init (ActionContext *p_actctx,
+		  gboolean with_count)
 {
 	ESourceRegistry *registry;
 	GList *list, *iter;
 	FILE *outputfile = NULL;
+	SortData sd;
 	const gchar *extension_name;
 
 	registry = p_actctx->registry;
@@ -69,68 +128,70 @@ action_list_folders_init (ActionContext *p_actctx)
 			g_warning (_("Can not open file"));
 			exit (-1);
 		}
+	} else {
+		outputfile = stdout;
 	}
 
 	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 	list = e_source_registry_list_sources (registry, extension_name);
 
+	sd.registry = registry;
+	sd.parents = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	list = g_list_sort_with_data (list, sort_sources_by_parent_cb, &sd);
+	g_hash_table_destroy (sd.parents);
+
 	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-		EClient *client;
-		EBookClient *book_client;
-		EBookQuery *query;
 		ESource *source;
-		GSList *contacts = NULL;
-		const gchar *display_name;
+		gchar *full_name;
 		const gchar *uid;
-		gchar *query_str;
-		GError *error = NULL;
+		gint count = -1;
 
 		source = E_SOURCE (iter->data);
+		uid = e_source_get_uid (source);
+		full_name = e_util_get_source_full_name (registry, source);
 
-		client = e_book_client_connect_sync (source, 30, NULL, &error);
+		if (with_count) {
+			EClient *client;
+			EBookClient *book_client;
+			GSList *contact_uids = NULL;
+			GError *error = NULL;
 
-		/* Sanity check. */
-		g_warn_if_fail (
-			((client != NULL) && (error == NULL)) ||
-			((client == NULL) && (error != NULL)));
+			client = e_book_client_connect_sync (source, 5, NULL, &error);
 
-		if (error != NULL) {
-			g_warning (
-				_("Failed to open client “%s”: %s"),
-				e_source_get_display_name (source),
-				error->message);
-			g_error_free (error);
-			continue;
+			/* Sanity check. */
+			g_warn_if_fail (
+				((client != NULL) && (error == NULL)) ||
+				((client == NULL) && (error != NULL)));
+
+			if (error != NULL) {
+				g_warning (_("Failed to open client “%s”: %s"), full_name, error->message);
+				g_error_free (error);
+				g_free (full_name);
+				continue;
+			}
+
+			book_client = E_BOOK_CLIENT (client);
+
+			if (!e_book_client_get_contacts_uids_sync (book_client, "#t", &contact_uids, NULL, NULL))
+				contact_uids = NULL;
+
+			count = g_slist_length (contact_uids);
+
+			g_slist_free_full (contact_uids, g_free);
+			g_object_unref (book_client);
 		}
 
-		book_client = E_BOOK_CLIENT (client);
-
-		query = e_book_query_any_field_contains ("");
-		query_str = e_book_query_to_string (query);
-		e_book_query_unref (query);
-
-		if (!e_book_client_get_contacts_sync (book_client, query_str, &contacts, NULL, NULL))
-			contacts = NULL;
-
-		display_name = e_source_get_display_name (source);
-		uid = e_source_get_uid (source);
-
-		if (outputfile)
-			fprintf (
-				outputfile, "\"%s\",\"%s\",%d\n",
-				uid, display_name, g_slist_length (contacts));
+		if (count != -1)
+			fprintf (outputfile, "\"%s\",\"%s\",%d\n", uid, full_name, count);
 		else
-			printf (
-				"\"%s\",\"%s\",%d\n",
-				uid, display_name, g_slist_length (contacts));
+			fprintf (outputfile, "\"%s\",\"%s\"\n", uid, full_name);
 
-		g_slist_free_full (contacts, g_object_unref);
-		g_object_unref (book_client);
+		g_free (full_name);
 	}
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
-	if (outputfile)
+	if (outputfile && outputfile != stdout)
 		fclose (outputfile);
 }
 
@@ -731,8 +792,8 @@ output_n_cards_file (FILE *outputfile,
 }
 
 static void
-action_list_cards (GSList *contacts,
-                   ActionContext *p_actctx)
+action_export (GSList *contacts,
+               ActionContext *p_actctx)
 {
 	FILE *outputfile;
 	long length;
@@ -769,16 +830,14 @@ action_list_cards (GSList *contacts,
 }
 
 static void
-action_list_cards_init (ActionContext *p_actctx)
+action_export_init (ActionContext *p_actctx)
 {
 	ESourceRegistry *registry;
 	EClient *client;
 	EBookClient *book_client;
-	EBookQuery *query;
 	ESource *source;
 	GSList *contacts = NULL;
 	const gchar *uid;
-	gchar *query_str;
 	GError *error = NULL;
 
 	registry = p_actctx->registry;
@@ -819,17 +878,12 @@ action_list_cards_init (ActionContext *p_actctx)
 
 	book_client = E_BOOK_CLIENT (client);
 
-	query = e_book_query_any_field_contains ("");
-	query_str = e_book_query_to_string (query);
-	e_book_query_unref (query);
-
-	if (e_book_client_get_contacts_sync (book_client, query_str, &contacts, NULL, &error)) {
-		action_list_cards (contacts, p_actctx);
+	if (e_book_client_get_contacts_sync (book_client, "#t", &contacts, NULL, &error)) {
+		action_export (contacts, p_actctx);
 		g_slist_free_full (contacts, g_object_unref);
 	}
 
 	g_object_unref (book_client);
-	g_free (query_str);
 
 	if (error != NULL) {
 		g_warning ("Failed to get contacts: %s", error->message);
@@ -853,11 +907,11 @@ addressbook_export_thread (gpointer user_data)
 	g_return_val_if_fail (actctx != NULL, NULL);
 
 	/* do actions */
-	if (actctx->action_type == ACTION_LIST_FOLDERS) {
-		action_list_folders_init (actctx);
+	if (actctx->action_type == ACTION_LIST || actctx->action_type == ACTION_LIST_WITH_COUNT) {
+		action_list_init (actctx, actctx->action_type == ACTION_LIST_WITH_COUNT);
 
-	} else if (actctx->action_type == ACTION_LIST_CARDS) {
-		action_list_cards_init (actctx);
+	} else if (actctx->action_type == ACTION_EXPORT) {
+		action_export_init (actctx);
 
 	} else {
 		g_warning (_("Unhandled error"));
@@ -885,7 +939,8 @@ addressbook_export_start_idle (gpointer user_data)
 
 /* Command-Line Options */
 static gchar *opt_output_file = NULL;
-static gboolean opt_list_folders_mode = FALSE;
+static gboolean opt_list = FALSE;
+static gboolean opt_list_with_count = FALSE;
 static gchar *opt_output_format = NULL;
 static gchar *opt_addressbook_source_uid = NULL;
 static gchar **opt_remaining = NULL;
@@ -895,9 +950,12 @@ static GOptionEntry entries[] = {
 	  G_OPTION_ARG_STRING, &opt_output_file,
 	  N_("Specify the output file instead of standard output"),
 	  N_("OUTPUTFILE") },
-	{ "list-addressbook-folders", 'l', 0,
-	  G_OPTION_ARG_NONE, &opt_list_folders_mode,
-	  N_("List local address book folders") },
+	{ "list", 'l', 0,
+	  G_OPTION_ARG_NONE, &opt_list,
+	  N_("List available address books") },
+	{ "list-with-count", 'L', 0,
+	  G_OPTION_ARG_NONE, &opt_list_with_count,
+	  N_("List available address books and show how many contacts they have") },
 	{ "format", '\0', 0,
 	  G_OPTION_ARG_STRING, &opt_output_format,
 	  N_("Show cards as vcard or csv file"),
@@ -949,15 +1007,19 @@ main (gint argc,
 	if (opt_remaining && g_strv_length (opt_remaining) > 0)
 		opt_addressbook_source_uid = g_strdup (opt_remaining[0]);
 
-	if (opt_list_folders_mode) {
-		actctx.action_type = ACTION_LIST_FOLDERS;
+	if (opt_list || opt_list_with_count) {
+		actctx.action_type = opt_list ? ACTION_LIST : ACTION_LIST_WITH_COUNT;
+		if (opt_list && opt_list_with_count) {
+			g_warning (_("Cannot use --list and --list-with-count together."));
+			exit (-1);
+		}
 		if (opt_addressbook_source_uid != NULL || opt_output_format != NULL) {
 			g_warning (_("Command line arguments error, please use --help option to see the usage."));
 			exit (-1);
 		}
 	} else {
 
-		actctx.action_type = ACTION_LIST_CARDS;
+		actctx.action_type = ACTION_EXPORT;
 
 		/* check the output format */
 		if (opt_output_format == NULL) {
@@ -966,7 +1028,7 @@ main (gint argc,
 			IsCSV = !strcmp (opt_output_format, "csv");
 			IsVCard = !strcmp (opt_output_format, "vcard");
 			if (IsCSV == FALSE && IsVCard == FALSE) {
-				g_warning (_("Only support csv or vcard format."));
+				g_warning (_("Only supports csv or vcard format."));
 				exit (-1);
 			}
 		}
