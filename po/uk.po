@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2024-05-17 07:29+0000\n"
-"PO-Revision-Date: 2024-05-17 16:29+0300\n"
+"POT-Creation-Date: 2024-06-06 10:42+0000\n"
+"PO-Revision-Date: 2024-06-06 22:53+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -25,35 +25,35 @@ msgstr ""
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 23.04.3\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:97
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:237
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
 #: src/addressbook/libebook-contacts/e-contact.c:312
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
 msgid "Anniversary"
 msgstr "Річниця"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:489
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:655
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Вказана адреса, «%s» не є адресою адресної книги CardDAV"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1397
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1569
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1435
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:999
 msgid "Server didn’t return object’s href"
 msgstr "Сервер не повернув посилання об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1399
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1571
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1437
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1001
 msgid "Server didn’t return object’s ETag"
 msgstr "Сервер не повернув ETag об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1401
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1573
 msgid "Received object is not a valid vCard"
 msgstr "Отриманий об'єкт не є коректною vCard"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1523
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1695
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1604
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
@@ -66,7 +66,7 @@ msgstr ""
 "пошкоджений. Ви можете спробувати вилучити його і перезапустити фонові "
 "процеси evolution-data-server. Файл кешу: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1529
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1701
 msgid "Object to save is not a valid vCard"
 msgstr "Об'єкт для збереження не є коректною візитною карткою vCard"
 
@@ -187,8 +187,8 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/camel/providers/imapx/camel-imapx-server.c:3406
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1116
-#: src/libedataserver/e-soup-session.c:2122
+#: src/libedataserver/e-soup-session.c:1125
+#: src/libedataserver/e-soup-session.c:2131
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:272
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
 #: src/libedataserverui/e-reminders-widget.c:2141
@@ -2843,17 +2843,17 @@ msgstr "Отримання повідомлення %d з %d"
 msgid "Failed at message %d of %d"
 msgstr "Помилка на повідомленні %d з %d"
 
-#: src/camel/camel-filter-driver.c:2167 src/camel/camel-filter-driver.c:2191
+#: src/camel/camel-filter-driver.c:2164 src/camel/camel-filter-driver.c:2188
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Помилка виконання фільтра «%s»: "
 
-#: src/camel/camel-filter-driver.c:2181
+#: src/camel/camel-filter-driver.c:2178
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Помилка аналізу фільтра «%s»: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2200
+#: src/camel/camel-filter-driver.c:2197
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Помилка виконання фільтра «%s»: %s: %s"
@@ -2923,19 +2923,19 @@ msgstr[1] "Фільтруємо нові повідомлення у «%s : %s»
 msgstr[2] "Фільтруємо нові повідомлення у «%s : %s»"
 msgstr[3] "Фільтруємо нове повідомлення у «%s : %s»"
 
-#: src/camel/camel-folder.c:1211
+#: src/camel/camel-folder.c:1209
 #: src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "Переміщення повідомлень"
 
-#: src/camel/camel-folder.c:1214
+#: src/camel/camel-folder.c:1212
 msgid "Copying messages"
 msgstr "Копіювання повідомлень"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1259
+#: src/camel/camel-folder.c:1257
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Для теки «%s : %s» не передбачено підтримки даних щодо квоти"
@@ -2943,7 +2943,7 @@ msgstr "Для теки «%s : %s» не передбачено підтримк
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1361
+#: src/camel/camel-folder.c:1359
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Фільтруємо теку «%s : %s»"
@@ -2951,7 +2951,7 @@ msgstr "Фільтруємо теку «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3374
+#: src/camel/camel-folder.c:3372
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Знищення теки «%s : %s»"
@@ -2959,7 +2959,7 @@ msgstr "Знищення теки «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3509
+#: src/camel/camel-folder.c:3507
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Отримання повідомлення «%s» у «%s : %s»"
@@ -2967,7 +2967,7 @@ msgstr "Отримання повідомлення «%s» у «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3734
+#: src/camel/camel-folder.c:3732
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Отримання відомостей про квоту для «%s : %s»"
@@ -2975,7 +2975,7 @@ msgstr "Отримання відомостей про квоту для «%s : 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:4034
+#: src/camel/camel-folder.c:4032
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Оновлюємо теку «%s : %s»"
@@ -3238,7 +3238,6 @@ msgstr "Не вдалося декодувати секцію MIME: не зна�
 
 #: src/camel/camel-gpg-context.c:3204
 #, c-format
-#| msgid "Failed to decrypt MIME part: protocol error"
 msgid "Failed to decrypt MIME part: %s"
 msgstr "Не вдалося декодувати секцію MIME: %s"
 
@@ -7845,16 +7844,16 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1361
+#: src/libedataserver/e-soup-session.c:1370
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Помилка HTTP %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1437
+#: src/libedataserver/e-soup-session.c:1446
 msgid "Failed to setup authentication"
 msgstr "Не вдалося налаштувати розпізнавання"
 
-#: src/libedataserver/e-soup-session.c:1802
+#: src/libedataserver/e-soup-session.c:1811
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
@@ -7863,7 +7862,7 @@ msgstr[1] "Сервер зайнято, очікуємо на повторну �
 msgstr[2] "Сервер зайнято, очікуємо на повторну спробу (%d:%02d хвилин)"
 msgstr[3] "Сервер зайнято, очікуємо на повторну спробу (%d:%02d хвилина)"
 
-#: src/libedataserver/e-soup-session.c:1808
+#: src/libedataserver/e-soup-session.c:1817
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
@@ -7872,7 +7871,7 @@ msgstr[1] "Сервер зайнято, чекаємо на повторну с�
 msgstr[2] "Сервер зайнято, чекаємо на повторну спробу (%d секунд)"
 msgstr[3] "Сервер зайнято, чекаємо на повторну спробу (%d секунду)"
 
-#: src/libedataserver/e-soup-session.c:1929
+#: src/libedataserver/e-soup-session.c:1938
 msgid "Too many redirects"
 msgstr "Забагато переспрямовувань"
 
@@ -8549,22 +8548,22 @@ msgstr ""
 msgid "Failed to open browser: %s"
 msgstr "Не вдалося відкрити браузер: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1049
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1050
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1131
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1132
 msgid "URL:"
 msgstr "Адреса:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1161
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1162
 msgid "Click here to open the URL"
 msgstr "Натисніть, щоб відкрити URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1202
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8575,11 +8574,11 @@ msgstr ""
 "завершив роботу майстер OAuth2, до наведеного нижче поля і продовжіть "
 "процедуру розпізнавання."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1238
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1239
 msgid "_Authorization code:"
 msgstr "Код _уповноваження:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1251
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1252
 msgid "C_ontinue"
 msgstr "Пр_одовжити"
 
@@ -9052,46 +9051,57 @@ msgstr[3] "Ви маєте %d нагадувань"
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Не переносити дані з попередніх версій Evolution"
 
-#: src/tools/addressbook-export/addressbook-export.c:69
-#: src/tools/addressbook-export/addressbook-export.c:754
+#: src/tools/addressbook-export/addressbook-export.c:128
+#: src/tools/addressbook-export/addressbook-export.c:815
 msgid "Can not open file"
 msgstr "Не вдалося відкрити файл"
 
-#: src/tools/addressbook-export/addressbook-export.c:99
+#: src/tools/addressbook-export/addressbook-export.c:167
 #, c-format
 msgid "Failed to open client “%s”: %s"
 msgstr "Не вдалося відкрити клієнт «%s»: %s"
 
-#: src/tools/addressbook-export/addressbook-export.c:863
+#: src/tools/addressbook-export/addressbook-export.c:917
 msgid "Unhandled error"
 msgstr "Непридатна до обробки помилка"
 
-#: src/tools/addressbook-export/addressbook-export.c:896
+#: src/tools/addressbook-export/addressbook-export.c:951
 msgid "Specify the output file instead of standard output"
 msgstr "Вказати файл замість стандартного виводу"
 
-#: src/tools/addressbook-export/addressbook-export.c:897
+#: src/tools/addressbook-export/addressbook-export.c:952
 msgid "OUTPUTFILE"
 msgstr "ФАЙЛ_ВИВОДУ"
 
-#: src/tools/addressbook-export/addressbook-export.c:900
-msgid "List local address book folders"
-msgstr "Вивести теки локальної адресної книги"
+#: src/tools/addressbook-export/addressbook-export.c:955
+#| msgid "List local address book folders"
+msgid "List available address books"
+msgstr "Вивести список доступних адресних книг"
 
-#: src/tools/addressbook-export/addressbook-export.c:903
+#: src/tools/addressbook-export/addressbook-export.c:958
+msgid "List available address books and show how many contacts they have"
+msgstr ""
+"Вивести список доступних адресних книг і показати кількість контактів у них"
+
+#: src/tools/addressbook-export/addressbook-export.c:961
 msgid "Show cards as vcard or csv file"
 msgstr "Показувати картки як файли vcard чи csv"
 
-#: src/tools/addressbook-export/addressbook-export.c:955
+#: src/tools/addressbook-export/addressbook-export.c:1013
+msgid "Cannot use --list and --list-with-count together."
+msgstr "Не можна одночасно використовувати --list і --list-with-count."
+
+#: src/tools/addressbook-export/addressbook-export.c:1017
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Помилка у аргументах командного рядка, скористайтеся параметром --help, щоб "
 "переглянути список доступних аргументів."
 
-#: src/tools/addressbook-export/addressbook-export.c:969
-msgid "Only support csv or vcard format."
-msgstr "Підтримуються лише формати csv чи vcard."
+#: src/tools/addressbook-export/addressbook-export.c:1031
+#| msgid "Only support csv or vcard format."
+msgid "Only supports csv or vcard format."
+msgstr "Передбачено підтримку лише форматів csv та vcard."
 
 #: src/tools/list-sources/list-sources.c:83
 msgid "Show only enabled sources"
