@@ -23,7 +23,7 @@ flatpak:
     - jq -M '(.modules[] | select(.name=="evolution-data-server")).sources[0].commit = env.CI_COMMIT_SHA' ${MANIFEST_PATH} > tmp.json && mv tmp.json ${MANIFEST_PATH}
     - >
       xvfb-run -a -s "-screen 0 1024x768x24"
-      flatpak-builder --keep-build-dirs --user --disable-rofiles-fuse flatpak_app --repo=repo --ccache ${BRANCH:+--default-branch=$BRANCH} ${MANIFEST_PATH}
+      flatpak-builder --verbose --keep-build-dirs --user --disable-rofiles-fuse flatpak_app --repo=repo --ccache ${BRANCH:+--default-branch=$BRANCH} ${MANIFEST_PATH}
     - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
   cache:
     paths:
