@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-06-06 10:42+0000\n"
-"PO-Revision-Date: 2024-06-06 23:01+0200\n"
+"POT-Creation-Date: 2024-06-11 11:40+0000\n"
+"PO-Revision-Date: 2024-06-11 17:14+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -159,24 +159,24 @@ msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:281
 #: src/calendar/backends/http/e-cal-backend-http.c:313
 #: src/calendar/libecal/e-cal-client.c:244
-#: src/calendar/libecal/e-cal-client.c:3216
-#: src/calendar/libecal/e-cal-client.c:3373
-#: src/calendar/libecal/e-cal-client.c:3634
-#: src/calendar/libecal/e-cal-client.c:3858
-#: src/calendar/libecal/e-cal-client.c:4036
-#: src/calendar/libecal/e-cal-client.c:4206
-#: src/calendar/libecal/e-cal-client.c:4428
-#: src/calendar/libecal/e-cal-client.c:4595
-#: src/calendar/libecal/e-cal-client.c:4792
-#: src/calendar/libecal/e-cal-client.c:4935
-#: src/calendar/libecal/e-cal-client.c:5120
-#: src/calendar/libecal/e-cal-client.c:5273
-#: src/calendar/libecal/e-cal-client.c:5487
-#: src/calendar/libecal/e-cal-client.c:5643
-#: src/calendar/libecal/e-cal-client.c:5858
-#: src/calendar/libecal/e-cal-client.c:6046
-#: src/calendar/libecal/e-cal-client.c:6376
-#: src/calendar/libecal/e-cal-client.c:6581
+#: src/calendar/libecal/e-cal-client.c:3231
+#: src/calendar/libecal/e-cal-client.c:3388
+#: src/calendar/libecal/e-cal-client.c:3649
+#: src/calendar/libecal/e-cal-client.c:3873
+#: src/calendar/libecal/e-cal-client.c:4051
+#: src/calendar/libecal/e-cal-client.c:4221
+#: src/calendar/libecal/e-cal-client.c:4443
+#: src/calendar/libecal/e-cal-client.c:4610
+#: src/calendar/libecal/e-cal-client.c:4807
+#: src/calendar/libecal/e-cal-client.c:4950
+#: src/calendar/libecal/e-cal-client.c:5135
+#: src/calendar/libecal/e-cal-client.c:5288
+#: src/calendar/libecal/e-cal-client.c:5502
+#: src/calendar/libecal/e-cal-client.c:5658
+#: src/calendar/libecal/e-cal-client.c:5873
+#: src/calendar/libecal/e-cal-client.c:6061
+#: src/calendar/libecal/e-cal-client.c:6391
+#: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
 #: src/camel/camel-gpg-context.c:3205
@@ -188,8 +188,8 @@ msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1125
 #: src/libedataserver/e-soup-session.c:2131
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:272
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:273
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:975
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -8359,46 +8359,46 @@ msgstr "Povpraševanje po poverilnicah preklicano"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Vir »%s« ne podpira poizvedbe po poverilnicah"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:270
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:271
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Pridobivanje žetona za dostop do »%s« je spodletelo: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:301
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:302
 msgid "Requesting access token, please wait…"
 msgstr "Poteka preverjanje žetona za dostop ..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:576
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s zahteva overitev imenika"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:580
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:581
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s zahteva overitev koledarja"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:585
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:586
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s zahteva overitev seznama opomnikov"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:591
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s zahteva overitev seznama nalog"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:596
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:597
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s zahteva overitev elektronske pošte"
@@ -8406,7 +8406,7 @@ msgstr "%s zahteva overitev elektronske pošte"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:601
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s zahteva overitev računa"
@@ -8414,7 +8414,7 @@ msgstr "%s zahteva overitev računa"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:615
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8425,7 +8425,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:622
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8436,7 +8436,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:629
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8448,7 +8448,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:636
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8460,7 +8460,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:643
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8472,7 +8472,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:650
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8484,34 +8484,44 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:658
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr "Prijavite se v %s in sprejmite pogoje uporabe za dostop do »%s«."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:975
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Odpiranje brskalnika je spodletelo: %s"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1050
+msgid "_Copy URL"
+msgstr "Kopiraj _URL"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1052
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1083
+msgid "Open in _Browser"
+msgstr "Odpri v _brskalniku"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1069
+#, c-format
+msgid "Open with “%s”"
+msgstr "Odpri s programom »%s«"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1179
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Prekliči"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1132
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1264
 msgid "URL:"
 msgstr "Naslov URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1162
-msgid "Click here to open the URL"
-msgstr "Kliknite za odpiranje naslova URL"
-
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1202
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1339
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8520,11 +8530,11 @@ msgstr ""
 "Navedeni naslov URL in sledite overitvenemu čarovniku OAuth2. Kopirajte "
 "spodnjo overitveno kodo, da nadaljujete postopek preverjanja pristnosti."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1239
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1376
 msgid "_Authorization code:"
 msgstr "_Overitvena koda:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1252
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1389
 msgid "C_ontinue"
 msgstr "_Nadaljuj"
 
