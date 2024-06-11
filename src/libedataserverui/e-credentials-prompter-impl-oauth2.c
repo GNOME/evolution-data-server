@@ -116,6 +116,7 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 
 	g_uri_unref (parsed_uri);
 	g_hash_table_destroy (uri_query);
+	g_free (query);
 
 	return uri;
 }
@@ -1621,6 +1622,7 @@ e_credentials_prompter_impl_oauth2_free_prompt_data (ECredentialsPrompterImplOAu
 	g_clear_object (&prompter_oauth2->priv->cred_source);
 	g_clear_object (&prompter_oauth2->priv->service);
 	g_clear_object (&prompter_oauth2->priv->oauth2_response_skeleton);
+	g_clear_object (&prompter_oauth2->priv->cancellable);
 
 	g_free (prompter_oauth2->priv->error_text);
 	prompter_oauth2->priv->error_text = NULL;
