@@ -134,7 +134,7 @@ static const gchar *
 eos_yahoo_get_redirect_uri (EOAuth2Service *service,
 			    ESource *source)
 {
-	return "https://gitlab.gnome.org/GNOME/evolution/-/wikis/YahooOAuth2/";
+	return "https://gnome.pages.gitlab.gnome.org/evolution/YahooOAuth2/";
 }
 
 static void
