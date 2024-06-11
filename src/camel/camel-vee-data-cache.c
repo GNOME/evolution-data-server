@@ -87,7 +87,6 @@ vee_subfolder_data_hash_folder (CamelFolder *folder,
 	guint8 *digest;
 	gsize length;
 	gint state = 0, save = 0;
-	gchar *ptr_string;
 	const gchar *uid;
 	gint i;
 
@@ -97,11 +96,9 @@ vee_subfolder_data_hash_folder (CamelFolder *folder,
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	parent_store = camel_folder_get_parent_store (folder);
 	uid = camel_service_get_uid (CAMEL_SERVICE (parent_store));
-	g_checksum_update (checksum, (guchar *) uid, -1);
 
-	ptr_string = g_strdup_printf ("%p", folder);
-	g_checksum_update (checksum, (guchar *) ptr_string, -1);
-	g_free (ptr_string);
+	g_checksum_update (checksum, (guchar *) uid, -1);
+	g_checksum_update (checksum, (guchar *) camel_folder_get_full_name (folder), -1);
 
 	g_checksum_get_digest (checksum, digest, &length);
 	g_checksum_free (checksum);
