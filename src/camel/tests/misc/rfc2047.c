@@ -37,6 +37,10 @@ struct {
 	{ "=?iso-8859-1?q?th?= =?iso-8859-1?q?is?= is some text", "this is some text", 0 },
 	{ "=?ISO-8859-1?B?SWYgeW91IGNhbiByZWFkIHRoaXMgeW8=?=  =?ISO-8859-2?B?dSB1bmRlcnN0YW5kIHRoZSBleGFtcGxlLg==?=",
 	  "If you can read this you understand the example.", 0 },
+	{ "aaa bbb  =?utf-8?Q?=63=63=63?= =?utf-8?Q?=64=64=64?="
+	  "    =?utf-8?Q?=65=65=65?= fff =?utf-8?Q?=67=67=67?=  hhh",
+	  "aaa bbb  cccdddeee fff ggg  hhh", 0 }
+
 #if 0
 	/* And oddly enough, camel fails on these, removed for now */
 
@@ -64,7 +68,10 @@ struct {
 } test2[] = {
 	/* ctext tests */
 	{ "Test of ctext (=?ISO-8859-1?Q?a?= =?ISO-8859-1?Q?b?=)", "Test of ctext (ab)", 1 },
-	{ "ctext with \\\"quoted\\\" pairs", "ctext with \"quoted\" pairs", 1 }
+	{ "ctext with \\\"quoted\\\" pairs", "ctext with \"quoted\" pairs", 1 },
+	{ "aaa bbb  =?utf-8?Q?=63=63=63?= =?utf-8?Q?=64=64=64?="
+	  "    =?utf-8?Q?=65=65=65?= fff =?utf-8?Q?=67=67=67?=  hhh",
+	  "aaa bbb  cccdddeee fff ggg  hhh", 1 }
 };
 
 gint main (gint argc, gchar ** argv)

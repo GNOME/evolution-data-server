@@ -5284,6 +5284,21 @@ camel_header_address_fold (const gchar *in,
 	return g_string_free (out, FALSE);
 }
 
+static gboolean
+ends_only_with_spcs (GString *str)
+{
+	guint ii;
+
+	for (ii = 0; ii < str->len; ii++) {
+		gchar chr = str->str[str->len - ii - 1];
+
+		if (chr != ' ' && chr != '\t')
+			return chr == '\n';
+	}
+
+	return FALSE;
+}
+
 /* simple header folding */
 /* will work even if the header is already folded */
 gchar *
@@ -5340,7 +5355,8 @@ camel_header_fold (const gchar *in,
 		if (outlen + len > CAMEL_FOLD_SIZE) {
 			d (printf ("outlen = %d wordlen = %d\n", outlen, len));
 			/* strip trailing space */
-			if (out->len > 0 && outlen > 2 && (out->str[out->len - 1] == ' ' || out->str[out->len - 1] == '\t')) {
+			if (out->len > 0 && outlen > 2 && (out->str[out->len - 1] == ' ' || out->str[out->len - 1] == '\t') &&
+			    !ends_only_with_spcs (out)) {
 				spc = out->str[out->len - 1];
 				g_string_truncate (out, out->len - 1);
 				g_string_append_c (out, '\n');
@@ -5352,10 +5368,15 @@ camel_header_fold (const gchar *in,
 			while (outlen + len > CAMEL_FOLD_MAX_SIZE) {
 				tmplen = CAMEL_FOLD_MAX_SIZE - outlen;
 				g_string_append_len (out, inptr, tmplen);
-				g_string_append (out, "\n ");
 				inptr += tmplen;
 				len -= tmplen;
-				outlen = 1;
+				if (*inptr == ' ' || *inptr == '\t') {
+					g_string_append_c (out, '\n');
+					outlen = 0;
+				} else {
+					g_string_append (out, "\n ");
+					outlen = 1;
+				}
 			}
 		}
 
@@ -5384,10 +5405,8 @@ camel_header_unfold (const gchar *in)
 	while ((c = *inptr++)) {
 		if (c == '\n') {
 			if (camel_mime_is_lwsp (*inptr)) {
-				do {
-					inptr++;
-				} while (camel_mime_is_lwsp (*inptr));
-				*o++ = ' ';
+				*o++ = *inptr;
+				inptr++;
 			} else {
 				*o++ = c;
 			}
