@@ -406,7 +406,7 @@ data_book_view_watcher_sqlite_dispose (GObject *object)
 
 		if (self->priv->signal_objects_removed_id) {
 			g_signal_handler_disconnect (view, self->priv->signal_objects_removed_id);
-			self->priv->signal_objects_modified_id = 0;
+			self->priv->signal_objects_removed_id = 0;
 		}
 
 		g_object_unref (view);

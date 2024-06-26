@@ -469,6 +469,7 @@ e_destination_set_contact (EDestination *dest,
 						if ((g_ascii_strcasecmp (param_name, EVC_CL_UID) == 0) ||
 						    (g_ascii_strcasecmp (param_name, EVC_X_DEST_CONTACT_UID) == 0)) {
 							value = e_vcard_attribute_param_get_values (param->data);
+							g_free (id);
 							id = value ? g_strdup (value->data) : NULL;
 						} else if (g_ascii_strcasecmp (param_name, EVC_X_DEST_EMAIL_NUM) == 0) {
 							value = e_vcard_attribute_param_get_values (param->data);
