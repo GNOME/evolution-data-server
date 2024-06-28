@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.52.3 2024-06-28
+---------------------------------------
+
+Bug Fixes:
+	I#543 - Camel: Attachments not recognized when filtering POP3 message
+	I#548 - Camel: Search folder's message UID is not persistent
+	evo-I#2732 - CalDAV: Correct check for "is Google server"
+
+Miscellaneous:
+	OAuth2 Prompter: Fix two memory leaks
+	EOAuth2ServiceYahoo: Update redirect URI
+	CI: Workaround broken git clone for libcanberra
+	Fix few issues reported by Coverity Scan
+
+Translations:
+	Aurimas Černius (lt)
+
 Evolution-Data-Server 3.52.2 2024-05-24
 ---------------------------------------
 
