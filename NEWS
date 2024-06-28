@@ -1,3 +1,54 @@
+Evolution-Data-Server 3.53.1 2024-06-28
+---------------------------------------
+
+Bug Fixes:
+	I#498 - vCard: Incorrectly parses non-UTF-8 vCard data
+	I#518 - WebDAV: Handle `Retry-After` header on 503 error
+	I#531 - Camel: Sanitize exported OpenPGP public key before transfer
+	I#534 - Google Task stale item cannot be deleted
+	I#536 - Calendar: "This and Future" modifications can duplicate events
+	I#537 - Camel: GPG message decryption can sometimes miss content
+	I#539 - CardDAV: Prefetch PHOTO/LOGO when being remote URL
+	I#543 - Camel: Attachments not recognized when filtering POP3 message
+	I#545 - addressbook-export: Enhance listing of available sources
+	I#546 - ECalClient: Generate RECURRENCE-ID in UTC
+	I#547 - OAuth2 Prompt: Enlarge "Open in Browser" button
+	I#548 - Camel: Search folder's message UID is not persistent
+	I#549 - Camel: Unfolding headers eats consecutive white-spaces
+	M!157 - Flatpak: Drop org.freedesktop.Sdk.Extension.vala and rely on GNOME SDK (Rico Tzschichholz)
+	evo-I#2230 - Configurable timeout for WebDAV sources
+	evo-I#2697 - IMAPX: Add option to define Not-Junk folder
+	evo-I#2720 - Add e_util_host_is_in_domain helper (Peter Simonyi)
+
+Miscellaneous:
+	Calendar: Update comment of E_CAL_STATIC_CAPABILITY_RETRACT_SUPPORTED
+	CamelMimePart: Fix runtime warning when removing some headers
+	CamelMimeMessage: Check for non-NULL Subject value before using it
+	IMAPx: Correct return value of imapx_splice_with_progress() when cancelled
+	IMAPX: Correct path returned by imapx_get_filename()
+	OAuth2 Prompter: Fix two memory leaks
+	EOAuth2ServiceOutlook: Cannot be used with IMAP
+	EOAuth2ServiceYahoo: Update redirect URI
+	OAuth2Prompter: Fix possible crash on application quit
+	Mark org.gnome.evolution-data-server.OAuth2-handler.desktop for translation
+	Fix few issues reported by Coverity Scan
+	CI: Pass --verbose to flatpak-builder (Bart Piotrowski)
+	CI: Update OpenLDAP version in devel/nightly build
+	CI: Workaround broken git clone for libcanberra
+
+Translations:
+	Anders Jonsson (sv)
+	Andika Triwidada (id)
+	Artur S0 (ru)
+	Aurimas Černius (lt)
+	Balázs Úr (hu)
+	Fabio Tomat (fur)
+	Martin (sl)
+	Olga Smirnova (ie)
+	Piotr Drąg (pl)
+	Sabri Ünal (tr)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.52.0 2024-03-15
 ---------------------------------------
 
