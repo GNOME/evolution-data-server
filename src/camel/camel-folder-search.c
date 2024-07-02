@@ -995,6 +995,8 @@ folder_search_match_threads (CamelSExp *sexp,
 {
 	CamelSExpResult *r;
 	CamelFolderSearchPrivate *p = search->priv;
+	const gchar *type_str;
+	gboolean thread_subject = TRUE;
 	gint i, type;
 	GHashTable *results;
 	gchar *error_msg;
@@ -1028,16 +1030,24 @@ folder_search_match_threads (CamelSExp *sexp,
 		g_free (error_msg);
 	}
 
+	type_str = r->value.string;
+
+	/* optional prefix to not fallback to thread by subject */
+	if (g_str_has_prefix (type_str, "no-subject,")) {
+		thread_subject = FALSE;
+		type_str += strlen ("no-subject,");
+	}
+
 	type = 0;
-	if (!strcmp (r->value.string, "none"))
+	if (!strcmp (type_str, "none"))
 		type = 0;
-	else if (!strcmp (r->value.string, "all"))
+	else if (!strcmp (type_str, "all"))
 		type = 1;
-	else if (!strcmp (r->value.string, "replies"))
+	else if (!strcmp (type_str, "replies"))
 		type = 2;
-	else if (!strcmp (r->value.string, "replies_parents"))
+	else if (!strcmp (type_str, "replies_parents"))
 		type = 3;
-	else if (!strcmp (r->value.string, "single"))
+	else if (!strcmp (type_str, "single"))
 		type = 4;
 	camel_sexp_result_free (sexp, r);
 
@@ -1068,7 +1078,7 @@ folder_search_match_threads (CamelSExp *sexp,
 
 	/* cache this, so we only have to re-calculate once per search at most */
 	if (p->threads == NULL) {
-		p->threads = camel_folder_thread_messages_new (search->priv->folder, NULL, TRUE);
+		p->threads = camel_folder_thread_messages_new (search->priv->folder, NULL, thread_subject);
 		p->threads_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
 		fill_thread_table (p->threads->tree, p->threads_hash);
