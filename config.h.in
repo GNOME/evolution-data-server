@@ -63,6 +63,9 @@
 /* Configured with enabled maintainer mode */
 #cmakedefine ENABLE_MAINTAINER_MODE 1
 
+/* Define to 1 if you have <sys/param.h> */
+#cmakedefine HAVE_SYS_PARAM_H 1
+
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #cmakedefine HAVE_SYS_WAIT_H 1
 

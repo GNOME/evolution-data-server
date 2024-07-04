@@ -21,14 +21,16 @@
 #include <string.h>
 #include <libical-glib/libical-glib.h>
 
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include "e-cal-system-timezone.h"
 
 #ifndef G_OS_WIN32
 
-#ifdef HAVE_SOLARIS
-#define SYSTEM_ZONEINFODIR "/usr/share/lib/zoneinfo/tab"
-#else
-#define SYSTEM_ZONEINFODIR "/usr/share/zoneinfo"
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 1024
 #endif
 
 #define ETC_TIMEZONE        "/etc/timezone"
@@ -41,28 +43,86 @@
 
 #define TZ_MAGIC "TZif"
 
+static const gchar *
+system_timezone_get_zoneinfo_dir (void)
+{
+	static gchar tzdir[MAXPATHLEN + 1] = { 0 , };
+	const gchar *zonetab_filename = "zone.tab";
+	const gchar *wellknown_tzdir[] = {
+		"/usr/share/zoneinfo",
+		"/usr/lib/zoneinfo",
+		"/etc/zoneinfo",
+		"/usr/share/lib/zoneinfo",
+		"/usr/share/lib/zoneinfo/tab"
+	};
+	const gchar *env_tzdir;
+	gchar *filename;
+	guint ii;
+
+	if (*tzdir != '\0')
+		return tzdir;
+
+	env_tzdir = g_getenv ("TZDIR");
+	if (env_tzdir) {
+		filename = g_build_filename (env_tzdir, zonetab_filename, NULL);
+		if (g_file_test (filename, G_FILE_TEST_EXISTS))
+			g_snprintf (tzdir, MAXPATHLEN, "%s", env_tzdir);
+		g_free (filename);
+	}
+
+	if (!*tzdir) {
+		for (ii = 0; ii < G_N_ELEMENTS (wellknown_tzdir) && !*tzdir; ii++) {
+			filename = g_build_filename (wellknown_tzdir[ii], zonetab_filename, NULL);
+			if (g_file_test (filename, G_FILE_TEST_EXISTS))
+				g_snprintf (tzdir, MAXPATHLEN, "%s", wellknown_tzdir[ii]);
+			g_free (filename);
+		}
+	}
+
+	ii = strlen (tzdir);
+	while (ii > 0 && tzdir[ii - 1] == G_DIR_SEPARATOR) {
+		ii--;
+		tzdir[ii] = '\0';
+	}
+
+	if (!*tzdir) {
+		#ifdef HAVE_SOLARIS
+		g_snprintf (tzdir, MAXPATHLEN, "%s", "/usr/share/lib/zoneinfo/tab");
+		#else
+		g_snprintf (tzdir, MAXPATHLEN, "%s", "/usr/share/zoneinfo");
+		#endif
+	}
+
+	return tzdir;
+}
+
 static gchar *
 system_timezone_strip_path_if_valid (const gchar *filename)
 {
+	const gchar *tzdir;
 	gint skip;
 
 	/* In case it's a relative path the '../' references the root (from the /etc) */
 	if (filename && g_str_has_prefix (filename, "../"))
 		filename += 2;
 
-	if (!filename || !g_str_has_prefix (filename, SYSTEM_ZONEINFODIR "/"))
+	tzdir = system_timezone_get_zoneinfo_dir ();
+
+	if (!filename || !g_str_has_prefix (filename, tzdir) || filename[strlen (tzdir)] != G_DIR_SEPARATOR)
 		return NULL;
+
+	skip = strlen (tzdir);
 
 	/* Timezone data files also live under posix/ and right/ for some
 	 * reason.
 	 * FIXME: make sure accepting those files is valid. I think "posix" is
 	 * okay, not sure about "right" */
-	if (g_str_has_prefix (filename, SYSTEM_ZONEINFODIR "/posix/"))
-		skip = strlen (SYSTEM_ZONEINFODIR "/posix/");
-	else if (g_str_has_prefix (filename, SYSTEM_ZONEINFODIR "/right/"))
-		skip = strlen (SYSTEM_ZONEINFODIR "/right/");
+	if (g_str_has_prefix (filename + skip, G_DIR_SEPARATOR_S "posix" G_DIR_SEPARATOR_S))
+		skip += strlen (G_DIR_SEPARATOR_S "posix" G_DIR_SEPARATOR_S);
+	else if (g_str_has_prefix (filename + skip, G_DIR_SEPARATOR_S "right" G_DIR_SEPARATOR_S))
+		skip += strlen (G_DIR_SEPARATOR_S "right" G_DIR_SEPARATOR_S);
 	else
-		skip = strlen (SYSTEM_ZONEINFODIR "/");
+		skip += strlen (G_DIR_SEPARATOR_S);
 
 	return g_strdup (filename + skip);
 }
@@ -379,7 +439,7 @@ system_timezone_read_etc_localtime_hardlink (GHashTable *ical_zones)
 		&stat_localtime,
 		NULL,
 		0,
-		SYSTEM_ZONEINFODIR,
+		system_timezone_get_zoneinfo_dir (),
 		files_are_identical_inode,
 		ical_zones,
 		0,
@@ -471,7 +531,7 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 		&stat_localtime,
 		localtime_content,
 		localtime_content_len,
-		SYSTEM_ZONEINFODIR,
+		system_timezone_get_zoneinfo_dir (),
 		files_are_identical_content,
 		ical_zones,
 		0,
@@ -610,8 +670,7 @@ system_timezone_find (void)
 			struct stat stat_config_tz;
 			gchar *filename;
 
-			filename = g_build_filename (
-				SYSTEM_ZONEINFODIR, config_tz, NULL);
+			filename = g_build_filename (system_timezone_get_zoneinfo_dir (), config_tz, NULL);
 
 			if (filename &&
 			    g_stat (filename, &stat_config_tz) == 0 &&
