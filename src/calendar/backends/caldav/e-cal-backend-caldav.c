@@ -2390,7 +2390,9 @@ ecb_caldav_discard_alarm_sync (ECalBackendSync *sync_backend,
 
 			e_cal_backend_sync_modify_objects (sync_backend, cal, cancellable, calobjs,
 				(rid && *rid) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL,
-				opflags, &old_components, &new_components, error);
+				/* this is not a reason to notify meeting attendees */
+				opflags | E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE,
+				&old_components, &new_components, error);
 
 			e_util_free_nullable_object_slist (old_components);
 			e_util_free_nullable_object_slist (new_components);
