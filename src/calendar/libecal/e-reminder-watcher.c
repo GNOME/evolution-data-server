@@ -3765,7 +3765,8 @@ e_reminder_watcher_dismiss_one_sync (ECalClient *client,
 			e_cal_component_id_get_uid (id),
 			e_cal_component_id_get_rid (id) ? e_cal_component_id_get_rid (id) : e_cal_component_alarm_instance_get_rid (rd->instance),
 			e_cal_component_alarm_instance_get_uid (rd->instance),
-			E_CAL_OPERATION_FLAG_NONE,
+			/* this is not a reason to notify meeting attendees */
+			E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE,
 			cancellable, &local_error);
 
 		e_reminder_watcher_debug_print ("Discard alarm for '%s' from %s (uid:%s rid:%s auid:%s) %s%s%s%s\n",

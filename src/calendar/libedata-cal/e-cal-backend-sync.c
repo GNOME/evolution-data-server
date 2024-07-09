@@ -532,7 +532,10 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
 	if (class->discard_alarm_sync != NULL) {
 		class->discard_alarm_sync (
 			backend, cal, cancellable,
-			uid, rid, auid, opflags, error);
+			uid, rid, auid,
+			/* this is not a reason to notify meeting attendees */
+			opflags | E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE,
+			error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
