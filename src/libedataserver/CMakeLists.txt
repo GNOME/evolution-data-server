@@ -65,6 +65,7 @@ set(SOURCES
 	e-list-iterator.c
 	e-memory.c
 	e-module.c
+	e-ms-oapxbc.c
 	e-named-parameters.c
 	e-network-monitor.c
 	e-oauth2-service.c
@@ -158,6 +159,7 @@ set(HEADERS
 	e-list-iterator.h
 	e-memory.h
 	e-module.h
+	e-ms-oapxbc.h
 	e-named-parameters.h
 	e-network-monitor.h
 	e-oauth2-service.h
@@ -261,6 +263,7 @@ target_compile_options(edataserver PUBLIC
 	${GIO_UNIX_CFLAGS}
 	${ICU_CFLAGS}
 	${JSON_GLIB_CFLAGS}
+	${UUID_CFLAGS}
 )
 
 target_include_directories(edataserver PUBLIC
@@ -275,6 +278,7 @@ target_include_directories(edataserver PUBLIC
 	${GIO_UNIX_INCLUDE_DIRS}
 	${ICU_INCLUDE_DIRS}
 	${JSON_GLIB_INCLUDE_DIRS}
+	${UUID_INCLUDE_DIRS}
 )
 
 target_link_libraries(edataserver
@@ -283,6 +287,7 @@ target_link_libraries(edataserver
 	${GIO_UNIX_LDFLAGS}
 	${ICU_LDFLAGS}
 	${JSON_GLIB_LDFLAGS}
+	${UUID_LDFLAGS}
 )
 
 install(TARGETS edataserver

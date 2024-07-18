@@ -120,6 +120,7 @@ set(libical_glib_minimum_version 3.0.7)
 set(libsecret_minimum_version 0.5)
 set(libxml_minimum_version 2.0.0)
 set(sqlite_minimum_version 3.7.17)
+set(uuid_minimum_version 2.0)
 
 # Optional Packages
 set(goa_minimum_version 3.8)
@@ -420,6 +421,7 @@ endif(ENABLE_GTK4)
 # **************************************************************
 
 pkg_check_modules(JSON_GLIB REQUIRED json-glib-1.0>=${json_glib_minimum_version})
+pkg_check_modules(UUID REQUIRED uuid>=${uuid_minimum_version})
 
 if(ENABLE_GTK)
 	add_printable_option(ENABLE_OAUTH2_WEBKITGTK "Enable WebKitGTK gtk3 for built-in OAuth2 authentications" ON)

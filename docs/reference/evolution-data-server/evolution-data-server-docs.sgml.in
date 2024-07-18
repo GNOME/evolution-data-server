@@ -251,6 +251,7 @@
       <xi:include href="xml/e-gdata-session.xml"/>
       <xi:include href="xml/e-json-utils.xml"/>
       <xi:include href="xml/e-memory.xml"/>
+      <xi:include href="xml/e-ms-oapxbc.xml"/>
       <xi:include href="xml/e-named-parameters.xml"/>
       <xi:include href="xml/e-network-monitor.xml"/>
       <xi:include href="xml/e-operation-pool.xml"/>
