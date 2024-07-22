@@ -2602,7 +2602,7 @@ e_util_get_source_full_name (ESourceRegistry *registry,
 		}
 	}
 
-	g_object_unref (source);
+	g_clear_object (&source);
 
 	fullname = g_string_new ("");
 
