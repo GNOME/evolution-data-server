@@ -156,9 +156,9 @@ cpi_oauth2_replace_string (const gchar *text,
 #endif /* WITH_WEBKITGTK */
 
 static void
-cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
-		       const gchar *title,
-		       const gchar *body_text)
+cpi_oauth2_show_info (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
+		      const gchar *title,
+		      const gchar *body_text)
 {
 #ifdef WITH_WEBKITGTK
 	gchar *tmp, *html;
@@ -181,7 +181,14 @@ cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 	g_free (html);
 	g_free (tmp);
 #endif /* WITH_WEBKITGTK */
+}
 
+static void
+cpi_oauth2_show_error (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
+		       const gchar *title,
+		       const gchar *body_text)
+{
+	cpi_oauth2_show_info (prompter_oauth2, title, body_text);
 	gtk_label_set_text (prompter_oauth2->priv->error_text_label, body_text);
 }
 
@@ -299,7 +306,7 @@ cpi_oauth2_test_authorization_code (ECredentialsPrompterImplOAuth2 *prompter_oau
 		AccessTokenThreadData *td;
 		GThread *thread;
 
-		cpi_oauth2_show_error (prompter_oauth2, "Checking returned code", _("Requesting access token, please wait…"));
+		cpi_oauth2_show_info (prompter_oauth2, _("Checking returned code"), _("Requesting access token, please wait…"));
 
 		gtk_widget_set_sensitive (GTK_WIDGET (prompter_oauth2->priv->notebook), FALSE);
 
