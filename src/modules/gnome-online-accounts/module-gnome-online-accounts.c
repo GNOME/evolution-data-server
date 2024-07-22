@@ -118,6 +118,9 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 	if (g_str_equal (goa_provider_type, "exchange"))
 		eds_backend_name = "ews";
 
+	if (g_str_equal (goa_provider_type, "ms_graph"))
+		eds_backend_name = "microsoft365";
+
 	if (g_str_equal (goa_provider_type, "google"))
 		eds_backend_name = "google";
 
@@ -364,6 +367,27 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 	/* This function is called in the main thread and the autodiscovery
 	   can block it, thus use the asynchronous/non-blocking version. */
 	goa_ews_autodiscover (goa_object, NULL, goa_ews_autodiscover_done_cb, g_object_ref (source));
+}
+
+static void
+gnome_online_accounts_config_microsoft365 (EGnomeOnlineAccounts *extension,
+					   ESource *source,
+					   GoaObject *goa_object)
+{
+	ESourceBackend *collection_extension;
+	ESourceAuthentication *authentication_extension;
+
+	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+	if (g_strcmp0 (e_source_backend_get_backend_name (collection_extension), "microsoft365") != 0)
+		return;
+
+	authentication_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	e_source_authentication_set_method (authentication_extension, "OAuth2");
+
+	e_binding_bind_property (
+		collection_extension, "identity",
+		authentication_extension, "user",
+		G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -648,6 +672,7 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 
 	/* Handle optional GOA interfaces. */
 	gnome_online_accounts_config_exchange (extension, source, goa_object);
+	gnome_online_accounts_config_microsoft365 (extension, source, goa_object);
 
 	e_server_side_source_set_writable (E_SERVER_SIDE_SOURCE (source), TRUE);
 
