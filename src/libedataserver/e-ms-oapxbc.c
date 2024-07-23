@@ -95,9 +95,28 @@ ensure_broker_is_running_sync (EMsOapxbc *self,
 	GDBusMessage *method_reply_message;
 	GVariant *response;
 	guint response_state = 0;
+	gboolean service_running = FALSE;
 
+	/* check if broker is running */
+	method_call_message = g_dbus_message_new_method_call (DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, NULL, "NameHasOwner");
+	g_dbus_message_set_body (method_call_message, g_variant_new ("(s)", DBUS_BROKER_NAME));
+	method_reply_message = g_dbus_connection_send_message_with_reply_sync (self->connection, method_call_message,
+		G_DBUS_SEND_MESSAGE_FLAGS_NONE, -1, NULL, cancellable, error);
+	g_object_unref (method_call_message);
+	if (method_reply_message == NULL) {
+		g_prefix_error (error, _("Failed to check if broker is running (%s): "), DBUS_BROKER_NAME);
+		return FALSE;
+	}
+	response = g_dbus_message_get_body (method_reply_message);
+	g_variant_get (response, "(b)", &service_running);
+	g_object_unref (method_reply_message);
+	if (service_running) {
+		return TRUE;
+	}
+
+	/* try to start broker */
 	method_call_message = g_dbus_message_new_method_call (DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, NULL, "StartServiceByName");
-	g_dbus_message_set_body (method_call_message, g_variant_new("(su)", DBUS_BROKER_NAME, 0));
+	g_dbus_message_set_body (method_call_message, g_variant_new ("(su)", DBUS_BROKER_NAME, 0));
 	method_reply_message = g_dbus_connection_send_message_with_reply_sync (self->connection, method_call_message,
 		G_DBUS_SEND_MESSAGE_FLAGS_NONE, -1, NULL, cancellable, error);
 	g_object_unref (method_call_message);
