@@ -43,6 +43,7 @@
 
 #define DBUS_BROKER_NAME "com.microsoft.identity.broker1"
 #define DBUS_BROKER_PATH "/com/microsoft/identity/broker1"
+#define DBUS_BROKER_IFACE "com.microsoft.identity.Broker1"
 #define AUTH_TYPE_OAUTH2 8
 
 struct _EMsOapxbc {
@@ -217,7 +218,7 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 	g_object_unref (generator);
 
 	method_call_message = g_dbus_message_new_method_call (
-		DBUS_BROKER_NAME, DBUS_BROKER_PATH, NULL, "getAccounts");
+		DBUS_BROKER_NAME, DBUS_BROKER_PATH, DBUS_BROKER_IFACE, "getAccounts");
 	g_dbus_message_set_body (
 		method_call_message,
 		g_variant_new ("(sss)", "0.0", self->session_id, data));
@@ -391,7 +392,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	data = prepare_prt_sso_request_data (account, auth_params, sso_url);
 	json_object_unref (auth_params);
 
-	method_call_message = g_dbus_message_new_method_call (DBUS_BROKER_NAME, DBUS_BROKER_PATH, NULL, "acquirePrtSsoCookie");
+	method_call_message = g_dbus_message_new_method_call (DBUS_BROKER_NAME, DBUS_BROKER_PATH, DBUS_BROKER_IFACE, "acquirePrtSsoCookie");
 	g_dbus_message_set_body (method_call_message, g_variant_new ("(sss)", "0.0", self->session_id, data));
 	method_reply_message = g_dbus_connection_send_message_with_reply_sync (
 		self->connection, method_call_message,
