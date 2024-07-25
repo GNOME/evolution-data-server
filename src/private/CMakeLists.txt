@@ -1,4 +1,15 @@
 
+set(GENERATED_DBUS_IDENTITY_BROKER
+	e-dbus-identity-broker.c
+	e-dbus-identity-broker.h
+)
+
+gdbus_codegen(com.microsoft.identity.broker1.xml
+	com.microsoft.
+	E_DBus
+	e-dbus-identity-broker
+	GENERATED_DBUS_IDENTITY_BROKER)
+
 set(GENERATED_DBUS_LOCALE
 	e-dbus-localed.c
 	e-dbus-localed.h
@@ -186,6 +197,7 @@ gdbus_codegen_custom(org.gnome.evolution.dataserver.Subprocess.Backend.xml
 	--c-generate-object-manager)
 
 add_library(edbus-private SHARED
+	${GENERATED_DBUS_IDENTITY_BROKER}
 	${GENERATED_DBUS_LOCALE}
 	${GENERATED_DBUS_SOURCE}
 	${GENERATED_DBUS_SOURCE_MANAGER}

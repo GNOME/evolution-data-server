@@ -34,16 +34,12 @@
 #include <libsoup/soup.h>
 #include <uuid/uuid.h>
 
-#include "e-ms-oapxbc.h"
+#include "e-dbus-identity-broker.h"
 
-#define DBUS_SERVICE_DBUS		"org.freedesktop.DBus"
-#define DBUS_PATH_DBUS			"/org/freedesktop/DBus"
-#define DBUS_START_REPLY_SUCCESS         1 /* Service was auto started */
-#define DBUS_START_REPLY_ALREADY_RUNNING 2 /* Service was already running */
+#include "e-ms-oapxbc.h"
 
 #define DBUS_BROKER_NAME "com.microsoft.identity.broker1"
 #define DBUS_BROKER_PATH "/com/microsoft/identity/broker1"
-#define DBUS_BROKER_IFACE "com.microsoft.identity.Broker1"
 #define AUTH_TYPE_OAUTH2 8
 
 struct _EMsOapxbc {
@@ -52,7 +48,7 @@ struct _EMsOapxbc {
 	gchar client_id[UUID_STR_LEN];
 	gchar session_id[UUID_STR_LEN];
 	gchar *authority;
-	GDBusConnection *connection;
+	EDBusIdentityBroker1 *broker;
 };
 
 G_DEFINE_TYPE (EMsOapxbc, e_ms_oapxbc, G_TYPE_OBJECT)
@@ -63,7 +59,7 @@ e_ms_oapxbc_finalize (GObject *object)
 	EMsOapxbc *self = E_MS_OAPXBC (object);
 
 	g_clear_pointer (&self->authority, g_free);
-	g_clear_object (&self->connection);
+	g_clear_object (&self->broker);
 
 	G_OBJECT_CLASS (e_ms_oapxbc_parent_class)->finalize (object);
 }
@@ -84,58 +80,6 @@ e_ms_oapxbc_init (EMsOapxbc *self)
 
 	uuid_generate_random (session_id);
 	uuid_unparse_lower (session_id, self->session_id);
-}
-
-static gboolean
-ensure_broker_is_running_sync (EMsOapxbc *self,
-			       GCancellable *cancellable,
-			       GError **error)
-{
-	GDBusMessage *method_call_message;
-	GDBusMessage *method_reply_message;
-	GVariant *response;
-	guint response_state = 0;
-	gboolean service_running = FALSE;
-
-	/* check if broker is running */
-	method_call_message = g_dbus_message_new_method_call (DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, NULL, "NameHasOwner");
-	g_dbus_message_set_body (method_call_message, g_variant_new ("(s)", DBUS_BROKER_NAME));
-	method_reply_message = g_dbus_connection_send_message_with_reply_sync (self->connection, method_call_message,
-		G_DBUS_SEND_MESSAGE_FLAGS_NONE, -1, NULL, cancellable, error);
-	g_object_unref (method_call_message);
-	if (method_reply_message == NULL) {
-		g_prefix_error (error, _("Failed to check if broker is running (%s): "), DBUS_BROKER_NAME);
-		return FALSE;
-	}
-	response = g_dbus_message_get_body (method_reply_message);
-	g_variant_get (response, "(b)", &service_running);
-	g_object_unref (method_reply_message);
-	if (service_running) {
-		return TRUE;
-	}
-
-	/* try to start broker */
-	method_call_message = g_dbus_message_new_method_call (DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, NULL, "StartServiceByName");
-	g_dbus_message_set_body (method_call_message, g_variant_new ("(su)", DBUS_BROKER_NAME, 0));
-	method_reply_message = g_dbus_connection_send_message_with_reply_sync (self->connection, method_call_message,
-		G_DBUS_SEND_MESSAGE_FLAGS_NONE, -1, NULL, cancellable, error);
-	g_object_unref (method_call_message);
-
-	if (method_reply_message == NULL) {
-		g_prefix_error (error, _("Failed to start broker (%s): "), DBUS_BROKER_NAME);
-		return FALSE;
-	}
-
-	response = g_dbus_message_get_body (method_reply_message);
-	g_variant_get (response, "(u)", &response_state);
-	g_object_unref (method_reply_message);
-
-	if (response_state != DBUS_START_REPLY_ALREADY_RUNNING &&
-	    response_state != DBUS_START_REPLY_SUCCESS) {
-		return FALSE;
-	}
-
-	return TRUE;
 }
 
 /**
@@ -166,19 +110,18 @@ e_ms_oapxbc_new_sync (const gchar *client_id,
 
 	strncpy (self->client_id, client_id, UUID_STR_LEN - 1);
 	self->authority = g_strdup (authority);
-
-	self->connection = g_bus_get_sync (G_BUS_TYPE_SESSION, cancellable, error);
-
-	if (!self->connection) {
-		g_prefix_error (error, _("Failed to get session bus: "));
+	self->broker = e_dbus_identity_broker1_proxy_new_for_bus_sync (
+		G_BUS_TYPE_SESSION,
+		G_DBUS_PROXY_FLAGS_NONE,
+		DBUS_BROKER_NAME,
+		DBUS_BROKER_PATH,
+		cancellable, error);
+	if (!self->broker) {
+		if (error && *error)
+			g_dbus_error_strip_remote_error (*error);
+		g_prefix_error (error, _("Failed to create broker proxy: "));
 		g_clear_object (&self);
-
-		return NULL;
 	}
-
-	if (!ensure_broker_is_running_sync (self, cancellable, error))
-		g_clear_object (&self);
-
 	return self;
 }
 
@@ -207,16 +150,14 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 			       GCancellable *cancellable,
 			       GError **error)
 {
-	GDBusMessage *method_call_message;
-	GDBusMessage *method_reply_message;
-	const gchar *response;
+	gchar *response = NULL;
 	JsonBuilder *builder;
 	JsonGenerator *generator;
 	JsonParser *parser;
 	JsonNode *root;
 	JsonObject *accounts;
 	gchar *data;
-	gboolean parse_ok;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_MS_OAPXBC (self), NULL);
 
@@ -236,30 +177,23 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 	json_node_unref (root);
 	g_object_unref (generator);
 
-	method_call_message = g_dbus_message_new_method_call (
-		DBUS_BROKER_NAME, DBUS_BROKER_PATH, DBUS_BROKER_IFACE, "getAccounts");
-	g_dbus_message_set_body (
-		method_call_message,
-		g_variant_new ("(sss)", "0.0", self->session_id, data));
-	method_reply_message = g_dbus_connection_send_message_with_reply_sync (
-		self->connection, method_call_message, G_DBUS_SEND_MESSAGE_FLAGS_NONE,
-		-1, NULL, cancellable, error);
+	success = e_dbus_identity_broker1_call_get_accounts_sync (
+		self->broker, "0.0", self->session_id, data,
+		&response, cancellable, error);
 	g_free (data);
-	g_object_unref (method_call_message);
-
-	if (method_reply_message == NULL) {
+	if (!success) {
+		if (error && *error)
+			g_dbus_error_strip_remote_error (*error);
 		g_prefix_error (error, _("Failed to call getAccounts: "));
 		return NULL;
 	}
 
-	response = g_dbus_message_get_arg0 (method_reply_message);
-
 	parser = json_parser_new ();
-	parse_ok = json_parser_load_from_data (parser, response, -1, error);
-	if (!parse_ok) {
+	success = json_parser_load_from_data (parser, response, -1, error);
+	g_free (response);
+	if (!success) {
 		g_prefix_error (error, _("Failed to parse getAccounts response: "));
 		g_clear_object (&parser);
-		g_clear_object (&method_reply_message);
 		return NULL;
 	}
 
@@ -267,15 +201,12 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 	if (json_node_get_value_type (root) != JSON_TYPE_OBJECT) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Failed to parse getAccounts response: root is not an object"));
 		g_clear_object (&parser);
-		g_clear_object (&method_reply_message);
 		return NULL;
 	}
 
 	accounts = json_node_get_object (root);
 	json_object_ref (accounts);
-
-	g_object_unref (parser);
-	g_object_unref (method_reply_message);
+	g_clear_object (&parser);
 
 	return accounts;
 }
@@ -398,46 +329,38 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	JsonNode *root;
 	JsonObject *auth_params, *json_cookie;
 	JsonParser *parser;
-	GDBusMessage *method_call_message;
-	GDBusMessage *method_reply_message;
 	SoupCookie *soup_cookie;
 	gchar *data;
-	const gchar *response;
-	gboolean parse_ok;
+	gchar *response = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_MS_OAPXBC (self), NULL);
-
 	auth_params = prepare_prt_auth_params (self, account, scopes, redirect_uri);
 	data = prepare_prt_sso_request_data (account, auth_params, sso_url);
 	json_object_unref (auth_params);
 
-	method_call_message = g_dbus_message_new_method_call (DBUS_BROKER_NAME, DBUS_BROKER_PATH, DBUS_BROKER_IFACE, "acquirePrtSsoCookie");
-	g_dbus_message_set_body (method_call_message, g_variant_new ("(sss)", "0.0", self->session_id, data));
-	method_reply_message = g_dbus_connection_send_message_with_reply_sync (
-		self->connection, method_call_message,
-		G_DBUS_SEND_MESSAGE_FLAGS_NONE, -1, NULL,
-		cancellable, error);
+	success = e_dbus_identity_broker1_call_acquire_prt_sso_cookie_sync (
+		self->broker, "0.0", self->session_id, data,
+		&response, cancellable, error);
 	g_free (data);
-	g_object_unref (method_call_message);
-
-	if (method_reply_message == NULL) {
+	if (!success) {
+		if (error && *error)
+			g_dbus_error_strip_remote_error (*error);
 		g_prefix_error (error, _("Failed to acquire PRT SSO cookie: "));
 		return NULL;
 	}
 
-	response = g_dbus_message_get_arg0 (method_reply_message);
 	parser = json_parser_new ();
-	parse_ok = json_parser_load_from_data (parser, response, -1, error);
-	if (!parse_ok) {
+	success = json_parser_load_from_data (parser, response, -1, error);
+	g_free (response);
+	if (!success) {
 		g_prefix_error (error, _("Failed to parse acquirePrtSsoCookie response: "));
-		g_clear_object (&method_reply_message);
 		g_clear_object (&parser);
 		return NULL;
 	}
 	root = json_parser_get_root (parser);
 	if (json_node_get_value_type (root) != JSON_TYPE_OBJECT) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Failed to parse acquirePrtSsoCookie response: root is not an object"));
-		g_clear_object (&method_reply_message);
 		g_clear_object (&parser);
 		return NULL;
 	}
@@ -453,8 +376,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	soup_cookie_set_secure (soup_cookie, TRUE);
 	soup_cookie_set_http_only (soup_cookie, TRUE);
 
-	g_object_unref (parser);
-	g_object_unref (method_reply_message);
+	g_clear_object (&parser);
 
 	return soup_cookie;
 }

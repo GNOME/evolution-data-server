@@ -1,0 +1,55 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/com/microsoft/identity/broker1">
+ <interface name="com.microsoft.identity.Broker1">
+  <method name="acquireTokenInteractively" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="acquireTokenSilently" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="getAccounts" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="removeAccount" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="acquirePrtSsoCookie" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="generateSignedHttpRequest" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="cancelInteractiveFlow" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="getLinuxBrokerVersion" >
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+ </interface>
+</node>
