@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2024-07-22 16:12+0000\n"
-"PO-Revision-Date: 2024-07-22 21:33+0300\n"
+"POT-Creation-Date: 2024-07-24 15:55+0000\n"
+"PO-Revision-Date: 2024-07-26 08:48+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -7776,49 +7776,49 @@ msgstr "Сервером не повернуто жодного об'єкта JS
 msgid "Failed to call %s: "
 msgstr "Не вдалося викликати %s: "
 
-#: src/libedataserver/e-ms-oapxbc.c:105
+#: src/libedataserver/e-ms-oapxbc.c:107
 #, c-format
-#| msgid "Failed to open browser: %s"
+#| msgid "Failed to start broker (%s): "
+msgid "Failed to check if broker is running (%s): "
+msgstr "Не вдалося перевірити, чи запущено обробник (%s): "
+
+#: src/libedataserver/e-ms-oapxbc.c:125
+#, c-format
 msgid "Failed to start broker (%s): "
 msgstr "Не вдалося запустити брокер (%s): "
 
-#: src/libedataserver/e-ms-oapxbc.c:153
-#| msgid "Could not get session bus:"
+#: src/libedataserver/e-ms-oapxbc.c:173
 msgid "Failed to get session bus: "
 msgstr "Не вдалося отримати канал сеансу: "
 
-#: src/libedataserver/e-ms-oapxbc.c:231
-#| msgid "Failed to call %s: "
+#: src/libedataserver/e-ms-oapxbc.c:251
 msgid "Failed to call getAccounts: "
 msgstr "Не вдалося викликати getAccounts: "
 
-#: src/libedataserver/e-ms-oapxbc.c:240
-#| msgid "Failed to parse response data"
+#: src/libedataserver/e-ms-oapxbc.c:260
 msgid "Failed to parse getAccounts response: "
 msgstr "Не вдалося обробити відповідь getAccounts: "
 
-#: src/libedataserver/e-ms-oapxbc.c:248
+#: src/libedataserver/e-ms-oapxbc.c:268
 #, c-format
-#| msgid "Failed to parse response data"
 msgid "Failed to parse getAccounts response: root is not an object"
 msgstr ""
 "Не вдалося обробити відповідь getAccounts: кореневий елемент не є об'єктом"
 
-#: src/libedataserver/e-ms-oapxbc.c:404
+#: src/libedataserver/e-ms-oapxbc.c:424
 msgid "Failed to acquire PRT SSO cookie: "
 msgstr "Не вдалося опитати щодо куки SSO PRT: "
 
-#: src/libedataserver/e-ms-oapxbc.c:412
-#| msgid "Failed to parse autodiscover response XML"
+#: src/libedataserver/e-ms-oapxbc.c:432
 msgid "Failed to parse acquirePrtSsoCookie response: "
 msgstr "Не вдалося обробити відповідь acquirePrtSsoCookie: "
 
-#: src/libedataserver/e-ms-oapxbc.c:419
+#: src/libedataserver/e-ms-oapxbc.c:439
 #, c-format
 msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
 msgstr ""
-"Не вдалося обробити відповідь acquirePrtSsoCookie: кореневий елемент не є"
-" об'єктом"
+"Не вдалося обробити відповідь acquirePrtSsoCookie: кореневий елемент не є "
+"об'єктом"
 
 #: src/libedataserver/e-oauth2-service.c:1095
 msgid "Malformed, no message body set"
@@ -8457,7 +8457,6 @@ msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Не вдалося отримати ключ доступу з адреси «%s»: %s"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
-#| msgid "Checking folder consistency"
 msgid "Checking returned code"
 msgstr "Перевіряємо повернутий код"
 
@@ -8643,7 +8642,6 @@ msgstr "Пр_одовжити"
 
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1710
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1711
-#| msgid "Requesting access token, please wait…"
 msgid "Preparing request, please wait…"
 msgstr "Готуємо запит, будь ласка, зачекайте…"
 
