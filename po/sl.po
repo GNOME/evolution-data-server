@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-07-24 15:55+0000\n"
-"PO-Revision-Date: 2024-07-24 19:30+0200\n"
+"POT-Creation-Date: 2024-07-26 07:51+0000\n"
+"PO-Revision-Date: 2024-07-26 11:32+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -7724,42 +7724,32 @@ msgstr "Strežnik ni vrnil nobenega predmeta JSON"
 msgid "Failed to call %s: "
 msgstr "Klic %s je spodletel: "
 
-#: src/libedataserver/e-ms-oapxbc.c:107
-#, c-format
-msgid "Failed to check if broker is running (%s): "
-msgstr "Preverjanje, ali posrednik deluje (%s), ni uspelo: "
+#: src/libedataserver/e-ms-oapxbc.c:122
+msgid "Failed to create broker proxy: "
+msgstr "Ustvarjanje posrednika posredovalnega strežnika ni uspel: "
 
-#: src/libedataserver/e-ms-oapxbc.c:125
-#, c-format
-msgid "Failed to start broker (%s): "
-msgstr "Zagon posrednika (%s) ni uspel: "
-
-#: src/libedataserver/e-ms-oapxbc.c:173
-msgid "Failed to get session bus: "
-msgstr "Ni mogoče pridobiti vodila seje: "
-
-#: src/libedataserver/e-ms-oapxbc.c:251
+#: src/libedataserver/e-ms-oapxbc.c:187
 msgid "Failed to call getAccounts: "
 msgstr "Ni mogoče poklicati getAccounts: "
 
-#: src/libedataserver/e-ms-oapxbc.c:260
+#: src/libedataserver/e-ms-oapxbc.c:195
 msgid "Failed to parse getAccounts response: "
 msgstr "Razčlenjevanje odziva getAccounts je spodletelo: "
 
-#: src/libedataserver/e-ms-oapxbc.c:268
+#: src/libedataserver/e-ms-oapxbc.c:202
 #, c-format
 msgid "Failed to parse getAccounts response: root is not an object"
 msgstr "Razčlenjevanje odziva getAccounts je spodletelo: root ni predmet"
 
-#: src/libedataserver/e-ms-oapxbc.c:424
+#: src/libedataserver/e-ms-oapxbc.c:349
 msgid "Failed to acquire PRT SSO cookie: "
 msgstr "Ni uspelo pridobiti piškotka PRT SSO: "
 
-#: src/libedataserver/e-ms-oapxbc.c:432
+#: src/libedataserver/e-ms-oapxbc.c:357
 msgid "Failed to parse acquirePrtSsoCookie response: "
 msgstr "Razčlenjevanje odziva acquirePrtSsoCookie je spodletelo: "
 
-#: src/libedataserver/e-ms-oapxbc.c:439
+#: src/libedataserver/e-ms-oapxbc.c:363
 #, c-format
 msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
 msgstr "Razčlenjevanje odgovora acquirePrtSsoCookie ni uspel: root ni predmet"
