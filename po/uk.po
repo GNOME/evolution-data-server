@@ -11,10 +11,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
-"sues/\n"
-"POT-Creation-Date: 2024-07-24 15:55+0000\n"
-"PO-Revision-Date: 2024-07-26 08:48+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
+"ues/\n"
+"POT-Creation-Date: 2024-07-26 07:51+0000\n"
+"PO-Revision-Date: 2024-07-27 16:04+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1229,8 +1229,7 @@ msgstr ""
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1426
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1419
 msgid "Refresh skipped due to being disabled on metered network."
-msgstr ""
-"Оновлення пропущено, оскільки його вимкнено у мережах з обліком даних."
+msgstr "Оновлення пропущено, оскільки його вимкнено у мережах з обліком даних."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2064
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2563
@@ -3223,8 +3222,7 @@ msgstr "Ця частина повідомлення зашифрована"
 #: src/camel/camel-gpg-context.c:3139
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr ""
-"Не вдалося розшифрувати повідомлення: неправильний формат повідомлення"
+msgstr "Не вдалося розшифрувати повідомлення: неправильний формат повідомлення"
 
 #: src/camel/camel-gpg-context.c:3127
 #, c-format
@@ -3573,8 +3571,7 @@ msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: src/camel/camel-sasl-gssapi.c:90
-msgid ""
-"This option will connect to the server using Kerberos 5 authentication."
+msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "З'єднуватись з сервером використовуючи Kerberos 5."
 
 #: src/camel/camel-sasl-gssapi.c:151
@@ -3734,8 +3731,7 @@ msgid "OAuth2"
 msgstr "OAuth2"
 
 #: src/camel/camel-sasl-xoauth2.c:27
-msgid ""
-"This option will use an OAuth 2.0 access token to connect to the server"
+msgid "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
 "Цей параметр використовуватиме ключ доступу OAuth 2.0, щоб під'єднатись до "
 "сервера"
@@ -3997,8 +3993,7 @@ msgstr ""
 "пошти."
 
 #: src/camel/camel-smime-context.c:155
-msgid ""
-"Not encrypted: you do not have certificates for each of the recipients."
+msgid "Not encrypted: you do not have certificates for each of the recipients."
 msgstr "Не зашифровано: у вас немає сертифікатів для кожного з отримувачів."
 
 #: src/camel/camel-smime-context.c:156
@@ -4172,8 +4167,7 @@ msgid "Unable to import.  MAC algorithm not supported."
 msgstr "Не вдалося імпортувати. Не передбачено підтримки MAC-алгоритму."
 
 #: src/camel/camel-smime-context.c:192
-msgid ""
-"Unable to import.  Only password integrity and privacy modes supported."
+msgid "Unable to import.  Only password integrity and privacy modes supported."
 msgstr ""
 "Не вдалося імпортувати. Передбачено підтримку лише режиму цілісності пароля "
 "та закритого режиму."
@@ -4184,8 +4178,7 @@ msgstr "Не вдалося імпортувати. Структуру файл�
 
 #: src/camel/camel-smime-context.c:194
 msgid "Unable to import.  Encryption algorithm not supported."
-msgstr ""
-"Не вдалося імпортувати. Не передбачено підтримки алгоритму шифрування."
+msgstr "Не вдалося імпортувати. Не передбачено підтримки алгоритму шифрування."
 
 #: src/camel/camel-smime-context.c:195
 msgid "Unable to import.  File version not supported."
@@ -4354,8 +4347,7 @@ msgid "The OCSP server returned unexpected/invalid HTTP data."
 msgstr "Сервером OCSP повернуто неочікувані/некоректні дані HTTP."
 
 #: src/camel/camel-smime-context.c:231
-msgid ""
-"The OCSP server found the request to be corrupted or improperly formed."
+msgid "The OCSP server found the request to be corrupted or improperly formed."
 msgstr ""
 "Сервером OCSP визначено, що запит пошкоджено або сформовано неналежним чином."
 
@@ -4743,8 +4735,7 @@ msgstr "У повідомленні лише сертифікати, не вда
 #: src/camel/camel-smime-context.c:768
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
-"У повідомленні лише сертифікати, сертифікати імпортовані та перевірені"
+msgstr "У повідомленні лише сертифікати, сертифікати імпортовані та перевірені"
 
 #: src/camel/camel-smime-context.c:772
 msgid "Cannot find signature digests"
@@ -4909,8 +4900,7 @@ msgstr "Оновлення теки «%s»"
 #: src/camel/camel-vee-folder.c:1375 src/camel/camel-vee-folder.c:1511
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
-"Не вдалося скопіювати або перемістити повідомлення до віртуальної теки"
+msgstr "Не вдалося скопіювати або перемістити повідомлення до віртуальної теки"
 
 #. Translators: The first “%s” is replaced with a message UID, the second “%s”
 #. is replaced with an account name and the third “%s” is replaced with a full
@@ -5459,8 +5449,7 @@ msgid "Password"
 msgstr "Пароль"
 
 #: src/camel/providers/imapx/camel-imapx-store.c:1072
-msgid ""
-"This option will connect to the IMAP server using a plaintext password."
+msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "З'єднуватись з IMAP сервером використовуючи нешифрований пароль."
 
 #: src/camel/providers/imapx/camel-imapx-store.c:1156
@@ -6296,8 +6285,7 @@ msgstr "Не можна перейменовувати теку у групах 
 #: src/camel/providers/nntp/camel-nntp-store.c:1399
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
-"Не можна переміщувати теку у групах новин: натомість слід відписатись."
+msgstr "Не можна переміщувати теку у групах новин: натомість слід відписатись."
 
 #: src/camel/providers/nntp/camel-nntp-store.c:1616
 #, c-format
@@ -6929,16 +6917,14 @@ msgid "Default reminder for all events in chosen calendars"
 msgstr "Типове нагадування для усіх подій у вибраних календарях"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:29
-msgid ""
-"Whether to show a specified reminder for all events in chosen calendars"
+msgid "Whether to show a specified reminder for all events in chosen calendars"
 msgstr ""
 "Визначає, чи слід показувати вказане нагадування для усіх подій у вибраних "
 "коментарях"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
 msgid "Interval of the default reminder for all events in chosen calendars"
-msgstr ""
-"Інтервал для типового нагадування для усіх подій у вибраних календарях"
+msgstr "Інтервал для типового нагадування для усіх подій у вибраних календарях"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:34
 msgid "Number of units for determining the reminder"
@@ -7422,8 +7408,7 @@ msgstr "Обробник OAuth2 сервера даних Evolution"
 msgid ""
 "Handles OAuth2 responses and passes them to the OAuth2 prompter "
 "implementation"
-msgstr ""
-"Обробляє відповіді OAuth2 і передає їх реалізації засобу запиту OAuth2"
+msgstr "Обробляє відповіді OAuth2 і передає їх реалізації засобу запиту OAuth2"
 
 #: src/libebackend/e-cache.c:750
 msgid "Out of memory"
@@ -7740,8 +7725,7 @@ msgstr[0] ""
 "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилина)"
 msgstr[1] ""
 "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилини)"
-msgstr[2] ""
-"Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилин)"
+msgstr[2] "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилин)"
 msgstr[3] ""
 "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилина)"
 
@@ -7776,44 +7760,34 @@ msgstr "Сервером не повернуто жодного об'єкта JS
 msgid "Failed to call %s: "
 msgstr "Не вдалося викликати %s: "
 
-#: src/libedataserver/e-ms-oapxbc.c:107
-#, c-format
+#: src/libedataserver/e-ms-oapxbc.c:122
 #| msgid "Failed to start broker (%s): "
-msgid "Failed to check if broker is running (%s): "
-msgstr "Не вдалося перевірити, чи запущено обробник (%s): "
+msgid "Failed to create broker proxy: "
+msgstr "Не вдалося створити проксі обробки: "
 
-#: src/libedataserver/e-ms-oapxbc.c:125
-#, c-format
-msgid "Failed to start broker (%s): "
-msgstr "Не вдалося запустити брокер (%s): "
-
-#: src/libedataserver/e-ms-oapxbc.c:173
-msgid "Failed to get session bus: "
-msgstr "Не вдалося отримати канал сеансу: "
-
-#: src/libedataserver/e-ms-oapxbc.c:251
+#: src/libedataserver/e-ms-oapxbc.c:187
 msgid "Failed to call getAccounts: "
 msgstr "Не вдалося викликати getAccounts: "
 
-#: src/libedataserver/e-ms-oapxbc.c:260
+#: src/libedataserver/e-ms-oapxbc.c:195
 msgid "Failed to parse getAccounts response: "
 msgstr "Не вдалося обробити відповідь getAccounts: "
 
-#: src/libedataserver/e-ms-oapxbc.c:268
+#: src/libedataserver/e-ms-oapxbc.c:202
 #, c-format
 msgid "Failed to parse getAccounts response: root is not an object"
 msgstr ""
 "Не вдалося обробити відповідь getAccounts: кореневий елемент не є об'єктом"
 
-#: src/libedataserver/e-ms-oapxbc.c:424
+#: src/libedataserver/e-ms-oapxbc.c:349
 msgid "Failed to acquire PRT SSO cookie: "
 msgstr "Не вдалося опитати щодо куки SSO PRT: "
 
-#: src/libedataserver/e-ms-oapxbc.c:432
+#: src/libedataserver/e-ms-oapxbc.c:357
 msgid "Failed to parse acquirePrtSsoCookie response: "
 msgstr "Не вдалося обробити відповідь acquirePrtSsoCookie: "
 
-#: src/libedataserver/e-ms-oapxbc.c:439
+#: src/libedataserver/e-ms-oapxbc.c:363
 #, c-format
 msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
 msgstr ""
@@ -7853,8 +7827,7 @@ msgstr ""
 
 #: src/libedataserver/e-oauth2-service.c:1615
 msgid "Failed to refresh access token. Sign to the server again, please."
-msgstr ""
-"Не вдалося оновити ключ доступу. Увійдіть на сервер знову, будь ласка."
+msgstr "Не вдалося оновити ключ доступу. Увійдіть на сервер знову, будь ласка."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: src/libedataserver/e-oauth2-service.c:1661
@@ -8280,8 +8253,7 @@ msgstr "Не вдалося отримати список керування д�
 
 #: src/libedataserver/e-webdav-session.c:4821
 msgid "Cannot store protected nor inherited Access Control Entry."
-msgstr ""
-"Неможливо зберегти захищений або успадкований запис керування доступом"
+msgstr "Неможливо зберегти захищений або успадкований запис керування доступом"
 
 #: src/libedataserver/e-webdav-session.c:4828
 msgid "Provided invalid principal kind for Access Control Entry."
@@ -9383,6 +9355,14 @@ msgstr "У інтернеті"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Нотатки WebDAV"
+
+#, c-format
+#~| msgid "Failed to start broker (%s): "
+#~ msgid "Failed to check if broker is running (%s): "
+#~ msgstr "Не вдалося перевірити, чи запущено обробник (%s): "
+
+#~ msgid "Failed to get session bus: "
+#~ msgstr "Не вдалося отримати канал сеансу: "
 
 #~ msgid "Click here to open the URL"
 #~ msgstr "Натисніть, щоб відкрити URL"
