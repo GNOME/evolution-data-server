@@ -1,3 +1,10 @@
+Evolution-Data-Server 3.52.4 2024-08-02
+---------------------------------------
+
+Bug Fixes:
+	I#551 - alarm-notify: Save acknowledge time without sending iTip message
+	I#552 - Calendar: Anniversaries hidden when book goes to online
+
 Evolution-Data-Server 3.52.3 2024-06-28
 ---------------------------------------
 
