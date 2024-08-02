@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.53.2 2024-08-02
+---------------------------------------
+
+Bug Fixes:
+	I#550 - Calendar: Respect TZDIR env variable
+	I#551 - alarm-notify: Save acknowledge time without sending iTip message
+	I#552 - Calendar: Anniversaries hidden when book goes to online
+	I#553 - Camel: 'match-threads' in search folder can miss messages
+	M!159 - Add helper object to talk to intune (Microsoft OAuth2 broker service) (Felix Moessbauer)
+	M!160 - e-ms-oapxbc: Check if broker is running before starting it (Felix Moessbauer)
+	M!161 - e-ms-oapxbc: Use GDBusProxy to communicate with broker (Felix Moessbauer)
+	evo-I#2780 - Enhance "junk-test" to return also "inconclusive" value
+	evo-I#2790 - "Thread by Subject" option not propagated to Search Folders
+
+Miscellaneous:
+	module-gnome-online-accounts: Recognize "Microsoft 365" accounts
+	e_util_get_source_full_name: Fix possible runtime warning
+
+Translations:
+	Artur S0 (ru)
+	Boyuan Yang (zh_CN)
+	Martin (sl)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.53.1 2024-06-28
 ---------------------------------------
 
