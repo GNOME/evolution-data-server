@@ -19,8 +19,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-06-11 10:37+0000\n"
-"PO-Revision-Date: 2024-06-11 13:41+0300\n"
+"POT-Creation-Date: 2024-07-26 07:51+0000\n"
+"PO-Revision-Date: 2024-07-26 14:32+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: RU\n"
 "Language: ru\n"
@@ -34,7 +34,7 @@ msgstr ""
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
 #: src/addressbook/libebook-contacts/e-contact.c:312
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:903
 msgid "Anniversary"
 msgstr "Годовщина"
 
@@ -163,7 +163,7 @@ msgstr "Не удалось переименовать старую базу д�
 #: src/addressbook/libebook/e-book-client.c:3305
 #: src/addressbook/libebook/e-book-client.c:3511
 #: src/addressbook/libedata-book/e-book-backend-sexp.c:898
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:281
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:275
 #: src/calendar/backends/http/e-cal-backend-http.c:313
 #: src/calendar/libecal/e-cal-client.c:244
 #: src/calendar/libecal/e-cal-client.c:3231
@@ -195,8 +195,8 @@ msgstr "Не удалось переименовать старую базу д�
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1125
 #: src/libedataserver/e-soup-session.c:2131
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:273
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:975
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -940,7 +940,7 @@ msgid "Matrix ID List"
 msgstr "Matrix ID List"
 
 #: src/addressbook/libebook-contacts/e-contact.c:1924
-#: src/addressbook/libebook/e-destination.c:914
+#: src/addressbook/libebook/e-destination.c:915
 msgid "Unnamed List"
 msgstr "Безымянный список"
 
@@ -1347,16 +1347,16 @@ msgstr "Указанный URL «%s» не ссылается на календ�
 msgid "Failed to parse response data"
 msgstr "Не удалось разобрать данные ответа"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:941
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:905
 msgid "Birthday"
 msgstr "День рождения"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:977
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:941
 #, c-format
 msgid "Birthday: %s"
 msgstr "День рождения: %s"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1008
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:972
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Годовщина: %s"
@@ -2855,11 +2855,11 @@ msgstr "Недопустимые аргументы для (system-flag)"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Недопустимые аргументы для (user-tag)"
 
-#: src/camel/camel-filter-search.c:1238
+#: src/camel/camel-filter-search.c:1241
 msgid "Invalid arguments to (message-location)"
 msgstr "Недопустимые аргументы для (message-location)"
 
-#: src/camel/camel-filter-search.c:1451 src/camel/camel-filter-search.c:1462
+#: src/camel/camel-filter-search.c:1454 src/camel/camel-filter-search.c:1465
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Ошибка выполнения поиска фильтра: %s: %s"
@@ -2969,30 +2969,30 @@ msgid "(%s) requires a single bool result"
 msgstr "(%s) требует единственного логического результата"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1011
+#: src/camel/camel-folder-search.c:1013
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) запрещено в %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1018 src/camel/camel-folder-search.c:1026
+#: src/camel/camel-folder-search.c:1020 src/camel/camel-folder-search.c:1028
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) требует строку соответствия"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1054
+#: src/camel/camel-folder-search.c:1064
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) ожидает результат в виде массива"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1064
+#: src/camel/camel-folder-search.c:1074
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) требует набор папок"
 
-#: src/camel/camel-folder-search.c:2286 src/camel/camel-folder-search.c:2460
+#: src/camel/camel-folder-search.c:2296 src/camel/camel-folder-search.c:2470
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -3001,7 +3001,7 @@ msgstr ""
 "Ошибка в регулярном выражении «%s»:\n"
 "%s"
 
-#: src/camel/camel-folder-search.c:2298 src/camel/camel-folder-search.c:2472
+#: src/camel/camel-folder-search.c:2308 src/camel/camel-folder-search.c:2482
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -4880,7 +4880,7 @@ msgstr "Не удалось разобрать URL «%s»"
 msgid "Updating folder “%s”"
 msgstr "Обновление папки «%s»"
 
-#: src/camel/camel-vee-folder.c:1296 src/camel/camel-vee-folder.c:1432
+#: src/camel/camel-vee-folder.c:1375 src/camel/camel-vee-folder.c:1511
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Не удалось скопировать или переместить сообщения в виртуальную папку"
@@ -4889,22 +4889,22 @@ msgstr "Не удалось скопировать или переместить
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1333
+#: src/camel/camel-vee-folder.c:1412
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Нет такого сообщения %s в «%s : %s»"
 
-#: src/camel/camel-vee-folder.c:1408
+#: src/camel/camel-vee-folder.c:1487
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Ошибка при хранении «%s»: "
 
-#: src/camel/camel-vee-folder.c:1598
+#: src/camel/camel-vee-folder.c:1677
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "Обновление папки поиска «%s»"
 
-#: src/camel/camel-vee-folder.c:1656
+#: src/camel/camel-vee-folder.c:1735
 msgid "Automatically _update on change in source folders"
 msgstr "Автоматически _обновлять при изменении папок-источников"
 
@@ -6912,8 +6912,8 @@ msgstr "Напоминание о дне рождения и годовщине 
 msgid ""
 "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
 msgstr ""
-"Единицы измерения для напоминания о днях рождения и годовщинах: "
-"«minutes» (минуты), «hours» (часы) или «days» (дни)"
+"Единицы измерения для напоминания о днях рождения и годовщинах: «minutes» "
+"(минуты), «hours» (часы) или «days» (дни)"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:28
 msgid "Default reminder for all events in chosen calendars"
@@ -7750,27 +7750,58 @@ msgstr "Нет объекта JSON, возвращенного сервером"
 msgid "Failed to call %s: "
 msgstr "Не удалось вызвать %s: "
 
-#: src/libedataserver/e-oauth2-service.c:1061
+#: src/libedataserver/e-ms-oapxbc.c:122
+msgid "Failed to create broker proxy: "
+msgstr "Не удалось создать брокерский прокси: "
+
+#: src/libedataserver/e-ms-oapxbc.c:187
+msgid "Failed to call getAccounts: "
+msgstr "Не удалось вызвать getAccounts: "
+
+#: src/libedataserver/e-ms-oapxbc.c:195
+msgid "Failed to parse getAccounts response: "
+msgstr "Не удалось разобрать ответ getAccounts: "
+
+#: src/libedataserver/e-ms-oapxbc.c:202
+#, c-format
+msgid "Failed to parse getAccounts response: root is not an object"
+msgstr "Не удалось разобрать ответ getAccounts: root не является объектом"
+
+#: src/libedataserver/e-ms-oapxbc.c:349
+msgid "Failed to acquire PRT SSO cookie: "
+msgstr "Не удалось получить файл cookie PRT SSO: "
+
+#: src/libedataserver/e-ms-oapxbc.c:357
+msgid "Failed to parse acquirePrtSsoCookie response: "
+msgstr "Не удалось разобрать ответ acquirePrtSsoCookie: "
+
+#: src/libedataserver/e-ms-oapxbc.c:363
+#, c-format
+msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
+msgstr ""
+"Не удалось разобрать ответ acquirePrtSsoCookie: root не является объектом"
+
+#: src/libedataserver/e-oauth2-service.c:1095
 msgid "Malformed, no message body set"
 msgstr "Неправильно сформировано, тело сообщения не установлено"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1343
+#: src/libedataserver/e-oauth2-service.c:1377
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Источник «%s» (%s) не действителен для «%s» сервиса OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1358
+#: src/libedataserver/e-oauth2-service.c:1392
 msgid "OAuth2 secret not found"
 msgstr "Секрет OAuth2 не найден"
 
-#: src/libedataserver/e-oauth2-service.c:1555
+#: src/libedataserver/e-oauth2-service.c:1589
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Получен неверный ответ от сервера «%s»."
 
-#: src/libedataserver/e-oauth2-service.c:1578
+#: src/libedataserver/e-oauth2-service.c:1612
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7781,18 +7812,18 @@ msgstr ""
 "\n"
 "Подробно об ошибке: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1581
+#: src/libedataserver/e-oauth2-service.c:1615
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Не удалось обновить маркер доступа. Повторите вход на сервер, пожалуйста."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1627
+#: src/libedataserver/e-oauth2-service.c:1661
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Источник «%s» (%s) не является действительным источником OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1911
+#: src/libedataserver/e-oauth2-service.c:1945
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -8379,46 +8410,50 @@ msgstr "Запрос учётных данных был отменён"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Источник «%s» не поддерживает запрос учётных данных"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:271
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:278
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Не удалось получить маркер доступа с адреса «%s»: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:302
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
+msgid "Checking returned code"
+msgstr "Проверка возвращенного кода"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
 msgid "Requesting access token, please wait…"
 msgstr "Запрашивается маркер доступа, пожалуйста, подождите…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:576
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:583
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s Запрос на аутентификацию адресной книги"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:581
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:588
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s Запрос на аутентификацию календаря"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:586
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:593
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s Запрос на аутентификацию списка памяток"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:591
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:598
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s Запрос на аутентификацию списка задач"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:597
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:604
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s Запрос аутентификации почты"
@@ -8426,7 +8461,7 @@ msgstr "%s Запрос аутентификации почты"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s запрос аутентификации учетной записи"
@@ -8434,7 +8469,7 @@ msgstr "%s запрос аутентификации учетной записи
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:616
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8446,7 +8481,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8458,7 +8493,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8470,7 +8505,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8482,7 +8517,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8494,7 +8529,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:658
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8506,7 +8541,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:658
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:665
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8515,37 +8550,37 @@ msgstr ""
 "Войдите в свою учетную запись «%s» и примите условия, чтобы получить доступ "
 "к своей учетной записи «%s»."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:975
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Не удалось открыть браузер: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1050
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1174
 msgid "_Copy URL"
 msgstr "_Копировать URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1052
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1083
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1176
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1207
 msgid "Open in _Browser"
 msgstr "Открыть в _браузере"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1069
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1193
 #, c-format
 msgid "Open with “%s”"
 msgstr "Открыть с помощью “%s”"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1179
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1303
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "_Отменить"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1264
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1388
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1339
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1463
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8555,13 +8590,18 @@ msgstr ""
 "Скопируйте полученный код авторизации или URL-адрес, на котором мастер "
 "OAuth2 завершил работу, ниже, чтобы продолжить процесс аутентификации."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1376
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1500
 msgid "_Authorization code:"
 msgstr "Код _авторизации:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1389
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1513
 msgid "C_ontinue"
 msgstr "П_родолжить"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1710
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1711
+msgid "Preparing request, please wait…"
+msgstr "Подготовка запроса, пожалуйста, подождите…"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:136
 msgid "Address book authentication request"
@@ -8915,7 +8955,7 @@ msgstr "Не удалось найти элемент Account"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Не удалось найти ASUrl и OABUrl в ответе автообнаружения"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1434
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1459
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -8924,7 +8964,7 @@ msgstr ""
 "Не удалось найти соответствующую запись в службе org.gnome.OnlineAccounts, с "
 "помощью которой можно получить маркер доступа для «%s»"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1484
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1509
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Не удалось получить маркер доступа для «%s»: "
@@ -9298,6 +9338,9 @@ msgstr "В Веб-браузере"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Заметки WebDAV"
+
+#~ msgid "Failed to get session bus: "
+#~ msgstr "Не удалось получить шину сеанса: "
 
 #~ msgid "Click here to open the URL"
 #~ msgstr "Нажмите, чтобы перейти по ссылке"
