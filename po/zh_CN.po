@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-08-03 04:43+0000\n"
-"PO-Revision-Date: 2024-08-13 12:17-0400\n"
+"POT-Creation-Date: 2024-08-13 16:29+0000\n"
+"PO-Revision-Date: 2024-08-23 09:20-0400\n"
 "Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
@@ -1253,7 +1253,7 @@ msgstr "无法打开地址簿："
 #. Translators: This is prefix to a detailed error message
 #: src/addressbook/libedata-book/e-data-book.c:1231
 msgid "Cannot refresh address book: "
-msgstr "无法刷新地址薄："
+msgstr "无法刷新地址簿："
 
 #. Translators: This is prefix to a detailed error message
 #: src/addressbook/libedata-book/e-data-book.c:1270
@@ -3751,11 +3751,11 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:126
 msgid "The security password entered is incorrect."
-msgstr ""
+msgstr "输入的安全密码不正确。"
 
 #: src/camel/camel-smime-context.c:127
 msgid "New password entered incorrectly.  Please try again."
-msgstr ""
+msgstr "新密码输入错误。请重试。"
 
 #: src/camel/camel-smime-context.c:128
 msgid "security library: no nodelock."
@@ -3781,17 +3781,15 @@ msgstr "此证书已通过验证可用于以下用途："
 
 #: src/camel/camel-smime-context.c:133
 msgid "Certificate already exists in your database."
-msgstr ""
+msgstr "您的数据库中已存在证书。"
 
 #: src/camel/camel-smime-context.c:134
 msgid "Downloaded certificate's name duplicates one already in your database."
-msgstr ""
+msgstr "下载的证书名称与数据库中已有的名称重复。"
 
 #: src/camel/camel-smime-context.c:135
-#, fuzzy
-#| msgid "Signing certificate not trusted"
 msgid "Error adding certificate to database."
-msgstr "签名证书不可信"
+msgstr "将证书添加到数据库时出错。"
 
 #: src/camel/camel-smime-context.c:136
 msgid "Error refiling the key for this certificate."
@@ -3995,7 +3993,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:177
 msgid "security library: read-only database."
-msgstr ""
+msgstr "安全库：只读数据库。"
 
 #: src/camel/camel-smime-context.c:178
 #, fuzzy
@@ -4059,13 +4057,11 @@ msgstr "无法导入。解码错误。文件无效。"
 
 #: src/camel/camel-smime-context.c:190
 msgid "Unable to import.  Invalid MAC.  Incorrect password or corrupt file."
-msgstr ""
+msgstr "无法导入。无效的消息认证码。密码不正确或文件已损坏。"
 
 #: src/camel/camel-smime-context.c:191
-#, fuzzy
-#| msgid "Signature algorithm unsupported"
 msgid "Unable to import.  MAC algorithm not supported."
-msgstr "签名算法不支持"
+msgstr "无法导入。消息认证码算法不受支持。"
 
 #: src/camel/camel-smime-context.c:192
 msgid "Unable to import.  Only password integrity and privacy modes supported."
@@ -4219,10 +4215,8 @@ msgid "The requested certificate could not be found."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:227
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "The signer's certificate could not be found."
-msgstr "签名证书找不到"
+msgstr "无法找到签名者的证书。"
 
 #: src/camel/camel-smime-context.c:228
 msgid "The location for the certificate status server has invalid format."
@@ -4287,13 +4281,11 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:242
 msgid "The OCSP response is not yet valid (contains a date in the future)."
-msgstr ""
+msgstr "OCSP 响应尚未生效（包含未来的日期）。"
 
 #: src/camel/camel-smime-context.c:243
-#, fuzzy
-#| msgid "IMAP server response did not contain %s information"
 msgid "The OCSP response contains out-of-date information."
-msgstr "IMAP 服务器应答不含有 %s 信息"
+msgstr "OCSP 响应包含了过时的信息。"
 
 #: src/camel/camel-smime-context.c:244
 msgid "The CMS or PKCS #7 Digest was not found in signed message."
@@ -4330,10 +4322,8 @@ msgid "DER-encoded message contained extra unused data."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:252
-#, fuzzy
-#| msgid "Unsupported security layer."
 msgid "Unsupported elliptic curve."
-msgstr "不支持的安全层。"
+msgstr "不支持的椭圆曲线。"
 
 #: src/camel/camel-smime-context.c:253
 #, fuzzy
@@ -4396,7 +4386,7 @@ msgstr "CRL 已存在。"
 
 #: src/camel/camel-smime-context.c:265
 msgid "NSS is not initialized."
-msgstr ""
+msgstr "NSS 尚未初始化。"
 
 #: src/camel/camel-smime-context.c:266
 msgid "The operation failed because the PKCS#11 token is not logged in."
@@ -4407,10 +4397,8 @@ msgid "Configured OCSP responder's certificate is invalid."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:268
-#, fuzzy
-#| msgid "No signed data in signature"
 msgid "OCSP response has an invalid signature."
-msgstr "签名中没有签名数据"
+msgstr "OCSP 响应含有无效的签名。"
 
 #: src/camel/camel-smime-context.c:271
 msgid "Cert validation search is out of search limits"
