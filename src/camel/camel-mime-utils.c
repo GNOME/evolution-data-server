@@ -4016,6 +4016,12 @@ camel_content_disposition_is_attachment_ex (const CamelContentDisposition *dispo
 	if (parent_content_type && content_type && camel_content_type_is (content_type, "message", "rfc822"))
 		return TRUE;
 
+	if (content_type && camel_content_type_is (content_type, "application", "octet-stream"))
+		return TRUE;
+
+	if (parent_content_type && content_type && !disposition && camel_content_type_is (parent_content_type, "multipart", "mixed"))
+		return TRUE;
+
 	if (!disposition)
 		return FALSE;
 
