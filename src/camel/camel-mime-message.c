@@ -1422,18 +1422,6 @@ find_attachment (CamelMimeMessage *msg,
 
 	*found = camel_content_disposition_is_attachment_ex (cd, ct, parent_ct);
 
-	if (*found && parent_ct && !cd && camel_content_type_is (parent_ct, "multipart", "mixed") &&
-	    ct && camel_content_type_is (ct, "text", "*")) {
-		CamelDataWrapper *containee;
-
-		/* multipart/mixed with a single text/anything subpart means the subpart is most
-		   likely a message body; it's weird, but some tools/clients generate such messages */
-		containee = camel_medium_get_content (CAMEL_MEDIUM (parent_part));
-		if (!containee || !CAMEL_IS_MULTIPART (containee) ||
-		    camel_multipart_get_number (CAMEL_MULTIPART (containee)) < 2)
-			*found = FALSE;
-	}
-
 	return !(*found);
 }
 
