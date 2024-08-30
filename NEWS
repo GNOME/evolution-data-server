@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.53.3 2024-08-30
+---------------------------------------
+
+Bug Fixes:
+	I#557 - Camel: Claim attachment in multipart/mixed
+
+Translations:
+	Artur S0 (ru)
+	Asier Sarasua Garmendia (eu)
+	Balázs Úr (hu)
+	Bruce Cowan (en_GB)
+	Boyuan Yang (zh_CN)
+	Ekaterine Papava (ka)
+
 Evolution-Data-Server 3.53.2 2024-08-02
 ---------------------------------------
 
