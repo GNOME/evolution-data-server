@@ -1,5 +1,5 @@
 # Turkish translation of Evolution-data-server
-# Copyright (C) 2002-2023 Evolution-data-server'S COPYRIGHT HOLDER
+# Copyright (C) 2002-2024 Evolution-data-server'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Evolution-data-server package.
 #
 # Görkem Çetin <gorkem@gelecek.com.tr>, 2002, 2003.
@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-03-20 07:26+0000\n"
-"PO-Revision-Date: 2024-03-20 22:14+0300\n"
+"POT-Creation-Date: 2024-08-03 04:43+0000\n"
+"PO-Revision-Date: 2024-08-25 15:21+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Türkçe <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -26,38 +26,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.3\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:97
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:237
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
 #: src/addressbook/libebook-contacts/e-contact.c:312
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:939
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:903
 msgid "Anniversary"
 msgstr "Yıl Dönümü"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:489
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:655
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Verilen URL “%s”, CardDAV adres defterine ait değil"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1397
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1569
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1435
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:999
 msgid "Server didn’t return object’s href"
 msgstr "Sunucu nesnenin hrefʼini döndürmedi"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1399
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1571
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1437
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1001
 msgid "Server didn’t return object’s ETag"
 msgstr "Sunucu nesnenin ETagʼini döndürmedi"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1401
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1573
 msgid "Received object is not a valid vCard"
 msgstr "Alınan nesne geçerli bir vCard değil"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1523
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1695
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1604
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
@@ -70,7 +70,7 @@ msgstr ""
 "kaldırmayı ve evolution-data-server arka plan süreçlerini yeniden başlatmayı "
 "deneyebilirsiniz. Önbellek dosyası: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1529
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1701
 msgid "Object to save is not a valid vCard"
 msgstr "Kaydedilecek nesne geçerli bir vCard değil"
 
@@ -161,39 +161,40 @@ msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
 #: src/addressbook/libebook/e-book-client.c:3305
 #: src/addressbook/libebook/e-book-client.c:3511
 #: src/addressbook/libedata-book/e-book-backend-sexp.c:898
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:281
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:275
 #: src/calendar/backends/http/e-cal-backend-http.c:313
 #: src/calendar/libecal/e-cal-client.c:244
-#: src/calendar/libecal/e-cal-client.c:3216
-#: src/calendar/libecal/e-cal-client.c:3373
-#: src/calendar/libecal/e-cal-client.c:3634
-#: src/calendar/libecal/e-cal-client.c:3858
-#: src/calendar/libecal/e-cal-client.c:4036
-#: src/calendar/libecal/e-cal-client.c:4206
-#: src/calendar/libecal/e-cal-client.c:4428
-#: src/calendar/libecal/e-cal-client.c:4595
-#: src/calendar/libecal/e-cal-client.c:4792
-#: src/calendar/libecal/e-cal-client.c:4935
-#: src/calendar/libecal/e-cal-client.c:5120
-#: src/calendar/libecal/e-cal-client.c:5273
-#: src/calendar/libecal/e-cal-client.c:5487
-#: src/calendar/libecal/e-cal-client.c:5643
-#: src/calendar/libecal/e-cal-client.c:5858
-#: src/calendar/libecal/e-cal-client.c:6046
-#: src/calendar/libecal/e-cal-client.c:6376
-#: src/calendar/libecal/e-cal-client.c:6581
+#: src/calendar/libecal/e-cal-client.c:3231
+#: src/calendar/libecal/e-cal-client.c:3388
+#: src/calendar/libecal/e-cal-client.c:3649
+#: src/calendar/libecal/e-cal-client.c:3873
+#: src/calendar/libecal/e-cal-client.c:4051
+#: src/calendar/libecal/e-cal-client.c:4221
+#: src/calendar/libecal/e-cal-client.c:4443
+#: src/calendar/libecal/e-cal-client.c:4610
+#: src/calendar/libecal/e-cal-client.c:4807
+#: src/calendar/libecal/e-cal-client.c:4950
+#: src/calendar/libecal/e-cal-client.c:5135
+#: src/calendar/libecal/e-cal-client.c:5288
+#: src/calendar/libecal/e-cal-client.c:5502
+#: src/calendar/libecal/e-cal-client.c:5658
+#: src/calendar/libecal/e-cal-client.c:5873
+#: src/calendar/libecal/e-cal-client.c:6061
+#: src/calendar/libecal/e-cal-client.c:6391
+#: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
+#: src/camel/camel-gpg-context.c:3205
 #: src/camel/providers/imapx/camel-imapx-server.c:3378
 #: src/camel/providers/imapx/camel-imapx-server.c:3384
 #: src/camel/providers/imapx/camel-imapx-server.c:3394
 #: src/camel/providers/imapx/camel-imapx-server.c:3406
 #: src/camel/providers/nntp/camel-nntp-store.c:419
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
-#: src/libedataserver/e-soup-session.c:1116
-#: src/libedataserver/e-soup-session.c:2122
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:272
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
+#: src/libedataserver/e-soup-session.c:1125
+#: src/libedataserver/e-soup-session.c:2131
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #: src/libedataserverui/e-reminders-widget.c:2141
 #: src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
@@ -931,7 +932,7 @@ msgid "Matrix ID List"
 msgstr "Matrix Kimlik Listesi"
 
 #: src/addressbook/libebook-contacts/e-contact.c:1924
-#: src/addressbook/libebook/e-destination.c:914
+#: src/addressbook/libebook/e-destination.c:915
 msgid "Unnamed List"
 msgstr "Adsız Liste"
 
@@ -1226,7 +1227,7 @@ msgstr "Kotalı ağda devre dışı bırakıldığı için yenileme atlandı."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2064
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2563
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3437
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3432
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” önbelleği oluşturulamadı:"
@@ -1334,16 +1335,16 @@ msgstr "Verilen URL “%s”, CalDAV takvimine ait değil"
 msgid "Failed to parse response data"
 msgstr "Yanıt verisi ayrıştırılamadı"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:941
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:905
 msgid "Birthday"
 msgstr "Doğum Günü"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:977
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:941
 #, c-format
 msgid "Birthday: %s"
 msgstr "Doğum Günü: %s"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1008
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:972
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Yıl Dönümü: %s"
@@ -1378,7 +1379,7 @@ msgstr "“%s” dosyası bir VCALENDAR bileşeni değil"
 #: src/calendar/backends/file/e-cal-backend-file.c:3749
 #: src/calendar/backends/file/e-cal-backend-file.c:3755
 #: src/calendar/backends/file/e-cal-backend-file.c:3782
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2664
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2659
 msgid "Unsupported method"
 msgstr "Desteklenmeyen yöntem"
 
@@ -2577,7 +2578,7 @@ msgstr ""
 "Ayrılmış bir örnekten tüm örnekler değiştirilemez. Bunun yerine bir seri "
 "örneğini değiştirin."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4337
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4332
 msgid "attachment.dat"
 msgstr "ek.dat"
 
@@ -2777,17 +2778,17 @@ msgstr "%d/%d ileti alınıyor"
 msgid "Failed at message %d of %d"
 msgstr "%d/%d iletisinde hata"
 
-#: src/camel/camel-filter-driver.c:2167 src/camel/camel-filter-driver.c:2191
+#: src/camel/camel-filter-driver.c:2164 src/camel/camel-filter-driver.c:2188
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "“%s” süzgeci çalıştırılamadı: "
 
-#: src/camel/camel-filter-driver.c:2181
+#: src/camel/camel-filter-driver.c:2178
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "“%s” süzgeci ayrıştırılırken hata: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2200
+#: src/camel/camel-filter-driver.c:2197
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "“%s” süzgeci çalıştırılırken hata: %s: %s"
@@ -2804,11 +2805,11 @@ msgstr "(sistem-imine) geçersiz parametreler"
 msgid "Invalid arguments to (user-tag)"
 msgstr "(kullanıcı-imine) geçersiz parametreler"
 
-#: src/camel/camel-filter-search.c:1238
+#: src/camel/camel-filter-search.c:1241
 msgid "Invalid arguments to (message-location)"
 msgstr "(ileti-konumu)ʼna geçersiz parametreler"
 
-#: src/camel/camel-filter-search.c:1451 src/camel/camel-filter-search.c:1462
+#: src/camel/camel-filter-search.c:1454 src/camel/camel-filter-search.c:1465
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "%s süzgeci taramasını çalıştırırken hata oldu: %s"
@@ -2848,19 +2849,19 @@ msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "“%s : %s” içindeki yeni ileti süzülüyor"
 
-#: src/camel/camel-folder.c:1211
+#: src/camel/camel-folder.c:1209
 #: src/camel/providers/local/camel-maildir-folder.c:332
 msgid "Moving messages"
 msgstr "İletiler taşınıyor"
 
-#: src/camel/camel-folder.c:1214
+#: src/camel/camel-folder.c:1212
 msgid "Copying messages"
 msgstr "İletiler kopyalanıyor"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1259
+#: src/camel/camel-folder.c:1257
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "“%s : %s” klasörü için kota bilgisi desteklenmiyor"
@@ -2868,7 +2869,7 @@ msgstr "“%s : %s” klasörü için kota bilgisi desteklenmiyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1361
+#: src/camel/camel-folder.c:1359
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "“%s : %s” klasörü süzülüyor"
@@ -2876,7 +2877,7 @@ msgstr "“%s : %s” klasörü süzülüyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3374
+#: src/camel/camel-folder.c:3372
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "“%s : %s” klasörü siliniyor"
@@ -2884,7 +2885,7 @@ msgstr "“%s : %s” klasörü siliniyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3509
+#: src/camel/camel-folder.c:3507
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "“%2$s : %3$s” içindeki %1$s iletisi alınıyor"
@@ -2892,7 +2893,7 @@ msgstr "“%2$s : %3$s” içindeki %1$s iletisi alınıyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3734
+#: src/camel/camel-folder.c:3732
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "“%s : %s” için kota bilgisi alınıyor"
@@ -2900,7 +2901,7 @@ msgstr "“%s : %s” için kota bilgisi alınıyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:4034
+#: src/camel/camel-folder.c:4032
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "“%s : %s” klasörü tazeleniyor"
@@ -2912,30 +2913,30 @@ msgid "(%s) requires a single bool result"
 msgstr "(%s) mantıksal değer sonucu istiyor"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1011
+#: src/camel/camel-folder-search.c:1013
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) %s içinde izin verilmedi"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1018 src/camel/camel-folder-search.c:1026
+#: src/camel/camel-folder-search.c:1020 src/camel/camel-folder-search.c:1028
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) dizge eşleme türü gerektiriyor"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1054
+#: src/camel/camel-folder-search.c:1064
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) dizi sonuç bekliyor"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: src/camel/camel-folder-search.c:1064
+#: src/camel/camel-folder-search.c:1074
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) klasör ayarı gerektiriyor"
 
-#: src/camel/camel-folder-search.c:2286 src/camel/camel-folder-search.c:2460
+#: src/camel/camel-folder-search.c:2296 src/camel/camel-folder-search.c:2470
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2944,7 +2945,7 @@ msgstr ""
 "Arama ifadesi ayrıştırılamadı: %s:\n"
 "%s"
 
-#: src/camel/camel-folder-search.c:2298 src/camel/camel-folder-search.c:2472
+#: src/camel/camel-folder-search.c:2308 src/camel/camel-folder-search.c:2482
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2962,23 +2963,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "“%s : %s” klasörü için kullanılmayan belleği serbest bırak"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:623
+#: src/camel/camel-gpg-context.c:621
 #, c-format
 msgid "Output from %s:"
 msgstr "%s konumundan çıktı:"
 
-#: src/camel/camel-gpg-context.c:1182 src/camel/camel-gpg-context.c:1187
-#: src/camel/camel-gpg-context.c:2066
+#: src/camel/camel-gpg-context.c:1179 src/camel/camel-gpg-context.c:1184
+#: src/camel/camel-gpg-context.c:2053
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg çalıştırılamadı: %s"
 
-#: src/camel/camel-gpg-context.c:1187
-#: src/camel/providers/smtp/camel-smtp-transport.c:1217
+#: src/camel/camel-gpg-context.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1218
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
-#: src/camel/camel-gpg-context.c:1299
+#: src/camel/camel-gpg-context.c:1296
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2989,17 +2990,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1335
+#: src/camel/camel-gpg-context.c:1332
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid bilgisi ayrıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:1360 src/camel/camel-gpg-context.c:1375
+#: src/camel/camel-gpg-context.c:1357 src/camel/camel-gpg-context.c:1372
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg parola metni isteği ayrıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:1402
+#: src/camel/camel-gpg-context.c:1399
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3008,7 +3009,7 @@ msgstr ""
 "Kilidi kaldırmak için PIN girmeniz gerekiyor. Kilidi kaldırılacak\n"
 "SmartCard: “%s”"
 
-#: src/camel/camel-gpg-context.c:1406
+#: src/camel/camel-gpg-context.c:1403
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3017,12 +3018,12 @@ msgstr ""
 "“%s” kullanıcısının anahtarının kilidini kaldırmak için\n"
 "parola metnine ihtiyacınız var"
 
-#: src/camel/camel-gpg-context.c:1412
+#: src/camel/camel-gpg-context.c:1409
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "“%s” için GnuPG’den beklenmeyen yanıt"
 
-#: src/camel/camel-gpg-context.c:1424
+#: src/camel/camel-gpg-context.c:1421
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3030,31 +3031,31 @@ msgstr ""
 "Şifreli içeriğin alıcı ile ilgili bilgi içermediğini not edin, yani içerilen "
 "her özel anahtar için parola penceresi açılacak."
 
-#: src/camel/camel-gpg-context.c:1455 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1452 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "İptal Edildi"
 
-#: src/camel/camel-gpg-context.c:1477
+#: src/camel/camel-gpg-context.c:1474
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Gizli anahtarın kilidi kaldırılamadı: 3 yanlış parola metni girildi."
 
-#: src/camel/camel-gpg-context.c:1490
+#: src/camel/camel-gpg-context.c:1487
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPGʼden beklenmeyen yanıt: %s"
 
-#: src/camel/camel-gpg-context.c:1607
+#: src/camel/camel-gpg-context.c:1604
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Şifrelenemedi: Geçerli alıcı belirtilmedi."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1628
+#: src/camel/camel-gpg-context.c:1625
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3064,38 +3065,38 @@ msgstr ""
 "alıcı için içe aktarılmış genel anahtara %s tarafından sahip olunmamasıdır."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1635
+#: src/camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Şifrelenemedi: %s alıcısının genel anahtarı bulunamadı."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1642
+#: src/camel/camel-gpg-context.c:1639
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı iptal edilmiş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1649
+#: src/camel/camel-gpg-context.c:1646
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Şifrelenemedi: %s alıcısının anahtar süresi dolmuş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1656
+#: src/camel/camel-gpg-context.c:1653
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı güvenilir değil."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1663
+#: src/camel/camel-gpg-context.c:1660
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı devre dışı bırakılmış."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1671
+#: src/camel/camel-gpg-context.c:1668
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3104,80 +3105,80 @@ msgstr ""
 "Şifrelenemedi: Geçersiz alıcı %s belirtildi (kod %d). %s bu alıcının içe "
 "aktarılan genel anahtarına sahip olmadığı için bu sorun oluşmaktadır."
 
-#: src/camel/camel-gpg-context.c:1732 src/camel/camel-gpg-context.c:1743
+#: src/camel/camel-gpg-context.c:1729 src/camel/camel-gpg-context.c:1740
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Komut GPGʼye aktarılamadı: %s"
 
-#: src/camel/camel-gpg-context.c:2590 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:2577 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "İmzalama verisi oluşturulamadı: "
 
-#: src/camel/camel-gpg-context.c:2641 src/camel/camel-gpg-context.c:2879
-#: src/camel/camel-gpg-context.c:3020 src/camel/camel-gpg-context.c:3197
-#: src/camel/camel-gpg-context.c:3552 src/camel/camel-gpg-context.c:3639
-#: src/camel/camel-gpg-context.c:3932 src/camel/camel-gpg-context.c:4030
-#: src/camel/camel-gpg-context.c:4115 src/camel/camel-gpg-context.c:4182
+#: src/camel/camel-gpg-context.c:2628 src/camel/camel-gpg-context.c:2866
+#: src/camel/camel-gpg-context.c:3007 src/camel/camel-gpg-context.c:3184
+#: src/camel/camel-gpg-context.c:3542 src/camel/camel-gpg-context.c:3629
+#: src/camel/camel-gpg-context.c:3922 src/camel/camel-gpg-context.c:4020
+#: src/camel/camel-gpg-context.c:4105 src/camel/camel-gpg-context.c:4172
 msgid "Failed to execute gpg."
 msgstr "gpg çalıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:2749 src/camel/camel-gpg-context.c:2757
-#: src/camel/camel-gpg-context.c:2765 src/camel/camel-gpg-context.c:2785
+#: src/camel/camel-gpg-context.c:2736 src/camel/camel-gpg-context.c:2744
+#: src/camel/camel-gpg-context.c:2752 src/camel/camel-gpg-context.c:2772
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "İleti imzası doğrulanamadı: Geçersiz ileti biçimi"
 
-#: src/camel/camel-gpg-context.c:2831
+#: src/camel/camel-gpg-context.c:2818
 msgid "Cannot verify message signature: "
 msgstr "İletiye ait imza doğrulanamıyor: "
 
-#: src/camel/camel-gpg-context.c:2978
+#: src/camel/camel-gpg-context.c:2965
 msgid "Could not generate encrypting data: "
 msgstr "Şifreleme verisi oluşturulamadı: "
 
-#: src/camel/camel-gpg-context.c:3060
+#: src/camel/camel-gpg-context.c:3047
 msgid "This is a digitally encrypted message part"
 msgstr "Bu dijital olarak şifrelenmiş ileti parçasıdır"
 
-#: src/camel/camel-gpg-context.c:3120 src/camel/camel-gpg-context.c:3129
-#: src/camel/camel-gpg-context.c:3152
+#: src/camel/camel-gpg-context.c:3107 src/camel/camel-gpg-context.c:3116
+#: src/camel/camel-gpg-context.c:3139
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "İletinin şifresi çözülemedi: Geçersiz ileti biçimi"
 
-#: src/camel/camel-gpg-context.c:3140
+#: src/camel/camel-gpg-context.c:3127
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME parçasının şifresi çözülemedi: İletişim kuralı hatası"
 
-#: src/camel/camel-gpg-context.c:3212
+#: src/camel/camel-gpg-context.c:3199
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "MIME parçasının şifresi çözülemedi: Gizli anahtar bulunamadı"
 
-#: src/camel/camel-gpg-context.c:3249
+#: src/camel/camel-gpg-context.c:3204
 #, c-format
-msgid "GPG blob contains unencrypted text: %s"
-msgstr "GPG veri nesnesi şifrelenmemiş metin içeriyor: %s"
+msgid "Failed to decrypt MIME part: %s"
+msgstr "MIME parçasının şifresi çözülemedi: %s"
 
-#: src/camel/camel-gpg-context.c:3251 src/camel/camel-multipart-encrypted.c:36
+#: src/camel/camel-gpg-context.c:3241 src/camel/camel-multipart-encrypted.c:36
 #: src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Şifrelenmiş içerik"
 
-#: src/camel/camel-gpg-context.c:3559 src/camel/camel-gpg-context.c:3646
-#: src/camel/camel-gpg-context.c:3939 src/camel/camel-gpg-context.c:3950
+#: src/camel/camel-gpg-context.c:3549 src/camel/camel-gpg-context.c:3636
+#: src/camel/camel-gpg-context.c:3929 src/camel/camel-gpg-context.c:3940
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "“%s” genel anahtarı bulunamadı"
 
-#: src/camel/camel-gpg-context.c:4037
+#: src/camel/camel-gpg-context.c:4027
 msgid "No public key was found in the provided data"
 msgstr "Sağlanan verilerde genel anahtar bulunamadı"
 
-#: src/camel/camel-gpg-context.c:4050
+#: src/camel/camel-gpg-context.c:4040
 msgid "Key information was not found in the provided data"
 msgstr "Anahtar bilgisi sağlanan verilerde bulunamadı"
 
@@ -3579,7 +3580,7 @@ msgstr "Yönlendirilen koşulların zamanı doldu."
 
 #: src/camel/camel-sasl-gssapi.c:237 src/camel/camel-sasl-gssapi.c:441
 #: src/camel/camel-sasl-gssapi.c:491 src/camel/camel-sasl-gssapi.c:508
-#: src/camel/providers/smtp/camel-smtp-transport.c:864
+#: src/camel/providers/smtp/camel-smtp-transport.c:865
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Sunucudan hatalı kimlik doğrulama yanıtı."
@@ -3713,7 +3714,7 @@ msgstr "“%s” iletişim kuralı için geçersiz GType kaydedilmiş"
 #: src/camel/providers/imapx/camel-imapx-server.c:3299
 #: src/camel/providers/pop3/camel-pop3-store.c:305
 #: src/camel/providers/pop3/camel-pop3-store.c:809
-#: src/camel/providers/smtp/camel-smtp-transport.c:700
+#: src/camel/providers/smtp/camel-smtp-transport.c:701
 #, c-format
 msgid "No support for %s authentication"
 msgstr "%s kimlik doğrulaması desteklenmiyor"
@@ -4762,7 +4763,7 @@ msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "CamelHttpStream ile yalnızca başa dönme desteklenir"
 
 #: src/camel/camel-stream-process.c:282
-#: src/camel/providers/smtp/camel-smtp-transport.c:751
+#: src/camel/providers/smtp/camel-smtp-transport.c:752
 #, c-format
 msgid "Connection cancelled"
 msgstr "Bağlantı iptal edildi"
@@ -4792,7 +4793,7 @@ msgstr "URL “%s” ayrıştırılamadı"
 msgid "Updating folder “%s”"
 msgstr "“%s” klasörü güncelleniyor"
 
-#: src/camel/camel-vee-folder.c:1296 src/camel/camel-vee-folder.c:1432
+#: src/camel/camel-vee-folder.c:1375 src/camel/camel-vee-folder.c:1511
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
@@ -4801,22 +4802,22 @@ msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1333
+#: src/camel/camel-vee-folder.c:1412
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "“%2$s : %3$s” içerisinde %1$s iletisi yok"
 
-#: src/camel/camel-vee-folder.c:1408
+#: src/camel/camel-vee-folder.c:1487
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "“%s” depolanırken hata oluştu: "
 
-#: src/camel/camel-vee-folder.c:1598
+#: src/camel/camel-vee-folder.c:1677
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "“%s” arama klasörü güncelleniyor"
 
-#: src/camel/camel-vee-folder.c:1656
+#: src/camel/camel-vee-folder.c:1735
 msgid "Automatically _update on change in source folders"
 msgstr "Kaynak klasörlerde değişikliklerde kendiliğinden _güncelle"
 
@@ -4872,7 +4873,7 @@ msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışıyor olmalısın�
 #: src/camel/providers/pop3/camel-pop3-store.c:576
 #: src/camel/providers/pop3/camel-pop3-store.c:673
 #: src/camel/providers/pop3/camel-pop3-store.c:1124
-#: src/camel/providers/smtp/camel-smtp-transport.c:551
+#: src/camel/providers/smtp/camel-smtp-transport.c:552
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışıyor olmalısınız"
@@ -4891,9 +4892,9 @@ msgstr "Önemsiz iletiler taşınamadı"
 msgid "Unable to move deleted messages"
 msgstr "Silinen iletiler taşınamadı"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1809
-msgid "Unable to move messages to Inbox"
-msgstr "İletiler Gelen Kutusuna taşınamadı"
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1825
+msgid "Unable to move Not-Junk messages"
+msgstr "Önemsiz olmayan iletiler taşınamadı"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -5110,7 +5111,7 @@ msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "%s IMAP sunucusuna güvenli kipte bağlanamadı: %s"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3114
-#: src/camel/providers/smtp/camel-smtp-transport.c:287
+#: src/camel/providers/smtp/camel-smtp-transport.c:288
 msgid "STARTTLS not supported"
 msgstr "STARTTLS desteklenmiyor"
 
@@ -6552,227 +6553,227 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "Uzaktaki mailhubʼa SMTP kullanıp bağlanarak mektup göndermek için."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:241
-#: src/camel/providers/smtp/camel-smtp-transport.c:248
+#: src/camel/providers/smtp/camel-smtp-transport.c:242
+#: src/camel/providers/smtp/camel-smtp-transport.c:249
 msgid "Welcome response error: "
 msgstr "Karşılama yanıtı hatası: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:286
+#: src/camel/providers/smtp/camel-smtp-transport.c:287
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "%s SMTP sunucusuna güvenli kipte bağlanamadı: %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:295
-#: src/camel/providers/smtp/camel-smtp-transport.c:308
-#: src/camel/providers/smtp/camel-smtp-transport.c:315
+#: src/camel/providers/smtp/camel-smtp-transport.c:296
+#: src/camel/providers/smtp/camel-smtp-transport.c:309
+#: src/camel/providers/smtp/camel-smtp-transport.c:316
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS komutu başarısız oldu: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:336
+#: src/camel/providers/smtp/camel-smtp-transport.c:337
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "%s SMTP sunucusuna güvenli kipte bağlanamadı: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:447
+#: src/camel/providers/smtp/camel-smtp-transport.c:448
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP sunucu %s"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:450
+#: src/camel/providers/smtp/camel-smtp-transport.c:451
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "%s üzerinden STMP mektup gönderimi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:590
+#: src/camel/providers/smtp/camel-smtp-transport.c:591
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "%s SMTP sunucusu %s kimlik doğrulama desteklemiyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:690
+#: src/camel/providers/smtp/camel-smtp-transport.c:691
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Herhangi bir SASL mekanizması belirtilmemiş"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:731
+#: src/camel/providers/smtp/camel-smtp-transport.c:732
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH komutu başarısız: Bağlanılmadı."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:738
-#: src/camel/providers/smtp/camel-smtp-transport.c:752
-#: src/camel/providers/smtp/camel-smtp-transport.c:768
+#: src/camel/providers/smtp/camel-smtp-transport.c:739
+#: src/camel/providers/smtp/camel-smtp-transport.c:753
+#: src/camel/providers/smtp/camel-smtp-transport.c:769
 msgid "AUTH command failed: "
 msgstr "AUTH komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:972
+#: src/camel/providers/smtp/camel-smtp-transport.c:973
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "İleti gönderilemiyor: hizmet bağlı değil."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:981
+#: src/camel/providers/smtp/camel-smtp-transport.c:982
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "İleti gönderilemiyor: gönderen adresi geçerli değil."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:985
+#: src/camel/providers/smtp/camel-smtp-transport.c:986
 msgid "Sending message"
 msgstr "İletiler gönderiliyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1017
+#: src/camel/providers/smtp/camel-smtp-transport.c:1018
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "İleti gönderilemiyor: hiçbir alıcı belirtilmemiş."
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1032
+#: src/camel/providers/smtp/camel-smtp-transport.c:1033
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "İleti gönderilemiyor: bir ya da daha fazla hatalı alıcı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1164
+#: src/camel/providers/smtp/camel-smtp-transport.c:1165
 msgid "Syntax error, command unrecognized"
 msgstr "Söz dizimi hatası, bilinmeyen komut"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1166
+#: src/camel/providers/smtp/camel-smtp-transport.c:1167
 msgid "Syntax error in parameters or arguments"
 msgstr "Parametre ya da argümanlarda söz dizimi hatası"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1168
+#: src/camel/providers/smtp/camel-smtp-transport.c:1169
 msgid "Command not implemented"
 msgstr "Komut henüz tanınmıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1170
+#: src/camel/providers/smtp/camel-smtp-transport.c:1171
 msgid "Command parameter not implemented"
 msgstr "Komut parametresi henüz tanınmıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1172
+#: src/camel/providers/smtp/camel-smtp-transport.c:1173
 msgid "System status, or system help reply"
 msgstr "Sistem durumu, ya da sistem yardım yanıtı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1174
+#: src/camel/providers/smtp/camel-smtp-transport.c:1175
 msgid "Help message"
 msgstr "Yardım iletisi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1176
+#: src/camel/providers/smtp/camel-smtp-transport.c:1177
 msgid "Service ready"
 msgstr "Hizmet hazır"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1178
+#: src/camel/providers/smtp/camel-smtp-transport.c:1179
 msgid "Service closing transmission channel"
 msgstr "Hizmet iletişim kanalını kapatıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1180
+#: src/camel/providers/smtp/camel-smtp-transport.c:1181
 msgid "Service not available, closing transmission channel"
 msgstr "Hizmet uygun değil, iletişim kanalı kapatılıyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1182
+#: src/camel/providers/smtp/camel-smtp-transport.c:1183
 msgid "Requested mail action okay, completed"
 msgstr "İstenen mektup işlemi tamamlandı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1184
+#: src/camel/providers/smtp/camel-smtp-transport.c:1185
 msgid "User not local; will forward to <forward-path>"
 msgstr "Kullanıcı yerel değil, <forward-path> üzerine yönlendirilecek"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1186
+#: src/camel/providers/smtp/camel-smtp-transport.c:1187
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "İstenen mektup eylemi yapılmadı: posta kutusu kullanılabilir değil"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1188
+#: src/camel/providers/smtp/camel-smtp-transport.c:1189
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "İstenen eylem yapılmadı: posta kutusu kullanılabilir değil"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1190
+#: src/camel/providers/smtp/camel-smtp-transport.c:1191
 msgid "Requested action aborted: error in processing"
 msgstr "İstenen eylem iptal edildi: işlem sırasında hata"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1192
+#: src/camel/providers/smtp/camel-smtp-transport.c:1193
 msgid "User not local; please try <forward-path>"
 msgstr "Kullanıcı yerel değil; lütfen <forward-path> deneyin"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1194
+#: src/camel/providers/smtp/camel-smtp-transport.c:1195
 msgid "Requested action not taken: insufficient system storage"
 msgstr "İstenen eylem yapılmadı: disk alanı yetersiz"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1196
+#: src/camel/providers/smtp/camel-smtp-transport.c:1197
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "İstenen mektup eylemi iptal edildi: ayrılan saklama miktarı aşıldı"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1198
+#: src/camel/providers/smtp/camel-smtp-transport.c:1199
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "İstenen eylem yapılmadı: posta kutusu adına izin verilmedi"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1200
+#: src/camel/providers/smtp/camel-smtp-transport.c:1201
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Mektup başlangıcını girin, <CRLF>.<CRLF> ile bitirin"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1202
+#: src/camel/providers/smtp/camel-smtp-transport.c:1203
 msgid "Transaction failed"
 msgstr "İletim başarısız oldu"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1206
+#: src/camel/providers/smtp/camel-smtp-transport.c:1207
 msgid "A password transition is needed"
 msgstr "Parola iletimi gerekiyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1208
+#: src/camel/providers/smtp/camel-smtp-transport.c:1209
 msgid "Authentication mechanism is too weak"
 msgstr "Kimlik doğrulama yöntemi çok zayıf"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1210
+#: src/camel/providers/smtp/camel-smtp-transport.c:1211
 msgid "Encryption required for requested authentication mechanism"
 msgstr "İstenen kimlik doğrulama yöntemi için şifreleme gerekiyor"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1212
+#: src/camel/providers/smtp/camel-smtp-transport.c:1213
 msgid "Temporary authentication failure"
 msgstr "Geçici kimlik doğrulama hatası"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1214
+#: src/camel/providers/smtp/camel-smtp-transport.c:1215
 #: src/libedataserver/e-client.c:145
 msgid "Authentication required"
 msgstr "Kimlik doğrulaması gerekli"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1525
+#: src/camel/providers/smtp/camel-smtp-transport.c:1526
 msgid "SMTP Greeting"
 msgstr "SMTP Karşılaması"
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1534
-#: src/camel/providers/smtp/camel-smtp-transport.c:1547
-#: src/camel/providers/smtp/camel-smtp-transport.c:1554
+#: src/camel/providers/smtp/camel-smtp-transport.c:1535
+#: src/camel/providers/smtp/camel-smtp-transport.c:1548
+#: src/camel/providers/smtp/camel-smtp-transport.c:1555
 msgid "HELO command failed: "
 msgstr "HELO komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1661
-#: src/camel/providers/smtp/camel-smtp-transport.c:1675
-#: src/camel/providers/smtp/camel-smtp-transport.c:1684
+#: src/camel/providers/smtp/camel-smtp-transport.c:1662
+#: src/camel/providers/smtp/camel-smtp-transport.c:1676
+#: src/camel/providers/smtp/camel-smtp-transport.c:1685
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1753
+#: src/camel/providers/smtp/camel-smtp-transport.c:1754
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1769
-#: src/camel/providers/smtp/camel-smtp-transport.c:1778
+#: src/camel/providers/smtp/camel-smtp-transport.c:1770
+#: src/camel/providers/smtp/camel-smtp-transport.c:1779
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:1861
-#: src/camel/providers/smtp/camel-smtp-transport.c:1872
-#: src/camel/providers/smtp/camel-smtp-transport.c:1883
-#: src/camel/providers/smtp/camel-smtp-transport.c:1968
-#: src/camel/providers/smtp/camel-smtp-transport.c:1986
-#: src/camel/providers/smtp/camel-smtp-transport.c:1999
-#: src/camel/providers/smtp/camel-smtp-transport.c:2007
+#: src/camel/providers/smtp/camel-smtp-transport.c:1862
+#: src/camel/providers/smtp/camel-smtp-transport.c:1873
+#: src/camel/providers/smtp/camel-smtp-transport.c:1884
+#: src/camel/providers/smtp/camel-smtp-transport.c:1969
+#: src/camel/providers/smtp/camel-smtp-transport.c:1987
+#: src/camel/providers/smtp/camel-smtp-transport.c:2000
+#: src/camel/providers/smtp/camel-smtp-transport.c:2008
 msgid "DATA command failed: "
 msgstr "DATA komutu başarısız: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2033
-#: src/camel/providers/smtp/camel-smtp-transport.c:2047
-#: src/camel/providers/smtp/camel-smtp-transport.c:2055
+#: src/camel/providers/smtp/camel-smtp-transport.c:2034
+#: src/camel/providers/smtp/camel-smtp-transport.c:2048
+#: src/camel/providers/smtp/camel-smtp-transport.c:2056
 msgid "RSET command failed: "
 msgstr "RSET komutu başarısız oldu: "
 
-#: src/camel/providers/smtp/camel-smtp-transport.c:2081
-#: src/camel/providers/smtp/camel-smtp-transport.c:2093
-#: src/camel/providers/smtp/camel-smtp-transport.c:2099
+#: src/camel/providers/smtp/camel-smtp-transport.c:2082
+#: src/camel/providers/smtp/camel-smtp-transport.c:2094
+#: src/camel/providers/smtp/camel-smtp-transport.c:2100
 msgid "QUIT command failed: "
 msgstr "QUIT komutu başarısız oldu: "
 
@@ -7634,27 +7635,57 @@ msgstr "Sunucudan JSON nesnesi dönmedi"
 msgid "Failed to call %s: "
 msgstr "%s aranamıyor: "
 
-#: src/libedataserver/e-oauth2-service.c:1061
+#: src/libedataserver/e-ms-oapxbc.c:122
+msgid "Failed to create broker proxy: "
+msgstr "Kesici vekili oluşturulamadı: "
+
+#: src/libedataserver/e-ms-oapxbc.c:187
+msgid "Failed to call getAccounts: "
+msgstr "getAccounts aranamadı: "
+
+#: src/libedataserver/e-ms-oapxbc.c:195
+msgid "Failed to parse getAccounts response: "
+msgstr "getAccounts yanıtı ayrıştırılamadı"
+
+#: src/libedataserver/e-ms-oapxbc.c:202
+#, c-format
+msgid "Failed to parse getAccounts response: root is not an object"
+msgstr "GetAccounts yanıtı ayrıştırılamadı: kök bir nesne değil"
+
+#: src/libedataserver/e-ms-oapxbc.c:349
+msgid "Failed to acquire PRT SSO cookie: "
+msgstr "PRT SSO çerezi alınamadı: "
+
+#: src/libedataserver/e-ms-oapxbc.c:357
+msgid "Failed to parse acquirePrtSsoCookie response: "
+msgstr "acquirePrtSsoCookie yanıtı ayrıştırılamadı: "
+
+#: src/libedataserver/e-ms-oapxbc.c:363
+#, c-format
+msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
+msgstr "AcquirePrtSsoCookie yanıtı ayrıştırılamadı: kök bir nesne değil"
+
+#: src/libedataserver/e-oauth2-service.c:1095
 msgid "Malformed, no message body set"
 msgstr "Hatalı biçimlendirilmiş, ileti gövdesi takımı yok"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1343
+#: src/libedataserver/e-oauth2-service.c:1377
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” (%s) kaynağı, “%s” OAuth2 hizmeti için geçerli değil"
 
-#: src/libedataserver/e-oauth2-service.c:1358
+#: src/libedataserver/e-oauth2-service.c:1392
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 gizi bulunamadı"
 
-#: src/libedataserver/e-oauth2-service.c:1555
+#: src/libedataserver/e-oauth2-service.c:1589
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "“%s” sunucusundan geçersiz yanıt alındı."
 
-#: src/libedataserver/e-oauth2-service.c:1578
+#: src/libedataserver/e-oauth2-service.c:1612
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7665,17 +7696,17 @@ msgstr ""
 "\n"
 "Ayrıntılı hata: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1581
+#: src/libedataserver/e-oauth2-service.c:1615
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1627
+#: src/libedataserver/e-oauth2-service.c:1661
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” (%s) kaynağı geçerli bir OAuth2 kaynağı değil"
 
-#: src/libedataserver/e-oauth2-service.c:1911
+#: src/libedataserver/e-oauth2-service.c:1945
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -7700,28 +7731,28 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1361
+#: src/libedataserver/e-soup-session.c:1370
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "HTTP hatası %d ile başarısızlık: %s"
 
-#: src/libedataserver/e-soup-session.c:1437
+#: src/libedataserver/e-soup-session.c:1446
 msgid "Failed to setup authentication"
 msgstr "Kimlik doğrulama kurulamadı"
 
-#: src/libedataserver/e-soup-session.c:1802
+#: src/libedataserver/e-soup-session.c:1811
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] "Sunucu meşgul, yeniden denemek için bekleniyor (%d:%02d dakika)"
 
-#: src/libedataserver/e-soup-session.c:1808
+#: src/libedataserver/e-soup-session.c:1817
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
 msgstr[0] "Sunucu meşgul, yeniden denemek için bekleniyor (%d saniye)"
 
-#: src/libedataserver/e-soup-session.c:1929
+#: src/libedataserver/e-soup-session.c:1938
 msgid "Too many redirects"
 msgstr "Çok sayıda yönlendirme"
 
@@ -8257,46 +8288,50 @@ msgstr "Kimlik bilgileri istemi iptal edildi"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "“%s” kaynağı kimlik bilgilerinin sorulmasını desteklemiyor"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:270
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:278
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "“%s” adresinden erişim jetonu alınamadı: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:301
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
+msgid "Checking returned code"
+msgstr "Dönen kod denetleniyor"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
 msgid "Requesting access token, please wait…"
 msgstr "Erişim jetonu isteniyor, lütfen bekleyin…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:575
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:583
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s Adres defteri kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:580
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:588
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s Takvim kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:585
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:593
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s Not Listesi kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:590
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:598
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s Görev Listesi kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:596
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:604
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s E-posta kimlik doğrulama isteği"
@@ -8304,7 +8339,7 @@ msgstr "%s E-posta kimlik doğrulama isteği"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:601
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s hesabı kimlik doğrulama isteği"
@@ -8312,7 +8347,7 @@ msgstr "%s hesabı kimlik doğrulama isteği"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:615
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8324,7 +8359,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:622
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8336,7 +8371,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:629
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8348,7 +8383,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:636
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8360,7 +8395,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:643
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8372,7 +8407,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:650
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:658
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8384,7 +8419,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:665
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8393,27 +8428,37 @@ msgstr ""
 "%s hesabınıza giriş yapın ve “%s” hesabınıza erişmek için koşulları kabul "
 "edin."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:951
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Tarayıcı açılamadı: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1049
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1174
+msgid "_Copy URL"
+msgstr "URL’yi _Kopyala"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1176
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1207
+msgid "Open in _Browser"
+msgstr "Tarayıcıda _Aç"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1193
+#, c-format
+msgid "Open with “%s”"
+msgstr "“%s” ile aç"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1303
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1149
 msgid "_Cancel"
 msgstr "İ_ptal"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1131
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1388
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1161
-msgid "Click here to open the URL"
-msgstr "Buraya tıklayarak URL’yi aç"
-
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1463
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8423,13 +8468,18 @@ msgstr ""
 "yetkilendirme kodunu veya OAuth2 sihirbazının bittiği URL’yi aşağıya "
 "kopyalayın ve kimlik doğrulama sürecini sürdürün."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1238
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1500
 msgid "_Authorization code:"
 msgstr "_Yetkilendirme kodu:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1251
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1513
 msgid "C_ontinue"
 msgstr "_Sürdür"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1710
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1711
+msgid "Preparing request, please wait…"
+msgstr "İstek hazırlanıyor, lütfen bekleyin…"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:136
 msgid "Address book authentication request"
@@ -8779,7 +8829,7 @@ msgstr "Hesap ögesi bulunamadı"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Autodiscover yanıtında ASUrl ve OABUrl bulunamadı"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1434
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1459
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -8788,7 +8838,7 @@ msgstr ""
 "org.gnome.OnlineAccounts hizmetinde “%s” için erişim jetonu almaya uygun bir "
 "hesap bulunamadı"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1484
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1509
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "“%s” için erişim jetonu alınamadı: "
@@ -8892,46 +8942,54 @@ msgstr[0] "%d anımsatıcınız var"
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Evolution’un eski sürümlerinden kullanıcı verisi aktarma"
 
-#: src/tools/addressbook-export/addressbook-export.c:69
-#: src/tools/addressbook-export/addressbook-export.c:754
+#: src/tools/addressbook-export/addressbook-export.c:128
+#: src/tools/addressbook-export/addressbook-export.c:815
 msgid "Can not open file"
 msgstr "Dosya açılamadı"
 
-#: src/tools/addressbook-export/addressbook-export.c:99
+#: src/tools/addressbook-export/addressbook-export.c:167
 #, c-format
 msgid "Failed to open client “%s”: %s"
 msgstr "“%s” istemcisi açılamadı: %s"
 
-#: src/tools/addressbook-export/addressbook-export.c:863
+#: src/tools/addressbook-export/addressbook-export.c:917
 msgid "Unhandled error"
 msgstr "İşlenemeyen hata"
 
-#: src/tools/addressbook-export/addressbook-export.c:896
+#: src/tools/addressbook-export/addressbook-export.c:951
 msgid "Specify the output file instead of standard output"
 msgstr "Standart çıktının yerine çıktı dosyasını belirt"
 
-#: src/tools/addressbook-export/addressbook-export.c:897
+#: src/tools/addressbook-export/addressbook-export.c:952
 msgid "OUTPUTFILE"
 msgstr "ÇIKTIDOSYASI"
 
-#: src/tools/addressbook-export/addressbook-export.c:900
-msgid "List local address book folders"
-msgstr "Yerel adres defteri klasörlerini listele"
+#: src/tools/addressbook-export/addressbook-export.c:955
+msgid "List available address books"
+msgstr "Kullanılabilir adres defteri listele"
 
-#: src/tools/addressbook-export/addressbook-export.c:903
+#: src/tools/addressbook-export/addressbook-export.c:958
+msgid "List available address books and show how many contacts they have"
+msgstr "Kullanılabilir adres defterlerini listele ve kaç kişi olduğunu göster"
+
+#: src/tools/addressbook-export/addressbook-export.c:961
 msgid "Show cards as vcard or csv file"
 msgstr "Kartları, vcard veya csv dosyası olarak göster"
 
-#: src/tools/addressbook-export/addressbook-export.c:955
+#: src/tools/addressbook-export/addressbook-export.c:1013
+msgid "Cannot use --list and --list-with-count together."
+msgstr "--list ve --list-with-count birlikte kullanılamaz."
+
+#: src/tools/addressbook-export/addressbook-export.c:1017
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Komut satırı argümanları hatası, lütfen kullanımı görmek için --help "
 "seçeneğini kullanın."
 
-#: src/tools/addressbook-export/addressbook-export.c:969
-msgid "Only support csv or vcard format."
-msgstr "Yalnızca csv veya vcard biçimini destekler."
+#: src/tools/addressbook-export/addressbook-export.c:1031
+msgid "Only supports csv or vcard format."
+msgstr "Yalnızca csv ya da vcard biçimini destekler."
 
 #: src/tools/list-sources/list-sources.c:83
 msgid "Show only enabled sources"
@@ -9151,19 +9209,3 @@ msgstr "Web Üzerinde"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "WebDAV Notları"
-
-#~ msgid "Evolution Alarm Notify"
-#~ msgstr "Evolution Alarm Bildirimi"
-
-#~ msgid "Calendar event notifications"
-#~ msgstr "Takvim olayı bildirimleri"
-
-#~ msgid "[vcard|csv]"
-#~ msgstr "[vcard|csv]"
-
-#~ msgid ""
-#~ "Missing information about vCard URL, local cache is possibly incomplete "
-#~ "or broken. Remove it, please."
-#~ msgstr ""
-#~ "VCard URL hakkında eksik bilgi, yerel önbellek eksik veya hatalı, "
-#~ "düzeltin veya kaldırın."
