@@ -214,7 +214,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	if (xev) {
 		/* the x-ev header should match the 'current' flags, no problem, so store as much */
 		camel_medium_set_header ((CamelMedium *) message, "X-Evolution", xev);
-		camel_mesage_info_set_flags (mi, CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED, 0);
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED, 0);
 		g_free (xev);
 	}
 #endif
