@@ -294,7 +294,7 @@ struct _GpgCtx {
 	CamelSession *session;
 	GCancellable *cancellable;
 	GHashTable *userid_hint;
-	pid_t pid;
+	GPid pid;
 
 	GSList *userids;
 	gchar *sigfile;
@@ -1049,26 +1049,39 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 
 #endif
 
+static void
+camel_gpg_ctx_close_pipe (gint pp[2])
+{
+	if (pp[0] != -1) {
+		close (pp[0]);
+		pp[0] = -1;
+	}
+	if (pp[1] != -1) {
+		close (pp[1]);
+		pp[1] = -1;
+	}
+}
+
 static gboolean
 gpg_ctx_op_start (struct _GpgCtx *gpg,
                   GError **error)
 {
 #ifndef G_OS_WIN32
 	gchar *status_fd = NULL, *command_fd = NULL;
-	gint i, maxfd, errnosave, fds[10];
+	gint errnosave;
+	gint status_pipe[2] = { -1, -1 }, command_pipe[2] = { -1, -1 };
+	gint pass_fds[2] = { -1, -1 };
 	GPtrArray *argv;
+	GError *local_error = NULL;
 	gint flags;
+	gboolean success;
 
-	for (i = 0; i < 10; i++)
-		fds[i] = -1;
+	if (pipe (status_pipe) == -1)
+		goto exception;
+	if (gpg->need_command_fd && pipe (command_pipe) == -1)
+		goto exception;
 
-	maxfd = gpg->need_command_fd ? 10 : 8;
-	for (i = 0; i < maxfd; i += 2) {
-		if (pipe (fds + i) == -1)
-			goto exception;
-	}
-
-	argv = gpg_ctx_get_argv (gpg, fds[7], &status_fd, fds[8], &command_fd);
+	argv = gpg_ctx_get_argv (gpg, status_pipe[1], &status_fd, command_pipe[0], &command_fd);
 
 	if (camel_debug_start ("gpg")) {
 		guint ii;
@@ -1084,59 +1097,28 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		camel_debug_end ();
 	}
 
-	if (!(gpg->pid = fork ())) {
-		/* child process */
+	pass_fds[0] = status_pipe[1];
+	pass_fds[1] = command_pipe[0];
 
-		if ((dup2 (fds[0], STDIN_FILENO) < 0 ) ||
-		    (dup2 (fds[3], STDOUT_FILENO) < 0 ) ||
-		    (dup2 (fds[5], STDERR_FILENO) < 0 )) {
-			_exit (255);
-		}
-
-		/* Dissociate from camel's controlling terminal so
-		 * that gpg won't be able to read from it.
-		 */
-		setsid ();
-
-		maxfd = sysconf (_SC_OPEN_MAX);
-		/* Loop over all fds. */
-		for (i = 3; i < maxfd; i++) {
-			/* don't close the status-fd or passwd-fd */
-			if (i != fds[7] && i != fds[8]) {
-				if (fcntl (i, F_SETFD, FD_CLOEXEC) == -1) {
-					/* Do nothing here. Cannot use CHECK_CALL() macro here, because
-					   it makes the process stuck, possibly due to the debug print. */
-				}
-			}
-		}
-
-		/* run gpg */
-		execvp (gpg_ctx_get_executable_name (), (gchar **) argv->pdata);
-		_exit (255);
-	} else if (gpg->pid < 0) {
-		g_ptr_array_free (argv, TRUE);
-		g_free (status_fd);
-		g_free (command_fd);
-		goto exception;
-	}
+	success = g_spawn_async_with_pipes_and_fds (NULL, (const gchar * const  *) argv->pdata, NULL,
+		G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH, NULL, NULL,
+		-1, -1, -1, pass_fds, pass_fds, 1 + (gpg->need_command_fd ? 1 : 0),
+		&gpg->pid, &gpg->stdin_fd, &gpg->stdout_fd, &gpg->stderr_fd,
+		&local_error);
 
 	g_ptr_array_free (argv, TRUE);
 	g_free (status_fd);
 	g_free (command_fd);
 
-	/* Parent */
-	close (fds[0]);
-	gpg->stdin_fd = fds[1];
-	gpg->stdout_fd = fds[2];
-	close (fds[3]);
-	gpg->stderr_fd = fds[4];
-	close (fds[5]);
-	gpg->status_fd = fds[6];
-	close (fds[7]);
+	if (!success)
+		goto exception;
+
+	gpg->status_fd = status_pipe[0];
+	close (status_pipe[1]);
 
 	if (gpg->need_command_fd) {
-		close (fds[8]);
-		gpg->command_fd = fds[9];
+		close (command_pipe[0]);
+		gpg->command_fd = command_pipe[1];
 		flags = fcntl (gpg->command_fd, F_GETFL);
 		CHECK_CALL (fcntl (gpg->command_fd, F_SETFL, flags | O_NONBLOCK));
 	}
@@ -1159,10 +1141,8 @@ exception:
 
 	errnosave = errno;
 
-	for (i = 0; i < 10; i++) {
-		if (fds[i] != -1)
-			close (fds[i]);
-	}
+	camel_gpg_ctx_close_pipe (status_pipe);
+	camel_gpg_ctx_close_pipe (command_pipe);
 
 	errno = errnosave;
 #else
@@ -1172,7 +1152,9 @@ exception:
 	errno = EINVAL;
 #endif
 
-	if (errno != 0)
+	if (local_error)
+		g_propagate_error (error, local_error);
+	else if (errno != 0)
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
