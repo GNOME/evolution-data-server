@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-08-13 16:29+0000\n"
-"PO-Revision-Date: 2024-08-23 09:20-0400\n"
+"POT-Creation-Date: 2024-08-23 13:21+0000\n"
+"PO-Revision-Date: 2024-09-12 11:41-0400\n"
 "Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 3.5\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
@@ -3767,7 +3767,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:130
 msgid "security library: memory allocation failure."
-msgstr ""
+msgstr "安全软件库：内存分配失败。"
 
 #: src/camel/camel-smime-context.c:131
 msgid "Peer's certificate issuer has been marked as not trusted by the user."
@@ -3809,13 +3809,13 @@ msgstr "此证书无效。"
 
 #: src/camel/camel-smime-context.c:140
 msgid "Cert Library: No Response"
-msgstr ""
+msgstr "证书软件库：无响应"
 
 #: src/camel/camel-smime-context.c:141
 msgid ""
 "The certificate issuer's certificate has expired.  Check your system date "
 "and time."
-msgstr ""
+msgstr "证书签发者的证书已过期。请检查您当前系统的日期和时间是否正确。"
 
 #: src/camel/camel-smime-context.c:142
 msgid ""
@@ -3863,7 +3863,7 @@ msgstr "证书字段"
 
 #: src/camel/camel-smime-context.c:150
 msgid "**Internal ONLY module**"
-msgstr ""
+msgstr "***仅内部使用的模块**"
 
 #: src/camel/camel-smime-context.c:151
 #, fuzzy
@@ -3906,11 +3906,11 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:159
 msgid "Unsupported or unknown key algorithm."
-msgstr ""
+msgstr "不支持或未知的密钥算法。"
 
 #: src/camel/camel-smime-context.c:160
 msgid "Cannot decrypt: encrypted using a disallowed algorithm or key size."
-msgstr ""
+msgstr "无法解密：加密时使用了被禁止的算法或密钥长度。"
 
 #: src/camel/camel-smime-context.c:161
 msgid ""
@@ -4011,7 +4011,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:181
 msgid "error while creating safe object"
-msgstr "创建安全对象时出错。"
+msgstr "创建安全对象时出错"
 
 #: src/camel/camel-smime-context.c:182
 #, fuzzy
@@ -4114,19 +4114,19 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:204
 msgid "Unable to import.  Error attempting to import private key."
-msgstr ""
+msgstr "无法导入。尝试导入私钥时出错。"
 
 #: src/camel/camel-smime-context.c:205
 msgid "Unable to import.  Error attempting to import certificate chain."
-msgstr ""
+msgstr "无法导入。尝试导入证书链时出错。"
 
 #: src/camel/camel-smime-context.c:206
 msgid "Unable to export.  Unable to locate certificate or key by nickname."
-msgstr ""
+msgstr "无法导出。无法使用昵称定位到证书或密钥。"
 
 #: src/camel/camel-smime-context.c:207
 msgid "Unable to export.  Private Key could not be located and exported."
-msgstr ""
+msgstr "无法导出。无法定位并导出私钥。"
 
 #: src/camel/camel-smime-context.c:208
 msgid "Unable to export.  Unable to write the export file."
@@ -4141,24 +4141,20 @@ msgid "Unable to export.  Key database corrupt or deleted."
 msgstr "无法导出。密钥数据库已损坏或已被删除。"
 
 #: src/camel/camel-smime-context.c:211
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Unable to generate public/private key pair."
-msgstr "无法创建缓存路径"
+msgstr "无法生成公/私钥密钥对。"
 
 #: src/camel/camel-smime-context.c:212
 msgid "Password entered is invalid.  Please pick a different one."
-msgstr ""
+msgstr "所输入的密码无效。请另选一个不同的密码。"
 
 #: src/camel/camel-smime-context.c:213
 msgid "Old password entered incorrectly.  Please try again."
-msgstr ""
+msgstr "输入的旧密码不正确。请再试一次。"
 
 #: src/camel/camel-smime-context.c:214
-#, fuzzy
-#| msgid "Certificate Signature Value"
 msgid "Certificate nickname already in use."
-msgstr "证书数字签名值 "
+msgstr "证书昵称已被使用。"
 
 #: src/camel/camel-smime-context.c:215
 msgid "Peer FORTEZZA chain has a non-FORTEZZA Certificate."
@@ -4224,23 +4220,23 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:229
 msgid "The OCSP response cannot be fully decoded; it is of an unknown type."
-msgstr ""
+msgstr "OCSP 响应无法被完全解码；其类型未知。"
 
 #: src/camel/camel-smime-context.c:230
 msgid "The OCSP server returned unexpected/invalid HTTP data."
-msgstr ""
+msgstr "OCSP 服务器返回了未预期的/无效的 HTTP 数据。"
 
 #: src/camel/camel-smime-context.c:231
 msgid "The OCSP server found the request to be corrupted or improperly formed."
-msgstr ""
+msgstr "OCSP 服务器认为请求已损坏或格式不正确。"
 
 #: src/camel/camel-smime-context.c:232
 msgid "The OCSP server experienced an internal error."
-msgstr ""
+msgstr "OCSP 服务器出现了内部错误。"
 
 #: src/camel/camel-smime-context.c:233
 msgid "The OCSP server suggests trying again later."
-msgstr ""
+msgstr "OCSP 服务器建议再试一次。"
 
 #: src/camel/camel-smime-context.c:234
 msgid "The OCSP server requires a signature on this request."
@@ -4252,17 +4248,15 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:236
 msgid "The OCSP server returned an unrecognizable status."
-msgstr ""
+msgstr "OCSP 服务器返回了无法识别的状态信息。"
 
 #: src/camel/camel-smime-context.c:237
 msgid "The OCSP server has no status for the certificate."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:238
-#, fuzzy
-#| msgid "You must be working online to complete this operation"
 msgid "You must enable OCSP before performing this operation."
-msgstr "您必须在线工作以便完成该操作"
+msgstr "您必须启用 OCSP 以完成该操作。"
 
 #: src/camel/camel-smime-context.c:239
 msgid ""
@@ -4370,7 +4364,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:261
 msgid "Unknown object type specified."
-msgstr ""
+msgstr "指定了未知的对象类型。"
 
 #: src/camel/camel-smime-context.c:262
 msgid "PKCS #11 driver violates the spec in an incompatible way."
