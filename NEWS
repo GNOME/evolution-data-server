@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.54.0 2024-09-13
+---------------------------------------
+
+Bug Fixes:
+	I#558 - Camel: Prefer GLib API for gpg process spawning
+	I#559 - Camel: Correct typos in disabled code
+
+Miscellaneous:
+	docs: Correct developer documentation to install API indexes
+
+Translations:
+	Alan Mortensen (da)
+	Anders Jonsson (sv)
+	Boyuan Yang (zh_CN)
+	Piotr Drąg (pl)
+	Sabri Ünal (tr)
+
 Evolution-Data-Server 3.53.3 2024-08-30
 ---------------------------------------
 
