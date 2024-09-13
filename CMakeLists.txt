@@ -4,14 +4,14 @@ cmake_minimum_required(VERSION 3.15)
 cmake_policy(VERSION 3.15)
 
 project(evolution-data-server
-	VERSION 3.54.0
+	VERSION 3.55.1
 	LANGUAGES C CXX)
 set(PROJECT_BUGREPORT "https://gitlab.gnome.org/GNOME/evolution-data-server/issues/")
 
 # Base Version: This is for API/version tracking for things like
 # D-Bus server files. This should always be the major/minor of
 # the stable version or stable version to be.
-set(BASE_VERSION 3.54)
+set(BASE_VERSION 3.56)
 
 # This number is meaningless, but we're now stuck with it in our
 # library names for backward compatibility.
