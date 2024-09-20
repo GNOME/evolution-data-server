@@ -18,6 +18,7 @@ set(extra_ldflags
 
 # Should be kept ordered approximately from least to most difficult/complex
 set(TESTS
+	test-contact
 	test-contact-types
 	test-indices-updater
 	test-vcard-parsing
