@@ -30,7 +30,7 @@
 #define w(x)
 
 struct _CamelMimeFilterCharsetPrivate {
-	iconv_t ic;
+	GIConv ic;
 	gchar *from;
 	gchar *to;
 };
@@ -47,9 +47,9 @@ mime_filter_charset_finalize (GObject *object)
 	g_free (priv->from);
 	g_free (priv->to);
 
-	if (priv->ic != (iconv_t) -1) {
+	if (priv->ic != (GIConv) -1) {
 		camel_iconv_close (priv->ic);
-		priv->ic = (iconv_t) -1;
+		priv->ic = (GIConv) -1;
 	}
 
 	/* Chain up to parent's finalize() method. */
@@ -72,7 +72,7 @@ mime_filter_charset_complete (CamelMimeFilter *mime_filter,
 
 	priv = CAMEL_MIME_FILTER_CHARSET (mime_filter)->priv;
 
-	if (priv->ic == (iconv_t) -1)
+	if (priv->ic == (GIConv) -1)
 		goto noop;
 
 	camel_mime_filter_set_size (mime_filter, len * 5 + 16, FALSE);
@@ -163,7 +163,7 @@ mime_filter_charset_filter (CamelMimeFilter *mime_filter,
 
 	priv = CAMEL_MIME_FILTER_CHARSET (mime_filter)->priv;
 
-	if (priv->ic == (iconv_t) -1)
+	if (priv->ic == (GIConv) -1)
 		goto noop;
 
 	camel_mime_filter_set_size (mime_filter, len * 5 + 16, FALSE);
@@ -227,7 +227,7 @@ mime_filter_charset_reset (CamelMimeFilter *mime_filter)
 	priv = CAMEL_MIME_FILTER_CHARSET (mime_filter)->priv;
 
 	/* what happens with the output bytes if this resets the state? */
-	if (priv->ic != (iconv_t) -1) {
+	if (priv->ic != (GIConv) -1) {
 		buffer = buf;
 		camel_iconv (priv->ic, NULL, NULL, &buffer, &outlen);
 	}
@@ -252,7 +252,7 @@ static void
 camel_mime_filter_charset_init (CamelMimeFilterCharset *filter)
 {
 	filter->priv = camel_mime_filter_charset_get_instance_private (filter);
-	filter->priv->ic = (iconv_t) -1;
+	filter->priv->ic = (GIConv) -1;
 }
 
 /**
@@ -276,7 +276,7 @@ camel_mime_filter_charset_new (const gchar *from_charset,
 	priv = CAMEL_MIME_FILTER_CHARSET (new)->priv;
 
 	priv->ic = camel_iconv_open (to_charset, from_charset);
-	if (priv->ic == (iconv_t) -1) {
+	if (priv->ic == (GIConv) -1) {
 		w (g_warning (
 			"Cannot create charset conversion from %s to %s: %s",
 			from_charset ? from_charset : "(null)",
