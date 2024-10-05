@@ -146,7 +146,7 @@ camel_movemail (const gchar *source,
 	}
 
 #ifdef ENABLE_BROKEN_SPOOL
-	res = camel_movemail_solaris (sfd, dfd, ex);
+	res = camel_movemail_solaris (sfd, dfd, error);
 #else
 	res = camel_movemail_copy_file (sfd, dfd, error);
 #endif
