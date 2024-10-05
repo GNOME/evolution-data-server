@@ -367,7 +367,7 @@ camel_movemail_copy_filter (gint fromfd,
 	gchar buffer[4096 + PRE_SIZE];
 	gint written = 0;
 	gchar *filterbuffer;
-	gint filterlen, filterpre;
+	gsize filterlen, filterpre;
 
 	d (printf ("writing %d bytes ... ", bytes));
 
@@ -487,7 +487,7 @@ camel_movemail_solaris (gint oldsfd,
 {
 	CamelMimeParser *mp;
 	gchar *buffer;
-	gint len;
+	gsize len;
 	gint sfd;
 	CamelMimeFilter *ffrom;
 	gint ret = 1;
