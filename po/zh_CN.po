@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-09-14 16:00+0000\n"
-"PO-Revision-Date: 2024-10-03 17:54-0400\n"
+"POT-Creation-Date: 2024-10-03 21:59+0000\n"
+"PO-Revision-Date: 2024-10-11 16:05-0400\n"
 "Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -3724,30 +3724,24 @@ msgid "security library: improperly formatted DER-encoded message."
 msgstr "安全软件库：格式化不正确的 DER 编码的信息。"
 
 #: src/camel/camel-smime-context.c:121
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's certificate has an invalid signature."
-msgstr "证书已过期。"
+msgstr "对方的证书签名无效。"
 
 #: src/camel/camel-smime-context.c:122
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has expired."
-msgstr "证书已过期。"
+msgstr "对方的证书已过期。"
 
 #: src/camel/camel-smime-context.c:123
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "Peer's Certificate has been revoked."
-msgstr "证书已过期。"
+msgstr "对方的证书已被吊销。"
 
 #: src/camel/camel-smime-context.c:124
 msgid "Peer's Certificate issuer is not recognized."
-msgstr ""
+msgstr "对方的证书签发者无法被识别。"
 
 #: src/camel/camel-smime-context.c:125
 msgid "Peer's public key is invalid."
-msgstr ""
+msgstr "对方的公钥无效。"
 
 #: src/camel/camel-smime-context.c:126
 msgid "The security password entered is incorrect."
@@ -3797,7 +3791,7 @@ msgstr ""
 
 #: src/camel/camel-smime-context.c:137
 msgid "The private key for this certificate cannot be found in key database"
-msgstr ""
+msgstr "该证书对应的私钥无法在密钥数据库中找到"
 
 #: src/camel/camel-smime-context.c:138
 msgid "This certificate is valid."
@@ -3822,14 +3816,15 @@ msgid ""
 "The CRL for the certificate's issuer has expired.  Update it or check your "
 "system date and time."
 msgstr ""
+"证书签发者的证书吊销列表（CRL）已过期。请更新它或者检查您的系统日期和时间。"
 
 #: src/camel/camel-smime-context.c:143
 msgid "The CRL for the certificate's issuer has an invalid signature."
-msgstr ""
+msgstr "证书签发者的证书吊销列表（CRL）的签名无效。"
 
 #: src/camel/camel-smime-context.c:144
 msgid "New CRL has an invalid format."
-msgstr ""
+msgstr "新的证书吊销列表（CRL）格式无效。"
 
 #: src/camel/camel-smime-context.c:145
 msgid "Certificate extension value is invalid."
@@ -3841,7 +3836,7 @@ msgstr "未找到证书扩展。"
 
 #: src/camel/camel-smime-context.c:147
 msgid "Issuer certificate is invalid."
-msgstr ""
+msgstr "签发者的证书无效。"
 
 #: src/camel/camel-smime-context.c:148
 #, fuzzy
@@ -3867,11 +3862,11 @@ msgstr "后端不支持批量添加"
 
 #: src/camel/camel-smime-context.c:152
 msgid "Certificate contains unknown critical extension."
-msgstr ""
+msgstr "证书包含未知的关键扩展。"
 
 #: src/camel/camel-smime-context.c:153
 msgid "New CRL is not later than the current one."
-msgstr ""
+msgstr "新的证书吊销列表（CRL）不比当前的版本更新。"
 
 #: src/camel/camel-smime-context.c:154
 msgid "Not encrypted or signed: you do not yet have an email certificate."
@@ -3959,10 +3954,8 @@ msgid "The KRL for this site's certificate has an invalid signature."
 msgstr ""
 
 #: src/camel/camel-smime-context.c:172
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "The key for this site's certificate has been revoked."
-msgstr "证书已过期。"
+msgstr "该站点的证书对应的密钥已被吊销。"
 
 #: src/camel/camel-smime-context.c:173
 msgid "New KRL has an invalid format."
