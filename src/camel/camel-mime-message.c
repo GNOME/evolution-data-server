@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*- */
 /* camel-mime-message.c : class for a mime_message
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

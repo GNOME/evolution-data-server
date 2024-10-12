@@ -1,5 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
 /* e-test-server-utils.c - Test scaffolding to run tests with in-tree data server.
  *
  * Copyright (C) 2012 Intel Corporation

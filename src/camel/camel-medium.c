@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camelMedium.c : Abstract class for a medium
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

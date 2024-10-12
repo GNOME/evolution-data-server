@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-stream-mem.c: memory buffer based stream
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

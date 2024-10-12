@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* e-source-revision-guards.h - Revision Guard Configuration.
  *
  * Copyright (C) 2013 Intel Corporation

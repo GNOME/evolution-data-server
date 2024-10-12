@@ -1,5 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-
 /* e-book-backend-file.h - File contact backend.
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

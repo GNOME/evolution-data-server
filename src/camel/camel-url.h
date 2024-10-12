@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-url.h : utility functions to parse URLs
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

@@ -1,5 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
 /* e-source-backend-summary-setup.h - Backend Summary Data Configuration.
  *
  * Copyright (C) 2012 Intel Corporation

@@ -1,5 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
 /* e-book-backend-file-migrate-bdb.c - Migration of old BDB database to the new sqlite DB.
  *
  * Copyright (C) 2012 Intel Corporation

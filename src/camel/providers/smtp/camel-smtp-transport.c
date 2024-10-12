@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-smtp-transport.c : class for a smtp transport
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

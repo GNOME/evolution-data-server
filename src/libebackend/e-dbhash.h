@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Writes hashes that go to/from disk in db form. Hash keys are strings
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
