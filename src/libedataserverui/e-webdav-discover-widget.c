@@ -566,6 +566,7 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 		addbit (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS, C_("WebDAVDiscover", "Events"));
 		addbit (E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES, C_("WebDAVDiscover", "Memos"));
 		addbit (E_WEBDAV_DISCOVER_SUPPORTS_TASKS, C_("WebDAVDiscover", "Tasks"));
+		addbit (E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE, C_("WebDAVDiscover", "Server-side scheduling"));
 
 		#undef addbit
 
@@ -1141,7 +1142,7 @@ e_webdav_discover_dialog_new (GtkWindow *parent,
 		"transient-for", parent,
 		"title", title,
 		"destroy-with-parent", TRUE,
-		"default-width", 400,
+		"default-width", 775,
 		"default-height", 400,
 		NULL);
 
