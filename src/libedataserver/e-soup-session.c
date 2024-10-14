@@ -252,19 +252,19 @@ e_soup_session_maybe_prepare_bearer_auth (ESoupSession *session,
 	} else {
 		ESoupAuthBearer *soup_auth;
 
-		g_mutex_unlock (&session->priv->property_lock);
-
 		soup_auth = g_object_new (
 			E_TYPE_SOUP_AUTH_BEARER,
 			"authority", g_uri_get_host (g_uri), NULL);
 
 		success = e_soup_session_setup_bearer_auth (session, message, FALSE, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
 		if (success) {
-			g_mutex_lock (&session->priv->property_lock);
 			g_clear_object (&session->priv->using_bearer_auth);
 			session->priv->using_bearer_auth = g_object_ref (soup_auth);
-			g_mutex_unlock (&session->priv->property_lock);
 		}
+
+		/* unlock only after the bearer auth is set, to avoid a race
+		   with re-used session by multiple sources in a single process */
+		g_mutex_unlock (&session->priv->property_lock);
 
 		g_object_unref (soup_auth);
 	}
