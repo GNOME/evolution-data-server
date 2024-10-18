@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.54.1 2024-10-18
+---------------------------------------
+
+Bug Fixes:
+	I#562 - Pass GError instead of CamelException to camel_movemail_solaris (Niveditha Rau)
+	I#563 - Fix argument types in ENABLE_BROKEN_SPOOL code (Alan Coopersmith)
+	I#564 - Use GIConv instead of iconv_t with iconv wrappers (Alan Coopersmith)
+	I#566 - ESoupSession: Sometimes accesses server without OAuth2 token
+
+Translations:
+	Juliano de Souza Camargo (pt_BR)
+
 Evolution-Data-Server 3.54.0 2024-09-13
 ---------------------------------------
 
