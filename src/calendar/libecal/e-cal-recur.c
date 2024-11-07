@@ -1685,8 +1685,10 @@ array_to_list_and_free (GArray *array)
 	for (ii = 0; ii < array->len; ii++) {
 		gshort value = g_array_index (array, gshort, ii);
 
+		#ifndef HAVE_I_CAL_RECURRENCE_GET_BY
 		if (value == I_CAL_RECURRENCE_ARRAY_MAX)
 			break;
+		#endif
 
 		lst = g_list_prepend (lst, GINT_TO_POINTER ((gint) value));
 	}
@@ -1811,29 +1813,40 @@ e_cal_recur_from_icalproperty (ICalProperty *prop,
 	r->enddate = e_cal_recur_obtain_enddate (ir, prop, zone, convert_end_date);
 	r->week_start_day = e_cal_recur_ical_weekday_to_weekday (i_cal_recurrence_get_week_start (ir));
 
+	#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+	r->bymonth = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_MONTH));
+	r->byweekno = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_WEEK_NO));
+	r->byyearday = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_YEAR_DAY));
+	r->bymonthday = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_MONTH_DAY));
+	#else
 	r->bymonth = array_to_list_and_free (i_cal_recurrence_get_by_month_array (ir));
+	r->byweekno = array_to_list_and_free (i_cal_recurrence_get_by_week_no_array (ir));
+	r->byyearday = array_to_list_and_free (i_cal_recurrence_get_by_year_day_array (ir));
+	r->bymonthday = array_to_list_and_free (i_cal_recurrence_get_by_month_day_array (ir));
+	#endif
+
 	for (elem = r->bymonth; elem; elem = elem->next) {
 		/* We need to convert from 1-12 to 0-11, i.e. subtract 1. */
 		gint month = GPOINTER_TO_INT (elem->data) - 1;
 		elem->data = GINT_TO_POINTER (month);
 	}
 
-	r->byweekno = array_to_list_and_free (i_cal_recurrence_get_by_week_no_array (ir));
-
-	r->byyearday = array_to_list_and_free (i_cal_recurrence_get_by_year_day_array (ir));
-
-	r->bymonthday = array_to_list_and_free (i_cal_recurrence_get_by_month_day_array (ir));
-
 	/* FIXME: libical only supports 8 values, out of possible 107 * 7. */
 	r->byday = NULL;
+	#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+	array = i_cal_recurrence_get_by_array (ir, I_CAL_BY_DAY);
+	#else
 	array = i_cal_recurrence_get_by_day_array (ir);
+	#endif
 	for (ii = 0; array && ii < array->len; ii++) {
 		gshort value = g_array_index (array, gshort, ii);
 		ICalRecurrenceWeekday day;
 		gint weeknum, weekday;
 
+		#ifndef HAVE_I_CAL_RECURRENCE_GET_BY
 		if (value == I_CAL_RECURRENCE_ARRAY_MAX)
 			break;
+		#endif
 
 		day = i_cal_recurrence_day_day_of_week (value);
 		weeknum = i_cal_recurrence_day_position (value);
@@ -1849,13 +1862,17 @@ e_cal_recur_from_icalproperty (ICalProperty *prop,
 	if (array)
 		g_array_unref (array);
 
+	#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+	r->byhour = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_HOUR));
+	r->byminute = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_MINUTE));
+	r->bysecond = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_SECOND));
+	r->bysetpos = array_to_list_and_free (i_cal_recurrence_get_by_array (ir, I_CAL_BY_SET_POS));
+	#else
 	r->byhour = array_to_list_and_free (i_cal_recurrence_get_by_hour_array (ir));
-
 	r->byminute = array_to_list_and_free (i_cal_recurrence_get_by_minute_array (ir));
-
 	r->bysecond = array_to_list_and_free (i_cal_recurrence_get_by_second_array (ir));
-
 	r->bysetpos = array_to_list_and_free (i_cal_recurrence_get_by_set_pos_array (ir));
+	#endif
 
 	g_clear_object (&ir);
 
@@ -4939,6 +4956,7 @@ e_cal_recur_get_localized_nth (gint nth)
 	return _(e_cal_recur_nth[nth]);
 }
 
+#ifndef HAVE_I_CAL_RECURRENCE_GET_BY
 static gint
 cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
 {
@@ -4956,6 +4974,7 @@ cal_comp_util_recurrence_count_by_xxx_and_free (GArray *array) /* gshort */
 
 	return ii;
 }
+#endif
 
 /**
  * e_cal_recur_describe_recurrence_ex:
@@ -5038,6 +5057,17 @@ e_cal_recur_describe_recurrence_ex (ICalComponent *icalcomp,
 	until = i_cal_recurrence_get_until (rrule);
 	dtstart = i_cal_component_get_dtstart (icalcomp);
 
+	#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+	n_by_second = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_SECOND);
+	n_by_minute = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_MINUTE);
+	n_by_hour = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_HOUR);
+	n_by_day = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_DAY);
+	n_by_month_day = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_MONTH_DAY);
+	n_by_year_day = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_YEAR_DAY);
+	n_by_week_no = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_WEEK_NO);
+	n_by_month = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_MONTH);
+	n_by_set_pos = i_cal_recurrence_get_by_array_size (rrule, I_CAL_BY_SET_POS);
+	#else
 	n_by_second = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_second_array (rrule));
 	n_by_minute = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_minute_array (rrule));
 	n_by_hour = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_hour_array (rrule));
@@ -5047,6 +5077,7 @@ e_cal_recur_describe_recurrence_ex (ICalComponent *icalcomp,
 	n_by_week_no = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_week_no_array (rrule));
 	n_by_month = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_month_array (rrule));
 	n_by_set_pos = cal_comp_util_recurrence_count_by_xxx_and_free (i_cal_recurrence_get_by_set_pos_array (rrule));
+	#endif
 
 	if (n_by_second != 0 ||
 	    n_by_minute != 0 ||
@@ -5114,12 +5145,19 @@ e_cal_recur_describe_recurrence_ex (ICalComponent *icalcomp,
 
 		day_mask = 0;
 
-		for (ii = 0; ii < 8 && i_cal_recurrence_get_by_day (rrule, ii) != I_CAL_RECURRENCE_ARRAY_MAX; ii++) {
+		for (ii = 0; ii < 8 && ii < n_by_day; ii++) {
 			ICalRecurrenceWeekday weekday;
+			gshort byday;
 			gint pos;
 
-			weekday = i_cal_recurrence_day_day_of_week (i_cal_recurrence_get_by_day (rrule, ii));
-			pos = i_cal_recurrence_day_position (i_cal_recurrence_get_by_day (rrule, ii));
+			#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+			byday = i_cal_recurrence_get_by (rrule, I_CAL_BY_DAY, ii);
+			#else
+			byday = i_cal_recurrence_get_by_day (rrule, ii);
+			#endif
+
+			weekday = i_cal_recurrence_day_day_of_week (byday);
+			pos = i_cal_recurrence_day_position (byday);
 
 			if (pos != 0)
 				goto custom;
@@ -5296,7 +5334,11 @@ e_cal_recur_describe_recurrence_ex (ICalComponent *icalcomp,
 			if (n_by_set_pos != 0)
 				goto custom;
 
+			#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+			nth = i_cal_recurrence_get_by (rrule, I_CAL_BY_MONTH_DAY, 0);
+			#else
 			nth = i_cal_recurrence_get_by_month_day (rrule, 0);
+			#endif
 			if (nth < 1 && nth != -1)
 				goto custom;
 
@@ -5311,19 +5353,30 @@ e_cal_recur_describe_recurrence_ex (ICalComponent *icalcomp,
 
 		} else if (n_by_day == 1) {
 			ICalRecurrenceWeekday weekday;
+			gshort byday;
 			gint pos;
 
 			/* Outlook 2000 uses BYDAY=TU;BYSETPOS=2, and will not
 			 * accept BYDAY=2TU. So we now use the same as Outlook
 			 * by default. */
 
-			weekday = i_cal_recurrence_day_day_of_week (i_cal_recurrence_get_by_day (rrule, 0));
-			pos = i_cal_recurrence_day_position (i_cal_recurrence_get_by_day (rrule, 0));
+			#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+			byday = i_cal_recurrence_get_by (rrule, I_CAL_BY_DAY, 0);
+			#else
+			byday = i_cal_recurrence_get_by_day (rrule, 0);
+			#endif
+
+			weekday = i_cal_recurrence_day_day_of_week (byday);
+			pos = i_cal_recurrence_day_position (byday);
 
 			if (pos == 0) {
 				if (n_by_set_pos != 1)
 					goto custom;
+				#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+				pos = i_cal_recurrence_get_by (rrule, I_CAL_BY_SET_POS, 0);
+				#else
 				pos = i_cal_recurrence_get_by_set_pos (rrule, 0);
+				#endif
 			} else if (pos < 0) {
 				goto custom;
 			}

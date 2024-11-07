@@ -374,7 +374,7 @@ create_component_midnight (const gchar *tz_location)
 		"DTSTAMP:20190101T050000Z\r\n"
 		"CREATED:20190101T050000Z\r\n"
 		"LAST-MODIFIED:20190101T050000Z\r\n"
-		"RRULE:FREQ=DAILY;UNTIL=20190109\r\n"
+		"RRULE%s:FREQ=DAILY;UNTIL=20190109T000000%s\r\n"
 		"END:VEVENT\r\n";
 	gchar *tzref = NULL, tzsuffix[2] = { 0, 0 };
 	gchar *str;
@@ -399,7 +399,10 @@ create_component_midnight (const gchar *tz_location)
 		}
 	}
 
-	str = g_strdup_printf (comp_str, tzref ? tzref : "", tzsuffix, tzref ? tzref : "", tzsuffix);
+	str = g_strdup_printf (comp_str,
+		tzref ? tzref : "", tzsuffix, /* DTSTART */
+		tzref ? tzref : "", tzsuffix, /* DTEND */
+		tzref ? tzref : "", tzsuffix); /* RRULE */
 	icomp = i_cal_component_new_from_string (str);
 	g_assert_nonnull (icomp);
 

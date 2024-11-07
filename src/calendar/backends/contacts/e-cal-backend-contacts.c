@@ -886,8 +886,14 @@ create_component (ECalBackendContacts *cbc,
 	rt = i_cal_recurrence_new ();
 	i_cal_recurrence_set_freq (rt, I_CAL_YEARLY_RECURRENCE);
 	i_cal_recurrence_set_interval (rt, 1);
-	if (is_leap_day)
+	if (is_leap_day) {
+		#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+		i_cal_recurrence_resize_by_array (rt, I_CAL_BY_MONTH_DAY, 1);
+		i_cal_recurrence_set_by (rt, I_CAL_BY_MONTH_DAY, 0, -1);
+		#else
 		i_cal_recurrence_set_by_month_day (rt, 0, -1);
+		#endif
+	}
 	recur_list = g_slist_prepend (NULL, rt);
 	e_cal_component_set_rrules (cal_comp, recur_list);
 	g_slist_free_full (recur_list, g_object_unref);

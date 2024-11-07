@@ -971,6 +971,13 @@ CHECK_C_SOURCE_COMPILES("#define LIBICAL_GLIB_UNSTABLE_API 1
 				return 0;
 			}" HAVE_I_CAL_EMAIL_PARAMETER)
 
+CHECK_C_SOURCE_COMPILES("#define LIBICAL_GLIB_UNSTABLE_API 1
+			#include <libical-glib/libical-glib.h>
+			int main(void) {
+				i_cal_recurrence_get_by (NULL, I_CAL_BY_MONTH, 0);
+				return 0;
+			}" HAVE_I_CAL_RECURRENCE_GET_BY)
+
 unset(CMAKE_REQUIRED_DEFINITIONS)
 unset(CMAKE_REQUIRED_INCLUDES)
 unset(CMAKE_REQUIRED_LIBRARIES)

@@ -25,6 +25,19 @@
 #include "e-test-server-utils.h"
 #include "test-cal-cache-utils.h"
 
+#ifdef HAVE_I_CAL_RECURRENCE_GET_BY
+#define check_recurrence_index(_rr, _kind, _idx) (((_idx) < i_cal_recurrence_get_by_array_size (_rr, _kind)) ? i_cal_recurrence_get_by (_rr, _kind, _idx) : 0)
+#define i_cal_recurrence_get_by_month(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_MONTH, _idx)
+#define i_cal_recurrence_get_by_set_pos(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_SET_POS, _idx)
+#define i_cal_recurrence_get_by_week_no(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_WEEK_NO, _idx)
+#define i_cal_recurrence_get_by_year_day(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_YEAR_DAY, _idx)
+#define i_cal_recurrence_get_by_month_day(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_MONTH_DAY, _idx)
+#define i_cal_recurrence_get_by_day(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_DAY, _idx)
+#define i_cal_recurrence_get_by_hour(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_HOUR, _idx)
+#define i_cal_recurrence_get_by_minute(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_MINUTE, _idx)
+#define i_cal_recurrence_get_by_second(_rr, _idx) check_recurrence_index (_rr, I_CAL_BY_SECOND, _idx)
+#endif
+
 void _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache); /* e-cal-cache.c, private function */
 void _e_cal_backend_remove_cached_timezones (ECalBackend *cal_backend); /* e-cal-backend.c, private function */
 
@@ -1542,8 +1555,6 @@ test_timezones_verify_tz_sub (ICalComponent *sub1,
 	g_assert_nonnull (rrule1);
 	g_assert_nonnull (rrule2);
 	g_assert_cmpint (i_cal_recurrence_get_freq (rrule1), ==, i_cal_recurrence_get_freq (rrule2));
-	g_assert_cmpint (i_cal_recurrence_get_by_second (rrule1, 0), ==, i_cal_recurrence_get_by_second (rrule2, 0));
-	g_assert_cmpint (i_cal_recurrence_get_by_second (rrule1, 1), ==, i_cal_recurrence_get_by_second (rrule2, 1));
 	g_assert_cmpint (i_cal_recurrence_get_by_month (rrule1, 0), ==, i_cal_recurrence_get_by_month (rrule2, 0));
 	g_assert_cmpint (i_cal_recurrence_get_by_month (rrule1, 1), ==, i_cal_recurrence_get_by_month (rrule2, 1));
 	g_assert_cmpint (i_cal_recurrence_get_by_set_pos (rrule1, 0), ==, i_cal_recurrence_get_by_set_pos (rrule2, 0));
