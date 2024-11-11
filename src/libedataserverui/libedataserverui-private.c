@@ -61,6 +61,14 @@ _libedataserverui_init_icon_theme (void)
 	static gboolean icons_added = FALSE;
 
 	#if GTK_CHECK_VERSION(4, 0, 0)
+	/* We can't call gdk_display_manager_get if gtk is
+	 * not initialized. This can happen when we are building
+	 * gobject-introspection data or documentation */
+	if (!gtk_is_initialized ()) {
+		e_source_registry_debug_print ("%s: GTK is not initialized, skipping\n", G_STRFUNC);
+		return;
+	}
+
 	if (!icons_added) {
 		GdkDisplayManager *manager;
 
