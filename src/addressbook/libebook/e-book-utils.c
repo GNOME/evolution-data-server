@@ -143,7 +143,7 @@ book_utils_get_recipient_certificates_thread (gpointer data,
 											gboolean usable;
 
 											nss_cert = CERT_DecodeCertFromPackage (decoded->str, decoded->len);
-											usable = nss_cert && (nss_cert->keyUsage & certificateUsageEmailRecipient) != 0;
+											usable = nss_cert && (nss_cert->keyUsage & (KU_KEY_ENCIPHERMENT | KU_DATA_ENCIPHERMENT)) != 0;
 											if (nss_cert)
 												CERT_DestroyCertificate (nss_cert);
 

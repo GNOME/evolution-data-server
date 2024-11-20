@@ -285,8 +285,9 @@ ecw_dup_usage (CERTCertificate *cert)
 		const gchar *text;
 	} usageinfo[] = {
 		/* x509 certificate usage types */
-		{ certificateUsageEmailSigner, N_("Digital Signature") },
-		{ certificateUsageEmailRecipient, N_("Key Encipherment") }
+		{ KU_DIGITAL_SIGNATURE, N_("Digital Signature") },
+		/* This is inaccurate, but cannot add a new translatable string */
+		{ KU_KEY_ENCIPHERMENT | KU_DATA_ENCIPHERMENT, N_("Key Encipherment") }
 	};
 
 	GString *str = NULL;
