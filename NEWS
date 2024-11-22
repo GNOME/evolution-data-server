@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.54.2 2024-11-22
+---------------------------------------
+
+Bug Fixes:
+	I#571 - libedataserverui: Avoid initializing the icon_theme when building introspection data (Jordan Petridis)
+	I#574 - Fails to build/link against icu 76.1
+	evo-I#2897 - Correct certificate key usage constants
+
+Translations:
+	Alexandre Franke (fr)
+	Daniel Rusek (cs)
+	Милош Поповић (sr)
+	Милош Поповић (sr@latin)
+
 Evolution-Data-Server 3.54.1 2024-10-18
 ---------------------------------------
 
