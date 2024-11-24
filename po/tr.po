@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-08-03 04:43+0000\n"
-"PO-Revision-Date: 2024-08-25 15:21+0300\n"
+"POT-Creation-Date: 2024-10-14 08:37+0000\n"
+"PO-Revision-Date: 2024-10-22 23:21+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Türkçe <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.3\n"
+"X-Generator: Poedit 3.5\n"
 "X-POOTLE-MTIME: 1433363404.000000\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
@@ -184,7 +184,7 @@ msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
 #: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1837
 #: src/camel/camel-filter-driver.c:1838 src/camel/camel-filter-driver.c:1973
-#: src/camel/camel-gpg-context.c:3205
+#: src/camel/camel-gpg-context.c:3187
 #: src/camel/providers/imapx/camel-imapx-server.c:3378
 #: src/camel/providers/imapx/camel-imapx-server.c:3384
 #: src/camel/providers/imapx/camel-imapx-server.c:3394
@@ -2968,18 +2968,18 @@ msgstr "“%s : %s” klasörü için kullanılmayan belleği serbest bırak"
 msgid "Output from %s:"
 msgstr "%s konumundan çıktı:"
 
-#: src/camel/camel-gpg-context.c:1179 src/camel/camel-gpg-context.c:1184
-#: src/camel/camel-gpg-context.c:2053
+#: src/camel/camel-gpg-context.c:1161 src/camel/camel-gpg-context.c:1166
+#: src/camel/camel-gpg-context.c:2035
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg çalıştırılamadı: %s"
 
-#: src/camel/camel-gpg-context.c:1184
+#: src/camel/camel-gpg-context.c:1166
 #: src/camel/providers/smtp/camel-smtp-transport.c:1218
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
-#: src/camel/camel-gpg-context.c:1296
+#: src/camel/camel-gpg-context.c:1278
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2990,17 +2990,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1332
+#: src/camel/camel-gpg-context.c:1314
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid bilgisi ayrıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:1357 src/camel/camel-gpg-context.c:1372
+#: src/camel/camel-gpg-context.c:1339 src/camel/camel-gpg-context.c:1354
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg parola metni isteği ayrıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:1399
+#: src/camel/camel-gpg-context.c:1381
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3009,7 +3009,7 @@ msgstr ""
 "Kilidi kaldırmak için PIN girmeniz gerekiyor. Kilidi kaldırılacak\n"
 "SmartCard: “%s”"
 
-#: src/camel/camel-gpg-context.c:1403
+#: src/camel/camel-gpg-context.c:1385
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3018,12 +3018,12 @@ msgstr ""
 "“%s” kullanıcısının anahtarının kilidini kaldırmak için\n"
 "parola metnine ihtiyacınız var"
 
-#: src/camel/camel-gpg-context.c:1409
+#: src/camel/camel-gpg-context.c:1391
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "“%s” için GnuPG’den beklenmeyen yanıt"
 
-#: src/camel/camel-gpg-context.c:1421
+#: src/camel/camel-gpg-context.c:1403
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3031,31 +3031,31 @@ msgstr ""
 "Şifreli içeriğin alıcı ile ilgili bilgi içermediğini not edin, yani içerilen "
 "her özel anahtar için parola penceresi açılacak."
 
-#: src/camel/camel-gpg-context.c:1452 src/camel/camel-net-utils.c:524
+#: src/camel/camel-gpg-context.c:1434 src/camel/camel-net-utils.c:524
 #: src/camel/providers/nntp/camel-nntp-summary.c:393
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "İptal Edildi"
 
-#: src/camel/camel-gpg-context.c:1474
+#: src/camel/camel-gpg-context.c:1456
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Gizli anahtarın kilidi kaldırılamadı: 3 yanlış parola metni girildi."
 
-#: src/camel/camel-gpg-context.c:1487
+#: src/camel/camel-gpg-context.c:1469
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPGʼden beklenmeyen yanıt: %s"
 
-#: src/camel/camel-gpg-context.c:1604
+#: src/camel/camel-gpg-context.c:1586
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Şifrelenemedi: Geçerli alıcı belirtilmedi."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1625
+#: src/camel/camel-gpg-context.c:1607
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3065,38 +3065,38 @@ msgstr ""
 "alıcı için içe aktarılmış genel anahtara %s tarafından sahip olunmamasıdır."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1632
+#: src/camel/camel-gpg-context.c:1614
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Şifrelenemedi: %s alıcısının genel anahtarı bulunamadı."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1639
+#: src/camel/camel-gpg-context.c:1621
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı iptal edilmiş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1646
+#: src/camel/camel-gpg-context.c:1628
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Şifrelenemedi: %s alıcısının anahtar süresi dolmuş."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1653
+#: src/camel/camel-gpg-context.c:1635
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı güvenilir değil."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1660
+#: src/camel/camel-gpg-context.c:1642
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Şifrelenemedi: %s alıcısının anahtarı devre dışı bırakılmış."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1668
+#: src/camel/camel-gpg-context.c:1650
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3105,80 +3105,80 @@ msgstr ""
 "Şifrelenemedi: Geçersiz alıcı %s belirtildi (kod %d). %s bu alıcının içe "
 "aktarılan genel anahtarına sahip olmadığı için bu sorun oluşmaktadır."
 
-#: src/camel/camel-gpg-context.c:1729 src/camel/camel-gpg-context.c:1740
+#: src/camel/camel-gpg-context.c:1711 src/camel/camel-gpg-context.c:1722
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Komut GPGʼye aktarılamadı: %s"
 
-#: src/camel/camel-gpg-context.c:2577 src/camel/camel-smime-context.c:1041
+#: src/camel/camel-gpg-context.c:2559 src/camel/camel-smime-context.c:1041
 msgid "Could not generate signing data: "
 msgstr "İmzalama verisi oluşturulamadı: "
 
-#: src/camel/camel-gpg-context.c:2628 src/camel/camel-gpg-context.c:2866
-#: src/camel/camel-gpg-context.c:3007 src/camel/camel-gpg-context.c:3184
-#: src/camel/camel-gpg-context.c:3542 src/camel/camel-gpg-context.c:3629
-#: src/camel/camel-gpg-context.c:3922 src/camel/camel-gpg-context.c:4020
-#: src/camel/camel-gpg-context.c:4105 src/camel/camel-gpg-context.c:4172
+#: src/camel/camel-gpg-context.c:2610 src/camel/camel-gpg-context.c:2848
+#: src/camel/camel-gpg-context.c:2989 src/camel/camel-gpg-context.c:3166
+#: src/camel/camel-gpg-context.c:3524 src/camel/camel-gpg-context.c:3611
+#: src/camel/camel-gpg-context.c:3904 src/camel/camel-gpg-context.c:4002
+#: src/camel/camel-gpg-context.c:4087 src/camel/camel-gpg-context.c:4154
 msgid "Failed to execute gpg."
 msgstr "gpg çalıştırılamadı."
 
-#: src/camel/camel-gpg-context.c:2736 src/camel/camel-gpg-context.c:2744
-#: src/camel/camel-gpg-context.c:2752 src/camel/camel-gpg-context.c:2772
+#: src/camel/camel-gpg-context.c:2718 src/camel/camel-gpg-context.c:2726
+#: src/camel/camel-gpg-context.c:2734 src/camel/camel-gpg-context.c:2754
 #: src/camel/camel-smime-context.c:1172 src/camel/camel-smime-context.c:1186
 #: src/camel/camel-smime-context.c:1198
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "İleti imzası doğrulanamadı: Geçersiz ileti biçimi"
 
-#: src/camel/camel-gpg-context.c:2818
+#: src/camel/camel-gpg-context.c:2800
 msgid "Cannot verify message signature: "
 msgstr "İletiye ait imza doğrulanamıyor: "
 
-#: src/camel/camel-gpg-context.c:2965
+#: src/camel/camel-gpg-context.c:2947
 msgid "Could not generate encrypting data: "
 msgstr "Şifreleme verisi oluşturulamadı: "
 
-#: src/camel/camel-gpg-context.c:3047
+#: src/camel/camel-gpg-context.c:3029
 msgid "This is a digitally encrypted message part"
 msgstr "Bu dijital olarak şifrelenmiş ileti parçasıdır"
 
-#: src/camel/camel-gpg-context.c:3107 src/camel/camel-gpg-context.c:3116
-#: src/camel/camel-gpg-context.c:3139
+#: src/camel/camel-gpg-context.c:3089 src/camel/camel-gpg-context.c:3098
+#: src/camel/camel-gpg-context.c:3121
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "İletinin şifresi çözülemedi: Geçersiz ileti biçimi"
 
-#: src/camel/camel-gpg-context.c:3127
+#: src/camel/camel-gpg-context.c:3109
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME parçasının şifresi çözülemedi: İletişim kuralı hatası"
 
-#: src/camel/camel-gpg-context.c:3199
+#: src/camel/camel-gpg-context.c:3181
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "MIME parçasının şifresi çözülemedi: Gizli anahtar bulunamadı"
 
-#: src/camel/camel-gpg-context.c:3204
+#: src/camel/camel-gpg-context.c:3186
 #, c-format
 msgid "Failed to decrypt MIME part: %s"
 msgstr "MIME parçasının şifresi çözülemedi: %s"
 
-#: src/camel/camel-gpg-context.c:3241 src/camel/camel-multipart-encrypted.c:36
+#: src/camel/camel-gpg-context.c:3223 src/camel/camel-multipart-encrypted.c:36
 #: src/camel/camel-smime-context.c:1724
 msgid "Encrypted content"
 msgstr "Şifrelenmiş içerik"
 
-#: src/camel/camel-gpg-context.c:3549 src/camel/camel-gpg-context.c:3636
-#: src/camel/camel-gpg-context.c:3929 src/camel/camel-gpg-context.c:3940
+#: src/camel/camel-gpg-context.c:3531 src/camel/camel-gpg-context.c:3618
+#: src/camel/camel-gpg-context.c:3911 src/camel/camel-gpg-context.c:3922
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "“%s” genel anahtarı bulunamadı"
 
-#: src/camel/camel-gpg-context.c:4027
+#: src/camel/camel-gpg-context.c:4009
 msgid "No public key was found in the provided data"
 msgstr "Sağlanan verilerde genel anahtar bulunamadı"
 
-#: src/camel/camel-gpg-context.c:4040
+#: src/camel/camel-gpg-context.c:4022
 msgid "Key information was not found in the provided data"
 msgstr "Anahtar bilgisi sağlanan verilerde bulunamadı"
 
@@ -8450,7 +8450,7 @@ msgstr "“%s” ile aç"
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1303
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:243
 #: src/libedataserverui/e-trust-prompt.c:117
-#: src/libedataserverui/e-webdav-discover-widget.c:1149
+#: src/libedataserverui/e-webdav-discover-widget.c:1150
 msgid "_Cancel"
 msgstr "İ_ptal"
 
@@ -8544,7 +8544,7 @@ msgstr ""
 "(ana makine: %s)"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:244
-#: src/libedataserverui/e-webdav-discover-widget.c:1150
+#: src/libedataserverui/e-webdav-discover-widget.c:1151
 msgid "_OK"
 msgstr "_Tamam"
 
@@ -8768,15 +8768,20 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Görevler"
 
-#: src/libedataserverui/e-webdav-discover-widget.c:891
+#: src/libedataserverui/e-webdav-discover-widget.c:569
+msgctxt "WebDAVDiscover"
+msgid "Server-side scheduling"
+msgstr "Sunucu taraflı zamanlama"
+
+#: src/libedataserverui/e-webdav-discover-widget.c:892
 msgid "Invalid URL"
 msgstr "Geçersiz Adres"
 
-#: src/libedataserverui/e-webdav-discover-widget.c:940
+#: src/libedataserverui/e-webdav-discover-widget.c:941
 msgid "Cancel"
 msgstr "İptal"
 
-#: src/libedataserverui/e-webdav-discover-widget.c:943
+#: src/libedataserverui/e-webdav-discover-widget.c:944
 msgid "Searching server sources..."
 msgstr "Sunucu kaynakları aranıyor..."
 
