@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-11-18 09:39+0000\n"
-"PO-Revision-Date: 2024-11-24 09:46+0100\n"
+"POT-Creation-Date: 2024-11-24 08:48+0000\n"
+"PO-Revision-Date: 2024-11-24 09:54+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -363,7 +363,7 @@ msgid "Family Name"
 msgstr "Družinsko ime"
 
 #: src/addressbook/libebook-contacts/e-contact.c:164
-#: src/libedataserverui/e-certificate-widget.c:414
+#: src/libedataserverui/e-certificate-widget.c:420
 msgid "Nickname"
 msgstr "Vzdevek"
 
@@ -481,8 +481,8 @@ msgstr "TTY"
 
 #. Organizational fields
 #: src/addressbook/libebook-contacts/e-contact.c:202
-#: src/libedataserverui/e-certificate-widget.c:416
-#: src/libedataserverui/e-certificate-widget.c:425
+#: src/libedataserverui/e-certificate-widget.c:422
+#: src/libedataserverui/e-certificate-widget.c:431
 msgid "Organization"
 msgstr "Organizacija"
 
@@ -8272,108 +8272,132 @@ msgstr "Digitalni podpis"
 msgid "Key Encipherment"
 msgstr "Šifriranje ključa"
 
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:289
+msgid "Data Encipherment"
+msgstr "Šifriranje podatkov"
+
+#: src/libedataserverui/e-certificate-widget.c:290
+msgid "Non Repudiation"
+msgstr "Nezavračanje"
+
+#: src/libedataserverui/e-certificate-widget.c:291
+msgid "Key Agreement"
+msgstr "Sporazum ključa"
+
+#: src/libedataserverui/e-certificate-widget.c:292
+msgid "Key Certificate Sign"
+msgstr "Podpis potrdila ključa"
+
+#: src/libedataserverui/e-certificate-widget.c:293
+msgid "CRL Sign"
+msgstr "Znak CRL"
+
+#: src/libedataserverui/e-certificate-widget.c:294
+msgid "Encipher Only"
+msgstr "Samo šifriraj"
+
+#: src/libedataserverui/e-certificate-widget.c:416
 msgid "Certificate"
 msgstr "Potrdilo"
 
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:416
 msgid "Identity"
 msgstr "Istovetnost"
 
-#: src/libedataserverui/e-certificate-widget.c:411
-#: src/libedataserverui/e-certificate-widget.c:423
+#: src/libedataserverui/e-certificate-widget.c:417
+#: src/libedataserverui/e-certificate-widget.c:429
 msgid "Issuer"
 msgstr "Izdajatelj"
 
-#: src/libedataserverui/e-certificate-widget.c:412
+#: src/libedataserverui/e-certificate-widget.c:418
 msgid "Expires on"
 msgstr "Poteče"
 
-#: src/libedataserverui/e-certificate-widget.c:413
+#: src/libedataserverui/e-certificate-widget.c:419
 msgid "Subject"
 msgstr "Zadeva"
 
-#: src/libedataserverui/e-certificate-widget.c:413
-#: src/libedataserverui/e-certificate-widget.c:423
+#: src/libedataserverui/e-certificate-widget.c:419
+#: src/libedataserverui/e-certificate-widget.c:429
 msgid "Common Name"
 msgstr "Skupno ime"
 
-#: src/libedataserverui/e-certificate-widget.c:415
-#: src/libedataserverui/e-certificate-widget.c:424
+#: src/libedataserverui/e-certificate-widget.c:421
+#: src/libedataserverui/e-certificate-widget.c:430
 msgid "Email"
 msgstr "Elektronski naslov"
 
-#: src/libedataserverui/e-certificate-widget.c:417
-#: src/libedataserverui/e-certificate-widget.c:426
+#: src/libedataserverui/e-certificate-widget.c:423
+#: src/libedataserverui/e-certificate-widget.c:432
 msgid "Organization Unit"
 msgstr "Organizacijska enota"
 
-#: src/libedataserverui/e-certificate-widget.c:418
-#: src/libedataserverui/e-certificate-widget.c:427
+#: src/libedataserverui/e-certificate-widget.c:424
+#: src/libedataserverui/e-certificate-widget.c:433
 msgid "Country"
 msgstr "Država"
 
-#: src/libedataserverui/e-certificate-widget.c:419
-#: src/libedataserverui/e-certificate-widget.c:428
+#: src/libedataserverui/e-certificate-widget.c:425
+#: src/libedataserverui/e-certificate-widget.c:434
 msgid "State"
 msgstr "Pokrajina / Zvezna država"
 
-#: src/libedataserverui/e-certificate-widget.c:420
-#: src/libedataserverui/e-certificate-widget.c:429
+#: src/libedataserverui/e-certificate-widget.c:426
+#: src/libedataserverui/e-certificate-widget.c:435
 msgid "Locality"
 msgstr "Krajevnost"
 
-#: src/libedataserverui/e-certificate-widget.c:421
-#: src/libedataserverui/e-certificate-widget.c:430
+#: src/libedataserverui/e-certificate-widget.c:427
+#: src/libedataserverui/e-certificate-widget.c:436
 msgid "Domain Component Name"
 msgstr "Ime komponente domene"
 
-#: src/libedataserverui/e-certificate-widget.c:422
+#: src/libedataserverui/e-certificate-widget.c:428
 msgid "Alternative Emails"
 msgstr "Drugi eelektronski naslovi"
 
-#: src/libedataserverui/e-certificate-widget.c:431
-#: src/libedataserverui/e-certificate-widget.c:439
+#: src/libedataserverui/e-certificate-widget.c:437
+#: src/libedataserverui/e-certificate-widget.c:445
 msgid "SHA-256 Fingerprint"
 msgstr "Prstni odtis SHA-256"
 
-#: src/libedataserverui/e-certificate-widget.c:432
+#: src/libedataserverui/e-certificate-widget.c:438
 msgid "Details"
 msgstr "Podrobnosti"
 
-#: src/libedataserverui/e-certificate-widget.c:432
+#: src/libedataserverui/e-certificate-widget.c:438
 msgid "Not Before"
 msgstr "Ne prej kot"
 
-#: src/libedataserverui/e-certificate-widget.c:433
+#: src/libedataserverui/e-certificate-widget.c:439
 msgid "Not After"
 msgstr "Ne kasneje kot"
 
-#: src/libedataserverui/e-certificate-widget.c:434
+#: src/libedataserverui/e-certificate-widget.c:440
 msgid "Usage"
 msgstr "Uporaba"
 
-#: src/libedataserverui/e-certificate-widget.c:435
+#: src/libedataserverui/e-certificate-widget.c:441
 msgid "Version"
 msgstr "Različica"
 
-#: src/libedataserverui/e-certificate-widget.c:436
+#: src/libedataserverui/e-certificate-widget.c:442
 msgid "Serial Number"
 msgstr "Zaporedna številka"
 
-#: src/libedataserverui/e-certificate-widget.c:437
+#: src/libedataserverui/e-certificate-widget.c:443
 msgid "Key ID"
 msgstr "ID ključa"
 
-#: src/libedataserverui/e-certificate-widget.c:438
+#: src/libedataserverui/e-certificate-widget.c:444
 msgid "Signature Algorithm"
 msgstr "Algoritem podpisa"
 
-#: src/libedataserverui/e-certificate-widget.c:440
+#: src/libedataserverui/e-certificate-widget.c:446
 msgid "Public Key"
 msgstr "Javni ključ"
 
-#: src/libedataserverui/e-certificate-widget.c:440
+#: src/libedataserverui/e-certificate-widget.c:446
 msgid "Algorithm"
 msgstr "Algoritem"
 
