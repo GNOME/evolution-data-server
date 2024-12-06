@@ -965,6 +965,7 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 	GHashTable *covered_uids; /* const gchar *uid ~> 1 - to not check multiple times for detached instances */
 	GSList *link, *reminders = NULL;
 	gint def_reminder_before_start_seconds;
+	gint64 cal_last_notified;
 
 	g_return_if_fail (E_IS_REMINDER_WATCHER (source_object));
 	g_return_if_fail (ocd != NULL);
@@ -978,6 +979,7 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 		def_reminder_before_start_seconds = -1;
 	source = e_client_get_source (E_CLIENT (ocd->client));
 	source_uid = e_source_get_uid (source);
+	cal_last_notified = client_get_last_notification_time (ocd->client);
 
 	for (link = ocd->ids; link && !g_cancellable_is_cancelled (cancellable); link = g_slist_next (link)) {
 		const ECalComponentId *id = link->data;
@@ -1056,6 +1058,23 @@ e_reminder_watcher_objects_changed_thread (GTask *task,
 
 							instance = NULL;
 						}
+					}
+				}
+
+				if (instance && cal_last_notified >= 0) {
+					gint64 instance_time;
+
+					instance_time = e_cal_component_alarm_instance_get_time (instance);
+
+					if (instance_time <= cal_last_notified) {
+						e_reminder_watcher_debug_print ("   Skipping alarm '%s' for '%s|%s' at '%s', because being before or at calendar's last notify time '%s'\n",
+							e_cal_component_alarm_instance_get_uid (instance),
+							e_cal_component_id_get_uid (id),
+							e_cal_component_alarm_instance_get_rid (instance) ? e_cal_component_alarm_instance_get_rid (instance) : "",
+							e_reminder_watcher_timet_as_string (instance_time),
+							e_reminder_watcher_timet_as_string (cal_last_notified));
+
+						instance = NULL;
 					}
 				}
 
