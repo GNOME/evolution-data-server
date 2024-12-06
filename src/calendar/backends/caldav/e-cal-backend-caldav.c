@@ -1513,7 +1513,9 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 			e_cal_util_component_remove_x_property (subcomp, E_CALDAV_X_ETAG);
 
-			if (disable_scheduling) {
+			/* the SCHEDULE-AGENT parameter change can send cancellation notices,
+			   thus it cannot be used. */
+			if (disable_scheduling && !overwrite_existing) {
 				/* this way the server should not send any messages on its own */
 				ecb_cbdav_set_property_schedule_agent (subcomp, I_CAL_ORGANIZER_PROPERTY, I_CAL_SCHEDULEAGENT_CLIENT);
 				ecb_cbdav_set_property_schedule_agent (subcomp, I_CAL_ATTENDEE_PROPERTY, I_CAL_SCHEDULEAGENT_CLIENT);
@@ -1557,7 +1559,8 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 				ecb_caldav_store_component_etag (vcalendar, new_etag);
 
-				if (disable_scheduling) {
+				/* remove the SCHEDULE-AGENT only if it was added */
+				if (disable_scheduling && !overwrite_existing) {
 					for (subcomp = i_cal_component_get_first_component (vcalendar, I_CAL_ANY_COMPONENT);
 					     subcomp;
 					     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
@@ -2384,19 +2387,27 @@ ecb_caldav_discard_alarm_sync (ECalBackendSync *sync_backend,
 
 	if (comp) {
 		if (e_cal_util_set_alarm_acknowledged (comp, auid, 0)) {
-			GSList *calobjs, *old_components = NULL, *new_components = NULL;
+			/* the SCHEDULE-AGENT parameter change can send cancellation notices,
+			   thus avoid saving these changes on the server which does auto-schedule;
+			   revert this once there will be a way to save the change on the server
+			   without notifying the attendees */
+			ECalBackendCalDAV *cbdav = E_CAL_BACKEND_CALDAV (sync_backend);
 
-			calobjs = g_slist_prepend (NULL, e_cal_component_get_as_string (comp));
+			if (!cbdav->priv->calendar_auto_schedule) {
+				GSList *calobjs, *old_components = NULL, *new_components = NULL;
 
-			e_cal_backend_sync_modify_objects (sync_backend, cal, cancellable, calobjs,
-				(rid && *rid) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL,
-				/* this is not a reason to notify meeting attendees */
-				opflags | E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE,
-				&old_components, &new_components, error);
+				calobjs = g_slist_prepend (NULL, e_cal_component_get_as_string (comp));
 
-			e_util_free_nullable_object_slist (old_components);
-			e_util_free_nullable_object_slist (new_components);
-			g_slist_free_full (calobjs, g_free);
+				e_cal_backend_sync_modify_objects (sync_backend, cal, cancellable, calobjs,
+					(rid && *rid) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL,
+					/* this is not a reason to notify meeting attendees */
+					opflags | E_CAL_OPERATION_FLAG_DISABLE_ITIP_MESSAGE,
+					&old_components, &new_components, error);
+
+				e_util_free_nullable_object_slist (old_components);
+				e_util_free_nullable_object_slist (new_components);
+				g_slist_free_full (calobjs, g_free);
+			}
 		} else {
 			g_propagate_error (error, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 		}
