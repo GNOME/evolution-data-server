@@ -1,3 +1,9 @@
+Evolution-Data-Server 3.54.3 2025-01-03
+---------------------------------------
+
+Bug Fixes:
+	I#568 - CalDAV: Do not use SCHEDULE-AGENT parameter
+
 Evolution-Data-Server 3.54.2 2024-11-22
 ---------------------------------------
 
