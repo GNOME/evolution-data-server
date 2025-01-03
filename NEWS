@@ -1,3 +1,37 @@
+Evolution-Data-Server 3.55.1 2025-01-03
+---------------------------------------
+
+Bug Fixes:
+	I#562 - Pass GError instead of CamelException to camel_movemail_solaris (Niveditha Rau)
+	I#563 - Fix argument types in ENABLE_BROKEN_SPOOL code (Alan Coopersmith)
+	I#564 - Use GIConv instead of iconv_t with iconv wrappers (Alan Coopersmith)
+	I#566 - ESoupSession: Sometimes accesses server without OAuth2 token
+	I#568 - CalDAV: Do not use SCHEDULE-AGENT parameter
+	I#570 - Adapt to libical icalrecurrencetype changes
+	I#571 - libedataserverui: Avoid initializing the icon_theme when building introspection data (Jordan Petridis)
+	I#574 - Fails to build/link against icu 76.1
+	M!162 - EContact: Don't duplicate strings twice in get_property() (Andy Holmes)
+	M!164 - EWebDAVDiscoverWidget: show Server-side scheduling (Дилян Палаузов)
+	M!165 - Set project-wide emacs formatting rules (Дилян Палаузов)
+	evo-I#2897 - Correct certificate key usage constants
+
+Miscellaneous:
+	libebook-contacts: Add test for EContact GObject property get/set functions
+	build: Update CMake uninstall file
+	Typo assing -> assign (Дилян Палаузов)
+	reminder-watcher: Verify calendar's last-notify time before showing reminder
+
+Translations:
+	Anders Jonsson (sv)
+	Boyuan Yang (zh_CN)
+	Daniel Rusek (cs)
+	Jean-Marc Tissières (fr)
+	Juliano de Souza Camargo (pt_BR)
+	Martin (sl)
+	Милош Поповић (sr)
+	Sabri Ünal (tr)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.54.0 2024-09-13
 ---------------------------------------
 
