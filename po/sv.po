@@ -1,5 +1,5 @@
 # Swedish messages for evolution-data-server.
-# Copyright © 2000-2024 Free Software Foundation, Inc.
+# Copyright © 2000-2025 Free Software Foundation, Inc.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
 # Richard Hult <rhult@codefactory.se>, 2000, 2001.
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004, 2005.
@@ -7,7 +7,7 @@
 # Johan Dahlin <zilch.am@home.se>, 2001.
 # Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010, 2011, 2012.
 # Mattias Eriksson <snaggen@gmail.com>, 2014.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025.
 # Sebastian Rasmussen <sebras@gmail.com>, 2016.
 # Luna Jernberg <droidbittin@gmail.com>, 2020, 2021, 2022, 2024.
 #
@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-11-07 10:27+0000\n"
-"PO-Revision-Date: 2024-11-18 10:37+0100\n"
+"POT-Creation-Date: 2024-12-24 11:13+0000\n"
+"PO-Revision-Date: 2025-01-10 20:19+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -56,7 +56,7 @@ msgid "Received object is not a valid vCard"
 msgstr "Mottaget objekt är inte ett giltigt vCard"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1695
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1604
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1607
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
 msgid ""
@@ -361,7 +361,7 @@ msgid "Family Name"
 msgstr "Efternamn"
 
 #: src/addressbook/libebook-contacts/e-contact.c:164
-#: src/libedataserverui/e-certificate-widget.c:414
+#: src/libedataserverui/e-certificate-widget.c:420
 msgid "Nickname"
 msgstr "Smeknamn"
 
@@ -479,8 +479,8 @@ msgstr "TTY"
 
 #. Organizational fields
 #: src/addressbook/libebook-contacts/e-contact.c:202
-#: src/libedataserverui/e-certificate-widget.c:416
-#: src/libedataserverui/e-certificate-widget.c:425
+#: src/libedataserverui/e-certificate-widget.c:422
+#: src/libedataserverui/e-certificate-widget.c:431
 msgid "Organization"
 msgstr "Organisation"
 
@@ -1333,7 +1333,7 @@ msgstr "Alfabetiskt index sattes för felaktig local"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Angiven URL ”%s” refererar inte till en CalDAV-kalender"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2128
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2131
 msgid "Failed to parse response data"
 msgstr "Misslyckades med att tolka svarsdata"
 
@@ -2425,14 +2425,14 @@ msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
 msgstr[1] "%d sekunder"
 
-#: src/calendar/libecal/e-reminder-watcher.c:3235
+#: src/calendar/libecal/e-reminder-watcher.c:3254
 msgid "No Summary"
 msgstr "Ingen sammanfattning"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3251
+#: src/calendar/libecal/e-reminder-watcher.c:3270
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2441,7 +2441,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:3256
+#: src/calendar/libecal/e-reminder-watcher.c:3275
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2450,7 +2450,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3261
+#: src/calendar/libecal/e-reminder-watcher.c:3280
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -7191,9 +7191,9 @@ msgstr ""
 "att den faktiska URL:en där åtkomstelementet begärs och uppdateras inte kan "
 "ändras här, värdnamnet är till för att tillåta andra servrar, där OAuth2-"
 "tjänsten kan användas. Exempel: Company:mail.company.com — aktiverar en "
-"OAuth2-autentisering ”Company” för värden ”mail.company.com” Company-CalDAV:"
-"caldav.company.com — aktiverar en OAuth2-autentisering ”Company” för valfri "
-"”CalDAV”-källa, som läser data från värden ”caldav.company.com”"
+"OAuth2-autentisering ”Company” för värden ”mail.company.com” Company-"
+"CalDAV:caldav.company.com — aktiverar en OAuth2-autentisering ”Company” för "
+"valfri ”CalDAV”-källa, som läser data från värden ”caldav.company.com”"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:61
 msgid ""
@@ -8285,108 +8285,132 @@ msgstr "Digital signatur"
 msgid "Key Encipherment"
 msgstr "Nyckelkryptering"
 
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:289
+msgid "Data Encipherment"
+msgstr "Datakryptering"
+
+#: src/libedataserverui/e-certificate-widget.c:290
+msgid "Non Repudiation"
+msgstr "Oförnekbarhet"
+
+#: src/libedataserverui/e-certificate-widget.c:291
+msgid "Key Agreement"
+msgstr "Nyckelöverenskommelse"
+
+#: src/libedataserverui/e-certificate-widget.c:292
+msgid "Key Certificate Sign"
+msgstr "Signatur för nyckelcertifikat"
+
+#: src/libedataserverui/e-certificate-widget.c:293
+msgid "CRL Sign"
+msgstr "CRL-signatur"
+
+#: src/libedataserverui/e-certificate-widget.c:294
+msgid "Encipher Only"
+msgstr "Endast kryptering"
+
+#: src/libedataserverui/e-certificate-widget.c:416
 msgid "Certificate"
 msgstr "Certifikat"
 
-#: src/libedataserverui/e-certificate-widget.c:410
+#: src/libedataserverui/e-certificate-widget.c:416
 msgid "Identity"
 msgstr "Identitet"
 
-#: src/libedataserverui/e-certificate-widget.c:411
-#: src/libedataserverui/e-certificate-widget.c:423
+#: src/libedataserverui/e-certificate-widget.c:417
+#: src/libedataserverui/e-certificate-widget.c:429
 msgid "Issuer"
 msgstr "Utfärdare"
 
-#: src/libedataserverui/e-certificate-widget.c:412
+#: src/libedataserverui/e-certificate-widget.c:418
 msgid "Expires on"
 msgstr "Utgår"
 
-#: src/libedataserverui/e-certificate-widget.c:413
+#: src/libedataserverui/e-certificate-widget.c:419
 msgid "Subject"
 msgstr "Innehavare"
 
-#: src/libedataserverui/e-certificate-widget.c:413
-#: src/libedataserverui/e-certificate-widget.c:423
+#: src/libedataserverui/e-certificate-widget.c:419
+#: src/libedataserverui/e-certificate-widget.c:429
 msgid "Common Name"
 msgstr "Namn"
 
-#: src/libedataserverui/e-certificate-widget.c:415
-#: src/libedataserverui/e-certificate-widget.c:424
+#: src/libedataserverui/e-certificate-widget.c:421
+#: src/libedataserverui/e-certificate-widget.c:430
 msgid "Email"
 msgstr "E-post"
 
-#: src/libedataserverui/e-certificate-widget.c:417
-#: src/libedataserverui/e-certificate-widget.c:426
+#: src/libedataserverui/e-certificate-widget.c:423
+#: src/libedataserverui/e-certificate-widget.c:432
 msgid "Organization Unit"
 msgstr "Organisationsenhet"
 
-#: src/libedataserverui/e-certificate-widget.c:418
-#: src/libedataserverui/e-certificate-widget.c:427
+#: src/libedataserverui/e-certificate-widget.c:424
+#: src/libedataserverui/e-certificate-widget.c:433
 msgid "Country"
 msgstr "Land"
 
-#: src/libedataserverui/e-certificate-widget.c:419
-#: src/libedataserverui/e-certificate-widget.c:428
+#: src/libedataserverui/e-certificate-widget.c:425
+#: src/libedataserverui/e-certificate-widget.c:434
 msgid "State"
 msgstr "Län"
 
-#: src/libedataserverui/e-certificate-widget.c:420
-#: src/libedataserverui/e-certificate-widget.c:429
+#: src/libedataserverui/e-certificate-widget.c:426
+#: src/libedataserverui/e-certificate-widget.c:435
 msgid "Locality"
 msgstr "Plats"
 
-#: src/libedataserverui/e-certificate-widget.c:421
-#: src/libedataserverui/e-certificate-widget.c:430
+#: src/libedataserverui/e-certificate-widget.c:427
+#: src/libedataserverui/e-certificate-widget.c:436
 msgid "Domain Component Name"
 msgstr "Domänkomponentnamn"
 
-#: src/libedataserverui/e-certificate-widget.c:422
+#: src/libedataserverui/e-certificate-widget.c:428
 msgid "Alternative Emails"
 msgstr "Alternativa e-postadresser"
 
-#: src/libedataserverui/e-certificate-widget.c:431
-#: src/libedataserverui/e-certificate-widget.c:439
+#: src/libedataserverui/e-certificate-widget.c:437
+#: src/libedataserverui/e-certificate-widget.c:445
 msgid "SHA-256 Fingerprint"
 msgstr "SHA-256-fingeravtryck"
 
-#: src/libedataserverui/e-certificate-widget.c:432
+#: src/libedataserverui/e-certificate-widget.c:438
 msgid "Details"
 msgstr "Detaljer"
 
-#: src/libedataserverui/e-certificate-widget.c:432
+#: src/libedataserverui/e-certificate-widget.c:438
 msgid "Not Before"
 msgstr "Inte före"
 
-#: src/libedataserverui/e-certificate-widget.c:433
+#: src/libedataserverui/e-certificate-widget.c:439
 msgid "Not After"
 msgstr "Inte efter"
 
-#: src/libedataserverui/e-certificate-widget.c:434
+#: src/libedataserverui/e-certificate-widget.c:440
 msgid "Usage"
 msgstr "Användning"
 
-#: src/libedataserverui/e-certificate-widget.c:435
+#: src/libedataserverui/e-certificate-widget.c:441
 msgid "Version"
 msgstr "Version"
 
-#: src/libedataserverui/e-certificate-widget.c:436
+#: src/libedataserverui/e-certificate-widget.c:442
 msgid "Serial Number"
 msgstr "Serienummer"
 
-#: src/libedataserverui/e-certificate-widget.c:437
+#: src/libedataserverui/e-certificate-widget.c:443
 msgid "Key ID"
 msgstr "Nyckel-ID"
 
-#: src/libedataserverui/e-certificate-widget.c:438
+#: src/libedataserverui/e-certificate-widget.c:444
 msgid "Signature Algorithm"
 msgstr "Signaturalgoritm"
 
-#: src/libedataserverui/e-certificate-widget.c:440
+#: src/libedataserverui/e-certificate-widget.c:446
 msgid "Public Key"
 msgstr "Öppen nyckel"
 
-#: src/libedataserverui/e-certificate-widget.c:440
+#: src/libedataserverui/e-certificate-widget.c:446
 msgid "Algorithm"
 msgstr "Algoritm"
 
