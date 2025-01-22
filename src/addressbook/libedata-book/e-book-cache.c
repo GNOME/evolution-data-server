@@ -48,7 +48,7 @@
 
 #include "e-book-cache.h"
 
-#define E_BOOK_CACHE_VERSION		4
+#define E_BOOK_CACHE_VERSION		5
 #define INSERT_MULTI_STMT_BYTES		128
 #define COLUMN_DEFINITION_BYTES		32
 #define GENERATED_QUERY_BYTES		1024
@@ -4567,6 +4567,21 @@ e_book_cache_populate_categories (ECache *cache,
 }
 
 static gboolean
+ebc_empty_categories_table (ECache *cache,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	gchar *stmt;
+	gboolean success;
+
+	stmt = e_cache_sqlite_stmt_printf ("DELETE FROM %Q", EBC_TABLE_CATEGORIES);
+	success = e_cache_sqlite_exec (cache, stmt, cancellable, error);
+	e_cache_sqlite_stmt_free (stmt);
+
+	return success;
+}
+
+static gboolean
 e_book_cache_migrate (ECache *cache,
 		      gint from_version,
 		      GCancellable *cancellable,
@@ -4637,18 +4652,33 @@ e_book_cache_migrate (ECache *cache,
 	/* Add any version-related changes here */
 	if (success && from_version > 0 && from_version < E_BOOK_CACHE_VERSION) {
 		if (from_version == 1) {
-			/* Version 2 added E_CONTACT_PGP_CERT existence into the summary */
-			success = e_cache_foreach_update (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_fill_pgp_cert_column_and_categories, NULL, cancellable, error);
+			success = ebc_empty_categories_table (cache, cancellable, error);
+
+			if (success) {
+				/* Version 2 added E_CONTACT_PGP_CERT existence into the summary */
+				success = e_cache_foreach_update (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_fill_pgp_cert_column_and_categories, NULL, cancellable, error);
+			}
+		} else if (from_version == 2) {
+			success = ebc_empty_categories_table (cache, cancellable, error);
+
+			if (success) {
+				/* Version 3 added EBC_TABLE_CATEGORIES */
+				success = e_cache_foreach (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_populate_categories, NULL, cancellable, error);
+			}
 		}
 
-		if (from_version == 2) {
-			/* Version 3 added EBC_TABLE_CATEGORIES */
-			success = e_cache_foreach (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_populate_categories, NULL, cancellable, error);
-		}
-
-		if (from_version == 3) {
+		if (from_version == 3 && success) {
 			/* Version 4 is to rebuild locale dependent data, due to added Latin/English labels into the ECollator */
 			success = ebc_upgrade (book_cache, cancellable, error);
+		}
+
+		if ((from_version == 3 || from_version == 4) && success) {
+			success = ebc_empty_categories_table (cache, cancellable, error);
+
+			if (success) {
+				/* Version 5 rebuilds the categories table, because it could have incorrect counts due to previous migrations */
+				success = e_cache_foreach (cache, E_CACHE_INCLUDE_DELETED, NULL, e_book_cache_populate_categories, NULL, cancellable, error);
+			}
 		}
 	}
 
