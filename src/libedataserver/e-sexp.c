@@ -291,7 +291,7 @@ term_eval_and (ESExp *sexp,
 	GHashTable *ht = g_hash_table_new (g_str_hash, g_str_equal);
 	struct IterData lambdafoo;
 	gint type=-1;
-	gint bool = TRUE;
+	gint val = TRUE;
 	gint i;
 	const gchar *oper;
 
@@ -302,7 +302,7 @@ term_eval_and (ESExp *sexp,
 	oper = "AND";
 	sexp->priv->operators = g_slist_prepend (sexp->priv->operators, (gpointer) oper);
 
-	for (i = 0; bool && i < argc; i++) {
+	for (i = 0; val && i < argc; i++) {
 		r1 = e_sexp_term_eval (sexp, argv[i]);
 		if (type == -1)
 			type = r1->type;
@@ -325,7 +325,7 @@ term_eval_and (ESExp *sexp,
 				g_hash_table_insert (ht, a1[j], GINT_TO_POINTER (n + 1));
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
-			bool = bool && r1->value.boolean;
+			val = val && r1->value.boolean;
 		}
 		e_sexp_result_free (sexp, r1);
 	}
@@ -338,7 +338,7 @@ term_eval_and (ESExp *sexp,
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
 		r->type = ESEXP_RES_BOOL;
-		r->value.boolean = bool;
+		r->value.boolean = val;
 	}
 
 	g_hash_table_destroy (ht);
@@ -357,7 +357,7 @@ term_eval_or (ESExp *sexp,
 	GHashTable *ht = g_hash_table_new (g_str_hash, g_str_equal);
 	struct IterData lambdafoo;
 	gint type = -1;
-	gint bool = FALSE;
+	gint val = FALSE;
 	gint i;
 	const gchar *oper;
 
@@ -368,7 +368,7 @@ term_eval_or (ESExp *sexp,
 
 	r = e_sexp_result_new (sexp, ESEXP_RES_UNDEFINED);
 
-	for (i = 0; !bool && i < argc; i++) {
+	for (i = 0; !val && i < argc; i++) {
 		r1 = e_sexp_term_eval (sexp, argv[i]);
 		if (type == -1)
 			type = r1->type;
@@ -387,7 +387,7 @@ term_eval_or (ESExp *sexp,
 				g_hash_table_insert (ht, a1[j], (gpointer) 1);
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
-			bool |= r1->value.boolean;
+			val |= r1->value.boolean;
 		}
 		e_sexp_result_free (sexp, r1);
 	}
@@ -400,7 +400,7 @@ term_eval_or (ESExp *sexp,
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
 		r->type = ESEXP_RES_BOOL;
-		r->value.boolean = bool;
+		r->value.boolean = val;
 	}
 	g_hash_table_destroy (ht);
 
