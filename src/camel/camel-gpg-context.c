@@ -91,6 +91,8 @@ enum {
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
+static gboolean glob_gpg_ctx_can_load_photos = TRUE;
+
 static const gchar *gpg_ctx_get_executable_name (void);
 
 /**
@@ -2520,6 +2522,12 @@ gpg_context_decode_to_stream (CamelMimePart *part,
 }
 
 static gboolean
+camel_gpg_context_is_show_photos_error (const gchar *diagnostics)
+{
+	return diagnostics && strstr (diagnostics, "show-photos");
+}
+
+static gboolean
 gpg_sign_sync (CamelCipherContext *context,
                const gchar *userid,
                CamelCipherHash hash,
@@ -2696,7 +2704,7 @@ gpg_verify_sync (CamelCipherContext *context,
 	CamelMultipart *mps;
 	CamelStream *filter;
 	CamelMimeFilter *canon;
-	gboolean is_retry = FALSE;
+	gboolean is_retry = FALSE, is_photo_retry = FALSE;
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
@@ -2820,7 +2828,7 @@ gpg_verify_sync (CamelCipherContext *context,
 
 	gpg = gpg_ctx_new (context, cancellable);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_VERIFY);
-	gpg_ctx_set_load_photos (gpg, camel_cipher_can_load_photos ());
+	gpg_ctx_set_load_photos (gpg, glob_gpg_ctx_can_load_photos && camel_cipher_can_load_photos ());
 	if (sigfile)
 		gpg_ctx_set_sigfile (gpg, sigfile);
 	gpg_ctx_set_istream (gpg, canon_stream);
@@ -2841,6 +2849,16 @@ gpg_verify_sync (CamelCipherContext *context,
 	/* report error only when no data or didn't found signature */
 	if (gpg_ctx_op_wait (gpg) != 0 && (gpg->nodata || !gpg->hadsig)) {
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
+
+		if (gpg->load_photos && !is_photo_retry && camel_gpg_context_is_show_photos_error (diagnostics)) {
+			gpg_ctx_free (gpg);
+			g_object_unref (canon_stream);
+			is_photo_retry = TRUE;
+			/* this gpg version does not know how to load photos, disable it for this run */
+			glob_gpg_ctx_can_load_photos = FALSE;
+			goto retry;
+		}
+
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
 			(diagnostics != NULL && *diagnostics != '\0') ?
@@ -3081,6 +3099,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	CamelMultipart *mp;
 	CamelContentType *ct;
 	gboolean success;
+	gboolean is_photo_retry = FALSE;
 
 	if (!ipart) {
 		g_set_error (
@@ -3099,6 +3118,8 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	}
 
 	ct = camel_data_wrapper_get_mime_type_field (content);
+
+ retry:
 	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
 	if (camel_content_type_is (ct, "multipart", "encrypted")) {
 		mp = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) ipart);
@@ -3135,7 +3156,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 
 	gpg = gpg_ctx_new (context, cancellable);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_DECRYPT);
-	gpg_ctx_set_load_photos (gpg, camel_cipher_can_load_photos ());
+	gpg_ctx_set_load_photos (gpg, glob_gpg_ctx_can_load_photos && camel_cipher_can_load_photos ());
 	gpg_ctx_set_istream (gpg, istream);
 	gpg_ctx_set_ostream (gpg, ostream);
 
@@ -3159,6 +3180,17 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
+
+		if (gpg->load_photos && !is_photo_retry && camel_gpg_context_is_show_photos_error (diagnostics)) {
+			g_object_unref (ostream);
+			g_object_unref (istream);
+			gpg_ctx_free (gpg);
+			is_photo_retry = TRUE;
+			/* this gpg version does not know how to load photos, disable it for this run */
+			glob_gpg_ctx_can_load_photos = FALSE;
+			goto retry;
+		}
+
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
 			(diagnostics != NULL && *diagnostics != '\0') ?
