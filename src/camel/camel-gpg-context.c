@@ -1258,7 +1258,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 	while (inptr < gpg->statusptr && *inptr != '\n')
 		inptr++;
 
-	if (*inptr != '\n') {
+	if (inptr >= gpg->statusptr || *inptr != '\n') {
 		/* we don't have enough data buffered to parse this status line */
 		return 0;
 	}
