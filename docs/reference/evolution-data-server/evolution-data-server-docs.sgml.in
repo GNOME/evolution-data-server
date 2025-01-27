@@ -56,13 +56,7 @@
 	    Working examples of how to use Evolution Data Server.
 	  </para>
 	</listitem>
-	<listitem>
-          <para><link linkend="unit-testing">Unit Testing</link></para>
-	  <para>
-	    A description of how to test Evolution Data Server itself, and
-	    how to use the general unit test fixture.
-	  </para>
-	</listitem>
+	@UNITTESTS_DESC@
 	<listitem>
           <para><link linkend="deprecated">Deprecated Classes</link></para>
 	  <para>
@@ -329,10 +323,7 @@
     <xi:include href="xml/evolution-data-server-cursor-example.sgml"/>
   </part>
 
-  <part id="unit-testing">
-    <title>Unit Testing</title>
-    <xi:include href="xml/e-test-server-utils.xml"/>
-  </part>
+  @UNITTESTS_XML@
 
   <part id="deprecated">
     <title>Deprecated Classes</title>

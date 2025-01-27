@@ -1,3 +1,11 @@
+set(UNITTESTS_DESC "")
+set(UNITTESTS_XML "")
+
+if(ENABLE_TESTS)
+	set(UNITTESTS_DESC "<listitem><para><link linkend=\"unit-testing\">Unit Testing</link></para><para>A description of how to test Evolution Data Server itself, and how to use the general unit test fixture.</para></listitem>")
+	set(UNITTESTS_XML "<part id=\"unit-testing\"><title>Unit Testing</title><xi:include href=\"xml/e-test-server-utils.xml\"/></part>")
+endif(ENABLE_TESTS)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/evolution-data-server-cursor-example.sgml.in
 	${CMAKE_CURRENT_BINARY_DIR}/xml/evolution-data-server-cursor-example.sgml
 	@ONLY
@@ -23,8 +31,11 @@ set(DEPENDENCIES
 	edata-book
 	ecal
 	edata-cal
-	etestserverutils
 )
+
+if(ENABLE_TESTS)
+	list(APPEND DEPENDENCIES etestserverutils)
+endif(ENABLE_TESTS)
 
 set(IGNORE_HEADERS
 	e-alphabet-index-private.h
