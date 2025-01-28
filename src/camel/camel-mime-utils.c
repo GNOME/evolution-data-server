@@ -3828,7 +3828,6 @@ camel_content_type_decode (const gchar *in)
 		g_free (type);
 		g_free (subtype);
 	} else {
-		g_free (type);
 		d (printf ("cannot find MIME type in header (2) '%s'", in));
 	}
 	return t;
