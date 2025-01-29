@@ -255,6 +255,16 @@ G_BEGIN_DECLS
  **/
 #define E_CAL_STATIC_CAPABILITY_RETRACT_SUPPORTED "retract-supported"
 
+/**
+ * E_CAL_STATIC_CAPABILITY_USER_IS_ORGANIZER_ONLY:
+ *
+ * Set, when the backend can save meetings only if the organizer is
+ * the calendar user.
+ *
+ * Since: 3.56
+ **/
+#define E_CAL_STATIC_CAPABILITY_USER_IS_ORGANIZER_ONLY "user-is-organizer-only"
+
 struct _ECalClient;
 
 ICalComponent *	e_cal_util_new_top_level	(void);
