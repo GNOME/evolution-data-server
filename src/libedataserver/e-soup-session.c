@@ -1988,25 +1988,27 @@ e_soup_session_send_message_sync (ESoupSession *session,
 				else
 					retry_after = 0;
 
-				if (retry_after > 0)
+				/* the server can return 503 even when not asking the client to wait */
+				if (retry_after > 0) {
 					need_retry_seconds = retry_after;
-				else if (need_retry_seconds < 120)
-					need_retry_seconds *= 2;
 
-				g_rec_mutex_lock (&session->priv->session_lock);
-				soup_session_abort (SOUP_SESSION (session));
-				g_rec_mutex_unlock (&session->priv->session_lock);
+					g_clear_object (&input_stream);
 
-				g_mutex_lock (&session->priv->property_lock);
+					g_rec_mutex_lock (&session->priv->session_lock);
+					soup_session_abort (SOUP_SESSION (session));
+					g_rec_mutex_unlock (&session->priv->session_lock);
 
-				if (session->priv->backoff_for_usec < need_retry_seconds * G_USEC_PER_SEC)
-					session->priv->backoff_for_usec = need_retry_seconds * G_USEC_PER_SEC;
+					g_mutex_lock (&session->priv->property_lock);
 
-				g_signal_emit_by_name (message, "restarted");
-				resend_count++;
-				g_clear_error (&local_error);
+					if (session->priv->backoff_for_usec < need_retry_seconds * G_USEC_PER_SEC)
+						session->priv->backoff_for_usec = need_retry_seconds * G_USEC_PER_SEC;
 
-				g_mutex_unlock (&session->priv->property_lock);
+					g_signal_emit_by_name (message, "restarted");
+					resend_count++;
+					g_clear_error (&local_error);
+
+					g_mutex_unlock (&session->priv->property_lock);
+				}
 			}
 		}
 	}
