@@ -1223,8 +1223,27 @@ e_soup_session_new_message_from_uri (ESoupSession *session,
 				     GError **error)
 {
 	SoupMessage *message;
+	const gchar *host;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
+
+	if (!uri) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("No URI set"));
+
+		return NULL;
+	}
+
+	host = g_uri_get_host (uri);
+
+	if (!host || !*host) {
+		gchar *str = g_uri_to_string (uri);
+
+		g_set_error (error, G_URI_ERROR, G_URI_ERROR_BAD_HOST, _("Invalid URI “%s”"), str);
+
+		g_free (str);
+
+		return NULL;
+	}
 
 	if (g_uri_get_user (uri) && !g_uri_get_password (uri)) {
 		/* Do not allow setting user without password in the URI, because libsoup3 tries
