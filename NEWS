@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.55.2 2025-01-31
+---------------------------------------
+
+Bug Fixes:
+	I#576 - Contacts: Categories miscalculated in the cache
+	I#581 - CamelGpgContext: Verify status buffer read is in buffer boundary
+	I#583 - devel-doc: Do not require tests to be build
+	I#584 - ESoupSession: Leaked input stream on 503 response
+	M!167 - build: Use Heimdal KRB5 implementation when found (Dan Cîrnaț)
+	M!169 - camel_content_type_decode: Remove unneeded g_free() call (Дилян Палаузов)
+	ews-I#295 - Calendar: Import of forwarded meeting as bare event
+
+Miscellaneous:
+	Do not use variable named 'bool' in the code
+	Camel: Disable photo-loading when used gpg version does not understand it
+	ESoupSession: Check validity of passed-in URI
+
+Translations:
+	Anders Jonsson (sv)
+	Artur S0 (ru)
+	Ekaterine Papava (ka)
+	Jan Tojnar ()
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.55.1 2025-01-03
 ---------------------------------------
 
