@@ -19,8 +19,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-01-12 14:14+0000\n"
-"PO-Revision-Date: 2025-01-17 13:43+0300\n"
+"POT-Creation-Date: 2025-01-30 10:24+0000\n"
+"PO-Revision-Date: 2025-02-02 16:17+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: RU\n"
 "Language: ru\n"
@@ -186,7 +186,7 @@ msgstr "Не удалось переименовать старую базу д�
 #: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1836
 #: src/camel/camel-filter-driver.c:1837 src/camel/camel-filter-driver.c:1972
-#: src/camel/camel-gpg-context.c:3186
+#: src/camel/camel-gpg-context.c:3218
 #: src/camel/providers/imapx/camel-imapx-server.c:3377
 #: src/camel/providers/imapx/camel-imapx-server.c:3383
 #: src/camel/providers/imapx/camel-imapx-server.c:3393
@@ -194,7 +194,7 @@ msgstr "Не удалось переименовать старую базу д�
 #: src/camel/providers/nntp/camel-nntp-store.c:418
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1124
-#: src/libedataserver/e-soup-session.c:2130
+#: src/libedataserver/e-soup-session.c:2151
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #: src/libedataserverui/e-reminders-widget.c:2140
@@ -1016,7 +1016,7 @@ msgid "Error parsing regular expression"
 msgstr "Ошибка разбора регулярного выражения"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4837
+#: src/addressbook/libedata-book/e-book-cache.c:4867
 #: src/addressbook/libedata-book/e-book-sqlite.c:1910 src/camel/camel-db.c:826
 #, c-format
 msgid "Insufficient memory"
@@ -1114,7 +1114,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Невозможно отсортировать по полю, которое имеет несколько значений"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6168
+#: src/addressbook/libedata-book/e-book-cache.c:6198
 #: src/addressbook/libedata-book/e-book-sqlite.c:8236
 #, c-format
 msgid ""
@@ -1125,7 +1125,7 @@ msgstr ""
 "списка контактов"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6175
+#: src/addressbook/libedata-book/e-book-cache.c:6205
 #: src/addressbook/libedata-book/e-book-sqlite.c:8244
 #, c-format
 msgid ""
@@ -1150,20 +1150,20 @@ msgid "Invalid query: %s"
 msgstr "Недопустимый запрос: %s"
 
 #: src/addressbook/libedata-book/e-book-cache.c:3745
-#: src/addressbook/libedata-book/e-book-cache.c:6851
+#: src/addressbook/libedata-book/e-book-cache.c:6881
 msgid "Invalid query for a book cursor"
 msgstr "Неверный запрос для книжного курсора"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4841
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Не удается открыть базу данных %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5507
-#: src/addressbook/libedata-book/e-book-cache.c:5554
-#: src/addressbook/libedata-book/e-book-cache.c:5601
-#: src/addressbook/libedata-book/e-book-cache.c:5653
+#: src/addressbook/libedata-book/e-book-cache.c:5537
+#: src/addressbook/libedata-book/e-book-cache.c:5584
+#: src/addressbook/libedata-book/e-book-cache.c:5631
+#: src/addressbook/libedata-book/e-book-cache.c:5683
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1176,32 +1176,32 @@ msgstr "Не удается открыть базу данных %s: %s"
 msgid "Object “%s” not found"
 msgstr "Объект «%s» не найден"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5713
+#: src/addressbook/libedata-book/e-book-cache.c:5743
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Объект с дополнительным «%s» не найден"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5889
+#: src/addressbook/libedata-book/e-book-cache.c:5919
 msgid "Search by email not supported"
 msgstr "Поиск по электронной почте не поддерживается"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5900
+#: src/addressbook/libedata-book/e-book-cache.c:5930
 msgid "No email address provided"
 msgstr "Адрес электронной почты не указан"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5955
+#: src/addressbook/libedata-book/e-book-cache.c:5985
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Для использования курсора должно быть указано хотя бы одно поле сортировки"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5964
+#: src/addressbook/libedata-book/e-book-cache.c:5994
 #: src/addressbook/libedata-book/e-book-sqlite.c:8076
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Невозможно отсортировать по полю, которое имеет нестроковый тип"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7042
-#: src/addressbook/libedata-book/e-book-cache.c:7201
+#: src/addressbook/libedata-book/e-book-cache.c:7072
+#: src/addressbook/libedata-book/e-book-cache.c:7231
 #: src/addressbook/libedata-book/e-book-sqlite.c:8963
 #: src/addressbook/libedata-book/e-book-sqlite.c:9124
 #, c-format
@@ -3019,23 +3019,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Освободите неиспользуемую память для папки «%s : %s»"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:620
+#: src/camel/camel-gpg-context.c:622
 #, c-format
 msgid "Output from %s:"
 msgstr "Вывод из %s:"
 
-#: src/camel/camel-gpg-context.c:1160 src/camel/camel-gpg-context.c:1165
-#: src/camel/camel-gpg-context.c:2034
+#: src/camel/camel-gpg-context.c:1162 src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:2036
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Сбой при исполнении gpg: %s"
 
-#: src/camel/camel-gpg-context.c:1165
+#: src/camel/camel-gpg-context.c:1167
 #: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/camel/camel-gpg-context.c:1277
+#: src/camel/camel-gpg-context.c:1279
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3046,17 +3046,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1313
+#: src/camel/camel-gpg-context.c:1315
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Ошибка при обработке подсказки gpg userid."
 
-#: src/camel/camel-gpg-context.c:1338 src/camel/camel-gpg-context.c:1353
+#: src/camel/camel-gpg-context.c:1340 src/camel/camel-gpg-context.c:1355
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Ошибка при обработке запроса парольной фразы gpg."
 
-#: src/camel/camel-gpg-context.c:1380
+#: src/camel/camel-gpg-context.c:1382
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3065,7 +3065,7 @@ msgstr ""
 "Вам нужен PIN-код, чтобы разблокировать ключ для вашей\n"
 "смарт-карты: «%s»"
 
-#: src/camel/camel-gpg-context.c:1384
+#: src/camel/camel-gpg-context.c:1386
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3074,12 +3074,12 @@ msgstr ""
 "Для разблокировки ключа необходима парольная фраза для\n"
 "пользователя: «%s»"
 
-#: src/camel/camel-gpg-context.c:1390
+#: src/camel/camel-gpg-context.c:1392
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Неожиданный запрос от GnuPG для «%s»"
 
-#: src/camel/camel-gpg-context.c:1402
+#: src/camel/camel-gpg-context.c:1404
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3088,26 +3088,26 @@ msgstr ""
 "получателе, поэтому для каждого хранимого закрытого ключа будет "
 "запрашиваться пароль."
 
-#: src/camel/camel-gpg-context.c:1433 src/camel/camel-net-utils.c:523
+#: src/camel/camel-gpg-context.c:1435 src/camel/camel-net-utils.c:523
 #: src/camel/providers/nntp/camel-nntp-summary.c:392
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Отменено"
 
-#: src/camel/camel-gpg-context.c:1455
+#: src/camel/camel-gpg-context.c:1457
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Сбой при разблокировании секретного ключа: указано 3 некорректных парольных "
 "фразы."
 
-#: src/camel/camel-gpg-context.c:1468
+#: src/camel/camel-gpg-context.c:1470
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Неожиданный ответ от GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1585
+#: src/camel/camel-gpg-context.c:1587
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr ""
@@ -3115,7 +3115,7 @@ msgstr ""
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1606
+#: src/camel/camel-gpg-context.c:1608
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3126,38 +3126,38 @@ msgstr ""
 "получателя."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1613
+#: src/camel/camel-gpg-context.c:1615
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr "Не удалось зашифровать: Открытый ключ для получателя %s не найден."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1620
+#: src/camel/camel-gpg-context.c:1622
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Не удалось зашифровать: Ключ для получателя %s отозван."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1627
+#: src/camel/camel-gpg-context.c:1629
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Не удалось зашифровать: Ключ для получателя %s истек."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1634
+#: src/camel/camel-gpg-context.c:1636
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Не удалось зашифровать: Ключ для получателя %s не является доверенным."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1641
+#: src/camel/camel-gpg-context.c:1643
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Не удалось зашифровать: Ключ для получателя %s отключен."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1649
+#: src/camel/camel-gpg-context.c:1651
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3167,80 +3167,80 @@ msgstr ""
 "проблема заключается в том, что у %s нет импортированного открытого ключа "
 "для этого получателя."
 
-#: src/camel/camel-gpg-context.c:1710 src/camel/camel-gpg-context.c:1721
+#: src/camel/camel-gpg-context.c:1712 src/camel/camel-gpg-context.c:1723
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Не удалось передать GPG команду: %s"
 
-#: src/camel/camel-gpg-context.c:2558 src/camel/camel-smime-context.c:1040
+#: src/camel/camel-gpg-context.c:2566 src/camel/camel-smime-context.c:1040
 msgid "Could not generate signing data: "
 msgstr "Не удалось создать данные подписи: "
 
-#: src/camel/camel-gpg-context.c:2609 src/camel/camel-gpg-context.c:2847
-#: src/camel/camel-gpg-context.c:2988 src/camel/camel-gpg-context.c:3165
-#: src/camel/camel-gpg-context.c:3523 src/camel/camel-gpg-context.c:3610
-#: src/camel/camel-gpg-context.c:3903 src/camel/camel-gpg-context.c:4001
-#: src/camel/camel-gpg-context.c:4086 src/camel/camel-gpg-context.c:4153
+#: src/camel/camel-gpg-context.c:2617 src/camel/camel-gpg-context.c:2865
+#: src/camel/camel-gpg-context.c:3006 src/camel/camel-gpg-context.c:3197
+#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
+#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:4033
+#: src/camel/camel-gpg-context.c:4118 src/camel/camel-gpg-context.c:4185
 msgid "Failed to execute gpg."
 msgstr "Сбой при исполнении gpg."
 
-#: src/camel/camel-gpg-context.c:2717 src/camel/camel-gpg-context.c:2725
-#: src/camel/camel-gpg-context.c:2733 src/camel/camel-gpg-context.c:2753
+#: src/camel/camel-gpg-context.c:2725 src/camel/camel-gpg-context.c:2733
+#: src/camel/camel-gpg-context.c:2741 src/camel/camel-gpg-context.c:2761
 #: src/camel/camel-smime-context.c:1171 src/camel/camel-smime-context.c:1185
 #: src/camel/camel-smime-context.c:1197
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Не удалось проверить подпись сообщения: Неверный формат сообщения"
 
-#: src/camel/camel-gpg-context.c:2799
+#: src/camel/camel-gpg-context.c:2807
 msgid "Cannot verify message signature: "
 msgstr "Не удалось проверить подпись сообщения: "
 
-#: src/camel/camel-gpg-context.c:2946
+#: src/camel/camel-gpg-context.c:2964
 msgid "Could not generate encrypting data: "
 msgstr "Не удалось создать данные шифрования: "
 
-#: src/camel/camel-gpg-context.c:3028
+#: src/camel/camel-gpg-context.c:3046
 msgid "This is a digitally encrypted message part"
 msgstr "Это зашифрованная часть сообщения"
 
-#: src/camel/camel-gpg-context.c:3088 src/camel/camel-gpg-context.c:3097
-#: src/camel/camel-gpg-context.c:3120
+#: src/camel/camel-gpg-context.c:3107 src/camel/camel-gpg-context.c:3116
+#: src/camel/camel-gpg-context.c:3141
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Не удалось декодировать сообщение: Неверный формат сообщения"
 
-#: src/camel/camel-gpg-context.c:3108
+#: src/camel/camel-gpg-context.c:3129
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Сбой при декодировании части MIME: ошибка протокола"
 
-#: src/camel/camel-gpg-context.c:3180
+#: src/camel/camel-gpg-context.c:3212
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Сбой при декодировании части MIME: секретный ключ не найден"
 
-#: src/camel/camel-gpg-context.c:3185
+#: src/camel/camel-gpg-context.c:3217
 #, c-format
 msgid "Failed to decrypt MIME part: %s"
 msgstr "Сбой при декодировании части MIME: %s"
 
-#: src/camel/camel-gpg-context.c:3222 src/camel/camel-multipart-encrypted.c:35
+#: src/camel/camel-gpg-context.c:3254 src/camel/camel-multipart-encrypted.c:35
 #: src/camel/camel-smime-context.c:1723
 msgid "Encrypted content"
 msgstr "Зашифрованное содержимое"
 
-#: src/camel/camel-gpg-context.c:3530 src/camel/camel-gpg-context.c:3617
-#: src/camel/camel-gpg-context.c:3910 src/camel/camel-gpg-context.c:3921
+#: src/camel/camel-gpg-context.c:3562 src/camel/camel-gpg-context.c:3649
+#: src/camel/camel-gpg-context.c:3942 src/camel/camel-gpg-context.c:3953
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "Открытый ключ «%s» не найден"
 
-#: src/camel/camel-gpg-context.c:4008
+#: src/camel/camel-gpg-context.c:4040
 msgid "No public key was found in the provided data"
 msgstr "В предоставленных данных не найдено открытого ключа"
 
-#: src/camel/camel-gpg-context.c:4021
+#: src/camel/camel-gpg-context.c:4053
 msgid "Key information was not found in the provided data"
 msgstr "В предоставленных данных не найдена информация о ключе"
 
@@ -7849,16 +7849,25 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1369
+#: src/libedataserver/e-soup-session.c:1231
+msgid "No URI set"
+msgstr "URI не задан"
+
+#: src/libedataserver/e-soup-session.c:1241
+#, c-format
+msgid "Invalid URI “%s”"
+msgstr "Недопустимый URI «%s»"
+
+#: src/libedataserver/e-soup-session.c:1388
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Отказ с ошибкой HTTP %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1445
+#: src/libedataserver/e-soup-session.c:1464
 msgid "Failed to setup authentication"
 msgstr "Не удалось установить аутентификацию"
 
-#: src/libedataserver/e-soup-session.c:1810
+#: src/libedataserver/e-soup-session.c:1829
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
@@ -7866,7 +7875,7 @@ msgstr[0] "Сервер занят, ожидание повторной попы
 msgstr[1] "Сервер занят, ожидание повторной попытки (%d:%02d минуты)"
 msgstr[2] "Сервер занят, ожидание повторной попытки (%d:%02d минут)"
 
-#: src/libedataserver/e-soup-session.c:1816
+#: src/libedataserver/e-soup-session.c:1835
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
@@ -7874,7 +7883,7 @@ msgstr[0] "Сервер занят, ожидание повторной попы
 msgstr[1] "Сервер занят, ожидание повторной попытки (%d секунды)"
 msgstr[2] "Сервер занят, ожидание повторной попытки (%d секунд)"
 
-#: src/libedataserver/e-soup-session.c:1937
+#: src/libedataserver/e-soup-session.c:1956
 msgid "Too many redirects"
 msgstr "Слишком много переадресаций"
 
