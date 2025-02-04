@@ -380,6 +380,12 @@ compute_alarm_range (ECalComponent *comp,
 	}
 
 	*alarm_start -= repeat_time;
+
+	if (*alarm_start < 0)
+		*alarm_start = 0;
+	if (*alarm_end < 0)
+		*alarm_end = 0;
+
 	g_warn_if_fail (*alarm_start <= *alarm_end);
 }
 
