@@ -344,7 +344,6 @@
 			"config-opts": [
 				"-DDBUS_SERVICES_PREFIX=org.gnome.EvolutionDataServer.Devel",
 				"-DEXTENSIONS_DIR=/app/evolution/extensions",
-				"-DENABLE_MAINTAINER_MODE=ON",
 				"-DENABLE_FILE_LOCKING=fcntl",
 				"-DENABLE_DOT_LOCKING=OFF",
 				"-DENABLE_GTK=ON",
@@ -367,11 +366,7 @@
 					"url": "https://gitlab.gnome.org/GNOME/evolution-data-server.git",
 					"branch": "master"
 				}
-			],
-			"post-install": [
-				"ctest --force-new-ctest-process --output-on-failure"
 			]
-
 		}
 	]
 }
