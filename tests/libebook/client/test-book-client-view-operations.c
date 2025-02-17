@@ -1188,12 +1188,14 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	setlocale (LC_ALL, "en_US.UTF-8");
+	/* if set, overwrite it, thus the backend uses expected locale for the collation */
+	g_setenv ("LC_COLLATE", "en_US.UTF-8", TRUE);
+
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
 
 	client_test_utils_read_args (argc, argv);
-
-	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_test_add (
 		"/EBookClient/ConcurrentViews/Sync",
