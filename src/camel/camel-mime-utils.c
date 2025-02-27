@@ -1650,7 +1650,7 @@ header_encode_string_rfc2047 (const guchar *in,
 	start = inptr;
 	while (inptr && *inptr) {
 		gunichar c;
-		const gchar *newinptr;
+		const guchar *newinptr;
 
 		newinptr = g_utf8_next_char (inptr);
 		c = g_utf8_get_char ((gchar *) inptr);
@@ -1733,7 +1733,7 @@ header_encode_string_rfc2047 (const guchar *in,
 		if (!(c < 256 && !include_lwsp && camel_mime_is_lwsp (c)) && !word)
 			word = inptr;
 
-		inptr = (const guchar *) newinptr;
+		inptr = newinptr;
 	}
 
 	if (inptr - start) {
@@ -1874,7 +1874,7 @@ header_encode_phrase_get_words (const guchar *in,
 	encoding = 0;
 	while (inptr && *inptr) {
 		gunichar c;
-		const gchar *newinptr;
+		const guchar *newinptr;
 
 		newinptr = g_utf8_next_char (inptr);
 		c = g_utf8_get_char ((gchar *) inptr);
@@ -1888,7 +1888,7 @@ header_encode_phrase_get_words (const guchar *in,
 			continue;
 		}
 
-		inptr = (const guchar *) newinptr;
+		inptr = newinptr;
 		if (g_unichar_isspace (c)) {
 			if (count > 0) {
 				word = g_new0 (struct _phrase_word, 1);
