@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.55.3 2025-02-28
+---------------------------------------
+
+Bug Fixes:
+	I#582 - test-book-client-view-operations: Enforce LC_COLLATE for the backend process
+	I#585 - alarm-notify: Tasks without DTSTART cause runtime warning
+
+Miscellaneous:
+	EBackend: Change when adding signal handler for "network-changed"
+	CI: Use a Fedora image instead of Flatpak build
+	camel-mime-utils: Correct a compiler warning [-Wpointer-sign]
+
+Translations:
+	Artur S0 (ru)
+	Ekaterine Papava (ka)
+	Jiri Eischmann (cs)
+	Martin (sl)
+
 Evolution-Data-Server 3.55.2 2025-01-31
 ---------------------------------------
 
