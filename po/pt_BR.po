@@ -1,5 +1,5 @@
 # Brazilian Portuguese translation of evolution-data-server.
-# Copyright (C) 2022 Free Software Foundation, Inc.
+# Copyright (C) 2025 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution-data-server package.
 # Gustavo Maciel Dias Vieira <gustavo@sagui.org>, 2003, 2004.
 # Afonso Celso Medina <afmedina@uol.com.br>, 2005.
@@ -18,24 +18,24 @@
 # Enrico Nicoletto <liverig@gmail.com>, 2013-2016, 2021.
 # Leônidas Araújo <leorusvellt@hotmail.com>, 2022.
 # Matheus Barbosa <mdpb.matheus@gmail.com>, 2022.
-# Rafael Fontenelle <rafaelff@gnome.org>, 2012-2023.
 # Juliano de Souza Camargo <julianosc@pm.me>, 2024.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2012-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-11-24 08:48+0000\n"
-"PO-Revision-Date: 2024-11-24 07:05-0300\n"
-"Last-Translator: Juliano de Souza Camargo <julianosc@pm.me>\n"
+"POT-Creation-Date: 2025-02-10 21:59+0000\n"
+"PO-Revision-Date: 2025-03-06 13:18-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 47.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 47.1\n"
 "X-DamnedLies-Scope: partial\n"
 "X-Project-Style: gnome\n"
 "X-DL-Team: pt_BR\n"
@@ -73,7 +73,7 @@ msgid "Received object is not a valid vCard"
 msgstr "O objeto recebido não é um vCard válido"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1695
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1604
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1607
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
 msgid ""
@@ -199,7 +199,7 @@ msgstr "Não foi possível renomear a velha base de dados de “%s” para “%s
 #: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1836
 #: src/camel/camel-filter-driver.c:1837 src/camel/camel-filter-driver.c:1972
-#: src/camel/camel-gpg-context.c:3186
+#: src/camel/camel-gpg-context.c:3218
 #: src/camel/providers/imapx/camel-imapx-server.c:3377
 #: src/camel/providers/imapx/camel-imapx-server.c:3383
 #: src/camel/providers/imapx/camel-imapx-server.c:3393
@@ -207,7 +207,7 @@ msgstr "Não foi possível renomear a velha base de dados de “%s” para “%s
 #: src/camel/providers/nntp/camel-nntp-store.c:418
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1124
-#: src/libedataserver/e-soup-session.c:2130
+#: src/libedataserver/e-soup-session.c:2151
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #: src/libedataserverui/e-reminders-widget.c:2140
@@ -1032,7 +1032,7 @@ msgid "Error parsing regular expression"
 msgstr "Erro ao analisar expressão regular"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4837
+#: src/addressbook/libedata-book/e-book-cache.c:4867
 #: src/addressbook/libedata-book/e-book-sqlite.c:1910 src/camel/camel-db.c:826
 #, c-format
 msgid "Insufficient memory"
@@ -1130,7 +1130,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Não é possível ordenar por um campo que pode ter múltiplos valores"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6168
+#: src/addressbook/libedata-book/e-book-cache.c:6198
 #: src/addressbook/libedata-book/e-book-sqlite.c:8236
 #, c-format
 msgid ""
@@ -1141,7 +1141,7 @@ msgstr ""
 "lista de contatos"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6175
+#: src/addressbook/libedata-book/e-book-cache.c:6205
 #: src/addressbook/libedata-book/e-book-sqlite.c:8244
 #, c-format
 msgid ""
@@ -1166,20 +1166,20 @@ msgid "Invalid query: %s"
 msgstr "Consulta inválida: %s"
 
 #: src/addressbook/libedata-book/e-book-cache.c:3745
-#: src/addressbook/libedata-book/e-book-cache.c:6851
+#: src/addressbook/libedata-book/e-book-cache.c:6881
 msgid "Invalid query for a book cursor"
 msgstr "Consulta inválida para um cursor de catálogo"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4841
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Não foi possível abrir o banco de dados %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5507
-#: src/addressbook/libedata-book/e-book-cache.c:5554
-#: src/addressbook/libedata-book/e-book-cache.c:5601
-#: src/addressbook/libedata-book/e-book-cache.c:5653
+#: src/addressbook/libedata-book/e-book-cache.c:5537
+#: src/addressbook/libedata-book/e-book-cache.c:5584
+#: src/addressbook/libedata-book/e-book-cache.c:5631
+#: src/addressbook/libedata-book/e-book-cache.c:5683
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1192,32 +1192,32 @@ msgstr "Não foi possível abrir o banco de dados %s: %s"
 msgid "Object “%s” not found"
 msgstr "Objeto “%s” não localizado"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5713
+#: src/addressbook/libedata-book/e-book-cache.c:5743
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objeto com “%s” extra não localizado"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5889
+#: src/addressbook/libedata-book/e-book-cache.c:5919
 msgid "Search by email not supported"
 msgstr "Pesquisa por e-mail não suportada"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5900
+#: src/addressbook/libedata-book/e-book-cache.c:5930
 msgid "No email address provided"
 msgstr "Sem endereço de e-mail provido"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5955
+#: src/addressbook/libedata-book/e-book-cache.c:5985
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Pelo menos um campo de ordenação deve ser especificado para usar um cursor"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5964
+#: src/addressbook/libedata-book/e-book-cache.c:5994
 #: src/addressbook/libedata-book/e-book-sqlite.c:8076
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Não foi possível ordenar por um campo que não é um tipo string"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7042
-#: src/addressbook/libedata-book/e-book-cache.c:7201
+#: src/addressbook/libedata-book/e-book-cache.c:7072
+#: src/addressbook/libedata-book/e-book-cache.c:7231
 #: src/addressbook/libedata-book/e-book-sqlite.c:8963
 #: src/addressbook/libedata-book/e-book-sqlite.c:9124
 #, c-format
@@ -1358,7 +1358,7 @@ msgstr "Índice alfabético foi configurado para o local incorreto"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "A URL “%s” dada não faz referência a uma agenda CalDAV"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2128
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2131
 msgid "Failed to parse response data"
 msgstr "Falha ao analisar os dados da resposta"
 
@@ -2374,31 +2374,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1101
-#: src/calendar/libecal/e-cal-util.c:1128
+#: src/calendar/libecal/e-cal-util.c:1107
+#: src/calendar/libecal/e-cal-util.c:1134
 msgctxt "Priority"
 msgid "High"
 msgstr "Alta"
 
-#: src/calendar/libecal/e-cal-util.c:1103
-#: src/calendar/libecal/e-cal-util.c:1130
+#: src/calendar/libecal/e-cal-util.c:1109
+#: src/calendar/libecal/e-cal-util.c:1136
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normal"
 
-#: src/calendar/libecal/e-cal-util.c:1105
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1111
+#: src/calendar/libecal/e-cal-util.c:1138
 msgctxt "Priority"
 msgid "Low"
 msgstr "Baixa"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1126
+#: src/calendar/libecal/e-cal-util.c:1132
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Indefinida"
 
-#: src/calendar/libecal/e-cal-util.c:1168
+#: src/calendar/libecal/e-cal-util.c:1174
 #: src/libedataserverui/e-reminders-widget.c:336
 #, c-format
 msgid "%d week"
@@ -2406,7 +2406,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d semana"
 msgstr[1] "%d semanas"
 
-#: src/calendar/libecal/e-cal-util.c:1177
+#: src/calendar/libecal/e-cal-util.c:1183
 #: src/libedataserverui/e-reminders-widget.c:332
 #, c-format
 msgid "%d day"
@@ -2414,7 +2414,7 @@ msgid_plural "%d days"
 msgstr[0] "%d dia"
 msgstr[1] "%d dias"
 
-#: src/calendar/libecal/e-cal-util.c:1186
+#: src/calendar/libecal/e-cal-util.c:1192
 #: src/libedataserverui/e-reminders-widget.c:328
 #, c-format
 msgid "%d hour"
@@ -2422,7 +2422,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: src/calendar/libecal/e-cal-util.c:1195
+#: src/calendar/libecal/e-cal-util.c:1201
 #: src/libedataserverui/e-reminders-widget.c:324
 #, c-format
 msgid "%d minute"
@@ -2431,21 +2431,21 @@ msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1200
+#: src/calendar/libecal/e-cal-util.c:1206
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: src/calendar/libecal/e-reminder-watcher.c:3235
+#: src/calendar/libecal/e-reminder-watcher.c:3254
 msgid "No Summary"
 msgstr "Sem resumo"
 
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, and the third %s with an event location,
 #. making it something like: "24.1.2018 10:30 (30 minutes) Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3251
+#: src/calendar/libecal/e-reminder-watcher.c:3270
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s) %s"
@@ -2454,7 +2454,7 @@ msgstr "%s (%s) %s"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with a duration, making is something like:
 #. "24.1.2018 10:30 (30 minutes)"
-#: src/calendar/libecal/e-reminder-watcher.c:3256
+#: src/calendar/libecal/e-reminder-watcher.c:3275
 #, c-format
 msgctxt "overdue"
 msgid "%s (%s)"
@@ -2463,7 +2463,7 @@ msgstr "%s (%s)"
 #. Translators: The first %s is replaced with the time string,
 #. the second %s with an event location, making it something like:
 #. "24.1.2018 10:30 Meeting room A1"
-#: src/calendar/libecal/e-reminder-watcher.c:3261
+#: src/calendar/libecal/e-reminder-watcher.c:3280
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
@@ -3012,23 +3012,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Liberar memória inutilizada para a pasta “%s : %s”"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:620
+#: src/camel/camel-gpg-context.c:622
 #, c-format
 msgid "Output from %s:"
 msgstr "Saída de %s:"
 
-#: src/camel/camel-gpg-context.c:1160 src/camel/camel-gpg-context.c:1165
-#: src/camel/camel-gpg-context.c:2034
+#: src/camel/camel-gpg-context.c:1162 src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:2036
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Falha ao executar gpg: %s"
 
-#: src/camel/camel-gpg-context.c:1165
+#: src/camel/camel-gpg-context.c:1167
 #: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: src/camel/camel-gpg-context.c:1277
+#: src/camel/camel-gpg-context.c:1279
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3039,17 +3039,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1313
+#: src/camel/camel-gpg-context.c:1315
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Falha ao analisar dica de id de usuário do gpg."
 
-#: src/camel/camel-gpg-context.c:1338 src/camel/camel-gpg-context.c:1353
+#: src/camel/camel-gpg-context.c:1340 src/camel/camel-gpg-context.c:1355
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Falha ao analisar requisição de frase secreta do gpg."
 
-#: src/camel/camel-gpg-context.c:1380
+#: src/camel/camel-gpg-context.c:1382
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3058,7 +3058,7 @@ msgstr ""
 "Você precisa de um PIN para desbloquear a chave\n"
 "para o seu cartão inteligente: “%s”"
 
-#: src/camel/camel-gpg-context.c:1384
+#: src/camel/camel-gpg-context.c:1386
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3067,12 +3067,12 @@ msgstr ""
 "Você precisa de uma frase secreta para desbloquear a chave\n"
 "para o usuário: “%s”"
 
-#: src/camel/camel-gpg-context.c:1390
+#: src/camel/camel-gpg-context.c:1392
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Requisição inesperada do GnuPG para “%s”"
 
-#: src/camel/camel-gpg-context.c:1402
+#: src/camel/camel-gpg-context.c:1404
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3081,32 +3081,32 @@ msgstr ""
 "destinatário, assim, será exibida uma tela pedindo a senha para cada chave "
 "privada armazenada."
 
-#: src/camel/camel-gpg-context.c:1433 src/camel/camel-net-utils.c:523
+#: src/camel/camel-gpg-context.c:1435 src/camel/camel-net-utils.c:523
 #: src/camel/providers/nntp/camel-nntp-summary.c:392
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Cancelado"
 
-#: src/camel/camel-gpg-context.c:1455
+#: src/camel/camel-gpg-context.c:1457
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Falha ao desbloquear chave secreta: fornecidas 3 frases secretas inválidas."
 
-#: src/camel/camel-gpg-context.c:1468
+#: src/camel/camel-gpg-context.c:1470
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Resposta inesperada do GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1585
+#: src/camel/camel-gpg-context.c:1587
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Falha ao criptografar: Não foram especificados destinatários válidos."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1606
+#: src/camel/camel-gpg-context.c:1608
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3116,39 +3116,39 @@ msgstr ""
 "comum é que o %s não possui chave pública importada para este destinatário."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1613
+#: src/camel/camel-gpg-context.c:1615
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr ""
 "Falha ao criptografar: A chave pública do destinatário %s não foi encontrada."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1620
+#: src/camel/camel-gpg-context.c:1622
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr "Falha ao criptografar: A chave do destinatário %s foi revogada."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1627
+#: src/camel/camel-gpg-context.c:1629
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Falha ao criptografar: A chave do destinatário %s expirou."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1634
+#: src/camel/camel-gpg-context.c:1636
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr "Falha ao criptografar: A chave do destinatário %s não é confiável."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1641
+#: src/camel/camel-gpg-context.c:1643
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr "Falha ao criptografar: A chave do destinatário %s está desabilitada."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1649
+#: src/camel/camel-gpg-context.c:1651
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3157,25 +3157,25 @@ msgstr ""
 "Falha ao criptografar: destinatário inválido %s especificado (código %d). Um "
 "problema comum é o %s não ter chave pública importada para este destinatário."
 
-#: src/camel/camel-gpg-context.c:1710 src/camel/camel-gpg-context.c:1721
+#: src/camel/camel-gpg-context.c:1712 src/camel/camel-gpg-context.c:1723
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Falha ao passar comando para GPG: %s"
 
-#: src/camel/camel-gpg-context.c:2558 src/camel/camel-smime-context.c:1040
+#: src/camel/camel-gpg-context.c:2566 src/camel/camel-smime-context.c:1040
 msgid "Could not generate signing data: "
 msgstr "Não foi possível gerar dados de assinatura: "
 
-#: src/camel/camel-gpg-context.c:2609 src/camel/camel-gpg-context.c:2847
-#: src/camel/camel-gpg-context.c:2988 src/camel/camel-gpg-context.c:3165
-#: src/camel/camel-gpg-context.c:3523 src/camel/camel-gpg-context.c:3610
-#: src/camel/camel-gpg-context.c:3903 src/camel/camel-gpg-context.c:4001
-#: src/camel/camel-gpg-context.c:4086 src/camel/camel-gpg-context.c:4153
+#: src/camel/camel-gpg-context.c:2617 src/camel/camel-gpg-context.c:2865
+#: src/camel/camel-gpg-context.c:3006 src/camel/camel-gpg-context.c:3197
+#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
+#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:4033
+#: src/camel/camel-gpg-context.c:4118 src/camel/camel-gpg-context.c:4185
 msgid "Failed to execute gpg."
 msgstr "Falha ao executar gpg."
 
-#: src/camel/camel-gpg-context.c:2717 src/camel/camel-gpg-context.c:2725
-#: src/camel/camel-gpg-context.c:2733 src/camel/camel-gpg-context.c:2753
+#: src/camel/camel-gpg-context.c:2725 src/camel/camel-gpg-context.c:2733
+#: src/camel/camel-gpg-context.c:2741 src/camel/camel-gpg-context.c:2761
 #: src/camel/camel-smime-context.c:1171 src/camel/camel-smime-context.c:1185
 #: src/camel/camel-smime-context.c:1197
 #, c-format
@@ -3184,56 +3184,56 @@ msgstr ""
 "Não foi possível verificar assinatura da mensagem: Formato de mensagem "
 "incorreto"
 
-#: src/camel/camel-gpg-context.c:2799
+#: src/camel/camel-gpg-context.c:2807
 msgid "Cannot verify message signature: "
 msgstr "Não foi possível verificar assinatura da mensagem: "
 
-#: src/camel/camel-gpg-context.c:2946
+#: src/camel/camel-gpg-context.c:2964
 msgid "Could not generate encrypting data: "
 msgstr "Não foi possível gerar dados de criptografia: "
 
-#: src/camel/camel-gpg-context.c:3028
+#: src/camel/camel-gpg-context.c:3046
 msgid "This is a digitally encrypted message part"
 msgstr "Esta é uma parte de mensagem criptografada digitalmente"
 
-#: src/camel/camel-gpg-context.c:3088 src/camel/camel-gpg-context.c:3097
-#: src/camel/camel-gpg-context.c:3120
+#: src/camel/camel-gpg-context.c:3107 src/camel/camel-gpg-context.c:3116
+#: src/camel/camel-gpg-context.c:3141
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr ""
 "Não foi possível descriptografar a mensagem: Formato de mensagem incorreto"
 
-#: src/camel/camel-gpg-context.c:3108
+#: src/camel/camel-gpg-context.c:3129
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Falha ao descriptografar parte MIME: erro de protocolo"
 
-#: src/camel/camel-gpg-context.c:3180
+#: src/camel/camel-gpg-context.c:3212
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Falha ao descriptografar parte MIME: chave secreta não encontrada"
 
-#: src/camel/camel-gpg-context.c:3185
+#: src/camel/camel-gpg-context.c:3217
 #, c-format
 msgid "Failed to decrypt MIME part: %s"
 msgstr "Falha ao descriptografar parte MIME: %s"
 
-#: src/camel/camel-gpg-context.c:3222 src/camel/camel-multipart-encrypted.c:35
+#: src/camel/camel-gpg-context.c:3254 src/camel/camel-multipart-encrypted.c:35
 #: src/camel/camel-smime-context.c:1723
 msgid "Encrypted content"
 msgstr "Conteúdo criptografado"
 
-#: src/camel/camel-gpg-context.c:3530 src/camel/camel-gpg-context.c:3617
-#: src/camel/camel-gpg-context.c:3910 src/camel/camel-gpg-context.c:3921
+#: src/camel/camel-gpg-context.c:3562 src/camel/camel-gpg-context.c:3649
+#: src/camel/camel-gpg-context.c:3942 src/camel/camel-gpg-context.c:3953
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "Chave pública “%s” não localizada"
 
-#: src/camel/camel-gpg-context.c:4008
+#: src/camel/camel-gpg-context.c:4040
 msgid "No public key was found in the provided data"
 msgstr "Nenhuma chave pública foi encontrada nos dados disponibilizados"
 
-#: src/camel/camel-gpg-context.c:4021
+#: src/camel/camel-gpg-context.c:4053
 msgid "Key information was not found in the provided data"
 msgstr "Informação de chave não foi encontrada nos dados disponibilizados"
 
@@ -6168,8 +6168,8 @@ msgstr "Você não pode copiar mensagens de uma pasta NNTP"
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"Mo_strar pastas usando notação reduzida (ex.: c.o.linux no lugar de comp.os."
-"linux)"
+"Mo_strar pastas usando notação reduzida (ex.: c.o.linux no lugar de "
+"comp.os.linux)"
 
 #: src/camel/providers/nntp/camel-nntp-provider.c:47
 msgid "In the subscription _dialog, show relative folder names"
@@ -7136,8 +7136,8 @@ msgstr ""
 #: data/org.gnome.evolution-data-server.gschema.xml.in:39
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
-"Uma lista de variáveis que podem ser parte dos arquivos de autoconfiguração ."
-"source"
+"Uma lista de variáveis que podem ser parte dos arquivos de "
+"autoconfiguração .source"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:40
 msgid ""
@@ -7181,9 +7181,9 @@ msgstr ""
 "solicitado e atualizado não pode ser alterado aqui, o nome do host é para "
 "permitir outros servidores, onde o serviço OAuth2 pode ser usado. Exemplos: "
 "Company:mail.empresa.com.br – habilita a autenticação “Company” OAuth2 para "
-"a empresa de hospedagem “mail.empresa.com.br” Company-CalDAV:caldav.empresa."
-"com.br – habilita a autenticação “Company” OAuth2 para qualquer fonte "
-"“CalDAV”, que lê dados do host “caldav.empresa.com.br”"
+"a empresa de hospedagem “mail.empresa.com.br” Company-"
+"CalDAV:caldav.empresa.com.br – habilita a autenticação “Company” OAuth2 para "
+"qualquer fonte “CalDAV”, que lê dados do host “caldav.empresa.com.br”"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:61
 msgid ""
@@ -7847,16 +7847,25 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1369
+#: src/libedataserver/e-soup-session.c:1231
+msgid "No URI set"
+msgstr "Nenhum URI definido"
+
+#: src/libedataserver/e-soup-session.c:1241
+#, c-format
+msgid "Invalid URI “%s”"
+msgstr "URI “%s” inválido"
+
+#: src/libedataserver/e-soup-session.c:1388
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falha com error HTTP %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1445
+#: src/libedataserver/e-soup-session.c:1464
 msgid "Failed to setup authentication"
 msgstr "Falha ao configurar a autenticação"
 
-#: src/libedataserver/e-soup-session.c:1810
+#: src/libedataserver/e-soup-session.c:1829
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
@@ -7865,7 +7874,7 @@ msgstr[0] ""
 msgstr[1] ""
 "O servidor está ocupado, aguardando para tentar novamente (%d:%02d minutos)"
 
-#: src/libedataserver/e-soup-session.c:1816
+#: src/libedataserver/e-soup-session.c:1835
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
@@ -7874,7 +7883,7 @@ msgstr[0] ""
 msgstr[1] ""
 "O servidor está ocupado, aguardando para tentar novamente (%d segundos)"
 
-#: src/libedataserver/e-soup-session.c:1937
+#: src/libedataserver/e-soup-session.c:1956
 msgid "Too many redirects"
 msgstr "Muitos redirecionamentos"
 
@@ -8948,8 +8957,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
 msgstr ""
-"Não foi possível encontrar uma conta correspondente no serviço org.gnome."
-"OnlineAccounts a fim de obter uma senha para “%s”"
+"Não foi possível encontrar uma conta correspondente no serviço "
+"org.gnome.OnlineAccounts a fim de obter uma senha para “%s”"
 
 #: src/modules/gnome-online-accounts/e-goa-password-based.c:315
 msgid "Failed to get password from GOA: "
@@ -8997,8 +9006,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
-"Não foi possível encontrar uma conta correspondente no serviço org.gnome."
-"OnlineAccounts a fim de obter um token de acesso para “%s”"
+"Não foi possível encontrar uma conta correspondente no serviço "
+"org.gnome.OnlineAccounts a fim de obter um token de acesso para “%s”"
 
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1509
 #, c-format
