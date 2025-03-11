@@ -1074,6 +1074,7 @@ backtrace_matches (const Backtrace *match_bt,
 	mlink = NULL;
 	lt = lines_tolerance;
 	do {
+  try_next_frame:
 		gboolean found = FALSE;
 		BacktraceLine *fline = flink->data;
 
@@ -1118,6 +1119,11 @@ backtrace_matches (const Backtrace *match_bt,
 		if (g_strcmp0 (mline->function, fline->function) != 0 ||
 		    g_strcmp0 (mline->file, fline->file) != 0 ||
 		    mline->lineno != fline->lineno) {
+			if (lt >= 0) {
+				flink = g_slist_next (flink);
+				if (flink)
+					goto try_next_frame;
+			}
 			break;
 		}
 
@@ -1143,7 +1149,7 @@ remove_matching_ref_backtrace (GQueue *backtraces,
 			       const Backtrace *unref_backtrace)
 {
 	GList *link;
-	gint up_bts = 2, up_lines = 1;
+	gint up_bts = 3, up_lines = 1;
 
 	g_return_val_if_fail (backtraces != NULL, FALSE);
 	g_return_val_if_fail (unref_backtrace != NULL, FALSE);
@@ -1154,8 +1160,17 @@ remove_matching_ref_backtrace (GQueue *backtraces,
 
 		if (g_strcmp0 ("g_value_object_free_value()", btline->function) == 0)
 			up_lines = 5;
-		else if (g_strcmp0 ("g_object_notify()", btline->function) == 0)
+		else if (g_strcmp0 ("g_object_notify()", btline->function) == 0 ||
+			 g_strcmp0 ("closure_invoke_notifiers()", btline->function) == 0)
 			up_bts = 5;
+		else if (unref_backtrace->lines->next->next) {
+			btline = unref_backtrace->lines->next->next->data;
+			if (g_strcmp0 ("g_value_object_free_value()", btline->function) == 0)
+				up_lines = 5;
+			else if (g_strcmp0 ("g_object_notify()", btline->function) == 0 ||
+				 g_strcmp0 ("closure_invoke_notifiers()", btline->function) == 0)
+				up_bts = 5;
+		}
 	}
 
 	for (link = g_queue_peek_tail_link (backtraces); link && up_bts > 0; link = g_list_previous (link), up_bts--) {
@@ -1168,7 +1183,9 @@ remove_matching_ref_backtrace (GQueue *backtraces,
 		if (bt->lines && bt->lines->next && bt->lines->next->data) {
 			BacktraceLine *btline = bt->lines->next->data;
 
-			if (g_strcmp0 ("g_weak_ref_get()", btline->function) == 0)
+			if (g_strcmp0 ("g_weak_ref_get()", btline->function) == 0 ||
+			    g_strcmp0 ("closure_invoke_notifiers()", btline->function) == 0 ||
+			    g_strcmp0 ("weak_unbind()", btline->function) == 0)
 				inc_up_lines = 2;
 		}
 
