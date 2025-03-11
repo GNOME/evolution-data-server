@@ -9,15 +9,15 @@
 # Mattias Eriksson <snaggen@gmail.com>, 2014.
 # Anders Jonsson <anders.jonsson@norsjovallen.se>, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025.
 # Sebastian Rasmussen <sebras@gmail.com>, 2016.
-# Luna Jernberg <droidbittin@gmail.com>, 2020, 2021, 2022, 2024.
+# Luna Jernberg <droidbittin@gmail.com>, 2020, 2021, 2022, 2024, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2024-12-24 11:13+0000\n"
-"PO-Revision-Date: 2025-01-10 20:19+0100\n"
+"POT-Creation-Date: 2025-02-04 17:18+0000\n"
+"PO-Revision-Date: 2025-03-11 18:30+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -183,7 +183,7 @@ msgstr ""
 #: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1836
 #: src/camel/camel-filter-driver.c:1837 src/camel/camel-filter-driver.c:1972
-#: src/camel/camel-gpg-context.c:3186
+#: src/camel/camel-gpg-context.c:3218
 #: src/camel/providers/imapx/camel-imapx-server.c:3377
 #: src/camel/providers/imapx/camel-imapx-server.c:3383
 #: src/camel/providers/imapx/camel-imapx-server.c:3393
@@ -191,7 +191,7 @@ msgstr ""
 #: src/camel/providers/nntp/camel-nntp-store.c:418
 #: src/libebackend/e-server-side-source.c:498 src/libedataserver/e-client.c:183
 #: src/libedataserver/e-soup-session.c:1124
-#: src/libedataserver/e-soup-session.c:2130
+#: src/libedataserver/e-soup-session.c:2151
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
 #: src/libedataserverui/e-reminders-widget.c:2140
@@ -1011,7 +1011,7 @@ msgid "Error parsing regular expression"
 msgstr "Fel vid tolkning av reguljärt uttryck"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4837
+#: src/addressbook/libedata-book/e-book-cache.c:4867
 #: src/addressbook/libedata-book/e-book-sqlite.c:1910 src/camel/camel-db.c:826
 #, c-format
 msgid "Insufficient memory"
@@ -1107,7 +1107,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Kan inte sortera på ett fält som kan ha flera olika värden"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6168
+#: src/addressbook/libedata-book/e-book-cache.c:6198
 #: src/addressbook/libedata-book/e-book-sqlite.c:8236
 #, c-format
 msgid ""
@@ -1118,7 +1118,7 @@ msgstr ""
 "kontaktlistan"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6175
+#: src/addressbook/libedata-book/e-book-cache.c:6205
 #: src/addressbook/libedata-book/e-book-sqlite.c:8244
 #, c-format
 msgid ""
@@ -1143,20 +1143,20 @@ msgid "Invalid query: %s"
 msgstr "Ogiltig frågesats: %s"
 
 #: src/addressbook/libedata-book/e-book-cache.c:3745
-#: src/addressbook/libedata-book/e-book-cache.c:6851
+#: src/addressbook/libedata-book/e-book-cache.c:6881
 msgid "Invalid query for a book cursor"
 msgstr "Ogiltig frågesats för en bokmarkör"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4841
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Kan inte öppna databasen %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5507
-#: src/addressbook/libedata-book/e-book-cache.c:5554
-#: src/addressbook/libedata-book/e-book-cache.c:5601
-#: src/addressbook/libedata-book/e-book-cache.c:5653
+#: src/addressbook/libedata-book/e-book-cache.c:5537
+#: src/addressbook/libedata-book/e-book-cache.c:5584
+#: src/addressbook/libedata-book/e-book-cache.c:5631
+#: src/addressbook/libedata-book/e-book-cache.c:5683
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1169,31 +1169,31 @@ msgstr "Kan inte öppna databasen %s: %s"
 msgid "Object “%s” not found"
 msgstr "Objektet ”%s” hittades inte"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5713
+#: src/addressbook/libedata-book/e-book-cache.c:5743
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objekt med extra ”%s” hittades inte"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5889
+#: src/addressbook/libedata-book/e-book-cache.c:5919
 msgid "Search by email not supported"
 msgstr "Sökning efter e-post stöds inte"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5900
+#: src/addressbook/libedata-book/e-book-cache.c:5930
 msgid "No email address provided"
 msgstr "Ingen e-postadress tillhandahölls"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5955
+#: src/addressbook/libedata-book/e-book-cache.c:5985
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Åtminstone ett sorteringsfält måste anges för att använda en markör"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5964
+#: src/addressbook/libedata-book/e-book-cache.c:5994
 #: src/addressbook/libedata-book/e-book-sqlite.c:8076
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Kan inte sortera på ett fält som inte är en strängtyp"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7042
-#: src/addressbook/libedata-book/e-book-cache.c:7201
+#: src/addressbook/libedata-book/e-book-cache.c:7072
+#: src/addressbook/libedata-book/e-book-cache.c:7231
 #: src/addressbook/libedata-book/e-book-sqlite.c:8963
 #: src/addressbook/libedata-book/e-book-sqlite.c:9124
 #, c-format
@@ -2361,31 +2361,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1101
-#: src/calendar/libecal/e-cal-util.c:1128
+#: src/calendar/libecal/e-cal-util.c:1107
+#: src/calendar/libecal/e-cal-util.c:1134
 msgctxt "Priority"
 msgid "High"
 msgstr "Hög"
 
-#: src/calendar/libecal/e-cal-util.c:1103
-#: src/calendar/libecal/e-cal-util.c:1130
+#: src/calendar/libecal/e-cal-util.c:1109
+#: src/calendar/libecal/e-cal-util.c:1136
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normal"
 
-#: src/calendar/libecal/e-cal-util.c:1105
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1111
+#: src/calendar/libecal/e-cal-util.c:1138
 msgctxt "Priority"
 msgid "Low"
 msgstr "Låg"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1126
+#: src/calendar/libecal/e-cal-util.c:1132
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Odefinierad"
 
-#: src/calendar/libecal/e-cal-util.c:1168
+#: src/calendar/libecal/e-cal-util.c:1174
 #: src/libedataserverui/e-reminders-widget.c:336
 #, c-format
 msgid "%d week"
@@ -2393,7 +2393,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d vecka"
 msgstr[1] "%d veckor"
 
-#: src/calendar/libecal/e-cal-util.c:1177
+#: src/calendar/libecal/e-cal-util.c:1183
 #: src/libedataserverui/e-reminders-widget.c:332
 #, c-format
 msgid "%d day"
@@ -2401,7 +2401,7 @@ msgid_plural "%d days"
 msgstr[0] "%d dag"
 msgstr[1] "%d dagar"
 
-#: src/calendar/libecal/e-cal-util.c:1186
+#: src/calendar/libecal/e-cal-util.c:1192
 #: src/libedataserverui/e-reminders-widget.c:328
 #, c-format
 msgid "%d hour"
@@ -2409,7 +2409,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d timme"
 msgstr[1] "%d timmar"
 
-#: src/calendar/libecal/e-cal-util.c:1195
+#: src/calendar/libecal/e-cal-util.c:1201
 #: src/libedataserverui/e-reminders-widget.c:324
 #, c-format
 msgid "%d minute"
@@ -2418,7 +2418,7 @@ msgstr[0] "%d minut"
 msgstr[1] "%d minuter"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1200
+#: src/calendar/libecal/e-cal-util.c:1206
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -3010,23 +3010,23 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Frigör oanvänt minne för mappen ”%s : %s”"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:620
+#: src/camel/camel-gpg-context.c:622
 #, c-format
 msgid "Output from %s:"
 msgstr "Utdata från %s:"
 
-#: src/camel/camel-gpg-context.c:1160 src/camel/camel-gpg-context.c:1165
-#: src/camel/camel-gpg-context.c:2034
+#: src/camel/camel-gpg-context.c:1162 src/camel/camel-gpg-context.c:1167
+#: src/camel/camel-gpg-context.c:2036
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Misslyckades med att köra gpg: %s"
 
-#: src/camel/camel-gpg-context.c:1165
+#: src/camel/camel-gpg-context.c:1167
 #: src/camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "Unknown"
 msgstr "Okänd"
 
-#: src/camel/camel-gpg-context.c:1277
+#: src/camel/camel-gpg-context.c:1279
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -3037,17 +3037,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/camel-gpg-context.c:1313
+#: src/camel/camel-gpg-context.c:1315
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Misslyckades med att tolka gpg-tips för användarid."
 
-#: src/camel/camel-gpg-context.c:1338 src/camel/camel-gpg-context.c:1353
+#: src/camel/camel-gpg-context.c:1340 src/camel/camel-gpg-context.c:1355
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Misslyckades med att tolka gpg-lösenfrasbegäran."
 
-#: src/camel/camel-gpg-context.c:1380
+#: src/camel/camel-gpg-context.c:1382
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -3056,7 +3056,7 @@ msgstr ""
 "Du behöver en pin-kod för att låsa upp nyckeln för\n"
 "ditt smartkort: ”%s”"
 
-#: src/camel/camel-gpg-context.c:1384
+#: src/camel/camel-gpg-context.c:1386
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -3065,12 +3065,12 @@ msgstr ""
 "Du behöver en lösenfras för att låsa upp nyckeln för\n"
 "användaren: ”%s”"
 
-#: src/camel/camel-gpg-context.c:1390
+#: src/camel/camel-gpg-context.c:1392
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Oväntad begäran från GnuPG för ”%s”"
 
-#: src/camel/camel-gpg-context.c:1402
+#: src/camel/camel-gpg-context.c:1404
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -3078,32 +3078,32 @@ msgstr ""
 "Det krypterade innehållet kan innehålla information om en mottagare, därför "
 "kommer det att frågas efter ett lösenord för varje lagrad privat nyckel."
 
-#: src/camel/camel-gpg-context.c:1433 src/camel/camel-net-utils.c:523
+#: src/camel/camel-gpg-context.c:1435 src/camel/camel-net-utils.c:523
 #: src/camel/providers/nntp/camel-nntp-summary.c:392
 #: src/libedataserver/e-client.c:156
 #, c-format
 msgid "Cancelled"
 msgstr "Avbruten"
 
-#: src/camel/camel-gpg-context.c:1455
+#: src/camel/camel-gpg-context.c:1457
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Misslyckades med att låsa upp hemlig nyckel: 3 felaktiga lösenfraser angivna."
 
-#: src/camel/camel-gpg-context.c:1468
+#: src/camel/camel-gpg-context.c:1470
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Oväntat svar från GnuPG: %s"
 
-#: src/camel/camel-gpg-context.c:1585
+#: src/camel/camel-gpg-context.c:1587
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Misslyckades med att kryptera: inga giltiga mottagare angivna."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1606
+#: src/camel/camel-gpg-context.c:1608
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
@@ -3113,7 +3113,7 @@ msgstr ""
 "är att %s inte har importerat den öppna nyckeln för denna mottagare."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1613
+#: src/camel/camel-gpg-context.c:1615
 #, c-format
 msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgstr ""
@@ -3121,27 +3121,27 @@ msgstr ""
 "inte."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1620
+#: src/camel/camel-gpg-context.c:1622
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgstr ""
 "Misslyckades med att kryptera: nyckeln för mottagaren %s har återkallats."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1627
+#: src/camel/camel-gpg-context.c:1629
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is expired."
 msgstr "Misslyckades med att kryptera: nyckeln för mottagaren %s har gått ut."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1634
+#: src/camel/camel-gpg-context.c:1636
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgstr ""
 "Misslyckades med att kryptera: nyckeln för mottagaren %s är inte pålitlig."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
-#: src/camel/camel-gpg-context.c:1641
+#: src/camel/camel-gpg-context.c:1643
 #, c-format
 msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgstr ""
@@ -3149,7 +3149,7 @@ msgstr ""
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
-#: src/camel/camel-gpg-context.c:1649
+#: src/camel/camel-gpg-context.c:1651
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified (code %d). A common issue "
@@ -3159,80 +3159,80 @@ msgstr ""
 "vanligt fel är att %s inte har importerat den öppna nyckeln för denna "
 "mottagare."
 
-#: src/camel/camel-gpg-context.c:1710 src/camel/camel-gpg-context.c:1721
+#: src/camel/camel-gpg-context.c:1712 src/camel/camel-gpg-context.c:1723
 #, c-format
 msgid "Failed to pass command to GPG: %s"
 msgstr "Misslyckades med att skicka kommando till GPG: %s"
 
-#: src/camel/camel-gpg-context.c:2558 src/camel/camel-smime-context.c:1040
+#: src/camel/camel-gpg-context.c:2566 src/camel/camel-smime-context.c:1040
 msgid "Could not generate signing data: "
 msgstr "Kunde inte generera signeringsdata: "
 
-#: src/camel/camel-gpg-context.c:2609 src/camel/camel-gpg-context.c:2847
-#: src/camel/camel-gpg-context.c:2988 src/camel/camel-gpg-context.c:3165
-#: src/camel/camel-gpg-context.c:3523 src/camel/camel-gpg-context.c:3610
-#: src/camel/camel-gpg-context.c:3903 src/camel/camel-gpg-context.c:4001
-#: src/camel/camel-gpg-context.c:4086 src/camel/camel-gpg-context.c:4153
+#: src/camel/camel-gpg-context.c:2617 src/camel/camel-gpg-context.c:2865
+#: src/camel/camel-gpg-context.c:3006 src/camel/camel-gpg-context.c:3197
+#: src/camel/camel-gpg-context.c:3555 src/camel/camel-gpg-context.c:3642
+#: src/camel/camel-gpg-context.c:3935 src/camel/camel-gpg-context.c:4033
+#: src/camel/camel-gpg-context.c:4118 src/camel/camel-gpg-context.c:4185
 msgid "Failed to execute gpg."
 msgstr "Misslyckades med att köra gpg."
 
-#: src/camel/camel-gpg-context.c:2717 src/camel/camel-gpg-context.c:2725
-#: src/camel/camel-gpg-context.c:2733 src/camel/camel-gpg-context.c:2753
+#: src/camel/camel-gpg-context.c:2725 src/camel/camel-gpg-context.c:2733
+#: src/camel/camel-gpg-context.c:2741 src/camel/camel-gpg-context.c:2761
 #: src/camel/camel-smime-context.c:1171 src/camel/camel-smime-context.c:1185
 #: src/camel/camel-smime-context.c:1197
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Kan inte verifiera meddelandesignatur: Felaktigt meddelandeformat"
 
-#: src/camel/camel-gpg-context.c:2799
+#: src/camel/camel-gpg-context.c:2807
 msgid "Cannot verify message signature: "
 msgstr "Kan inte verifiera meddelandesignatur: "
 
-#: src/camel/camel-gpg-context.c:2946
+#: src/camel/camel-gpg-context.c:2964
 msgid "Could not generate encrypting data: "
 msgstr "Kunde inte generera krypteringsdata: "
 
-#: src/camel/camel-gpg-context.c:3028
+#: src/camel/camel-gpg-context.c:3046
 msgid "This is a digitally encrypted message part"
 msgstr "Detta är en digitalt signerad meddelandedel"
 
-#: src/camel/camel-gpg-context.c:3088 src/camel/camel-gpg-context.c:3097
-#: src/camel/camel-gpg-context.c:3120
+#: src/camel/camel-gpg-context.c:3107 src/camel/camel-gpg-context.c:3116
+#: src/camel/camel-gpg-context.c:3141
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Kan inte dekryptera meddelande: Felaktigt meddelandeformat"
 
-#: src/camel/camel-gpg-context.c:3108
+#: src/camel/camel-gpg-context.c:3129
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Misslyckades med att dekryptera MIME-del: protokollfel"
 
-#: src/camel/camel-gpg-context.c:3180
+#: src/camel/camel-gpg-context.c:3212
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Misslyckades med att dekryptera MIME-del: hemlig nyckel hittades inte"
 
-#: src/camel/camel-gpg-context.c:3185
+#: src/camel/camel-gpg-context.c:3217
 #, c-format
 msgid "Failed to decrypt MIME part: %s"
 msgstr "Misslyckades med att dekryptera MIME-del: %s"
 
-#: src/camel/camel-gpg-context.c:3222 src/camel/camel-multipart-encrypted.c:35
+#: src/camel/camel-gpg-context.c:3254 src/camel/camel-multipart-encrypted.c:35
 #: src/camel/camel-smime-context.c:1723
 msgid "Encrypted content"
 msgstr "Krypterat innehåll"
 
-#: src/camel/camel-gpg-context.c:3530 src/camel/camel-gpg-context.c:3617
-#: src/camel/camel-gpg-context.c:3910 src/camel/camel-gpg-context.c:3921
+#: src/camel/camel-gpg-context.c:3562 src/camel/camel-gpg-context.c:3649
+#: src/camel/camel-gpg-context.c:3942 src/camel/camel-gpg-context.c:3953
 #, c-format
 msgid "Public key “%s” was not found"
 msgstr "Öppna nyckeln ”%s” hittades inte"
 
-#: src/camel/camel-gpg-context.c:4008
+#: src/camel/camel-gpg-context.c:4040
 msgid "No public key was found in the provided data"
 msgstr "Ingen öppen nyckel hittades i tillhandahållna data"
 
-#: src/camel/camel-gpg-context.c:4021
+#: src/camel/camel-gpg-context.c:4053
 msgid "Key information was not found in the provided data"
 msgstr "Nyckelinformation hittades inte i tillhandahållna data"
 
@@ -7844,31 +7844,40 @@ msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
-#: src/libedataserver/e-soup-session.c:1369
+#: src/libedataserver/e-soup-session.c:1231
+msgid "No URI set"
+msgstr "Ingen URI inställd"
+
+#: src/libedataserver/e-soup-session.c:1241
+#, c-format
+msgid "Invalid URI “%s”"
+msgstr "Ogiltig URI ”%s”"
+
+#: src/libedataserver/e-soup-session.c:1388
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Misslyckades med HTTP-fel %d: %s"
 
-#: src/libedataserver/e-soup-session.c:1445
+#: src/libedataserver/e-soup-session.c:1464
 msgid "Failed to setup authentication"
 msgstr "Misslyckades med att konfigurera autentisering"
 
 # TODO: dubious singular strings? Seconds ignored?
-#: src/libedataserver/e-soup-session.c:1810
+#: src/libedataserver/e-soup-session.c:1829
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] "Servern är upptagen, väntar med att försöka igen (%d:%02d minut)"
 msgstr[1] "Servern är upptagen, väntar med att försöka igen (%d:%02d minuter)"
 
-#: src/libedataserver/e-soup-session.c:1816
+#: src/libedataserver/e-soup-session.c:1835
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
 msgstr[0] "Servern är upptagen, väntar med att försöka igen (%d sekund)"
 msgstr[1] "Servern är upptagen, väntar med att försöka igen (%d sekunder)"
 
-#: src/libedataserver/e-soup-session.c:1937
+#: src/libedataserver/e-soup-session.c:1956
 msgid "Too many redirects"
 msgstr "För många omdirigeringar"
 
