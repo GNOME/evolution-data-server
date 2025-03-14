@@ -364,7 +364,7 @@
 				{
 					"type": "git",
 					"url": "https://gitlab.gnome.org/GNOME/evolution-data-server.git",
-					"branch": "master"
+					"branch": "gnome-48"
 				}
 			]
 		}
