@@ -616,7 +616,7 @@ contains_helper (const gchar *s1,
 	gchar *s1uni;
 	gchar *s2uni;
 	GSList *words;
-	gchar *next;
+	const gchar *next;
 	gboolean have_nonspace;
 	gboolean have_space;
 	GString *last_word, *w;

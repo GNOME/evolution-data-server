@@ -277,7 +277,7 @@ e_util_strstrcase (const gchar *haystack,
  *
  * Returns: (nullable): A pointer to the next character in @text after @out.
  **/
-gchar *
+const gchar *
 e_util_unicode_get_utf8 (const gchar *text,
                          gunichar *out)
 {

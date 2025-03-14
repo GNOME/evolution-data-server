@@ -48,7 +48,7 @@ gint		e_util_strcmp0			(const gchar *str1,
 						 const gchar *str2);
 gchar *		e_util_strstrcase		(const gchar *haystack,
 						 const gchar *needle);
-gchar *		e_util_unicode_get_utf8		(const gchar *text,
+const gchar *	e_util_unicode_get_utf8		(const gchar *text,
 						 gunichar *out);
 const gchar *	e_util_utf8_strstrcase		(const gchar *haystack,
 						 const gchar *needle);
