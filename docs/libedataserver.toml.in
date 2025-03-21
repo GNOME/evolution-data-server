@@ -22,7 +22,7 @@ search_index = true
   [dependencies."Soup-3.0"]
   name = "Soup"
   description = "HTTP client/server library for GNOME"
-  docs_url = "https://libsoup.org/libsoup-3.0"
+  docs_url = "https://libsoup.gnome.org/libsoup-3.0"
 
   [dependencies."libxml2-2.0"]
   name = "libxml2"
