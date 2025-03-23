@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
 "POT-Creation-Date: 2023-04-25 14:50+0000\n"
-"PO-Revision-Date: 2023-05-12 21:32+0100\n"
+"PO-Revision-Date: 2025-03-23 21:32+0100\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
 "Language: ca\n"
@@ -2443,7 +2443,7 @@ msgstr "No definida"
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] "%d setmanes"
+msgstr[0] "%d setmana"
 msgstr[1] "%d setmanes"
 
 #: src/calendar/libecal/e-cal-util.c:1101
@@ -2801,7 +2801,7 @@ msgstr "No s'ha pogut crear el procés fill «%s»: %s"
 #: src/camel/camel-filter-driver.c:1180
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "S'ha rebut un flux de missatge no vàlid de %s: %s"
+msgstr "S'ha rebut un missatge del flux no vàlid de %s: %s"
 
 #: src/camel/camel-filter-driver.c:1404 src/camel/camel-filter-driver.c:1417
 msgid "Syncing folders"
@@ -6421,7 +6421,7 @@ msgid ""
 "the background. A special value “always-online” is used for no network "
 "monitoring."
 msgstr ""
-"Quan s'estableix un valor desconegut, llavors el GNetworkMonitor  per "
+"Quan s'estableix un valor desconegut, llavors el GNetworkMonitor per "
 "defecte s'utilitza en segon pla. El valor especial «always-online» "
 "s'utilitza per no monitorar xarxes."
 
@@ -6800,7 +6800,7 @@ msgstr "No s'ha trobat la font «%s»"
 #: src/libebackend/e-subprocess-factory.c:276
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
-msgstr "No es pot carregar el mòdul  «%s» per la font amb UID «%s»"
+msgstr "No es pot carregar el mòdul «%s» per la font amb UID «%s»"
 
 #: src/libebackend/e-subprocess-factory.c:297
 #, c-format
@@ -8034,7 +8034,7 @@ msgstr "_Descarta"
 
 #: src/libedataserverui/e-reminders-widget.c:1750
 msgid "Dismiss _All"
-msgstr "Desactivar _tot"
+msgstr "Descarta-ho _tot"
 
 #: src/libedataserverui/e-reminders-widget.c:1752
 msgid "_Snooze"
@@ -8294,7 +8294,7 @@ msgstr "No em torneu a preguntar sobre aquest programa de nou"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:782
 msgid "Display Reminders window with _notifications"
-msgstr "Mostra la finestra de recordatoris amb  _notificacions"
+msgstr "Mostra la finestra de recordatoris amb _notificacions"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:783
 msgid "Keep reminder notification window always on _top"
