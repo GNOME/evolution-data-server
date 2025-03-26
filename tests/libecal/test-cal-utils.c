@@ -355,6 +355,1356 @@ test_categories (ETestServerFixture *fixture,
 	g_clear_object (&new_comp);
 }
 
+static void
+test_guess_tz (ETestServerFixture *fixture,
+	       gconstpointer user_data)
+{
+	ICalTimezone *zone;
+
+	zone = e_cal_util_guess_timezone ("some-odd-text");
+	g_assert_null (zone);
+
+	zone = e_cal_util_guess_timezone ("Europe/Vienna");
+	g_assert_nonnull (zone);
+	g_assert_cmpstr (i_cal_timezone_get_location (zone), ==, "Europe/Vienna");
+
+	zone = i_cal_timezone_get_builtin_timezone ("Europe/Vatican");
+	g_assert_nonnull (zone);
+	zone = e_cal_util_guess_timezone (i_cal_timezone_get_tzid (zone));
+	g_assert_nonnull (zone);
+	g_assert_cmpstr (i_cal_timezone_get_location (zone), ==, "Europe/Vatican");
+
+	zone = e_cal_util_guess_timezone ("id-looking/Europe/Vaduz");
+	g_assert_nonnull (zone);
+	g_assert_cmpstr (i_cal_timezone_get_location (zone), ==, "Europe/Vaduz");
+
+	zone = e_cal_util_guess_timezone ("id-looking/America/Kentucky/Louisville");
+	g_assert_nonnull (zone);
+	g_assert_cmpstr (i_cal_timezone_get_location (zone), ==, "America/Kentucky/Louisville");
+}
+
+static void
+test_time_convert_tm_back (struct tm *tm)
+{
+	ICalTime *itt;
+
+	itt = e_cal_util_tm_to_icaltime (tm, FALSE);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (tm->tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm->tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm->tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm->tm_hour, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (tm->tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm->tm_sec, ==, i_cal_time_get_second (itt));
+	g_object_unref (itt);
+
+	itt = e_cal_util_tm_to_icaltime (tm, TRUE);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (tm->tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm->tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm->tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_second (itt));
+	g_object_unref (itt);
+}
+
+static void
+test_time_convert_tm (ETestServerFixture *fixture,
+		      gconstpointer user_data)
+{
+	ICalTime *itt;
+	ICalTimezone *from_zone, *to_zone;
+	struct tm tm;
+
+	itt = i_cal_time_new_from_string ("20250326T104025");
+	g_assert_nonnull (itt);
+	g_assert_null (i_cal_time_get_timezone (itt));
+	g_assert_cmpint (i_cal_time_get_year (itt), ==, 2025);
+	g_assert_cmpint (i_cal_time_get_month (itt), ==, 3);
+	g_assert_cmpint (i_cal_time_get_day (itt), ==, 26);
+	g_assert_cmpint (i_cal_time_get_hour (itt), ==, 10);
+	g_assert_cmpint (i_cal_time_get_minute (itt), ==, 40);
+	g_assert_cmpint (i_cal_time_get_second (itt), ==, 25);
+
+	tm = e_cal_util_icaltime_to_tm (itt);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	from_zone = i_cal_timezone_get_builtin_timezone ("Europe/Berlin");
+	g_assert_nonnull (from_zone);
+	i_cal_time_set_timezone (itt, from_zone);
+	g_assert_true (from_zone == i_cal_time_get_timezone (itt));
+
+	/* check it does not matter what timezone the itt has set */
+	tm = e_cal_util_icaltime_to_tm (itt);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	to_zone = from_zone;
+	tm = e_cal_util_icaltime_to_tm_with_zone (itt, from_zone, to_zone);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	to_zone = i_cal_timezone_get_builtin_timezone ("America/Winnipeg");
+	g_assert_nonnull (to_zone);
+
+	tm = e_cal_util_icaltime_to_tm_with_zone (itt, from_zone, to_zone);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt) - 6);
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	i_cal_time_set_timezone (itt, NULL);
+
+	tm = e_cal_util_icaltime_to_tm_with_zone (itt, from_zone, to_zone);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt) - 6);
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	i_cal_time_set_timezone (itt, to_zone);
+
+	to_zone = i_cal_timezone_get_builtin_timezone ("America/New_York");
+	g_assert_nonnull (to_zone);
+
+	tm = e_cal_util_icaltime_to_tm_with_zone (itt, from_zone, to_zone);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt) - 5);
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	i_cal_time_set_timezone (itt, NULL);
+
+	tm = e_cal_util_icaltime_to_tm_with_zone (itt, from_zone, to_zone);
+	g_assert_cmpint (tm.tm_year, ==, i_cal_time_get_year (itt) - 1900);
+	g_assert_cmpint (tm.tm_mon, ==, i_cal_time_get_month (itt) - 1);
+	g_assert_cmpint (tm.tm_mday, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (tm.tm_hour, ==, i_cal_time_get_hour (itt) - 5);
+	g_assert_cmpint (tm.tm_min, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (tm.tm_sec, ==, i_cal_time_get_second (itt));
+
+	test_time_convert_tm_back (&tm);
+
+	g_clear_object (&itt);
+}
+
+static void test_zone_cache_iface_init (ETimezoneCacheInterface *iface);
+#define TEST_TYPE_ZONE_CACHE test_zone_cache_get_type ()
+G_DECLARE_FINAL_TYPE (TestZoneCache, test_zone_cache, TEST, ZONE_CACHE, GObject)
+
+struct _TestZoneCache {
+	GObject object;
+};
+
+G_DEFINE_TYPE_WITH_CODE (TestZoneCache, test_zone_cache, G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (E_TYPE_TIMEZONE_CACHE, test_zone_cache_iface_init))
+
+static void
+test_zone_cache_add_timezone (ETimezoneCache *cache,
+			      ICalTimezone *zone)
+{
+	g_assert_not_reached ();
+}
+
+static ICalTimezone *
+test_zone_cache_get_timezone (ETimezoneCache *cache,
+			      const gchar *tzid)
+{
+	if (!tzid || !*tzid)
+		return NULL;
+
+	if (g_strcmp0 ("special/vienna/id", tzid) == 0)
+		return i_cal_timezone_get_builtin_timezone ("Europe/Vienna");
+	if (g_strcmp0 ("special/winnipeg/id", tzid) == 0)
+		return i_cal_timezone_get_builtin_timezone ("America/Winnipeg");
+
+	return NULL;
+}
+
+static GList *
+test_zone_cache_list_timezones (ETimezoneCache *cache)
+{
+	g_assert_not_reached ();
+	return NULL;
+}
+
+static void
+test_zone_cache_iface_init (ETimezoneCacheInterface *iface)
+{
+	iface->tzcache_add_timezone = test_zone_cache_add_timezone;
+	iface->tzcache_get_timezone = test_zone_cache_get_timezone;
+	iface->tzcache_list_timezones = test_zone_cache_list_timezones;
+}
+
+static void
+test_zone_cache_class_init (TestZoneCacheClass *klass)
+{
+}
+
+static void
+test_zone_cache_init (TestZoneCache *self)
+{
+}
+
+static ICalComponent *
+test_time_convert_create_vcalendar (void)
+{
+	ICalTimezone *zone;
+	ICalComponent *comp, *clone, *vcalendar;
+	ICalProperty *prop;
+
+	vcalendar = i_cal_component_new_vcalendar ();
+
+	#define add_zone_as(tzid, new_tzid) \
+		zone = i_cal_timezone_get_builtin_timezone (tzid); \
+		g_assert_nonnull (zone); \
+		comp = i_cal_timezone_get_component (zone); \
+		g_assert_nonnull (comp); \
+		clone = i_cal_component_clone (comp); \
+		g_assert_nonnull (clone); \
+		g_clear_object (&comp); \
+		e_cal_util_component_remove_x_property (clone, "X-LIC-LOCATION"); \
+		prop = i_cal_component_get_first_property (clone, I_CAL_TZID_PROPERTY); \
+		g_assert_nonnull (prop); \
+		i_cal_property_set_tzid (prop, new_tzid); \
+		g_clear_object (&prop); \
+		i_cal_component_take_component (vcalendar, clone);
+
+	add_zone_as ("America/Winnipeg", "vcal winnipeg.id");
+	add_zone_as ("America/New_York", "vcal newyork.id");
+	add_zone_as ("Europe/Berlin", "vcal berlin.id");
+
+	#undef add_zone_as
+
+	return vcalendar;
+}
+
+static void
+test_time_convert_props (ETestServerFixture *fixture,
+			 gconstpointer user_data)
+{
+	ICalComponent *icomp, *vcalendar;
+	ICalTime *itt = NULL;
+	ICalTimezone *to_zone;
+	ICalTimezone *berlin_tz = i_cal_timezone_get_builtin_timezone ("Europe/Berlin");
+	ICalTimezone *winnipeg_tz = i_cal_timezone_get_builtin_timezone ("America/Winnipeg");
+	ICalTimezone *newyork_tz = i_cal_timezone_get_builtin_timezone ("America/New_York");
+	ETimezoneCache *zone_cache;
+	time_t tt;
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTSTART;TZID=Europe/Vienna:20250326T104025\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_UID_PROPERTY, NULL, NULL, NULL, NULL);
+	g_assert_cmpint (tt, ==, -1);
+	g_assert_null (itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_UID_PROPERTY, NULL, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, -1);
+	g_assert_null (itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, NULL, NULL, NULL, NULL);
+	g_assert_cmpint (tt, ==, -1);
+	g_assert_null (itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, NULL, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, -1);
+	g_assert_null (itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, NULL, NULL, NULL, NULL);
+	g_assert_cmpint (tt, ==, 1742982025);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, NULL, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 1);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_null (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	/* NULL and UTC to_zone should produce the same time */
+	to_zone = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (to_zone);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 1);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_nonnull (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 6);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	g_assert_nonnull (to_zone);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	/* date value */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTEND;VALUE=DATE:20250327\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743048000);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (1, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_null (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	/* floating time */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTEND:20250327T173210\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	to_zone = i_cal_timezone_get_builtin_timezone ("Europe/Vatican");
+	g_assert_nonnull (to_zone);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743093130);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743114730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743111130);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	/* UTC */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTEND:20250327T173210Z\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	to_zone = berlin_tz;
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) + 4);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	zone_cache = g_object_new (TEST_TYPE_ZONE_CACHE, NULL);
+	g_assert_nonnull (zone_cache);
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTSTART;TZID=special/vienna/id:20250326T104025\r\n"
+		"DTEND;TZID=special/winnipeg/id:20250327T173015\r\n"
+		"DUE;TZID=special/unknown/id:20250328T132333\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 6);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DUE_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 6);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DUE_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743186213);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DUE_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743182613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	vcalendar = test_time_convert_create_vcalendar ();
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTEND;TZID=special/unknown/id:20250327T203015\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	to_zone = berlin_tz;
+
+	/* cannot find the zone anywhere */
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743103815);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (20, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:Summary\r\n"
+		"DTSTART;TZID=vcal newyork.id:20250326T104025\r\n"
+		"DTEND;TZID=special/winnipeg/id:20250327T173015\r\n"
+		"DUE;TZID=Europe/Vienna:20250328T132333\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743000025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) - 5);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 6);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DUE_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743000025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 1);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DUE_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt) + 6);
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743000025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DUE_PROPERTY, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&icomp);
+
+	g_clear_object (&zone_cache);
+	g_clear_object (&vcalendar);
+}
+
+static void
+test_time_convert_icaltime (ETestServerFixture *fixture,
+			    gconstpointer user_data)
+{
+	ICalComponent *vcalendar;
+	ICalTime *itt = NULL, *src_itt;
+	ICalTimezone *to_zone;
+	ICalTimezone *berlin_tz = i_cal_timezone_get_builtin_timezone ("Europe/Berlin");
+	ICalTimezone *winnipeg_tz = i_cal_timezone_get_builtin_timezone ("America/Winnipeg");
+	ICalTimezone *newyork_tz = i_cal_timezone_get_builtin_timezone ("America/New_York");
+	ETimezoneCache *zone_cache;
+	const gchar *src_tzid = NULL;
+	time_t tt;
+
+	src_itt = i_cal_time_new_null_time ();
+
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, NULL, NULL, NULL, NULL);
+	g_assert_cmpint (tt, ==, -1);
+
+	g_assert_null (itt);
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, NULL, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, -1);
+	g_assert_null (itt);
+
+	g_clear_object (&src_itt);
+
+	src_itt = i_cal_time_new_from_string ("20250326T104025");
+	g_assert_nonnull (src_itt);
+	src_tzid = "Europe/Vienna";
+
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, NULL, NULL, NULL, NULL);
+	g_assert_cmpint (tt, ==, 1742982025);
+
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, NULL, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 1);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_null (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	/* NULL and UTC to_zone should produce the same time */
+	to_zone = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (to_zone);
+
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 1);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_nonnull (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 6);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	/* date value */
+	src_itt = i_cal_time_new_from_string ("20250327");
+	g_assert_nonnull (src_itt);
+	g_assert_true (i_cal_time_is_date (src_itt));
+	src_tzid = NULL;
+
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743048000);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (1, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_null (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	/* floating time */
+	src_itt = i_cal_time_new_from_string ("20250327T173210");
+	g_assert_nonnull (src_itt);
+	src_tzid = NULL;
+
+	to_zone = i_cal_timezone_get_builtin_timezone ("Europe/Vatican");
+	g_assert_nonnull (to_zone);
+
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743093130);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743114730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743111130);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	/* UTC */
+	src_itt = i_cal_time_new_from_string ("20250327T173210Z");
+	g_assert_nonnull (src_itt);
+	g_assert_true (i_cal_time_is_utc (src_itt));
+	src_tzid = NULL;
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) + 4);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	/* case insensitive compare */
+	src_tzid = "uTc";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743096730);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) + 4);
+	g_assert_cmpint (32, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (0, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	zone_cache = g_object_new (TEST_TYPE_ZONE_CACHE, NULL);
+	g_assert_nonnull (zone_cache);
+
+	src_itt = i_cal_time_new_from_string ("20250326T104025");
+	g_assert_nonnull (src_itt);
+	src_tzid = "special/vienna/id";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 6);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1742982025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	src_itt = i_cal_time_new_from_string ("20250327T173015");
+	g_assert_nonnull (src_itt);
+	src_tzid = "special/winnipeg/id";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 6);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	src_itt = i_cal_time_new_from_string ("20250328T132333");
+	g_assert_nonnull (src_itt);
+	src_tzid = "special/unknown/id";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743186213);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743182613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	vcalendar = test_time_convert_create_vcalendar ();
+
+	src_itt = i_cal_time_new_from_string ("20250327T203015");
+	g_assert_nonnull (src_itt);
+	src_tzid = "special/unknown/id";
+
+	to_zone = berlin_tz;
+
+	/* cannot find the zone anywhere */
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743103815);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (20, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	src_itt = i_cal_time_new_from_string ("20250326T104025");
+	g_assert_nonnull (src_itt);
+	src_tzid = "vcal newyork.id";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743000025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) - 5);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743000025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt) + 1);
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743000025);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (26, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (10, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (40, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (25, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	src_itt = i_cal_time_new_from_string ("20250327T173015");
+	g_assert_nonnull (src_itt);
+	src_tzid = "special/winnipeg/id";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 6);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, vcalendar, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743114615);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (17, ==, i_cal_time_get_hour (itt) - 1);
+	g_assert_cmpint (30, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (15, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	src_itt = i_cal_time_new_from_string ("20250328T132333");
+	g_assert_nonnull (src_itt);
+	src_tzid = "Europe/Vienna";
+
+	to_zone = berlin_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = winnipeg_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt) + 6);
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	to_zone = newyork_tz;
+	tt = e_cal_util_time_to_zone (src_itt, src_tzid, to_zone, NULL, zone_cache, &itt);
+	g_assert_cmpint (tt, ==, 1743164613);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (28, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (13, ==, i_cal_time_get_hour (itt) + 5);
+	g_assert_cmpint (23, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (33, ==, i_cal_time_get_second (itt));
+	g_assert_true (to_zone == i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
+	g_clear_object (&src_itt);
+
+	g_clear_object (&zone_cache);
+	g_clear_object (&vcalendar);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -366,6 +1716,14 @@ main (gint argc,
 		e_test_server_utils_setup, test_clamp_vtimezone, e_test_server_utils_teardown);
 	g_test_add ("/ECalUtils/Categories", ETestServerFixture, &test_closure,
 		e_test_server_utils_setup, test_categories, e_test_server_utils_teardown);
+	g_test_add ("/ECalUtils/GuessTZ", ETestServerFixture, &test_closure,
+		e_test_server_utils_setup, test_guess_tz, e_test_server_utils_teardown);
+	g_test_add ("/ECalUtils/TimeConvertTm", ETestServerFixture, &test_closure,
+		e_test_server_utils_setup, test_time_convert_tm, e_test_server_utils_teardown);
+	g_test_add ("/ECalUtils/TimeConvertProps", ETestServerFixture, &test_closure,
+		e_test_server_utils_setup, test_time_convert_props, e_test_server_utils_teardown);
+	g_test_add ("/ECalUtils/TimeConvertICalTime", ETestServerFixture, &test_closure,
+		e_test_server_utils_setup, test_time_convert_icaltime, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
 }

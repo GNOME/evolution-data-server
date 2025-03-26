@@ -19,8 +19,14 @@
  *          Damon Chaplin <damon@ximian.com>
  */
 
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 #include <ctype.h>
+
+#include "e-cal-check-timezones.h"
+#include "e-timezone-cache.h"
+
 #include "e-cal-time-util.h"
 
 #ifdef G_OS_WIN32
@@ -814,4 +820,237 @@ e_cal_util_tm_to_icaltime (struct tm *tm,
 	i_cal_time_set_is_date (itt, is_date);
 
 	return itt;
+}
+
+/**
+ * e_cal_util_guess_timezone:
+ * @tzid: a time zone ID
+ *
+ * Tries to match the @tzid with a built-in iCal timezone.
+ *
+ * Whenever possible, the timezone should be taken from
+ * the timezone cache or the VCALENDAR component the owner
+ * component belongs to, this should be used just as the last
+ * resort when such time zone could not be found.
+ *
+ * Returns: (nullable) (transfer none): matching built-in #ICalTimezone for the @tzid,
+ *    or %NULL, when could not be found
+ *
+ * Since: 3.58
+ **/
+ICalTimezone *
+e_cal_util_guess_timezone (const gchar *tzid)
+{
+	ICalTimezone *zone;
+
+	if (!tzid || !*tzid)
+		return NULL;
+
+	zone = i_cal_timezone_get_builtin_timezone (tzid);
+	if (zone)
+		return zone;
+
+	zone = i_cal_timezone_get_builtin_timezone_from_tzid (tzid);
+	if (zone)
+		return zone;
+
+	tzid = e_cal_match_tzid (tzid);
+	if (tzid) {
+		zone = i_cal_timezone_get_builtin_timezone_from_tzid (tzid);
+		if (!zone)
+			zone = i_cal_timezone_get_builtin_timezone (tzid);
+	}
+
+	return zone;
+}
+
+/**
+ * e_cal_util_comp_time_to_zone:
+ * @icomp: an #ICalComponent to get the property from
+ * @prop_kind: an #ICalPropertyKind of the property to read
+ * @to_zone: (nullable): an #ICalTimezone to convert the time to, or %NULL for UTC
+ * @vcalendar: (nullable): an optional VCALENDAR component with timezones for the @icomp, or %NULL when not available
+ * @tz_cache: (nullable): an #ETimezoneCache to use to read the time zones from, or %NULL if not available
+ * @out_itt: (out) (optional) (transfer full): return location for the converted time as #ICalTime, or %NULL when not requested
+ *
+ * Converts the time/date property @prop_kind to @to_zone. When such property
+ * does not exist, or does not contain DATE nor DATE-TIME value, then
+ * the function returns -1 and no output argument is set.
+ *
+ * The @vcalendar is used to get the timezone for the property, if provided,
+ * otherwise the timezone is tried to be found in the @tz_cache. If neither
+ * can get it, the iCal builtin timezones are checked. When the set timezone
+ * cannot be found, floating time is used (which can be almost always wrong).
+ *
+ * Note: this uses i_cal_component_get_first_property(), thus it cannot be used
+ *    in case any upper caller uses it too at the same time.
+ *
+ * Returns: property's time converted into @to_zone, or -1, when the conversion
+ *    was not possible.
+ *
+ * Since: 3.58
+ **/
+time_t
+e_cal_util_comp_time_to_zone (ICalComponent *icomp,
+			      ICalPropertyKind prop_kind,
+			      ICalTimezone *to_zone,
+			      ICalComponent *vcalendar,
+			      ETimezoneCache *tz_cache,
+			      ICalTime **out_itt)
+{
+	ICalProperty *prop;
+	time_t res = (time_t) -1;
+
+	g_return_val_if_fail (I_CAL_IS_COMPONENT (icomp), res);
+
+	prop = i_cal_component_get_first_property (icomp, prop_kind);
+	if (prop)
+		res = e_cal_util_property_time_to_zone (prop, to_zone, vcalendar, tz_cache, out_itt);
+
+	g_clear_object (&prop);
+
+	return res;
+}
+
+/**
+ * e_cal_util_property_time_to_zone:
+ * @prop: an #ICalProperty of DATE or DATE-TIME value
+ * @to_zone: (nullable): an #ICalTimezone to convert the time to, or %NULL for UTC
+ * @vcalendar: (nullable): an optional VCALENDAR component with timezones for the @prop, or %NULL when not available
+ * @tz_cache: (nullable): an #ETimezoneCache to use to read the time zones from, or %NULL if not available
+ * @out_itt: (out) (optional) (transfer full): return location for the converted time as #ICalTime, or %NULL when not requested
+ *
+ * Converts the time/date property @prop to @to_zone. When such property
+ * does not contain DATE nor DATE-TIME value, the function returns -1
+ * and no output argument is set.
+ *
+ * The @vcalendar is used to get the timezone for the property, if provided,
+ * otherwise the timezone is tried to be found in the @tz_cache. If neither
+ * can get it, the iCal builtin timezones are checked. When the set timezone
+ * cannot be found, floating time is used (which can be almost always wrong).
+ *
+ * Returns: property's time converted into @to_zone, or -1, when the conversion
+ *    was not possible.
+ *
+ * Since: 3.58
+ **/
+time_t
+e_cal_util_property_time_to_zone (ICalProperty *prop,
+				  ICalTimezone *to_zone,
+				  ICalComponent *vcalendar,
+				  ETimezoneCache *tz_cache,
+				  ICalTime **out_itt)
+{
+	time_t res = (time_t) -1;
+	ICalValue *value;
+
+	g_return_val_if_fail (I_CAL_IS_PROPERTY (prop), res);
+
+	value = i_cal_property_get_value (prop);
+	if (value) {
+		ICalTime *itt = NULL;
+
+		if (i_cal_value_isa (value) == I_CAL_DATE_VALUE ||
+		    i_cal_value_isa (value) == I_CAL_DATETIME_VALUE)
+			itt = i_cal_value_get_datetime (value);
+		else if (i_cal_value_isa (value) == I_CAL_DATETIMEDATE_VALUE)
+			itt = i_cal_value_get_datetimedate (value);
+
+		if (itt) {
+			ICalParameter *param;
+			const gchar *tzid = NULL;
+
+			param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+			if (param)
+				tzid = i_cal_parameter_get_tzid (param);
+			else if (i_cal_time_is_utc (itt))
+				tzid = "UTC";
+
+			res = e_cal_util_time_to_zone (itt, tzid, to_zone, vcalendar, tz_cache, out_itt);
+
+			g_clear_object (&param);
+			g_clear_object (&itt);
+		}
+
+		g_clear_object (&value);
+	}
+
+	return res;
+}
+
+/**
+ * e_cal_util_time_to_zone:
+ * @itt: an #ICalTime to convert
+ * @tzid: (nullable): a timezone ID the @itt is at, or %NULL for floating time
+ * @vcalendar: (nullable): an optional VCALENDAR component with timezones for the @tzid, or %NULL when not available
+ * @tz_cache: (nullable): an #ETimezoneCache to use to read the time zones from, or %NULL if not available
+ * @out_itt: (out) (optional) (transfer full): return location for the converted time as #ICalTime, or %NULL when not requested
+ *
+ * Converts the @itt in @tzid to @to_zone.
+ *
+ * The @vcalendar is used to get the timezone for the property, if provided,
+ * otherwise the timezone is tried to be found in the @tz_cache. If neither
+ * can get it, the iCal builtin timezones are checked. When the set timezone
+ * cannot be found, floating time is used (which can be almost always wrong).
+ *
+ * Returns: the time converted into @to_zone, or -1, when the conversion
+ *    was not possible.
+ *
+ * Since: 3.58
+ **/
+time_t
+e_cal_util_time_to_zone (const ICalTime *itt,
+			 const gchar *tzid,
+			 ICalTimezone *to_zone,
+			 ICalComponent *vcalendar,
+			 ETimezoneCache *tz_cache,
+			 ICalTime **out_itt)
+{
+	ICalTime *itt_copy;
+	ICalTimezone *from_zone = NULL;
+	time_t res = (time_t) -1;
+
+	g_return_val_if_fail (I_CAL_IS_TIME (itt), res);
+
+	if (i_cal_time_is_null_time (itt) || !i_cal_time_is_valid_time (itt))
+		return res;
+
+	itt_copy = i_cal_time_clone (itt);
+
+	if (tzid && *tzid) {
+		if (g_ascii_strcasecmp (tzid, "UTC") == 0) {
+			from_zone = g_object_ref (i_cal_timezone_get_utc_timezone ());
+		} else {
+			if (vcalendar)
+				from_zone = i_cal_component_get_timezone (vcalendar, tzid);
+
+			if (!from_zone && tz_cache) {
+				from_zone = e_timezone_cache_get_timezone (tz_cache, tzid);
+				if (from_zone)
+					g_object_ref (from_zone);
+			}
+
+			if (!from_zone) {
+				from_zone = e_cal_util_guess_timezone (tzid);
+				if (from_zone)
+					g_object_ref (from_zone);
+			}
+		}
+	} else if (i_cal_time_is_utc (itt)) {
+		from_zone = g_object_ref (i_cal_timezone_get_utc_timezone ());
+	}
+
+	i_cal_time_set_timezone (itt_copy, from_zone);
+	i_cal_time_convert_timezone (itt_copy, from_zone, to_zone);
+	i_cal_time_set_timezone (itt_copy, to_zone);
+
+	res = i_cal_time_as_timet_with_zone (itt_copy, to_zone);
+
+	if (out_itt)
+		*out_itt = g_steal_pointer (&itt_copy);
+
+	g_clear_object (&from_zone);
+	g_clear_object (&itt_copy);
+
+	return res;
 }

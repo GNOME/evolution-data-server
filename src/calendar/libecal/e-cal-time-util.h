@@ -28,8 +28,9 @@
 #define TIMEUTIL_H
 
 #include <time.h>
-#include <libical-glib/libical-glib.h>
 #include <glib.h>
+#include <libical-glib/libical-glib.h>
+#include <libecal/e-timezone-cache.h>
 
 G_BEGIN_DECLS
 
@@ -159,6 +160,27 @@ struct tm	e_cal_util_icaltime_to_tm_with_zone
 ICalTime *	e_cal_util_tm_to_icaltime
 					(struct tm *tm,
 					 gboolean is_date);
+/* other utilities  */
+
+ICalTimezone *	e_cal_util_guess_timezone	(const gchar *tzid);
+time_t		e_cal_util_comp_time_to_zone	(ICalComponent *icomp,
+						 ICalPropertyKind prop_kind,
+						 ICalTimezone *to_zone,
+						 ICalComponent *vcalendar,
+						 ETimezoneCache *tz_cache,
+						 ICalTime **out_itt);
+time_t		e_cal_util_property_time_to_zone
+						(ICalProperty *prop,
+						 ICalTimezone *to_zone,
+						 ICalComponent *vcalendar,
+						 ETimezoneCache *tz_cache,
+						 ICalTime **out_itt);
+time_t		e_cal_util_time_to_zone		(const ICalTime *itt,
+						 const gchar *tzid,
+						 ICalTimezone *to_zone,
+						 ICalComponent *vcalendar,
+						 ETimezoneCache *tz_cache,
+						 ICalTime **out_itt);
 
 G_END_DECLS
 
