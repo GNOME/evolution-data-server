@@ -744,6 +744,20 @@ test_time_convert_props (ETestServerFixture *fixture,
 	g_assert_null (i_cal_time_get_timezone (itt));
 	g_clear_object (&itt);
 
+	to_zone = berlin_tz;
+	tt = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTEND_PROPERTY, to_zone, NULL, NULL, &itt);
+	g_assert_cmpint (tt, ==, 1743030000);
+	g_assert_nonnull (itt);
+	g_assert_cmpint (2025, ==, i_cal_time_get_year (itt));
+	g_assert_cmpint (3, ==, i_cal_time_get_month (itt));
+	g_assert_cmpint (27, ==, i_cal_time_get_day (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_hour (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_minute (itt));
+	g_assert_cmpint (0, ==, i_cal_time_get_second (itt));
+	g_assert_cmpint (1, ==, (i_cal_time_is_date (itt) ? 1 : 0));
+	g_assert_null (i_cal_time_get_timezone (itt));
+	g_clear_object (&itt);
+
 	g_clear_object (&icomp);
 
 	/* floating time */
