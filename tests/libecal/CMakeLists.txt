@@ -33,6 +33,7 @@ set(TESTS
 	test-cal-client-get-revision
 	test-cal-client-get-free-busy
 	test-cal-component
+	test-cal-component-bag
 	test-cal-recur
 	test-cal-reminders
 	test-cal-utils

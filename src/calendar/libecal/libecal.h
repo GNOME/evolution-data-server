@@ -35,6 +35,7 @@
 #include <libecal/e-cal-component-alarm-trigger.h>
 #include <libecal/e-cal-component-alarms.h>
 #include <libecal/e-cal-component-attendee.h>
+#include <libecal/e-cal-component-bag.h>
 #include <libecal/e-cal-component-datetime.h>
 #include <libecal/e-cal-component-id.h>
 #include <libecal/e-cal-component-organizer.h>

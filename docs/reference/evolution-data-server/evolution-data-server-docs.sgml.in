@@ -149,6 +149,7 @@
       <xi:include href="xml/e-cal-component-alarms.xml"/>
       <xi:include href="xml/e-cal-component-alarm-trigger.xml"/>
       <xi:include href="xml/e-cal-component-attendee.xml"/>
+      <xi:include href="xml/e-cal-component-bag.xml"/>
       <xi:include href="xml/e-cal-component-datetime.xml"/>
       <xi:include href="xml/e-cal-component-id.xml"/>
       <xi:include href="xml/e-cal-component-organizer.xml"/>

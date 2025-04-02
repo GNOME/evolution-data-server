@@ -18,6 +18,7 @@ set(SOURCES
 	e-cal-component-alarm-trigger.c
 	e-cal-component-alarms.c
 	e-cal-component-attendee.c
+	e-cal-component-bag.c
 	e-cal-component-datetime.c
 	e-cal-component-id.c
 	e-cal-component-organizer.c
@@ -47,6 +48,7 @@ set(HEADERS
 	e-cal-component-alarm-trigger.h
 	e-cal-component-alarms.h
 	e-cal-component-attendee.h
+	e-cal-component-bag.h
 	e-cal-component-datetime.h
 	e-cal-component-id.h
 	e-cal-component-parameter-bag.h
