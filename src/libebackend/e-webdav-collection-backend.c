@@ -99,6 +99,41 @@ webdav_collection_remove_unknown_sources_cb (gpointer resource_id,
 	}
 }
 
+/* returns whether shortened and replaced the @inout_uri */
+static gboolean
+webdav_collection_shorten_uri (GUri **inout_uri)
+{
+	const gchar *host;
+	guint ii, previous_dot = G_MAXUINT, last_dot = G_MAXUINT;
+
+	if (!inout_uri || !*inout_uri || !g_uri_get_host (*inout_uri))
+		return FALSE;
+
+	host = g_uri_get_host (*inout_uri);
+
+	for (ii = 0; host[ii]; ii++) {
+		if (host[ii] == '.') {
+			previous_dot = last_dot;
+			last_dot = ii;
+		}
+	}
+
+	/* keep only "example.com" from the host name */
+	if (previous_dot != G_MAXUINT) {
+		GUri *shortened_uri;
+
+		shortened_uri = soup_uri_copy (*inout_uri, SOUP_URI_HOST, host + previous_dot + 1, SOUP_URI_NONE);
+		if (shortened_uri) {
+			g_uri_unref (*inout_uri);
+			*inout_uri = shortened_uri;
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 static void
 webdav_collection_add_found_source (ECollectionBackend *collection,
 				    EWebDAVDiscoverSupports source_type,
@@ -169,6 +204,64 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 	url = g_uri_to_string_partial (uri, G_URI_HIDE_PASSWORD);
 	identity = g_strconcat (identity_prefix, "::", url, NULL);
 	source_uid = g_hash_table_lookup (known_sources, identity);
+
+	/* Cover a case where the server can return a server from a pool of servers,
+	   which have a different host name, but otherwise reference the same data.
+	   Expect it be like "pXX-caldav.icloud.com", aka the first part of the host
+	   name is changing. */
+	if (!source_uid && g_uri_get_host (uri)) {
+		GUri *uri_copy = soup_uri_copy (uri, SOUP_URI_NONE);
+
+		if (webdav_collection_shorten_uri (&uri_copy)) {
+			gchar *tmp_url, *tmp_identity;
+
+			tmp_url = g_uri_to_string_partial (uri_copy, G_URI_HIDE_PASSWORD);
+			tmp_identity = g_strconcat (identity_prefix, "::", tmp_url, NULL);
+			source_uid = g_hash_table_lookup (known_sources, tmp_identity);
+
+			/* for migration, maybe only old identities are saved, traverse them one by one */
+			if (!source_uid && tmp_url) {
+				guint identity_prefix_len = strlen (identity_prefix);
+				GHashTableIter iter;
+				gpointer key = NULL, value = NULL;
+
+				g_hash_table_iter_init (&iter, known_sources);
+				while (!source_uid && g_hash_table_iter_next (&iter, &key, &value)) {
+					const gchar *old_identity = key, *old_source_uid = value;
+
+					if (g_str_has_prefix (old_identity, identity_prefix) &&
+					    g_str_has_prefix (old_identity + identity_prefix_len, "::")) {
+						GUri *resource_uri;
+
+						resource_uri = g_uri_parse (old_identity + identity_prefix_len + 2, SOUP_HTTP_URI_FLAGS, NULL);
+
+						if (resource_uri && webdav_collection_shorten_uri (&resource_uri)) {
+							gchar *shortened_url;
+
+							shortened_url = g_uri_to_string_partial (resource_uri, G_URI_HIDE_PASSWORD);
+
+							if (shortened_url && g_str_equal (shortened_url, tmp_url)) {
+								g_free (identity);
+
+								identity = g_strdup (old_identity);
+								source_uid = old_source_uid;
+							}
+
+							g_free (shortened_url);
+						}
+
+						g_clear_pointer (&resource_uri, g_uri_unref);
+					}
+				}
+			}
+
+			g_free (tmp_url);
+			g_free (tmp_identity);
+		}
+
+		g_clear_pointer (&uri_copy, g_uri_unref);
+	}
+
 	is_new = !source_uid;
 	if (is_new) {
 		source = e_collection_backend_new_child (collection, identity);
