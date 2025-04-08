@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2025-01-30 10:24+0000\n"
-"PO-Revision-Date: 2025-01-30 22:45+0200\n"
+"POT-Creation-Date: 2025-04-08 10:10+0000\n"
+"PO-Revision-Date: 2025-04-08 15:59+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -2384,31 +2384,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1101
-#: src/calendar/libecal/e-cal-util.c:1128
+#: src/calendar/libecal/e-cal-util.c:1107
+#: src/calendar/libecal/e-cal-util.c:1134
 msgctxt "Priority"
 msgid "High"
 msgstr "Високий"
 
-#: src/calendar/libecal/e-cal-util.c:1103
-#: src/calendar/libecal/e-cal-util.c:1130
+#: src/calendar/libecal/e-cal-util.c:1109
+#: src/calendar/libecal/e-cal-util.c:1136
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Звичайний"
 
-#: src/calendar/libecal/e-cal-util.c:1105
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1111
+#: src/calendar/libecal/e-cal-util.c:1138
 msgctxt "Priority"
 msgid "Low"
 msgstr "Низький"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1126
+#: src/calendar/libecal/e-cal-util.c:1132
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Невизначено"
 
-#: src/calendar/libecal/e-cal-util.c:1168
+#: src/calendar/libecal/e-cal-util.c:1174
 #: src/libedataserverui/e-reminders-widget.c:336
 #, c-format
 msgid "%d week"
@@ -2418,7 +2418,7 @@ msgstr[1] "%d тижні"
 msgstr[2] "%d тижнів"
 msgstr[3] "%d тижнів"
 
-#: src/calendar/libecal/e-cal-util.c:1177
+#: src/calendar/libecal/e-cal-util.c:1183
 #: src/libedataserverui/e-reminders-widget.c:332
 #, c-format
 msgid "%d day"
@@ -2428,7 +2428,7 @@ msgstr[1] "%d дні"
 msgstr[2] "%d днів"
 msgstr[3] "%d день"
 
-#: src/calendar/libecal/e-cal-util.c:1186
+#: src/calendar/libecal/e-cal-util.c:1192
 #: src/libedataserverui/e-reminders-widget.c:328
 #, c-format
 msgid "%d hour"
@@ -2438,7 +2438,7 @@ msgstr[1] "%d години"
 msgstr[2] "%d годин"
 msgstr[3] "%d година"
 
-#: src/calendar/libecal/e-cal-util.c:1195
+#: src/calendar/libecal/e-cal-util.c:1201
 #: src/libedataserverui/e-reminders-widget.c:324
 #, c-format
 msgid "%d minute"
@@ -2449,7 +2449,7 @@ msgstr[2] "%d хвилин"
 msgstr[3] "%d хвилина"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1200
+#: src/calendar/libecal/e-cal-util.c:1206
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -7878,13 +7878,11 @@ msgid "Yahoo!"
 msgstr "Yahoo!"
 
 #: src/libedataserver/e-soup-session.c:1231
-#| msgid "URI not set"
 msgid "No URI set"
 msgstr "Адресу не встановлено"
 
 #: src/libedataserver/e-soup-session.c:1241
 #, c-format
-#| msgid "Invalid Query “%s”"
 msgid "Invalid URI “%s”"
 msgstr "Некоректна адреса «%s»"
 
@@ -7963,6 +7961,14 @@ msgstr "Сценарій підпису повинен бути локальни
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "Джерело «%s» не підтримує пошук проксі"
+
+#: src/libedataserver/e-source-registry.c:1471
+#, c-format
+msgid ""
+"Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
+msgstr ""
+"Не вдалося встановити з'єднання зі службою D-Bus «%s» із шляхом до об'єкта «"
+"%s», власника не знайдено"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
