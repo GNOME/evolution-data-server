@@ -1385,6 +1385,7 @@ source_registry_initable_init (GInitable *initable,
 	ESourceRegistry *registry;
 	ThreadClosure *closure;
 	GError *local_error = NULL;
+	gchar *owner_name;
 
 	registry = E_SOURCE_REGISTRY (initable);
 
@@ -1463,6 +1464,15 @@ source_registry_initable_init (GInitable *initable,
 		goto exit;
 	}
 
+	owner_name = g_dbus_proxy_get_name_owner (G_DBUS_PROXY (registry->priv->dbus_source_manager));
+
+	if (!owner_name) {
+		g_set_error (&registry->priv->init_error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN,
+			_("Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"),
+			SOURCES_DBUS_SERVICE_NAME, DBUS_OBJECT_PATH);
+	}
+
+	g_free (owner_name);
 exit:
 	registry->priv->initialized = TRUE;
 	g_mutex_unlock (&registry->priv->init_lock);
