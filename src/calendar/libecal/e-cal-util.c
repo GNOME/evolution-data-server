@@ -847,7 +847,7 @@ ecu_generate_alarms_for_comp (ECalComponent *comp,
  * @omit: Alarm types to omit
  * @resolve_tzid: (closure user_data) (scope call): Callback for resolving
  * timezones
- * @user_data: (closure): Data to be passed to the resolve_tzid callback
+ * @user_data: Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
@@ -884,7 +884,7 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  * @end: end time
  * @omit: alarm types to omit
  * @resolve_tzid: (closure user_data) (scope call): Callback for resolving timezones
- * @user_data: (closure): Data to be passed to the resolve_tzid callback
+ * @user_data: Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME values.
  *
  * Checks whether the @comp has any alarms in the given time interval.
@@ -919,7 +919,7 @@ e_cal_util_has_alarms_in_range (ECalComponent *comp,
  * to be returned
  * @resolve_tzid: (closure user_data) (scope call): Callback for resolving
  * timezones
- * @user_data: (closure): Data to be passed to the resolve_tzid callback
+ * @user_data: Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
@@ -973,7 +973,7 @@ e_cal_util_generate_alarms_for_list (GList *comps,
  * @end: end time
  * @omit: alarm types to omit
  * @resolve_tzid: (closure user_data) (scope call): Callback for resolving timezones
- * @user_data: (closure): Data to be passed to the resolve_tzid callback
+ * @user_data: Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME values
  * @def_reminder_before_start_seconds: add default reminder before start in seconds, when not negative value
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1588,7 +1588,7 @@ time_matches_rid (const ICalTime *itt,
  * @icalcomp: An #ICalComponent
  * @ttuntil: An UNTIL value to validate
  * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
- * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ * @tz_cb_data: User data to be passed to the @tz_cb callback
  *
  * Makes sure the @ttuntil value matches the value type with
  * the DTSTART value, as required by RFC 5545 section 3.3.10.
@@ -1903,7 +1903,7 @@ e_cal_util_remove_instances (ICalComponent *icalcomp,
  * @rid: The base RECURRENCE-ID to remove
  * @mod: How to interpret @rid
  * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
- * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ * @tz_cb_data: User data to be passed to the @tz_cb callback
  *
  * Removes one or more instances from @icalcomp according to @rid and @mod.
  * Uses @tz_cb with @tz_cb_data to resolve time zones when needed.
@@ -1962,7 +1962,7 @@ e_cal_util_split_at_instance (ICalComponent *icalcomp,
  * @rid: The base RECURRENCE-ID to remove
  * @master_dtstart: (nullable): The DTSTART of the master object
  * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
- * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ * @tz_cb_data: User data to be passed to the @tz_cb callback
  *
  * Splits a recurring @icalcomp into two at time @rid. The returned #ICalComponent
  * is modified @icalcomp which contains recurrences beginning at @rid, inclusive.
@@ -2169,7 +2169,7 @@ check_first_instance_cb (ICalComponent *icalcomp,
  * @comp: an #ECalComponent instance
  * @rid: a recurrence ID
  * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
- * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ * @tz_cb_data: User data to be passed to the @tz_cb callback
  *
  * Returns whether the given @rid is the first instance of
  * the recurrence defined in the @comp.
@@ -2291,7 +2291,7 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
  * @out_start: (out): Location to store the start time
  * @out_end: (out): Location to store the end time
  * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
- * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ * @tz_cb_data: User data to be passed to the @tz_cb callback
  * @default_timezone: The default timezone
  * @kind: the type of component, indicated with an #ICalComponentKind
  *

@@ -975,8 +975,8 @@ message_foreach_part_rec (CamelMimeMessage *msg,
 /**
  * camel_mime_message_foreach_part:
  * @message: a #CamelMimeMessage
- * @callback: (scope call): a #CamelForeachPartFunc callback to call for each part
- * @user_data: (closure callback): user data passed to the @callback
+ * @callback: (scope call) (closure user_data): a #CamelForeachPartFunc callback to call for each part
+ * @user_data: user data passed to the @callback
  *
  * Calls @callback for each part of the @message, including the message itself.
  * The traverse of the @message parts can be stopped when the @callback

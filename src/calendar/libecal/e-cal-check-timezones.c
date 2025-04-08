@@ -214,12 +214,12 @@ addsystemtz (gpointer key,
  *    modified by this call
  * @icalcomps: (element-type ICalComponent) (nullable): a list of #ICalComponent
  *    instances which also have to be patched; may be %NULL
- * @tzlookup: (scope call): a callback function which is called to retrieve
+ * @tzlookup: (scope call) (closure tzlookup_data): a callback function which is called to retrieve
  *    a calendar's VTIMEZONE definition; the returned
  *    definition is *not* freed by e_cal_client_check_timezones()
  *    NULL indicates that no such timezone exists
  *    or an error occurred
- * @tzlookup_data: (closure tzlookup): an arbitrary pointer which is passed
+ * @tzlookup_data: an arbitrary pointer which is passed
  *    through to the @tzlookup function
  * @cancellable: a #GCancellable to use in @tzlookup function
  * @error: an error description in case of a failure

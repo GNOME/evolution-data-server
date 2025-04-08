@@ -674,8 +674,8 @@ camel_multipart_construct_from_parser (CamelMultipart *multipart,
 /**
  * camel_multipart_generate_preview:
  * @multipart: a #CamelMultipart
- * @func: (nullable) (scope call): an optional #CamelGeneratePreviewFunc function, or %NULL
- * @user_data: (closure func): user data for the @func, or %NULL
+ * @func: (nullable) (scope call) (closure user_data): an optional #CamelGeneratePreviewFunc function, or %NULL
+ * @user_data: user data for the @func, or %NULL
  *
  * Generates preview of the @multipart, to be used in the interface,
  * read by the users.

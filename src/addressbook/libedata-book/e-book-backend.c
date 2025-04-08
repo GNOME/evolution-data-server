@@ -2872,8 +2872,8 @@ e_book_backend_list_views (EBookBackend *backend)
 /**
  * e_book_backend_foreach_view:
  * @backend: an #EBookBackend
- * @func: (scope call): an #EBookBackendForeachViewFunc function to call
- * @user_data: (closure func): user data to pass to @func
+ * @func: (scope call) (closure user_data): an #EBookBackendForeachViewFunc function to call
+ * @user_data: user data to pass to @func
  *
  * Calls @func for each existing view (as returned by e_book_backend_list_views()).
  * The @func can return %FALSE to stop early.

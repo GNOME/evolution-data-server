@@ -1690,8 +1690,8 @@ e_book_client_view_got_contacts_cb (GObject *source_object,
  * @range_start: 0-based range start to retrieve the contacts for
  * @range_length: how many contacts to retrieve
  * @cancellable: optional #GCancellable object, or %NULL
- * @cb: (scope async): a callback to call when the contacts are received
- * @user_data: (closure cb): user data for @cb
+ * @cb: (scope async) (closure user_data): a callback to call when the contacts are received
+ * @user_data: user data for @cb
  *
  * Asynchronously reads @range_length contacts from index @range_start.
  * When there are asked more than e_book_client_view_get_n_total()

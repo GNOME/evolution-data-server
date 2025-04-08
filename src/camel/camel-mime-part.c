@@ -1833,8 +1833,8 @@ camel_mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
 /**
  * camel_mime_part_generate_preview:
  * @mime_part: a #CamelMimePart
- * @func: (nullable) (scope call): an optional #CamelGeneratePreviewFunc function, or %NULL
- * @user_data: (closure func): user data for the @func, or %NULL
+ * @func: (nullable) (scope call) (closure user_data): an optional #CamelGeneratePreviewFunc function, or %NULL
+ * @user_data: user data for the @func, or %NULL
  *
  * Generates preview of the @mime_part, to be used in the interface,
  * read by the users.

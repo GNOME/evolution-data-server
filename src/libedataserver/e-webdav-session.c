@@ -1454,8 +1454,8 @@ e_webdav_session_propfind_internal_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
  * @xml: (nullable): the request itself, as an #EXmlDocument, the root element should be DAV:propfind, or %NULL
- * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
- * @func_user_data: (closure func): user data passed to @func
+ * @func: (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: user data passed to @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1556,8 +1556,8 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @depth: (nullable): requested depth, can be %NULL, then no Depth header is sent
  * @xml: the request itself, as an #EXmlDocument
- * @func: (nullable) (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
- * @func_user_data: (closure func): user data passed to @func
+ * @func: (nullable) (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
+ * @func_user_data: user data passed to @func
  * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
  * @out_content: (nullable) (transfer full): return location for response content, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -3136,8 +3136,8 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
  * @xml_data: a #GByteArray containing DAV:multistatus response
- * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
- * @func_user_data: (closure func): user data passed to @func
+ * @func: (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: user data passed to @func
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a DAV:multistatus response and calls @func for each returned DAV:propstat.
@@ -3172,8 +3172,8 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
  * @xml_data: a #GByteArray containing DAV:mkcol-response response
- * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
- * @func_user_data: (closure func): user data passed to @func
+ * @func: (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
+ * @func_user_data: user data passed to @func
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a DAV:mkcol-response response and calls @func for each returned DAV:propstat.
@@ -3208,8 +3208,8 @@ e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
  * @xml_data: a #GByteArray containing CALDAV:mkcalendar-response response
- * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
- * @func_user_data: (closure func): user data passed to @func
+ * @func: (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
+ * @func_user_data: user data passed to @func
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a CALDAV:mkcalendar-response response and calls @func for each returned DAV:propstat.

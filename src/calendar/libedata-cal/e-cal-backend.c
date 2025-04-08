@@ -1732,8 +1732,8 @@ e_cal_backend_list_views (ECalBackend *backend)
 /**
  * e_cal_backend_foreach_view:
  * @backend: an #ECalBackend
- * @func: (scope call): an #ECalBackendForeachViewFunc function to call
- * @user_data: (closure func): user data to pass to @func
+ * @func: (scope call) (closure user_data): an #ECalBackendForeachViewFunc function to call
+ * @user_data: user data to pass to @func
  *
  * Calls @func for each existing view (as returned by e_cal_backend_list_views()).
  * The @func can return %FALSE to stop early.
@@ -4576,6 +4576,19 @@ e_cal_queue_free_strings (GQueue *queue)
 	g_queue_free_full (queue, g_free);
 }
 
+/**
+ * e_cal_queue_tuple_new: (skip)
+ * @first_free_func: the 1st #GDestroyNotify
+ * @second_free_func: the 2nd #GDestroyNotify
+ * @third_free_func: the 3rd #GDestroyNotify
+ *
+ * Creates a new #ECalQueueTuple, with three #GQueue-s,
+ * each using one of the free functions.
+ *
+ * This is a private function, not available as a public API.
+ *
+ * Returns: (transfer full): a new #ECalQueueTuple
+ **/
 ECalQueueTuple *
 e_cal_queue_tuple_new (GDestroyNotify first_free_func,
                        GDestroyNotify second_free_func,

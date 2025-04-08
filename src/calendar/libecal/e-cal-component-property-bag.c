@@ -57,8 +57,8 @@ e_cal_component_property_bag_new (void)
 /**
  * e_cal_component_property_bag_new_from_component:
  * @component: an #ICalComponent containing the properties to fill the bag with
- * @func: (nullable) (scope call): an optional %ECalComponentPropertyBagFilterFunc callback
- * @user_data: (closure func): user data for the @func
+ * @func: (nullable) (scope call) (closure user_data): an optional %ECalComponentPropertyBagFilterFunc callback
+ * @user_data: user data for the @func
  *
  * Creates a new #ECalComponentPropertyBag, filled with properties
  * from the @component, for which the @func returned %TRUE. When
@@ -135,8 +135,8 @@ e_cal_component_property_bag_free (gpointer bag)
  * e_cal_component_property_bag_set_from_component:
  * @bag: an #ECalComponentPropertyBag
  * @component: an #ICalComponent containing the properties to fill the @bag with
- * @func: (nullable) (scope call): an optional %ECalComponentPropertyBagFilterFunc callback
- * @user_data: (closure func): user data for the @func
+ * @func: (nullable) (scope call) (closure user_data): an optional %ECalComponentPropertyBagFilterFunc callback
+ * @user_data: user data for the @func
  *
  * Fills the @bag with properties from the @component, for which the @func
  * returned %TRUE. When the @func is %NULL, all the properties are included.

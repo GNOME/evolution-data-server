@@ -862,8 +862,8 @@ e_gdata_session_tasklists_insert_sync (EGDataSession *self,
  * e_gdata_session_tasklists_list_sync:
  * @self: an #EGDataSession
  * @query: (nullable): an #EGDataQuery to limit returned task lists, or %NULL
- * @cb: (scope call): an #EGDataObjectCallback to call for each found task list
- * @user_data: (closure cb): user data passed to the @cb
+ * @cb: (scope call) (closure user_data): an #EGDataObjectCallback to call for each found task list
+ * @user_data: user data passed to the @cb
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1627,8 +1627,8 @@ e_gdata_session_tasks_insert_sync (EGDataSession *self,
  * @self: an #EGDataSession
  * @tasklist_id: id of a task list
  * @query: (nullable): an #EGDataQuery to limit returned tasks, or %NULL
- * @cb: (scope call): an #EGDataObjectCallback to call for each found task
- * @user_data: (closure cb): user data passed to the @cb
+ * @cb: (scope call) (closure user_data): an #EGDataObjectCallback to call for each found task
+ * @user_data: user data passed to the @cb
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *

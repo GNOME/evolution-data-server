@@ -2771,7 +2771,7 @@ e_cal_client_generate_instances (ECalClient *client,
  * @end: End time for query
  * @cancellable: a #GCancellable; can be %NULL
  * @cb: (closure cb_data) (scope call): Callback for each generated instance
- * @cb_data: (closure): Closure data for the callback
+ * @cb_data: Closure data for the callback
  *
  * Does a combination of e_cal_client_get_object_list() and
  * e_cal_recur_generate_instances_sync().
@@ -2963,7 +2963,7 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
  * @end: End time for query
  * @cancellable: a #GCancellable; can be %NULL
  * @cb: (closure cb_data) (scope call): Callback for each generated instance
- * @cb_data: (closure): Closure data for the callback
+ * @cb_data: Closure data for the callback
  *
  * Does a combination of e_cal_client_get_object_list() and
  * e_cal_recur_generate_instances_sync(), like
@@ -3039,7 +3039,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
  * @end: End time for query
  * @cancellable: a #GCancellable; can be %NULL
  * @cb: (closure cb_data) (scope call): Callback for each generated instance
- * @cb_data: (closure): Closure data for the callback
+ * @cb_data: Closure data for the callback
  *
  * Does a combination of e_cal_client_get_object_list() and
  * e_cal_recur_generate_instances_sync(), like

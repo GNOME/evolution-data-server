@@ -360,10 +360,10 @@ intersects_interval (const ICalTime *tt,
  * @icalcomp: an #ICalComponent
  * @interval_start: an interval start, for which generate instances
  * @interval_end: an interval end, for which generate instances
- * @callback: (scope call): a callback to be called for each instance
- * @callback_user_data: (closure callback): user data for @callback
- * @get_tz_callback: (scope call): a callback to call when resolving timezone
- * @get_tz_callback_user_data: (closure get_tz_callback): user data for @get_tz_callback
+ * @callback: (scope call) (closure callback_user_data): a callback to be called for each instance
+ * @callback_user_data: user data for @callback
+ * @get_tz_callback: (scope call) (closure get_tz_callback_user_data): a callback to call when resolving timezone
+ * @get_tz_callback_user_data: user data for @get_tz_callback
  * @default_timezone: a default #ICalTimezone
  * @cancellable: a #GCancellable; can be %NULL
  * @error: a #GError to set an error, if any
@@ -4677,8 +4677,8 @@ cal_obj_time_to_string (CalObjTime *cotime)
  * e_cal_recur_ensure_end_dates:
  * @comp: an #ECalComponent
  * @refresh: %TRUE to recalculate all end dates
- * @tz_cb: (scope call): function to call to resolve timezones
- * @tz_cb_data: (closure tz_cb_data): user data to pass to @tz_cb
+ * @tz_cb: (scope call) (closure tz_cb_data): function to call to resolve timezones
+ * @tz_cb_data: user data to pass to @tz_cb
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *

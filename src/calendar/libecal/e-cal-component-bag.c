@@ -511,6 +511,19 @@ e_cal_component_bag_class_init (ECalComponentBagClass *klass)
 					 ECalComponentBagItem *item,
 					 gpointer user_data);
 	 */
+	/**
+	 * ECalComponentBag::added:
+	 * @bag: an #ECalComponentBag
+	 * @item: (type ECalComponentBagItem): an #ECalComponentBagItem
+	 *
+	 * A signal emitted whenever a new #ECalComponentBagItem is added.
+	 *
+	 * The @item can be modified, but if any properties related to the layout
+	 * changes then the content needs to be recalculated, for example
+	 * by calling e_cal_component_bag_rebuild().
+	 *
+	 * Since: 3.58
+	 **/
 	signals[ADDED] = g_signal_new (
 		"added",
 		G_TYPE_FROM_CLASS (klass),
@@ -525,6 +538,16 @@ e_cal_component_bag_class_init (ECalComponentBagClass *klass)
 					 GPtrArray *items, // (element-type ECalComponentBagItem): only borrowed, do not modify - neither the array content, nor the items, except of its user_data
 					 gpointer user_data);
 	 */
+	/**
+	 * ECalComponentBag::removed:
+	 * @bag: an #ECalComponentBag
+	 * @items: (element-type ECalComponentBagItem): a %GPtrArray with removed #ECalComponentBagItem structures
+	 *
+	 * A signal emitted when one or more items are removed from the @bag.
+	 * This is not called for e_cal_component_bag_clear()
+	 *
+	 * Since: 3.58
+	 **/
 	signals[REMOVED] = g_signal_new (
 		"removed",
 		G_TYPE_FROM_CLASS (klass),
@@ -539,6 +562,22 @@ e_cal_component_bag_class_init (ECalComponentBagClass *klass)
 					 ECalComponentBagItem *item,
 					 gpointer user_data);
 	 */
+	/**
+	 * ECalComponentBag::item-changed:
+	 * @bag: an #ECalComponentBag
+	 * @item: (type ECalComponentBagItem): an #ECalComponentBagItem
+	 *
+	 * A signal emitted whenever an existing @item in the @bag is changed.
+	 * It's a complement signal for the ECalComponentBag::added signal,
+	 * in a sense that when adding an item to the @bag either the added
+	 * or the item-changed is emitted, if the component changed.
+	 *
+	 * The @item can be modified, but if any properties related to the layout
+	 * changes then the content needs to be recalculated, for example
+	 * by calling e_cal_component_bag_rebuild().
+	 *
+	 * Since: 3.58
+	 **/
 	signals[ITEM_CHANGED] = g_signal_new (
 		"item-changed",
 		G_TYPE_FROM_CLASS (klass),
@@ -553,6 +592,20 @@ e_cal_component_bag_class_init (ECalComponentBagClass *klass)
 					 GPtrArray *items, // (element-type ECalComponentBagItem): only borrowed, do not modify - neither the array content, nor the items, except of its user_data
 					 gpointer user_data);
 	 */
+	/**
+	 * ECalComponentBag::span-changed:
+	 * @bag: an #ECalComponentBag
+	 * @items: (element-type ECalComponentBagItem): a #GPtrArray with #ECalComponentBagItem whose span changed
+	 *
+	 * A signal emitted with an array of #ECalComponentBagItem structures,
+	 * whose span changed.
+	 *
+	 * The respective items can be modified, but if any properties related
+	 * to the layout changes then the content needs to be recalculated,
+	 * for example by calling e_cal_component_bag_rebuild().
+	 *
+	 * Since: 3.58
+	 **/
 	signals[SPAN_CHANGED] = g_signal_new (
 		"span-changed",
 		G_TYPE_FROM_CLASS (klass),
