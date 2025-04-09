@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-01-30 10:24+0000\n"
-"PO-Revision-Date: 2025-02-01 09:42+0100\n"
+"POT-Creation-Date: 2025-04-08 10:10+0000\n"
+"PO-Revision-Date: 2025-04-09 16:20+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -2380,31 +2380,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1101
-#: src/calendar/libecal/e-cal-util.c:1128
+#: src/calendar/libecal/e-cal-util.c:1107
+#: src/calendar/libecal/e-cal-util.c:1134
 msgctxt "Priority"
 msgid "High"
 msgstr "visoka"
 
-#: src/calendar/libecal/e-cal-util.c:1103
-#: src/calendar/libecal/e-cal-util.c:1130
+#: src/calendar/libecal/e-cal-util.c:1109
+#: src/calendar/libecal/e-cal-util.c:1136
 msgctxt "Priority"
 msgid "Normal"
 msgstr "običajna"
 
-#: src/calendar/libecal/e-cal-util.c:1105
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1111
+#: src/calendar/libecal/e-cal-util.c:1138
 msgctxt "Priority"
 msgid "Low"
 msgstr "nizka"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1126
+#: src/calendar/libecal/e-cal-util.c:1132
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Nedoločeno"
 
-#: src/calendar/libecal/e-cal-util.c:1168
+#: src/calendar/libecal/e-cal-util.c:1174
 #: src/libedataserverui/e-reminders-widget.c:336
 #, c-format
 msgid "%d week"
@@ -2414,7 +2414,7 @@ msgstr[1] "%d teden"
 msgstr[2] "%d tedna"
 msgstr[3] "%d tedni"
 
-#: src/calendar/libecal/e-cal-util.c:1177
+#: src/calendar/libecal/e-cal-util.c:1183
 #: src/libedataserverui/e-reminders-widget.c:332
 #, c-format
 msgid "%d day"
@@ -2424,7 +2424,7 @@ msgstr[1] "%d dan"
 msgstr[2] "%d dneva"
 msgstr[3] "%d dnevi"
 
-#: src/calendar/libecal/e-cal-util.c:1186
+#: src/calendar/libecal/e-cal-util.c:1192
 #: src/libedataserverui/e-reminders-widget.c:328
 #, c-format
 msgid "%d hour"
@@ -2434,7 +2434,7 @@ msgstr[1] "%d ura"
 msgstr[2] "%d uri"
 msgstr[3] "%d ure"
 
-#: src/calendar/libecal/e-cal-util.c:1195
+#: src/calendar/libecal/e-cal-util.c:1201
 #: src/libedataserverui/e-reminders-widget.c:324
 #, c-format
 msgid "%d minute"
@@ -2445,7 +2445,7 @@ msgstr[2] "%d minuti"
 msgstr[3] "%d minute"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1200
+#: src/calendar/libecal/e-cal-util.c:1206
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -7907,6 +7907,14 @@ msgstr "Datoteka skripta podpisa mora biti krajevna datoteka."
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "Vir »%s« ne podpira poizvedbe posredovalnega strežnika"
+
+#: src/libedataserver/e-source-registry.c:1471
+#, c-format
+msgid ""
+"Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
+msgstr ""
+"Ni mogoče vzpostaviti povezave s storitvijo D-Bus »%s« s potjo predmeta "
+"»%s«, lastnika ni mogoče najti"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
