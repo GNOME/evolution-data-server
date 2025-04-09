@@ -20,22 +20,23 @@
 # Matheus Barbosa <mdpb.matheus@gmail.com>, 2022.
 # Juliano de Souza Camargo <julianosc@pm.me>, 2024.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2012-2025.
+# Álvaro Burns <>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-02-10 21:59+0000\n"
-"PO-Revision-Date: 2025-03-06 13:18-0300\n"
-"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
-"Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao>\n"
+"POT-Creation-Date: 2025-04-08 10:10+0000\n"
+"PO-Revision-Date: 2025-04-08 20:39-0300\n"
+"Last-Translator: Álvaro Burns <>\n"
+"Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 47.1\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 48.0\n"
 "X-DamnedLies-Scope: partial\n"
 "X-Project-Style: gnome\n"
 "X-DL-Team: pt_BR\n"
@@ -6168,8 +6169,8 @@ msgstr "Você não pode copiar mensagens de uma pasta NNTP"
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"Mo_strar pastas usando notação reduzida (ex.: c.o.linux no lugar de "
-"comp.os.linux)"
+"Mo_strar pastas usando notação reduzida (ex.: c.o.linux no lugar de comp.os."
+"linux)"
 
 #: src/camel/providers/nntp/camel-nntp-provider.c:47
 msgid "In the subscription _dialog, show relative folder names"
@@ -7136,8 +7137,8 @@ msgstr ""
 #: data/org.gnome.evolution-data-server.gschema.xml.in:39
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
-"Uma lista de variáveis que podem ser parte dos arquivos de "
-"autoconfiguração .source"
+"Uma lista de variáveis que podem ser parte dos arquivos de autoconfiguração ."
+"source"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:40
 msgid ""
@@ -7181,9 +7182,9 @@ msgstr ""
 "solicitado e atualizado não pode ser alterado aqui, o nome do host é para "
 "permitir outros servidores, onde o serviço OAuth2 pode ser usado. Exemplos: "
 "Company:mail.empresa.com.br – habilita a autenticação “Company” OAuth2 para "
-"a empresa de hospedagem “mail.empresa.com.br” Company-"
-"CalDAV:caldav.empresa.com.br – habilita a autenticação “Company” OAuth2 para "
-"qualquer fonte “CalDAV”, que lê dados do host “caldav.empresa.com.br”"
+"a empresa de hospedagem “mail.empresa.com.br” Company-CalDAV:caldav.empresa."
+"com.br – habilita a autenticação “Company” OAuth2 para qualquer fonte "
+"“CalDAV”, que lê dados do host “caldav.empresa.com.br”"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:61
 msgid ""
@@ -7931,6 +7932,14 @@ msgstr "Script de assinatura de ser um arquivo local"
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "A fonte “%s” não tem suporte a consultas por proxy"
+
+#: src/libedataserver/e-source-registry.c:1471
+#, c-format
+msgid ""
+"Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
+msgstr ""
+"Não pode conectar com o serviço D-Bus “%s” com o caminho de objeto “%s”, "
+"nenhum proprietário encontrado"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -8957,8 +8966,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
 msgstr ""
-"Não foi possível encontrar uma conta correspondente no serviço "
-"org.gnome.OnlineAccounts a fim de obter uma senha para “%s”"
+"Não foi possível encontrar uma conta correspondente no serviço org.gnome."
+"OnlineAccounts a fim de obter uma senha para “%s”"
 
 #: src/modules/gnome-online-accounts/e-goa-password-based.c:315
 msgid "Failed to get password from GOA: "
@@ -9006,8 +9015,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
-"Não foi possível encontrar uma conta correspondente no serviço "
-"org.gnome.OnlineAccounts a fim de obter um token de acesso para “%s”"
+"Não foi possível encontrar uma conta correspondente no serviço org.gnome."
+"OnlineAccounts a fim de obter um token de acesso para “%s”"
 
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1509
 #, c-format
