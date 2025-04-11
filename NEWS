@@ -1,3 +1,9 @@
+Evolution-Data-Server 3.56.1 2025-04-11
+---------------------------------------
+
+Bug Fixes:
+	I#592 -  Handle changed server pool in WebDAV collection sources
+
 Evolution-Data-Server 3.56.0 2025-03-14
 ---------------------------------------
 
