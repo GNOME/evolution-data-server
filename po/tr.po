@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-02-10 21:59+0000\n"
-"PO-Revision-Date: 2025-03-12 08:00+0300\n"
+"POT-Creation-Date: 2025-04-10 19:39+0000\n"
+"PO-Revision-Date: 2025-04-12 08:00+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -4085,7 +4085,7 @@ msgstr "İçe aktarılamadı.  MAC algoritması desteklenmiyor."
 #: src/camel/camel-smime-context.c:191
 msgid "Unable to import.  Only password integrity and privacy modes supported."
 msgstr ""
-"İçe aktarılamadı.  Yalnızca parola bütünlüğü ve gizlilik kipleri "
+"İçe aktarılamadı.  Yalnızca parola tümlüğü ve gizlilik kipleri "
 "destekleniyor."
 
 #: src/camel/camel-smime-context.c:192
@@ -5745,7 +5745,7 @@ msgstr "Maildir dizin yolu açılamadı: %s: %s"
 
 #: src/camel/providers/local/camel-maildir-summary.c:626
 msgid "Checking folder consistency"
-msgstr "Klasör bütünlüğü denetleniyor"
+msgstr "Klasör tümlüğü denetleniyor"
 
 #: src/camel/providers/local/camel-maildir-summary.c:749
 msgid "Checking for new messages"
@@ -7809,6 +7809,13 @@ msgstr "İmza betiği yerel bir dosya olmalı"
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "“%s” kaynağı vekil aramalarını desteklemiyor"
+
+#: src/libedataserver/e-source-registry.c:1471
+#, c-format
+msgid ""
+"Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
+msgstr ""
+"“%s” D-Bus hizmetine, “%s” nesne yoluyla bağlanılamadı, sahip bulunamadı"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
