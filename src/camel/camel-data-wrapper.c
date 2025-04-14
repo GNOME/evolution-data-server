@@ -1609,7 +1609,7 @@ camel_data_wrapper_calculate_size_sync (CamelDataWrapper *data_wrapper,
 
 	stream = camel_stream_null_new ();
 
-	if (camel_data_wrapper_write_to_stream_sync (data_wrapper, stream, cancellable, error))
+	if (camel_data_wrapper_write_to_stream_sync (data_wrapper, stream, cancellable, error) >= 0)
 		bytes_written = camel_stream_null_get_bytes_written (CAMEL_STREAM_NULL (stream));
 
 	g_object_unref (stream);
@@ -1644,7 +1644,7 @@ camel_data_wrapper_calculate_decoded_size_sync (CamelDataWrapper *data_wrapper,
 
 	stream = camel_stream_null_new ();
 
-	if (camel_data_wrapper_decode_to_stream_sync (data_wrapper, stream, cancellable, error))
+	if (camel_data_wrapper_decode_to_stream_sync (data_wrapper, stream, cancellable, error) >= 0)
 		bytes_written = camel_stream_null_get_bytes_written (CAMEL_STREAM_NULL (stream));
 
 	g_object_unref (stream);
