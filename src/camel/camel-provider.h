@@ -128,19 +128,6 @@ typedef struct {
 	gboolean is_ssl;
 } CamelProviderPortEntry;
 
-/**
- * CamelProviderAutoDetectFunc:
- * @url: a #CamelURL
- * @auto_detected: (out) (element-type utf8 utf8) (nullable): output
- * #GHashTable of auto-detected values
- * @error: return location for a #GError, or %NULL
- *
- * Function used in camel_provider_auto_detect().
- *
- * Returns: 0 on success or -1 on fail.
- **/
-typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, GError **error);
-
 typedef struct {
 	/* Provider protocol name (e.g. "imap", "smtp"). */
 	const gchar *protocol;
@@ -166,9 +153,6 @@ typedef struct {
 	CamelProviderFlags flags;
 	CamelProviderURLFlags url_flags;
 
-	/* The ConfEntry and AutoDetect functions will probably be
-	 * DEPRECATED in a future release */
-
 	/* Extra configuration information */
 	CamelProviderConfEntry *extra_conf;
 
@@ -177,9 +161,6 @@ typedef struct {
 	 * or "POP3 over SSL" etc.
 	 */
 	CamelProviderPortEntry *port_entries;
-
-	/* auto-detection function */
-	CamelProviderAutoDetectFunc auto_detect;
 
 	/* GType(s) of its store and/or transport. If both are
 	 * set, then they are assumed to be linked together and the
@@ -224,11 +205,6 @@ CamelProvider *	camel_provider_get		(const gchar *protocol,
 
 /* This is defined by each module, not by camel-provider.c. */
 void		camel_provider_module_init	(void);
-
-gint		camel_provider_auto_detect	(CamelProvider *provider,
-						 CamelURL *url,
-						 GHashTable **auto_detected,
-						 GError **error);
 
 G_END_DECLS
 

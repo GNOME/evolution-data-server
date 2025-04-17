@@ -85,19 +85,19 @@ camel_provider_free (CamelProvider *provider)
 
 /* The vfolder provider is always available */
 static CamelProvider vee_provider = {
-	"vfolder",
-	N_("Virtual folder email provider"),
+	.protocol = "vfolder",
+	.name = N_("Virtual folder email provider"),
 
-	N_("For reading mail as a query of another set of folders"),
+	.description = N_("For reading mail as a query of another set of folders"),
 
-	"vfolder",
+	.domain = "vfolder",
 
-	CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	.flags = CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 
-	NULL,	/* extra conf */
+	.extra_conf = NULL,
 
-	NULL,   /* port providers */
+	.port_entries = NULL,
 
 	/* ... */
 };
@@ -501,42 +501,4 @@ fail:
 	UNLOCK ();
 
 	return provider;
-}
-
-/**
- * camel_provider_auto_detect:
- * @provider: camel provider
- * @url: a #CamelURL
- * @auto_detected: (out) (element-type utf8 utf8) (nullable): output
- * #GHashTable of auto-detected values
- * @error: return location for a #GError, or %NULL
- *
- * After filling in the standard Username/Hostname/Port/Path settings
- * (which must be set in @url), if the provider supports it, you
- * may wish to have the provider auto-detect further settings based on
- * the aformentioned settings.
- *
- * If the provider does not support auto-detection, @auto_detected
- * will be set to %NULL. Otherwise the provider will attempt to
- * auto-detect whatever it can and file them into @auto_detected. If
- * for some reason it cannot auto-detect anything (not enough
- * information provided in @url?) then @auto_detected will be
- * set to %NULL and an exception may be set to explain why it failed.
- *
- * Returns: 0 on success or -1 on fail.
- **/
-gint
-camel_provider_auto_detect (CamelProvider *provider,
-                            CamelURL *url,
-                            GHashTable **auto_detected,
-                            GError **error)
-{
-	g_return_val_if_fail (provider != NULL, -1);
-
-	if (provider->auto_detect) {
-		return provider->auto_detect (url, auto_detected, error);
-	} else {
-		*auto_detected = NULL;
-		return 0;
-	}
 }

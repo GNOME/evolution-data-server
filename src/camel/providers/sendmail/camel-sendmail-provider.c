@@ -26,21 +26,21 @@
 #include "camel-sendmail-transport.h"
 
 static CamelProvider sendmail_provider = {
-	"sendmail",
-	N_("Sendmail"),
+	.protocol = "sendmail",
+	.name = N_("Sendmail"),
 
-	N_("For delivering mail by passing it to the “sendmail” program "
+	.description = N_("For delivering mail by passing it to the “sendmail” program "
 	   "on the local system."),
 
-	"mail",
+	.domain = "mail",
 
-	0, /* flags */
+	.flags = 0,
 
-	0, /* url_flags */
+	.url_flags = 0,
 
-	NULL,  /* conf entries */
+	.extra_conf = NULL,
 
-	NULL,  /* port entries */
+	.port_entries = NULL,
 
 	/* ... */
 };

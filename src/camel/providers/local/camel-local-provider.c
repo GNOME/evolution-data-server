@@ -45,14 +45,15 @@ static CamelProviderConfEntry mh_conf_entries[] = {
 };
 
 static CamelProvider mh_provider = {
-	"mh",
-	N_("MH-format mail directories"),
-	N_("For storing local mail in MH-like mail directories."),
-	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	mh_conf_entries,
-	NULL,
+	.protocol = "mh",
+	.name = N_("MH-format mail directories"),
+	.description = N_("For storing local mail in MH-like mail directories."),
+	.domain = "mail",
+	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE |
+	CAMEL_URL_FRAGMENT_IS_PATH,
+	.extra_conf = mh_conf_entries,
+	.port_entries = NULL,
 	/* ... */
 };
 
@@ -68,14 +69,14 @@ static CamelProviderConfEntry mbox_conf_entries[] = {
 };
 
 static CamelProvider mbox_provider = {
-	"mbox",
-	N_("Local delivery"),
-	N_("For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."),
-	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	mbox_conf_entries,  /* semi-empty entries, thus evolution will show "Receiving Options" page */
-	NULL,
+	.protocol = "mbox",
+	.name = N_("Local delivery"),
+	.description = N_("For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."),
+	.domain = "mail",
+	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	.extra_conf = mbox_conf_entries,  /* semi-empty entries, thus evolution will show "Receiving Options" page */
+	.port_entries = NULL,
 	/* ... */
 };
 
@@ -90,14 +91,15 @@ static CamelProviderConfEntry maildir_conf_entries[] = {
 };
 
 static CamelProvider maildir_provider = {
-	"maildir",
-	N_("Maildir-format mail directories"),
-	N_("For storing local mail in maildir directories."),
-	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	maildir_conf_entries,
-	NULL,
+	.protocol = "maildir",
+	.name = N_("Maildir-format mail directories"),
+	.description = N_("For storing local mail in maildir directories."),
+	.domain = "mail",
+	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE |
+	CAMEL_URL_FRAGMENT_IS_PATH,
+	.extra_conf = maildir_conf_entries,
+	.port_entries = NULL,
 	/* ... */
 };
 
@@ -117,30 +119,31 @@ static CamelProviderConfEntry spool_conf_entries[] = {
 };
 
 static CamelProvider spool_file_provider = {
-	"spool",
-	N_("Standard Unix mbox spool file"),
-	N_("For reading and storing local mail in external standard mbox "
+	.protocol = "spool",
+	.name = N_("Standard Unix mbox spool file"),
+	.description = N_("For reading and storing local mail in external standard mbox "
 	"spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt "
 	"style folders."),
-	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	spool_conf_entries,
-	NULL,
+	.domain = "mail",
+	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	.extra_conf = spool_conf_entries,
+	.port_entries = NULL,
 	/* ... */
 };
 
 static CamelProvider spool_directory_provider = {
-	"spooldir",
-	N_("Standard Unix mbox spool directory"),
-	N_("For reading and storing local mail in external standard mbox "
+	.protocol = "spooldir",
+	.name = N_("Standard Unix mbox spool directory"),
+	.description = N_("For reading and storing local mail in external standard mbox "
 	"spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt "
 	"style folders."),
-	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	spool_conf_entries,
-	NULL,
+	.domain = "mail",
+	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE |
+	CAMEL_URL_FRAGMENT_IS_PATH,
+	.extra_conf = spool_conf_entries,
+	.port_entries = NULL,
 	/* ... */
 };
 

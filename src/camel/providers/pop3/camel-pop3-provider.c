@@ -56,23 +56,23 @@ CamelProviderPortEntry pop3_port_entries[] = {
 };
 
 static CamelProvider pop3_provider = {
-	"pop",
+	.protocol = "pop",
 
-	N_("POP"),
+	.name = N_("POP"),
 
-	N_("For connecting to and downloading mail from POP servers."),
+	.description = N_("For connecting to and downloading mail from POP servers."),
 
-	"mail",
+	.domain = "mail",
 
-	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
+	.flags = CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
 	CAMEL_PROVIDER_SUPPORTS_SSL |
 	CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES,
 
-	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
+	.url_flags = CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
 
-	pop3_conf_entries,
+	.extra_conf = pop3_conf_entries,
 
-	pop3_port_entries,
+	.port_entries = pop3_port_entries,
 
 	/* ... */
 };

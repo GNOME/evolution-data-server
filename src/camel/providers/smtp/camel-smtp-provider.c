@@ -49,21 +49,21 @@ CamelProviderPortEntry smtp_port_entries[] = {
 };
 
 static CamelProvider smtp_provider = {
-	"smtp",
-	N_("SMTP"),
+	.protocol = "smtp",
+	.name = N_("SMTP"),
 
-	N_("For delivering mail by connecting to a remote mailhub "
+	.description = N_("For delivering mail by connecting to a remote mailhub "
 	   "using SMTP."),
 
-	"mail",
+	.domain = "mail",
 
-	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_SUPPORTS_SSL,
+	.flags = CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_SUPPORTS_SSL,
 
-	CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH | CAMEL_URL_ALLOW_USER,
+	.url_flags = CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH | CAMEL_URL_ALLOW_USER,
 
-	smtp_conf_entries,
+	.extra_conf = smtp_conf_entries,
 
-	smtp_port_entries,
+	.port_entries = smtp_port_entries,
 
 	/* ... */
 };

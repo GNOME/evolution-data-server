@@ -59,23 +59,23 @@ CamelProviderPortEntry nntp_port_entries[] = {
 };
 
 static CamelProvider news_provider = {
-	"nntp",
-	N_("USENET news"),
+	.protocol = "nntp",
+	.name = N_("USENET news"),
 
-	N_("This is a provider for reading from and posting to "
+	.description = N_("This is a provider for reading from and posting to "
 	   "USENET newsgroups."),
 
-	"news",
+	.domain = "news",
 
-	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
+	.flags = CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
 	CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_SUPPORTS_SSL,
 
-	CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_USER |
+	.url_flags = CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_USER |
 	CAMEL_URL_ALLOW_PASSWORD | CAMEL_URL_ALLOW_AUTH,
 
-	nntp_conf_entries,
+	.extra_conf = nntp_conf_entries,
 
-	nntp_port_entries,
+	.port_entries = nntp_port_entries,
 
 	/* ... */
 };

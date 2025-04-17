@@ -105,25 +105,25 @@ CamelProviderPortEntry imapx_port_entries[] = {
 };
 
 static CamelProvider imapx_provider = {
-	"imapx",
+	.protocol = "imapx",
 
-	N_("IMAP"),
+	.name = N_("IMAP"),
 
-	N_("For reading and storing mail on IMAP servers."),
+	.description = N_("For reading and storing mail on IMAP servers."),
 
-	"mail",
+	.domain = "mail",
 
-	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
+	.flags = CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
 	CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_SUPPORTS_SSL|
 	CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES |
 	CAMEL_PROVIDER_SUPPORTS_BATCH_FETCH |
 	CAMEL_PROVIDER_SUPPORTS_PURGE_MESSAGE_CACHE,
 
-	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
+	.url_flags = CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
 
-	imapx_conf_entries,
+	.extra_conf = imapx_conf_entries,
 
-	imapx_port_entries,
+	.port_entries = imapx_port_entries,
 
 	/* ... */
 };
