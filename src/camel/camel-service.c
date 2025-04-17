@@ -1212,6 +1212,72 @@ camel_service_new_camel_url (CamelService *service)
 	return url;
 }
 
+
+
+/**
+ * camel_service_get_uri:
+ * @service: a #CamelService
+ *
+ * Returns a new #GUri representing @service.
+ * Free the returned #GUri with g_uri_unref().
+ *
+ * Returns: (transfer full): a new #GUri
+ *
+ * Since: 3.58
+ **/
+GUri *
+camel_service_get_uri (CamelService *service)
+{
+	GUri *uri;
+	CamelProvider *provider;
+	CamelSettings *settings;
+	gchar *host = NULL;
+	gchar *user = NULL;
+	gchar *path = NULL;
+	guint16 port = 0;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	provider = camel_service_get_provider (service);
+	g_return_val_if_fail (provider != NULL, NULL);
+
+	settings = camel_service_ref_settings (service);
+
+	if (CAMEL_IS_NETWORK_SETTINGS (settings)) {
+		CamelNetworkSettings *network_settings;
+
+		network_settings = CAMEL_NETWORK_SETTINGS (settings);
+		host = camel_network_settings_dup_host (network_settings);
+		port = camel_network_settings_get_port (network_settings);
+		user = camel_network_settings_dup_user (network_settings);
+	}
+
+	if (CAMEL_IS_LOCAL_SETTINGS (settings)) {
+		CamelLocalSettings *local_settings;
+
+		local_settings = CAMEL_LOCAL_SETTINGS (settings);
+		path = camel_local_settings_dup_path (local_settings);
+	}
+
+	uri = g_uri_build (
+		G_URI_FLAGS_NONE,
+		provider->protocol,
+		user,
+		host,
+		port,
+		path,
+		NULL,
+		NULL);
+
+	g_free (host);
+	g_free (user);
+	g_free (path);
+
+	g_object_unref (settings);
+
+	return uri;
+}
+
 /**
  * camel_service_get_connection_status:
  * @service: a #CamelService
