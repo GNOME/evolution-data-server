@@ -2805,7 +2805,6 @@ connect_to_server_process (CamelIMAPXServer *is,
 	CamelProvider *provider;
 	CamelSettings *settings;
 	CamelIMAPXStore *store;
-	CamelURL url;
 	gchar **argv = NULL;
 	gchar *buf;
 	gchar *cmd_copy;
@@ -2814,8 +2813,6 @@ connect_to_server_process (CamelIMAPXServer *is,
 	gchar *host;
 	gchar *user;
 	guint16 port;
-
-	memset (&url, 0, sizeof (CamelURL));
 
 	launcher = g_subprocess_launcher_new (
 		G_SUBPROCESS_FLAGS_STDIN_PIPE |
@@ -2841,11 +2838,9 @@ connect_to_server_process (CamelIMAPXServer *is,
 
 	/* Put full details in the environment, in case the connection
 	 * program needs them */
-	camel_url_set_protocol (&url, provider->protocol);
-	camel_url_set_host (&url, host);
-	camel_url_set_port (&url, port);
-	camel_url_set_user (&url, user);
-	buf = camel_url_to_string (&url, 0);
+	buf = g_uri_join (
+		G_URI_FLAGS_NONE, provider->protocol, user, host, port,
+		NULL, NULL, NULL);
 
 	g_subprocess_launcher_setenv (launcher, "URL", buf, TRUE);
 	g_subprocess_launcher_setenv (launcher, "URLHOST", host, TRUE);
