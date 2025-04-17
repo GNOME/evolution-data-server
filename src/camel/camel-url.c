@@ -814,3 +814,36 @@ camel_url_decode_path (const gchar *path)
 	return g_string_free (str, FALSE);
 }
 
+GUri *
+camel_url_to_uri (CamelURL *url)
+{
+	gchar *url_str;
+	GUri *uri;
+	GError *error = NULL;
+
+	url_str = camel_url_to_string (url, 0);
+	uri = g_uri_parse (url_str, G_URI_FLAGS_NONE, &error);
+	if (!uri)
+		g_debug ("Error converting url %s to GUri: %s", url_str, error->message);
+
+	g_free (url_str);
+	g_clear_error (&error);
+	return uri;
+}
+
+CamelURL *
+camel_url_new_from_uri (GUri *uri)
+{
+	CamelURL *url;
+	gchar *uri_str;
+	GError *error = NULL;
+
+	uri_str = g_uri_to_string (uri);
+	url = camel_url_new (uri_str, &error);
+	if (!url)
+		g_debug ("Error converting uri %s to CamelURL: %s", uri_str, error->message);
+
+	g_free (uri_str);
+	g_clear_error (&error);
+	return url;
+}

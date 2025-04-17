@@ -63,7 +63,7 @@ CamelURL *	camel_url_new			(const gchar *url_string,
 gchar *		camel_url_to_string		(CamelURL *url,
 						 CamelURLFlags flags);
 guint		camel_url_hash			(const CamelURL *u);
-gboolean		camel_url_equal			(const CamelURL *u,
+gboolean	camel_url_equal			(const CamelURL *u,
 						 const CamelURL *u2);
 CamelURL *	camel_url_copy			(CamelURL *in);
 void		camel_url_free			(CamelURL *url);
@@ -96,6 +96,9 @@ void		camel_url_set_fragment		(CamelURL *url,
 
 const gchar *	camel_url_get_param		(CamelURL *url,
 						 const gchar *name);
+
+GUri *		camel_url_to_uri		(CamelURL *url);
+CamelURL *	camel_url_new_from_uri		(GUri *uri);
 
 G_END_DECLS
 
