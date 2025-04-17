@@ -995,6 +995,87 @@ camel_session_ref_service (CamelSession *session,
 }
 
 /**
+ * camel_session_ref_service_by_uri:
+ * @session: a #CamelSession
+ * @uri: a #GUri
+ * @type: a #CamelProviderType
+ *
+ * Looks up a #CamelService by trying to match its #GUri against the
+ * given @uri and then checking that the object is of the desired @type.
+ * The service must have been previously added using
+ * camel_session_add_service().
+ *
+ * The returned #CamelService is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Note this function is significantly slower than camel_session_ref_service().
+ *
+ * Returns: (transfer full) (nullable): a #CamelService instance, or %NULL
+ *
+ * Since: 3.58
+ **/
+CamelService *
+camel_session_ref_service_by_uri (CamelSession *session,
+                                  GUri *uri,
+                                  CamelProviderType type)
+{
+	CamelURL *url;
+	CamelService *match = NULL;
+	GList *list, *iter;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	list = camel_session_list_services (session);
+	url = camel_url_new_from_uri (uri);
+
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		CamelProvider *provider;
+		CamelService *service;
+		CamelURL *service_url;
+		gboolean url_equal;
+
+		service = CAMEL_SERVICE (iter->data);
+		provider = camel_service_get_provider (service);
+
+		if (provider == NULL)
+			continue;
+
+		if (provider->url_equal == NULL)
+			continue;
+
+		service_url = camel_service_new_camel_url (service);
+		url_equal = provider->url_equal (url, service_url);
+		camel_url_free (service_url);
+
+		if (!url_equal)
+			continue;
+
+		switch (type) {
+			case CAMEL_PROVIDER_STORE:
+				if (CAMEL_IS_STORE (service))
+					match = g_object_ref (service);
+				break;
+			case CAMEL_PROVIDER_TRANSPORT:
+				if (CAMEL_IS_TRANSPORT (service))
+					match = g_object_ref (service);
+				break;
+			default:
+				g_warn_if_reached ();
+				break;
+		}
+
+		if (match != NULL)
+			break;
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	camel_url_free (url);
+
+	return match;
+}
+
+/**
  * camel_session_ref_service_by_url:
  * @session: a #CamelSession
  * @url: a #CamelURL

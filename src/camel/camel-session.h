@@ -197,6 +197,10 @@ CamelService *	camel_session_ref_service_by_url
 						(CamelSession *session,
 						 CamelURL *url,
 						 CamelProviderType type);
+CamelService *	camel_session_ref_service_by_uri
+						(CamelSession *session,
+						 GUri *uri,
+						 CamelProviderType type);
 GList *		camel_session_list_services	(CamelSession *session);
 void		camel_session_remove_services	(CamelSession *session);
 gchar *		camel_session_get_password	(CamelSession *session,
