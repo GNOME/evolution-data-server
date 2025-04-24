@@ -262,6 +262,7 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 	const gchar *extension_name;
 	gchar *as_url = NULL;
 	gchar *oab_url = NULL;
+	gchar *fallback_host_url = NULL;
 	GError *error = NULL;
 
 	g_return_if_fail (GOA_IS_OBJECT (source_object));
@@ -272,8 +273,21 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 	if (!goa_ews_autodiscover_finish (goa_object, result, &as_url, &oab_url, &error) || !as_url) {
 		g_message ("Failed to autodiscover EWS data: %s", error ? error->message : "Unknown error");
 		g_clear_error (&error);
-		g_object_unref (source);
-		return;
+		as_url = NULL;
+		oab_url = NULL;
+	}
+
+	if (!as_url) {
+		GoaExchange *goa_exchange;
+		gchar *host;
+
+		goa_exchange = goa_object_get_exchange (goa_object);
+		host = goa_exchange_dup_host (goa_exchange);
+		g_clear_object (&goa_exchange);
+
+		fallback_host_url = g_strconcat ("https://", host, "/EWS/Exchange.asmx", NULL);
+
+		g_free (host);
 	}
 
 	/* XXX We don't have direct access to CamelEwsSettings from here
@@ -288,17 +302,25 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 		GoaAccount *goa_account;
 		CamelSettings *settings;
 		GUri *suri;
+		const gchar *host_url;
 		gchar *user, *email;
 
+		if (!as_url) {
+			g_object_get (source_extension, "hosturl", &as_url, NULL);
+			if (as_url && !*as_url)
+				g_clear_pointer (&as_url, g_free);
+		}
+
+		host_url = as_url ? as_url : fallback_host_url;
 		goa_account = goa_object_peek_account (goa_object);
 		user = goa_account_dup_identity (goa_account);
 		email = goa_account_dup_presentation_identity (goa_account);
 
-		suri = g_uri_parse (as_url, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
+		suri = g_uri_parse (host_url, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 
 		g_object_set (
 			source_extension,
-			"hosturl", as_url,
+			"hosturl", host_url,
 			"oaburl", oab_url,
 			"email", email,
 			NULL);
@@ -323,6 +345,7 @@ goa_ews_autodiscover_done_cb (GObject *source_object,
 	}
 
 	g_object_unref (source);
+	g_free (fallback_host_url);
 	g_free (as_url);
 	g_free (oab_url);
 }
