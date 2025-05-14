@@ -9,18 +9,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
-"ues/\n"
-"POT-Creation-Date: 2025-02-10 21:59+0000\n"
-"PO-Revision-Date: 2025-02-28 19:11+0100\n"
-"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
+"issues/\n"
+"POT-Creation-Date: 2025-04-24 11:25+0000\n"
+"PO-Revision-Date: 2025-04-27 20:43+0200\n"
+"Last-Translator: Meskó Balázs <mesko.balazs@fsf.hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.6\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
@@ -7189,20 +7189,21 @@ msgid ""
 msgstr ""
 "A felhasználók bővíthetik a támogatott protokollok és kiszolgálónevek "
 "listáját a megadott OAuth2 szolgáltatásoknál a beégetett értékek mellett. "
-"Minden sor a következő alakú: szolgáltatásnév[-protokoll]:kiszolgálónév1,"
-"kiszolgálónév2,… ahol a „szolgáltatásnév” a tényleges szolgáltatásnév; a „-"
-"protokoll” nem kötelező, de ha meg van adva, akkor a szolgáltatás csak akkor "
-"használható, ha a protokoll és a „kiszolgálónévX” egyezik; a "
-"„kiszolgálónévX” a tényleges kiszolgálónév, amivel össze lesz hasonlítva, a "
-"kis- és nagybetűk egyezőnek számítanak. Minden sor több értéket is "
-"tartalmazhat vesszővel elválasztva. Egy OAuth2 szolgáltatáshoz több sor is "
-"megadható. Ne feledje, hogy a tényleges URL, ahol a kulcsot kérik és "
-"frissítik, itt nem változtatható meg, ezért a kiszolgálónevek adják meg, "
-"hogy hol használhatóak az OAuth2 szolgáltatások. Példák: Company:mail."
-"company.com – engedélyezi a „Company” OAuth2 hitelesítést a „mail.company."
-"com” kiszolgálón, Company-CalDAV:caldav.company.com – engedélyezi a "
-"„Company” OAuth2 hitelesítést az összes „CalDAV” forráshoz, amely adatokat "
-"olvas a „caldav.company.com” kiszolgálóról"
+"Minden sor a következő alakú: szolgáltatásnév[-"
+"protokoll]:kiszolgálónév1,kiszolgálónév2,… ahol a „szolgáltatásnév” a "
+"tényleges szolgáltatásnév; a „-protokoll” nem kötelező, de ha meg van adva, "
+"akkor a szolgáltatás csak akkor használható, ha a protokoll és a "
+"„kiszolgálónévX” egyezik; a „kiszolgálónévX” a tényleges kiszolgálónév, "
+"amivel össze lesz hasonlítva, a kis- és nagybetűk egyezőnek számítanak. "
+"Minden sor több értéket is tartalmazhat vesszővel elválasztva. Egy OAuth2 "
+"szolgáltatáshoz több sor is megadható. Ne feledje, hogy a tényleges URL, "
+"ahol a kulcsot kérik és frissítik, itt nem változtatható meg, ezért a "
+"kiszolgálónevek adják meg, hogy hol használhatóak az OAuth2 szolgáltatások. "
+"Példák: Company:mail.company.com – engedélyezi a „Company” OAuth2 "
+"hitelesítést a „mail.company.com” kiszolgálón, Company-"
+"CalDAV:caldav.company.com – engedélyezi a „Company” OAuth2 hitelesítést az "
+"összes „CalDAV” forráshoz, amely adatokat olvas a „caldav.company.com” "
+"kiszolgálóról"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:61
 msgid ""
@@ -7865,13 +7866,11 @@ msgid "Yahoo!"
 msgstr "Yahoo!"
 
 #: src/libedataserver/e-soup-session.c:1231
-#| msgid "URI not set"
 msgid "No URI set"
 msgstr "Nincs URI beállítva"
 
 #: src/libedataserver/e-soup-session.c:1241
 #, c-format
-#| msgid "Invalid Query “%s”"
 msgid "Invalid URI “%s”"
 msgstr "Érvénytelen URI: „%s”"
 
@@ -7950,6 +7949,14 @@ msgstr "Az aláírás parancsfájlja csak helyi fájl lehet"
 #, c-format
 msgid "Source “%s” does not support proxy lookups"
 msgstr "A(z) „%s” forrás nem támogatja a proxykereséseket"
+
+#: src/libedataserver/e-source-registry.c:1471
+#, c-format
+msgid ""
+"Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
+msgstr ""
+"Nem lehet kapcsolódni a(z) „%s” D-Bus szolgáltatáshoz a(z) „%s” "
+"objektumútvonallal, nem található tulajdonos"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -8324,7 +8331,6 @@ msgid "Key Encipherment"
 msgstr "Kulcstitkosítás"
 
 #: src/libedataserverui/e-certificate-widget.c:289
-#| msgid "Key Encipherment"
 msgid "Data Encipherment"
 msgstr "Adattitkosítás"
 
@@ -8333,12 +8339,10 @@ msgid "Non Repudiation"
 msgstr "Letagadhatatlanság"
 
 #: src/libedataserverui/e-certificate-widget.c:291
-#| msgid "Key Encipherment"
 msgid "Key Agreement"
 msgstr "Kulcsmegállapodás"
 
 #: src/libedataserverui/e-certificate-widget.c:292
-#| msgid "Certificate"
 msgid "Key Certificate Sign"
 msgstr "Kulcstanúsítvány-aláírás"
 
@@ -8347,7 +8351,6 @@ msgid "CRL Sign"
 msgstr "CRL-aláírás"
 
 #: src/libedataserverui/e-certificate-widget.c:294
-#| msgid "Key Encipherment"
 msgid "Encipher Only"
 msgstr "Csak titkosítás"
 
@@ -9022,7 +9025,7 @@ msgstr ""
 "Nem sikerült megtalálni az ASUrl és OABUrl elemeket az automatikus "
 "felderítés válaszában"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1459
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1482
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -9031,7 +9034,7 @@ msgstr ""
 "Nem található megfelelő fiók az org.gnome.OnlineAccounts szolgáltatásban, "
 "amelyből a(z) „%s” hozzáférési tokene beszerezhető."
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1509
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1532
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Nem sikerült beszerezni a(z) „%s” hozzáférési tokenjét: "
@@ -9405,4 +9408,3 @@ msgstr "A világhálón"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "WebDAV jegyzetek"
-
