@@ -43,6 +43,58 @@ typedef struct _WebDAVDiscoverData {
 
 G_DEFINE_BOXED_TYPE (EWebDAVDiscoveredSource, e_webdav_discovered_source, e_webdav_discovered_source_copy, e_webdav_discovered_source_free)
 
+/* some server, like iCloud, can return different server pools for different entry points,
+   which look like "https://p66-caldav.icloud.com/...." which are technically different
+   URL-s, but pointing to the same collection, thus skip the pool part and compare only
+   the ".icloud.com/...." in the processed URL-s. */
+static const gchar *
+webdav_discover_skip_first_host_part (const gchar *href)
+{
+	const gchar *ptr, *dash, *dot;
+
+	ptr = strstr (href, "://");
+	if (!ptr)
+		return href;
+
+	ptr += 3;
+	dash = strchr (ptr, '/');
+	ptr = strchr (ptr, '.');
+
+	/* the first dot is before the next forward slash */
+	if (!ptr || ptr > dash)
+		return href;
+
+	dot = strchr (ptr + 1, '.');
+	/* the second dot is before the next forward slash */
+	if (!dot || dot > dash)
+		return href;
+
+	/* leaving the 'ptr' as ".icloud.com/....." */
+	return ptr;
+}
+
+static guint
+webdav_discover_href_hash (gconstpointer ptr)
+{
+	const gchar *href = ptr;
+
+	href = webdav_discover_skip_first_host_part (href);
+
+	return g_str_hash (href);
+}
+
+static gboolean
+webdav_discover_href_equal (gconstpointer ptr1,
+			    gconstpointer ptr2)
+{
+	const gchar *href1 = ptr1, *href2 = ptr2;
+
+	href1 = webdav_discover_skip_first_host_part (href1);
+	href2 = webdav_discover_skip_first_host_part (href2);
+
+	return g_str_equal (href1, href2);
+}
+
 static gboolean
 e_webdav_discovery_already_discovered (const gchar *href,
 				       const GSList *discovered_sources,
@@ -929,7 +981,11 @@ e_webdav_discover_sources_full_sync (ESource *source,
 		gboolean fatal_error;
 		GError *local_error = NULL;
 
-		wdd.covered_hrefs = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		/* play with the server pools only for icloud.com servers */
+		if (g_uri_get_host (guri) && e_util_host_is_in_domain (g_uri_get_host (guri), "icloud.com"))
+			wdd.covered_hrefs = g_hash_table_new_full (webdav_discover_href_hash, webdav_discover_href_equal, g_free, NULL);
+		else
+			wdd.covered_hrefs = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 		wdd.addressbooks = NULL;
 		wdd.calendars = NULL;
 		wdd.only_supports = only_supports;
