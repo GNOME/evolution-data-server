@@ -1,3 +1,11 @@
+Evolution-Data-Server 3.56.2 2025-05-23
+---------------------------------------
+
+Bug Fixes:
+	I#592 - Handle changed server pool in WebDAV collection sources ][
+	I#593 - CamelDataWrapper: Correct return value of size calculate functions (dagosuhn)
+	I#597 - GOA EWS: Fallback to likely EWS host URL when autodicovery fails
+
 Evolution-Data-Server 3.56.1 2025-04-11
 ---------------------------------------
 
