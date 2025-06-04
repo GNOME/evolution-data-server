@@ -103,7 +103,8 @@ enum {
 	PROP_PROXY_RESOLVER,
 	PROP_SESSION,
 	PROP_SETTINGS,
-	PROP_UID
+	PROP_UID,
+	PROP_WITH_PROXY_RESOLVER
 };
 
 /* Forward Declarations */
@@ -726,6 +727,17 @@ service_set_property (GObject *object,
 				CAMEL_SERVICE (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_WITH_PROXY_RESOLVER:
+			if (g_value_get_boolean (value)) {
+				CamelService *self = CAMEL_SERVICE (object);
+				if (!self->priv->proxy_resolver) {
+					self->priv->proxy_resolver = g_proxy_resolver_get_default ();
+					if (self->priv->proxy_resolver)
+						g_object_ref (self->priv->proxy_resolver);
+				}
+			}
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1046,6 +1058,19 @@ camel_service_class_init (CamelServiceClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+
+	/* private property, to not create GProxyResolver in the tests */
+	g_object_class_install_property (
+		object_class,
+		PROP_WITH_PROXY_RESOLVER,
+		g_param_spec_boolean (
+			"with-proxy-resolver",
+			NULL,
+			NULL,
+			TRUE,
+			G_PARAM_WRITABLE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -1071,10 +1096,6 @@ camel_service_init (CamelService *service)
 	g_mutex_init (&service->priv->connection_lock);
 	g_weak_ref_init (&service->priv->session, NULL);
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
-
-	service->priv->proxy_resolver = g_proxy_resolver_get_default ();
-	if (service->priv->proxy_resolver != NULL)
-		g_object_ref (service->priv->proxy_resolver);
 
 	service->priv->task_table = task_table;
 	g_mutex_init (&service->priv->task_table_lock);
