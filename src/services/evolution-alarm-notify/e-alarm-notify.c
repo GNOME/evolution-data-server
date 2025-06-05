@@ -131,6 +131,11 @@ e_alarm_notify_show_window (EAlarmNotify *an,
 }
 
 static gboolean
+e_alarm_notify_display (EAlarmNotify *an,
+			const EReminderData *rd,
+			ECalComponentAlarm *alarm);
+
+static gboolean
 e_alarm_notify_audio (EAlarmNotify *an,
 		      const EReminderData *rd,
 		      ECalComponentAlarm *alarm)
@@ -138,10 +143,14 @@ e_alarm_notify_audio (EAlarmNotify *an,
 	ICalAttach *attach = NULL;
 	GSList *attachments;
 	gboolean did_play = FALSE;
+	gboolean keep_in_reminders = FALSE;
 
 	g_return_val_if_fail (an != NULL, FALSE);
 	g_return_val_if_fail (rd != NULL, FALSE);
 	g_return_val_if_fail (alarm != NULL, FALSE);
+
+	if (g_settings_get_boolean (an->priv->settings, "notify-enable-display"))
+		keep_in_reminders = e_alarm_notify_display (an, rd, alarm);
 
 	if (!g_settings_get_boolean (an->priv->settings, "notify-enable-audio")) {
 		ean_debug_print ("Audio notify: Skipped, because disabled in the settings\n");
@@ -225,7 +234,7 @@ e_alarm_notify_audio (EAlarmNotify *an,
 			ean_debug_print ("Audio notify: Cannot beep, no display found\n");
 	}
 
-	return FALSE;
+	return keep_in_reminders;
 }
 
 /* Copy of e_util_is_running_gnome() from Evolution */
