@@ -1548,20 +1548,20 @@ gather_changed_uids (gpointer key,
 }
 
 /**
- * camel_folder_summary_get_changed:
+ * camel_folder_summary_dup_changed:
  * @summary: a #CamelFolderSummary
  *
  * Returns an array of changed UID-s. A UID is considered changed
  * when its corresponding CamelMesageInfo is 'dirty' or when it has
  * set the #CAMEL_MESSAGE_FOLDER_FLAGGED flag.
  *
- * Returns: (element-type utf8) (transfer full): a #GPtrArray with changed UID-s.
+ * Returns: (element-type utf8) (transfer container): a #GPtrArray with changed UID-s.
  *    Free it with g_ptr_array_unref() when no longer needed.
  *
- * Since: 2.24
+ * Since: 3.58
  **/
 GPtrArray *
-camel_folder_summary_get_changed (CamelFolderSummary *summary)
+camel_folder_summary_dup_changed (CamelFolderSummary *summary)
 {
 	GPtrArray *res;
 	GHashTable *hash;

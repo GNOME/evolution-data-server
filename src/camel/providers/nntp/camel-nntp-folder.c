@@ -650,7 +650,7 @@ nntp_folder_synchronize_sync (CamelFolder *folder,
 
 	summary = camel_folder_get_folder_summary (folder);
 
-	changed = camel_folder_summary_get_changed (summary);
+	changed = camel_folder_summary_dup_changed (summary);
 	if (changed != NULL) {
 		g_ptr_array_foreach (
 			changed, (GFunc) unset_flagged_flag, summary);

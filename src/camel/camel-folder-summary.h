@@ -246,7 +246,7 @@ CamelMessageInfo *
 						 const gchar *uid);
 
 /* Get only the uids of dirty/changed things to sync to server/db */
-GPtrArray *	camel_folder_summary_get_changed
+GPtrArray *	camel_folder_summary_dup_changed
 						(CamelFolderSummary *summary);
 
 /* reload the summary at any required point if required */

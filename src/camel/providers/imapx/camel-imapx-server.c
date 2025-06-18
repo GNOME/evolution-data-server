@@ -6017,7 +6017,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	 * one for each flag being turned off, including each
 	 * info being turned off, and one for each flag being turned on.
 	 */
-	changed_uids = camel_folder_summary_get_changed (camel_folder_get_folder_summary (folder));
+	changed_uids = camel_folder_summary_dup_changed (camel_folder_get_folder_summary (folder));
 
 	if (changed_uids->len == 0) {
 		g_clear_pointer (&changed_uids, g_ptr_array_unref);

@@ -777,7 +777,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 	camel_mime_parser_init_with_fd (mp, pfd);
 
 	/* Sync only the changes */
-	summary = camel_folder_summary_get_changed ((CamelFolderSummary *) mbs);
+	summary = camel_folder_summary_dup_changed ((CamelFolderSummary *) mbs);
 	if (summary->len)
 		g_ptr_array_sort_with_data (summary, cms_sort_frompos, mbs);
 
@@ -931,7 +931,7 @@ mbox_summary_sync (CamelLocalSummary *cls,
 
 	/* Sync only the changes */
 
-	summary = camel_folder_summary_get_changed ((CamelFolderSummary *) mbs);
+	summary = camel_folder_summary_dup_changed ((CamelFolderSummary *) mbs);
 	for (i = 0; i < summary->len; i++) {
 		CamelMessageInfo *info = camel_folder_summary_get (s, summary->pdata[i]);
 
