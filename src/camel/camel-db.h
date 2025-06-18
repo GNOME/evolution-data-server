@@ -108,44 +108,6 @@ struct _CamelDBClass {
  **/
 typedef gint (* CamelDBCollate)(gpointer enc, gint length1, gconstpointer data1, gint length2, gconstpointer data2);
 
-/* Hopefully no one will create a folder named EVO_IN_meM_hAnDlE */
-
-/**
- * CAMEL_DB_IN_MEMORY_TABLE:
- *
- * Since: 2.26
- **/
-#define CAMEL_DB_IN_MEMORY_TABLE "EVO_IN_meM_hAnDlE.temp"
-
-/**
- * CAMEL_DB_IN_MEMORY_DB:
- *
- * Since: 2.26
- **/
-#define CAMEL_DB_IN_MEMORY_DB "EVO_IN_meM_hAnDlE"
-
-/**
- * CAMEL_DB_IN_MEMORY_TABLE_LIMIT:
- *
- * Since: 2.26
- **/
-#define CAMEL_DB_IN_MEMORY_TABLE_LIMIT 100000
-
-
-/**
- * CAMEL_DB_FREE_CACHE_SIZE:
- *
- * Since: 2.24
- **/
-#define CAMEL_DB_FREE_CACHE_SIZE 2 * 1024 * 1024
-
-/**
- * CAMEL_DB_SLEEP_INTERVAL:
- *
- * Since: 2.24
- **/
-#define CAMEL_DB_SLEEP_INTERVAL 1*10*10
-
 /**
  * CamelDBSelectCB:
  * @user_data: a callback user data

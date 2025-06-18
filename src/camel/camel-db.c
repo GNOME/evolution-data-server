@@ -42,6 +42,9 @@
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5
 
+#define CAMEL_DB_FREE_CACHE_SIZE 2 * 1024 * 1024
+#define CAMEL_DB_SLEEP_INTERVAL 1 * 10 * 10
+
 G_DEFINE_QUARK (camel-db-error-quark, camel_db_error)
 
 static sqlite3_vfs *old_vfs = NULL;
