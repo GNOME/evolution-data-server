@@ -324,42 +324,77 @@ csdb_camel_cmp_any_header_func (sqlite3_context *ctx,
 	sqlite3_result_int (ctx, matches ? 1 : 0);
 }
 
-/* string camelgetusertag(string tag_name, string all_tags) */
+/* string camelgetusertag(string context, string uid, string tag_name, string dbvalue) */
 static void
 csdb_camel_get_user_tag_func (sqlite3_context *ctx,
 			      gint nArgs,
 			      sqlite3_value **values)
 {
+	CamelStoreDB *self = sqlite3_user_data (ctx);
+	CamelStoreSearch *search;
 	gchar *value = NULL;
-	const gchar *tag_name, *all_tags;
+	const gchar *context, *uid, *tag_name, *dbvalue;
 
 	g_return_if_fail (ctx != NULL);
-	g_return_if_fail (nArgs == 2);
+	g_return_if_fail (nArgs == 4);
 	g_return_if_fail (values != NULL);
 
-	tag_name = (const gchar *) sqlite3_value_text (values[0]);
-	all_tags = (const gchar *) sqlite3_value_text (values[1]);
+	context = (const gchar *) sqlite3_value_text (values[0]);
+	uid = (const gchar *) sqlite3_value_text (values[1]);
+	tag_name = (const gchar *) sqlite3_value_text (values[2]);
+	dbvalue = (const gchar *) sqlite3_value_text (values[3]);
 
-	/* parse the string only if it looks like the tag is there */
-	if (tag_name && *tag_name && all_tags && *all_tags && camel_strstrcase (all_tags, tag_name)) {
-		gchar *part = (gchar *) all_tags;
-		gint ii, count;
+	LOCK (self);
+	search = g_hash_table_lookup (self->priv->searches, context);
+	if (search)
+		g_object_ref (search);
+	UNLOCK (self);
 
-		count = camel_util_bdata_get_number (&part, 0);
+	if (search)
+		value = _camel_store_search_dup_user_tag (search, uid, tag_name, dbvalue);
+	else
+		g_warn_if_reached ();
 
-		for (ii = 0; ii < count && !value; ii++) {
-			gchar *nname, *nvalue;
+	g_clear_object (&search);
 
-			nname = camel_util_bdata_get_string (&part, NULL);
-			nvalue = camel_util_bdata_get_string (&part, NULL);
+	if (value)
+		sqlite3_result_text (ctx, value, -1, g_free);
+	else
+		sqlite3_result_null (ctx);
+}
 
-			if (nname && g_ascii_strcasecmp (nname, tag_name) == 0)
-				value = g_steal_pointer (&nvalue);
+/* string camelfromloadedinfoordb(string context, string uid, string column_name, string dbvalue) */
+static void
+csdb_camel_from_loaded_info_or_db_func (sqlite3_context *ctx,
+					gint nArgs,
+					sqlite3_value **values)
+{
+	CamelStoreDB *self = sqlite3_user_data (ctx);
+	CamelStoreSearch *search;
+	gchar *value = NULL;
+	const gchar *context, *uid, *column_name, *dbvalue;
 
-			g_free (nname);
-			g_free (nvalue);
-		}
-	}
+	g_return_if_fail (ctx != NULL);
+	g_return_if_fail (nArgs == 4);
+	g_return_if_fail (values != NULL);
+
+	context = (const gchar *) sqlite3_value_text (values[0]);
+	uid = (const gchar *) sqlite3_value_text (values[1]);
+	column_name = (const gchar *) sqlite3_value_text (values[2]);
+	dbvalue = (const gchar *) sqlite3_value_text (values[3]);
+
+	LOCK (self);
+	search = g_hash_table_lookup (self->priv->searches, context);
+	if (search)
+		g_object_ref (search);
+	UNLOCK (self);
+
+	if (search)
+		value = _camel_store_search_from_loaded_info_or_db (search, uid, column_name, dbvalue);
+	else
+		g_warn_if_reached ();
+
+	g_clear_object (&search);
 
 	if (value)
 		sqlite3_result_text (ctx, value, -1, g_free);
@@ -394,6 +429,82 @@ csdb_camel_addressbook_contains_func (sqlite3_context *ctx,
 
 	if (search)
 		matches = _camel_store_search_addressbook_contains (search, book_uid, email);
+	else
+		g_warn_if_reached ();
+
+	g_clear_object (&search);
+
+	sqlite3_result_int (ctx, matches ? 1 : 0);
+}
+
+/* bool camelchecklabels(string context, string uid, string label_to_check, string dbvalue) */
+static void
+csdb_camel_check_labels_func (sqlite3_context *ctx,
+			      gint nArgs,
+			      sqlite3_value **values)
+{
+	CamelStoreDB *self = sqlite3_user_data (ctx);
+	CamelStoreSearch *search;
+	gboolean matches = FALSE;
+	const gchar *context, *uid, *label_to_check, *dbvalue;
+
+	g_return_if_fail (ctx != NULL);
+	g_return_if_fail (nArgs == 4);
+	g_return_if_fail (values != NULL);
+
+	context = (const gchar *) sqlite3_value_text (values[0]);
+	uid = (const gchar *) sqlite3_value_text (values[1]);
+	label_to_check = (const gchar *) sqlite3_value_text (values[2]);
+	dbvalue = (const gchar *) sqlite3_value_text (values[3]);
+
+	LOCK (self);
+	search = g_hash_table_lookup (self->priv->searches, context);
+	if (search)
+		g_object_ref (search);
+	UNLOCK (self);
+
+	if (search)
+		matches = _camel_store_search_check_labels (search, uid, label_to_check, dbvalue);
+	else
+		g_warn_if_reached ();
+
+	g_clear_object (&search);
+
+	sqlite3_result_int (ctx, matches ? 1 : 0);
+}
+
+/* bool camelcheckflags(string context, string uid, uint flags_to_check, uint dbvalue) */
+static void
+csdb_camel_check_flags_func (sqlite3_context *ctx,
+			     gint nArgs,
+			     sqlite3_value **values)
+{
+	CamelStoreDB *self = sqlite3_user_data (ctx);
+	CamelStoreSearch *search;
+	gboolean matches = FALSE;
+	const gchar *context, *uid;
+	guint32 flags_to_check, dbvalue;
+
+	g_return_if_fail (ctx != NULL);
+	g_return_if_fail (nArgs == 4);
+	g_return_if_fail (values != NULL);
+
+	context = (const gchar *) sqlite3_value_text (values[0]);
+	uid = (const gchar *) sqlite3_value_text (values[1]);
+	flags_to_check = (guint32) sqlite3_value_int64 (values[2]);
+	if (sqlite3_value_type (values[3]) == SQLITE_NULL)
+		dbvalue = 0;
+	else
+		dbvalue = (guint32) sqlite3_value_int64 (values[3]);
+
+	LOCK (self);
+	search = g_hash_table_lookup (self->priv->searches, context);
+	if (search)
+		g_object_ref (search);
+	UNLOCK (self);
+
+	if (search)
+		matches = _camel_store_search_check_flags (search, uid, flags_to_check, dbvalue);
 	else
 		g_warn_if_reached ();
 
@@ -543,11 +654,20 @@ camel_store_db_init_sqlite_functions (CamelStoreDB *self)
 	/* string camelcmpanyheader(string context, string uid, string kind, string needle) */
 	sqlite3_create_function (sdb, "camelcmpanyheader", 4, flags, self, csdb_camel_cmp_any_header_func, NULL, NULL);
 
-	/* string camelgetusertag(string tag_name, string all_tags) */
-	sqlite3_create_function (sdb, "camelgetusertag", 2, flags, self, csdb_camel_get_user_tag_func, NULL, NULL);
+	/* string camelgetusertag(string context, string uid, string tag_name, string db_tags) */
+	sqlite3_create_function (sdb, "camelgetusertag", 4, flags, self, csdb_camel_get_user_tag_func, NULL, NULL);
+
+	/* string camelfromloadedinfoordb(string context, string uid, string column_name, string dbvalue) */
+	sqlite3_create_function (sdb, "camelfromloadedinfoordb", 4, flags, self, csdb_camel_from_loaded_info_or_db_func, NULL, NULL);
 
 	/* bool cameladdressbookcontains(string context, string book_uid, string email) */
 	sqlite3_create_function (sdb, "cameladdressbookcontains", 3, flags, self, csdb_camel_addressbook_contains_func, NULL, NULL);
+
+	/* bool camelchecklabels(string context, string uid, string label_to_check, string dbvalue) */
+	sqlite3_create_function (sdb, "camelchecklabels", 4, flags, self, csdb_camel_check_labels_func, NULL, NULL);
+
+	/* bool camelcheckflags(string context, string uid, uint flags_to_check, uint dbvalue) */
+	sqlite3_create_function (sdb, "camelcheckflags", 4, flags, self, csdb_camel_check_flags_func, NULL, NULL);
 
 	/* bool camelsearchinresultindex(string context, string uid) */
 	sqlite3_create_function (sdb, "camelsearchinresultindex", 2, flags, self, csdb_camel_search_in_result_index_func, NULL, NULL);
@@ -2530,6 +2650,7 @@ camel_store_db_util_get_column_for_header_name (const gchar *header_name)
 {
 	g_return_val_if_fail (header_name != NULL, NULL);
 
+	/* when changing the columns list, update also _camel_store_search_from_loaded_info_or_db() */
 	if (!g_ascii_strcasecmp (header_name, "Subject"))
 		return "subject";
 	else if (!g_ascii_strcasecmp (header_name, "from"))

@@ -236,7 +236,8 @@ GHashTable *	camel_folder_summary_get_hash	(CamelFolderSummary *summary);
 
 gboolean	camel_folder_summary_replace_flags
 						(CamelFolderSummary *summary,
-						 CamelMessageInfo *info);
+						 const gchar *uid,
+						 guint32 new_flags);
 
 /* Peek from mem only */
 CamelMessageInfo *

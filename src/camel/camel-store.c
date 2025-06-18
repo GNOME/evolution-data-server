@@ -239,22 +239,38 @@ ignore_no_such_table_exception (GError **error)
 
 static CamelFolder *
 store_get_special (CamelStore *store,
-                   CamelVTrashFolderType type)
+                   CamelVTrashFolderType type,
+		   GCancellable *cancellable,
+		   GError **error)
 {
 	CamelFolder *folder;
 	GPtrArray *folders;
-	gint i;
+	guint ii;
 
 	folder = camel_vtrash_folder_new (store, type);
 
 	if (store->priv->folders) {
+		GPtrArray *add_folders;
+
+		add_folders = g_ptr_array_new_with_free_func (g_object_unref);
 		folders = camel_object_bag_list (store->priv->folders);
-		for (i = 0; i < folders->len; i++) {
-			if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
-				camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i], NULL);
-			g_object_unref (folders->pdata[i]);
+
+		for (ii = 0; ii < folders->len; ii++) {
+			CamelFolder *subfolder = g_ptr_array_index (folders, ii);
+			if (!CAMEL_IS_VTRASH_FOLDER (subfolder))
+				g_ptr_array_add (add_folders, g_object_ref (subfolder));
+			g_object_unref (subfolder);
 		}
 		g_ptr_array_free (folders, TRUE);
+
+		if (add_folders->len) {
+			CamelVeeFolder *vfolder = CAMEL_VEE_FOLDER (folder);
+
+			if (!camel_vee_folder_set_folders_sync (vfolder, add_folders, CAMEL_VEE_FOLDER_OP_FLAG_NONE, cancellable, error))
+				g_clear_object (&folder);
+		}
+
+		g_ptr_array_unref (add_folders);
 	}
 
 	return folder;
@@ -394,7 +410,7 @@ store_get_junk_folder_sync (CamelStore *store,
                             GCancellable *cancellable,
                             GError **error)
 {
-	return store_get_special (store, CAMEL_VTRASH_FOLDER_JUNK);
+	return store_get_special (store, CAMEL_VTRASH_FOLDER_JUNK, cancellable, error);
 }
 
 static CamelFolder *
@@ -402,7 +418,7 @@ store_get_trash_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	return store_get_special (store, CAMEL_VTRASH_FOLDER_TRASH);
+	return store_get_special (store, CAMEL_VTRASH_FOLDER_TRASH, cancellable, error);
 }
 
 static gboolean
@@ -1495,7 +1511,7 @@ try_again:
 	 * virtual Junk folder, let the virtual Junk folder
 	 * track this folder. */
 	if (vjunk != NULL) {
-		camel_vee_folder_add_folder (vjunk, folder, NULL);
+		camel_vee_folder_add_folder_sync (vjunk, folder, CAMEL_VEE_FOLDER_OP_FLAG_NONE, cancellable, NULL);
 		g_object_unref (vjunk);
 	}
 
@@ -1503,7 +1519,7 @@ try_again:
 	 * virtual Trash folder, let the virtual Trash folder
 	 * track this folder. */
 	if (vtrash != NULL) {
-		camel_vee_folder_add_folder (vtrash, folder, NULL);
+		camel_vee_folder_add_folder_sync (vtrash, folder, CAMEL_VEE_FOLDER_OP_FLAG_NONE, cancellable, NULL);
 		g_object_unref (vtrash);
 	}
 
@@ -3334,7 +3350,7 @@ camel_store_delete_cached_folder (CamelStore *store,
 		vfolder = camel_object_bag_get (
 			store->priv->folders, CAMEL_VTRASH_NAME);
 		if (vfolder != NULL) {
-			camel_vee_folder_remove_folder (vfolder, folder, NULL);
+			camel_vee_folder_remove_folder_sync (vfolder, folder, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, NULL);
 			g_object_unref (vfolder);
 		}
 	}
@@ -3343,7 +3359,7 @@ camel_store_delete_cached_folder (CamelStore *store,
 		vfolder = camel_object_bag_get (
 			store->priv->folders, CAMEL_VJUNK_NAME);
 		if (vfolder != NULL) {
-			camel_vee_folder_remove_folder (vfolder, folder, NULL);
+			camel_vee_folder_remove_folder_sync (vfolder, folder, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, NULL);
 			g_object_unref (vfolder);
 		}
 	}

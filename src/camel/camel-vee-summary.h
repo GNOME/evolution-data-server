@@ -25,6 +25,7 @@
 #define CAMEL_VEE_SUMMARY_H
 
 #include <camel/camel-folder-summary.h>
+#include <camel/camel-store-search.h>
 #include <camel/camel-vee-message-info.h>
 
 /* Standard GObject macros */
@@ -74,15 +75,20 @@ CamelFolderSummary *
 		camel_vee_summary_new		(CamelFolder *parent);
 CamelVeeMessageInfo *
 		camel_vee_summary_add		(CamelVeeSummary *summary,
-						 struct _CamelVeeMessageInfoData *mi_data);
+						 CamelFolder *subfolder,
+						 const gchar *vuid);
 void		camel_vee_summary_remove	(CamelVeeSummary *summary,
-						 const gchar *vuid,
-						 CamelFolder *subfolder);
-void		camel_vee_summary_replace_flags	(CamelVeeSummary *summary,
-						 const gchar *uid);
+						 CamelFolder *subfolder,
+						 const gchar *vuid);
+gboolean	camel_vee_summary_replace_flags	(CamelVeeSummary *vsummary,
+						 const gchar *vuid);
 GHashTable *	camel_vee_summary_get_uids_for_subfolder
 						(CamelVeeSummary *summary,
 						 CamelFolder *subfolder);
+CamelStoreSearchIndex *
+		camel_vee_summary_to_match_index(CamelVeeSummary *self);
+GHashTable * /* CamelFolder *~>NULL */
+		camel_vee_summary_dup_subfolders(CamelVeeSummary *self);
 
 G_END_DECLS
 

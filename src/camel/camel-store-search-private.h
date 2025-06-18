@@ -32,6 +32,15 @@ gboolean	_camel_store_search_body_contains	(CamelStoreSearch *self,
 gchar *		_camel_store_search_dup_header_value	(CamelStoreSearch *self,
 							 const gchar *uid,
 							 const gchar *header_name);
+gchar *		_camel_store_search_dup_user_tag	(CamelStoreSearch *self,
+							 const gchar *uid,
+							 const gchar *tag_name,
+							 const gchar *dbvalue);
+gchar *		_camel_store_search_from_loaded_info_or_db
+							(CamelStoreSearch *self,
+							 const gchar *uid,
+							 const gchar *column_name,
+							 const gchar *dbvalue);
 gboolean	_camel_store_search_cmp_any_headers	(CamelStoreSearch *self,
 							 const gchar *uid,
 							 camel_search_match_t how,
@@ -39,6 +48,14 @@ gboolean	_camel_store_search_cmp_any_headers	(CamelStoreSearch *self,
 gboolean	_camel_store_search_addressbook_contains(CamelStoreSearch *self,
 							 const gchar *book_uid,
 							 const gchar *email);
+gboolean	_camel_store_search_check_labels	(CamelStoreSearch *self,
+							 const gchar *uid,
+							 const gchar *label_to_check,
+							 const gchar *dbvalue);
+gboolean	_camel_store_search_check_flags		(CamelStoreSearch *self,
+							 const gchar *uid,
+							 guint32 flags_to_check,
+							 guint32 dbvalue);
 gboolean	_camel_store_search_in_result_index	(CamelStoreSearch *self,
 							 const gchar *uid);
 gboolean	_camel_store_search_in_match_index	(CamelStoreSearch *self,

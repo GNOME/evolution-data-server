@@ -6,7 +6,6 @@
 #include "evolution-data-server-config.h"
 
 #include <glib.h>
-#include <glib/gstdio.h>
 
 #include "camel/camel.h"
 
@@ -240,6 +239,9 @@ test_store_search_create (void)
 
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -421,6 +423,7 @@ test_store_search_subject (void)
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "11", 1, "12", 2, "21", 2, "22", 3, "31", 0, NULL);
 
+	g_clear_object (&f3);
 	f3 = camel_store_get_folder_sync (store, "f3", 0, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_nonnull (f3);
@@ -458,6 +461,9 @@ test_store_search_subject (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -615,6 +621,9 @@ test_store_search_addresses (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -710,6 +719,9 @@ test_store_search_flags (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -796,6 +808,9 @@ test_store_search_user_flags (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static CamelFolder *
@@ -943,6 +958,9 @@ test_store_search_user_tags (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1020,6 +1038,9 @@ test_store_search_uid (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1038,16 +1059,19 @@ test_store_search_headers (void)
 	f1 = test_store_search_fill_folder (store, "f1", "11", "12", "13", NULL);
 	g_assert_nonnull (f1);
 	tf1 = TEST_FOLDER (f1);
+	tf1->cache_message_info = FALSE;
 
 	f2 = test_store_search_fill_folder (store, "f2", "21", "22", "23", NULL);
 	g_assert_nonnull (f2);
 	camel_store_search_add_folder (search, f2);
 	tf2 = TEST_FOLDER (f2);
+	tf2->cache_message_info = FALSE;
 
 	f3 = test_store_search_fill_folder (store, "f3", "31", NULL);
 	g_assert_nonnull (f3);
 	camel_store_search_add_folder (search, f3);
 	tf3 = TEST_FOLDER (f3);
+	tf3->cache_message_info = FALSE;
 
 	#define reset_folder_counts(_with_headers) \
 		tf1->n_called_get_message_info = 0; \
@@ -1362,6 +1386,9 @@ test_store_search_headers (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1505,6 +1532,9 @@ test_store_search_dates (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1592,6 +1622,9 @@ test_store_search_size (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1690,6 +1723,9 @@ test_store_search_message_id (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1771,6 +1807,9 @@ test_store_search_message_location (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1877,6 +1916,9 @@ test_store_search_addressbook_contains (void)
 	g_clear_object (&session);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -1895,16 +1937,19 @@ test_store_search_body (void)
 	f1 = test_store_search_fill_folder (store, "f1", "11", "12", "13", NULL);
 	g_assert_nonnull (f1);
 	tf1 = TEST_FOLDER (f1);
+	tf1->cache_message_info = FALSE;
 
 	f2 = test_store_search_fill_folder (store, "f2", "21", "22", "23", NULL);
 	g_assert_nonnull (f2);
 	camel_store_search_add_folder (search, f2);
 	tf2 = TEST_FOLDER (f2);
+	tf2->cache_message_info = FALSE;
 
 	f3 = test_store_search_fill_folder (store, "f3", "31", NULL);
 	g_assert_nonnull (f3);
 	camel_store_search_add_folder (search, f3);
 	tf3 = TEST_FOLDER (f3);
+	tf3->cache_message_info = FALSE;
 
 	#define reset_folder_counts() \
 		tf1->n_called_get_message_info = 0; \
@@ -2061,6 +2106,9 @@ test_store_search_body (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -2495,6 +2543,9 @@ test_store_search_extras (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -2608,7 +2659,7 @@ test_store_search_match_threads (void)
 		"part", "1 2 1 2 1",
 		"subject", "reply to 21 from 12",
 		"",
-		"uid", "12.1",
+		"uid", "14",
 		"part", "12 1 1 2 1",
 		"subject", "reply to 21 b",
 		"",
@@ -2616,7 +2667,7 @@ test_store_search_match_threads (void)
 		"part", "1 3 2 9 9 1 2",
 		"subject", "reply to nonexistent 99, referencing 12",
 		"",
-		"uid", "13.1",
+		"uid", "15",
 		"part", "1 31 1 1 2",
 		"subject", "reply to 12",
 		NULL);
@@ -2668,8 +2719,8 @@ test_store_search_match_threads (void)
 	       12
 		 13
 		   22
-		 13.1
-	       12.1
+		 15
+	       14
 	     23
 	       33
 		 32
@@ -2729,7 +2780,7 @@ test_store_search_match_threads (void)
 	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 3);
 	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
 	camel_store_search_set_result_index (search, index);
-	test_store_search_check_result (search, 1, "11", 1, "12", 1, "12.1", 1, "13", 1, "13.1", 2, "21", 2, "22", 3, "31", 0, NULL);
+	test_store_search_check_result (search, 1, "11", 1, "12", 1, "14", 1, "13", 1, "15", 2, "21", 2, "22", 3, "31", 0, NULL);
 	g_clear_pointer (&index, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
@@ -2752,7 +2803,7 @@ test_store_search_match_threads (void)
 	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 2);
 	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
 	camel_store_search_set_result_index (search, index);
-	test_store_search_check_result (search, 1, "12", 1, "12.1", 1, "13", 1, "13.1", 2, "21", 2, "22", 2, "23", 2, "24", 3, "32", 3, "33", 0, NULL);
+	test_store_search_check_result (search, 1, "12", 1, "14", 1, "13", 1, "15", 2, "21", 2, "22", 2, "23", 2, "24", 3, "32", 3, "33", 0, NULL);
 	g_clear_pointer (&index, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
@@ -2775,7 +2826,7 @@ test_store_search_match_threads (void)
 	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 2);
 	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
 	camel_store_search_set_result_index (search, index);
-	test_store_search_check_result (search, 1, "12", 1, "12.1", 1, "13", 1, "13.1", 2, "21", 2, "22", 2, "23", 3, "32", 3, "33", 0, NULL);
+	test_store_search_check_result (search, 1, "12", 1, "14", 1, "13", 1, "15", 2, "21", 2, "22", 2, "23", 3, "32", 3, "33", 0, NULL);
 	g_clear_pointer (&index, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
@@ -2876,6 +2927,9 @@ test_store_search_match_threads (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -2911,7 +2965,7 @@ test_store_search_match_threads_multiple_stores (void)
 		"part", "1 2 1 2 1",
 		"subject", "reply to 21 from 12",
 		"",
-		"uid", "12.1",
+		"uid", "14",
 		"part", "12 1 1 2 1",
 		"subject", "reply to 21 b",
 		"",
@@ -2919,7 +2973,7 @@ test_store_search_match_threads_multiple_stores (void)
 		"part", "1 3 2 9 9 1 2",
 		"subject", "reply to nonexistent 99, referencing 12",
 		"",
-		"uid", "13.1",
+		"uid", "15",
 		"part", "1 31 1 1 2",
 		"subject", "reply to 12",
 		NULL);
@@ -2971,8 +3025,8 @@ test_store_search_match_threads_multiple_stores (void)
 	       12
 		 13
 		   22
-		 13.1
-	       12.1
+		 15
+	       14
 	     23
 	       33
 		 32
@@ -3084,7 +3138,7 @@ test_store_search_match_threads_multiple_stores (void)
 	camel_store_search_index_unref (index2);
 	camel_store_search_index_apply_match_threads (index1, items, match_threads_kind, thread_flags, NULL);
 	camel_store_search_set_result_index (search1, index1);
-	test_store_search_check_result (search1, 1, "11", 1, "12", 1, "12.1", 1, "13", 1, "13.1", 3, "31", 0, NULL);
+	test_store_search_check_result (search1, 1, "11", 1, "12", 1, "14", 1, "13", 1, "15", 3, "31", 0, NULL);
 	camel_store_search_set_result_index (search2, index1);
 	test_store_search_check_result (search2, 2, "21", 2, "22", 0, NULL);
 	g_clear_pointer (&index1, camel_store_search_index_unref);
@@ -3130,7 +3184,7 @@ test_store_search_match_threads_multiple_stores (void)
 	camel_store_search_index_unref (index2);
 	camel_store_search_index_apply_match_threads (index1, items, match_threads_kind, thread_flags, NULL);
 	camel_store_search_set_result_index (search1, index1);
-	test_store_search_check_result (search1, 1, "12", 1, "12.1", 1, "13", 1, "13.1", 3, "32", 3, "33", 0, NULL);
+	test_store_search_check_result (search1, 1, "12", 1, "14", 1, "13", 1, "15", 3, "32", 3, "33", 0, NULL);
 	camel_store_search_set_result_index (search2, index1);
 	test_store_search_check_result (search2, 2, "21", 2, "22", 2, "23", 2, "24", 0, NULL);
 	g_clear_pointer (&index1, camel_store_search_index_unref);
@@ -3174,7 +3228,7 @@ test_store_search_match_threads_multiple_stores (void)
 	camel_store_search_index_unref (index2);
 	camel_store_search_index_apply_match_threads (index1, items, match_threads_kind, thread_flags, NULL);
 	camel_store_search_set_result_index (search1, index1);
-	test_store_search_check_result (search1, 1, "12", 1, "12.1", 1, "13", 1, "13.1", 3, "32", 3, "33", 0, NULL);
+	test_store_search_check_result (search1, 1, "12", 1, "14", 1, "13", 1, "15", 3, "32", 3, "33", 0, NULL);
 	camel_store_search_set_result_index (search2, index1);
 	test_store_search_check_result (search2, 2, "21", 2, "22", 2, "23", NULL);
 	g_clear_pointer (&index1, camel_store_search_index_unref);
@@ -3383,7 +3437,7 @@ test_store_search_match_threads_multiple_stores (void)
 		"part", "1 2 1 2 1",
 		"subject", "reply to 21 from 12",
 		"",
-		"uid", "12.1",
+		"uid", "14",
 		"part", "12 1 1 2 1",
 		"subject", "reply to 21 b",
 		"",
@@ -3391,7 +3445,7 @@ test_store_search_match_threads_multiple_stores (void)
 		"part", "1 3 2 9 9 1 2",
 		"subject", "reply to nonexistent 99, referencing 12",
 		"",
-		"uid", "13.1",
+		"uid", "15",
 		"part", "1 31 1 1 2",
 		"subject", "reply to 12",
 		NULL);
@@ -3533,6 +3587,9 @@ test_store_search_match_threads_multiple_stores (void)
 	g_clear_object (&store1);
 	g_clear_object (&store2);
 	g_clear_object (&session);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -3589,6 +3646,9 @@ test_store_search_folder (void)
 
 	g_clear_object (&folder);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -3614,7 +3674,7 @@ test_store_search_folder_match_threads (void)
 		"part", "1 2 1 2 1",
 		"subject", "reply to 21 from 12",
 		"",
-		"uid", "12.1",
+		"uid", "14",
 		"part", "12 1 1 2 1",
 		"subject", "reply to 21 b",
 		"",
@@ -3622,7 +3682,7 @@ test_store_search_folder_match_threads (void)
 		"part", "1 3 2 9 9 1 2",
 		"subject", "reply to nonexistent 99, referencing 12",
 		"",
-		"uid", "13.1",
+		"uid", "15",
 		"part", "1 31 1 1 2",
 		"subject", "reply to 12",
 		"",
@@ -3661,8 +3721,8 @@ test_store_search_folder_match_threads (void)
 	       12
 		 13
 		   22
-		 13.1
-	       12.1
+		 15
+	       14
 	     23
 	       33
 		 32
@@ -3684,7 +3744,7 @@ test_store_search_folder_match_threads (void)
 	g_assert_true (success);
 	g_assert_nonnull (uids);
 	g_assert_cmpint (uids->len, ==, 8);
-	test_store_search_check_folder_uids (uids, "11", "12", "12.1", "13", "13.1", "21", "22", "31", NULL);
+	test_store_search_check_folder_uids (uids, "11", "12", "14", "13", "15", "21", "22", "31", NULL);
 	g_clear_pointer (&uids, g_ptr_array_unref);
 
 	success = camel_folder_search_sync (folder, "(match-threads \"all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))", &uids, NULL, &local_error);
@@ -3692,7 +3752,7 @@ test_store_search_folder_match_threads (void)
 	g_assert_true (success);
 	g_assert_nonnull (uids);
 	g_assert_cmpint (uids->len, ==, 10);
-	test_store_search_check_folder_uids (uids, "12", "12.1", "13", "13.1", "21", "22", "23", "24", "32", "33", NULL);
+	test_store_search_check_folder_uids (uids, "12", "14", "13", "15", "21", "22", "23", "24", "32", "33", NULL);
 	g_clear_pointer (&uids, g_ptr_array_unref);
 
 	success = camel_folder_search_sync (folder, "(match-threads \"no-subject,all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))", &uids, NULL, &local_error);
@@ -3700,7 +3760,7 @@ test_store_search_folder_match_threads (void)
 	g_assert_true (success);
 	g_assert_nonnull (uids);
 	g_assert_cmpint (uids->len, ==, 9);
-	test_store_search_check_folder_uids (uids, "12", "12.1", "13", "13.1", "21", "22", "23", "32", "33", NULL);
+	test_store_search_check_folder_uids (uids, "12", "14", "13", "15", "21", "22", "23", "32", "33", NULL);
 	g_clear_pointer (&uids, g_ptr_array_unref);
 
 	success = camel_folder_search_sync (folder, "(match-threads \"replies\" (uid \"13\" \"33\"))", &uids, NULL, &local_error);
@@ -3737,6 +3797,9 @@ test_store_search_folder_match_threads (void)
 
 	g_clear_object (&folder);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -3821,6 +3884,9 @@ test_store_search_bool_sexp (void)
 	g_clear_object (&f3);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -3998,6 +4064,9 @@ test_store_search_match_index (void)
 	g_clear_object (&store);
 	g_clear_pointer (&index1, camel_store_search_index_unref);
 	g_clear_pointer (&index2, camel_store_search_index_unref);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 static void
@@ -4131,6 +4200,9 @@ test_store_search_summary_changes (void)
 	g_clear_object (&f1);
 	g_clear_object (&search);
 	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
 }
 
 gint

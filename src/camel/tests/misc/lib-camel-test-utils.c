@@ -5,16 +5,40 @@
 
 /* include as #include "lib-camel-test-utils.c" after camel.h */
 
+#include <glib/gstdio.h>
+
+#define DELAY_TIMEOUT_SECONDS 5
+
 #define TEST_TYPE_SESSION (test_session_get_type ())
 G_DECLARE_FINAL_TYPE (TestSession, test_session, TEST, SESSION, CamelSession)
+
+static gint n_alive_test_sessions = 0;
 
 struct _TestSession {
 	CamelSession parent_instance;
 
 	guint32 n_called_addressbook_contains;
+	guint32 n_pending_jobs;
 };
 
 G_DEFINE_TYPE (TestSession, test_session, CAMEL_TYPE_SESSION)
+
+static void
+test_session_job_started_cb (CamelSession *session)
+{
+	TestSession *self = TEST_SESSION (session);
+
+	self->n_pending_jobs++;
+}
+
+static void
+test_session_job_finished_cb (CamelSession *session)
+{
+	TestSession *self = TEST_SESSION (session);
+
+	g_assert_cmpuint (self->n_pending_jobs, >, 0);
+	self->n_pending_jobs--;
+}
 
 static gboolean
 test_session_addressbook_contains_sync (CamelSession *session,
@@ -65,6 +89,19 @@ test_session_constructor (GType type,
 }
 
 static void
+test_session_finalize (GObject *object)
+{
+	TestSession *self = TEST_SESSION (object);
+
+	g_assert_cmpuint (self->n_pending_jobs, ==, 0);
+	g_assert_cmpint (n_alive_test_sessions, >, 0);
+
+	g_atomic_int_add (&n_alive_test_sessions, -1);
+
+	G_OBJECT_CLASS (test_session_parent_class)->finalize (object);
+}
+
+static void
 test_session_class_init (TestSessionClass *klass)
 {
 	GObjectClass *object_class;
@@ -72,6 +109,7 @@ test_session_class_init (TestSessionClass *klass)
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructor = test_session_constructor;
+	object_class->finalize = test_session_finalize;
 
 	session_class = CAMEL_SESSION_CLASS (klass);
 	session_class->addressbook_contains_sync = test_session_addressbook_contains_sync;
@@ -80,6 +118,9 @@ test_session_class_init (TestSessionClass *klass)
 static void
 test_session_init (TestSession *self)
 {
+	g_atomic_int_add (&n_alive_test_sessions, 1);
+	g_signal_connect (self, "job-started", G_CALLBACK (test_session_job_started_cb), NULL);
+	g_signal_connect (self, "job-finished", G_CALLBACK (test_session_job_finished_cb), NULL);
 }
 
 static CamelSession *
@@ -101,6 +142,65 @@ test_session_new (void)
 	g_free (cache_dir);
 
 	return session;
+}
+
+static void
+test_session_check_finalized (void)
+{
+	g_assert_cmpint (n_alive_test_sessions, ==, 0);
+}
+
+static gboolean
+test_util_abort_on_timeout_cb (gpointer user_data)
+{
+	g_assert_not_reached ();
+	return G_SOURCE_REMOVE;
+}
+
+static gboolean
+test_util_reset_idle_timer (gpointer user_data)
+{
+	guint *ptimeout_id = user_data;
+	*ptimeout_id = 0;
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_session_wait_for_pending_jobs (void)
+{
+	TestSession *test_session;
+	guint timeout_id;
+
+	/* it's a singleton, thus it's okay to reach it this way */
+	test_session = TEST_SESSION (test_session_new ());
+
+	/* jobs are scheduled in an idle callback, which might not be called yet, thus
+	   wait for up to 100ms in case there's anything pending */
+
+	if (!test_session->n_pending_jobs) {
+		timeout_id = g_timeout_add (100, test_util_reset_idle_timer, &timeout_id);
+		g_assert_cmpuint (timeout_id, !=, 0);
+
+		while (!test_session->n_pending_jobs && timeout_id) {
+			g_main_context_iteration (NULL, TRUE);
+		}
+
+		if (timeout_id != 0)
+			g_assert_true (g_source_remove (timeout_id));
+	}
+
+	if (test_session->n_pending_jobs > 0) {
+		timeout_id = g_timeout_add_seconds (DELAY_TIMEOUT_SECONDS, test_util_abort_on_timeout_cb, NULL);
+		g_assert_cmpuint (timeout_id, !=, 0);
+
+		while (test_session->n_pending_jobs > 0) {
+			g_main_context_iteration (NULL, TRUE);
+		}
+
+		g_assert_true (g_source_remove (timeout_id));
+	}
+
+	g_clear_object (&test_session);
 }
 
 static void
@@ -261,6 +361,7 @@ struct _TestFolder {
 	guint32 n_called_search_header;
 	guint32 n_called_search_body;
 	gboolean message_info_with_headers;
+	gboolean cache_message_info;
 };
 
 G_DEFINE_TYPE (TestFolder, test_folder, CAMEL_TYPE_FOLDER)
@@ -278,24 +379,35 @@ test_folder_get_message_info (CamelFolder *folder,
 			      const gchar *uid)
 {
 	TestFolder *self = TEST_FOLDER (folder);
-	CamelStoreDB *sdb;
-	CamelMessageInfo *nfo;
-	gchar *bdata_ptr = NULL;
-	GError *local_error = NULL;
-	gboolean success;
-	CamelStoreDBMessageRecord record = { 0, };
+	CamelFolderSummary *summary;
+	CamelMessageInfo *nfo = NULL;
 
-	sdb = camel_store_get_db (camel_folder_get_parent_store (folder));
+	summary = camel_folder_get_folder_summary (folder);
+	if (summary)
+		nfo = camel_folder_summary_peek_loaded (summary, uid);
 
-	success = camel_store_db_read_message (sdb, camel_folder_get_full_name (folder), uid, &record, &local_error);
-	g_assert_no_error (local_error);
-	g_assert_true (success);
+	if (!nfo) {
+		CamelStoreDB *sdb;
+		gchar *bdata_ptr = NULL;
+		GError *local_error = NULL;
+		gboolean success;
+		CamelStoreDBMessageRecord record = { 0, };
 
-	nfo = camel_message_info_new (NULL);
+		sdb = camel_store_get_db (camel_folder_get_parent_store (folder));
 
-	g_assert_true (camel_message_info_load (nfo, &record, &bdata_ptr));
+		success = camel_store_db_read_message (sdb, camel_folder_get_full_name (folder), uid, &record, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
 
-	camel_store_db_message_record_clear (&record);
+		nfo = camel_message_info_new (summary);
+
+		g_assert_true (camel_message_info_load (nfo, &record, &bdata_ptr));
+
+		camel_store_db_message_record_clear (&record);
+
+		if (summary && self->cache_message_info)
+			camel_folder_summary_add (summary, nfo, TRUE);
+	}
 
 	if (self->message_info_with_headers) {
 		test_store_search_read_message_data (uid, nfo, NULL);
@@ -322,6 +434,46 @@ test_folder_get_message_sync (CamelFolder *folder,
 	self->n_called_get_message++;
 
 	return msg;
+}
+
+static gboolean
+test_folder_synchronize_sync (CamelFolder *folder,
+			      gboolean expunge,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	if (expunge) {
+		CamelFolderSummary *summary = camel_folder_get_folder_summary (folder);
+		CamelFolderChangeInfo *changes;
+		GPtrArray *all_uids;
+		guint ii;
+
+		if (!camel_folder_summary_get_deleted_count (summary))
+			return TRUE;
+
+		all_uids = camel_folder_get_uids (folder);
+		if (!all_uids)
+			return TRUE;
+
+		changes = camel_folder_change_info_new ();
+
+		for (ii = 0; ii < all_uids->len; ii++) {
+			const gchar *uid = g_ptr_array_index (all_uids, ii);
+
+			if ((camel_folder_summary_get_info_flags (summary, uid) & CAMEL_MESSAGE_DELETED) != 0) {
+				camel_folder_change_info_remove_uid (changes, uid);
+				camel_folder_summary_remove_uid (summary, uid);
+			}
+		}
+
+		if (camel_folder_change_info_changed (changes))
+			camel_folder_changed (folder, changes);
+
+		camel_folder_change_info_free (changes);
+		g_ptr_array_unref (all_uids);
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -362,6 +514,7 @@ test_folder_class_init (TestFolderClass *klass)
 	folder_class->get_filename = test_folder_get_filename;
 	folder_class->get_message_info = test_folder_get_message_info;
 	folder_class->get_message_sync = test_folder_get_message_sync;
+	folder_class->synchronize_sync = test_folder_synchronize_sync;
 	folder_class->search_header_sync = test_folder_search_header_sync;
 	folder_class->search_body_sync = test_folder_search_body_sync;
 }
@@ -370,6 +523,8 @@ static void
 test_folder_init (TestFolder *self)
 {
 	CamelFolder *folder = CAMEL_FOLDER (self);
+
+	self->cache_message_info = TRUE;
 
 	camel_folder_take_folder_summary (folder, camel_folder_summary_new (folder));
 }

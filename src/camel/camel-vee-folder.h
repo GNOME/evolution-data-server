@@ -23,6 +23,7 @@
 #ifndef CAMEL_VEE_FOLDER_H
 #define CAMEL_VEE_FOLDER_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-store.h>
 #include <camel/camel-vee-summary.h>
@@ -60,31 +61,9 @@ struct _CamelVeeFolder {
 struct _CamelVeeFolderClass {
 	CamelFolderClass parent_class;
 
-	/* TODO: Some of this may need some additional work/thinking through, it works for now*/
-
-	void		(*add_folder)		(CamelVeeFolder *vfolder,
-						 CamelFolder *subfolder,
-						 GCancellable *cancellable);
-	void		(*remove_folder)	(CamelVeeFolder *vfolder,
-						 CamelFolder *subfolder,
-						 GCancellable *cancellable);
-	void		(*rebuild_folder)	(CamelVeeFolder *vfolder,
-						 CamelFolder *subfolder,
-						 GCancellable *cancellable);
-
-	void		(*set_expression)	(CamelVeeFolder *vfolder,
-						 const gchar *expression);
-
-	/* Called for a folder-changed event on a source folder */
-	void		(*folder_changed)	(CamelVeeFolder *vfolder,
-						 CamelFolder *subfolder,
-						 CamelFolderChangeInfo *changes);
-
 	/* Padding for future expansion */
 	gpointer reserved[20];
 };
-
-#define CAMEL_UNMATCHED_NAME "UNMATCHED"
 
 GType		camel_vee_folder_get_type		(void);
 CamelFolder *	camel_vee_folder_new			(CamelStore *parent_store,
@@ -96,43 +75,33 @@ guint32		camel_vee_folder_get_flags		(CamelVeeFolder *vf);
 CamelFolder *	camel_vee_folder_get_location		(CamelVeeFolder *vf,
 							 const CamelVeeMessageInfo *vinfo,
 							 gchar **realuid);
-CamelFolder *	camel_vee_folder_get_vee_uid_folder	(CamelVeeFolder *vfolder,
+CamelFolder *	camel_vee_folder_dup_vee_uid_folder	(CamelVeeFolder *vfolder,
 							 const gchar *vee_message_uid);
 void		camel_vee_folder_set_auto_update	(CamelVeeFolder *vfolder,
 							 gboolean auto_update);
 gboolean	camel_vee_folder_get_auto_update	(CamelVeeFolder *vfolder);
-void		camel_vee_folder_add_folder		(CamelVeeFolder *vfolder,
-							 CamelFolder *subfolder,
-							 GCancellable *cancellable);
-void		camel_vee_folder_remove_folder		(CamelVeeFolder *vfolder,
-							 CamelFolder *subfolder,
-							 GCancellable *cancellable);
-void		camel_vee_folder_set_folders		(CamelVeeFolder *vfolder,
-							 GList *folders,
-							 GCancellable *cancellable);
-GList *		camel_vee_folder_ref_folders		(CamelVeeFolder *vfolder);
-void		camel_vee_folder_add_vuid		(CamelVeeFolder *vfolder,
-							 struct _CamelVeeMessageInfoData *mi_data,
-							 CamelFolderChangeInfo *changes);
-void		camel_vee_folder_remove_vuid		(CamelVeeFolder *vfolder,
-							 struct _CamelVeeMessageInfoData *mi_data,
-							 CamelFolderChangeInfo *changes);
-
-void		camel_vee_folder_rebuild_folder		(CamelVeeFolder *vfolder,
-							 CamelFolder *subfolder,
-							 GCancellable *cancellable);
-void		camel_vee_folder_set_expression		(CamelVeeFolder *vfolder,
-							 const gchar *expression);
+gboolean	camel_vee_folder_set_expression_sync	(CamelVeeFolder *vfolder,
+							 const gchar *expression,
+							 CamelVeeFolderOpFlags op_flags,
+							 GCancellable *cancellable,
+							 GError **error);
 const gchar *	camel_vee_folder_get_expression		(CamelVeeFolder *vfolder);
-
-void		camel_vee_folder_ignore_next_changed_event
-							(CamelVeeFolder *vfolder,
-							 CamelFolder *subfolder);
-void		camel_vee_folder_remove_from_ignore_changed_event
-							(CamelVeeFolder *vfolder,
-							 CamelFolder *subfolder);
-void		camel_vee_folder_propagate_skipped_changes
-							(CamelVeeFolder *vf);
+gboolean	camel_vee_folder_add_folder_sync	(CamelVeeFolder *vfolder,
+							 CamelFolder *subfolder,
+							 CamelVeeFolderOpFlags op_flags,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	camel_vee_folder_remove_folder_sync	(CamelVeeFolder *vfolder,
+							 CamelFolder *subfolder,
+							 CamelVeeFolderOpFlags op_flags,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	camel_vee_folder_set_folders_sync	(CamelVeeFolder *vfolder,
+							 GPtrArray *folders, /* CamelFolder * */
+							 CamelVeeFolderOpFlags op_flags,
+							 GCancellable *cancellable,
+							 GError **error);
+GPtrArray *	camel_vee_folder_dup_folders		(CamelVeeFolder *vfolder); /* CamelFolder * */
 
 G_END_DECLS
 

@@ -142,7 +142,6 @@ set(SOURCES
 	camel-url.c
 	camel-utf8.c
 	camel-utils.c
-	camel-vee-data-cache.c
 	camel-vee-folder.c
 	camel-vee-message-info.c
 	camel-vee-store.c
@@ -288,7 +287,6 @@ set(HEADERS
 	camel-url.h
 	camel-utf8.h
 	camel-utils.h
-	camel-vee-data-cache.h
 	camel-vee-folder.h
 	camel-vee-message-info.h
 	camel-vee-store.h

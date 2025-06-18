@@ -933,6 +933,8 @@ struct _CamelStoreSearchPrivate {
 	/* data related to an ongoing search */
 	struct _ongoing_search {
 		guint folder_id;
+		CamelFolder *folder;
+		CamelFolderSummary *folder_summary;
 		const gchar *uid; /* camel's string pool */
 		CamelNameValueArray *headers;
 		CamelMessageInfo *info;
@@ -960,6 +962,8 @@ camel_store_search_clear_ongoing_search_data (CamelStoreSearch *self)
 	search_cache_clear (self->priv->ongoing_search.search_body);
 
 	self->priv->ongoing_search.folder_id = 0;
+	self->priv->ongoing_search.folder = NULL;
+	self->priv->ongoing_search.folder_summary = NULL;
 	g_clear_pointer (&self->priv->ongoing_search.uid, camel_pstring_free);
 	g_clear_pointer (&self->priv->ongoing_search.headers, camel_name_value_array_free);
 	g_clear_object (&self->priv->ongoing_search.info);
@@ -1091,6 +1095,7 @@ store_search_and_or (CamelSExp *sexp,
 	ResultFlags max_flags = store_search_result_get_flags (res);
 	GPtrArray *array; /* CamelSExpResult * */
 	GString *stmt = NULL;
+	gboolean has_bool_true = FALSE, has_bool_false = FALSE;
 	gint ii;
 
 	array = g_ptr_array_sized_new (argc);
@@ -1101,7 +1106,27 @@ store_search_and_or (CamelSExp *sexp,
 		if (res1) {
 			g_ptr_array_add (array, res1);
 			max_flags |= store_search_result_get_flags (res1);
+
+			if (res1->type == CAMEL_SEXP_RES_BOOL) {
+				has_bool_true = has_bool_true || res1->value.boolean;
+				has_bool_false = has_bool_false || !res1->value.boolean;
+			}
 		}
+	}
+
+	if (is_and_op && has_bool_false)
+		res->value.string = g_strdup ("0");
+	else if (!is_and_op && has_bool_true)
+		res->value.string = g_strdup ("1");
+
+	if (res->value.string) {
+		for (ii = 0; ii < (gint) array->len; ii++) {
+			res1 = g_ptr_array_index (array, ii);
+			camel_sexp_result_free (sexp, res1);
+		}
+
+		g_ptr_array_unref (array);
+		return res;
 	}
 
 	g_ptr_array_sort (array, store_search_cmp_result_flags);
@@ -1549,7 +1574,7 @@ store_search_header (CamelSExp *sexp,
 			    (!is_email_column && (cmp_kind == CMP_HEADER_MATCHES ||
 			    cmp_kind == CMP_HEADER_STARTS_WITH ||
 			    cmp_kind == CMP_HEADER_ENDS_WITH))) {
-				g_string_append_printf (stmt, "%s IS NOT NULL AND %s LIKE '", column_name, column_name);
+				g_string_append_printf (stmt, "camelfromloadedinfoordb('%p',uid,'%s',%s) LIKE '", self, column_name, column_name);
 
 				if (cmp_kind == CMP_HEADER_CONTAINS || cmp_kind == CMP_HEADER_ENDS_WITH)
 					g_string_append_c (stmt, '%');
@@ -1563,7 +1588,7 @@ store_search_header (CamelSExp *sexp,
 			} else {
 				g_string_append (stmt, "camelcmptext(");
 				camel_db_sqlize_to_statement (stmt, header_name, CAMEL_DB_SQLIZE_FLAG_FULL);
-				g_string_append_printf (stmt, ",'%s',%s,", cmp_kind_str, column_name);
+				g_string_append_printf (stmt, ",'%s',camelfromloadedinfoordb('%p',uid,'%s',%s),", cmp_kind_str, self, column_name, column_name);
 				camel_db_sqlize_to_statement (stmt, value, CAMEL_DB_SQLIZE_FLAG_FULL);
 				g_string_append (stmt, ") THEN 1");
 				store_search_result_add_flags (res, RESULT_NEEDS_CUSTOM_FUNCTION);
@@ -1586,7 +1611,7 @@ store_search_header (CamelSExp *sexp,
 
 				g_string_append (stmt, "camelcmptext(");
 				camel_db_sqlize_to_statement (stmt, column_names[jj], CAMEL_DB_SQLIZE_FLAG_FULL);
-				g_string_append_printf (stmt, ",'%s',%s,", cmp_kind_str, column_names[jj]);
+				g_string_append_printf (stmt, ",'%s',camelfromloadedinfoordb('%p',uid,'%s',%s),", cmp_kind_str, self, column_names[jj], column_names[jj]);
 				camel_db_sqlize_to_statement (stmt, value, CAMEL_DB_SQLIZE_FLAG_FULL);
 				g_string_append_c (stmt, ')');
 			}
@@ -1701,6 +1726,7 @@ store_search_user_tag_cb (CamelSExp *sexp,
 			  CamelSExpResult **argv,
 			  gpointer user_data)
 {
+	CamelStoreSearch *self = user_data;
 	CamelSExpResult *res = store_search_create_string_result (sexp);
 	GString *stmt;
 
@@ -1708,6 +1734,7 @@ store_search_user_tag_cb (CamelSExp *sexp,
 	g_return_val_if_fail (argv[0]->type == CAMEL_SEXP_RES_STRING, res);
 
 	stmt = g_string_new ("camelgetusertag(");
+	g_string_append_printf (stmt, "'%p',uid,", self);
 	store_search_res_to_statement (stmt, argv[0]);
 	g_string_append (stmt, ", usertags)");
 
@@ -1725,14 +1752,17 @@ store_search_user_flag_cb (CamelSExp *sexp,
 			   CamelSExpResult **argv,
 			   gpointer user_data)
 {
+	CamelStoreSearch *self = user_data;
 	CamelSExpResult *res = store_search_create_string_result (sexp);
 	GString *stmt;
 
 	g_return_val_if_fail (argc == 1, res);
 	g_return_val_if_fail (argv[0]->type == CAMEL_SEXP_RES_STRING, res);
 
-	stmt = g_string_new ("labels MATCH ");
+	stmt = g_string_new ("camelchecklabels(");
+	g_string_append_printf (stmt, "'%p',uid,", self);
 	store_search_res_to_statement (stmt, argv[0]);
+	g_string_append (stmt, ",labels)");
 
 	store_search_result_add_flags (res, store_search_result_get_flags (argv[0]));
 	res->value.string = g_string_free (stmt, FALSE);
@@ -1746,13 +1776,14 @@ store_search_system_flag_cb (CamelSExp *sexp,
 			     CamelSExpResult **argv,
 			     gpointer user_data)
 {
+	CamelStoreSearch *self = user_data;
 	CamelSExpResult *res = store_search_create_string_result (sexp);
 
 	g_return_val_if_fail (argc == 1, res);
 	g_return_val_if_fail (argv[0]->type == CAMEL_SEXP_RES_STRING, res);
 
 	store_search_result_add_flags (res, store_search_result_get_flags (argv[0]));
-	res->value.string = g_strdup_printf ("(flags & 0x%x) != 0", camel_system_flag (argv[0]->value.string));
+	res->value.string = g_strdup_printf ("camelcheckflags('%p',uid,%u,flags)", self, camel_system_flag (argv[0]->value.string));
 
 	return res;
 }
@@ -2520,7 +2551,7 @@ camel_store_search_populate_result_index_sync (CamelStoreSearch *self,
 	CamelDB *cdb;
 	GHashTableIter iter;
 	GString *stmt;
-	gpointer key = NULL;
+	gpointer key = NULL, value = NULL;
 	gboolean success = TRUE;
 
 	self->priv->result_index = camel_store_search_index_new ();
@@ -2533,8 +2564,9 @@ camel_store_search_populate_result_index_sync (CamelStoreSearch *self,
 
 	stmt = g_string_new ("");
 	g_hash_table_iter_init (&iter, self->priv->folders_by_id);
-	while (g_hash_table_iter_next (&iter, &key, NULL)) {
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
 		guint32 folder_id = GPOINTER_TO_UINT (key);
+		CamelFolder *folder = value;
 
 		if (stmt->len)
 			g_string_truncate (stmt, 0);
@@ -2543,6 +2575,8 @@ camel_store_search_populate_result_index_sync (CamelStoreSearch *self,
 			folder_id, self->priv->where_clause_sql);
 
 		self->priv->ongoing_search.folder_id = folder_id;
+		self->priv->ongoing_search.folder = folder;
+		self->priv->ongoing_search.folder_summary = camel_folder_get_folder_summary (folder);
 
 		success = camel_db_exec_select (cdb, stmt->str, camel_store_search_populate_result_index_cb, self, error);
 
@@ -2557,6 +2591,81 @@ camel_store_search_populate_result_index_sync (CamelStoreSearch *self,
 	return success;
 }
 
+static gboolean
+camel_store_search_acquire_folder (CamelFolder *folder,
+				   GError **error)
+{
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (folder);
+	gboolean success = TRUE;
+
+	camel_folder_lock (folder);
+	if (summary) {
+		camel_folder_summary_lock (summary);
+		success = camel_folder_summary_save (summary, error);
+	}
+
+	return success;
+}
+
+static void
+camel_store_search_release_folder (CamelFolder *folder)
+{
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (folder);
+
+	if (summary)
+		camel_folder_summary_unlock (summary);
+	camel_folder_unlock (folder);
+}
+
+/* this is needed to avoid deadlock when two threads are reading from the CamelStoreDB
+   and one of them tries to read data from the folder summary during the SELECT execution */
+static GPtrArray * /* (transfer full) (element-type CamelFolder) */
+camel_store_search_acquire_folders (CamelStoreSearch *self,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	GPtrArray *folders;
+	gboolean success = TRUE;
+	guint ii;
+
+	folders = camel_store_search_list_folders (self);
+
+	for (ii = 0; success && folders && ii < folders->len; ii++) {
+		CamelFolder *folder = g_ptr_array_index (folders, ii);
+
+		/* even when it returns FALSE, the folder and its summary are locked */
+		success = camel_store_search_acquire_folder (folder, error);
+		success = success && !g_cancellable_set_error_if_cancelled (cancellable, error);
+	}
+
+	if (!success) {
+		guint jj;
+
+		for (jj = 0; jj < ii; jj++) {
+			CamelFolder *folder = g_ptr_array_index (folders, jj);
+
+			camel_store_search_release_folder (folder);
+		}
+
+		g_clear_pointer (&folders, g_ptr_array_unref);
+	}
+
+	return folders;
+}
+
+static void
+camel_store_search_release_folders (CamelStoreSearch *self,
+				    GPtrArray *folders)
+{
+	guint ii;
+
+	for (ii = 0; folders && ii < folders->len; ii++) {
+		CamelFolder *folder = g_ptr_array_index (folders, ii);
+
+		camel_store_search_release_folder (folder);
+	}
+}
+
 /**
  * camel_store_search_rebuild_sync:
  * @self: a #CamelStoreSearch
@@ -2564,8 +2673,9 @@ camel_store_search_populate_result_index_sync (CamelStoreSearch *self,
  * @error: return location for a #GError, or %NULL
  *
  * Rebuilds content of the @self with the current search expression.
- * The function does nothing when no search expression is set or
- * when no folder is added to the @self.
+ * The function does nothing when no search expression is set. It can
+ * be called with no folder set, then it parses the expression and
+ * sets the values for the camel_store_search_get_match_threads_kind().
  *
  * Returns: whether succeeded
  *
@@ -2576,6 +2686,7 @@ camel_store_search_rebuild_sync (CamelStoreSearch *self,
 				 GCancellable *cancellable,
 				 GError **error)
 {
+	GPtrArray *folders;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), FALSE);
@@ -2590,7 +2701,10 @@ camel_store_search_rebuild_sync (CamelStoreSearch *self,
 
 	camel_store_search_clear_ongoing_search_data (self);
 
-	if (!self->priv->expression || !g_hash_table_size (self->priv->folders)) {
+	if (!self->priv->expression) {
+		camel_store_search_release_folders (self, folders);
+		g_clear_pointer (&folders, g_ptr_array_unref);
+
 		return TRUE;
 	}
 
@@ -2616,7 +2730,7 @@ camel_store_search_rebuild_sync (CamelStoreSearch *self,
 
 			self->priv->where_clause_sql = g_strdup (stmt);
 
-			/*printf ("%s: expr:---%s--- SQL:---%s---\n", G_STRFUNC, self->priv->expression, stmt->str);*/
+			/* printf ("%s: expr:---%s--- SQL where-clause:---%s---\n", G_STRFUNC, self->priv->expression, self->priv->where_clause_sql); */
 			if (self->priv->match_threads_kind != CAMEL_MATCH_THREADS_KIND_NONE) {
 				success = camel_store_search_populate_result_index_sync (self, cancellable, error);
 
@@ -2640,6 +2754,9 @@ camel_store_search_rebuild_sync (CamelStoreSearch *self,
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, "Cannot parse expression “%s”: %s",
 			self->priv->expression, err_msg ? err_msg : "Unknown error");
 	}
+
+	camel_store_search_release_folders (self, folders);
+	g_clear_pointer (&folders, g_ptr_array_unref);
 
 	return success;
 }
@@ -2776,21 +2893,34 @@ camel_store_search_get_items_sync (CamelStoreSearch *self,
 				   GError **error)
 {
 	CamelDB *cdb;
+	GPtrArray *folders;
 	GString *stmt;
 	GHashTableIter iter;
-	gpointer key;
+	gpointer key = NULL, value = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), FALSE);
 	g_return_val_if_fail (out_items != NULL, FALSE);
 
+	folders = camel_store_search_acquire_folders (self, cancellable, error);
+	if (!folders)
+		return FALSE;
+
 	if (self->priv->needs_rebuild) {
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_INITIALIZED, "Cannot get items: Run rebuild first");
+
+		camel_store_search_release_folders (self, folders);
+		g_clear_pointer (&folders, g_ptr_array_unref);
+
 		return FALSE;
 	}
 
 	if (!g_hash_table_size (self->priv->folders_by_id)) {
 		*out_items = g_ptr_array_new ();
+
+		camel_store_search_release_folders (self, folders);
+		g_clear_pointer (&folders, g_ptr_array_unref);
+
 		return TRUE;
 	}
 
@@ -2804,8 +2934,9 @@ camel_store_search_get_items_sync (CamelStoreSearch *self,
 
 	stmt = g_string_new ("");
 	g_hash_table_iter_init (&iter, self->priv->folders_by_id);
-	while (g_hash_table_iter_next (&iter, &key, NULL)) {
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
 		guint32 folder_id = GPOINTER_TO_UINT (key);
+		CamelFolder *folder = value;
 
 		if (stmt->len)
 			g_string_truncate (stmt, 0);
@@ -2817,6 +2948,8 @@ camel_store_search_get_items_sync (CamelStoreSearch *self,
 			folder_id, self->priv->where_clause_sql);
 
 		self->priv->ongoing_search.folder_id = folder_id;
+		self->priv->ongoing_search.folder = folder;
+		self->priv->ongoing_search.folder_summary = camel_folder_get_folder_summary (folder);
 
 		success = camel_db_exec_select (cdb, stmt->str, camel_store_search_read_items_cb, *out_items, error);
 
@@ -2831,6 +2964,9 @@ camel_store_search_get_items_sync (CamelStoreSearch *self,
 	if (success)
 		success = self->priv->ongoing_search.success;
 	camel_store_search_clear_ongoing_search_data (self);
+
+	camel_store_search_release_folders (self, folders);
+	g_clear_pointer (&folders, g_ptr_array_unref);
 
 	if (!success)
 		g_clear_pointer (out_items, g_ptr_array_unref);
@@ -2881,6 +3017,7 @@ camel_store_search_get_uids_sync (CamelStoreSearch *self,
 				  GCancellable *cancellable,
 				  GError **error)
 {
+	CamelFolder *folder;
 	guint32 folder_id;
 	gboolean success;
 
@@ -2894,10 +3031,20 @@ camel_store_search_get_uids_sync (CamelStoreSearch *self,
 	}
 
 	folder_id = camel_store_db_get_folder_id (self->priv->store_db, folder_name);
-	if (!folder_id || !g_hash_table_contains (self->priv->folders_by_id, GUINT_TO_POINTER (folder_id))) {
+	if (!folder_id || (folder = g_hash_table_lookup (self->priv->folders_by_id, GUINT_TO_POINTER (folder_id))) == NULL) {
 		*out_uids = NULL;
 
 		return TRUE;
+	}
+
+	g_object_ref (folder);
+
+	/* this avoids deadlock when two threads are trying to read data from the self
+	   and the message info is read from the summary during the SELECT */
+	if (!camel_store_search_acquire_folder (folder, error)) {
+		camel_store_search_release_folder (folder);
+		g_object_unref (folder);
+		return FALSE;
 	}
 
 	*out_uids = g_ptr_array_new_full (128, (GDestroyNotify) camel_pstring_free);
@@ -2928,6 +3075,8 @@ camel_store_search_get_uids_sync (CamelStoreSearch *self,
 		self->priv->ongoing_search.cancellable = cancellable;
 		self->priv->ongoing_search.error = error;
 		self->priv->ongoing_search.folder_id = folder_id;
+		self->priv->ongoing_search.folder = folder;
+		self->priv->ongoing_search.folder_summary = camel_folder_get_folder_summary (folder);
 
 		success = camel_db_exec_select (cdb, stmt->str, camel_store_search_read_uids_cb, *out_uids, error);
 
@@ -2937,6 +3086,9 @@ camel_store_search_get_uids_sync (CamelStoreSearch *self,
 			success = self->priv->ongoing_search.success;
 		camel_store_search_clear_ongoing_search_data (self);
 	}
+
+	camel_store_search_release_folder (folder);
+	g_object_unref (folder);
 
 	if (!success)
 		g_clear_pointer (out_uids, g_ptr_array_unref);
@@ -3235,9 +3387,10 @@ camel_store_search_list_match_indexes (CamelStoreSearch *self)
 }
 
 typedef enum _EnsureFlags {
-	ENSURE_FLAG_INFO = 1 << 0,
-	ENSURE_FLAG_HEADERS = 1 << 1,
-	ENSURE_FLAG_MESSAGE = 1 << 2
+	ENSURE_FLAG_LOADED_INFO = 1 << 0,
+	ENSURE_FLAG_INFO = 1 << 1,
+	ENSURE_FLAG_HEADERS = 1 << 2,
+	ENSURE_FLAG_MESSAGE = 1 << 3
 } EnsureFlags;
 
 static void
@@ -3254,43 +3407,33 @@ camel_store_search_ensure_ongoing_search (CamelStoreSearch *self,
 		self->priv->ongoing_search.uid = camel_pstring_strdup (uid);
 	}
 
-	if ((flags & ENSURE_FLAG_INFO) != 0 && !self->priv->ongoing_search.info) {
-		CamelFolder *folder;
-
-		folder = g_hash_table_lookup (self->priv->folders_by_id, GUINT_TO_POINTER (self->priv->ongoing_search.folder_id));
-		if (folder) {
-			self->priv->ongoing_search.info = camel_folder_get_message_info (folder, uid);
-		}
+	if ((flags & (ENSURE_FLAG_INFO | ENSURE_FLAG_LOADED_INFO)) != 0 && !self->priv->ongoing_search.info && self->priv->ongoing_search.folder_summary) {
+		self->priv->ongoing_search.info = camel_folder_summary_peek_loaded (self->priv->ongoing_search.folder_summary, uid);
 	}
 
-	if ((flags & ENSURE_FLAG_HEADERS) != 0 && !self->priv->ongoing_search.headers) {
-		CamelFolder *folder;
-
-		folder = g_hash_table_lookup (self->priv->folders_by_id, GUINT_TO_POINTER (self->priv->ongoing_search.folder_id));
-		if (folder) {
-			camel_folder_dup_headers_sync (folder, uid, &self->priv->ongoing_search.headers,
-				self->priv->ongoing_search.cancellable, NULL);
-		}
+	if ((flags & ENSURE_FLAG_INFO) != 0 && !self->priv->ongoing_search.info && self->priv->ongoing_search.folder) {
+		self->priv->ongoing_search.info = camel_folder_get_message_info (self->priv->ongoing_search.folder, uid);
 	}
 
-	if ((flags & ENSURE_FLAG_MESSAGE) != 0 && !self->priv->ongoing_search.message) {
-		CamelFolder *folder;
-		CamelMimeMessage *message = NULL;
+	if ((flags & ENSURE_FLAG_HEADERS) != 0 && !self->priv->ongoing_search.headers && self->priv->ongoing_search.folder) {
+		camel_folder_dup_headers_sync (self->priv->ongoing_search.folder, uid, &self->priv->ongoing_search.headers,
+			self->priv->ongoing_search.cancellable, NULL);
+	}
 
-		folder = g_hash_table_lookup (self->priv->folders_by_id, GUINT_TO_POINTER (self->priv->ongoing_search.folder_id));
-		if (folder) {
-			message = camel_folder_get_message_cached (folder, uid, self->priv->ongoing_search.cancellable);
-			if (!message) {
-				GError *local_error = NULL;
+	if ((flags & ENSURE_FLAG_MESSAGE) != 0 && !self->priv->ongoing_search.message && self->priv->ongoing_search.folder) {
+		CamelMimeMessage *message;
 
-				message = camel_folder_get_message_sync (folder, uid, self->priv->ongoing_search.cancellable, &local_error);
+		message = camel_folder_get_message_cached (self->priv->ongoing_search.folder, uid, self->priv->ongoing_search.cancellable);
+		if (!message) {
+			GError *local_error = NULL;
 
-				if (local_error && !g_error_matches (local_error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
-					self->priv->ongoing_search.success = FALSE;
-					g_propagate_error (self->priv->ongoing_search.error, local_error);
-				} else {
-					g_clear_error (&local_error);
-				}
+			message = camel_folder_get_message_sync (self->priv->ongoing_search.folder, uid, self->priv->ongoing_search.cancellable, &local_error);
+
+			if (local_error && !g_error_matches (local_error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
+				self->priv->ongoing_search.success = FALSE;
+				g_propagate_error (self->priv->ongoing_search.error, local_error);
+			} else {
+				g_clear_error (&local_error);
 			}
 		}
 
@@ -3379,21 +3522,17 @@ _camel_store_search_body_contains (CamelStoreSearch *self,
 	if (!is_regex) {
 		SearchCache *cache = self->priv->ongoing_search.search_body;
 
-		if (!search_cache_has_token_result (cache, encoded_words)) {
-			CamelFolder *folder = g_hash_table_lookup (self->priv->folders_by_id, GUINT_TO_POINTER (self->priv->ongoing_search.folder_id));
+		if (!search_cache_has_token_result (cache, encoded_words) && self->priv->ongoing_search.folder) {
+			GPtrArray *uids = NULL;
+			gboolean success;
 
-			if (folder) {
-				GPtrArray *uids = NULL;
-				gboolean success;
+			if (!words)
+				words = store_search_decode_words (encoded_words);
 
-				if (!words)
-					words = store_search_decode_words (encoded_words);
+			success = camel_folder_search_body_sync (self->priv->ongoing_search.folder, words, &uids, self->priv->ongoing_search.cancellable, NULL);
+			search_cache_add_token_result (cache, encoded_words, self->priv->ongoing_search.folder_id, uids, !success);
 
-				success = camel_folder_search_body_sync (folder, words, &uids, self->priv->ongoing_search.cancellable, NULL);
-				search_cache_add_token_result (cache, encoded_words, self->priv->ongoing_search.folder_id, uids, !success);
-
-				g_clear_pointer (&uids, g_ptr_array_unref);
-			}
+			g_clear_pointer (&uids, g_ptr_array_unref);
 		}
 
 		if (!search_cache_get_token_result_failed (cache, encoded_words, self->priv->ongoing_search.folder_id) &&
@@ -3519,6 +3658,94 @@ _camel_store_search_dup_header_value (CamelStoreSearch *self,
 	return header_value;
 }
 
+gchar *
+_camel_store_search_dup_user_tag (CamelStoreSearch *self,
+				  const gchar *uid,
+				  const gchar *tag_name,
+				  const gchar *dbvalue)
+{
+	gchar *value = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), NULL);
+
+	if (!self->priv->ongoing_search.success)
+		return NULL;
+
+	/* do not load it, use the in-memory info only if loaded, otherwise use the db value */
+	camel_store_search_ensure_ongoing_search (self, uid, ENSURE_FLAG_LOADED_INFO);
+
+	if (self->priv->ongoing_search.info) {
+		camel_message_info_property_lock (self->priv->ongoing_search.info);
+		value = camel_message_info_dup_user_tag (self->priv->ongoing_search.info, tag_name);
+		camel_message_info_property_unlock (self->priv->ongoing_search.info);
+	} else {
+		/* parse the string only if it looks like the tag is there */
+		if (tag_name && *tag_name && dbvalue && *dbvalue && camel_strstrcase (dbvalue, tag_name)) {
+			gchar *part = (gchar *) dbvalue;
+			gint ii, count;
+
+			count = camel_util_bdata_get_number (&part, 0);
+
+			for (ii = 0; ii < count && !value; ii++) {
+				gchar *nname, *nvalue;
+
+				nname = camel_util_bdata_get_string (&part, NULL);
+				nvalue = camel_util_bdata_get_string (&part, NULL);
+
+				if (nname && g_ascii_strcasecmp (nname, tag_name) == 0)
+					value = g_steal_pointer (&nvalue);
+
+				g_free (nname);
+				g_free (nvalue);
+			}
+		}
+	}
+
+	return value;
+}
+
+gchar *
+_camel_store_search_from_loaded_info_or_db (CamelStoreSearch *self,
+					    const gchar *uid,
+					    const gchar *column_name,
+					    const gchar *dbvalue)
+{
+	gchar *value = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), NULL);
+
+	if (!self->priv->ongoing_search.success)
+		return NULL;
+
+	/* do not load it, use the in-memory info only if loaded, otherwise use the db value */
+	camel_store_search_ensure_ongoing_search (self, uid, ENSURE_FLAG_LOADED_INFO);
+
+	if (self->priv->ongoing_search.info) {
+		camel_message_info_property_lock (self->priv->ongoing_search.info);
+
+		if (g_ascii_strcasecmp (column_name, "subject") == 0)
+			value = g_strdup (camel_message_info_get_subject (self->priv->ongoing_search.info));
+		else if (g_ascii_strcasecmp (column_name, "mail_from") == 0)
+			value = g_strdup (camel_message_info_get_from (self->priv->ongoing_search.info));
+		else if (g_ascii_strcasecmp (column_name, "mail_cc") == 0)
+			value = g_strdup (camel_message_info_get_cc (self->priv->ongoing_search.info));
+		else if (g_ascii_strcasecmp (column_name, "mail_to") == 0)
+			value = g_strdup (camel_message_info_get_to (self->priv->ongoing_search.info));
+		else if (g_ascii_strcasecmp (column_name, "usertags") == 0)
+			value = camel_message_info_encode_user_tags (self->priv->ongoing_search.info);
+		else if (g_ascii_strcasecmp (column_name, "labels") == 0)
+			value = camel_message_info_encode_user_flags (self->priv->ongoing_search.info);
+		else if (g_ascii_strcasecmp (column_name, "mlist") == 0)
+			value = g_strdup (camel_message_info_get_mlist (self->priv->ongoing_search.info));
+
+		camel_message_info_property_unlock (self->priv->ongoing_search.info);
+	} else {
+		value = g_strdup (dbvalue);
+	}
+
+	return value;
+}
+
 static gboolean
 _camel_store_search_cmp_any_headers_list (const CamelNameValueArray *headers,
 					  camel_search_match_t how,
@@ -3640,6 +3867,82 @@ _camel_store_search_addressbook_contains (CamelStoreSearch *self,
 
 		g_object_unref (session);
 	}
+
+	return contains;
+}
+
+gboolean
+_camel_store_search_check_labels (CamelStoreSearch *self,
+				  const gchar *uid,
+				  const gchar *label_to_check,
+				  const gchar *dbvalue)
+{
+	gboolean contains = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), FALSE);
+
+	if (!self->priv->ongoing_search.success || !label_to_check || !*label_to_check)
+		return FALSE;
+
+	/* do not load it, use the in-memory info only if loaded, otherwise use the db value */
+	camel_store_search_ensure_ongoing_search (self, uid, ENSURE_FLAG_LOADED_INFO);
+
+	if (self->priv->ongoing_search.info) {
+		contains = camel_message_info_get_user_flag (self->priv->ongoing_search.info, label_to_check);
+	} else {
+		if (dbvalue && *dbvalue) {
+			/* checks whether string 'where' contains whole word 'what',
+			 * case insensitively (ASCII, not utf8) */
+			const gchar *where = dbvalue;
+			const gchar *what = label_to_check;
+
+			if (what && where && !*what) {
+				contains = TRUE;
+			} else if (what && where) {
+				gboolean word = TRUE;
+				gint i, j;
+
+				for (i = 0, j = 0; where[i] && !contains; i++) {
+					gchar c = where[i];
+
+					if (c == ' ') {
+						word = TRUE;
+						j = 0;
+					} else if (word && g_ascii_tolower (c) == g_ascii_tolower (what[j])) {
+						j++;
+						if (what[j] == 0 && (where[i + 1] == 0 || g_ascii_isspace (where[i + 1])))
+							contains = TRUE;
+					} else {
+						word = FALSE;
+					}
+				}
+			}
+		}
+	}
+
+	return contains;
+}
+
+gboolean
+_camel_store_search_check_flags (CamelStoreSearch *self,
+				 const gchar *uid,
+				 guint32 flags_to_check,
+				 guint32 dbvalue)
+{
+	gboolean contains = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), FALSE);
+
+	if (!self->priv->ongoing_search.success)
+		return FALSE;
+
+	/* do not load it, use the in-memory info only if loaded, otherwise use the db value */
+	camel_store_search_ensure_ongoing_search (self, uid, ENSURE_FLAG_LOADED_INFO);
+
+	if (self->priv->ongoing_search.info)
+		contains = (camel_message_info_get_flags (self->priv->ongoing_search.info) & flags_to_check) != 0;
+	else
+		contains = (dbvalue & flags_to_check) != 0;
 
 	return contains;
 }

@@ -125,7 +125,6 @@
       <xi:include href="xml/camel-vee-store.xml"/>
       <xi:include href="xml/camel-vee-summary.xml"/>
       <xi:include href="xml/camel-vtrash-folder.xml"/>
-      <xi:include href="xml/camel-vee-data-cache.xml"/>
     </chapter>
 
     <chapter id="Addresses">

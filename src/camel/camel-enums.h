@@ -693,4 +693,24 @@ typedef enum _CamelMatchThreadsKind {
 	CAMEL_MATCH_THREADS_KIND_SINGLE
 } CamelMatchThreadsKind;
 
+/**
+ * CamelVeeFolderOpFlags:
+ * @CAMEL_VEE_FOLDER_OP_FLAG_NONE: no flag set
+ * @CAMEL_VEE_FOLDER_OP_FLAG_SKIP_REBUILD: skip rebuild of the search folder
+ * @CAMEL_VEE_FOLDER_OP_FLAG_SKIP_EMIT: skip emit of internal "vee-setup-changed" signal
+ *
+ * Flags influencing behavior of some functions of a #CamelVeeFolder,
+ * like the camel_vee_folder_set_expression_sync(),
+ * camel_vee_folder_add_folder_sync (),
+ * camel_vee_folder_remove_folder_sync () and
+ * camel_vee_folder_set_folders_sync().
+ *
+ * Since: 3.58
+ **/
+typedef enum _CamelVeeFolderOpFlags { /*< flags >*/
+	CAMEL_VEE_FOLDER_OP_FLAG_NONE		= 0,
+	CAMEL_VEE_FOLDER_OP_FLAG_SKIP_REBUILD	= 1 << 0,
+	CAMEL_VEE_FOLDER_OP_FLAG_SKIP_EMIT	= 1 << 1
+} CamelVeeFolderOpFlags;
+
 #endif /* CAMEL_ENUMS_H */

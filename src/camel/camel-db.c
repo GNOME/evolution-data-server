@@ -20,7 +20,6 @@
 #include "evolution-data-server-config.h"
 
 #include <errno.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -604,49 +603,6 @@ cdb_sql_exec (CamelDB *cdb,
 	return TRUE;
 }
 
-/* checks whether string 'where' contains whole word 'what',
- * case insensitively (ascii, not utf8, same as 'LIKE' in SQLite3)
-*/
-static void
-cdb_match_func (sqlite3_context *ctx,
-                gint nArgs,
-                sqlite3_value **values)
-{
-	gboolean matches = FALSE;
-	const gchar *what, *where;
-
-	g_return_if_fail (ctx != NULL);
-	g_return_if_fail (nArgs == 2);
-	g_return_if_fail (values != NULL);
-
-	what = (const gchar *) sqlite3_value_text (values[0]);
-	where = (const gchar *) sqlite3_value_text (values[1]);
-
-	if (what && where && !*what) {
-		matches = TRUE;
-	} else if (what && where) {
-		gboolean word = TRUE;
-		gint i, j;
-
-		for (i = 0, j = 0; where[i] && !matches; i++) {
-			gchar c = where[i];
-
-			if (c == ' ') {
-				word = TRUE;
-				j = 0;
-			} else if (word && tolower (c) == tolower (what[j])) {
-				j++;
-				if (what[j] == 0 && (where[i + 1] == 0 || isspace (where[i + 1])))
-					matches = TRUE;
-			} else {
-				word = FALSE;
-			}
-		}
-	}
-
-	sqlite3_result_int (ctx, matches ? 1 : 0);
-}
-
 static void
 cdb_camel_compare_date_func (sqlite3_context *ctx,
 			     gint nArgs,
@@ -910,7 +866,6 @@ camel_db_open (CamelDB *cdb,
 	cdb->priv->filename = g_strdup (filename);
 	d (g_print ("\nDatabase successfully opened  \n"));
 
-	sqlite3_create_function (db, "MATCH", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, cdb_match_func, NULL, NULL);
 	sqlite3_create_function (db, "CAMELCOMPAREDATE", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, cdb_camel_compare_date_func, NULL, NULL);
 
 	/* Which is big / costlier ? A Stack frame or a pointer */

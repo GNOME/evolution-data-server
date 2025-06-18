@@ -271,6 +271,8 @@ gboolean
 		camel_message_info_take_user_flags
 						(CamelMessageInfo *mi,
 						 CamelNamedFlags *user_flags);
+gchar *		camel_message_info_encode_user_flags
+						(const CamelMessageInfo *mi);
 const gchar *	camel_message_info_get_user_tag	(const CamelMessageInfo *mi,
 						 const gchar *name);
 gchar *		camel_message_info_dup_user_tag	(const CamelMessageInfo *mi,
@@ -287,6 +289,8 @@ CamelNameValueArray *
 gboolean	camel_message_info_take_user_tags
 						(CamelMessageInfo *mi,
 						 CamelNameValueArray *user_tags);
+gchar *		camel_message_info_encode_user_tags
+						(const CamelMessageInfo *mi);
 const gchar *	camel_message_info_get_subject	(const CamelMessageInfo *mi);
 gboolean	camel_message_info_set_subject	(CamelMessageInfo *mi,
 						 const gchar *subject);

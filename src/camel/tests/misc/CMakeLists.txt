@@ -11,6 +11,7 @@ set(TESTS
 set(TESTS_CHECK
 	test-camel-db
 	test-store-search
+	test-vee-folder
 )
 
 set(TESTS_SKIP

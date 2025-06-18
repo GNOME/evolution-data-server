@@ -140,7 +140,6 @@
 #include <camel/camel-url-scanner.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-utils.h>
-#include <camel/camel-vee-data-cache.h>
 #include <camel/camel-vee-folder.h>
 #include <camel/camel-vee-message-info.h>
 #include <camel/camel-vee-store.h>

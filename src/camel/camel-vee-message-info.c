@@ -77,9 +77,8 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 #define vee_call_from_parent_mi(_err_ret, _ret_type, _call_what, _call_args, _is_set) G_STMT_START {	\
 		CamelVeeMessageInfo *vmi;							\
 		CamelMessageInfo *orig_mi;							\
-		CamelFolderSummary *this_summary, *sub_summary;					\
-		CamelFolder *this_folder, *sub_folder;						\
-		gboolean ignore_changes;							\
+		CamelFolderSummary *this_summary;						\
+		CamelFolder *this_folder;							\
 		const gchar *uid;								\
 		_ret_type result;								\
 												\
@@ -108,28 +107,13 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 												\
 		this_summary = camel_message_info_ref_summary (mi);				\
 		this_folder = this_summary ? camel_folder_summary_get_folder (this_summary) : NULL; \
-		sub_summary = camel_message_info_ref_summary (orig_mi);				\
-		sub_folder = sub_summary ? camel_folder_summary_get_folder (sub_summary) : NULL; \
-												\
-		ignore_changes = _is_set && !CAMEL_IS_VTRASH_FOLDER (this_folder);		\
-												\
-		/* ignore changes done in the folder itself,					\
-		 * unless it's a vTrash or vJunk folder */					\
-		if (ignore_changes)								\
-			camel_vee_folder_ignore_next_changed_event (CAMEL_VEE_FOLDER (this_folder), sub_folder); \
 												\
 		result = _call_what _call_args;							\
 												\
-		if (ignore_changes) {								\
-			if (result)								\
-				vee_message_info_notify_mi_changed (this_folder, uid);		\
-			else									\
-				camel_vee_folder_remove_from_ignore_changed_event (		\
-					CAMEL_VEE_FOLDER (this_folder), sub_folder);		\
-		}										\
+		if (_is_set && result)								\
+			vee_message_info_notify_mi_changed (this_folder, uid);			\
 												\
 		g_clear_object (&this_summary);							\
-		g_clear_object (&sub_summary);							\
 		g_clear_object (&orig_mi);							\
 		camel_pstring_free (uid);							\
 												\
@@ -211,7 +195,7 @@ vee_message_info_set_flags (CamelMessageInfo *mi,
 
 		summary = camel_message_info_ref_summary (mi);
 		if (summary)
-			camel_folder_summary_replace_flags (summary, mi);
+			camel_folder_summary_replace_flags (summary, camel_message_info_get_uid (mi), camel_message_info_get_flags (mi));
 		g_clear_object (&summary);
 	}
 

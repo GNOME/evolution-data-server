@@ -337,9 +337,8 @@ message_info_save (const CamelMessageInfo *mi,
 		   GString *bdata_str)
 {
 	GString *tmp;
+	const CamelNameValueArray *headers;
 	CamelSummaryMessageID message_id;
-	const CamelNamedFlags *user_flags;
-	const CamelNameValueArray *user_tags;
 	const GArray *references;
 	guint32 read_or_flags = CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_JUNK;
 
@@ -401,61 +400,21 @@ message_info_save (const CamelMessageInfo *mi,
 	}
 	record->part = g_string_free (tmp, FALSE);
 
-	tmp = g_string_new (NULL);
-	user_flags = camel_message_info_get_user_flags (mi);
-	if (user_flags) {
-		guint ii, count;
-
-		count = camel_named_flags_get_length (user_flags);
-		for (ii = 0; ii < count; ii++) {
-			const gchar *name = camel_named_flags_get (user_flags, ii);
-
-			if (name && *name) {
-				if (tmp->len)
-					g_string_append_c (tmp, ' ');
-				g_string_append (tmp, name);
-			}
-		}
-	}
-	record->labels = g_string_free (tmp, FALSE);
+	record->labels = camel_message_info_encode_user_flags (mi);
+	record->usertags = camel_message_info_encode_user_tags (mi);
 
 	tmp = g_string_new (NULL);
-	user_tags = camel_message_info_get_user_tags (mi);
-	if (user_tags) {
-		guint ii, count;
-
-		count = camel_name_value_array_get_length (user_tags);
-		g_string_append_printf (tmp, "%lu", (gulong) count);
-
-		for (ii = 0; ii < count; ii++) {
-			const gchar *name = NULL, *value = NULL;
-
-			if (camel_name_value_array_get (user_tags, ii, &name, &value)) {
-				if (!name)
-					name = "";
-				if (!value)
-					value = "";
-
-				g_string_append_printf (tmp, " %lu-%s %lu-%s", (gulong) strlen (name), name, (gulong) strlen (value), value);
-			}
-		}
-	} else {
-		g_string_append_c (tmp, '0');
-	}
-	record->usertags = g_string_free (tmp, FALSE);
-
-	tmp = g_string_new (NULL);
-	user_tags = camel_message_info_get_user_headers (mi);
-	if (user_tags) {
+	headers = camel_message_info_get_user_headers (mi);
+	if (headers) {
 		guint32 ii, count;
 
-		count = camel_name_value_array_get_length (user_tags);
+		count = camel_name_value_array_get_length (headers);
 		g_string_append_printf (tmp, "%" G_GUINT32_FORMAT, count);
 
 		for (ii = 0; ii < count; ii++) {
 			const gchar *name = NULL, *value = NULL;
 
-			if (camel_name_value_array_get (user_tags, ii, &name, &value) && name && value) {
+			if (camel_name_value_array_get (headers, ii, &name, &value) && name && value) {
 				g_string_append_printf (tmp, " %" G_GUINT32_FORMAT "-%s %" G_GUINT32_FORMAT "-%s",
 					(guint32) strlen (name), name,
 					(guint32) strlen (value), value);
@@ -1403,7 +1362,7 @@ camel_message_info_update_summary_and_folder (CamelMessageInfo *mi,
 				camel_folder_summary_lock (summary);
 				g_object_freeze_notify (G_OBJECT (summary));
 
-				camel_folder_summary_replace_flags (summary, mi);
+				camel_folder_summary_replace_flags (summary, camel_message_info_get_uid (mi), camel_message_info_get_flags (mi));
 
 				g_object_thaw_notify (G_OBJECT (summary));
 				camel_folder_summary_unlock (summary);
@@ -2073,6 +2032,49 @@ camel_message_info_take_user_flags (CamelMessageInfo *mi,
 }
 
 /**
+ * camel_message_info_encode_user_flags:
+ * @mi: a #CamelMessageInfo
+ *
+ * Encodes the user flags into a string. Free the returned
+ * string with g_free(), when no longer needed.
+ *
+ * Returns: (transfer full): a newly allocated string with the user flags
+ *
+ * Since: 3.58
+ **/
+gchar *
+camel_message_info_encode_user_flags (const CamelMessageInfo *mi)
+{
+	const CamelNamedFlags *user_flags;
+	GString *tmp;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	camel_message_info_property_lock (mi);
+
+	tmp = g_string_new (NULL);
+	user_flags = camel_message_info_get_user_flags (mi);
+	if (user_flags) {
+		guint ii, count;
+
+		count = camel_named_flags_get_length (user_flags);
+		for (ii = 0; ii < count; ii++) {
+			const gchar *name = camel_named_flags_get (user_flags, ii);
+
+			if (name && *name) {
+				if (tmp->len)
+					g_string_append_c (tmp, ' ');
+				g_string_append (tmp, name);
+			}
+		}
+	}
+
+	camel_message_info_property_unlock (mi);
+
+	return g_string_free (tmp, FALSE);
+}
+
+/**
  * camel_message_info_get_user_tag:
  * @mi: a #CamelMessageInfo
  * @name: user tag name
@@ -2279,6 +2281,57 @@ camel_message_info_take_user_tags (CamelMessageInfo *mi,
 	}
 
 	return changed;
+}
+
+/**
+ * camel_message_info_encode_user_tags:
+ * @mi: a #CamelMessageInfo
+ *
+ * Encodes the user tags into a string. Free the returned
+ * string with g_free(), when no longer needed.
+ *
+ * Returns: (transfer full): a newly allocated string with the user tags
+ *
+ * Since: 3.58
+ **/
+gchar *
+camel_message_info_encode_user_tags (const CamelMessageInfo *mi)
+{
+	const CamelNameValueArray *user_tags;
+	GString *tmp;
+
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
+
+	tmp = g_string_new (NULL);
+
+	camel_message_info_property_lock (mi);
+
+	user_tags = camel_message_info_get_user_tags (mi);
+	if (user_tags) {
+		guint ii, count;
+
+		count = camel_name_value_array_get_length (user_tags);
+		g_string_append_printf (tmp, "%lu", (gulong) count);
+
+		for (ii = 0; ii < count; ii++) {
+			const gchar *name = NULL, *value = NULL;
+
+			if (camel_name_value_array_get (user_tags, ii, &name, &value)) {
+				if (!name)
+					name = "";
+				if (!value)
+					value = "";
+
+				g_string_append_printf (tmp, " %lu-%s %lu-%s", (gulong) strlen (name), name, (gulong) strlen (value), value);
+			}
+		}
+	} else {
+		g_string_append_c (tmp, '0');
+	}
+
+	camel_message_info_property_unlock (mi);
+
+	return g_string_free (tmp, FALSE);
 }
 
 /**

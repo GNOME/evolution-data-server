@@ -122,8 +122,6 @@ static CamelMessageInfo * message_info_new_from_headers (CamelFolderSummary *, c
 static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *summary, CamelMimeMessage *msg);
 
-static gint save_message_infos_to_db (CamelFolderSummary *summary, GError **error);
-
 static gchar *next_uid_string (CamelFolderSummary *summary);
 
 static CamelMessageInfo * message_info_from_uid (CamelFolderSummary *summary, const gchar *uid);
@@ -141,6 +139,7 @@ enum {
 
 enum {
 	PREPARE_FETCH_ALL,
+	INFO_FLAGS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -570,28 +569,28 @@ summary_header_save (CamelFolderSummary *summary,
 /**
  * camel_folder_summary_replace_flags:
  * @summary: a #CamelFolderSummary
- * @info: a #CamelMessageInfo
+ * @uid: a message info UID
+ * @new_flags: new flags to use
  *
- * Updates internal counts based on the flags in @info.
+ * Updates internal counts based on the @new_flags for the message info @uid.
  *
  * Returns: Whether any count changed
  *
- * Since: 3.6
+ * Since: 3.58
  **/
 gboolean
 camel_folder_summary_replace_flags (CamelFolderSummary *summary,
-                                    CamelMessageInfo *info)
+				    const gchar *uid,
+				    guint32 new_flags)
 {
-	guint32 old_flags, new_flags, added_flags, removed_flags;
+	guint32 old_flags, added_flags, removed_flags;
 	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
 	GObject *summary_object;
 	gboolean changed = FALSE;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
-	g_return_val_if_fail (info != NULL, FALSE);
 
-	if (!camel_message_info_get_uid (info) ||
-	    !camel_folder_summary_check_uid (summary, camel_message_info_get_uid (info)))
+	if (!uid || !camel_folder_summary_check_uid (summary, uid))
 		return FALSE;
 
 	summary_object = G_OBJECT (summary);
@@ -599,8 +598,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 	camel_folder_summary_lock (summary);
 	g_object_freeze_notify (summary_object);
 
-	old_flags = GPOINTER_TO_UINT (g_hash_table_lookup (summary->priv->uids, camel_message_info_get_uid (info)));
-	new_flags = camel_message_info_get_flags (info);
+	old_flags = GPOINTER_TO_UINT (g_hash_table_lookup (summary->priv->uids, uid));
 
 	if ((old_flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED) == (new_flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 		g_object_thaw_notify (summary_object);
@@ -651,11 +649,14 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 	/* update current flags on the summary */
 	g_hash_table_insert (
 		summary->priv->uids,
-		(gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)),
+		(gpointer) camel_pstring_strdup (uid),
 		GUINT_TO_POINTER (new_flags));
 
 	g_object_thaw_notify (summary_object);
 	camel_folder_summary_unlock (summary);
+
+	if (changed)
+		g_signal_emit (summary, signals[INFO_FLAGS_CHANGED], 0, uid, new_flags, NULL);
 
 	return changed;
 }
@@ -806,6 +807,26 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 0,
 		G_TYPE_NONE);
+
+	/**
+	 * CamelFolderSummary::info-flags-changed
+	 * @summary: the #CamelFolderSummary which emitted the signal
+	 * @uid: the message UID whose flags changed
+	 * @new_flags: the new flags
+	 *
+	 * Emitted on call to camel_folder_summary_replace_flags(), when
+	 * the flags changed.
+	 *
+	 * Since: 3.58
+	 **/
+	signals[INFO_FLAGS_CHANGED] = g_signal_new (
+		"info-flags-changed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		0,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 2,
+		G_TYPE_STRING, G_TYPE_UINT);
 }
 
 static void
@@ -2031,7 +2052,7 @@ camel_folder_summary_save (CamelFolderSummary *summary,
 		return res;
 	}
 
-	success = save_message_infos_to_db (summary, error) == 0;
+	success = save_message_infos_to_db (summary, error);
 	if (!success) {
 		/* Failed, so lets reset the flag */
 		summary->priv->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
@@ -2489,6 +2510,8 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
 void
 camel_folder_summary_touch (CamelFolderSummary *summary)
 {
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+
 	camel_folder_summary_lock (summary);
 	summary->priv->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 	camel_folder_summary_unlock (summary);
