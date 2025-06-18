@@ -171,7 +171,6 @@ struct _CamelFolderClass {
 						 const gchar *uid2);
 	void		(*sort_uids)		(CamelFolder *folder,
 						 GPtrArray *uids);
-	GPtrArray *	(*get_summary)		(CamelFolder *folder);
 	gboolean	(*has_search_capability)(CamelFolder *folder);
 	CamelMessageInfo *
 			(*get_message_info)	(CamelFolder *folder,
@@ -350,7 +349,6 @@ gint		camel_folder_get_unread_message_count
 #endif
 gint		camel_folder_get_deleted_message_count
 						(CamelFolder *folder);
-GPtrArray *	camel_folder_get_summary	(CamelFolder *folder);
 
 #define camel_folder_delete_message(folder, uid) \
 	(camel_folder_set_message_flags ( \

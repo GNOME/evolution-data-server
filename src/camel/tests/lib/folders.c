@@ -30,19 +30,6 @@ test_folder_counts (CamelFolder *folder,
 
 	push ("test folder counts %d total %d unread", total, unread);
 
-	/* use the summary */
-	s = camel_folder_get_summary (folder);
-	check (s != NULL);
-	check (s->len == total);
-	myunread = s->len;
-	for (i = 0; i < s->len; i++) {
-		info = s->pdata[i];
-		if (camel_message_info_get_flags (info) & CAMEL_MESSAGE_SEEN)
-			myunread--;
-	}
-	check (unread == myunread);
-	g_clear_pointer (&s, g_ptr_array_unref);
-
 	/* use the uid list */
 	s = camel_folder_dup_uids (folder);
 	check (s != NULL);
@@ -121,18 +108,6 @@ test_folder_message (CamelFolder *folder,
 
 	g_object_unref (msg);
 
-	/* see if it is in the summary (only once) */
-	s = camel_folder_get_summary (folder);
-	check (s != NULL);
-	found = 0;
-	for (i = 0; i < s->len; i++) {
-		info = s->pdata[i];
-		if (strcmp (camel_message_info_get_uid (info), uid) == 0)
-			found++;
-	}
-	check (found == 1);
-	g_clear_pointer (&s, g_ptr_array_unref);
-
 	/* check it is in the uid list */
 	s = camel_folder_dup_uids (folder);
 	check (s != NULL);
@@ -175,20 +150,6 @@ test_folder_not_message (CamelFolder *folder,
 	check (error != NULL);
 	check (msg == NULL);
 	g_clear_error (&error);
-	pull ();
-
-	/* see if it is not in the summary (only once) */
-	push ("not in summary list");
-	s = camel_folder_get_summary (folder);
-	check (s != NULL);
-	found = 0;
-	for (i = 0; i < s->len; i++) {
-		info = s->pdata[i];
-		if (strcmp (camel_message_info_get_uid (info), uid) == 0)
-			found++;
-	}
-	check (found == 0);
-	g_clear_pointer (&s, g_ptr_array_unref);
 	pull ();
 
 	/* check it is not in the uid list */

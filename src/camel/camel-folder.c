@@ -1034,14 +1034,6 @@ folder_sort_uids (CamelFolder *folder,
 		sizeof (gpointer), cmp_array_uids, folder);
 }
 
-static GPtrArray *
-folder_get_summary (CamelFolder *folder)
-{
-	g_return_val_if_fail (folder->priv->summary != NULL, NULL);
-
-	return camel_folder_summary_dup_uids (folder->priv->summary);
-}
-
 static gboolean
 folder_search_sync (CamelFolder *folder,
 		    const gchar *expression,
@@ -1536,7 +1528,6 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->get_uncached_uids = folder_get_uncached_uids;
 	class->cmp_uids = folder_cmp_uids;
 	class->sort_uids = folder_sort_uids;
-	class->get_summary = folder_get_summary;
 	class->search_sync = folder_search_sync;
 	class->get_message_info = folder_get_message_info;
 	class->delete_ = folder_delete;
@@ -2638,30 +2629,6 @@ camel_folder_sort_uids (CamelFolder *folder,
 	g_return_if_fail (class->sort_uids != NULL);
 
 	class->sort_uids (folder, uids);
-}
-
-/**
- * camel_folder_get_summary:
- * @folder: a #CamelFolder
- *
- * This returns the summary information for the folder. This array
- * should not be modified, and must be freed with
- * g_ptr_array_unref().
- *
- * Returns: (element-type utf8) (transfer container): an array of UID-s of #CamelMessageInfo
- **/
-GPtrArray *
-camel_folder_get_summary (CamelFolder *folder)
-{
-	CamelFolderClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->get_summary != NULL, NULL);
-
-	return class->get_summary (folder);
 }
 
 /**
