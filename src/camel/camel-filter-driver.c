@@ -68,8 +68,6 @@ struct _filter_rule {
 };
 
 struct _CamelFilterDriverPrivate {
-	GHashTable *globals;       /* global variables */
-
 	CamelSession *session;
 
 	CamelFolder *defaultfolder;        /* defualt folder */
@@ -370,9 +368,6 @@ filter_driver_finalize (GObject *object)
 	close_folders (CAMEL_FILTER_DRIVER (object), FALSE, NULL);
 	g_hash_table_destroy (priv->folders);
 
-	g_hash_table_foreach (priv->globals, free_hash_strings, object);
-	g_hash_table_destroy (priv->globals);
-
 	g_hash_table_foreach (priv->only_once, free_hash_strings, object);
 	g_hash_table_destroy (priv->only_once);
 
@@ -424,9 +419,6 @@ camel_filter_driver_init (CamelFilterDriver *filter_driver)
 				filter_driver);
 		}
 	}
-
-	filter_driver->priv->globals =
-		g_hash_table_new (g_str_hash, g_str_equal);
 
 	filter_driver->priv->folders =
 		g_hash_table_new (g_str_hash, g_str_equal);
@@ -659,23 +651,6 @@ report_status (CamelFilterDriver *driver,
 		g_free (str);
 	}
 }
-
-#if 0
-void
-camel_filter_driver_set_global (CamelFilterDriver *d,
-                                const gchar *name,
-                                const gchar *value)
-{
-	gchar *oldkey, *oldvalue;
-
-	if (g_hash_table_lookup_extended (d->priv->globals, name, (gpointer) &oldkey, (gpointer) &oldvalue)) {
-		g_free (oldvalue);
-		g_hash_table_insert (d->priv->globals, oldkey, g_strdup (value));
-	} else {
-		g_hash_table_insert (d->priv->globals, g_strdup (name), g_strdup (value));
-	}
-}
-#endif
 
 static CamelSExpResult *
 do_delete (struct _CamelSExp *f,
