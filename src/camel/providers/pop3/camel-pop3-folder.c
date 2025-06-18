@@ -290,7 +290,7 @@ pop3_folder_dup_uids (CamelFolder *folder)
 }
 
 static GPtrArray *
-pop3_get_uncached_uids (CamelFolder *folder,
+pop3_dup_uncached_uids (CamelFolder *folder,
                         GPtrArray *uids,
                         GError **error)
 {
@@ -1009,7 +1009,7 @@ camel_pop3_folder_class_init (CamelPOP3FolderClass *class)
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_message_count = pop3_folder_get_message_count;
 	folder_class->dup_uids = pop3_folder_dup_uids;
-	folder_class->get_uncached_uids = pop3_get_uncached_uids;
+	folder_class->dup_uncached_uids = pop3_dup_uncached_uids;
 	folder_class->get_filename = pop3_folder_get_filename;
 	folder_class->set_message_flags = pop3_folder_set_message_flags;
 	folder_class->get_message_sync = pop3_folder_get_message_sync;

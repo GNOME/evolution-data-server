@@ -997,7 +997,7 @@ folder_dup_uids (CamelFolder *folder)
 }
 
 static GPtrArray *
-folder_get_uncached_uids (CamelFolder *folder,
+folder_dup_uncached_uids (CamelFolder *folder,
                           GPtrArray *uids,
                           GError **error)
 {
@@ -1525,7 +1525,7 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->get_message_user_tag = folder_get_message_user_tag;
 	class->set_message_user_tag = folder_set_message_user_tag;
 	class->dup_uids = folder_dup_uids;
-	class->get_uncached_uids = folder_get_uncached_uids;
+	class->dup_uncached_uids = folder_dup_uncached_uids;
 	class->cmp_uids = folder_cmp_uids;
 	class->sort_uids = folder_sort_uids;
 	class->search_sync = folder_search_sync;
@@ -2541,21 +2541,24 @@ camel_folder_dup_uids (CamelFolder *folder)
 }
 
 /**
- * camel_folder_get_uncached_uids:
+ * camel_folder_dup_uncached_uids:
  * @folder: a #CamelFolder
  * @uids: (element-type utf8): the array of uids to filter down to uncached ones.
  * @error: return location for a #GError, or %NULL
  *
  * Returns the known-uncached uids from a list of uids. It may return uids
  * which are locally cached but should never filter out a uid which is not
- * locally cached. Free the result by g_ptr_array_unref().
+ * locally cached.
  *
- * Returns: (element-type utf8) (transfer none):
+ * Free the result with g_ptr_array_unref(), when no longer needed.
  *
- * Since: 2.26
+ * Returns: (element-type utf8) (transfer container): a new #GPtrArray with UID-s,
+ *    which are not cached locally
+ *
+ * Since: 3.58
  **/
 GPtrArray *
-camel_folder_get_uncached_uids (CamelFolder *folder,
+camel_folder_dup_uncached_uids (CamelFolder *folder,
                                 GPtrArray *uids,
                                 GError **error)
 {
@@ -2567,10 +2570,10 @@ camel_folder_get_uncached_uids (CamelFolder *folder,
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->get_uncached_uids != NULL, NULL);
+	g_return_val_if_fail (class->dup_uncached_uids != NULL, NULL);
 
-	uncached_uids = class->get_uncached_uids (folder, uids, error);
-	CAMEL_CHECK_GERROR (folder, get_uncached_uids, uncached_uids != NULL, error);
+	uncached_uids = class->dup_uncached_uids (folder, uids, error);
+	CAMEL_CHECK_GERROR (folder, dup_uncached_uids, uncached_uids != NULL, error);
 
 	return uncached_uids;
 }

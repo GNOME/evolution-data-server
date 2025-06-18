@@ -428,7 +428,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 	if (!uids)
 		goto done;
 
-	uncached_uids = camel_folder_get_uncached_uids (folder, uids, NULL);
+	uncached_uids = camel_folder_dup_uncached_uids (folder, uids, NULL);
 
 	g_clear_pointer (&uids, g_ptr_array_unref);
 

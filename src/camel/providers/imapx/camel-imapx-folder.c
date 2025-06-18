@@ -314,7 +314,7 @@ imapx_folder_finalize (GObject *object)
  */
 
 static GPtrArray *
-imapx_get_uncached_uids (CamelFolder *folder,
+imapx_dup_uncached_uids (CamelFolder *folder,
 			 GPtrArray *uids,
 			 GError **error)
 {
@@ -1143,7 +1143,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_permanent_flags = imapx_get_permanent_flags;
 	folder_class->rename = imapx_rename;
-	folder_class->get_uncached_uids = imapx_get_uncached_uids;
+	folder_class->dup_uncached_uids = imapx_dup_uncached_uids;
 	folder_class->get_filename = imapx_get_filename;
 	folder_class->append_message_sync = imapx_append_message_sync;
 	folder_class->expunge_sync = imapx_expunge_sync;

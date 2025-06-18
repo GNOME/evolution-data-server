@@ -274,7 +274,7 @@ local_folder_rename (CamelFolder *folder,
 }
 
 static GPtrArray *
-local_folder_get_uncached_uids (CamelFolder *folder,
+local_folder_dup_uncached_uids (CamelFolder *folder,
                                 GPtrArray *uids,
                                 GError **error)
 {
@@ -384,7 +384,7 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	folder_class->get_permanent_flags = local_folder_get_permanent_flags;
 	folder_class->delete_ = local_folder_delete;
 	folder_class->rename = local_folder_rename;
-	folder_class->get_uncached_uids = local_folder_get_uncached_uids;
+	folder_class->dup_uncached_uids = local_folder_dup_uncached_uids;
 	folder_class->expunge_sync = local_folder_expunge_sync;
 	folder_class->refresh_info_sync = local_folder_refresh_info_sync;
 	folder_class->synchronize_sync = local_folder_synchronize_sync;

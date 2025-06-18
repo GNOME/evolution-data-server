@@ -181,7 +181,7 @@ struct _CamelFolderClass {
 	void		(*freeze)		(CamelFolder *folder);
 	void		(*thaw)			(CamelFolder *folder);
 	gboolean	(*is_frozen)		(CamelFolder *folder);
-	GPtrArray *	(*get_uncached_uids)	(CamelFolder *folder,
+	GPtrArray *	(*dup_uncached_uids)	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 GError **error);
 	gchar *		(*get_filename)		(CamelFolder *folder,
@@ -357,7 +357,7 @@ gint		camel_folder_get_deleted_message_count
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_SEEN))
 
 GPtrArray *	camel_folder_dup_uids		(CamelFolder *folder);
-GPtrArray *	camel_folder_get_uncached_uids	(CamelFolder *folder,
+GPtrArray *	camel_folder_dup_uncached_uids	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 GError **error);
 gint		camel_folder_cmp_uids		(CamelFolder *folder,
