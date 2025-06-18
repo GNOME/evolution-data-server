@@ -1418,8 +1418,8 @@ nntp_migrate_to_user_cache_dir (CamelService *service)
 	g_return_if_fail (user_data_dir != NULL);
 	g_return_if_fail (user_cache_dir != NULL);
 
-	udd_folders_db = g_build_filename (user_data_dir, CAMEL_DB_FILE, NULL);
-	ucd_folders_db = g_build_filename (user_cache_dir, CAMEL_DB_FILE, NULL);
+	udd_folders_db = g_build_filename (user_data_dir, CAMEL_STORE_DB_FILE, NULL);
+	ucd_folders_db = g_build_filename (user_cache_dir, CAMEL_STORE_DB_FILE, NULL);
 
 	/* migrate only if the source directory exists and the destination doesn't */
 	if (g_file_test (udd_folders_db, G_FILE_TEST_EXISTS) &&

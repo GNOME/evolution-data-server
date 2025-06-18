@@ -108,13 +108,6 @@ struct _CamelDBClass {
  **/
 typedef gint (* CamelDBCollate)(gpointer enc, gint length1, gconstpointer data1, gint length2, gconstpointer data2);
 
-/**
- * CAMEL_DB_FILE:
- *
- * Since: 2.24
- **/
-#define CAMEL_DB_FILE "folders.db"
-
 /* Hopefully no one will create a folder named EVO_IN_meM_hAnDlE */
 
 /**

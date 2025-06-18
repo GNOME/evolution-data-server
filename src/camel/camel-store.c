@@ -582,7 +582,7 @@ store_initable_init (GInitable *initable,
 
 	/* This is for reading from the store */
 	if (!filename)
-		filename = g_build_filename (user_dir, CAMEL_DB_FILE, NULL);
+		filename = g_build_filename (user_dir, CAMEL_STORE_DB_FILE, NULL);
 	store->priv->db = camel_store_db_new (filename, cancellable, error);
 	g_free (filename);
 

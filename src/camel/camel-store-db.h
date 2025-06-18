@@ -109,6 +109,15 @@ typedef struct _CamelStoreDBMessageRecord {
 
 void		camel_store_db_message_record_clear	(CamelStoreDBMessageRecord *self);
 
+/**
+ * CAMEL_STORE_DB_FILE:
+ *
+ * File name used by the #CamelStore for the #CamelStoreDB.
+ *
+ * Since: 3.58
+ **/
+#define CAMEL_STORE_DB_FILE "folders.db"
+
 /* Standard GObject macros */
 #define CAMEL_TYPE_STORE_DB camel_store_db_get_type ()
 #define CAMEL_STORE_DB(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAMEL_TYPE_STORE_DB, CamelStoreDB))
