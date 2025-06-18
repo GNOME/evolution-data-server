@@ -44,7 +44,7 @@ CamelUIDCache *camel_uid_cache_new (const gchar *filename);
 gboolean camel_uid_cache_save (CamelUIDCache *cache);
 void camel_uid_cache_destroy (CamelUIDCache *cache);
 
-GPtrArray *camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids);
+GPtrArray *camel_uid_cache_dup_new_uids (CamelUIDCache *cache, GPtrArray *uids);
 
 void camel_uid_cache_save_uid (CamelUIDCache *cache, const gchar *uid);
 

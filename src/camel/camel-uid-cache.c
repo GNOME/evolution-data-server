@@ -248,7 +248,7 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
 }
 
 /**
- * camel_uid_cache_get_new_uids:
+ * camel_uid_cache_dup_new_uids:
  * @cache: a CamelUIDCache
  * @uids: (element-type utf8) (transfer none): an array of UIDs
  *
@@ -259,7 +259,7 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
  *    free with g_ptr_array_unref(), when no longer needed.
  **/
 GPtrArray *
-camel_uid_cache_get_new_uids (CamelUIDCache *cache,
+camel_uid_cache_dup_new_uids (CamelUIDCache *cache,
                               GPtrArray *uids)
 {
 	GPtrArray *new_uids;
