@@ -23,7 +23,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-imapx-folder.h"
-#include "camel-imapx-search.h"
 #include "camel-imapx-server.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
@@ -224,7 +223,6 @@ imapx_folder_dispose (GObject *object)
 	CamelStore *store;
 
 	g_clear_object (&folder->cache);
-	g_clear_object (&folder->search);
 
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
 	if (store != NULL) {
@@ -244,7 +242,6 @@ imapx_folder_finalize (GObject *object)
 {
 	CamelIMAPXFolder *folder = CAMEL_IMAPX_FOLDER (object);
 
-	g_mutex_clear (&folder->search_lock);
 	g_mutex_clear (&folder->stream_lock);
 
 	g_mutex_clear (&folder->priv->property_lock);
@@ -316,120 +313,6 @@ imapx_folder_finalize (GObject *object)
  *   3 = up to date
  */
 
-static void
-imapx_search_free (CamelFolder *folder,
-                   GPtrArray *uids)
-{
-	CamelIMAPXFolder *imapx_folder;
-
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-
-	g_return_if_fail (imapx_folder->search);
-
-	g_mutex_lock (&imapx_folder->search_lock);
-
-	camel_folder_search_free_result (imapx_folder->search, uids);
-
-	g_mutex_unlock (&imapx_folder->search_lock);
-}
-
-static GPtrArray *
-imapx_search_by_uids (CamelFolder *folder,
-                      const gchar *expression,
-                      GPtrArray *uids,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	CamelIMAPXFolder *imapx_folder;
-	CamelIMAPXSearch *imapx_search;
-	GPtrArray *matches;
-
-	if (uids->len == 0)
-		return g_ptr_array_new ();
-
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-
-	g_mutex_lock (&imapx_folder->search_lock);
-
-	imapx_search = CAMEL_IMAPX_SEARCH (imapx_folder->search);
-
-	camel_folder_search_set_folder (imapx_folder->search, folder);
-	camel_imapx_search_clear_cached_results (imapx_search);
-	camel_imapx_search_set_cancellable_and_error (imapx_search, cancellable, error);
-
-	matches = camel_folder_search_search (
-		imapx_folder->search, expression, uids, cancellable, error);
-
-	camel_imapx_search_set_cancellable_and_error (imapx_search, NULL, NULL);
-	camel_imapx_search_clear_cached_results (imapx_search);
-
-	g_mutex_unlock (&imapx_folder->search_lock);
-
-	return matches;
-}
-
-static guint32
-imapx_count_by_expression (CamelFolder *folder,
-                           const gchar *expression,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelIMAPXFolder *imapx_folder;
-	CamelIMAPXSearch *imapx_search;
-	guint32 matches;
-
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-
-	g_mutex_lock (&imapx_folder->search_lock);
-
-	imapx_search = CAMEL_IMAPX_SEARCH (imapx_folder->search);
-
-	camel_folder_search_set_folder (imapx_folder->search, folder);
-	camel_imapx_search_clear_cached_results (imapx_search);
-	camel_imapx_search_set_cancellable_and_error (imapx_search, cancellable, error);
-
-	matches = camel_folder_search_count (
-		imapx_folder->search, expression, cancellable, error);
-
-	camel_imapx_search_set_cancellable_and_error (imapx_search, NULL, NULL);
-	camel_imapx_search_clear_cached_results (imapx_search);
-
-	g_mutex_unlock (&imapx_folder->search_lock);
-
-	return matches;
-}
-
-static GPtrArray *
-imapx_search_by_expression (CamelFolder *folder,
-                            const gchar *expression,
-                            GCancellable *cancellable,
-                            GError **error)
-{
-	CamelIMAPXFolder *imapx_folder;
-	CamelIMAPXSearch *imapx_search;
-	GPtrArray *matches;
-
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-
-	g_mutex_lock (&imapx_folder->search_lock);
-
-	imapx_search = CAMEL_IMAPX_SEARCH (imapx_folder->search);
-
-	camel_folder_search_set_folder (imapx_folder->search, folder);
-	camel_imapx_search_clear_cached_results (imapx_search);
-	camel_imapx_search_set_cancellable_and_error (imapx_search, cancellable, error);
-
-	matches = camel_folder_search_search (
-		imapx_folder->search, expression, NULL, cancellable, error);
-
-	camel_imapx_search_set_cancellable_and_error (imapx_search, NULL, NULL);
-	camel_imapx_search_clear_cached_results (imapx_search);
-
-	g_mutex_unlock (&imapx_folder->search_lock);
-
-	return matches;
-}
-
 static GPtrArray *
 imapx_get_uncached_uids (CamelFolder *folder,
 			 GPtrArray *uids,
@@ -444,7 +327,7 @@ imapx_get_uncached_uids (CamelFolder *folder,
 
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 
-	result = g_ptr_array_sized_new (uids->len);
+	result = g_ptr_array_new_full (uids->len, (GDestroyNotify) camel_pstring_free);
 
 	for (ii = 0; ii < uids->len; ii++) {
 		const gchar *uid = uids->pdata[ii];
@@ -565,7 +448,7 @@ imapx_expunge_sync (CamelFolder *folder,
 
 			camel_folder_summary_unlock (folder_summary);
 
-			camel_folder_summary_free_array (known_uids);
+			g_clear_pointer (&known_uids, g_ptr_array_unref);
 		}
 
 		g_clear_object (&trash);
@@ -1094,6 +977,122 @@ imapx_folder_changed (CamelFolder *folder,
 	CAMEL_FOLDER_CLASS (camel_imapx_folder_parent_class)->changed (folder, info);
 }
 
+static gboolean
+imapx_folder_process_search (CamelIMAPXStore *imapx_store,
+			     CamelIMAPXMailbox *mailbox,
+			     const gchar *criteria_prefix,
+			     const gchar *search_key,
+			     const GPtrArray *words,
+			     GPtrArray **out_uids,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	CamelIMAPXConnManager *conn_man;
+	GError *local_error = NULL;
+	gboolean success = TRUE;
+
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
+	*out_uids = camel_imapx_conn_manager_uid_search_sync (conn_man, mailbox, criteria_prefix ? criteria_prefix : "", search_key,
+		words, cancellable, &local_error);
+
+	if (local_error) {
+		g_propagate_error (error, local_error);
+		g_clear_pointer (out_uids, g_ptr_array_unref);
+		success = FALSE;
+	}
+
+	return success;
+}
+
+static gboolean
+imapx_folder_search_header_sync (CamelFolder *folder,
+				 const gchar *header_name,
+				 /* const */ GPtrArray *words, /* gchar * */
+				 GPtrArray **out_uids, /* gchar * */
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	CamelStore *store;
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXMailbox *mailbox = NULL;
+	GString *criteria;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (header_name != NULL, FALSE);
+
+	store = camel_folder_get_parent_store (folder);
+
+	/* Not connected, thus skip the operation */
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
+		g_set_error_literal (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to search in headers"));
+		return FALSE;
+	}
+
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	mailbox = camel_imapx_folder_list_mailbox (CAMEL_IMAPX_FOLDER (folder), cancellable, error);
+
+	criteria = g_string_new ("");
+
+	if (g_ascii_strcasecmp (header_name, "From") == 0)
+		g_string_append (criteria, "FROM");
+	else if (g_ascii_strcasecmp (header_name, "To") == 0)
+		g_string_append (criteria, "TO");
+	else if (g_ascii_strcasecmp (header_name, "CC") == 0)
+		g_string_append (criteria, "CC");
+	else if (g_ascii_strcasecmp (header_name, "Bcc") == 0)
+		g_string_append (criteria, "BCC");
+	else if (g_ascii_strcasecmp (header_name, "Subject") == 0)
+		g_string_append (criteria, "SUBJECT");
+	else
+		g_string_append_printf (criteria, "HEADER \"%s\"", header_name);
+
+	if (words && !words->len)
+		words = NULL;
+
+	if (!words)
+		g_string_append (criteria, " \"\"");
+
+	success = imapx_folder_process_search (imapx_store, mailbox, words ? NULL : criteria->str,
+		words ? criteria->str : NULL, words, out_uids, cancellable, error);
+
+	g_clear_object (&mailbox);
+	g_string_free (criteria, TRUE);
+
+	return success;
+}
+
+static gboolean
+imapx_folder_search_body_sync (CamelFolder *folder,
+			       /* const */ GPtrArray *words, /* gchar * */
+			       GPtrArray **out_uids, /* gchar * */
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CamelStore *store;
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXMailbox *mailbox = NULL;
+	gboolean success = FALSE;
+
+	store = camel_folder_get_parent_store (folder);
+
+	/* Not connected, thus skip the operation */
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
+		g_set_error_literal (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to search in message body"));
+		return FALSE;
+	}
+
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	mailbox = camel_imapx_folder_list_mailbox (CAMEL_IMAPX_FOLDER (folder), cancellable, error);
+
+	success = imapx_folder_process_search (imapx_store, mailbox, NULL, "BODY", words, out_uids, cancellable, error);
+
+	g_clear_object (&mailbox);
+
+	return success;
+}
+
 static guint32
 imapx_get_permanent_flags (CamelFolder *folder)
 {
@@ -1144,11 +1143,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_permanent_flags = imapx_get_permanent_flags;
 	folder_class->rename = imapx_rename;
-	folder_class->search_by_expression = imapx_search_by_expression;
-	folder_class->search_by_uids = imapx_search_by_uids;
-	folder_class->count_by_expression = imapx_count_by_expression;
 	folder_class->get_uncached_uids = imapx_get_uncached_uids;
-	folder_class->search_free = imapx_search_free;
 	folder_class->get_filename = imapx_get_filename;
 	folder_class->append_message_sync = imapx_append_message_sync;
 	folder_class->expunge_sync = imapx_expunge_sync;
@@ -1161,6 +1156,8 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->synchronize_message_sync = imapx_synchronize_message_sync;
 	folder_class->transfer_messages_to_sync = imapx_transfer_messages_to_sync;
 	folder_class->changed = imapx_folder_changed;
+	folder_class->search_header_sync = imapx_folder_search_header_sync;
+	folder_class->search_body_sync = imapx_folder_search_body_sync;
 
 	g_object_class_install_property (
 		object_class,
@@ -1243,7 +1240,6 @@ camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 	imapx_folder->priv->move_to_real_trash_uids = move_to_real_trash_uids;
 	imapx_folder->priv->move_to_not_junk_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
-	g_mutex_init (&imapx_folder->search_lock);
 	g_mutex_init (&imapx_folder->stream_lock);
 
 	g_weak_ref_init (&imapx_folder->priv->mailbox, NULL);
@@ -1341,8 +1337,6 @@ camel_imapx_folder_new (CamelStore *store,
 	camel_binding_bind_property (store, "online",
 		imapx_folder->cache, "expire-enabled",
 		G_BINDING_SYNC_CREATE);
-
-	imapx_folder->search = camel_imapx_search_new (CAMEL_IMAPX_STORE (store));
 
 	if (filter_all)
 		add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
@@ -1565,7 +1559,7 @@ camel_imapx_folder_copy_message_map (CamelIMAPXFolder *folder)
 		g_sequence_append (message_map, GUINT_TO_POINTER (uid));
 	}
 
-	camel_folder_summary_free_array (array);
+	g_clear_pointer (&array, g_ptr_array_unref);
 
 	return message_map;
 }
@@ -1740,7 +1734,7 @@ camel_imapx_folder_invalidate_local_cache (CamelIMAPXFolder *folder,
 	camel_folder_changed (CAMEL_FOLDER (folder), changes);
 
 	camel_folder_change_info_free (changes);
-	camel_folder_summary_free_array (array);
+	g_clear_pointer (&array, g_ptr_array_unref);
 }
 
 gboolean

@@ -50,8 +50,8 @@ struct _CamelNNTPSummaryPrivate {
 };
 
 static CamelMessageInfo * message_info_new_from_headers (CamelFolderSummary *, const CamelNameValueArray *);
-static gboolean summary_header_load (CamelFolderSummary *s, CamelFIRecord *mir);
-static CamelFIRecord * summary_header_save (CamelFolderSummary *s, GError **error);
+static gboolean summary_header_load (CamelFolderSummary *s, CamelStoreDBFolderRecord *record);
+static gboolean summary_header_save (CamelFolderSummary *s, CamelStoreDBFolderRecord *record, GError **error);
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelNNTPSummary, camel_nntp_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
@@ -110,15 +110,15 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 
 static gboolean
 summary_header_load (CamelFolderSummary *s,
-		     CamelFIRecord *mir)
+		     CamelStoreDBFolderRecord *record)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	gchar *part;
 
-	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_load (s, mir))
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_load (s, record))
 		return FALSE;
 
-	part = mir->bdata;
+	part = record->bdata;
 
 	cns->version = camel_util_bdata_get_number (&part, 0);
 	cns->high = camel_util_bdata_get_number (&part, 0);
@@ -129,19 +129,18 @@ summary_header_load (CamelFolderSummary *s,
 	return TRUE;
 }
 
-static CamelFIRecord *
+static gboolean
 summary_header_save (CamelFolderSummary *s,
+		     CamelStoreDBFolderRecord *record,
 		     GError **error)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
-	struct _CamelFIRecord *fir;
 
-	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_save (s, error);
-	if (!fir)
-		return NULL;
-	fir->bdata = g_strdup_printf ("%d %u %u %u %u", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low, cns->priv->last_full_resync, cns->priv->last_limit_latest);
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_save (s, record, error))
+		return FALSE;
+	record->bdata = g_strdup_printf ("%d %u %u %u %u", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low, cns->priv->last_full_resync, cns->priv->last_limit_latest);
 
-	return fir;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -569,7 +568,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	/* Check for messages no longer on the server */
 	known_uids = camel_folder_summary_get_array (s);
 	if (known_uids) {
-		GList *removed = NULL;
+		GPtrArray *removed = NULL;
 
 		n = nntp_summary_get_current_date_mark ();
 
@@ -595,7 +594,9 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 					if (!g_hash_table_contains (existing_articles, GUINT_TO_POINTER (n))) {
 						camel_folder_change_info_remove_uid (changes, uid);
-						removed = g_list_prepend (removed, (gpointer) camel_pstring_strdup (uid));
+						if (!removed)
+							removed = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+						g_ptr_array_add (removed, (gpointer) camel_pstring_strdup (uid));
 					}
 				}
 
@@ -608,17 +609,20 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 				uid = g_ptr_array_index (known_uids, i);
 				n = strtoul (uid, NULL, 10);
 
-				if (n < f || n > l)
-					removed = g_list_prepend (removed, (gpointer) camel_pstring_strdup (uid));
+				if (n < f || n > l) {
+					if (!removed)
+						removed = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+					g_ptr_array_add (removed, (gpointer) camel_pstring_strdup (uid));
+				}
 			}
 		}
 
-		if (removed)
+		if (removed) {
 			camel_folder_summary_remove_uids (s, removed);
+			g_ptr_array_unref (removed);
+		}
 
-		g_list_free_full (removed, (GDestroyNotify) camel_pstring_free);
-
-		camel_folder_summary_free_array (known_uids);
+		g_clear_pointer (&known_uids, g_ptr_array_unref);
 	}
 
 	cns->low = f;
@@ -661,7 +665,7 @@ update:
 		guint32 unread = 0;
 
 		count = camel_folder_summary_count (s);
-		camel_db_count_unread_message_info (camel_store_get_db (parent_store), full_name, &unread, NULL);
+		camel_store_db_count_messages (camel_store_get_db (parent_store), full_name, CAMEL_STORE_DB_COUNT_KIND_UNREAD, &unread, NULL);
 
 		if (si->info.unread != unread
 		    || si->info.total != count

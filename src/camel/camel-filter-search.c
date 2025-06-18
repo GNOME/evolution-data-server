@@ -44,6 +44,7 @@
 #include "camel-multipart.h"
 #include "camel-provider.h"
 #include "camel-search-private.h"
+#include "camel-search-utils.h"
 #include "camel-session.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
@@ -748,7 +749,7 @@ get_relative_months (struct _CamelSExp *f,
 		camel_filter_search_log (fms, "Failed relative months: Expecting 1 argument, an integer, but got %d arguments", argc);
 	} else {
 		r = camel_sexp_result_new (f, CAMEL_SEXP_RES_INT);
-		r->value.number = camel_folder_search_util_add_months (time (NULL), argv[0]->value.number);
+		r->value.number = camel_search_util_add_months (time (NULL), argv[0]->value.number);
 
 		camel_filter_search_log (fms, "Got relative months '%" G_GINT64_FORMAT "' for value '%d'", (gint64) r->value.number, argv[0]->value.number);
 	}
@@ -1275,7 +1276,7 @@ make_time_func (CamelSExp *sexp,
 	camel_filter_search_log (fms, "Calling 'make-time'");
 
 	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_TIME);
-	res->value.time = camel_folder_search_util_make_time (argc, argv);
+	res->value.time = camel_search_util_make_time (argc, argv);
 
 	return res;
 }
@@ -1312,7 +1313,7 @@ compare_date_func (CamelSExp *sexp,
 			return res;
 		}
 
-		res->value.number = camel_folder_search_util_compare_date (t1, t2);
+		res->value.number = camel_search_util_compare_date (t1, t2);
 	}
 
 	camel_filter_search_log (fms, "compare-date result:%d", res->value.number);

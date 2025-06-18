@@ -41,7 +41,6 @@ set(SOURCES
 	camel-filter-input-stream.c
 	camel-filter-output-stream.c
 	camel-filter-search.c
-	camel-folder-search.c
 	camel-folder-summary.c
 	camel-folder-thread.c
 	camel-folder.c
@@ -115,12 +114,15 @@ set(SOURCES
 	camel-sasl-xoauth2-yahoo.c
 	camel-sasl.c
 	camel-search-private.c
-	camel-search-sql-sexp.c
+	camel-search-utils.c
 	camel-service.c
 	camel-session.c
 	camel-settings.c
 	camel-sexp.c
 	camel-smime-context.c
+	camel-store-db.c
+	camel-store-search.c
+	camel-store-search-private.h
 	camel-store-settings.c
 	camel-store-summary.c
 	camel-store.c
@@ -182,7 +184,6 @@ set(HEADERS
 	camel-filter-input-stream.h
 	camel-filter-output-stream.h
 	camel-filter-search.h
-	camel-folder-search.h
 	camel-folder-summary.h
 	camel-folder-thread.h
 	camel-folder.h
@@ -259,12 +260,14 @@ set(HEADERS
 	camel-sasl-xoauth2-yahoo.h
 	camel-sasl.h
 	camel-search-private.h
-	camel-search-sql-sexp.h
+	camel-search-utils.h
 	camel-service.h
 	camel-session.h
 	camel-settings.h
 	camel-sexp.h
 	camel-smime-context.h
+	camel-store-db.h
+	camel-store-search.h
 	camel-store-settings.h
 	camel-store-summary.h
 	camel-store.h

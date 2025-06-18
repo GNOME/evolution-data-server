@@ -101,7 +101,7 @@ camel_spool_summary_new (CamelFolder *folder,
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_set_collate (camel_store_get_db (parent_store), "bdata", "spool_frompos_sort", (CamelDBCollate) camel_local_frompos_sort);
+		camel_db_set_collate (CAMEL_DB (camel_store_get_db (parent_store)), "bdata", "spool_frompos_sort", (CamelDBCollate) camel_local_frompos_sort);
 	}
 	camel_local_summary_construct ((CamelLocalSummary *) new, mbox_name, NULL);
 	camel_folder_summary_load ((CamelFolderSummary *) new, NULL);
@@ -340,7 +340,7 @@ spool_summary_check (CamelLocalSummary *cls,
 		work = (camel_message_info_get_flags (info) & (CAMEL_MESSAGE_FOLDER_NOXEV)) != 0;
 		g_clear_object (&info);
 	}
-	camel_folder_summary_free_array (known_uids);
+	g_clear_pointer (&known_uids, g_ptr_array_unref);
 
 	/* if we do, then write out the headers using sync_full, etc */
 	if (work) {

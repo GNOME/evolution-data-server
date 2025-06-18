@@ -54,7 +54,6 @@ struct _CamelIMAPXFolder {
 	CamelIMAPXFolderPrivate *priv;
 
 	CamelDataCache *cache;
-	CamelFolderSearch *search;
 
 	GMutex search_lock;
 	GMutex stream_lock;

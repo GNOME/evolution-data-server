@@ -47,7 +47,6 @@ void camel_uid_cache_destroy (CamelUIDCache *cache);
 GPtrArray *camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids);
 
 void camel_uid_cache_save_uid (CamelUIDCache *cache, const gchar *uid);
-void camel_uid_cache_free_uids (GPtrArray *uids);
 
 G_END_DECLS
 

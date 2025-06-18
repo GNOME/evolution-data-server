@@ -55,9 +55,39 @@ camel_search_build_match_regex (regex_t *pattern,
                                 struct _CamelSExpResult **argv,
                                 GError **error)
 {
+	GPtrArray *array;
+	gint ii;
+
+	array = g_ptr_array_sized_new (argc);
+
+	for (ii = 0; ii < argc; ii++) {
+		if (argv[ii]->type == CAMEL_SEXP_RES_STRING) {
+			g_ptr_array_add (array, argv[ii]->value.string);
+		} else {
+			g_warning ("Invalid type passed to body-contains match function");
+		}
+	}
+
+	ii = camel_search_build_match_regex_strv (pattern, type, (gint) array->len, (const gchar **) array->pdata, error) ? 0 : -1;
+
+	g_ptr_array_unref (array);
+
+	return ii;
+}
+
+/**
+ * camel_search_build_match_regex_strv: (skip)
+ **/
+gboolean
+camel_search_build_match_regex_strv (regex_t *pattern,
+				     camel_search_flags_t type,
+				     gint argc,
+				     const gchar **argv,
+				     GError **error)
+{
 	GString *match = g_string_new ("");
 	gint c, i, count = 0, err;
-	gchar *word;
+	const gchar *word;
 	gint flags;
 
 	/* Build a regex pattern we can use to match the words,
@@ -65,33 +95,29 @@ camel_search_build_match_regex (regex_t *pattern,
 	if (argc > 1)
 		g_string_append_c (match, '(');
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
-			if (count > 0)
-				g_string_append_c (match, '|');
+		if (count > 0)
+			g_string_append_c (match, '|');
 
-			word = argv[i]->value.string;
-			if (type & CAMEL_SEARCH_MATCH_REGEX) {
-				/* No need to escape because this
-				 * should already be a valid regex. */
-				g_string_append (match, word);
-			} else {
-				/* Escape any special chars (not
-				 * sure if this list is complete). */
-				if (type & CAMEL_SEARCH_MATCH_START)
-					g_string_append_c (match, '^');
-				while ((c = *word++)) {
-					if (strchr ("*\\.()[]^$+", c) != NULL) {
-						g_string_append_c (match, '\\');
-					}
-					g_string_append_c (match, c);
-				}
-				if (type & CAMEL_SEARCH_MATCH_END)
-					g_string_append_c (match, '^');
-			}
-			count++;
+		word = argv[i];
+		if (type & CAMEL_SEARCH_MATCH_REGEX) {
+			/* No need to escape because this
+			 * should already be a valid regex. */
+			g_string_append (match, word);
 		} else {
-			g_warning ("Invalid type passed to body-contains match function");
+			/* Escape any special chars (not
+			 * sure if this list is complete). */
+			if (type & CAMEL_SEARCH_MATCH_START)
+				g_string_append_c (match, '^');
+			while ((c = *word++)) {
+				if (strchr ("*\\.()[]^$+", c) != NULL) {
+					g_string_append_c (match, '\\');
+				}
+				g_string_append_c (match, c);
+			}
+			if (type & CAMEL_SEARCH_MATCH_END)
+				g_string_append_c (match, '^');
 		}
+		count++;
 	}
 	if (argc > 1)
 		g_string_append_c (match, ')');
@@ -118,7 +144,7 @@ camel_search_build_match_regex (regex_t *pattern,
 	d (printf ("Built regex: '%s'\n", match->str));
 	g_string_free (match, TRUE);
 
-	return err;
+	return err == 0;
 }
 
 static guchar soundex_table[256] = {
@@ -396,6 +422,43 @@ camel_ustrncasecmp (const gchar *ps1,
 	return 0;
 }
 
+static gboolean
+camel_search_regex (const gchar *haystack,
+		    const gchar *regexpr,
+		    gboolean is_multiline)
+{
+	gboolean matches = FALSE;
+
+	if (haystack) {
+		regex_t pattern;
+		guint32 flags = REG_EXTENDED | REG_NOSUB | REG_ICASE;
+		gint err;
+
+		if (is_multiline)
+			flags |= REG_NEWLINE;
+
+		err = regcomp (&pattern, regexpr, flags);
+		if (err != 0) {
+			/* regerror gets called twice to get the full error
+			 * string length to do proper posix error reporting. */
+			gint len = regerror (err, &pattern, NULL, 0);
+			gchar *buffer = g_malloc0 (len + 1);
+
+			regerror (err, &pattern, buffer, len);
+
+			g_warning ("%s: Regular expression compilation failed: '%s': %s", G_STRFUNC, regexpr, buffer);
+
+			g_free (buffer);
+		} else {
+			matches = regexec (&pattern, haystack, 0, NULL, 0) == 0;
+		}
+
+		regfree (&pattern);
+	}
+
+	return matches;
+}
+
 /* Value is the match value suitable for exact match if required. */
 static gint
 header_match (const gchar *value,
@@ -406,6 +469,10 @@ header_match (const gchar *value,
 
 	if (how == CAMEL_SEARCH_MATCH_SOUNDEX)
 		return header_soundex (value, match);
+
+	if (how == CAMEL_SEARCH_MATCH_REGEX_SINGLELINE ||
+	    how == CAMEL_SEARCH_MATCH_REGEX_MULTILINE)
+		return camel_search_regex (value, match, how == CAMEL_SEARCH_MATCH_REGEX_MULTILINE);
 
 	vlen = strlen (value);
 	mlen = strlen (match);
@@ -848,6 +915,12 @@ camel_search_get_header_decoded (const gchar *header_name,
 	gchar *unfold, *decoded;
 
 	if (!header_value || !*header_value)
+		return NULL;
+
+	while (*header_value && g_ascii_isspace (*header_value))
+		header_value++;
+
+	if (!*header_value)
 		return NULL;
 
 	unfold = camel_header_unfold (header_value);

@@ -90,6 +90,7 @@
       <xi:include href="xml/camel-network-service.xml"/>
       <xi:include href="xml/camel-store.xml"/>
       <xi:include href="xml/camel-subscribable.xml"/>
+      <xi:include href="xml/camel-store-search.xml"/>
       <xi:include href="xml/camel-store-summary.xml"/>
       <xi:include href="xml/camel-offline-store.xml"/>
       <xi:include href="xml/camel-transport.xml"/>
@@ -110,7 +111,6 @@
     <chapter id="Folders">
       <title>Folders</title>
       <xi:include href="xml/camel-folder.xml"/>
-      <xi:include href="xml/camel-folder-search.xml"/>
       <xi:include href="xml/camel-folder-summary.xml"/>
       <xi:include href="xml/camel-folder-thread.xml"/>
       <xi:include href="xml/camel-message-info.xml"/>
@@ -176,6 +176,7 @@
       <xi:include href="xml/camel-db.xml"/>
       <xi:include href="xml/camel-index.xml"/>
       <xi:include href="xml/camel-partition-table.xml"/>
+      <xi:include href="xml/camel-store-db.xml"/>
       <xi:include href="xml/camel-text-index.xml"/>
     </chapter>
 
@@ -199,8 +200,8 @@
       <xi:include href="xml/camel-name-value-array.xml"/>
       <xi:include href="xml/camel-named-flags.xml"/>
       <xi:include href="xml/camel-net-utils.xml"/>
-      <xi:include href="xml/camel-search-sql-sexp.xml"/>
       <xi:include href="xml/camel-sexp.xml"/>
+      <xi:include href="xml/camel-search-utils.xml"/>
       <xi:include href="xml/camel-string-utils.xml"/>
       <xi:include href="xml/camel-trie.xml"/>
       <xi:include href="xml/camel-uid-cache.xml"/>
@@ -249,7 +250,6 @@
       <xi:include href="xml/camel-imapx-message-info.xml"/>
       <xi:include href="xml/camel-imapx-namespace.xml"/>
       <xi:include href="xml/camel-imapx-namespace-response.xml"/>
-      <xi:include href="xml/camel-imapx-search.xml"/>
       <xi:include href="xml/camel-imapx-server.xml"/>
       <xi:include href="xml/camel-imapx-settings.xml"/>
       <xi:include href="xml/camel-imapx-store.xml"/>
@@ -299,6 +299,10 @@
   <index id="api-index-deprecated">
     <title>Index of deprecated symbols</title>
     <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3-58">
+    <title>Index of new symbols in 3.58</title>
+    <xi:include href="xml/api-index-3.58.xml"><xi:fallback /></xi:include>
   </index>
   <index id="api-index-3-54">
     <title>Index of new symbols in 3.54</title>

@@ -42,7 +42,9 @@ typedef enum {
 	CAMEL_SEARCH_MATCH_WORD,
 	CAMEL_SEARCH_MATCH_STARTS,
 	CAMEL_SEARCH_MATCH_ENDS,
-	CAMEL_SEARCH_MATCH_SOUNDEX
+	CAMEL_SEARCH_MATCH_SOUNDEX,
+	CAMEL_SEARCH_MATCH_REGEX_SINGLELINE,
+	CAMEL_SEARCH_MATCH_REGEX_MULTILINE
 } camel_search_match_t;
 
 typedef enum {
@@ -58,6 +60,12 @@ gint		camel_search_build_match_regex	(regex_t *pattern,
 						 camel_search_flags_t type,
 						 gint argc,
 						 CamelSExpResult **argv,
+						 GError **error);
+gboolean	camel_search_build_match_regex_strv
+						(regex_t *pattern,
+						 camel_search_flags_t type,
+						 gint argc,
+						 const gchar **argv,
 						 GError **error);
 gboolean	camel_search_message_body_contains
 						(CamelDataWrapper *object,

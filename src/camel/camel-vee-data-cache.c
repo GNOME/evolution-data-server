@@ -510,7 +510,7 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 				camel_pstring_free (vdata.orig_message_uid);
 			}
 
-			camel_folder_free_uids (subfolder, uids);
+			g_clear_pointer (&uids, g_ptr_array_unref);
 		}
 	}
 

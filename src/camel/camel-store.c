@@ -26,15 +26,16 @@
 #include <sys/types.h>
 
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #include "camel-async-closure.h"
-#include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-folder.h"
 #include "camel-network-service.h"
 #include "camel-offline-store.h"
 #include "camel-session.h"
 #include "camel-store.h"
+#include "camel-store-db.h"
 #include "camel-store-settings.h"
 #include "camel-subscribable.h"
 #include "camel-vtrash-folder.h"
@@ -46,7 +47,7 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 
 struct _CamelStorePrivate {
-	CamelDB *cdb;
+	CamelStoreDB *db;
 	CamelObjectBag *folders;
 	guint32 flags; /* bit-or of CamelStoreFlags */
 	guint32 permissions; /* bit-or of CamelStorePermissionFlags */
@@ -322,7 +323,7 @@ store_finalize (GObject *object)
 	if (store->priv->folders)
 		camel_object_bag_destroy (store->priv->folders);
 
-	g_clear_object (&store->priv->cdb);
+	g_clear_object (&store->priv->db);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_parent_class)->finalize (object);
@@ -512,6 +513,25 @@ store_initial_setup_sync (CamelStore *store,
 	return TRUE;
 }
 
+static gchar *
+store_create_temp_filename (void)
+{
+	GString *path;
+	gint fd;
+
+	path = g_string_new (g_get_tmp_dir ());
+	g_string_append_c (path, G_DIR_SEPARATOR);
+	g_string_append (path, "camel-test-XXXXXX.db");
+
+	fd = g_mkstemp (path->str);
+	g_warn_if_fail (fd != -1);
+
+	close (fd);
+	g_warn_if_fail (g_unlink (path->str) == 0);
+
+	return g_string_free (path, FALSE);
+}
+
 static gboolean
 store_initable_init (GInitable *initable,
                      GCancellable *cancellable,
@@ -519,8 +539,8 @@ store_initable_init (GInitable *initable,
 {
 	CamelStore *store;
 	CamelService *service;
-	const gchar *user_dir;
-	gchar *filename;
+	const gchar *user_dir = NULL;
+	gchar *filename = NULL;
 
 	store = CAMEL_STORE (initable);
 
@@ -529,12 +549,14 @@ store_initable_init (GInitable *initable,
 		return FALSE;
 
 	service = CAMEL_SERVICE (initable);
-	if ((store->priv->flags & CAMEL_STORE_USE_CACHE_DIR) != 0)
+	if ((store->priv->flags & CAMEL_STORE_USE_TEMP_DIR) != 0)
+		filename = store_create_temp_filename ();
+	else if ((store->priv->flags & CAMEL_STORE_USE_CACHE_DIR) != 0)
 		user_dir = camel_service_get_user_cache_dir (service);
 	else
 		user_dir = camel_service_get_user_data_dir (service);
 
-	if (g_mkdir_with_parents (user_dir, S_IRWXU) == -1) {
+	if (user_dir && g_mkdir_with_parents (user_dir, S_IRWXU) == -1) {
 		g_set_error_literal (
 			error, G_FILE_ERROR,
 			g_file_error_from_errno (errno),
@@ -543,14 +565,12 @@ store_initable_init (GInitable *initable,
 	}
 
 	/* This is for reading from the store */
-	filename = g_build_filename (user_dir, CAMEL_DB_FILE, NULL);
-	store->priv->cdb = camel_db_new (filename, error);
+	if (!filename)
+		filename = g_build_filename (user_dir, CAMEL_DB_FILE, NULL);
+	store->priv->db = camel_store_db_new (filename, cancellable, error);
 	g_free (filename);
 
-	if (store->priv->cdb == NULL)
-		return FALSE;
-
-	if (camel_db_create_folders_table (store->priv->cdb, error))
+	if (store->priv->db == NULL)
 		return FALSE;
 
 	return TRUE;
@@ -685,16 +705,16 @@ G_DEFINE_QUARK (camel-store-error-quark, camel_store_error)
  * camel_store_get_db:
  * @store: a #CamelStore
  *
- * Returns: (transfer none): A #CamelDB instance associated with this @store.
+ * Returns: (transfer none): A #CamelStoreDB instance associated with this @store.
  *
- * Since: 3.24
+ * Since: 3.58
  **/
-CamelDB *
+CamelStoreDB *
 camel_store_get_db (CamelStore *store)
 {
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 
-	return store->priv->cdb;
+	return store->priv->db;
 }
 
 /**
@@ -3260,7 +3280,7 @@ camel_store_initial_setup_finish (CamelStore *store,
  * @store: a #CamelStore instance
  * @error: return location for a #GError, or %NULL
  *
- * Checks the state of the current CamelDB used for the @store and eventually
+ * Checks the state of the current #CamelStoreDB used for the @store and eventually
  * runs maintenance routines on it.
  *
  * Returns: Whether succeeded.
@@ -3276,10 +3296,10 @@ camel_store_maybe_run_db_maintenance (CamelStore *store,
 	if (g_atomic_int_get (&store->priv->maintenance_lock) > 0)
 		return TRUE;
 
-	if (!store->priv->cdb)
+	if (!store->priv->db)
 		return TRUE;
 
-	return camel_db_maybe_run_maintenance (store->priv->cdb, error);
+	return camel_db_maybe_run_maintenance (CAMEL_DB (store->priv->db), error);
 }
 
 /**

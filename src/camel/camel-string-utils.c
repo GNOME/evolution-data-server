@@ -200,8 +200,8 @@ camel_pstring_add (gchar *string,
  * @string: (nullable): string to fetch from the string pool
  *
  * Returns the canonicalized copy of @string without increasing its
- * reference count in the string pool.  If necessary, @string is first
- * added to the string pool.
+ * reference count in the string pool. The @string is not added to
+ * the string pool when it's not part of it and %NULL is returned.
  *
  * The %NULL and empty strings are special cased to constant values.
  *
@@ -229,8 +229,8 @@ camel_pstring_peek (const gchar *string)
 	node = g_hash_table_lookup (string_pool, &static_node);
 
 	if (node == NULL) {
-		node = string_pool_node_new (g_strdup (string));
-		g_hash_table_add (string_pool, node);
+		g_mutex_unlock (&string_pool_lock);
+		return NULL;
 	}
 
 	interned = node->string;

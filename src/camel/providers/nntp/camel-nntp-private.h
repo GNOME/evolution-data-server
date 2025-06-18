@@ -28,7 +28,6 @@
 G_BEGIN_DECLS
 
 struct _CamelNNTPFolderPrivate {
-	GMutex search_lock;	/* for locking the search object */
 	GMutex cache_lock;     /* for locking the cache object */
 
 	gboolean apply_filters;		/* persistent property */

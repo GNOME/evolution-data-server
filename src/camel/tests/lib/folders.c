@@ -41,7 +41,7 @@ test_folder_counts (CamelFolder *folder,
 			myunread--;
 	}
 	check (unread == myunread);
-	camel_folder_free_summary (folder, s);
+	g_clear_pointer (&s, g_ptr_array_unref);
 
 	/* use the uid list */
 	s = camel_folder_get_uids (folder);
@@ -55,7 +55,7 @@ test_folder_counts (CamelFolder *folder,
 		g_clear_object (&info);
 	}
 	check (unread == myunread);
-	camel_folder_free_uids (folder, s);
+	g_clear_pointer (&s, g_ptr_array_unref);
 
 	pull ();
 }
@@ -131,7 +131,7 @@ test_folder_message (CamelFolder *folder,
 			found++;
 	}
 	check (found == 1);
-	camel_folder_free_summary (folder, s);
+	g_clear_pointer (&s, g_ptr_array_unref);
 
 	/* check it is in the uid list */
 	s = camel_folder_get_uids (folder);
@@ -142,7 +142,7 @@ test_folder_message (CamelFolder *folder,
 			found++;
 	}
 	check (found == 1);
-	camel_folder_free_uids (folder, s);
+	g_clear_pointer (&s, g_ptr_array_unref);
 
 	g_clear_error (&error);
 
@@ -188,7 +188,7 @@ test_folder_not_message (CamelFolder *folder,
 			found++;
 	}
 	check (found == 0);
-	camel_folder_free_summary (folder, s);
+	g_clear_pointer (&s, g_ptr_array_unref);
 	pull ();
 
 	/* check it is not in the uid list */
@@ -201,7 +201,7 @@ test_folder_not_message (CamelFolder *folder,
 			found++;
 	}
 	check (found == 0);
-	camel_folder_free_uids (folder, s);
+	g_clear_pointer (&s, g_ptr_array_unref);
 	pull ();
 
 	g_clear_error (&error);
@@ -464,7 +464,7 @@ test_folder_message_ops (CamelSession *session,
 					"info->subject %s", camel_message_info_get_subject (info));
 				g_clear_object (&info);
 			}
-			camel_folder_free_uids (folder, uids);
+			g_clear_pointer (&uids, g_ptr_array_unref);
 			pull ();
 
 			test_free (subject);
@@ -528,7 +528,7 @@ test_folder_message_ops (CamelSession *session,
 		test_folder_not_message (folder, uids->pdata[0]);
 		test_folder_counts (folder, 9, 9);
 
-		camel_folder_free_uids (folder, uids);
+		g_clear_pointer (&uids, g_ptr_array_unref);
 
 		uids = camel_folder_get_uids (folder);
 		check (uids != NULL);
@@ -559,7 +559,7 @@ test_folder_message_ops (CamelSession *session,
 		test_folder_not_message (folder, uids->pdata[8]);
 		test_folder_counts (folder, 8, 8);
 
-		camel_folder_free_uids (folder, uids);
+		g_clear_pointer (&uids, g_ptr_array_unref);
 
 		uids = camel_folder_get_uids (folder);
 		check (uids != NULL);
@@ -594,7 +594,7 @@ test_folder_message_ops (CamelSession *session,
 		}
 		test_folder_counts (folder, 0, 0);
 
-		camel_folder_free_uids (folder, uids);
+		g_clear_pointer (&uids, g_ptr_array_unref);
 		pull ();
 
 		if (local)

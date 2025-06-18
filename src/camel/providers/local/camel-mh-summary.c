@@ -102,7 +102,7 @@ camel_mh_summary_new (CamelFolder *folder,
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_set_collate (camel_store_get_db (parent_store), "uid", "mh_uid_sort", (CamelDBCollate) camel_local_frompos_sort);
+		camel_db_set_collate (CAMEL_DB (camel_store_get_db (parent_store)), "uid", "mh_uid_sort", (CamelDBCollate) camel_local_frompos_sort);
 	}
 
 	camel_local_summary_construct ((CamelLocalSummary *) o, mhdir, index);
@@ -245,7 +245,7 @@ mh_summary_check (CamelLocalSummary *cls,
 			g_hash_table_insert (left, (gchar *) camel_message_info_get_uid (info), info);
 		}
 	}
-	camel_folder_summary_free_array (known_uids);
+	g_clear_pointer (&known_uids, g_ptr_array_unref);
 
 	while ((d = readdir (dir))) {
 		/* FIXME: also run stat to check for regular file */
@@ -338,7 +338,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 		g_clear_object (&info);
 	}
 
-	camel_folder_summary_free_array (known_uids);
+	g_clear_pointer (&known_uids, g_ptr_array_unref);
 
 	/* Chain up to parent's sync() method. */
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (camel_mh_summary_parent_class);

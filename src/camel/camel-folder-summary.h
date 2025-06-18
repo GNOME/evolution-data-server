@@ -30,6 +30,7 @@
 #include <camel/camel-message-info.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-mime-parser.h>
+#include <camel/camel-store-db.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_FOLDER_SUMMARY \
@@ -77,9 +78,6 @@ struct _CamelFolderSummary {
 	CamelFolderSummaryPrivate *priv;
 };
 
-struct _CamelMIRecord;
-struct _CamelFIRecord;
-
 struct _CamelFolderSummaryClass {
 	GObjectClass parent_class;
 
@@ -90,10 +88,10 @@ struct _CamelFolderSummaryClass {
 	/* Load/Save folder summary*/
 	gboolean	(*summary_header_load)
 					(CamelFolderSummary *summary,
-					 struct _CamelFIRecord *fir);
-	struct _CamelFIRecord *
-			(*summary_header_save)
+					 CamelStoreDBFolderRecord *record);
+	gboolean	(*summary_header_save)
 					(CamelFolderSummary *summary,
+					 CamelStoreDBFolderRecord *inout_record,
 					 GError **error);
 
 	/* create an individual message info */
@@ -215,7 +213,7 @@ gboolean	camel_folder_summary_remove_uid	(CamelFolderSummary *summary,
 						 const gchar *uid);
 gboolean	camel_folder_summary_remove_uids
 						(CamelFolderSummary *summary,
-						 GList *uids);
+						 GPtrArray *uids);
 
 /* remove all items */
 gboolean	camel_folder_summary_clear	(CamelFolderSummary *summary,
@@ -233,7 +231,6 @@ guint32		camel_folder_summary_get_info_flags
 						(CamelFolderSummary *summary,
 						 const gchar *uid);
 GPtrArray *	camel_folder_summary_get_array	(CamelFolderSummary *summary);
-void		camel_folder_summary_free_array	(GPtrArray *array);
 
 GHashTable *	camel_folder_summary_get_hash	(CamelFolderSummary *summary);
 

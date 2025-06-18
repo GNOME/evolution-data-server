@@ -182,7 +182,7 @@ camel_maildir_summary_new (struct _CamelFolder *folder,
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_set_collate (camel_store_get_db (parent_store), "dreceived", NULL, NULL);
+		camel_db_set_collate (CAMEL_DB (camel_store_get_db (parent_store)), "dreceived", NULL, NULL);
 
 		if (!filename_flag_sep)
 			o->priv->filename_flag_sep = camel_maildir_store_get_filename_flag_sep (CAMEL_MAILDIR_STORE (parent_store));
@@ -579,7 +579,7 @@ camel_maildir_summary_add (CamelLocalSummary *cls,
 struct _remove_data {
 	CamelLocalSummary *cls;
 	CamelFolderChangeInfo *changes;
-	GList *removed_uids;
+	GPtrArray *removed_uids;
 };
 
 static void
@@ -592,7 +592,9 @@ remove_summary (const gchar *uid,
 		camel_index_delete_name (rd->cls->index, uid);
 	if (rd->changes)
 		camel_folder_change_info_remove_uid (rd->changes, uid);
-	rd->removed_uids = g_list_prepend (rd->removed_uids, (gpointer) uid);
+	if (!rd->removed_uids)
+		rd->removed_uids = g_ptr_array_new ();
+	g_ptr_array_add (rd->removed_uids, (gpointer) uid);
 }
 
 static gint
@@ -736,9 +738,10 @@ maildir_summary_check (CamelLocalSummary *cls,
 	closedir (dir);
 	g_hash_table_foreach (left, (GHFunc) remove_summary, &rd);
 
-	if (rd.removed_uids)
+	if (rd.removed_uids) {
 		camel_folder_summary_remove_uids ((CamelFolderSummary *) cls, rd.removed_uids);
-	g_list_free (rd.removed_uids);
+		g_clear_pointer (&rd.removed_uids, g_ptr_array_unref);
+	}
 
 	/* Destroy the hash table only after the removed_uids GList is freed, because it has borrowed the UIDs */
 	g_hash_table_destroy (left);
@@ -820,7 +823,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	g_free (new);
 	g_free (cur);
 
-	camel_folder_summary_free_array (known_uids);
+	g_clear_pointer (&known_uids, g_ptr_array_unref);
 	g_mutex_unlock (&mds->priv->summary_lock);
 
 	return 0;
@@ -838,7 +841,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 	gint i;
 	CamelMessageInfo *info;
 	CamelMaildirMessageInfo *mdi;
-	GList *removed_uids = NULL;
+	GPtrArray *removed_uids = NULL;
 	gchar *name;
 	struct stat st;
 	GPtrArray *known_uids;
@@ -893,7 +896,9 @@ maildir_summary_sync (CamelLocalSummary *cls,
 					camel_index_delete_name (cls->index, uid);
 
 				camel_folder_change_info_remove_uid (changes, uid);
-				removed_uids = g_list_prepend (removed_uids, (gpointer) camel_pstring_strdup (uid));
+				if (!removed_uids)
+					removed_uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+				g_ptr_array_add (removed_uids, (gpointer) camel_pstring_strdup (uid));
 			}
 			g_free (name);
 		} else if (mdi && camel_message_info_get_folder_flagged (info)) {
@@ -932,10 +937,10 @@ maildir_summary_sync (CamelLocalSummary *cls,
 
 	if (removed_uids) {
 		camel_folder_summary_remove_uids (CAMEL_FOLDER_SUMMARY (cls), removed_uids);
-		g_list_free_full (removed_uids, (GDestroyNotify) camel_pstring_free);
+		g_ptr_array_unref (removed_uids);
 	}
 
-	camel_folder_summary_free_array (known_uids);
+	g_clear_pointer (&known_uids, g_ptr_array_unref);
 	camel_operation_pop_message (cancellable);
 
 	/* Chain up to parent's sync() method. */

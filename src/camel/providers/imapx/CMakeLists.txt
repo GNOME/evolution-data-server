@@ -22,8 +22,6 @@ set(SOURCES
 	camel-imapx-namespace.h
 	camel-imapx-namespace-response.c
 	camel-imapx-namespace-response.h
-	camel-imapx-search.c
-	camel-imapx-search.h
 	camel-imapx-server.c
 	camel-imapx-server.h
 	camel-imapx-settings.c

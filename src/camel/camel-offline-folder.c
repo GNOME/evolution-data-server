@@ -372,6 +372,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 
 	limit_time = offline_folder_get_limit_time (folder);
 	if (limit_time > 0 && camel_folder_get_folder_summary (folder)) {
+		GError *local_error = NULL;
 		gchar *search_sexp;
 
 		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
@@ -385,7 +386,12 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 			"(> (get-sent-date) %" G_GINT64_FORMAT ")"
 			"))", expression, (gint64) limit_time);
 
-		uids = camel_folder_search_by_expression (folder, search_sexp, cancellable, NULL);
+		if (!camel_folder_search_sync (folder, search_sexp, &uids, cancellable, &local_error)) {
+			g_warning ("%s: Failed to search folder '%s': %s", G_STRFUNC, camel_folder_get_full_name (folder),
+				local_error ? local_error->message : "Unknown error");
+		}
+
+		g_clear_error (&local_error);
 
 		if (camel_debug ("downsync")) {
 			printf ("[downsync]       %p: (%s : %s): got %d uids for limit expr '%s'\n", camel_folder_get_parent_store (folder),
@@ -395,7 +401,14 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 
 		g_free (search_sexp);
 	} else if (expression) {
-		uids = camel_folder_search_by_expression (folder, expression, cancellable, NULL);
+		GError *local_error = NULL;
+
+		if (!camel_folder_search_sync (folder, expression, &uids, cancellable, &local_error)) {
+			g_warning ("%s: Failed to search folder '%s': %s", G_STRFUNC, camel_folder_get_full_name (folder),
+				local_error ? local_error->message : "Unknown error");
+		}
+
+		g_clear_error (&local_error);
 
 		if (camel_debug ("downsync")) {
 			printf ("[downsync]       %p: (%s : %s): got %d uids for expr '%s'\n", camel_folder_get_parent_store (folder),
@@ -417,10 +430,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 
 	uncached_uids = camel_folder_get_uncached_uids (folder, uids, NULL);
 
-	if (expression)
-		camel_folder_search_free (folder, uids);
-	else
-		camel_folder_free_uids (folder, uids);
+	g_clear_pointer (&uids, g_ptr_array_unref);
 
 	if (camel_debug ("downsync")) {
 		printf ("[downsync]       %p: (%s : %s): claimed %d uncached uids\n", camel_folder_get_parent_store (folder),
@@ -498,7 +508,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 
  done:
 	if (uncached_uids)
-		camel_folder_free_uids (folder, uncached_uids);
+		g_clear_pointer (&uncached_uids, g_ptr_array_unref);
 
 	camel_operation_pop_message (cancellable);
 

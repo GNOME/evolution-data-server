@@ -42,16 +42,16 @@ G_DEFINE_TYPE (
 
 static gboolean
 imapx_summary_summary_header_load (CamelFolderSummary *s,
-				   CamelFIRecord *mir)
+				   CamelStoreDBFolderRecord *record)
 {
 	gboolean success;
 
 	/* Chain up to parent's summary_header_load() method. */
-	success = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->summary_header_load (s, mir);
+	success = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->summary_header_load (s, record);
 
 	if (success) {
 		CamelIMAPXSummary *ims;
-		gchar *part = mir->bdata;
+		gchar *part = record->bdata;
 
 		ims = CAMEL_IMAPX_SUMMARY (s);
 
@@ -73,32 +73,30 @@ imapx_summary_summary_header_load (CamelFolderSummary *s,
 	return success;
 }
 
-static CamelFIRecord *
+static gboolean
 imapx_summary_summary_header_save (CamelFolderSummary *s,
+				   CamelStoreDBFolderRecord *record,
 				   GError **error)
 {
-	struct _CamelFIRecord *fir;
+	CamelIMAPXSummary *ims;
 
 	/* Chain up to parent's summary_header_save() method. */
-	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->summary_header_save (s, error);
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->summary_header_save (s, record, error))
+		return FALSE;
 
-	if (fir != NULL) {
-		CamelIMAPXSummary *ims;
+	ims = CAMEL_IMAPX_SUMMARY (s);
 
-		ims = CAMEL_IMAPX_SUMMARY (s);
+	record->bdata = g_strdup_printf (
+		"%d"
+		" %" G_GUINT64_FORMAT
+		" %" G_GUINT32_FORMAT
+		" %" G_GUINT64_FORMAT,
+		CAMEL_IMAPX_SUMMARY_VERSION,
+		ims->validity,
+		ims->uidnext,
+		ims->modseq);
 
-		fir->bdata = g_strdup_printf (
-			"%d"
-			" %" G_GUINT64_FORMAT
-			" %" G_GUINT32_FORMAT
-			" %" G_GUINT64_FORMAT,
-			CAMEL_IMAPX_SUMMARY_VERSION,
-			ims->validity,
-			ims->uidnext,
-			ims->modseq);
-	}
-
-	return fir;
+	return TRUE;
 }
 
 static void

@@ -25,7 +25,6 @@
 
 #include "camel-db.h"
 #include "camel-debug.h"
-#include "camel-folder-search.h"
 #include "camel-mime-message.h"
 #include "camel-session.h"
 #include "camel-store.h"
@@ -317,8 +316,7 @@ vee_folder_rebuild_folder_with_changes (CamelVeeFolder *vfolder,
 	if (vfolder->priv->expression == NULL) {
 		match = g_ptr_array_new ();
 	} else {
-		match = camel_folder_search_by_expression (subfolder, vfolder->priv->expression, cancellable, NULL);
-		if (!match)
+		if (!camel_folder_search_sync (subfolder, vfolder->priv->expression, &match, cancellable, NULL))
 			return;
 	}
 
@@ -330,7 +328,7 @@ vee_folder_rebuild_folder_with_changes (CamelVeeFolder *vfolder,
 		g_hash_table_destroy (all_uids);
 	}
 
-	camel_folder_search_free (subfolder, match);
+	g_clear_pointer (&match, g_ptr_array_unref);
 }
 
 static void
@@ -431,7 +429,6 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 
 	if (subfolder_changes->uid_added->len + subfolder_changes->uid_changed->len > 0) {
 		GPtrArray *test_uids, *match;
-		gboolean my_match = FALSE;
 
 		test_uids = g_ptr_array_sized_new (subfolder_changes->uid_added->len + subfolder_changes->uid_changed->len);
 
@@ -444,8 +441,7 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 		}
 
 		if (!vfolder->priv->expression) {
-			my_match = TRUE;
-			match = g_ptr_array_new ();
+			match = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
 			if (vee_folder_is_unmatched (vfolder)) {
 				CamelVeeMessageInfoData *mi_data;
@@ -465,24 +461,20 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 				}
 			}
 		} else {
-			/* sadly, if there are threads involved, then searching by uids doesn't work,
-			 * because just changed uids can be brought in by the thread condition */
-			if (strstr (vfolder->priv->expression, "match-threads") != NULL)
-				match = camel_folder_search_by_expression (subfolder, vfolder->priv->expression, cancellable, NULL);
-			else
-				match = camel_folder_search_by_uids (subfolder, vfolder->priv->expression, test_uids, cancellable, NULL);
+			if (!camel_folder_search_sync (subfolder, vfolder->priv->expression, &match, cancellable, NULL))
+				match = NULL;
 		}
 
 		if (match) {
 			GHashTable *with_uids;
 			CamelFolderSummary *subsummary = camel_folder_get_folder_summary (subfolder);
 
-			if (keep_uids && subsummary && !my_match) {
+			if (keep_uids && subsummary && !vfolder->priv->expression) {
 				GHashTableIter iter;
 				GPtrArray *my_matched;
 				gpointer ptr_uid;
 
-				my_matched = g_ptr_array_new ();
+				my_matched = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
 				for (ii = 0; ii < match->len; ii++) {
 					const gchar *uid = match->pdata[ii];
@@ -503,9 +495,8 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 						g_ptr_array_add (my_matched, (gpointer) camel_pstring_strdup (ptr_uid));
 				}
 
-				camel_folder_search_free (subfolder, match);
+				g_clear_pointer (&match, g_ptr_array_unref);
 				match = my_matched;
-				my_match = TRUE;
 			}
 
 			/* uids are taken from the string pool, thus use direct hashes */
@@ -517,12 +508,7 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 			vee_folder_merge_matching (vfolder, subfolder, with_uids, match, changes, TRUE);
 
 			g_hash_table_destroy (with_uids);
-			if (my_match) {
-				g_ptr_array_foreach (match, (GFunc) camel_pstring_free, NULL);
-				g_ptr_array_free (match, TRUE);
-			} else {
-				camel_folder_search_free (subfolder, match);
-			}
+			g_clear_pointer (&match, g_ptr_array_unref);
 		}
 
 		g_ptr_array_free (test_uids, TRUE);
@@ -946,23 +932,27 @@ vee_folder_combine_expressions (CamelVeeFolder *vfolder,
 	return expression;
 }
 
-static GPtrArray *
-vee_folder_search_by_expression (CamelFolder *folder,
-                                 const gchar *expression,
-                                 GCancellable *cancellable,
-                                 GError **error)
+static gboolean
+vee_folder_search_sync (CamelFolder *folder,
+			const gchar *expression,
+			GPtrArray **out_uids,
+			GCancellable *cancellable,
+			GError **error)
 {
 	CamelVeeFolder *vfolder;
 	CamelVeeDataCache *data_cache;
 	GHashTable *matches_hash = NULL; /* gchar *UID ~> NULL */
-	GPtrArray *matches = NULL;
 	GList *link;
+	gboolean success = FALSE;
 
-	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), NULL);
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
 
 	vfolder = CAMEL_VEE_FOLDER (folder);
 	data_cache = vee_folder_get_data_cache (vfolder);
 
+	#warning TODO replace me
+	#if 0
 	/* the "match-threads" requires whole folder content to have constructed complete threads,
 	   thus use the CamelFolderSearch for it, instead of using per-subfolder searches; it helps
 	   when the thread is split into multiple subfolders, like Inbox and Sent */
@@ -981,8 +971,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 				g_hash_table_insert (matches_hash, (gpointer) camel_pstring_strdup (vuid), NULL);
 			}
 
-			camel_folder_search_free_result (search, matches);
-			matches = NULL;
+			g_clear_pointer (&matches, g_ptr_array_unref);
 		}
 		g_clear_object (&search);
 
@@ -994,20 +983,23 @@ vee_folder_search_by_expression (CamelFolder *folder,
 		}
 
 		g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
-	} else {
+	} else
+	#endif
+	{
 		gchar *tmp = NULL;
 
 		g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
 
+		success = TRUE;
+
 		expression = vee_folder_combine_expressions (vfolder, expression, &tmp);
 
-		for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
+		for (link = vfolder->priv->subfolders; link && success && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
 			CamelFolder *subfolder = link->data;
-			GPtrArray *submatches;
+			GPtrArray *submatches = NULL;
 
-			submatches = camel_folder_search_by_expression (subfolder, expression, cancellable, NULL);
-
-			if (submatches) {
+			success = camel_folder_search_sync (subfolder, expression, &submatches, cancellable, NULL);
+			if (success && submatches) {
 				if (submatches->len) {
 					if (!matches_hash)
 						matches_hash = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
@@ -1015,7 +1007,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 					vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches_hash, subfolder, submatches);
 				}
 
-				camel_folder_search_free (subfolder, submatches);
+				g_clear_pointer (&submatches, g_ptr_array_unref);
 			}
 
 			vee_folder_add_subfolder_skipped_changes (vfolder, data_cache, subfolder, &matches_hash);
@@ -1026,8 +1018,11 @@ vee_folder_search_by_expression (CamelFolder *folder,
 		g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 	}
 
-	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		matches = g_ptr_array_new ();
+	success = success && !g_cancellable_set_error_if_cancelled (cancellable, error);
+	if (success) {
+		GPtrArray *matches;
+
+		matches = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
 		if (matches_hash) {
 			GHashTableIter iter;
@@ -1039,246 +1034,14 @@ vee_folder_search_by_expression (CamelFolder *folder,
 				g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (key));
 			}
 		}
+
+		*out_uids = matches;
 	}
 
 	if (matches_hash)
 		g_hash_table_destroy (matches_hash);
 
-	return matches;
-}
-
-static guint
-vee_hash_only_folder_id (gconstpointer key)
-{
-	const guchar *str;
-
-	if (!key)
-		return 0;
-
-	str = key;
-
-	return str[0] +
-		((str[0] ? str[1] : 0) << 8) +
-		(((str[0] && str[1]) ? str[2] : 0) << 16);
-}
-
-static gboolean
-vee_equal_only_folder_id (gconstpointer key1,
-			  gconstpointer key2)
-{
-	const gchar *str1, *str2;
-	gint ii;
-
-	if (key1 == key2)
-		return TRUE;
-
-	str1 = key1;
-	str2 = key2;
-
-	if (!str1 || !str2)
-		return FALSE;
-
-	for (ii = 0; ii < 8 && str1[ii]; ii++) {
-		if (str1[ii] != str2[ii])
-			return FALSE;
-	}
-
-	return ii == 8;
-}
-
-static GPtrArray *
-vee_folder_search_by_uids (CamelFolder *folder,
-                           const gchar *expression,
-                           GPtrArray *uids,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelVeeFolder *vfolder;
-	CamelVeeDataCache *data_cache;
-	GHashTable *matches_hash = NULL; /* gchar *uid ~> NULL */
-	GPtrArray *matches = NULL;
-	GList *link;
-	guint ii;
-
-	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), NULL);
-
-	if (!uids || uids->len == 0)
-		return g_ptr_array_new ();
-
-	vfolder = CAMEL_VEE_FOLDER (folder);
-	data_cache = vee_folder_get_data_cache (vfolder);
-
-	/* the "match-threads" requires whole folder content to have constructed complete threads,
-	   thus use the CamelFolderSearch for it, instead of using per-subfolder searches; it helps
-	   when the thread is split into multiple subfolders, like Inbox and Sent */
-	if (expression && strstr (expression, "match-threads")) {
-		CamelFolderSearch *search;
-
-		search = camel_folder_search_new ();
-		camel_folder_search_set_folder (search, folder);
-		matches = camel_folder_search_search (search, expression, uids, cancellable, NULL);
-		if (matches) {
-			matches_hash = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
-			for (ii = 0; ii < matches->len; ii++) {
-				const gchar *vuid = g_ptr_array_index (matches, ii);
-				g_hash_table_insert (matches_hash, (gpointer) camel_pstring_strdup (vuid), NULL);
-			}
-
-			camel_folder_search_free_result (search, matches);
-			matches = NULL;
-		}
-		g_clear_object (&search);
-
-		g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
-
-		for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
-			CamelFolder *subfolder = link->data;
-			vee_folder_add_subfolder_skipped_changes (vfolder, data_cache, subfolder, &matches_hash);
-		}
-
-		g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
-	} else {
-		GHashTable *uids_by_folder; /* gchar *folder_id as message UID ~> GPtrArray * */
-		gchar *tmp = NULL;
-
-		uids_by_folder = g_hash_table_new_full (vee_hash_only_folder_id, vee_equal_only_folder_id, NULL, (GDestroyNotify) g_ptr_array_unref);
-
-		for (ii = 0; ii < uids->len && !g_cancellable_is_cancelled (cancellable); ii++) {
-			GPtrArray *array;
-			const gchar *uid = uids->pdata[ii];
-
-			/* Skip UIDs not long enough */
-			if (!uid || !uid[0] || !uid[1] || !uid[2] || !uid[3] || !uid[4] || !uid[5] || !uid[6] || !uid[7] || !uid[8])
-				continue;
-
-			array = g_hash_table_lookup (uids_by_folder, uid);
-			if (!array) {
-				array = g_ptr_array_new ();
-				g_hash_table_insert (uids_by_folder, (gpointer) uid, array);
-			}
-
-			g_ptr_array_add (array, (gpointer) (uid + 8));
-		}
-
-		g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
-
-		expression = vee_folder_combine_expressions (vfolder, expression, &tmp);
-
-		for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
-			CamelFolder *subfolder = link->data;
-			GPtrArray *submatches, *subuids;
-			CamelVeeSubfolderData *sf_data;
-			const gchar *folder_id;
-
-			sf_data = camel_vee_data_cache_get_subfolder_data (data_cache, subfolder);
-			if (!sf_data)
-				continue;
-
-			folder_id = camel_vee_subfolder_data_get_folder_id (sf_data);
-			if (!folder_id)
-				continue;
-
-			subuids = g_hash_table_lookup (uids_by_folder, folder_id);
-			if (!subuids)
-				continue;
-
-			submatches = camel_folder_search_by_uids (subfolder, expression, subuids, cancellable, NULL);
-
-			if (submatches) {
-				if (submatches->len) {
-					if (!matches_hash)
-						matches_hash = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
-
-					vee_folder_add_subfolder_uids_to_search_matches (data_cache, matches_hash, subfolder, submatches);
-				}
-
-				camel_folder_search_free (subfolder, submatches);
-			}
-
-			vee_folder_add_subfolder_skipped_changes (vfolder, data_cache, subfolder, &matches_hash);
-		}
-
-		g_free (tmp);
-
-		g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
-
-		g_hash_table_destroy (uids_by_folder);
-	}
-
-	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		matches = g_ptr_array_new ();
-
-		if (matches_hash) {
-			GHashTableIter iter;
-			gpointer key;
-
-			g_hash_table_iter_init (&iter, matches_hash);
-
-			while (g_hash_table_iter_next (&iter, &key, NULL)) {
-				g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (key));
-			}
-		}
-	}
-
-	if (matches_hash)
-		g_hash_table_destroy (matches_hash);
-
-	return matches;
-}
-
-static guint32
-vee_folder_count_by_expression (CamelFolder *folder,
-                                const gchar *expression,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	CamelVeeFolder *vfolder;
-	GList *link;
-	guint32 count = 0;
-
-	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), 0);
-
-	vfolder = CAMEL_VEE_FOLDER (folder);
-
-	/* the "match-threads" requires whole folder content to have constructed complete threads,
-	   thus use the CamelFolderSearch for it, instead of using per-subfolder searches; it helps
-	   when the thread is split into multiple subfolders, like Inbox and Sent */
-	if (expression && strstr (expression, "match-threads")) {
-		CamelFolderSearch *search;
-
-		search = camel_folder_search_new ();
-		camel_folder_search_set_folder (search, folder);
-		count = camel_folder_search_count (search, expression, cancellable, NULL);
-		g_clear_object (&search);
-	} else {
-		gchar *tmp = NULL;
-
-		g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
-
-		expression = vee_folder_combine_expressions (vfolder, expression, &tmp);
-
-		for (link = vfolder->priv->subfolders; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
-			CamelFolder *subfolder = link->data;
-
-			count += camel_folder_count_by_expression (subfolder, expression, cancellable, NULL);
-		}
-
-		g_free (tmp);
-
-		g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
-	}
-
-	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		count = 0;
-
-	return count;
-}
-
-static void
-vee_folder_search_free (CamelFolder *folder,
-                        GPtrArray *result)
-{
-	camel_folder_search_free_result (NULL, result);
+	return success;
 }
 
 static void
@@ -1704,10 +1467,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_permanent_flags = vee_folder_get_permanent_flags;
-	folder_class->search_by_expression = vee_folder_search_by_expression;
-	folder_class->search_by_uids = vee_folder_search_by_uids;
-	folder_class->count_by_expression = vee_folder_count_by_expression;
-	folder_class->search_free = vee_folder_search_free;
+	folder_class->search_sync = vee_folder_search_sync;
 	folder_class->delete_ = vee_folder_delete;
 	folder_class->freeze = vee_folder_freeze;
 	folder_class->thaw = vee_folder_thaw;

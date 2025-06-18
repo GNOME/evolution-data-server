@@ -35,6 +35,7 @@
 #include "camel-operation.h"
 #include "camel-session.h"
 #include "camel-store.h"
+#include "camel-store-search.h"
 #include "camel-store-settings.h"
 #include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
@@ -264,18 +265,8 @@ async_context_free (AsyncContext *async_context)
 	if (async_context->destination != NULL)
 		g_object_unref (async_context->destination);
 
-	if (async_context->message_uids != NULL) {
-		g_ptr_array_foreach (
-			async_context->message_uids, (GFunc) g_free, NULL);
-		g_ptr_array_free (async_context->message_uids, TRUE);
-	}
-
-	if (async_context->transferred_uids != NULL) {
-		g_ptr_array_foreach (
-			async_context->transferred_uids, (GFunc) g_free, NULL);
-		g_ptr_array_free (async_context->transferred_uids, TRUE);
-	}
-
+	g_clear_pointer (&async_context->message_uids, g_ptr_array_unref);
+	g_clear_pointer (&async_context->transferred_uids, g_ptr_array_unref);
 	g_free (async_context->message_uid);
 	g_free (async_context->start_uid);
 	g_free (async_context->end_uid);
@@ -1013,7 +1004,7 @@ folder_get_uncached_uids (CamelFolder *folder,
 	GPtrArray *result;
 	gint i;
 
-	result = g_ptr_array_new ();
+	result = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
 	g_ptr_array_set_size (result, uids->len);
 	for (i = 0; i < uids->len; i++)
@@ -1021,13 +1012,6 @@ folder_get_uncached_uids (CamelFolder *folder,
 			(gpointer) camel_pstring_strdup (uids->pdata[i]);
 
 	return result;
-}
-
-static void
-folder_free_uids (CamelFolder *folder,
-                  GPtrArray *array)
-{
-	camel_folder_summary_free_array (array);
 }
 
 static gint
@@ -1058,22 +1042,59 @@ folder_get_summary (CamelFolder *folder)
 	return camel_folder_summary_get_array (folder->priv->summary);
 }
 
-static void
-folder_free_summary (CamelFolder *folder,
-                     GPtrArray *array)
+static gboolean
+folder_search_sync (CamelFolder *folder,
+		    const gchar *expression,
+		    GPtrArray **out_uids,
+		    GCancellable *cancellable,
+		    GError **error)
 {
-	camel_folder_summary_free_array (array);
-}
+	CamelStore *parent_store;
+	CamelStoreSearch *store_search;
+	gboolean success = FALSE;
 
-static void
-folder_search_free (CamelFolder *folder,
-                    GPtrArray *result)
-{
-	gint i;
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (expression != NULL, FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
 
-	for (i = 0; i < result->len; i++)
-		camel_pstring_free (g_ptr_array_index (result, i));
-	g_ptr_array_free (result, TRUE);
+	*out_uids = NULL;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	if (!parent_store)
+		return FALSE;
+
+	store_search = camel_store_search_new (parent_store);
+	camel_store_search_set_expression (store_search, expression);
+	camel_store_search_add_folder (store_search, folder);
+
+	if (camel_store_search_rebuild_sync (store_search, cancellable, error)) {
+		CamelMatchThreadsKind threads_kind;
+		CamelFolderThreadFlags threads_flags = CAMEL_FOLDER_THREAD_FLAG_NONE;
+		gboolean read_result = TRUE;
+
+		threads_kind = camel_store_search_get_match_threads_kind (store_search, &threads_flags);
+		if (threads_kind != CAMEL_MATCH_THREADS_KIND_NONE) {
+			GPtrArray *items = NULL;
+
+			if (camel_store_search_add_match_threads_items_sync (store_search, &items, cancellable, error) && items) {
+				CamelStoreSearchIndex *index;
+
+				index = camel_store_search_ref_result_index (store_search);
+				camel_store_search_index_apply_match_threads (index, items, threads_kind, threads_flags, cancellable);
+				camel_store_search_set_result_index (store_search, index);
+
+				g_clear_pointer (&index, camel_store_search_index_unref);
+				g_clear_pointer (&items, g_ptr_array_unref);
+			}
+		}
+
+		if (read_result)
+			success = camel_store_search_get_uids_sync (store_search, camel_folder_get_full_name (folder), out_uids, cancellable, error);
+	}
+
+	g_object_unref (store_search);
+
+	return success;
 }
 
 static CamelMessageInfo *
@@ -1195,7 +1216,7 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 	gulong handler_id = 0;
 
 	if (transferred_uids) {
-		*transferred_uids = g_ptr_array_new ();
+		*transferred_uids = g_ptr_array_new_with_free_func (g_free);
 		g_ptr_array_set_size (*transferred_uids, uids->len);
 	}
 
@@ -1390,6 +1411,108 @@ folder_get_full_display_name (CamelFolder *folder)
 	return res;
 }
 
+static gboolean
+folder_dup_headers_sync (CamelFolder *folder,
+			 const gchar *uid,
+			 CamelNameValueArray **out_headers,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	gboolean success = FALSE;
+
+	CamelFolderSummary *summary;
+
+	summary = camel_folder_get_folder_summary (folder);
+	if (summary) {
+		CamelMessageInfo *nfo;
+
+		nfo = camel_folder_summary_peek_loaded (summary, uid);
+		if (nfo) {
+			*out_headers = camel_message_info_dup_headers (nfo);
+			success = *out_headers != NULL;
+			g_object_unref (nfo);
+		}
+	}
+
+	if (!success) {
+		gchar *filename;
+
+		filename = camel_folder_get_filename (folder, uid, NULL);
+		if (filename) {
+			GFile *file;
+			GFileInputStream *input_stream;
+
+			file = g_file_new_for_path (filename);
+			input_stream = g_file_read (file, cancellable, NULL);
+
+			if (input_stream) {
+				CamelMimeParser *parser;
+
+				parser = camel_mime_parser_new ();
+				camel_mime_parser_init_with_input_stream (parser, G_INPUT_STREAM (input_stream));
+
+				/* looking only for headers, thus parse only them, not the whole message, when
+				   a file is available locally */
+				if (camel_mime_parser_step (parser, NULL, NULL) != CAMEL_MIME_PARSER_STATE_EOF) {
+					switch (camel_mime_parser_state (parser)) {
+					case CAMEL_MIME_PARSER_STATE_HEADER:
+					case CAMEL_MIME_PARSER_STATE_MESSAGE:
+					case CAMEL_MIME_PARSER_STATE_MULTIPART:
+						*out_headers = camel_mime_parser_dup_headers (parser);
+						success = TRUE;
+						break;
+					default:
+						break;
+					}
+				}
+
+				g_clear_object (&parser);
+			}
+
+			g_clear_object (&file);
+			g_clear_object (&input_stream);
+			g_free (filename);
+		}
+	}
+
+	if (!success && error && !*error) {
+		g_set_error_literal (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Cannot get message headers, local message file not found"));
+	}
+
+	return success;
+}
+
+static gboolean
+folder_search_header_sync (CamelFolder *folder,
+			   const gchar *header_name,
+			   /* const */ GPtrArray *words, /* gchar * */
+			   GPtrArray **out_uids, /* gchar * */
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Cannot search message headers remotely, not supported"));
+
+	return FALSE;
+}
+
+static gboolean
+folder_search_body_sync (CamelFolder *folder,
+			 /* const */ GPtrArray *words, /* gchar * */
+			 GPtrArray **out_uids, /* gchar * */
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Cannot search message bodies remotely, not supported"));
+
+	return FALSE;
+}
+
 static void
 camel_folder_class_init (CamelFolderClass *class)
 {
@@ -1411,12 +1534,10 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->set_message_user_tag = folder_set_message_user_tag;
 	class->get_uids = folder_get_uids;
 	class->get_uncached_uids = folder_get_uncached_uids;
-	class->free_uids = folder_free_uids;
 	class->cmp_uids = folder_cmp_uids;
 	class->sort_uids = folder_sort_uids;
 	class->get_summary = folder_get_summary;
-	class->free_summary = folder_free_summary;
-	class->search_free = folder_search_free;
+	class->search_sync = folder_search_sync;
 	class->get_message_info = folder_get_message_info;
 	class->delete_ = folder_delete;
 	class->rename = folder_rename;
@@ -1428,6 +1549,9 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->transfer_messages_to_sync = folder_transfer_messages_to_sync;
 	class->changed = folder_changed;
 	class->get_full_display_name = folder_get_full_display_name;
+	class->dup_headers_sync = folder_dup_headers_sync;
+	class->search_header_sync = folder_search_header_sync;
+	class->search_body_sync = folder_search_body_sync;
 
 	/**
 	 * CamelFolder:description
@@ -2406,9 +2530,9 @@ camel_folder_has_summary_capability (CamelFolder *folder)
  * Get the list of UIDs available in a folder. This routine is useful
  * for finding what messages are available when the folder does not
  * support summaries. The returned array should not be modified, and
- * must be freed by passing it to camel_folder_free_uids().
+ * must be freed by passing it to g_ptr_array_unref().
  *
- * Returns: (element-type utf8) (transfer none): a GPtrArray of UIDs
+ * Returns: (element-type utf8) (transfer container): a GPtrArray of UIDs
  * corresponding to the messages available in the folder
  **/
 GPtrArray *
@@ -2426,29 +2550,6 @@ camel_folder_get_uids (CamelFolder *folder)
 }
 
 /**
- * camel_folder_free_uids:
- * @folder: a #CamelFolder
- * @array: (element-type utf8): the array of uids to free
- *
- * Frees the array of UIDs returned by camel_folder_get_uids().
- **/
-void
-camel_folder_free_uids (CamelFolder *folder,
-                        GPtrArray *array)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (array != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->free_uids != NULL);
-
-	class->free_uids (folder, array);
-}
-
-/**
  * camel_folder_get_uncached_uids:
  * @folder: a #CamelFolder
  * @uids: (element-type utf8): the array of uids to filter down to uncached ones.
@@ -2456,8 +2557,7 @@ camel_folder_free_uids (CamelFolder *folder,
  *
  * Returns the known-uncached uids from a list of uids. It may return uids
  * which are locally cached but should never filter out a uid which is not
- * locally cached. Free the result by called camel_folder_free_uids().
- * Frees the array of UIDs returned by camel_folder_get_uids().
+ * locally cached. Free the result by g_ptr_array_unref().
  *
  * Returns: (element-type utf8) (transfer none):
  *
@@ -2546,9 +2646,9 @@ camel_folder_sort_uids (CamelFolder *folder,
  *
  * This returns the summary information for the folder. This array
  * should not be modified, and must be freed with
- * camel_folder_free_summary().
+ * g_ptr_array_unref().
  *
- * Returns: (element-type utf8) (transfer none): an array of UID-s of #CamelMessageInfo
+ * Returns: (element-type utf8) (transfer container): an array of UID-s of #CamelMessageInfo
  **/
 GPtrArray *
 camel_folder_get_summary (CamelFolder *folder)
@@ -2565,158 +2665,38 @@ camel_folder_get_summary (CamelFolder *folder)
 }
 
 /**
- * camel_folder_free_summary:
- * @folder: a #CamelFolder
- * @array: (element-type CamelMessageInfo): the summary array to free
- *
- * Frees the summary array returned by camel_folder_get_summary().
- **/
-void
-camel_folder_free_summary (CamelFolder *folder,
-                           GPtrArray *array)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (array != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->free_summary != NULL);
-
-	class->free_summary (folder, array);
-}
-
-/**
- * camel_folder_search_by_expression:
+ * camel_folder_search_sync:
  * @folder: a #CamelFolder
  * @expression: a search expression
+ * @out_uids: (out) (element-type utf8) (transfer container) (nullable): return location
+ *    for a #GPtrArray of uids of matching messages, or %NULL when none found or error happened
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for messages matching the given search expression.
  *
- * Returns: (element-type utf8) (transfer full): a #GPtrArray of uids of
- * matching messages. The caller must free the list and each of the elements
- * when it is done.
+ * Free the array with g_ptr_array_unref(), when no longer needed.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.58
  **/
-GPtrArray *
-camel_folder_search_by_expression (CamelFolder *folder,
-                                   const gchar *expression,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	CamelFolderClass *class;
-	GPtrArray *matches;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->search_by_expression != NULL, NULL);
-
-	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
-
-	matches = class->search_by_expression (folder, expression, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, search_by_expression, matches != NULL, error);
-
-	return matches;
-}
-
-/**
- * camel_folder_count_by_expression:
- * @folder: a #CamelFolder
- * @expression: a search expression
- * @cancellable: a #GCancellable
- * @error: return location for a #GError, or %NULL
- *
- * Searches the folder for count of messages matching the given search expression.
- *
- * Returns: an interger
- *
- * Since: 2.26
- **/
-guint32
-camel_folder_count_by_expression (CamelFolder *folder,
-                                  const gchar *expression,
-                                  GCancellable *cancellable,
-                                  GError **error)
+gboolean
+camel_folder_search_sync (CamelFolder *folder,
+			  const gchar *expression,
+			  GPtrArray **out_uids,
+			  GCancellable *cancellable,
+			  GError **error)
 {
 	CamelFolderClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class != NULL, 0);
-	g_return_val_if_fail (class->count_by_expression != NULL, 0);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->search_sync != NULL, FALSE);
 
-	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
-
-	return class->count_by_expression (folder, expression, cancellable, error);
-}
-
-/**
- * camel_folder_search_by_uids:
- * @folder: a #CamelFolder
- * @expression: search expression
- * @uids: (element-type utf8): array of uid's to match against.
- * @cancellable: a #GCancellable
- * @error: return location for a #GError, or %NULL
- *
- * Search a subset of uid's for an expression match.
- *
- * Returns: (element-type utf8) (transfer full): a #GPtrArray of uids of
- * matching messages. The caller must free the list and each of the elements
- * when it is done.
- **/
-GPtrArray *
-camel_folder_search_by_uids (CamelFolder *folder,
-                             const gchar *expression,
-                             GPtrArray *uids,
-                             GCancellable *cancellable,
-                             GError **error)
-{
-	CamelFolderClass *class;
-	GPtrArray *matches;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->search_by_uids != NULL, NULL);
-
-	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
-
-	matches = class->search_by_uids (folder, expression, uids, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, search_by_uids, matches != NULL, error);
-
-	return matches;
-}
-
-/**
- * camel_folder_search_free:
- * @folder: a #CamelFolder
- * @result: (element-type utf8): search results to free
- *
- * Free the result of a search as gotten by camel_folder_search_by_expression()
- * or camel_folder_search_by_uids().
- **/
-void
-camel_folder_search_free (CamelFolder *folder,
-                          GPtrArray *result)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (result != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->search_free != NULL);
-
-	/* NOTE: upto the callee to CAMEL_FOLDER_REC_LOCK */
-
-	class->search_free (folder, result);
+	return class->search_sync (folder, expression, out_uids, cancellable, error);
 }
 
 /**
@@ -2759,7 +2739,7 @@ camel_folder_delete (CamelFolder *folder)
 	/* Delete the references of the folder from the DB.*/
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	camel_db_delete_folder (camel_store_get_db (parent_store), full_name, NULL);
+	camel_store_db_delete_folder (camel_store_get_db (parent_store), full_name, NULL);
 
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
@@ -2815,7 +2795,7 @@ camel_folder_rename (CamelFolder *folder,
 	class->rename (folder, new_name);
 
 	parent_store = camel_folder_get_parent_store (folder);
-	camel_db_rename_folder (camel_store_get_db (parent_store), old_name, new_name, NULL);
+	camel_store_db_rename_folder (camel_store_get_db (parent_store), old_name, new_name, NULL);
 
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
@@ -3064,45 +3044,6 @@ camel_folder_quota_info_free (CamelFolderQuotaInfo *info)
 		g_free (info->name);
 		g_free (info);
 	}
-}
-
-/**
- * camel_folder_free_shallow:
- * @folder: a #CamelFolder
- * @array: (element-type utf8): an array of uids or #CamelMessageInfo
- *
- * Frees the provided array but not its contents. Used by #CamelFolder
- * subclasses as an implementation for free_uids or free_summary when
- * the returned array needs to be freed but its contents come from
- * "static" information.
- **/
-void
-camel_folder_free_shallow (CamelFolder *folder,
-                           GPtrArray *array)
-{
-	g_ptr_array_free (array, TRUE);
-}
-
-/**
- * camel_folder_free_deep:
- * @folder: a #CamelFolder
- * @array: (element-type utf8): an array of uids
- *
- * Frees the provided array and its contents. Used by #CamelFolder
- * subclasses as an implementation for free_uids when the provided
- * information was created explicitly by the corresponding get_ call.
- **/
-void
-camel_folder_free_deep (CamelFolder *folder,
-                        GPtrArray *array)
-{
-	gint i;
-
-	g_return_if_fail (array != NULL);
-
-	for (i = 0; i < array->len; i++)
-		g_free (array->pdata[i]);
-	g_ptr_array_free (array, TRUE);
 }
 
 /**
@@ -4468,7 +4409,7 @@ uid_index_pair_free (gpointer ptr)
  * @message_uids: (element-type utf8): message UIDs in @source
  * @destination: the destination #CamelFolder
  * @delete_originals: whether or not to delete the original messages
- * @transferred_uids: (element-type utf8) (out) (optional) (nullable): if
+ * @transferred_uids: (element-type utf8) (out) (optional) (nullable) (transfer container): if
  *                    non-%NULL, the UIDs of the resulting messages in
  *                    @destination will be stored here, if known.
  * @cancellable: optional #GCancellable object, or %NULL
@@ -4577,7 +4518,7 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 			gpointer key, value;
 
 			if (transferred_uids) {
-				*transferred_uids = g_ptr_array_new ();
+				*transferred_uids = g_ptr_array_new_with_free_func (g_free);
 				g_ptr_array_set_size (*transferred_uids, message_uids->len);
 			}
 
@@ -4622,13 +4563,11 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 						}
 					}
 
-					g_ptr_array_foreach (transferred, (GFunc) g_free, NULL);
 					g_ptr_array_free (transferred, TRUE);
 				}
 			}
 
 			if (!success && transferred_uids) {
-				g_ptr_array_foreach (*transferred_uids, (GFunc) g_free, NULL);
 				g_ptr_array_free (*transferred_uids, TRUE);
 				*transferred_uids = NULL;
 			}
@@ -4714,14 +4653,14 @@ camel_folder_transfer_messages_to (CamelFolder *source,
 	g_return_if_fail (message_uids != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->message_uids = g_ptr_array_new ();
+	async_context->message_uids = g_ptr_array_new_full (message_uids->len, (GDestroyNotify) camel_pstring_free);
 	async_context->destination = g_object_ref (destination);
 	async_context->delete_originals = delete_originals;
 
 	for (ii = 0; ii < message_uids->len; ii++)
 		g_ptr_array_add (
 			async_context->message_uids,
-			g_strdup (message_uids->pdata[ii]));
+			(gpointer) camel_pstring_strdup (message_uids->pdata[ii]));
 
 	task = g_task_new (source, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_folder_transfer_messages_to);
@@ -4740,7 +4679,7 @@ camel_folder_transfer_messages_to (CamelFolder *source,
  * camel_folder_transfer_messages_to_finish:
  * @source: a #CamelFolder
  * @result: a #GAsyncResult
- * @transferred_uids: (element-type utf8) (out) (optional) (nullable): if
+ * @transferred_uids: (element-type utf8) (out) (optional) (nullable) (transfer container): if
  *                    non-%NULL, the UIDs of the resulting messages in
  *                    @destination will be stored here, if known.
  * @error: return location for a #GError, or %NULL
@@ -4800,6 +4739,133 @@ camel_folder_prepare_content_refresh (CamelFolder *folder)
 
 	if (klass->prepare_content_refresh)
 		klass->prepare_content_refresh (folder);
+}
+
+/**
+ * camel_folder_dup_headers_sync:
+ * @folder: a #CamelFolder
+ * @uid: a message UID
+ * @out_headers: (out) (transfer full): return location to set read #CamelNameValueArray to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Reads headers of a message with the @uid and returns it
+ * in the @out_headers. Free the headers with camel_name_value_array_free(),
+ * when no longer needed.
+ *
+ * This is an optional method, which is meant to be used by the providers
+ * which can read the headers from the server when not available locally.
+ * The default implementation tries to read the headers from a loaded
+ * message info and a locally cached message when its file name is known.
+ * It returns a G_IO_ERROR_NOT_FOUND error when failed.
+ *
+ * Returns: whether the headers had been found and the @out_headers populated
+ *
+ * Since: 3.58
+ **/
+gboolean
+camel_folder_dup_headers_sync (CamelFolder *folder,
+			       const gchar *uid,
+			       CamelNameValueArray **out_headers,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CamelFolderClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (out_headers != NULL, FALSE);
+
+	klass = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->dup_headers_sync != NULL, FALSE);
+
+	return klass->dup_headers_sync (folder, uid, out_headers, cancellable, error);
+}
+
+/**
+ * camel_folder_search_header_sync:
+ * @folder: a #CamelFolder
+ * @header_name: a header name to search
+ * @words: (nullable) (element-type utf8): a list of words to search for, or %NULL to check an existence of the header instead
+ * @out_uids: (out) (transfer container) (element-type utf8): a #GPtrArray of the satisfying message UIDs
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Search the folder for messages with header @header_name, which either contains
+ * the @words or, when the @words is empty or %NULL, the header exists in the message.
+ * The list of satisfying message UIDs is returned in the @out_uids.
+ * The result list can be empty, meaning no such message exists.
+ *
+ * Free the returned @out_uids with g_ptr_array_unref(), when no longer needed.
+ *
+ * This is an optional helper method, meant to search server-side. The default
+ * implementation returns a G_IO_ERROR_NOT_SUPPORTED error.
+ *
+ * Returns: whether could search and set the @out_uids.
+ *
+ * Since: 3.58
+ **/
+gboolean
+camel_folder_search_header_sync (CamelFolder *folder,
+				 const gchar *header_name,
+				 /* const */ GPtrArray *words, /* gchar * */
+				 GPtrArray **out_uids, /* gchar * */
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	CamelFolderClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (header_name != NULL, FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
+
+	klass = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->search_header_sync != NULL, FALSE);
+
+	return klass->search_header_sync (folder, header_name, words, out_uids, cancellable, error);
+}
+
+/**
+ * camel_folder_search_body_sync:
+ * @folder: a #CamelFolder
+ * @words: (element-type utf8): a list of words to search for, or %NULL to check an existence of the header instead
+ * @out_uids: (out) (transfer container) (element-type utf8): a #GPtrArray of the satisfying message UIDs
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Search the folder for messages with body containing @words.
+ * The list of satisfying message UIDs is returned in the @out_uids.
+ * The result list can be empty, meaning no such message exists.
+ *
+ * Free the returned @out_uids with g_ptr_array_unref(), when no longer needed.
+ *
+ * This is an optional helper method, meant to search server-side. The default
+ * implementation returns a G_IO_ERROR_NOT_SUPPORTED error.
+ *
+ * Returns: whether could search and set the @out_uids.
+ *
+ * Since: 3.58
+ **/
+gboolean
+camel_folder_search_body_sync (CamelFolder *folder,
+			       /* const */ GPtrArray *words, /* gchar * */
+			       GPtrArray **out_uids, /* gchar * */
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CamelFolderClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (words != NULL, FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
+
+	klass = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->search_body_sync != NULL, FALSE);
+
+	return klass->search_body_sync (folder, words, out_uids, cancellable, error);
 }
 
 G_DEFINE_BOXED_TYPE (CamelFolderChangeInfo, camel_folder_change_info, camel_folder_change_info_copy, camel_folder_change_info_free)

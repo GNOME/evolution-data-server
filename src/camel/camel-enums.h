@@ -498,7 +498,8 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_USE_CACHE_DIR = 1 << 6,
 	CAMEL_STORE_CAN_DELETE_FOLDERS_AT_ONCE = 1 << 7,
 	CAMEL_STORE_SUPPORTS_INITIAL_SETUP = 1 << 8,
-	CAMEL_STORE_IS_BUILTIN = 1 << 9
+	CAMEL_STORE_IS_BUILTIN = 1 << 9,
+	CAMEL_STORE_USE_TEMP_DIR = 1 << 10 /* for test purposes only */
 } CamelStoreFlags;
 
 /**
@@ -615,5 +616,81 @@ typedef enum {
 	CAMEL_GPG_TRUST_FULL		= 4,
 	CAMEL_GPG_TRUST_ULTIMATE	= 5
 } CamelGpgTrust;
+
+/**
+ * CamelStoreDBCountKind
+ * @CAMEL_STORE_DB_COUNT_KIND_TOTAL: all messages
+ * @CAMEL_STORE_DB_COUNT_KIND_UNREAD: only unread messages
+ * @CAMEL_STORE_DB_COUNT_KIND_JUNK: only junk messages
+ * @CAMEL_STORE_DB_COUNT_KIND_DELETED: only deleted messages
+ * @CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED: all except of junk and deleted messages
+ * @CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED_UNREAD: all unread, except of junk and deleted messages
+ * @CAMEL_STORE_DB_COUNT_KIND_JUNK_NOT_DELETED: only junk messages, which are not deleted
+ *
+ * Represents a kind of the count the camel_store_db_count_messages()
+ * is asked to calculate.
+ *
+ * Since: 3.58
+ **/
+typedef enum _CamelStoreDBCountKind {
+	CAMEL_STORE_DB_COUNT_KIND_TOTAL = 1,
+	CAMEL_STORE_DB_COUNT_KIND_UNREAD,
+	CAMEL_STORE_DB_COUNT_KIND_JUNK,
+	CAMEL_STORE_DB_COUNT_KIND_DELETED,
+	CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED,
+	CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED_UNREAD,
+	CAMEL_STORE_DB_COUNT_KIND_JUNK_NOT_DELETED
+} CamelStoreDBCountKind;
+
+/**
+ * CamelDBSqlizeFlags:
+ * @CAMEL_DB_SQLIZE_FLAG_FULL: escape the text and enclose it into apostrophes
+ * @CAMEL_DB_SQLIZE_FLAG_ESCAPE_ONLY: only escape the text, without adding surrounding apostrophes
+ *
+ * Influences how the camel_db_sqlize_to_statement() behaves.
+ *
+ * Since: 3.58
+ **/
+typedef enum _CamelDBSqlizeFlags {
+	CAMEL_DB_SQLIZE_FLAG_FULL		= 0,
+	CAMEL_DB_SQLIZE_FLAG_ESCAPE_ONLY	= 1 << 0
+} CamelDBSqlizeFlags;
+
+/**
+ * CamelFolderThreadFlags:
+ * @CAMEL_FOLDER_THREAD_FLAG_NONE: no flag set
+ * @CAMEL_FOLDER_THREAD_FLAG_SUBJECT: thread by subject
+ * @CAMEL_FOLDER_THREAD_FLAG_SORT: sort threads by sent/received date
+ *
+ * Flags influencing what the resulting tree for camel_folder_thread_new()
+ * will look like.
+ *
+ * Since: 3.58
+ **/
+typedef enum _CamelFolderThreadFlags { /*< flags >*/
+	CAMEL_FOLDER_THREAD_FLAG_NONE		= 0,
+	CAMEL_FOLDER_THREAD_FLAG_SUBJECT	= 1 << 0,
+	CAMEL_FOLDER_THREAD_FLAG_SORT		= 1 << 1
+} CamelFolderThreadFlags;
+
+/**
+ * CamelMatchThreadsKind:
+ * @CAMEL_MATCH_THREADS_KIND_NONE: do not match on threads
+ * @CAMEL_MATCH_THREADS_KIND_ALL: include all related messages in the thread
+ * @CAMEL_MATCH_THREADS_KIND_REPLIES: include replies of the message
+ * @CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS: include replies and parents
+ * @CAMEL_MATCH_THREADS_KIND_SINGLE: include messages not being in any thread
+ *
+ * Kinds for "match-threads" search option.
+ *
+ * Since: 3.58
+ **/
+typedef enum _CamelMatchThreadsKind {
+	CAMEL_MATCH_THREADS_KIND_NONE = 0,
+	CAMEL_MATCH_THREADS_KIND_ALL,
+	CAMEL_MATCH_THREADS_KIND_REPLIES,
+	CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS,
+	CAMEL_MATCH_THREADS_KIND_SINGLE
+} CamelMatchThreadsKind;
 
 #endif /* CAMEL_ENUMS_H */

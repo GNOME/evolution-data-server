@@ -277,13 +277,13 @@ static GPtrArray *
 pop3_folder_get_uids (CamelFolder *folder)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (folder);
-	GPtrArray *uids = g_ptr_array_new ();
+	GPtrArray *uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 	CamelPOP3FolderInfo **fi = (CamelPOP3FolderInfo **) pop3_folder->uids->pdata;
 	gint i;
 
 	for (i = 0; i < pop3_folder->uids->len; i++,fi++) {
 		if (fi[0]->uid)
-			g_ptr_array_add (uids, fi[0]->uid);
+			g_ptr_array_add (uids, (gpointer) camel_pstring_strdup (fi[0]->uid));
 	}
 
 	return uids;
@@ -305,7 +305,7 @@ pop3_get_uncached_uids (CamelFolder *folder,
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (camel_folder_get_parent_store (folder));
 
-	uncached_uids = g_ptr_array_new ();
+	uncached_uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
 	for (ii = 0; ii < uids->len; ii++) {
 		const gchar *uid = uids->pdata[ii];
@@ -1009,7 +1009,6 @@ camel_pop3_folder_class_init (CamelPOP3FolderClass *class)
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_message_count = pop3_folder_get_message_count;
 	folder_class->get_uids = pop3_folder_get_uids;
-	folder_class->free_uids = camel_folder_free_shallow;
 	folder_class->get_uncached_uids = pop3_get_uncached_uids;
 	folder_class->get_filename = pop3_folder_get_filename;
 	folder_class->set_message_flags = pop3_folder_set_message_flags;

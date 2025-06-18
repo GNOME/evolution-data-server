@@ -28,6 +28,7 @@
 #include <glib/gstdio.h>
 
 #include "camel-file-utils.h"
+#include "camel-string-utils.h"
 #include "camel-uid-cache.h"
 #include "camel-win32.h"
 
@@ -254,8 +255,8 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
  * Returns an array of UIDs from @uids that are not in @cache, and
  * removes UIDs from @cache that aren't in @uids.
  *
- * Returns: (element-type utf8) (transfer full): an array of new UIDs, which must be freed with
- * camel_uid_cache_free_uids().
+ * Returns: (element-type utf8) (transfer container): an array of new UIDs,
+ *    free with g_ptr_array_unref(), when no longer needed.
  **/
 GPtrArray *
 camel_uid_cache_get_new_uids (CamelUIDCache *cache,
@@ -266,7 +267,7 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache,
 	gchar *uid;
 	gint i;
 
-	new_uids = g_ptr_array_new ();
+	new_uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 	cache->level++;
 
 	for (i = 0; i < uids->len; i++) {
@@ -277,7 +278,7 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache,
 			g_hash_table_remove (cache->uids, uid);
 			g_free (old_uid);
 		} else {
-			g_ptr_array_add (new_uids, g_strdup (uid));
+			g_ptr_array_add (new_uids, (gpointer) camel_pstring_strdup (uid));
 			state = g_new (struct _uid_state, 1);
 			state->save = FALSE;
 		}
@@ -315,20 +316,4 @@ camel_uid_cache_save_uid (CamelUIDCache *cache,
 
 		g_hash_table_insert (cache->uids, g_strdup (uid), state);
 	}
-}
-
-/**
- * camel_uid_cache_free_uids:
- * @uids: (element-type utf8) (transfer full): an array returned from camel_uid_cache_get_new_uids()
- *
- * Frees the array of UIDs.
- **/
-void
-camel_uid_cache_free_uids (GPtrArray *uids)
-{
-	gint i;
-
-	for (i = 0; i < uids->len; i++)
-		g_free (uids->pdata[i]);
-	g_ptr_array_free (uids, TRUE);
 }

@@ -52,7 +52,6 @@ struct _CamelNNTPFolder {
 	CamelNNTPFolderPrivate *priv;
 
 	struct _CamelFolderChangeInfo *changes;
-	CamelFolderSearch *search;
 };
 
 struct _CamelNNTPFolderClass {

@@ -63,9 +63,6 @@ struct _CamelLocalFolder {
 
 	CamelIndex *index;	/* index for this folder */
 
-	/* Used to run searches, we just use the real thing (tm). */
-	CamelFolderSearch *search;
-
 	/* Used to store changes to the folder during processing. */
 	CamelFolderChangeInfo *changes;
 };

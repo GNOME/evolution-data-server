@@ -110,22 +110,7 @@ UrlScanner.scan skip=false
 
 NetworkService.new_connectable skip=false
 
-Folder.threaded_messages_dump parent="Camel.FolderThreadNode" symbol_type="method" instance_idx=0 name="dump"
-
 FolderSummary.summary_header_load name="header_load_impl"
-FolderSummary.summary_header_load.fir type="Camel.FIRecord"
-FolderSummary.summary_header_save name="header_save_impl" type="Camel.FIRecord"
-
-FolderThread.folder unowned=false
-FolderThread.node_chunks unowned=false
-FolderThread.summary type="GLib.GenericArray<Camel.MessageInfo>"
-FolderThread.tree type="Camel.FolderThreadNode"
-
-FolderThreadNode struct=false
-FolderThreadNode.next type="unowned Camel.FolderThreadNode?"
-FolderThreadNode.parent type="unowned Camel.FolderThreadNode?"
-FolderThreadNode.child type="unowned Camel.FolderThreadNode?"
-FolderThreadNode.message nullable
 
 // FILE* are supported by Vala
 StoreSummary.* skip=false

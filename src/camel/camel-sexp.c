@@ -264,6 +264,8 @@ camel_sexp_result_free (CamelSExp *sexp,
 	default:
 		g_return_if_reached ();
 	}
+	if (result->free_user_data)
+		result->free_user_data (result->user_data);
 	camel_memchunk_free (sexp->priv->result_chunks, result);
 }
 
@@ -583,8 +585,13 @@ term_eval_plus (CamelSExp *sexp,
 		switch (type) {
 		case CAMEL_SEXP_RES_INT: {
 			gint total = argv[0]->value.number;
-			for (i = 1; i < argc && argv[i]->type == CAMEL_SEXP_RES_INT; i++) {
-				total += argv[i]->value.number;
+			for (i = 1; i < argc; i++) {
+				if (argv[i]->type == CAMEL_SEXP_RES_INT)
+					total += argv[i]->value.number;
+				else if (argv[i]->type == CAMEL_SEXP_RES_TIME)
+					total += (gint) argv[i]->value.time;
+				else
+					break;
 			}
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);
@@ -610,8 +617,14 @@ term_eval_plus (CamelSExp *sexp,
 
 			total = argv[0]->value.time;
 
-			for (i = 1; i < argc && argv[i]->type == CAMEL_SEXP_RES_TIME; i++)
-				total += argv[i]->value.time;
+			for (i = 1; i < argc; i++) {
+				if (argv[i]->type == CAMEL_SEXP_RES_TIME)
+					total += argv[i]->value.time;
+				else if (argv[i]->type == CAMEL_SEXP_RES_INT)
+					total += argv[i]->value.number;
+				else
+					break;
+			}
 
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);
@@ -647,8 +660,11 @@ term_eval_sub (CamelSExp *sexp,
 		switch (type) {
 		case CAMEL_SEXP_RES_INT: {
 			gint total = argv[0]->value.number;
-			for (i = 1; i < argc && argv[i]->type == CAMEL_SEXP_RES_INT; i++) {
-				total -= argv[i]->value.number;
+			for (i = 1; i < argc; i++) {
+				if (argv[i]->type == CAMEL_SEXP_RES_INT)
+					total -= argv[i]->value.number;
+				else if (argv[i]->type == CAMEL_SEXP_RES_TIME)
+					total -= (gint) argv[i]->value.time;
 			}
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);
@@ -662,8 +678,14 @@ term_eval_sub (CamelSExp *sexp,
 
 			total = argv[0]->value.time;
 
-			for (i = 1; i < argc && argv[i]->type == CAMEL_SEXP_RES_TIME; i++)
-				total -= argv[i]->value.time;
+			for (i = 1; i < argc; i++) {
+				if (argv[i]->type == CAMEL_SEXP_RES_TIME)
+					total -= argv[i]->value.time;
+				else if (argv[i]->type == CAMEL_SEXP_RES_INT)
+					total -= argv[i]->value.number;
+				else
+					break;
+			}
 
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);

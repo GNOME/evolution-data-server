@@ -26,10 +26,10 @@
 #ifndef CAMEL_STORE_H
 #define CAMEL_STORE_H
 
-#include <camel/camel-db.h>
 #include <camel/camel-enums.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-service.h>
+#include <camel/camel-store-db.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STORE \
@@ -229,7 +229,7 @@ struct _CamelStoreClass {
 
 GType		camel_store_get_type		(void);
 GQuark		camel_store_error_quark		(void) G_GNUC_CONST;
-CamelDB *	camel_store_get_db		(CamelStore *store);
+CamelStoreDB *	camel_store_get_db		(CamelStore *store);
 CamelObjectBag *camel_store_get_folders_bag	(CamelStore *store);
 GPtrArray *	camel_store_dup_opened_folders	(CamelStore *store);
 guint32		camel_store_get_flags		(CamelStore *store);

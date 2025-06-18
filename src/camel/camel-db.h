@@ -26,6 +26,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
+
+#include <camel/camel-enums.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_DB \
@@ -151,194 +154,6 @@ typedef gint (* CamelDBCollate)(gpointer enc, gint length1, gconstpointer data1,
 #define CAMEL_DB_SLEEP_INTERVAL 1*10*10
 
 /**
- * CamelMIRecord:
- * @uid: Message UID
- * @flags: Camel Message info flags
- * @msg_type: unused
- * @dirty: whether the message info requires upload to the server; it corresponds to #CAMEL_MESSAGE_FOLDER_FLAGGED
- * @read: boolean read status
- * @deleted: boolean deleted status
- * @replied: boolean replied status
- * @important: boolean important status
- * @junk: boolean junk status
- * @attachment: boolean attachment status
- * @size: size of the mail
- * @dsent: date sent
- * @dreceived: date received
- * @subject: subject of the mail
- * @from: sender
- * @to: recipient
- * @cc: CC members
- * @mlist: message list headers
- * @followup_flag: followup flag / also can be queried to see for followup or not
- * @followup_completed_on: completed date, can be used to see if completed
- * @followup_due_by: to see the due by date
- * @part: part / references / thread id
- * @labels: labels of mails also called as userflags
- * @usertags: composite string of user tags
- * @cinfo: content info string - composite string
- * @bdata: provider specific data
- * @userheaders: value for user-defined message headers; Since: 3.42
- * @preview: message body preview; Since: 3.42
- *
- * The extensive DB format, supporting basic searching and sorting.
- *
- * Since: 2.24
- **/
-typedef struct _CamelMIRecord {
-	const gchar *uid; /* stored in the string pool */
-	guint32 flags;
-	guint32 msg_type;
-	guint32 dirty;
-	gboolean read;
-	gboolean deleted;
-	gboolean replied;
-	gboolean important;
-	gboolean junk;
-	gboolean attachment;
-	guint32 size;
-	gint64 dsent; /* time_t */
-	gint64 dreceived; /* time_t */
-	const gchar *subject;	/* stored in the string pool */
-	const gchar *from;	/* stored in the string pool */
-	const gchar *to;	/* stored in the string pool */
-	const gchar *cc;	/* stored in the string pool */
-	const gchar *mlist;	/* stored in the string pool */
-	gchar *followup_flag;
-	gchar *followup_completed_on;
-	gchar *followup_due_by;
-	gchar *part;
-	gchar *labels;
-	gchar *usertags;
-	gchar *cinfo;
-	gchar *bdata;
-	gchar *userheaders;
-	gchar *preview;
-} CamelMIRecord;
-
-/**
- * CamelFIRecord:
- * @folder_name: name of the folder
- * @version: version of the saved information
- * @flags: folder flags
- * @nextuid: next free uid
- * @timestamp: timestamp of the summary
- * @saved_count: count of all messages
- * @unread_count: count of unread messages
- * @deleted_count: count of deleted messages
- * @junk_count: count of junk messages
- * @visible_count: count of visible (not deleted and not junk) messages
- * @jnd_count: count of junk and not deleted messages
- * @bdata: custom data of the #CamelFolderSummary descendants
- *
- * Values to store/load for single folder's #CamelFolderSummary structure.
- *
- * Since: 2.24
- **/
-typedef struct _CamelFIRecord {
-	gchar *folder_name;
-	guint32 version;
-	guint32 flags;
-	guint32 nextuid;
-	gint64 timestamp;
-	guint32 saved_count;
-	guint32 unread_count;
-	guint32 deleted_count;
-	guint32 junk_count;
-	guint32 visible_count;
-	guint32 jnd_count;  /* Junked not deleted */
-	gchar *bdata;
-} CamelFIRecord;
-
-/**
- * CamelDBKnownColumnNames:
- * @CAMEL_DB_COLUMN_UNKNOWN: unknown column name
- * @CAMEL_DB_COLUMN_ATTACHMENT: attachment
- * @CAMEL_DB_COLUMN_BDATA: bdata
- * @CAMEL_DB_COLUMN_CINFO: cinfo
- * @CAMEL_DB_COLUMN_DELETED: deleted
- * @CAMEL_DB_COLUMN_DELETED_COUNT: deleted_count
- * @CAMEL_DB_COLUMN_DRECEIVED: dreceived
- * @CAMEL_DB_COLUMN_DSENT: dsent
- * @CAMEL_DB_COLUMN_FLAGS: flags
- * @CAMEL_DB_COLUMN_FOLDER_NAME: folder_name
- * @CAMEL_DB_COLUMN_FOLLOWUP_COMPLETED_ON: followup_completed_on
- * @CAMEL_DB_COLUMN_FOLLOWUP_DUE_BY: followup_due_by
- * @CAMEL_DB_COLUMN_FOLLOWUP_FLAG: followup_flag
- * @CAMEL_DB_COLUMN_IMPORTANT: important
- * @CAMEL_DB_COLUMN_JND_COUNT: jnd_count
- * @CAMEL_DB_COLUMN_JUNK: junk
- * @CAMEL_DB_COLUMN_JUNK_COUNT: junk_count
- * @CAMEL_DB_COLUMN_LABELS: labels
- * @CAMEL_DB_COLUMN_MAIL_CC: mail_cc
- * @CAMEL_DB_COLUMN_MAIL_FROM: mail_from
- * @CAMEL_DB_COLUMN_MAIL_TO: mail_to
- * @CAMEL_DB_COLUMN_MLIST: mlist
- * @CAMEL_DB_COLUMN_NEXTUID: nextuid
- * @CAMEL_DB_COLUMN_PART: part
- * @CAMEL_DB_COLUMN_PREVIEW: preview
- * @CAMEL_DB_COLUMN_READ: read
- * @CAMEL_DB_COLUMN_REPLIED: replied
- * @CAMEL_DB_COLUMN_SAVED_COUNT: saved_count
- * @CAMEL_DB_COLUMN_SIZE: size
- * @CAMEL_DB_COLUMN_SUBJECT: subject
- * @CAMEL_DB_COLUMN_TIME: time
- * @CAMEL_DB_COLUMN_UID: uid
- * @CAMEL_DB_COLUMN_UNREAD_COUNT: unread_count
- * @CAMEL_DB_COLUMN_USERHEADERS: userheaders
- * @CAMEL_DB_COLUMN_USERTAGS: usertags
- * @CAMEL_DB_COLUMN_VERSION: version
- * @CAMEL_DB_COLUMN_VISIBLE_COUNT: visible_count
- * @CAMEL_DB_COLUMN_VUID: vuid
- *
- * An enum of all the known columns, which can be used for a quick column lookups.
- *
- * Since: 3.4
- **/
-typedef enum {
-	CAMEL_DB_COLUMN_UNKNOWN = -1,
-	CAMEL_DB_COLUMN_ATTACHMENT,
-	CAMEL_DB_COLUMN_BDATA,
-	CAMEL_DB_COLUMN_CINFO,
-	CAMEL_DB_COLUMN_DELETED,
-	CAMEL_DB_COLUMN_DELETED_COUNT,
-	CAMEL_DB_COLUMN_DRECEIVED,
-	CAMEL_DB_COLUMN_DSENT,
-	CAMEL_DB_COLUMN_FLAGS,
-	CAMEL_DB_COLUMN_FOLDER_NAME,
-	CAMEL_DB_COLUMN_FOLLOWUP_COMPLETED_ON,
-	CAMEL_DB_COLUMN_FOLLOWUP_DUE_BY,
-	CAMEL_DB_COLUMN_FOLLOWUP_FLAG,
-	CAMEL_DB_COLUMN_IMPORTANT,
-	CAMEL_DB_COLUMN_JND_COUNT,
-	CAMEL_DB_COLUMN_JUNK,
-	CAMEL_DB_COLUMN_JUNK_COUNT,
-	CAMEL_DB_COLUMN_LABELS,
-	CAMEL_DB_COLUMN_MAIL_CC,
-	CAMEL_DB_COLUMN_MAIL_FROM,
-	CAMEL_DB_COLUMN_MAIL_TO,
-	CAMEL_DB_COLUMN_MLIST,
-	CAMEL_DB_COLUMN_NEXTUID,
-	CAMEL_DB_COLUMN_PART,
-	CAMEL_DB_COLUMN_PREVIEW,
-	CAMEL_DB_COLUMN_READ,
-	CAMEL_DB_COLUMN_REPLIED,
-	CAMEL_DB_COLUMN_SAVED_COUNT,
-	CAMEL_DB_COLUMN_SIZE,
-	CAMEL_DB_COLUMN_SUBJECT,
-	CAMEL_DB_COLUMN_TIME,
-	CAMEL_DB_COLUMN_UID,
-	CAMEL_DB_COLUMN_UNREAD_COUNT,
-	CAMEL_DB_COLUMN_USERHEADERS,
-	CAMEL_DB_COLUMN_USERTAGS,
-	CAMEL_DB_COLUMN_VERSION,
-	CAMEL_DB_COLUMN_VISIBLE_COUNT,
-	CAMEL_DB_COLUMN_VUID
-} CamelDBKnownColumnNames;
-
-CamelDBKnownColumnNames camel_db_get_column_ident (GHashTable **hash, gint index, gint ncols, gchar **col_names);
-
-/**
  * CamelDBSelectCB:
  * @user_data: a callback user data
  * @ncol: how many columns is provided
@@ -348,156 +163,48 @@ CamelDBKnownColumnNames camel_db_get_column_ident (GHashTable **hash, gint index
  * A callback called for the SELECT statements. The items at the same index of @colvalues
  * and @colnames correspond to each other.
  *
- * Returns: 0 to continue the SELECT execution, non-zero to abort the execution.
+ * Returns: %TRUE to continue, %FALSE to abort the execution.
  *
- * Since: 2.24
+ * Since: 3.58
  **/
-typedef gint (* CamelDBSelectCB) (gpointer user_data, gint ncol, gchar **colvalues, gchar **colnames);
+typedef gboolean (* CamelDBSelectCB) (gpointer user_data, gint ncol, gchar **colvalues, gchar **colnames);
 
 GQuark		camel_db_error_quark		(void) G_GNUC_CONST;
 GType		camel_db_get_type		(void) G_GNUC_CONST;
 
 CamelDB *	camel_db_new			(const gchar *filename,
 						 GError **error);
+gboolean	camel_db_open			(CamelDB *cdb,
+						 const gchar *filename,
+						 GError **error);
 const gchar *	camel_db_get_filename		(CamelDB *cdb);
-gint		camel_db_command		(CamelDB *cdb,
-						 const gchar *stmt,
-						 GError **error);
-gint		camel_db_transaction_command	(CamelDB *cdb,
-						 const GList *qry_list,
-						 GError **error);
-gint		camel_db_begin_transaction	(CamelDB *cdb,
-						 GError **error);
-gint		camel_db_add_to_transaction	(CamelDB *cdb,
-						 const gchar *query,
-						 GError **error);
-gint		camel_db_end_transaction	(CamelDB *cdb,
-						 GError **error);
-gint		camel_db_abort_transaction	(CamelDB *cdb,
-						 GError **error);
-gint		camel_db_clear_folder_summary	(CamelDB *cdb,
-						 const gchar *folder_name,
-						 GError **error);
-gint		camel_db_rename_folder		(CamelDB *cdb,
-						 const gchar *old_folder_name,
-						 const gchar *new_folder_name,
-						 GError **error);
-gint		camel_db_delete_folder		(CamelDB *cdb,
-						 const gchar *folder_name,
-						 GError **error);
-gint		camel_db_delete_uid		(CamelDB *cdb,
-						 const gchar *folder_name,
-						 const gchar *uid,
-						 GError **error);
-gint		camel_db_delete_uids		(CamelDB *cdb,
-						 const gchar *folder_name,
-						 const GList *uids,
-						 GError **error);
-gint		camel_db_create_folders_table	(CamelDB *cdb,
-						 GError **error);
-gint		camel_db_select			(CamelDB *cdb,
+void		camel_db_writer_lock		(CamelDB *cdb);
+void		camel_db_writer_unlock		(CamelDB *cdb);
+void		camel_db_reader_lock		(CamelDB *cdb);
+void		camel_db_reader_unlock		(CamelDB *cdb);
+gboolean	camel_db_has_table		(CamelDB *cdb,
+						 const gchar *table_name);
+gboolean	camel_db_has_table_with_column	(CamelDB *cdb,
+						 const gchar *table_name,
+						 const gchar *column_name);
+gboolean	camel_db_exec_select		(CamelDB *cdb,
 						 const gchar *stmt,
 						 CamelDBSelectCB callback,
 						 gpointer user_data,
 						 GError **error);
-gint		camel_db_write_folder_info_record
-						(CamelDB *cdb,
-						 CamelFIRecord *record,
+gboolean	camel_db_exec_statement		(CamelDB *cdb,
+						 const gchar *stmt,
 						 GError **error);
-gint		camel_db_read_folder_info_record
-						(CamelDB *cdb,
-						 const gchar *folder_name,
-						 CamelFIRecord *record,
+gboolean	camel_db_begin_transaction	(CamelDB *cdb,
 						 GError **error);
-gint		camel_db_prepare_message_info_table
-						(CamelDB *cdb,
-						 const gchar *folder_name,
+gboolean	camel_db_end_transaction	(CamelDB *cdb,
 						 GError **error);
-gint		camel_db_write_message_info_record
-						(CamelDB *cdb,
-						 const gchar *folder_name,
-						 CamelMIRecord *record,
+gboolean	camel_db_abort_transaction	(CamelDB *cdb,
 						 GError **error);
-gint		camel_db_read_message_info_records
-						(CamelDB *cdb,
-						 const gchar *folder_name,
-						 gpointer user_data,
-						 CamelDBSelectCB callback,
-						 GError **error);
-gint		camel_db_read_message_info_record_with_uid
-						(CamelDB *cdb,
-						 const gchar *folder_name,
-						 const gchar *uid,
-						 gpointer user_data,
-						 CamelDBSelectCB callback,
-						 GError **error);
-gint		camel_db_count_junk_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_unread_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_deleted_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_total_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_visible_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_visible_unread_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_junk_not_deleted_message_info
-						(CamelDB *cdb,
-						 const gchar *table_name,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_count_message_info	(CamelDB *cdb,
-						 const gchar *query,
-						 guint32 *count,
-						 GError **error);
-gint		camel_db_get_folder_uids	(CamelDB *cdb,
-						 const gchar *folder_name,
-						 const gchar *sort_by,
-						 const gchar *collate,
-						 GHashTable *hash,
-						 GError **error);
-GPtrArray *	camel_db_get_folder_junk_uids	(CamelDB *cdb,
-						 const gchar *folder_name,
-						 GError **error);
-GPtrArray *	camel_db_get_folder_deleted_uids
-						(CamelDB *cdb,
-						 const gchar *folder_name,
-						 GError **error);
-gint		camel_db_set_collate		(CamelDB *cdb,
+gboolean	camel_db_set_collate		(CamelDB *cdb,
 						 const gchar *col,
 						 const gchar *collate,
 						 CamelDBCollate func);
-gint		camel_db_start_in_memory_transactions
-						(CamelDB *cdb,
-						 GError **error);
-gint		camel_db_flush_in_memory_transactions
-						(CamelDB *cdb,
-						 const gchar *folder_name,
-						 GError **error);
-gint		camel_db_reset_folder_version	(CamelDB *cdb,
-						 const gchar *folder_name,
-						 gint reset_version,
-						 GError **error);
 gboolean	camel_db_maybe_run_maintenance	(CamelDB *cdb,
 						 GError **error);
 
@@ -505,8 +212,9 @@ void		camel_db_release_cache_memory	(void);
 
 gchar *		camel_db_sqlize_string		(const gchar *string);
 void		camel_db_free_sqlized_string	(gchar *string);
-gchar *		camel_db_get_column_name	(const gchar *raw_name);
-void		camel_db_camel_mir_free		(CamelMIRecord *record);
+void		camel_db_sqlize_to_statement	(GString *stmt,
+						 const gchar *str,
+						 CamelDBSqlizeFlags flags);
 
 G_END_DECLS
 

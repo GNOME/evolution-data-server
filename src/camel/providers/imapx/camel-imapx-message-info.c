@@ -66,7 +66,7 @@ imapx_message_info_clone (const CamelMessageInfo *mi,
 
 static gboolean
 imapx_message_info_load (CamelMessageInfo *mi,
-			 const CamelMIRecord *record,
+			 const CamelStoreDBMessageRecord *record,
 			 /* const */ gchar **bdata_ptr)
 {
 	CamelIMAPXMessageInfo *imi;
@@ -137,7 +137,7 @@ imapx_message_info_load (CamelMessageInfo *mi,
 
 static gboolean
 imapx_message_info_save (const CamelMessageInfo *mi,
-			 CamelMIRecord *record,
+			 CamelStoreDBMessageRecord *record,
 			 GString *bdata_str)
 {
 	CamelIMAPXMessageInfo *imi;

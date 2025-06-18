@@ -36,11 +36,11 @@
 
 #define CAMEL_LOCAL_SUMMARY_VERSION (1)
 
-static CamelFIRecord *
-		summary_header_save		(CamelFolderSummary *,
+static gboolean	summary_header_save		(CamelFolderSummary *,
+						 CamelStoreDBFolderRecord *record,
 						 GError **error);
 static gboolean	summary_header_load		(CamelFolderSummary *,
-						 CamelFIRecord *);
+						 CamelStoreDBFolderRecord *);
 
 static CamelMessageInfo *
 		message_info_new_from_headers	(CamelFolderSummary *,
@@ -302,12 +302,12 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		struct _stat_info stats = { 0 };
 
 		known_uids = camel_folder_summary_get_array (s);
-		for (i = 0; i < camel_folder_summary_count (s); i++) {
+		for (i = 0; known_uids && i < known_uids->len; i++) {
 			CamelMessageInfo *info = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 			do_stat_mi (cls, &stats, info);
 			g_clear_object (&info);
 		}
-		camel_folder_summary_free_array (known_uids);
+		g_clear_pointer (&known_uids, g_ptr_array_unref);
 
 		printf ("\nMemory used by summary:\n\n");
 		printf (
@@ -691,43 +691,44 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 
 static gboolean
 summary_header_load (CamelFolderSummary *s,
-		     CamelFIRecord *fir)
+		     CamelStoreDBFolderRecord *record)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *) s;
 	gchar *part, *tmp;
 
 	/* We don't actually add our own headers, but version that we don't anyway */
 
-	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_load (s, fir))
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_load (s, record))
 		return FALSE;
 
-	part = fir->bdata;
+	part = record->bdata;
 	if (part) {
 		cls->version = camel_util_bdata_get_number (&part, 0);
 	}
 
 	/* keep only the rest of the bdata there (strip our version digit) */
 	tmp = g_strdup (part);
-	g_free (fir->bdata);
-	fir->bdata = tmp;
+	g_free (record->bdata);
+	record->bdata = tmp;
 
 	return TRUE;
 }
 
-static struct _CamelFIRecord *
+static gboolean
 summary_header_save (CamelFolderSummary *s,
+		     CamelStoreDBFolderRecord *record,
 		     GError **error)
 {
 	CamelFolderSummaryClass *folder_summary_class;
-	struct _CamelFIRecord *fir;
 
 	/* Chain up to parent's summary_header_save() method. */
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class);
-	fir = folder_summary_class->summary_header_save (s, NULL);
-	if (fir)
-		fir->bdata = g_strdup_printf ("%d", CAMEL_LOCAL_SUMMARY_VERSION);
+	if (!folder_summary_class->summary_header_save (s, record, error))
+		return FALSE;
 
-	return fir;
+	record->bdata = g_strdup_printf ("%d", CAMEL_LOCAL_SUMMARY_VERSION);
+
+	return TRUE;
 }
 
 static CamelMessageInfo *

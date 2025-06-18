@@ -134,7 +134,6 @@ nntp_folder_finalize (GObject *object)
 
 	g_clear_pointer (&nntp_folder->changes, camel_folder_change_info_free);
 
-	g_mutex_clear (&nntp_folder->priv->search_lock);
 	g_mutex_clear (&nntp_folder->priv->cache_lock);
 
 	/* Chain up to parent's finalize() method. */
@@ -302,87 +301,6 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 	return stream;
 }
 
-static GPtrArray *
-nntp_folder_search_by_expression (CamelFolder *folder,
-                                  const gchar *expression,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	GPtrArray *matches;
-
-	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
-
-	if (nntp_folder->search == NULL)
-		nntp_folder->search = camel_folder_search_new ();
-
-	camel_folder_search_set_folder (nntp_folder->search, folder);
-	matches = camel_folder_search_search (nntp_folder->search, expression, NULL, cancellable, error);
-
-	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
-
-	return matches;
-}
-
-static guint32
-nntp_folder_count_by_expression (CamelFolder *folder,
-                                 const gchar *expression,
-                                 GCancellable *cancellable,
-                                 GError **error)
-{
-	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	guint32 count;
-
-	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
-
-	if (nntp_folder->search == NULL)
-		nntp_folder->search = camel_folder_search_new ();
-
-	camel_folder_search_set_folder (nntp_folder->search, folder);
-	count = camel_folder_search_count (nntp_folder->search, expression, cancellable, error);
-
-	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
-
-	return count;
-}
-
-static GPtrArray *
-nntp_folder_search_by_uids (CamelFolder *folder,
-                            const gchar *expression,
-                            GPtrArray *uids,
-                            GCancellable *cancellable,
-                            GError **error)
-{
-	CamelNNTPFolder *nntp_folder = (CamelNNTPFolder *) folder;
-	GPtrArray *matches;
-
-	if (uids->len == 0)
-		return g_ptr_array_new ();
-
-	CAMEL_NNTP_FOLDER_LOCK (folder, search_lock);
-
-	if (nntp_folder->search == NULL)
-		nntp_folder->search = camel_folder_search_new ();
-
-	camel_folder_search_set_folder (nntp_folder->search, folder);
-	matches = camel_folder_search_search (nntp_folder->search, expression, uids, cancellable, error);
-
-	CAMEL_NNTP_FOLDER_UNLOCK (folder, search_lock);
-
-	return matches;
-}
-
-static void
-nntp_folder_search_free (CamelFolder *folder,
-                         GPtrArray *result)
-{
-	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-
-	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
-	camel_folder_search_free_result (nntp_folder->search, result);
-	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
-}
-
 static gboolean
 nntp_folder_append_message_sync (CamelFolder *folder,
                                  CamelMimeMessage *message,
@@ -539,7 +457,7 @@ nntp_folder_expunge_sync (CamelFolder *folder,
 	camel_folder_changed (folder, changes);
 
 	camel_folder_change_info_free (changes);
-	camel_folder_summary_free_array (known_uids);
+	g_clear_pointer (&known_uids, g_ptr_array_unref);
 
 	return TRUE;
 }
@@ -808,10 +726,6 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	object_class->finalize = nntp_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->search_by_expression = nntp_folder_search_by_expression;
-	folder_class->count_by_expression = nntp_folder_count_by_expression;
-	folder_class->search_by_uids = nntp_folder_search_by_uids;
-	folder_class->search_free = nntp_folder_search_free;
 	folder_class->get_filename = nntp_get_filename;
 	folder_class->append_message_sync = nntp_folder_append_message_sync;
 	folder_class->expunge_sync = nntp_folder_expunge_sync;
@@ -842,7 +756,6 @@ camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 	nntp_folder->priv = camel_nntp_folder_get_instance_private (nntp_folder);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
-	g_mutex_init (&nntp_folder->priv->search_lock);
 	g_mutex_init (&nntp_folder->priv->cache_lock);
 }
 

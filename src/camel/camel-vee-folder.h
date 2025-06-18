@@ -24,7 +24,6 @@
 #define CAMEL_VEE_FOLDER_H
 
 #include <camel/camel-folder.h>
-#include <camel/camel-folder-search.h>
 #include <camel/camel-store.h>
 #include <camel/camel-vee-summary.h>
 

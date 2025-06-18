@@ -65,7 +65,7 @@ maildir_message_info_clone (const CamelMessageInfo *mi,
 
 static gboolean
 maildir_message_info_load (CamelMessageInfo *mi,
-			   const CamelMIRecord *record,
+			   const CamelStoreDBMessageRecord *record,
 			   /* const */ gchar **bdata_ptr)
 {
 	CamelMaildirMessageInfo *mmi;

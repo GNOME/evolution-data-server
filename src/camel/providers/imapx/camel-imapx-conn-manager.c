@@ -2760,18 +2760,19 @@ camel_imapx_conn_manager_update_quota_info_sync (CamelIMAPXConnManager *conn_man
 }
 
 static gchar **
-imapx_copy_strv (const gchar * const *words)
+imapx_copy_words (const GPtrArray *words)
 {
 	gchar **copy;
 	gint ii;
 
-	if (!words || !*words)
+	if (!words || !words->len)
 		return NULL;
 
-	copy = g_new0 (gchar *, g_strv_length ((gchar **) words) + 1);
+	copy = g_new0 (gchar *, words->len + 1);
 
-	for (ii = 0; words[ii]; ii++) {
-		copy[ii] = g_strdup (words[ii]);
+	for (ii = 0; ii < words->len; ii++) {
+		const gchar *word = g_ptr_array_index (words, ii);
+		copy[ii] = g_strdup (word);
 	}
 
 	copy[ii] = NULL;
@@ -2878,7 +2879,7 @@ camel_imapx_conn_manager_uid_search_sync (CamelIMAPXConnManager *conn_man,
 					  CamelIMAPXMailbox *mailbox,
 					  const gchar *criteria_prefix,
 					  const gchar *search_key,
-					  const gchar * const *words,
+					  const GPtrArray *words,
 					  GCancellable *cancellable,
 					  GError **error)
 {
@@ -2892,7 +2893,7 @@ camel_imapx_conn_manager_uid_search_sync (CamelIMAPXConnManager *conn_man,
 	job_data = g_slice_new0 (struct UidSearchJobData);
 	job_data->criteria_prefix = g_strdup (criteria_prefix);
 	job_data->search_key = g_strdup (search_key);
-	job_data->words = imapx_copy_strv (words);
+	job_data->words = imapx_copy_words (words);
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_UID_SEARCH, mailbox,
 		imapx_conn_manager_uid_search_run_sync,

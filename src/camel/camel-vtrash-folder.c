@@ -89,9 +89,6 @@ transfer_messages (CamelFolder *folder,
 
 	camel_folder_thaw (md->folder);
 
-	for (i = 0; i < md->uids->len; i++)
-		g_free (md->uids->pdata[i]);
-
 	g_ptr_array_free (md->uids, TRUE);
 	g_ptr_array_free (md->source_uids, TRUE);
 	g_object_unref (md->folder);
@@ -182,7 +179,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 				md = g_malloc0 (sizeof (*md));
 				md->cancellable = cancellable;
 				md->folder = g_object_ref (camel_vee_message_info_get_original_folder (mi));
-				md->uids = g_ptr_array_new ();
+				md->uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 				md->dest = dest;
 				md->delete = delete_originals;
 				md->source_folder = source;
@@ -200,7 +197,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 			tuid = uids->pdata[i];
 			if (strlen (tuid) > 8)
 				tuid += 8;
-			g_ptr_array_add (md->uids, g_strdup (tuid));
+			g_ptr_array_add (md->uids, (gpointer) camel_pstring_strdup (tuid));
 			g_ptr_array_add (md->source_uids, uids->pdata[i]);
 		}
 		g_clear_object (&mi);

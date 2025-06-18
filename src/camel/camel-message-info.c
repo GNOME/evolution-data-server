@@ -159,9 +159,53 @@ message_info_clone (const CamelMessageInfo *mi,
 	return result;
 }
 
+/* private function */
+gboolean
+_camel_message_info_util_decode_part (const gchar *db_part,
+				      guint64 *out_message_id,
+				      GArray **out_references); /* guint64 */
+
+gboolean
+_camel_message_info_util_decode_part (const gchar *db_part,
+				      guint64 *out_message_id,
+				      GArray **out_references) /* guint64 */
+{
+	CamelSummaryMessageID message_id;
+	gchar *part = (gchar *) db_part;
+	gint ii, count;
+
+	*out_message_id = 0;
+	*out_references = NULL;
+
+	if (!db_part || !*db_part)
+		return FALSE;
+
+	message_id.id.part.hi = camel_util_bdata_get_number (&part, 0);
+	message_id.id.part.lo = camel_util_bdata_get_number (&part, 0);
+
+	*out_message_id = message_id.id.id;
+
+	count = camel_util_bdata_get_number (&part, 0);
+
+	if (count > 0) {
+		GArray *references = g_array_sized_new (FALSE, FALSE, sizeof (guint64), count);
+
+		for (ii = 0; ii < count; ii++) {
+			message_id.id.part.hi = camel_util_bdata_get_number (&part, 0);
+			message_id.id.part.lo = camel_util_bdata_get_number (&part, 0);
+
+			g_array_append_val (references, message_id.id.id);
+		}
+
+		*out_references = references;
+	}
+
+	return TRUE;
+}
+
 static gboolean
 message_info_load (CamelMessageInfo *mi,
-		   const CamelMIRecord *record,
+		   const CamelStoreDBMessageRecord *record,
 		   /* const */ gchar **bdata_ptr)
 {
 	gint ii, count;
@@ -187,25 +231,11 @@ message_info_load (CamelMessageInfo *mi,
 	/* Extract Message id & References */
 	part = record->part;
 	if (part) {
-		CamelSummaryMessageID message_id;
+		guint64 message_id = 0;
+		GArray *references = NULL;
 
-		message_id.id.part.hi = camel_util_bdata_get_number (&part, 0);
-		message_id.id.part.lo = camel_util_bdata_get_number (&part, 0);
-
-		camel_message_info_set_message_id (mi, message_id.id.id);
-
-		count = camel_util_bdata_get_number (&part, 0);
-
-		if (count > 0) {
-			GArray *references = g_array_sized_new (FALSE, FALSE, sizeof (guint64), count);
-
-			for (ii = 0; ii < count; ii++) {
-				message_id.id.part.hi = camel_util_bdata_get_number (&part, 0);
-				message_id.id.part.lo = camel_util_bdata_get_number (&part, 0);
-
-				g_array_append_val (references, message_id.id.id);
-			}
-
+		if (_camel_message_info_util_decode_part (part, &message_id, &references)) {
+			camel_message_info_set_message_id (mi, message_id);
 			camel_message_info_take_references (mi, references);
 		}
 	}
@@ -303,7 +333,7 @@ message_info_load (CamelMessageInfo *mi,
 
 static gboolean
 message_info_save (const CamelMessageInfo *mi,
-		   CamelMIRecord *record,
+		   CamelStoreDBMessageRecord *record,
 		   GString *bdata_str)
 {
 	GString *tmp;
@@ -340,13 +370,7 @@ message_info_save (const CamelMessageInfo *mi,
 		}
 	}
 
-	record->read = ((record->flags & (CAMEL_MESSAGE_SEEN | read_or_flags))) ? 1 : 0;
-	record->deleted = (record->flags & CAMEL_MESSAGE_DELETED) != 0 ? 1 : 0;
-	record->replied = (record->flags & CAMEL_MESSAGE_ANSWERED) != 0 ? 1 : 0;
-	record->important = (record->flags & CAMEL_MESSAGE_FLAGGED) != 0 ? 1 : 0;
-	record->junk = (record->flags & CAMEL_MESSAGE_JUNK) != 0 ? 1 : 0;
 	record->dirty = (record->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0 ? 1 : 0;
-	record->attachment = (record->flags & CAMEL_MESSAGE_ATTACHMENTS) != 0 ? 1 : 0;
 
 	record->size = camel_message_info_get_size (mi);
 	record->dsent = camel_message_info_get_date_sent (mi);
@@ -358,10 +382,6 @@ message_info_save (const CamelMessageInfo *mi,
 	record->cc = camel_pstring_strdup (camel_message_info_get_cc (mi));
 	record->mlist = camel_pstring_strdup (camel_message_info_get_mlist (mi));
 	record->preview = g_strdup (camel_message_info_get_preview (mi));
-
-	record->followup_flag = g_strdup (camel_message_info_get_user_tag (mi, "follow-up"));
-	record->followup_completed_on = g_strdup (camel_message_info_get_user_tag (mi, "completed-on"));
-	record->followup_due_by = g_strdup (camel_message_info_get_user_tag (mi, "due-by"));
 
 	tmp = g_string_new (NULL);
 	message_id.id.id = camel_message_info_get_message_id (mi);
@@ -1205,7 +1225,7 @@ camel_message_info_clone (const CamelMessageInfo *mi,
 /**
  * camel_message_info_load:
  * @mi: a #CamelMessageInfo to load
- * @record: (type CamelMIRecord): a #CamelMIRecord to load the @mi from
+ * @record: a #CamelStoreDBMessageRecord to load the @mi from
  * @bdata_ptr: a backend specific data (bdata) pointer
  *
  * Load content of @mi from the data stored in @record. The @bdata_ptr points
@@ -1221,7 +1241,7 @@ camel_message_info_clone (const CamelMessageInfo *mi,
  **/
 gboolean
 camel_message_info_load (CamelMessageInfo *mi,
-			 const CamelMIRecord *record,
+			 const CamelStoreDBMessageRecord *record,
 			 /* const */ gchar **bdata_ptr)
 {
 	CamelMessageInfoClass *klass;
@@ -1254,7 +1274,7 @@ camel_message_info_load (CamelMessageInfo *mi,
 /**
  * camel_message_info_save:
  * @mi: a #CamelMessageInfo
- * @record: (type CamelMIRecord): a #CamelMIRecord to populate
+ * @record: a #CamelStoreDBMessageRecord to populate
  * @bdata_str: a #GString with a string to save as backend specific data (bdata)
  *
  * Save the @mi content to the message info record @record. It can populate all
@@ -1267,7 +1287,7 @@ camel_message_info_load (CamelMessageInfo *mi,
  **/
 gboolean
 camel_message_info_save (const CamelMessageInfo *mi,
-			 CamelMIRecord *record,
+			 CamelStoreDBMessageRecord *record,
 			 GString *bdata_str)
 {
 	CamelMessageInfoClass *klass;

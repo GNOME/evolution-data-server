@@ -2005,7 +2005,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			100, _("Complete"));
 
 	if (freeuids)
-		camel_folder_free_uids (folder, uids);
+		g_ptr_array_unref (uids);
 
 	close_folders (driver, remove, cancellable);
 

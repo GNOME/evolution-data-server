@@ -109,7 +109,6 @@ local_folder_dispose (GObject *object)
 		}
 	}
 
-	g_clear_object (&local_folder->search);
 	g_clear_object (&local_folder->index);
 
 	/* Chain up to parent's dispose() method. */
@@ -132,7 +131,6 @@ local_folder_finalize (GObject *object)
 
 	camel_folder_change_info_free (local_folder->changes);
 
-	g_mutex_clear (&local_folder->priv->search_lock);
 	g_rec_mutex_clear (&local_folder->priv->changes_lock);
 
 	/* Chain up to parent's finalize() method. */
@@ -232,77 +230,6 @@ local_folder_get_permanent_flags (CamelFolder *folder)
 		CAMEL_MESSAGE_USER;
 }
 
-static GPtrArray *
-local_folder_search_by_expression (CamelFolder *folder,
-                                   const gchar *expression,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
-	GPtrArray *matches;
-
-	CAMEL_LOCAL_FOLDER_LOCK (folder, search_lock);
-
-	if (local_folder->search == NULL)
-		local_folder->search = camel_folder_search_new ();
-
-	camel_folder_search_set_folder (local_folder->search, folder);
-	if (camel_local_folder_get_index_body (local_folder))
-		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
-	else
-		camel_folder_search_set_body_index (local_folder->search, NULL);
-	matches = camel_folder_search_search (local_folder->search, expression, NULL, cancellable, error);
-
-	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
-
-	return matches;
-}
-
-static GPtrArray *
-local_folder_search_by_uids (CamelFolder *folder,
-                             const gchar *expression,
-                             GPtrArray *uids,
-                             GCancellable *cancellable,
-                             GError **error)
-{
-	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
-	GPtrArray *matches;
-
-	if (uids->len == 0)
-		return g_ptr_array_new ();
-
-	CAMEL_LOCAL_FOLDER_LOCK (folder, search_lock);
-
-	if (local_folder->search == NULL)
-		local_folder->search = camel_folder_search_new ();
-
-	camel_folder_search_set_folder (local_folder->search, folder);
-	if (camel_local_folder_get_index_body (local_folder))
-		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
-	else
-		camel_folder_search_set_body_index (local_folder->search, NULL);
-	matches = camel_folder_search_search (local_folder->search, expression, uids, cancellable, error);
-
-	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
-
-	return matches;
-}
-
-static void
-local_folder_search_free (CamelFolder *folder,
-                          GPtrArray *result)
-{
-	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
-
-	/* we need to lock this free because of the way search_free_result works */
-	/* FIXME: put the lock inside search_free_result */
-	CAMEL_LOCAL_FOLDER_LOCK (folder, search_lock);
-
-	camel_folder_search_free_result (local_folder->search, result);
-
-	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
-}
-
 static void
 local_folder_delete (CamelFolder *folder)
 {
@@ -344,32 +271,6 @@ local_folder_rename (CamelFolder *folder,
 	((CamelLocalSummary *) camel_folder_get_folder_summary (folder))->folder_path = g_strdup (lf->folder_path);
 
 	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->rename (folder, newname);
-}
-
-static guint32
-local_folder_count_by_expression (CamelFolder *folder,
-                                  const gchar *expression,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
-	gint matches;
-
-	CAMEL_LOCAL_FOLDER_LOCK (folder, search_lock);
-
-	if (local_folder->search == NULL)
-		local_folder->search = camel_folder_search_new ();
-
-	camel_folder_search_set_folder (local_folder->search, folder);
-	if (camel_local_folder_get_index_body (local_folder))
-		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
-	else
-		camel_folder_search_set_body_index (local_folder->search, NULL);
-	matches = camel_folder_search_count (local_folder->search, expression, cancellable, error);
-
-	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
-
-	return matches;
 }
 
 static GPtrArray *
@@ -481,12 +382,8 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_permanent_flags = local_folder_get_permanent_flags;
-	folder_class->search_by_expression = local_folder_search_by_expression;
-	folder_class->search_by_uids = local_folder_search_by_uids;
-	folder_class->search_free = local_folder_search_free;
 	folder_class->delete_ = local_folder_delete;
 	folder_class->rename = local_folder_rename;
-	folder_class->count_by_expression = local_folder_count_by_expression;
 	folder_class->get_uncached_uids = local_folder_get_uncached_uids;
 	folder_class->expunge_sync = local_folder_expunge_sync;
 	folder_class->refresh_info_sync = local_folder_refresh_info_sync;
@@ -514,12 +411,9 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 	CamelFolder *folder = CAMEL_FOLDER (local_folder);
 
 	local_folder->priv = camel_local_folder_get_instance_private (local_folder);
-	g_mutex_init (&local_folder->priv->search_lock);
 	g_rec_mutex_init (&local_folder->priv->changes_lock);
 
 	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
-
-	local_folder->search = NULL;
 }
 
 CamelLocalFolder *

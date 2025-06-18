@@ -39,7 +39,6 @@
 #include <camel/camel-filter-output-stream.h>
 #include <camel/camel-filter-search.h>
 #include <camel/camel-folder.h>
-#include <camel/camel-folder-search.h>
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder-thread.h>
 #include <camel/camel-gpg-context.h>
@@ -113,12 +112,15 @@
 #include <camel/camel-sasl-xoauth2-google.h>
 #include <camel/camel-sasl-xoauth2-outlook.h>
 #include <camel/camel-sasl-xoauth2-yahoo.h>
+#include <camel/camel-search-utils.h>
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
 #include <camel/camel-settings.h>
 #include <camel/camel-sexp.h>
 #include <camel/camel-smime-context.h>
 #include <camel/camel-store.h>
+#include <camel/camel-store-db.h>
+#include <camel/camel-store-search.h>
 #include <camel/camel-store-settings.h>
 #include <camel/camel-store-summary.h>
 #include <camel/camel-stream.h>

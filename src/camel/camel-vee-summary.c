@@ -174,7 +174,7 @@ camel_vee_summary_new (CamelFolder *parent)
 	/* not using DB for vee folder summaries, drop the table */
 	full_name = camel_folder_get_full_name (parent);
 	parent_store = camel_folder_get_parent_store (parent);
-	camel_db_delete_folder (camel_store_get_db (parent_store), full_name, NULL);
+	camel_store_db_delete_folder (camel_store_get_db (parent_store), full_name, NULL);
 
 	return summary;
 }

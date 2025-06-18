@@ -27,15 +27,17 @@ test_folder_search_sub (CamelFolder *folder,
                         const gchar *expr,
                         gint expected)
 {
-	GPtrArray *uids;
+	GPtrArray *uids = NULL;
 	GHashTable *hash;
 	gint i;
 	GError *error = NULL;
+	gboolean success;
 
-	uids = camel_folder_search_by_expression (folder, expr, NULL, &error);
+	success = camel_folder_search_sync (folder, expr, &uids, NULL, &error);
+	check_msg (error == NULL, "%s", error->message);
+	check (success);
 	check (uids != NULL);
 	check_msg (uids->len == expected, "search %s expected %d got %d", expr, expected, uids->len);
-	check_msg (error == NULL, "%s", error->message);
 	g_clear_error (&error);
 
 	/* check the uid's are actually unique, too */
@@ -45,8 +47,7 @@ test_folder_search_sub (CamelFolder *folder,
 		g_hash_table_insert (hash, uids->pdata[i], uids->pdata[i]);
 	}
 	g_hash_table_destroy (hash);
-
-	camel_folder_search_free (folder, uids);
+	g_ptr_array_unref (uids);
 }
 
 static void
@@ -269,7 +270,7 @@ main (gint argc,
 					camel_folder_set_message_user_tag (folder, uid, "every11", "11tag");
 				}
 			}
-			camel_folder_free_uids (folder, uids);
+			g_clear_pointer (&uids, g_ptr_array_unref);
 			pull ();
 
 			camel_test_nonfatal ("Index not guaranteed to be accurate before sync: should be fixed eventually");
@@ -296,7 +297,7 @@ main (gint argc,
 			for (j = 0; j < uids->len; j+=2) {
 				camel_folder_delete_message (folder, uids->pdata[j]);
 			}
-			camel_folder_free_uids (folder, uids);
+			g_clear_pointer (&uids, g_ptr_array_unref);
 			run_search (folder, 100);
 
 			push ("syncing");
@@ -332,7 +333,7 @@ main (gint argc,
 			for (j = 0; j < uids->len; j++) {
 				camel_folder_delete_message (folder, uids->pdata[j]);
 			}
-			camel_folder_free_uids (folder, uids);
+			g_clear_pointer (&uids, g_ptr_array_unref);
 			run_search (folder, 50);
 
 			push ("syncing");

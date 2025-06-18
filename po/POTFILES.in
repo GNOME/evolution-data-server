@@ -57,7 +57,6 @@ src/camel/camel-file-utils.c
 src/camel/camel-filter-driver.c
 src/camel/camel-filter-search.c
 src/camel/camel-folder.c
-src/camel/camel-folder-search.c
 src/camel/camel-folder-summary.c
 src/camel/camel-folder-thread.c
 src/camel/camel-gpg-context.c
@@ -120,6 +119,7 @@ src/camel/camel-service.c
 src/camel/camel-session.c
 src/camel/camel-smime-context.c
 src/camel/camel-store.c
+src/camel/camel-store-db.c
 src/camel/camel-store-summary.c
 src/camel/camel-stream-buffer.c
 src/camel/camel-stream.c

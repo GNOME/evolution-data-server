@@ -26,36 +26,49 @@
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-memchunk.h>
+#include <camel/camel-enums.h>
 
 G_BEGIN_DECLS
 
-typedef struct _CamelFolderThreadNode {
-	struct _CamelFolderThreadNode *next, *parent, *child;
-	const CamelMessageInfo *message;
-	gchar *root_subject;	/* cached root equivalent subject */
-	guint32 order : 31;
-	guint32 re:1;			/* re version of subject? */
-} CamelFolderThreadNode;
+typedef struct _CamelFolderThreadNode CamelFolderThreadNode;
 
-typedef struct _CamelFolderThread {
-	guint32 refcount : 31;
-	guint32 subject : 1;
+CamelFolderThreadNode *
+		camel_folder_thread_node_get_next	(CamelFolderThreadNode *self);
+CamelFolderThreadNode *
+		camel_folder_thread_node_get_parent	(CamelFolderThreadNode *self);
+CamelFolderThreadNode *
+		camel_folder_thread_node_get_child	(CamelFolderThreadNode *self);
+gpointer	camel_folder_thread_node_get_item	(CamelFolderThreadNode *self);
 
-	struct _CamelFolderThreadNode *tree;
-	CamelMemChunk *node_chunks;
-	CamelFolder *folder;
-	GPtrArray *summary;
-} CamelFolderThread;
+#define CAMEL_TYPE_FOLDER_THREAD (camel_folder_thread_get_type ())
+G_DECLARE_FINAL_TYPE (CamelFolderThread, camel_folder_thread, CAMEL, FOLDER_THREAD, GObject)
 
-GType		camel_folder_thread_messages_get_type		(void);
-CamelFolderThread *camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean thread_subject);
-void camel_folder_thread_messages_apply (CamelFolderThread *thread, GPtrArray *uids);
+typedef void		(* CamelFolderThreadVoidFunc) (gconstpointer item);
+typedef const gchar *	(* CamelFolderThreadStrFunc) (gconstpointer item);
+typedef gint64		(* CamelFolderThreadInt64Func) (gconstpointer item);
+typedef guint64		(* CamelFolderThreadUint64Func) (gconstpointer item);
+typedef const GArray *	(* CamelFolderThreadArrayFunc) (gconstpointer item);
 
-CamelFolderThread *camel_folder_thread_messages_ref (CamelFolderThread *thread);
-void camel_folder_thread_messages_unref (CamelFolderThread *thread);
+CamelFolderThread *
+		camel_folder_thread_new		(CamelFolder *folder,
+						 GPtrArray *uids,
+						 CamelFolderThreadFlags flags);
+CamelFolderThread *
+		camel_folder_thread_new_items	(GPtrArray *items, /* caller data with items understood by the below functions */
+						 CamelFolderThreadFlags flags,
+						 CamelFolderThreadStrFunc get_uid_func,
+						 CamelFolderThreadStrFunc get_subject_func,
+						 CamelFolderThreadUint64Func get_message_id_func,
+						 CamelFolderThreadArrayFunc get_references_func,
+						 CamelFolderThreadInt64Func get_date_sent_func,
+						 CamelFolderThreadInt64Func get_date_received_func,
+						 CamelFolderThreadVoidFunc lock_func,
+						 CamelFolderThreadVoidFunc unlock_func);
+CamelFolderThreadNode *
+		camel_folder_thread_get_tree	(CamelFolderThread *self);
 
 /* debugging function only */
-gint camel_folder_threaded_messages_dump (CamelFolderThreadNode *c);
+guint		camel_folder_thread_dump	(CamelFolderThread *self);
 
 G_END_DECLS
 

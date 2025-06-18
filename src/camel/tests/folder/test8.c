@@ -74,20 +74,23 @@ worker (gpointer d)
 	struct _threadinfo *info = d;
 	gint i, j, id = info->id;
 	gchar *sub, *content;
-	GPtrArray *res;
 	CamelMimeMessage *msg;
 	GError *error = NULL;
 
 	/* we add a message, search for it, twiddle some flags, delete it */
 	/* and flat out */
 	for (i = 0; i < MAX_MESSAGES; i++) {
+		GPtrArray *res = NULL;
+		gboolean success;
+
 		test_add_message (info->folder, id + i);
 
 		sub = g_strdup_printf ("(match-all (header-contains \"subject\" \"message %08x subject\"))", id + i);
 
 		push ("searching for message %d\n\tusing: %s", id + i, sub);
-		res = camel_folder_search_by_expression (info->folder, sub, NULL, &error);
+		success = camel_folder_search_sync (info->folder, sub, &res, NULL, &error);
 		check_msg (error == NULL, "%s", error->message);
+		check (success);
 		check_msg (res && res->len == 1, "res->len = %d", res ? res->len : -1);
 		g_clear_error (&error);
 		pull ();
@@ -111,8 +114,7 @@ worker (gpointer d)
 			camel_folder_delete_message (info->folder, res->pdata[0]);
 		}
 
-		camel_folder_search_free (info->folder, res);
-		res = NULL;
+		g_clear_pointer (&res, g_ptr_array_unref);
 		test_free (sub);
 
 		check_unref (msg, 1);
@@ -209,7 +211,7 @@ gint main (gint argc, gchar **argv)
 			for (i = 0; i < uids->len; i++) {
 				camel_folder_delete_message (folder, uids->pdata[i]);
 			}
-			camel_folder_free_uids (folder, uids);
+			g_clear_pointer (&uids, g_ptr_array_unref);
 
 			camel_folder_expunge_sync (folder, NULL, &error);
 			check_msg (error == NULL, "%s", error->message);

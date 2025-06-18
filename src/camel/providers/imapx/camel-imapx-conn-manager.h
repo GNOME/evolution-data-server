@@ -185,7 +185,7 @@ GPtrArray *	camel_imapx_conn_manager_uid_search_sync
 						 CamelIMAPXMailbox *mailbox,
 						 const gchar *criteria_prefix,
 						 const gchar *search_key,
-						 const gchar * const *words,
+						 const GPtrArray *words,
 						 GCancellable *cancellable,
 						 GError **error);
 

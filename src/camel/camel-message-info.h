@@ -25,6 +25,7 @@
 
 #include <camel/camel-named-flags.h>
 #include <camel/camel-name-value-array.h>
+#include <camel/camel-store-db.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_MESSAGE_INFO \
@@ -49,7 +50,6 @@ G_BEGIN_DECLS
 
 /* Forward declarations */
 struct _CamelFolderSummary;
-struct _CamelMIRecord;
 
 /* A summary messageid is a 64 bit identifier (partial md5 hash) */
 typedef struct _CamelSummaryMessageID {
@@ -108,10 +108,10 @@ struct _CamelMessageInfoClass {
 	CamelMessageInfo *	(* clone)	(const CamelMessageInfo *mi,
 						 struct _CamelFolderSummary *assign_summary);
 	gboolean		(* load)	(CamelMessageInfo *mi,
-						 const struct _CamelMIRecord *record,
+						 const CamelStoreDBMessageRecord *record,
 						 /* const */ gchar **bdata_ptr);
 	gboolean		(* save)	(const CamelMessageInfo *mi,
-						 struct _CamelMIRecord *record,
+						 CamelStoreDBMessageRecord *record,
 						 GString *bdata_str);
 	guint32			(* get_flags)	(const CamelMessageInfo *mi);
 	gboolean		(* set_flags)	(CamelMessageInfo *mi,
@@ -214,10 +214,10 @@ CamelMessageInfo *
 		camel_message_info_clone	(const CamelMessageInfo *mi,
 						 struct _CamelFolderSummary *assign_summary);
 gboolean	camel_message_info_load		(CamelMessageInfo *mi,
-						 const struct _CamelMIRecord *record,
+						 const CamelStoreDBMessageRecord *record,
 						 /* const */ gchar **bdata_ptr);
 gboolean	camel_message_info_save		(const CamelMessageInfo *mi,
-						 struct _CamelMIRecord *record,
+						 CamelStoreDBMessageRecord *record,
 						 GString *bdata_str);
 struct _CamelFolderSummary *
 		camel_message_info_ref_summary	(const CamelMessageInfo *mi);

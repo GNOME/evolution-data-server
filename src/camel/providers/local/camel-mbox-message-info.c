@@ -60,7 +60,7 @@ mbox_message_info_clone (const CamelMessageInfo *mi,
 
 static gboolean
 mbox_message_info_load (CamelMessageInfo *mi,
-			const CamelMIRecord *record,
+			const CamelStoreDBMessageRecord *record,
 			/* const */ gchar **bdata_ptr)
 {
 	CamelMboxMessageInfo *mmi;
@@ -87,7 +87,7 @@ mbox_message_info_load (CamelMessageInfo *mi,
 
 static gboolean
 mbox_message_info_save (const CamelMessageInfo *mi,
-			CamelMIRecord *record,
+			CamelStoreDBMessageRecord *record,
 			GString *bdata_str)
 {
 	CamelMboxMessageInfo *mmi;

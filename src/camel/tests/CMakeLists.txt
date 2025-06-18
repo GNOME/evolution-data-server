@@ -3,6 +3,7 @@ macro(add_camel_test_one _part _name _src_file _in_check)
 
 	# Not using EXCLUDE_FROM_ALL here, to have these built always
 	add_executable(${_test_ident} ${_src_file})
+	add_dependencies(${_test_ident} camel)
 
 	target_compile_definitions(${_test_ident} PRIVATE
 		-DG_LOG_DOMAIN=\"${_test_ident}\"

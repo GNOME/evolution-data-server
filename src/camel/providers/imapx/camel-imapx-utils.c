@@ -452,7 +452,7 @@ camel_imapx_dup_uid_from_summary_index (CamelFolder *folder,
 		uid = g_strdup (g_ptr_array_index (array, summary_index));
 	}
 
-	camel_folder_summary_free_array (array);
+	g_clear_pointer (&array, g_ptr_array_unref);
 
 	return uid;
 }
@@ -2836,7 +2836,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
 	if (!mailbox) {
-		camel_folder_summary_free_array (summary_array);
+		g_clear_pointer (&summary_array, g_ptr_array_unref);
 		return FALSE;
 	}
 
@@ -2945,7 +2945,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 exit:
 	g_free (known_uid_set);
-	camel_folder_summary_free_array (summary_array);
+	g_clear_pointer (&summary_array, g_ptr_array_unref);
 	g_object_unref (mailbox);
 
 	return parameter_added;

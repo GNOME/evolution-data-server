@@ -1219,7 +1219,7 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *imapx_store,
 	g_unlink (state_file);
 	g_free (state_file);
 
-	camel_db_delete_folder (camel_store_get_db (CAMEL_STORE (imapx_store)), folder_path, NULL);
+	camel_store_db_delete_folder (camel_store_get_db (CAMEL_STORE (imapx_store)), folder_path, NULL);
 	g_rmdir (folder_dir);
 
 	state_file = g_build_filename (folder_dir, "subfolders", NULL);

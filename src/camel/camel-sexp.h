@@ -86,6 +86,10 @@ typedef enum {
  * @time_generator: a boolean whether the occuring times are used
  * @occuring_start: start time
  * @occuring_end: end time
+ * @user_data: (nullable): a custom user data the caller can set; it's
+ *    completely managed by the caller (Since: 3.58)
+ * @free_user_data: (nullable): optional destroy callback
+ *    for the @user_data (Since: 3.58)
  *
  * Since: 3.4
  **/
@@ -101,6 +105,8 @@ struct _CamelSExpResult {
 	gboolean time_generator;
 	time_t occuring_start;
 	time_t occuring_end;
+	gpointer user_data; /* caller-managed user data */
+	GDestroyNotify free_user_data;
 };
 
 /**
