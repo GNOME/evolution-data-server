@@ -989,7 +989,7 @@ folder_set_message_user_tag (CamelFolder *folder,
 }
 
 static GPtrArray *
-folder_get_uids (CamelFolder *folder)
+folder_dup_uids (CamelFolder *folder)
 {
 	g_return_val_if_fail (folder->priv->summary != NULL, NULL);
 
@@ -1532,7 +1532,7 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->set_message_user_flag = folder_set_message_user_flag;
 	class->get_message_user_tag = folder_get_message_user_tag;
 	class->set_message_user_tag = folder_set_message_user_tag;
-	class->get_uids = folder_get_uids;
+	class->dup_uids = folder_dup_uids;
 	class->get_uncached_uids = folder_get_uncached_uids;
 	class->cmp_uids = folder_cmp_uids;
 	class->sort_uids = folder_sort_uids;
@@ -2524,19 +2524,19 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 /* UIDs stuff */
 
 /**
- * camel_folder_get_uids:
+ * camel_folder_dup_uids:
  * @folder: a #CamelFolder
  *
- * Get the list of UIDs available in a folder. This routine is useful
- * for finding what messages are available when the folder does not
- * support summaries. The returned array should not be modified, and
- * must be freed by passing it to g_ptr_array_unref().
+ * Duplicates a list of UIDs available in the @folder. Free the array
+ * with g_ptr_array_unref(), when no longer needed.
  *
- * Returns: (element-type utf8) (transfer container): a GPtrArray of UIDs
- * corresponding to the messages available in the folder
+ * Returns: (element-type utf8) (transfer container): a new #GPtrArray
+ *    of UIDs corresponding to the messages available in the @folder
+ *
+ * Since: 3.58
  **/
 GPtrArray *
-camel_folder_get_uids (CamelFolder *folder)
+camel_folder_dup_uids (CamelFolder *folder)
 {
 	CamelFolderClass *class;
 
@@ -2544,9 +2544,9 @@ camel_folder_get_uids (CamelFolder *folder)
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->get_uids != NULL, NULL);
+	g_return_val_if_fail (class->dup_uids != NULL, NULL);
 
-	return class->get_uids (folder);
+	return class->dup_uids (folder);
 }
 
 /**

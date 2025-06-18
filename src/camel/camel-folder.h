@@ -165,7 +165,7 @@ struct _CamelFolderClass {
 						 const gchar *uid,
 						 const gchar *name,
 						 const gchar *value);
-	GPtrArray *	(*get_uids)		(CamelFolder *folder);
+	GPtrArray *	(*dup_uids)		(CamelFolder *folder);
 	gint		(*cmp_uids)		(CamelFolder *folder,
 						 const gchar *uid1,
 						 const gchar *uid2);
@@ -358,7 +358,7 @@ GPtrArray *	camel_folder_get_summary	(CamelFolder *folder);
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_SEEN, \
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_SEEN))
 
-GPtrArray *	camel_folder_get_uids		(CamelFolder *folder);
+GPtrArray *	camel_folder_dup_uids		(CamelFolder *folder);
 GPtrArray *	camel_folder_get_uncached_uids	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 GError **error);

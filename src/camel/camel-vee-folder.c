@@ -1037,7 +1037,7 @@ vee_folder_search_sync (CamelFolder *folder,
 	g_return_val_if_fail (out_uids != NULL, FALSE);
 
 	if (!expression || !*expression || g_strcmp0 (expression, "#t") == 0) {
-		*out_uids = camel_folder_get_uids (folder);
+		*out_uids = camel_folder_dup_uids (folder);
 	} else {
 		CamelVeeFolder *vfolder;
 
@@ -1046,7 +1046,7 @@ vee_folder_search_sync (CamelFolder *folder,
 		if (success) {
 			success = camel_vee_folder_set_expression_sync (vfolder, expression, CAMEL_VEE_FOLDER_OP_FLAG_NONE, cancellable, error);
 			if (success)
-				*out_uids = camel_folder_get_uids (CAMEL_FOLDER (vfolder));
+				*out_uids = camel_folder_dup_uids (CAMEL_FOLDER (vfolder));
 		}
 
 		g_clear_object (&vfolder);

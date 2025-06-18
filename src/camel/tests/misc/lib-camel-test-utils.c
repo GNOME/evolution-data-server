@@ -451,7 +451,7 @@ test_folder_synchronize_sync (CamelFolder *folder,
 		if (!camel_folder_summary_get_deleted_count (summary))
 			return TRUE;
 
-		all_uids = camel_folder_get_uids (folder);
+		all_uids = camel_folder_dup_uids (folder);
 		if (!all_uids)
 			return TRUE;
 

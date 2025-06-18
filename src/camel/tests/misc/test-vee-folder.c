@@ -350,7 +350,7 @@ test_vee_folder_check_uids (gpointer fldr,
 
 	va_end (ap);
 
-	uids = camel_folder_get_uids (folder);
+	uids = camel_folder_dup_uids (folder);
 	if (!uids) {
 		g_assert_cmpuint (g_hash_table_size (expected), ==, 0);
 		g_hash_table_destroy (expected);
@@ -1251,7 +1251,7 @@ test_vee_folder_same_uids (void)
 	test_session_wait_for_pending_jobs ();
 	test_vee_folder_check_uids (vf3, "31", "00", NULL);
 
-	uids = camel_folder_get_uids (CAMEL_FOLDER (vf2));
+	uids = camel_folder_dup_uids (CAMEL_FOLDER (vf2));
 	g_assert_nonnull (uids);
 	g_assert_cmpuint (uids->len, ==, 2);
 	test_vee_folder_fill_vuid (vuid, f1, "00");
@@ -1260,7 +1260,7 @@ test_vee_folder_same_uids (void)
 	g_assert_true (g_ptr_array_find_with_equal_func (uids, vuid, g_str_equal, NULL));
 	g_clear_pointer (&uids, g_ptr_array_unref);
 
-	uids = camel_folder_get_uids (CAMEL_FOLDER (vf1));
+	uids = camel_folder_dup_uids (CAMEL_FOLDER (vf1));
 	g_assert_nonnull (uids);
 	g_assert_cmpuint (uids->len, ==, 3);
 	test_vee_folder_fill_vuid (vuid, f1, "00");

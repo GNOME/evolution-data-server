@@ -416,7 +416,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 				uids ? uids->len : -1, expression);
 		}
 	} else {
-		uids = camel_folder_get_uids (folder);
+		uids = camel_folder_dup_uids (folder);
 
 		if (camel_debug ("downsync")) {
 			printf ("[downsync]       %p: (%s : %s): got all %d uids\n", camel_folder_get_parent_store (folder),

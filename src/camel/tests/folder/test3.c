@@ -250,7 +250,7 @@ main (gint argc,
 			pull ();
 
 			push ("Setting up some flags &c");
-			uids = camel_folder_get_uids (folder);
+			uids = camel_folder_dup_uids (folder);
 			check (uids->len == 100);
 			for (j = 0; j < 100; j++) {
 				uid = uids->pdata[j];
@@ -292,7 +292,7 @@ main (gint argc,
 			pull ();
 
 			push ("deleting every 2nd message");
-			uids = camel_folder_get_uids (folder);
+			uids = camel_folder_dup_uids (folder);
 			check (uids->len == 100);
 			for (j = 0; j < uids->len; j+=2) {
 				camel_folder_delete_message (folder, uids->pdata[j]);
@@ -328,7 +328,7 @@ main (gint argc,
 			g_clear_error (&error);
 
 			push ("deleting remaining messages");
-			uids = camel_folder_get_uids (folder);
+			uids = camel_folder_dup_uids (folder);
 			check (uids->len == 50);
 			for (j = 0; j < uids->len; j++) {
 				camel_folder_delete_message (folder, uids->pdata[j]);

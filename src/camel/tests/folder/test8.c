@@ -207,7 +207,7 @@ gint main (gint argc, gchar **argv)
 			pull ();
 
 			push ("deleting remaining messages");
-			uids = camel_folder_get_uids (folder);
+			uids = camel_folder_dup_uids (folder);
 			for (i = 0; i < uids->len; i++) {
 				camel_folder_delete_message (folder, uids->pdata[i]);
 			}

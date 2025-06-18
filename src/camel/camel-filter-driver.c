@@ -1876,7 +1876,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	store_uid = camel_service_get_uid (CAMEL_SERVICE (parent_store));
 
 	if (uids == NULL) {
-		uids = camel_folder_get_uids (folder);
+		uids = camel_folder_dup_uids (folder);
 		freeuids = TRUE;
 	}
 

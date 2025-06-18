@@ -44,7 +44,7 @@ test_folder_counts (CamelFolder *folder,
 	g_clear_pointer (&s, g_ptr_array_unref);
 
 	/* use the uid list */
-	s = camel_folder_get_uids (folder);
+	s = camel_folder_dup_uids (folder);
 	check (s != NULL);
 	check (s->len == total);
 	myunread = s->len;
@@ -134,7 +134,7 @@ test_folder_message (CamelFolder *folder,
 	g_clear_pointer (&s, g_ptr_array_unref);
 
 	/* check it is in the uid list */
-	s = camel_folder_get_uids (folder);
+	s = camel_folder_dup_uids (folder);
 	check (s != NULL);
 	found = 0;
 	for (i = 0; i < s->len; i++) {
@@ -193,7 +193,7 @@ test_folder_not_message (CamelFolder *folder,
 
 	/* check it is not in the uid list */
 	push ("not in uid list");
-	s = camel_folder_get_uids (folder);
+	s = camel_folder_dup_uids (folder);
 	check (s != NULL);
 	found = 0;
 	for (i = 0; i < s->len; i++) {
@@ -448,7 +448,7 @@ test_folder_message_ops (CamelSession *session,
 			  camel_test_fatal ();*/
 
 			push ("checking it is in the right uid slot & exists");
-			uids = camel_folder_get_uids (folder);
+			uids = camel_folder_dup_uids (folder);
 			check (uids != NULL);
 			check (uids->len == j + 1);
 			if (uids->len > j)
@@ -501,7 +501,7 @@ test_folder_message_ops (CamelSession *session,
 		test_folder_counts (folder, 10, 10);
 
 		/* re-check uid's, after a reload */
-		uids = camel_folder_get_uids (folder);
+		uids = camel_folder_dup_uids (folder);
 		check (uids != NULL);
 		check (uids->len == 10);
 		for (j = 0; j < 10; j++) {
@@ -530,7 +530,7 @@ test_folder_message_ops (CamelSession *session,
 
 		g_clear_pointer (&uids, g_ptr_array_unref);
 
-		uids = camel_folder_get_uids (folder);
+		uids = camel_folder_dup_uids (folder);
 		check (uids != NULL);
 		check (uids->len == 9);
 		for (j = 0; j < 9; j++) {
@@ -561,7 +561,7 @@ test_folder_message_ops (CamelSession *session,
 
 		g_clear_pointer (&uids, g_ptr_array_unref);
 
-		uids = camel_folder_get_uids (folder);
+		uids = camel_folder_dup_uids (folder);
 		check (uids != NULL);
 		check (uids->len == 8);
 		for (j = 0; j < 8; j++) {
