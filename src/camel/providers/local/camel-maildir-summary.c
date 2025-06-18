@@ -645,7 +645,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
-	known_uids = camel_folder_summary_get_array (s);
+	known_uids = camel_folder_summary_dup_uids (s);
 	forceindex = !known_uids || known_uids->len == 0;
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		const gchar *uid = g_ptr_array_index (known_uids, i);
@@ -855,7 +855,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 
 	camel_operation_push_message (cancellable, _("Storing folder"));
 
-	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
+	known_uids = camel_folder_summary_dup_uids ((CamelFolderSummary *) cls);
 	for (i = (known_uids ? known_uids->len : 0) - 1; i >= 0; i--) {
 		const gchar *uid = g_ptr_array_index (known_uids, i);
 		guint32 flags = 0;

@@ -566,7 +566,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	/* Need to work out what to do with our messages */
 
 	/* Check for messages no longer on the server */
-	known_uids = camel_folder_summary_get_array (s);
+	known_uids = camel_folder_summary_dup_uids (s);
 	if (known_uids) {
 		GPtrArray *removed = NULL;
 

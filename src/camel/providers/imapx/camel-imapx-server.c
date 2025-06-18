@@ -4858,7 +4858,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 			if (summary) {
 				GPtrArray *array;
 
-				array = camel_folder_summary_get_array (summary);
+				array = camel_folder_summary_dup_uids (summary);
 				if (array) {
 					GSList *slink;
 					GPtrArray *removed_uids = NULL;
@@ -5850,7 +5850,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		   added new messages into the folder meanwhile, like with a COPY/MOVE filter;
 		   such new messages would be considered removed, because not being part
 		   of the 'known_uids' hash table. */
-		summary_uids = camel_folder_summary_get_array (CAMEL_FOLDER_SUMMARY (imapx_summary));
+		summary_uids = camel_folder_summary_dup_uids (CAMEL_FOLDER_SUMMARY (imapx_summary));
 	}
 
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);

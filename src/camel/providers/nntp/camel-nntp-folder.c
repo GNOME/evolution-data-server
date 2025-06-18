@@ -431,7 +431,7 @@ nntp_folder_expunge_sync (CamelFolder *folder,
 	summary = camel_folder_get_folder_summary (folder);
 
 	camel_folder_summary_prepare_fetch_all (summary, NULL);
-	known_uids = camel_folder_summary_get_array (summary);
+	known_uids = camel_folder_summary_dup_uids (summary);
 
 	if (known_uids == NULL)
 		return TRUE;

@@ -443,7 +443,7 @@ camel_imapx_dup_uid_from_summary_index (CamelFolder *folder,
 	summary = camel_folder_get_folder_summary (folder);
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	array = camel_folder_summary_get_array (summary);
+	array = camel_folder_summary_dup_uids (summary);
 	g_return_val_if_fail (array != NULL, NULL);
 
 	if (summary_index < array->len) {
@@ -2829,7 +2829,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 	imapx_summary = CAMEL_IMAPX_SUMMARY (camel_folder_get_folder_summary (folder));
 
-	summary_array = camel_folder_summary_get_array (CAMEL_FOLDER_SUMMARY (imapx_summary));
+	summary_array = camel_folder_summary_dup_uids (CAMEL_FOLDER_SUMMARY (imapx_summary));
 	g_return_val_if_fail (summary_array != NULL, FALSE);
 
 	camel_folder_sort_uids (folder, summary_array);

@@ -408,7 +408,7 @@ summary_update (CamelLocalSummary *cls,
 	 * If we're not starting from the start, we must be starting
 	 * from the old end, so everything must be treated as new */
 	camel_folder_summary_prepare_fetch_all (s, NULL);
-	known_uids = camel_folder_summary_get_array (s);
+	known_uids = camel_folder_summary_dup_uids (s);
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		mi = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 		camel_message_info_set_flags (mi, CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOTSEEN, offset == 0 ? CAMEL_MESSAGE_FOLDER_NOTSEEN : 0);
@@ -438,7 +438,7 @@ summary_update (CamelLocalSummary *cls,
 
 	g_object_unref (mp);
 
-	known_uids = camel_folder_summary_get_array (s);
+	known_uids = camel_folder_summary_dup_uids (s);
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		const gchar *uid;
 
@@ -527,7 +527,7 @@ mbox_summary_check (CamelLocalSummary *cls,
 		/* empty?  No need to scan at all */
 		d (printf ("Empty mbox, clearing summary\n"));
 		camel_folder_summary_prepare_fetch_all (s, NULL);
-		known_uids = camel_folder_summary_get_array (s);
+		known_uids = camel_folder_summary_dup_uids (s);
 		for (i = 0; known_uids && i < known_uids->len; i++) {
 			CamelMessageInfo *info = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 
@@ -1044,7 +1044,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 	camel_mime_parser_init_with_fd (mp, fd);
 
 	camel_folder_summary_prepare_fetch_all (s, NULL);
-	known_uids = camel_folder_summary_get_array (s);
+	known_uids = camel_folder_summary_dup_uids (s);
 	/* walk them in the same order as stored in the file */
 	if (known_uids && known_uids->len)
 		g_ptr_array_sort_with_data (known_uids, cms_sort_frompos, mbs);

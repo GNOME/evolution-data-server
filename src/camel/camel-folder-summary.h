@@ -230,7 +230,7 @@ CamelMessageInfo *
 guint32		camel_folder_summary_get_info_flags
 						(CamelFolderSummary *summary,
 						 const gchar *uid);
-GPtrArray *	camel_folder_summary_get_array	(CamelFolderSummary *summary);
+GPtrArray *	camel_folder_summary_dup_uids	(CamelFolderSummary *summary);
 
 GHashTable *	camel_folder_summary_get_hash	(CamelFolderSummary *summary);
 

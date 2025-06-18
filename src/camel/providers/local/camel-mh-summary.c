@@ -237,7 +237,7 @@ mh_summary_check (CamelLocalSummary *cls,
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new (g_str_hash, g_str_equal);
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
-	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
+	known_uids = camel_folder_summary_dup_uids ((CamelFolderSummary *) cls);
 	forceindex = !known_uids || known_uids->len == 0;
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
@@ -314,7 +314,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 	/* FIXME: need to update/honour .mh_sequences or whatever it is */
 
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
-	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
+	known_uids = camel_folder_summary_dup_uids ((CamelFolderSummary *) cls);
 	for (i = (known_uids ? known_uids->len : 0) - 1; i >= 0; i--) {
 		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
 		g_return_val_if_fail (info, -1);

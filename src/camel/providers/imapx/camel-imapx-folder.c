@@ -435,7 +435,7 @@ imapx_expunge_sync (CamelFolder *folder,
 			camel_folder_summary_lock (folder_summary);
 
 			camel_folder_summary_prepare_fetch_all (folder_summary, NULL);
-			known_uids = camel_folder_summary_get_array (folder_summary);
+			known_uids = camel_folder_summary_dup_uids (folder_summary);
 
 			/* it's a real trash folder, thus delete all mails from there */
 			for (ii = 0; known_uids && ii < known_uids->len; ii++) {
@@ -1549,7 +1549,7 @@ camel_imapx_folder_copy_message_map (CamelIMAPXFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
 
 	summary = camel_folder_get_folder_summary (CAMEL_FOLDER (folder));
-	array = camel_folder_summary_get_array (summary);
+	array = camel_folder_summary_dup_uids (summary);
 	camel_folder_sort_uids (CAMEL_FOLDER (folder), array);
 
 	message_map = g_sequence_new (NULL);
@@ -1716,7 +1716,7 @@ camel_imapx_folder_invalidate_local_cache (CamelIMAPXFolder *folder,
 	summary = camel_folder_get_folder_summary (CAMEL_FOLDER (folder));
 
 	changes = camel_folder_change_info_new ();
-	array = camel_folder_summary_get_array (summary);
+	array = camel_folder_summary_dup_uids (summary);
 
 	for (ii = 0; ii < array->len; ii++) {
 		const gchar *uid = array->pdata[ii];

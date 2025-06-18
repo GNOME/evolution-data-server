@@ -301,7 +301,7 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		GPtrArray *known_uids;
 		struct _stat_info stats = { 0 };
 
-		known_uids = camel_folder_summary_get_array (s);
+		known_uids = camel_folder_summary_dup_uids (s);
 		for (i = 0; known_uids && i < known_uids->len; i++) {
 			CamelMessageInfo *info = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 			do_stat_mi (cls, &stats, info);

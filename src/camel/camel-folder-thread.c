@@ -870,7 +870,7 @@ camel_folder_thread_new (CamelFolder *folder,
 
 	/* prefer given order from the summary order */
 	if (!uids) {
-		fsummary = camel_folder_summary_get_array (camel_folder_get_folder_summary (folder));
+		fsummary = camel_folder_summary_dup_uids (camel_folder_get_folder_summary (folder));
 		uids = fsummary;
 	}
 

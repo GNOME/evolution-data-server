@@ -1269,20 +1269,20 @@ folder_summary_dupe_uids_to_array (gpointer key_uid,
 }
 
 /**
- * camel_folder_summary_get_array:
+ * camel_folder_summary_dup_uids:
  * @summary: a #CamelFolderSummary object
  *
- * Obtain a copy of the summary array.  This is done atomically,
- * so cannot contain empty entries.
+ * Obtain a copy of the stored messag einfor in the @summary as a #GPtrArray with
+ * the mesag einfo UID-s.
  *
- * Free with g_ptr_array_unref()
+ * Free the returned array with g_ptr_array_unref(), when no longer needed.
  *
- * Returns: (element-type utf8) (transfer container): a #GPtrArray of uids
+ * Returns: (element-type utf8) (transfer container): a new #GPtrArray of UID-s
  *
- * Since: 3.4
+ * Since: 3.58
  **/
 GPtrArray *
-camel_folder_summary_get_array (CamelFolderSummary *summary)
+camel_folder_summary_dup_uids (CamelFolderSummary *summary)
 {
 	GPtrArray *res;
 

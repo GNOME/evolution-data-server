@@ -993,7 +993,7 @@ folder_get_uids (CamelFolder *folder)
 {
 	g_return_val_if_fail (folder->priv->summary != NULL, NULL);
 
-	return camel_folder_summary_get_array (folder->priv->summary);
+	return camel_folder_summary_dup_uids (folder->priv->summary);
 }
 
 static GPtrArray *
@@ -1039,7 +1039,7 @@ folder_get_summary (CamelFolder *folder)
 {
 	g_return_val_if_fail (folder->priv->summary != NULL, NULL);
 
-	return camel_folder_summary_get_array (folder->priv->summary);
+	return camel_folder_summary_dup_uids (folder->priv->summary);
 }
 
 static gboolean
