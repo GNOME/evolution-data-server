@@ -233,50 +233,6 @@ camel_offline_settings_set_stay_synchronized (CamelOfflineSettings *settings,
 }
 
 /**
- * camel_offline_settings_get_store_changes_interval:
- * @settings: a #CamelOfflineSettings
- *
- * Returns the interval, in seconds, for the changes in the folder being
- * saved automatically. 0 means immediately, while -1 means turning off
- * automatic folder change saving.
- *
- * Returns: the interval for automatic store of folder changes
- *
- * Since: 3.18
- *
- * Deprecated: 3.40: Use camel_store_settings_get_store_changes_interval() instead
- **/
-gint
-camel_offline_settings_get_store_changes_interval (CamelOfflineSettings *settings)
-{
-	g_return_val_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings), -1);
-
-	return camel_store_settings_get_store_changes_interval (CAMEL_STORE_SETTINGS (settings));
-}
-
-/**
- * camel_offline_settings_set_store_changes_interval:
- * @settings: a #CamelOfflineSettings
- * @interval: the interval, in seconds
- *
- * Sets the interval, in seconds, for the changes in the folder being
- * saved automatically. 0 means immediately, while -1 means turning off
- * automatic folder change saving.
- *
- * Since: 3.18
- *
- * Deprecated: 3.40: Use camel_store_settings_set_store_changes_interval() instead
- **/
-void
-camel_offline_settings_set_store_changes_interval (CamelOfflineSettings *settings,
-						   gint interval)
-{
-	g_return_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings));
-
-	camel_store_settings_set_store_changes_interval (CAMEL_STORE_SETTINGS (settings), interval);
-}
-
-/**
  * camel_offline_settings_get_limit_by_age:
  * @settings: a #CamelOfflineSettings
  *
