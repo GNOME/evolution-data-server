@@ -90,7 +90,7 @@ camel_nntp_store_summary_new (void)
  * Retrieve a summary item by full name.
  *
  * The returned #CamelNNTPStoreInfo is referenced for thread-safety and should
- * be unreferenced with camel_store_summary_info_unref() when finished with it.
+ * be unreferenced with camel_store_info_unref() when finished with it.
  *
  * Returns: (transfer full) (nullable): The summary item, or %NULL if the @full_name name
  *    is not available.
@@ -111,14 +111,12 @@ camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s,
 		info = g_ptr_array_index (array, ii);
 
 		if (g_str_equal (info->full_name, full_name)) {
-			match = camel_store_summary_info_ref (
-				CAMEL_STORE_SUMMARY (s),
-				(CamelStoreInfo *) info);
+			match = camel_store_info_ref ((CamelStoreInfo *) info);
 			break;
 		}
 	}
 
-	camel_store_summary_array_free (CAMEL_STORE_SUMMARY (s), array);
+	g_ptr_array_unref (array);
 
 	return (CamelNNTPStoreInfo *) match;
 }
@@ -190,7 +188,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
 		f = g_strdup (((CamelNNTPStoreInfo *) si)->full_name);
-		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
+		camel_store_info_unref (si);
 		return f;
 	}
 
@@ -229,7 +227,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 	if (si) {
 		full = g_strdup_printf ("%s%s", ((CamelNNTPStoreInfo *) si)->full_name, f);
 		g_free (f);
-		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
+		camel_store_info_unref (si);
 		f = full;
 	}
 
@@ -256,7 +254,7 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 
 	info = camel_nntp_store_summary_full_name (s, full_name);
 	if (info) {
-		camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+		camel_store_info_unref ((CamelStoreInfo *) info);
 		d (printf ("  already there\n"));
 		return info;
 	}
@@ -323,13 +321,13 @@ store_info_load (CamelStoreSummary *s,
 	ni = (CamelNNTPStoreInfo *) CAMEL_STORE_SUMMARY_CLASS (camel_nntp_store_summary_parent_class)->store_info_load (s, in);
 	if (ni) {
 		if (camel_file_util_decode_string (in, &ni->full_name) == -1) {
-			camel_store_summary_info_unref (s, (CamelStoreInfo *) ni);
+			camel_store_info_unref ((CamelStoreInfo *) ni);
 			return NULL;
 		}
 		if (((CamelNNTPStoreSummary *) s)->version >= CAMEL_NNTP_STORE_SUMMARY_VERSION_1) {
 			if (camel_file_util_decode_uint32 (in, &ni->first) == -1
 			    || camel_file_util_decode_uint32 (in, &ni->last) == -1) {
-				camel_store_summary_info_unref (s, (CamelStoreInfo *) ni);
+				camel_store_info_unref ((CamelStoreInfo *) ni);
 				return NULL;
 			}
 		}

@@ -788,7 +788,7 @@ nntp_store_info_update (CamelNNTPStore *nntp_store,
 	si->first = first;
 
 	if (fsi != NULL)
-		camel_store_summary_info_unref (store_summary, &fsi->info);
+		camel_store_info_unref (&fsi->info);
 	else /* TODO see if we really did touch it */
 		camel_store_summary_touch (store_summary);
 
@@ -881,7 +881,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *nntp_store,
 		last = fi;
 	}
 
-	camel_store_summary_array_free (store_summary, array);
+	g_ptr_array_unref (array);
 
 	g_clear_object (&nntp_store_summary);
 
@@ -1114,7 +1114,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 		}
 	}
 
-	camel_store_summary_array_free (store_summary, array);
+	g_ptr_array_unref (array);
 
 	g_hash_table_destroy (known);
 
@@ -1252,11 +1252,10 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 
 			for (ii = 0; ii < array->len; ii++) {
 				si = g_ptr_array_index (array, ii);
-				camel_store_summary_info_ref (store_summary, si);
-				g_hash_table_insert (all, si->path, si);
+				g_hash_table_insert (all, si->path, camel_store_info_ref (si));
 			}
 
-			camel_store_summary_array_free (store_summary, array);
+			g_ptr_array_unref (array);
 
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0) {
 				si = nntp_store_info_update (nntp_store, (gchar *) line, is_folder_list);
@@ -1570,7 +1569,7 @@ nntp_store_folder_is_subscribed (CamelSubscribable *subscribable,
 
 	if (si != NULL) {
 		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_unref (store_summary, si);
+		camel_store_info_unref (si);
 	}
 
 	g_clear_object (&nntp_store_summary);
@@ -1637,7 +1636,7 @@ nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 			camel_folder_info_free (fi);
 		}
 
-		camel_store_summary_info_unref (store_summary, si);
+		camel_store_info_unref (si);
 	}
 
 	g_clear_object (&nntp_store_summary);
@@ -1700,7 +1699,7 @@ nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 			camel_folder_info_free (fi);
 		}
 
-		camel_store_summary_info_unref (store_summary, si);
+		camel_store_info_unref (si);
 	}
 
 	g_clear_object (&nntp_store_summary);

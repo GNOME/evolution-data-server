@@ -6589,7 +6589,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					camel_store_summary_touch (CAMEL_IMAPX_STORE (parent_store)->summary);
 				}
 
-				camel_store_summary_info_unref (CAMEL_IMAPX_STORE (parent_store)->summary, si);
+				camel_store_info_unref (si);
 			}
 		}
 	}

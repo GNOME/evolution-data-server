@@ -678,8 +678,7 @@ update:
 			camel_store_summary_touch (store_summary);
 			camel_store_summary_save (store_summary);
 		}
-		camel_store_summary_info_unref (
-			store_summary, (CamelStoreInfo *) si);
+		camel_store_info_unref ((CamelStoreInfo *) si);
 
 	} else if (folder != NULL) {
 		g_warning ("Group '%s' not present in summary", folder);

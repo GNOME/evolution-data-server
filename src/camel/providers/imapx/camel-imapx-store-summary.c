@@ -173,19 +173,19 @@ imapx_store_summary_store_info_load (CamelStoreSummary *summary,
 		return NULL;
 
 	if (camel_file_util_decode_string (in, &separator) == -1) {
-		camel_store_summary_info_unref (summary, si);
+		camel_store_info_unref (si);
 		return NULL;
 	}
 
 	if (camel_file_util_decode_string (in, &mailbox_name) == -1) {
-		camel_store_summary_info_unref (summary, si);
+		camel_store_info_unref (si);
 		g_free (separator);
 		return NULL;
 	}
 
 	if (priv->saved_version >= 2 &&
 	    camel_file_util_decode_fixed_int32 (in, &in_personal_namespace) == -1) {
-		camel_store_summary_info_unref (summary, si);
+		camel_store_info_unref (si);
 		g_free (mailbox_name);
 		g_free (separator);
 		return NULL;
@@ -285,10 +285,10 @@ camel_imapx_store_summary_init (CamelIMAPXStoreSummary *summary)
  * Retrieve a summary item by mailbox name.
  *
  * The returned #CamelIMAPXStoreInfo is referenced for thread-safety
- * and should be unreferenced with camel_store_summary_info_unref()
+ * and should be unreferenced with camel_store_info_unref()
  * when finished with it.
  *
- * Returns: (nullable): a #CamelIMAPXStoreInfo, or %NULL
+ * Returns: (nullable) (transfer full): a #CamelIMAPXStoreInfo, or %NULL
  **/
 CamelIMAPXStoreInfo *
 camel_imapx_store_summary_mailbox (CamelStoreSummary *summary,
@@ -314,25 +314,23 @@ camel_imapx_store_summary_mailbox (CamelStoreSummary *summary,
 		is_inbox = camel_imapx_mailbox_is_inbox (info->mailbox_name);
 
 		if (find_inbox && is_inbox) {
-			match = camel_store_summary_info_ref (
-				summary, (CamelStoreInfo *) info);
+			match = camel_store_info_ref ((CamelStoreInfo *) info);
 			break;
 		}
 
 		if (g_str_equal (info->mailbox_name, mailbox_name)) {
-			match = camel_store_summary_info_ref (
-				summary, (CamelStoreInfo *) info);
+			match = camel_store_info_ref ((CamelStoreInfo *) info);
 			break;
 		}
 	}
 
-	camel_store_summary_array_free (summary, array);
+	g_ptr_array_unref (array);
 
 	return (CamelIMAPXStoreInfo *) match;
 }
 
 /* The returned CamelIMAPXStoreInfo is referenced, unref it with
-   camel_store_summary_info_unref() when no longer needed */
+   camel_store_info_unref() when no longer needed */
 CamelIMAPXStoreInfo *
 camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
                                             CamelIMAPXMailbox *mailbox)
@@ -370,7 +368,7 @@ camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
 
 	g_return_val_if_fail (info != NULL, NULL);
 
-	camel_store_summary_info_ref (summary, (CamelStoreInfo *) info);
+	camel_store_info_ref ((CamelStoreInfo *) info);
 
 	info->mailbox_name = g_strdup (mailbox_name);
 	info->separator = separator;

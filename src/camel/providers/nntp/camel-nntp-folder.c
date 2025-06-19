@@ -824,8 +824,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	if (si != NULL) {
 		subscribed =
 			(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_unref (
-			CAMEL_STORE_SUMMARY (nntp_store_summary), si);
+		camel_store_info_unref (si);
 	}
 
 	camel_store_summary_connect_folder_summary (

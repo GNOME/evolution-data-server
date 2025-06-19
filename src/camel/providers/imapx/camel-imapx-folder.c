@@ -1481,7 +1481,7 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	imapx_store_info = (CamelIMAPXStoreInfo *) store_info;
 	mailbox_name = g_strdup (imapx_store_info->mailbox_name);
 
-	camel_store_summary_info_unref (imapx_store->summary, store_info);
+	camel_store_info_unref (store_info);
 
 	/* See if the CamelIMAPXStore already has the mailbox. */
 

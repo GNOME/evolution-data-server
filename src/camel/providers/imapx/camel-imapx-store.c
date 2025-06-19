@@ -395,7 +395,7 @@ imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
 		gchar *new_mailbox_name;
 
 		si = g_ptr_array_index (array, ii);
-		path = camel_store_info_path (imapx_store->summary, si);
+		path = camel_store_info_get_path (si);
 
 		/* We need to adjust not only the entry for the renamed
 		 * folder, but also the entries for all the descendants
@@ -410,9 +410,7 @@ imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
 		else
 			new_path = g_strdup (new_folder_path);
 
-		camel_store_info_set_string (
-			imapx_store->summary, si,
-			CAMEL_STORE_INFO_PATH, new_path);
+		camel_store_info_set_value (si, CAMEL_STORE_INFO_PATH, new_path);
 
 		imapx_si = (CamelIMAPXStoreInfo *) si;
 		g_warn_if_fail (imapx_si->separator != '\0');
@@ -430,7 +428,7 @@ imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
 		g_free (new_path);
 	}
 
-	camel_store_summary_array_free (imapx_store->summary, array);
+	g_ptr_array_unref (array);
 }
 
 static void
@@ -659,7 +657,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	folder_path = camel_imapx_mailbox_to_folder_path (mailbox_name, separator);
 	fi = imapx_store_build_folder_info (store, folder_path, (CamelFolderInfoFlags) flags);
 
-	camel_store_summary_info_unref (store->summary, (CamelStoreInfo *) si);
+	camel_store_info_unref ((CamelStoreInfo *) si);
 
 	/* Figure out which signals to emit, if any. */
 	if (use_subscriptions || camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
@@ -1156,7 +1154,7 @@ get_folder_offline (CamelStore *store,
 	}
 
 	if (si)
-		camel_store_summary_info_unref (imapx_store->summary, si);
+		camel_store_info_unref (si);
 
 	return new_folder;
 }
@@ -1318,7 +1316,7 @@ get_folder_info_offline (CamelStore *store,
 		gboolean si_is_match;
 
 		si = g_ptr_array_index (array, ii);
-		folder_path = camel_store_info_path (imapx_store->summary, si);
+		folder_path = camel_store_info_get_path (si);
 		si_is_inbox = camel_imapx_mailbox_is_inbox (folder_path);
 
 		/* Filter by folder path. */
@@ -1404,7 +1402,7 @@ get_folder_info_offline (CamelStore *store,
 		g_ptr_array_add (folders, fi);
 	}
 
-	camel_store_summary_array_free (imapx_store->summary, array);
+	g_ptr_array_unref (array);
 
 	if (!*top && camel_imapx_settings_get_use_namespace (CAMEL_IMAPX_SETTINGS (settings))) {
 		str_namespace = camel_imapx_settings_dup_namespace (CAMEL_IMAPX_SETTINGS (settings));
@@ -1454,14 +1452,13 @@ collect_folder_info_for_list (CamelIMAPXStore *imapx_store,
 		imapx_store->summary, mailbox_name);
 	g_return_if_fail (si != NULL);
 
-	folder_path = camel_store_info_path (
-		imapx_store->summary, (CamelStoreInfo *) si);
+	folder_path = camel_store_info_get_path ((CamelStoreInfo *) si);
 	fi = imapx_store_build_folder_info (imapx_store, folder_path, 0);
 
 	/* Takes ownership of the CamelFolderInfo. */
 	g_hash_table_insert (folder_info_results, g_strdup (mailbox_name), fi);
 
-	camel_store_summary_info_unref (imapx_store->summary, (CamelStoreInfo *) si);
+	camel_store_info_unref ((CamelStoreInfo *) si);
 }
 
 static gboolean
@@ -1714,7 +1711,7 @@ imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 		const gchar *si_path;
 		gchar *dup_folder_path;
 
-		si_path = camel_store_info_path (imapx_store->summary, si);
+		si_path = camel_store_info_get_path (si);
 		dup_folder_path = g_strdup (si_path);
 
 		if (dup_folder_path != NULL) {
@@ -1724,7 +1721,7 @@ imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 			camel_store_summary_remove (imapx_store->summary, si);
 		}
 
-		camel_store_summary_info_unref (imapx_store->summary, si);
+		camel_store_info_unref (si);
 	}
 
 	return TRUE;
@@ -1866,7 +1863,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 			const gchar *si_path;
 
 			si = g_ptr_array_index (array, ii);
-			si_path = camel_store_info_path (imapx_store->summary, si);
+			si_path = camel_store_info_get_path (si);
 
 			if (imapx_store_mailbox_is_unknown (imapx_store, array, (CamelIMAPXStoreInfo *) si)) {
 				gchar *dup_folder_path = g_strdup (si_path);
@@ -1881,7 +1878,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 			}
 		}
 
-		camel_store_summary_array_free (imapx_store->summary, array);
+		g_ptr_array_unref (array);
 	}
 
 	camel_store_summary_save (imapx_store->summary);
@@ -2319,11 +2316,11 @@ imapx_store_create_folder_sync (CamelStore *store,
 
 	if (!si || (si->flags & CAMEL_STORE_INFO_FOLDER_NOSELECT) != 0) {
 		if (si)
-			camel_store_summary_info_unref (imapx_store->summary, si);
+			camel_store_info_unref (si);
 		goto check_namespace;
 	}
 
-	camel_store_summary_info_unref (imapx_store->summary, si);
+	camel_store_info_unref (si);
 
 	folder = camel_store_get_folder_sync (
 		store, parent_name, 0, cancellable, error);
@@ -3081,7 +3078,7 @@ imapx_store_folder_is_subscribed (CamelSubscribable *subscribable,
 	if (si != NULL) {
 		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
 			is_subscribed = TRUE;
-		camel_store_summary_info_unref (imapx_store->summary, si);
+		camel_store_info_unref (si);
 	}
 
 	return is_subscribed;

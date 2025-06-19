@@ -224,10 +224,10 @@ store_summary_store_info_free (CamelStoreSummary *summary,
 }
 
 static void
-store_summary_store_info_set_string (CamelStoreSummary *summary,
-                                     CamelStoreInfo *info,
-                                     gint type,
-                                     const gchar *str)
+store_summary_store_info_set_value (CamelStoreSummary *summary,
+                                    CamelStoreInfo *info,
+                                    gint type,
+                                    const gchar *str)
 {
 	switch (type) {
 	case CAMEL_STORE_INFO_PATH:
@@ -256,7 +256,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 	class->store_info_load = store_summary_store_info_load;
 	class->store_info_save = store_summary_store_info_save;
 	class->store_info_free = store_summary_store_info_free;
-	class->store_info_set_value = store_summary_store_info_set_string;
+	class->store_info_set_value = store_summary_store_info_set_value;
 }
 
 static void
@@ -350,26 +350,6 @@ camel_store_summary_array (CamelStoreSummary *summary)
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 
 	return res;
-}
-
-/**
- * camel_store_summary_array_free:
- * @summary: a #CamelStoreSummary object
- * @array: (element-type CamelStoreInfo) (transfer full): the summary array as gotten from
- * camel_store_summary_array()
- *
- * Free the folder summary array.
- *
- * Deprecated: 3.46: Use g_ptr_array_unref() directly.
- **/
-void
-camel_store_summary_array_free (CamelStoreSummary *summary,
-                                GPtrArray *array)
-{
-	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-	g_return_if_fail (array != NULL);
-
-	g_ptr_array_unref (array);
 }
 
 /**
@@ -633,47 +613,6 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 }
 
 /**
- * camel_store_summary_info_ref: (skip)
- * @summary: a #CamelStoreSummary object
- * @info: a #CamelStoreInfo
- *
- * Add an extra reference to @info.
- *
- * Returns: (transfer full): the @info argument
- *
- * Deprecated: 3.46: Use camel_store_info_ref() instead.
- **/
-CamelStoreInfo *
-camel_store_summary_info_ref (CamelStoreSummary *summary,
-                              CamelStoreInfo *info)
-{
-	g_return_val_if_fail (info != NULL, NULL);
-	g_return_val_if_fail (info->refcount > 0, NULL);
-
-	return camel_store_info_ref (info);
-}
-
-/**
- * camel_store_summary_info_unref:
- * @summary: a #CamelStoreSummary object
- * @info: (transfer full): a #CamelStoreInfo
- *
- * Unref and potentially free @info, and all associated memory.
- *
- * Deprecated: 3.46: Use camel_store_info_unref() instead.
- **/
-void
-camel_store_summary_info_unref (CamelStoreSummary *summary,
-                                CamelStoreInfo *info)
-{
-	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (info->refcount > 0);
-
-	camel_store_info_unref (info);
-}
-
-/**
  * camel_store_summary_touch:
  * @summary: a #CamelStoreSummary object
  *
@@ -799,29 +738,6 @@ camel_store_info_set_value (CamelStoreInfo *info,
 	g_rec_mutex_unlock (&info->summary->priv->summary_lock);
 }
 
-/**
- * camel_store_info_set_string:
- * @summary: a #CamelStoreSummary object
- * @info: a #CamelStoreInfo
- * @type: specific string being set
- * @value: string value to set
- *
- * Set a specific string on the @info.
- *
- * Deprecated: 3.46: Use camel_store_info_set_value() instead.
- **/
-void
-camel_store_info_set_string (CamelStoreSummary *summary,
-                             CamelStoreInfo *info,
-                             gint type,
-                             const gchar *value)
-{
-	g_return_if_fail (info != NULL);
-	g_warn_if_fail (info->summary == summary);
-
-	camel_store_info_set_value (info, type, value);
-}
-
 
 /**
  * camel_store_info_ref:
@@ -905,50 +821,6 @@ camel_store_info_get_name (CamelStoreInfo *info)
 	cp = strrchr (info->path, '/');
 
 	return (cp != NULL) ? cp + 1 : info->path;
-}
-
-/**
- * camel_store_info_path:
- * @summary: a #CamelStoreSummary
- * @info: a #CamelStoreInfo
- *
- * Returns the path string from @info.
- *
- * Returns: the path string from @info
- *
- * Deprecated: 3.46: Use camel_store_info_get_path() instead.
- **/
-const gchar *
-camel_store_info_path (CamelStoreSummary *summary,
-                       CamelStoreInfo *info)
-{
-	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
-	g_return_val_if_fail (info != NULL, NULL);
-
-	/* XXX Not thread-safe; should return a duplicate. */
-	return camel_store_info_get_path (info);
-}
-
-/**
- * camel_store_info_name:
- * @summary: a #CamelStoreSummary
- * @info: a #CamelStoreInfo
- *
- * Returns the last segment of the path string from @info.
- *
- * Returns: the last segment of the path string from @info
- *
- * Deprecated: 3.46: Use camel_store_info_get_name() instead.
- **/
-const gchar *
-camel_store_info_name (CamelStoreSummary *summary,
-                       CamelStoreInfo *info)
-{
-	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
-	g_return_val_if_fail (info != NULL, NULL);
-
-	/* XXX Not thread-safe; should return a duplicate. */
-	return camel_store_info_get_name (info);
 }
 
 /**
@@ -1050,7 +922,7 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
 		g_warn_if_reached ();
 	}
 
-	camel_store_summary_info_unref (summary, si);
+	camel_store_info_unref (si);
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
@@ -1092,7 +964,7 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
 		return FALSE;
 	}
 
-	camel_store_summary_info_unref (summary, si);
+	camel_store_info_unref (si);
 
 	if (g_hash_table_lookup (summary->priv->folder_summaries, folder_summary)) {
 		g_rec_mutex_unlock (&summary->priv->summary_lock);
