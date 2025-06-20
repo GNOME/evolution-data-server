@@ -128,7 +128,6 @@ typedef struct _CamelStorePrivate CamelStorePrivate;
  * CamelStoreGetFolderFlags:
  * @CAMEL_STORE_FOLDER_NONE: no flags
  * @CAMEL_STORE_FOLDER_CREATE: create the folder
- * @CAMEL_STORE_FOLDER_EXCL: deprecated, not honored
  * @CAMEL_STORE_FOLDER_BODY_INDEX: save the body index
  * @CAMEL_STORE_FOLDER_PRIVATE: a private folder that should not show up in
  *  unmatched, folder info's, etc.
@@ -138,9 +137,8 @@ typedef struct _CamelStorePrivate CamelStorePrivate;
 typedef enum {
 	CAMEL_STORE_FOLDER_NONE = 0,
 	CAMEL_STORE_FOLDER_CREATE = 1 << 0,
-	CAMEL_STORE_FOLDER_EXCL = 1 << 1,
-	CAMEL_STORE_FOLDER_BODY_INDEX = 1 << 2,
-	CAMEL_STORE_FOLDER_PRIVATE    = 1 << 3
+	CAMEL_STORE_FOLDER_BODY_INDEX = 1 << 1,
+	CAMEL_STORE_FOLDER_PRIVATE    = 1 << 2
 } CamelStoreGetFolderFlags;
 
 struct _CamelStore {
