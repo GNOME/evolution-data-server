@@ -33,8 +33,11 @@ enum {
 	PROP_0,
 	PROP_SERVER_FLAGS,
 	PROP_SERVER_USER_FLAGS,
-	PROP_SERVER_USER_TAGS
+	PROP_SERVER_USER_TAGS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXMessageInfo, camel_imapx_message_info, CAMEL_TYPE_MESSAGE_INFO_BASE)
 
@@ -278,17 +281,13 @@ camel_imapx_message_info_class_init (CamelIMAPXMessageInfoClass *class)
 	 *
 	 * Since: 3.24
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVER_FLAGS,
+	properties[PROP_SERVER_FLAGS] =
 		g_param_spec_uint (
-			"server-flags",
-			"Server Flags",
-			NULL,
+			"server-flags", NULL, NULL,
 			0, G_MAXUINT32, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelIMAPXMessageInfo:server-user-flags
@@ -298,17 +297,13 @@ camel_imapx_message_info_class_init (CamelIMAPXMessageInfoClass *class)
 	 *
 	 * Since: 3.24
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVER_USER_FLAGS,
+	properties[PROP_SERVER_USER_FLAGS] =
 		g_param_spec_boxed (
-			"server-user-flags",
-			"Server User Flags",
-			NULL,
+			"server-user-flags", NULL, NULL,
 			CAMEL_TYPE_NAMED_FLAGS,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelIMAPXMessageInfo:server-user-tags
@@ -318,17 +313,15 @@ camel_imapx_message_info_class_init (CamelIMAPXMessageInfoClass *class)
 	 *
 	 * Since: 3.24
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVER_USER_TAGS,
+	properties[PROP_SERVER_USER_TAGS] =
 		g_param_spec_boxed (
-			"server-user-tags",
-			"Server User tags",
-			NULL,
+			"server-user-tags", NULL, NULL,
 			CAMEL_TYPE_NAME_VALUE_ARRAY,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -374,7 +367,7 @@ camel_imapx_message_info_set_server_flags (CamelIMAPXMessageInfo *imi,
 	camel_message_info_property_unlock (mi);
 
 	if (changed && !camel_message_info_get_abort_notifications (mi)) {
-		g_object_notify (G_OBJECT (imi), "server-flags");
+		g_object_notify_by_pspec (G_OBJECT (imi), properties[PROP_SERVER_FLAGS]);
 		camel_message_info_set_dirty (mi, TRUE);
 	}
 
@@ -440,7 +433,7 @@ camel_imapx_message_info_take_server_user_flags (CamelIMAPXMessageInfo *imi,
 	camel_message_info_property_unlock (mi);
 
 	if (changed && !camel_message_info_get_abort_notifications (mi)) {
-		g_object_notify (G_OBJECT (imi), "server-user-flags");
+		g_object_notify_by_pspec (G_OBJECT (imi), properties[PROP_SERVER_USER_FLAGS]);
 		camel_message_info_set_dirty (mi, TRUE);
 	}
 
@@ -506,7 +499,7 @@ camel_imapx_message_info_take_server_user_tags (CamelIMAPXMessageInfo *imi,
 	camel_message_info_property_unlock (mi);
 
 	if (changed && !camel_message_info_get_abort_notifications (mi)) {
-		g_object_notify (G_OBJECT (imi), "server-user-tags");
+		g_object_notify_by_pspec (G_OBJECT (imi), properties[PROP_SERVER_USER_TAGS]);
 		camel_message_info_set_dirty (mi, TRUE);
 	}
 

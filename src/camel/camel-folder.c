@@ -1944,8 +1944,7 @@ camel_folder_get_parent_store (CamelFolder *folder)
  * camel_folder_get_folder_summary:
  * @folder: a #CamelFolder
  *
- * Get the #CamelFolderSummary if the backend actually supports it (mainly the POP backend
- * is the one that has no folder summary capabilities).
+ * Get the #CamelFolderSummary if the backend actually supports it.
  * The camel_folder_has_summary_capability() conveniently checks its availability.
  *
  * Returns: (transfer none) (nullable): a #CamelFolderSummary of the folder
