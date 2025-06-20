@@ -134,7 +134,8 @@ enum {
 	PROP_DELETED_COUNT,
 	PROP_JUNK_COUNT,
 	PROP_JUNK_NOT_DELETED_COUNT,
-	PROP_VISIBLE_COUNT
+	PROP_VISIBLE_COUNT,
+	N_PROPS
 };
 
 enum {
@@ -144,6 +145,8 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
@@ -429,25 +432,25 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 
 	if (deleted) {
 		summary->priv->deleted_count += deleted;
-		g_object_notify (summary_object, "deleted-count");
+		g_object_notify_by_pspec (summary_object, properties[PROP_DELETED_COUNT]);
 		changed = TRUE;
 	}
 
 	if (junk) {
 		summary->priv->junk_count += junk;
-		g_object_notify (summary_object, "junk-count");
+		g_object_notify_by_pspec (summary_object, properties[PROP_JUNK_COUNT]);
 		changed = TRUE;
 	}
 
 	if (junk && !deleted) {
 		summary->priv->junk_not_deleted_count += junk;
-		g_object_notify (summary_object, "junk-not-deleted-count");
+		g_object_notify_by_pspec (summary_object, properties[PROP_JUNK_NOT_DELETED_COUNT]);
 		changed = TRUE;
 	}
 
 	if (!junk && !deleted) {
 		summary->priv->visible_count += subtract ? -1 : 1;
-		g_object_notify (summary_object, "visible-count");
+		g_object_notify_by_pspec (summary_object, properties[PROP_VISIBLE_COUNT]);
 		changed = TRUE;
 	}
 
@@ -460,13 +463,13 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 		if (unread > 0 || summary->priv->unread_count)
 			summary->priv->unread_count += unread;
 
-		g_object_notify (summary_object, "unread-count");
+		g_object_notify_by_pspec (summary_object, properties[PROP_UNREAD_COUNT]);
 		changed = TRUE;
 	}
 
 	if (!without_total) {
 		summary->priv->saved_count += subtract ? -1 : 1;
-		g_object_notify (summary_object, "saved-count");
+		g_object_notify_by_pspec (summary_object, properties[PROP_SAVED_COUNT]);
 		changed = TRUE;
 	}
 
@@ -690,106 +693,81 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 	 *
 	 * The #CamelFolder to which the folder summary belongs.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_FOLDER,
+	properties[PROP_FOLDER] =
 		g_param_spec_object (
-			"folder",
-			"Folder",
-			"The folder to which the folder summary belongs",
+			"folder", NULL, NULL,
 			CAMEL_TYPE_FOLDER,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolderSummary:saved-count
 	 *
 	 * How many infos is saved in a summary.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_SAVED_COUNT,
+	properties[PROP_SAVED_COUNT] =
 		g_param_spec_uint (
-			"saved-count",
-			"Saved count",
-			"How many infos is savef in a summary",
+			"saved-count", NULL, NULL,
 			0,  G_MAXUINT32,
-			0, G_PARAM_READABLE));
+			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolderSummary:unread-count
 	 *
 	 * How many unread infos is saved in a summary.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_UNREAD_COUNT,
+	properties[PROP_UNREAD_COUNT] =
 		g_param_spec_uint (
-			"unread-count",
-			"Unread count",
-			"How many unread infos is saved in a summary",
-			0,  G_MAXUINT32,
-			0, G_PARAM_READABLE));
+			"unread-count", NULL, NULL,
+			0, G_MAXUINT32,
+			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolderSummary:deleted-count
 	 *
 	 * How many deleted infos is saved in a summary.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DELETED_COUNT,
+	properties[PROP_DELETED_COUNT] =
 		g_param_spec_uint (
-			"deleted-count",
-			"Deleted count",
-			"How many deleted infos is saved in a summary",
-			0,  G_MAXUINT32,
-			0, G_PARAM_READABLE));
+			"deleted-count", NULL, NULL,
+			0, G_MAXUINT32,
+			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolderSummary:junk-count
 	 *
 	 * How many junk infos is saved in a summary.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_JUNK_COUNT,
+	properties[PROP_JUNK_COUNT] =
 		g_param_spec_uint (
-			"junk-count",
-			"Junk count",
-			"How many junk infos is saved in a summary",
-			0,  G_MAXUINT32,
-			0, G_PARAM_READABLE));
+			"junk-count", NULL, NULL,
+			0, G_MAXUINT32,
+			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolderSummary:junk-not-deleted-count
 	 *
 	 * How many junk and not deleted infos is saved in a summary.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_JUNK_NOT_DELETED_COUNT,
+	properties[PROP_JUNK_NOT_DELETED_COUNT] =
 		g_param_spec_uint (
-			"junk-not-deleted-count",
-			"Junk not deleted count",
-			"How many junk and not deleted infos is saved in a summary",
-			0,  G_MAXUINT32,
-			0, G_PARAM_READABLE));
+			"junk-not-deleted-count", NULL, NULL,
+			0, G_MAXUINT32,
+			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolderSummary:visible-count
 	 *
 	 * How many visible (not deleted and not junk) infos is saved in a summary.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_VISIBLE_COUNT,
+	properties[PROP_VISIBLE_COUNT] =
 		g_param_spec_uint (
-			"visible-count",
-			"Visible count",
-			"How many visible (not deleted and not junk) infos is saved in a summary",
-			0,  G_MAXUINT32,
-			0, G_PARAM_READABLE));
+			"visible-count", NULL, NULL,
+			0, G_MAXUINT32,
+			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * CamelFolderSummary::prepare-fetch-all
@@ -2573,12 +2551,12 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 
 	summary_object = G_OBJECT (summary);
 	g_object_freeze_notify (summary_object);
-	g_object_notify (summary_object, "saved-count");
-	g_object_notify (summary_object, "unread-count");
-	g_object_notify (summary_object, "deleted-count");
-	g_object_notify (summary_object, "junk-count");
-	g_object_notify (summary_object, "junk-not-deleted-count");
-	g_object_notify (summary_object, "visible-count");
+	g_object_notify_by_pspec (summary_object, properties[PROP_SAVED_COUNT]);
+	g_object_notify_by_pspec (summary_object, properties[PROP_UNREAD_COUNT]);
+	g_object_notify_by_pspec (summary_object, properties[PROP_DELETED_COUNT]);
+	g_object_notify_by_pspec (summary_object, properties[PROP_JUNK_COUNT]);
+	g_object_notify_by_pspec (summary_object, properties[PROP_JUNK_NOT_DELETED_COUNT]);
+	g_object_notify_by_pspec (summary_object, properties[PROP_VISIBLE_COUNT]);
 	g_object_thaw_notify (summary_object);
 
 	camel_folder_summary_unlock (summary);
