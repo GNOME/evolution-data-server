@@ -632,7 +632,13 @@ test_store_new_full (CamelSession *session,
 		     const gchar *uid,
 		     const gchar *display_name)
 {
-	static const CamelProvider provider = { "none", "test-none", "Test provider", GETTEXT_PACKAGE, 0, };
+	static const CamelProvider provider = {
+		.protocol = "none",
+		.name = "test-none",
+		.description = "Test provider",
+		.domain = "mail",
+		.flags = 0,
+	};
 	CamelStoreDBFolderRecord record = {
 		.folder_name = NULL,
 		.version = 4,
