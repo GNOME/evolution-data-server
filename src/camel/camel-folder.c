@@ -900,94 +900,6 @@ folder_set_message_flags (CamelFolder *folder,
 	return res;
 }
 
-static gboolean
-folder_get_message_user_flag (CamelFolder *folder,
-                              const gchar *uid,
-                              const gchar *name)
-{
-	CamelMessageInfo *info;
-	gboolean ret;
-
-	g_return_val_if_fail (folder->priv->summary != NULL, FALSE);
-
-	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL)
-		return FALSE;
-
-	ret = camel_message_info_get_user_flag (info, name);
-	g_clear_object (&info);
-
-	return ret;
-}
-
-static void
-folder_set_message_user_flag (CamelFolder *folder,
-                              const gchar *uid,
-                              const gchar *name,
-                              gboolean value)
-{
-	CamelMessageInfo *info;
-
-	g_return_if_fail (folder->priv->summary != NULL);
-
-	camel_folder_summary_lock (folder->priv->summary);
-
-	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL) {
-		camel_folder_summary_unlock (folder->priv->summary);
-		return;
-	}
-
-	camel_message_info_set_user_flag (info, name, value);
-	g_clear_object (&info);
-
-	camel_folder_summary_unlock (folder->priv->summary);
-}
-
-static const gchar *
-folder_get_message_user_tag (CamelFolder *folder,
-                             const gchar *uid,
-                             const gchar *name)
-{
-	CamelMessageInfo *info;
-	const gchar *ret;
-
-	g_return_val_if_fail (folder->priv->summary != NULL, NULL);
-
-	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL)
-		return NULL;
-
-	ret = camel_message_info_get_user_tag (info, name);
-	g_clear_object (&info);
-
-	return ret;
-}
-
-static void
-folder_set_message_user_tag (CamelFolder *folder,
-                             const gchar *uid,
-                             const gchar *name,
-                             const gchar *value)
-{
-	CamelMessageInfo *info;
-
-	g_return_if_fail (folder->priv->summary != NULL);
-
-	camel_folder_summary_lock (folder->priv->summary);
-
-	info = camel_folder_summary_get (folder->priv->summary, uid);
-	if (info == NULL) {
-		camel_folder_summary_unlock (folder->priv->summary);
-		return;
-	}
-
-	camel_message_info_set_user_tag (info, name, value);
-	g_clear_object (&info);
-
-	camel_folder_summary_unlock (folder->priv->summary);
-}
-
 static GPtrArray *
 folder_dup_uids (CamelFolder *folder)
 {
@@ -1520,10 +1432,6 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->get_permanent_flags = folder_get_permanent_flags;
 	class->get_message_flags = folder_get_message_flags;
 	class->set_message_flags = folder_set_message_flags;
-	class->get_message_user_flag = folder_get_message_user_flag;
-	class->set_message_user_flag = folder_set_message_user_flag;
-	class->get_message_user_tag = folder_get_message_user_tag;
-	class->set_message_user_tag = folder_set_message_user_tag;
 	class->dup_uids = folder_dup_uids;
 	class->dup_uncached_uids = folder_dup_uncached_uids;
 	class->cmp_uids = folder_cmp_uids;
@@ -2106,40 +2014,6 @@ camel_folder_get_message_count (CamelFolder *folder)
 }
 
 /**
- * camel_folder_get_unread_message_count:
- * @folder: a #CamelFolder
- *
- * Deprecated: use camel_folder_summary_get_unread_count() instead.
- *
- * Returns: the number of unread messages in the folder, or -1 if
- * unknown
- **/
-gint
-camel_folder_get_unread_message_count (CamelFolder *folder)
-{
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
-	g_return_val_if_fail (folder->priv->summary != NULL, -1);
-
-	return camel_folder_summary_get_unread_count (folder->priv->summary);
-}
-
-/**
- * camel_folder_get_deleted_message_count:
- * @folder: a #CamelFolder
- *
- * Returns: the number of deleted messages in the folder, or -1 if
- * unknown
- **/
-gint
-camel_folder_get_deleted_message_count (CamelFolder *folder)
-{
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
-	g_return_val_if_fail (folder->priv->summary != NULL, -1);
-
-	return camel_folder_summary_get_deleted_count (folder->priv->summary);
-}
-
-/**
  * camel_folder_get_flags:
  * @folder: a #CamelFolder
  *
@@ -2335,132 +2209,6 @@ camel_folder_set_message_flags (CamelFolder *folder,
 	g_return_val_if_fail (class->set_message_flags != NULL, FALSE);
 
 	return class->set_message_flags (folder, uid, mask, set);
-}
-
-/**
- * camel_folder_get_message_user_flag:
- * @folder: a #CamelFolder
- * @uid: the UID of a message in @folder
- * @name: the name of a user flag
- *
- * DEPRECATED: Use camel_message_info_get_user_flag() on the message
- * info directly
- *
- * Returns: %TRUE if the given user flag is set on the message or
- * %FALSE otherwise
- **/
-gboolean
-camel_folder_get_message_user_flag (CamelFolder *folder,
-                                    const gchar *uid,
-                                    const gchar *name)
-{
-	CamelFolderClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
-	g_return_val_if_fail (uid != NULL, 0);
-	g_return_val_if_fail (name != NULL, 0);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class != NULL, 0);
-	g_return_val_if_fail (class->get_message_user_flag != NULL, 0);
-
-	return class->get_message_user_flag (folder, uid, name);
-}
-
-/**
- * camel_folder_set_message_user_flag:
- * @folder: a #CamelFolder
- * @uid: the UID of a message in @folder
- * @name: the name of the user flag to set
- * @value: the value to set it to
- *
- * DEPRECATED: Use camel_message_info_set_user_flag() on the
- * #CamelMessageInfo directly (when it works)
- *
- * Sets the user flag specified by @name to the value specified by @value
- * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See camel_folder_get_permanent_flags())
- **/
-void
-camel_folder_set_message_user_flag (CamelFolder *folder,
-                                    const gchar *uid,
-                                    const gchar *name,
-                                    gboolean value)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (uid != NULL);
-	g_return_if_fail (name != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->set_message_user_flag != NULL);
-
-	class->set_message_user_flag (folder, uid, name, value);
-}
-
-/**
- * camel_folder_get_message_user_tag:
- * @folder: a #CamelFolder
- * @uid: the UID of a message in @folder
- * @name: the name of a user tag
- *
- * DEPRECATED: Use camel_message_info_get_user_tag() on the
- * #CamelMessageInfo directly.
- *
- * Returns: the value of the user tag
- **/
-const gchar *
-camel_folder_get_message_user_tag (CamelFolder *folder,
-                                   const gchar *uid,
-                                   const gchar *name)
-{
-	CamelFolderClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-	g_return_val_if_fail (uid != NULL, NULL);
-	g_return_val_if_fail (name != NULL, NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->get_message_user_tag != NULL, NULL);
-
-	/* FIXME: should duplicate string */
-	return class->get_message_user_tag (folder, uid, name);
-}
-
-/**
- * camel_folder_set_message_user_tag:
- * @folder: a #CamelFolder
- * @uid: the UID of a message in @folder
- * @name: the name of the user tag to set
- * @value: the value to set it to
- *
- * DEPRECATED: Use camel_message_info_set_user_tag() on the
- * #CamelMessageInfo directly (when it works).
- *
- * Sets the user tag specified by @name to the value specified by @value
- * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See camel_folder_get_permanent_flags())
- **/
-void
-camel_folder_set_message_user_tag (CamelFolder *folder,
-                                   const gchar *uid,
-                                   const gchar *name,
-                                   const gchar *value)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (uid != NULL);
-	g_return_if_fail (name != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->set_message_user_tag != NULL);
-
-	class->set_message_user_tag (folder, uid, name, value);
 }
 
 /**

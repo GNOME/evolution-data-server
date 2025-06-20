@@ -191,8 +191,11 @@ fill_fi (CamelStore *store,
 	folder = camel_object_bag_peek (camel_store_get_folders_bag (store), fi->full_name);
 
 	if (folder != NULL) {
-		fi->unread = camel_folder_get_unread_message_count (folder);
-		fi->total = camel_folder_get_message_count (folder);
+		CamelFolderSummary *summary;
+
+		summary = camel_folder_get_folder_summary (folder);
+		fi->unread = camel_folder_summary_get_unread_count (summary);
+		fi->total = camel_folder_summary_count (summary);
 		g_object_unref (folder);
 	} else {
 		CamelLocalSettings *local_settings;

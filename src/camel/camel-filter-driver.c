@@ -883,9 +883,15 @@ do_label (struct _CamelSExp *f,
 			}
 		}
 
-		if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
-			camel_folder_set_message_user_flag (driver->priv->source, driver->priv->uid, label, TRUE);
-		else
+		if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source)) {
+			CamelMessageInfo *info;
+
+			info = camel_folder_get_message_info (driver->priv->source, driver->priv->uid);
+			if (info)
+				camel_message_info_set_user_flag (info, label, TRUE);
+
+			g_clear_object (&info);
+		} else
 			camel_message_info_set_user_flag (driver->priv->info, label, TRUE);
 		camel_filter_driver_log (
 			driver, FILTER_LOG_ACTION,
@@ -921,11 +927,16 @@ do_unset_label (struct _CamelSExp *f,
 			}
 
 			if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source)) {
-				if (camel_folder_get_message_user_flag (driver->priv->source, driver->priv->uid, label)) {
-					camel_folder_set_message_user_flag (driver->priv->source, driver->priv->uid, label, FALSE);
+				CamelMessageInfo *info;
+
+				info = camel_folder_get_message_info (driver->priv->source, driver->priv->uid);
+				if (info && camel_message_info_get_user_flag (info, label)) {
+					camel_message_info_set_user_flag (info, label, FALSE);
 					camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset label '%s'", label);
 					any_unset = TRUE;
 				}
+
+				g_clear_object (&info);
 			} else if (camel_message_info_get_user_flag (driver->priv->info, label)) {
 				camel_message_info_set_user_flag (driver->priv->info, label, FALSE);
 				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset label '%s'", label);
@@ -979,9 +990,15 @@ do_color (struct _CamelSExp *f,
 		if (color && !*color)
 			color = NULL;
 
-		if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source))
-			camel_folder_set_message_user_tag (driver->priv->source, driver->priv->uid, "color", color);
-		else
+		if (driver->priv->source && driver->priv->uid && camel_folder_has_summary_capability (driver->priv->source)) {
+			CamelMessageInfo *info;
+
+			info = camel_folder_get_message_info (driver->priv->source, driver->priv->uid);
+			if (info)
+				camel_message_info_set_user_tag (info, "color", color);
+
+			g_clear_object (&info);
+		} else
 			camel_message_info_set_user_tag (driver->priv->info, "color", color);
 		camel_filter_driver_log (
 			driver, FILTER_LOG_ACTION,

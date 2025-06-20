@@ -163,6 +163,7 @@ main (gint argc,
 	CamelSession *session;
 	CamelStore *store;
 	CamelFolder *folder;
+	CamelFolderSummary *summary;
 	CamelMimeMessage *msg;
 	gint i, j;
 	gint indexed;
@@ -250,24 +251,48 @@ main (gint argc,
 			pull ();
 
 			push ("Setting up some flags &c");
+			summary = camel_folder_get_folder_summary (folder);
+			check (CAMEL_IS_FOLDER_SUMMARY (summary));
+
 			uids = camel_folder_dup_uids (folder);
 			check (uids->len == 100);
 			for (j = 0; j < 100; j++) {
 				uid = uids->pdata[j];
 
 				if ((j / 13) * 13 == j) {
-					camel_folder_set_message_user_flag (folder, uid, "every13", TRUE);
+					CamelMessageInfo *info;
+
+					info = camel_folder_summary_get (summary, uid);
+					check (CAMEL_IS_MESSAGE_INFO (info));
+					camel_message_info_set_user_flag (info, "every13", TRUE);
+					g_clear_object (&info);
 				}
 				if ((j / 17) * 17 == j) {
-					camel_folder_set_message_user_flag (folder, uid, "every17", TRUE);
+					CamelMessageInfo *info;
+
+					info = camel_folder_summary_get (summary, uid);
+					check (CAMEL_IS_MESSAGE_INFO (info));
+					camel_message_info_set_user_flag (info, "every17", TRUE);
+					g_clear_object (&info);
 				}
 				if ((j / 7) * 7 == j) {
-					gchar *tag = g_strdup_printf ("7tag%d", j / 7);
-					camel_folder_set_message_user_tag (folder, uid, "every7", tag);
+					CamelMessageInfo *info;
+					gchar *tag;
+
+					info = camel_folder_summary_get (summary, uid);
+					check (CAMEL_IS_MESSAGE_INFO (info));
+					tag = g_strdup_printf ("7tag%d", j / 7);
+					camel_message_info_set_user_tag (info, "every7", tag);
 					test_free (tag);
+					g_clear_object (&info);
 				}
 				if ((j / 11) * 11 == j) {
-					camel_folder_set_message_user_tag (folder, uid, "every11", "11tag");
+					CamelMessageInfo *info;
+
+					info = camel_folder_summary_get (summary, uid);
+					check (CAMEL_IS_MESSAGE_INFO (info));
+					camel_message_info_set_user_tag (info, "every11", "11tag");
+					g_clear_object (&info);
 				}
 			}
 			g_clear_pointer (&uids, g_ptr_array_unref);

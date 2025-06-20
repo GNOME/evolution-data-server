@@ -232,9 +232,8 @@ vee_store_get_folder_info_sync (CamelStore *store,
 
 		if (add) {
 			gint32 unread;
-
-			unread = camel_folder_get_unread_message_count (
-				CAMEL_FOLDER (folder));
+			unread = camel_folder_summary_get_unread_count (
+				camel_folder_get_folder_summary (CAMEL_FOLDER (folder)));
 
 			info = camel_folder_info_new ();
 			info->full_name = g_strdup (full_name);

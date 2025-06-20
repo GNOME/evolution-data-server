@@ -151,20 +151,6 @@ struct _CamelFolderClass {
 						 const gchar *uid,
 						 guint32 mask,
 						 guint32 set);
-	gboolean	(*get_message_user_flag)(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name);
-	void		(*set_message_user_flag)(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name,
-						 gboolean value);
-	const gchar *	(*get_message_user_tag)	(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name);
-	void		(*set_message_user_tag)	(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name,
-						 const gchar *value);
 	GPtrArray *	(*dup_uids)		(CamelFolder *folder);
 	gint		(*cmp_uids)		(CamelFolder *folder,
 						 const gchar *uid1,
@@ -320,35 +306,9 @@ gboolean	camel_folder_set_message_flags	(CamelFolder *folder,
 						 const gchar *uid,
 						 guint32 mask,
 						 guint32 set);
-#ifndef CAMEL_DISABLE_DEPRECATED
-gboolean	camel_folder_get_message_user_flag
-						(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name);
-void		camel_folder_set_message_user_flag
-						(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name,
-						 gboolean value);
-const gchar *	camel_folder_get_message_user_tag
-						(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name);
-void		camel_folder_set_message_user_tag
-						(CamelFolder *folder,
-						 const gchar *uid,
-						 const gchar *name,
-						 const gchar *value);
-#endif /* CAMEL_DISABLE_DEPRECATED */
 gboolean	camel_folder_has_summary_capability
 						(CamelFolder *folder);
 gint		camel_folder_get_message_count	(CamelFolder *folder);
-#ifndef CAMEL_DISABLE_DEPRECATED
-gint		camel_folder_get_unread_message_count
-						(CamelFolder *folder);
-#endif
-gint		camel_folder_get_deleted_message_count
-						(CamelFolder *folder);
 
 #define camel_folder_delete_message(folder, uid) \
 	(camel_folder_set_message_flags ( \
