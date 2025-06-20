@@ -1585,7 +1585,7 @@ camel_store_db_write_folder (CamelStoreDB *self,
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
 	g_return_val_if_fail (record != NULL, FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	cdb = CAMEL_DB (self);
 
@@ -1699,7 +1699,7 @@ camel_store_db_read_folder (CamelStoreDB *self,
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (out_record != NULL, FALSE);
 
 	memset (out_record, 0, sizeof (*out_record));
@@ -1767,8 +1767,8 @@ camel_store_db_rename_folder (CamelStoreDB *self,
 	gboolean success = FALSE, exists;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (old_folder_name != NULL && *old_folder_name != '\0', FALSE);
-	g_return_val_if_fail (new_folder_name != NULL && *new_folder_name != '\0', FALSE);
+	g_return_val_if_fail (old_folder_name != NULL, FALSE);
+	g_return_val_if_fail (new_folder_name != NULL, FALSE);
 
 	cdb = CAMEL_DB (self);
 
@@ -1826,7 +1826,7 @@ camel_store_db_delete_folder (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	cdb = CAMEL_DB (self);
 
@@ -1892,7 +1892,7 @@ camel_store_db_clear_folder (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	cdb = CAMEL_DB (self);
 
@@ -1968,7 +1968,7 @@ camel_store_db_write_message (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (record != NULL, FALSE);
 
 	cdb = CAMEL_DB (self);
@@ -2182,7 +2182,7 @@ camel_store_db_read_message (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL && *uid != '\0', FALSE);
 	g_return_val_if_fail (out_record != NULL, FALSE);
 
@@ -2271,7 +2271,7 @@ camel_store_db_delete_message (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL && *uid != '\0', FALSE);
 
 	LOCK (self);
@@ -2320,7 +2320,7 @@ camel_store_db_delete_messages (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
 	LOCK (self);
@@ -2390,7 +2390,7 @@ camel_store_db_count_messages (CamelStoreDB *self,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (out_count != NULL, FALSE);
 
 	LOCK (self);
@@ -2492,7 +2492,7 @@ camel_store_db_dup_uids_with_flags (CamelStoreDB *self,
 	GHashTable *uids_flags = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	LOCK (self);
 	folder_id = GPOINTER_TO_UINT (g_hash_table_lookup (self->priv->folder_ids, folder_name));
@@ -2558,7 +2558,7 @@ camel_store_db_dup_junk_uids (CamelStoreDB *self,
 	GPtrArray *uids = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	LOCK (self);
 	folder_id = GPOINTER_TO_UINT (g_hash_table_lookup (self->priv->folder_ids, folder_name));
@@ -2607,7 +2607,7 @@ camel_store_db_dup_deleted_uids (CamelStoreDB *self,
 	GPtrArray *uids = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_DB (self), FALSE);
-	g_return_val_if_fail (folder_name != NULL && *folder_name != '\0', FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	LOCK (self);
 	folder_id = GPOINTER_TO_UINT (g_hash_table_lookup (self->priv->folder_ids, folder_name));
