@@ -2284,8 +2284,6 @@ camel_folder_get_permanent_flags (CamelFolder *folder)
  * @folder: a #CamelFolder
  * @uid: the UID of a message in @folder
  *
- * Deprecated: Use camel_folder_get_message_info() instead.
- *
  * Returns: the #CamelMessageFlags that are set on the indicated
  * message.
  **/
@@ -2310,7 +2308,7 @@ camel_folder_get_message_flags (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @uid: the UID of a message in @folder
  * @mask: a mask of #CamelMessageFlags bit-or values to use
- * @set: the flags to ser, also bit-or of #CamelMessageFlags
+ * @set: the flags to set, also bit-or of #CamelMessageFlags
  *
  * Sets those flags specified by @mask to the values specified by @set
  * on the indicated message. (This may or may not persist after the
@@ -2318,9 +2316,6 @@ camel_folder_get_message_flags (CamelFolder *folder,
  *
  * E.g. to set the deleted flag and clear the draft flag, use
  * camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_DRAFT, CAMEL_MESSAGE_DELETED);
- *
- * DEPRECATED: Use camel_message_info_set_flags() on the message info directly
- * (when it works)
  *
  * Returns: %TRUE if the flags were changed or %FALSE otherwise
  **/

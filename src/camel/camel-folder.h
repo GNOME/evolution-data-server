@@ -314,13 +314,13 @@ void		camel_folder_set_mark_seen_timeout
 						 gint timeout);
 guint32		camel_folder_get_permanent_flags
 						(CamelFolder *folder);
-#ifndef CAMEL_DISABLE_DEPRECATED
 guint32		camel_folder_get_message_flags	(CamelFolder *folder,
 						 const gchar *uid);
 gboolean	camel_folder_set_message_flags	(CamelFolder *folder,
 						 const gchar *uid,
 						 guint32 mask,
 						 guint32 set);
+#ifndef CAMEL_DISABLE_DEPRECATED
 gboolean	camel_folder_get_message_user_flag
 						(CamelFolder *folder,
 						 const gchar *uid,
