@@ -74,7 +74,7 @@ enum {
 	PROP_CONTENT_MD5,
 	PROP_DESCRIPTION,
 	PROP_DISPOSITION,
-	PROP_FILENAME
+	N_PROPS
 };
 
 typedef enum {
@@ -91,6 +91,8 @@ typedef enum {
 
 static GHashTable *header_name_table;
 static GHashTable *header_formatted_table;
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMimePart, camel_mime_part, CAMEL_TYPE_MEDIUM)
 
@@ -1168,53 +1170,47 @@ camel_mime_part_class_init (CamelMimePartClass *class)
 	class->construct_from_parser_sync = mime_part_construct_from_parser_sync;
 	class->generate_preview = mime_part_generate_preview;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTENT_ID,
+	properties[PROP_CONTENT_ID] =
 		g_param_spec_string (
-			"content-id",
-			"Content ID",
-			NULL,
+			"content-id", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTENT_MD5,
+	properties[PROP_CONTENT_MD5] =
 		g_param_spec_string (
-			"content-md5",
-			"Content MD5",
-			NULL,
+			"content-md5", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DESCRIPTION,
+	properties[PROP_CONTENT_LOCATION] =
 		g_param_spec_string (
-			"description",
-			"Description",
-			NULL,
+			"content-location", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DISPOSITION,
+	properties[PROP_DESCRIPTION] =
 		g_param_spec_string (
-			"disposition",
-			"Disposition",
-			NULL,
+			"description", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	properties[PROP_DISPOSITION] =
+		g_param_spec_string (
+			"disposition", NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	init_header_name_table ();
 }
@@ -1342,7 +1338,7 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part,
 
 	g_free (id);
 
-	g_object_notify (G_OBJECT (mime_part), "content-id");
+	g_object_notify_by_pspec (G_OBJECT (mime_part), properties[PROP_CONTENT_ID]);
 }
 
 /**
@@ -1381,7 +1377,7 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part,
 	/* FIXME: this should perform content-location folding */
 	camel_medium_set_header (medium, "Content-Location", location);
 
-	g_object_notify (G_OBJECT (mime_part), "content-location");
+	g_object_notify_by_pspec (G_OBJECT (mime_part), properties[PROP_CONTENT_LOCATION]);
 }
 
 /**
@@ -1540,7 +1536,7 @@ camel_mime_part_set_description (CamelMimePart *mime_part,
 	camel_medium_set_header (medium, "Content-Description", text);
 	g_free (text);
 
-	g_object_notify (G_OBJECT (mime_part), "description");
+	g_object_notify_by_pspec (G_OBJECT (mime_part), properties[PROP_DESCRIPTION]);
 }
 
 /**
@@ -1593,7 +1589,7 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part,
 	camel_medium_set_header (medium, "Content-Disposition", text);
 	g_free (text);
 
-	g_object_notify (G_OBJECT (mime_part), "disposition");
+	g_object_notify_by_pspec (G_OBJECT (mime_part), properties[PROP_DISPOSITION]);
 }
 
 /**
