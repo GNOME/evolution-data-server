@@ -119,7 +119,8 @@ enum {
 	PROP_FULL_NAME,
 	PROP_PARENT_STORE,
 	PROP_MARK_SEEN,
-	PROP_MARK_SEEN_TIMEOUT
+	PROP_MARK_SEEN_TIMEOUT,
+	N_PROPS
 };
 
 enum {
@@ -130,6 +131,8 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT)
 
@@ -1457,67 +1460,55 @@ camel_folder_class_init (CamelFolderClass *class)
 	 *
 	 * The folder's description.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DESCRIPTION,
+	properties[PROP_DESCRIPTION] =
 		g_param_spec_string (
-			"description",
-			"Description",
-			"The folder's description",
+			"description", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolder:display-name
 	 *
 	 * The folder's display name.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DISPLAY_NAME,
+	properties[PROP_DISPLAY_NAME] =
 		g_param_spec_string (
-			"display-name",
-			"Display Name",
-			"The folder's display name",
+			"display-name", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolder:full-name
 	 *
 	 * The folder's fully qualified name.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_FULL_NAME,
+	properties[PROP_FULL_NAME] =
 		g_param_spec_string (
-			"full-name",
-			"Full Name",
-			"The folder's fully qualified name",
+			"full-name", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolder:parent-store
 	 *
 	 * The #CamelStore to which the folder belongs.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_PARENT_STORE,
+	properties[PROP_PARENT_STORE] =
 		g_param_spec_object (
-			"parent-store",
-			"Parent Store",
-			"The store to which the folder belongs",
+			"parent-store", NULL, NULL,
 			CAMEL_TYPE_STORE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolder:mark-seen
@@ -1528,19 +1519,16 @@ camel_folder_class_init (CamelFolderClass *class)
 	 *
 	 * Since: 3.32
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_MARK_SEEN,
+	properties[PROP_MARK_SEEN] =
 		g_param_spec_enum (
-			"mark-seen",
-			"Mark Seen",
-			"Mark messages as read after N seconds",
+			"mark-seen", NULL, NULL,
 			CAMEL_TYPE_THREE_STATE,
 			CAMEL_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_PARAM_PERSISTENT);
 
 	/**
 	 * CamelFolder:mark-seen-timeout
@@ -1549,19 +1537,18 @@ camel_folder_class_init (CamelFolderClass *class)
 	 *
 	 * Since: 3.32
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_MARK_SEEN_TIMEOUT,
+	properties[PROP_MARK_SEEN_TIMEOUT] =
 		g_param_spec_int (
-			"mark-seen-timeout",
-			"Mark Seen Timeout",
-			"Mark seen timeout",
+			"mark-seen-timeout", NULL, NULL,
 			0, G_MAXINT32,
 			1500,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_PARAM_PERSISTENT);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * CamelFolder::changed
@@ -1747,7 +1734,7 @@ camel_folder_set_full_name (CamelFolder *folder,
 
 	g_mutex_unlock (&folder->priv->property_lock);
 
-	g_object_notify (G_OBJECT (folder), "full-name");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_FULL_NAME]);
 }
 
 /**
@@ -1827,7 +1814,7 @@ camel_folder_set_display_name (CamelFolder *folder,
 
 	g_mutex_unlock (&folder->priv->property_lock);
 
-	g_object_notify (G_OBJECT (folder), "display-name");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_DISPLAY_NAME]);
 }
 
 /**
@@ -1935,7 +1922,7 @@ camel_folder_set_description (CamelFolder *folder,
 
 	g_mutex_unlock (&folder->priv->property_lock);
 
-	g_object_notify (G_OBJECT (folder), "description");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_DESCRIPTION]);
 }
 
 /**
@@ -2090,7 +2077,7 @@ camel_folder_set_mark_seen (CamelFolder *folder,
 
 	folder->priv->mark_seen = mark_seen;
 
-	g_object_notify (G_OBJECT (folder), "mark-seen");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_MARK_SEEN]);
 }
 
 /**
@@ -2132,7 +2119,7 @@ camel_folder_set_mark_seen_timeout (CamelFolder *folder,
 
 	folder->priv->mark_seen_timeout = timeout;
 
-	g_object_notify (G_OBJECT (folder), "mark-seen-timeout");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_MARK_SEEN_TIMEOUT]);
 }
 
 /**
