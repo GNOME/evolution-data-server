@@ -201,6 +201,7 @@
       <xi:include href="xml/camel-net-utils.xml"/>
       <xi:include href="xml/camel-sexp.xml"/>
       <xi:include href="xml/camel-search-utils.xml"/>
+      <xi:include href="xml/camel-stateful-object.xml"/>
       <xi:include href="xml/camel-string-utils.xml"/>
       <xi:include href="xml/camel-trie.xml"/>
       <xi:include href="xml/camel-uid-cache.xml"/>

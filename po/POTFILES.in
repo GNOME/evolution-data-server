@@ -118,6 +118,7 @@ src/camel/camel-search-private.c
 src/camel/camel-service.c
 src/camel/camel-session.c
 src/camel/camel-smime-context.c
+src/camel/camel-stateful-object.c
 src/camel/camel-store.c
 src/camel/camel-store-db.c
 src/camel/camel-store-summary.c

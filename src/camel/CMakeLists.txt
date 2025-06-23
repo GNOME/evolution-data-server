@@ -120,6 +120,7 @@ set(SOURCES
 	camel-settings.c
 	camel-sexp.c
 	camel-smime-context.c
+	camel-stateful-object.c
 	camel-store-db.c
 	camel-store-search.c
 	camel-store-search-private.h
@@ -265,6 +266,7 @@ set(HEADERS
 	camel-settings.h
 	camel-sexp.h
 	camel-smime-context.h
+	camel-stateful-object.h
 	camel-store-db.h
 	camel-store-search.h
 	camel-store-settings.h

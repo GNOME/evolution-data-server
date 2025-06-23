@@ -118,6 +118,7 @@
 #include <camel/camel-settings.h>
 #include <camel/camel-sexp.h>
 #include <camel/camel-smime-context.h>
+#include <camel/camel-stateful-object.h>
 #include <camel/camel-store.h>
 #include <camel/camel-store-db.h>
 #include <camel/camel-store-search.h>
