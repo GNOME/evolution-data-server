@@ -26,7 +26,6 @@
 #define CAMEL_SERVICE_H
 
 #include <camel/camel-enums.h>
-#include <camel/camel-object.h>
 #include <camel/camel-url.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-operation.h>
@@ -88,12 +87,12 @@ typedef enum {
 } CamelServiceError;
 
 struct _CamelService {
-	CamelObject parent;
+	GObject parent;
 	CamelServicePrivate *priv;
 };
 
 struct _CamelServiceClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	GType settings_type;
 

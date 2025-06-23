@@ -170,10 +170,6 @@ offline_store_notify (GObject *object,
 		 camel_service_get_connection_status (CAMEL_SERVICE (object)) == CAMEL_SERVICE_DISCONNECTED) {
 		g_object_notify (object, "online");
 	}
-
-	/* Chain up to parent's notify() method. */
-	G_OBJECT_CLASS (camel_offline_store_parent_class)->
-		notify (object, pspec);
 }
 
 static void

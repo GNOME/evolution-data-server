@@ -114,7 +114,7 @@ static void	service_task_dispatch		(CamelService *service,
 						 GTask *task);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
-	CamelService, camel_service, CAMEL_TYPE_OBJECT,
+	CamelService, camel_service, G_TYPE_OBJECT,
 	G_ADD_PRIVATE (CamelService)
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, camel_service_initable_init))
 G_DEFINE_BOXED_TYPE (CamelServiceAuthType, camel_service_auth_type, camel_service_auth_type_copy, camel_service_auth_type_free);
