@@ -27,6 +27,7 @@
 #include "camel-session.h"
 #include "camel-string-utils.h"
 #include "camel-vee-folder.h"
+#include "camel-stateful-object.h"
 #include "camel-vee-store.h"
 
 #define d(x)
@@ -40,13 +41,6 @@
 #define CHANGE_NOSELECT (2)
 
 extern gint camel_application_is_exiting;
-
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
-enum {
-	PROP_0,
-	PROP_UNMATCHED_ENABLED = 0x2400  /* leftover property, not used anymore */
-};
 
 struct _CamelVeeStorePrivate {
 	gboolean dummy;
@@ -95,34 +89,6 @@ change_folder (CamelStore *store,
 	else
 		camel_store_folder_created (store, fi);
 	camel_folder_info_free (fi);
-}
-
-static void
-vee_store_set_property (GObject *object,
-                        guint property_id,
-                        const GValue *value,
-                        GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_UNMATCHED_ENABLED:
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-vee_store_get_property (GObject *object,
-                        guint property_id,
-                        GValue *value,
-                        GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_UNMATCHED_ENABLED:
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static gchar *
@@ -314,14 +280,7 @@ vee_store_delete_folder_sync (CamelStore *store,
 
 	folder = camel_object_bag_get (camel_store_get_folders_bag (store), folder_name);
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
-		const gchar *state_filename;
-
-		state_filename = camel_object_get_state_filename (object);
-		if (state_filename != NULL) {
-			g_unlink (state_filename);
-			camel_object_set_state_filename (object, NULL);
-		}
+		camel_stateful_object_delete_state_file (CAMEL_STATEFUL_OBJECT (folder));
 
 		if ((camel_vee_folder_get_flags (CAMEL_VEE_FOLDER (folder)) & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
 			/* what about now-empty parents?  ignore? */
@@ -404,10 +363,6 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = vee_store_set_property;
-	object_class->get_property = vee_store_get_property;
-
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = vee_store_get_name;
 
@@ -419,17 +374,6 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	store_class->delete_folder_sync = vee_store_delete_folder_sync;
 	store_class->rename_folder_sync = vee_store_rename_folder_sync;
 	store_class->get_can_auto_save_changes = vee_store_get_can_auto_save_changes;
-
-	g_object_class_install_property (
-		object_class,
-		PROP_UNMATCHED_ENABLED,
-		g_param_spec_boolean (
-			"unmatched-enabled",
-			NULL,
-			NULL,
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void
