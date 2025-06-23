@@ -10,6 +10,7 @@ set(TESTS
 # enable for `make check`/`make test` and install these tests
 set(TESTS_CHECK
 	test-camel-db
+	test-folder-thread
 	test-store-search
 	test-vee-folder
 )

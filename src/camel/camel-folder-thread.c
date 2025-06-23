@@ -782,6 +782,50 @@ thread_items (CamelFolderThread *self)
 			/* unlink pseudo node */
 			c->next = newtop;
 
+			if (!(self->flags & CAMEL_FOLDER_THREAD_FLAG_SORT)) {
+				CamelFolderThreadNode *node;
+				gint64 curr_sent_received;
+
+				if (newtop->item) {
+					curr_sent_received = self->functions.get_date_sent_func (newtop->item);
+					if (curr_sent_received == 0 || curr_sent_received == -1)
+						curr_sent_received = self->functions.get_date_received_func (newtop->item);
+				} else {
+					curr_sent_received = 0;
+				}
+
+				/* pick the oldest item as the new top item */
+				for (node = newtop->next; node; node = node->next) {
+					if (node->item) {
+						gint64 sent_received;
+
+						sent_received = self->functions.get_date_sent_func (node->item);
+						if (sent_received == 0 || sent_received == -1)
+							sent_received = self->functions.get_date_received_func (node->item);
+
+						if (sent_received != 0 && sent_received != -1 && (sent_received < curr_sent_received ||
+						    curr_sent_received == 0 || curr_sent_received == -1)) {
+							gpointer ptr;
+							guint32 val;
+
+							curr_sent_received = sent_received;
+
+							#define swap(_member, _var) \
+								_var = newtop->_member; \
+								newtop->_member = node->_member; \
+								node->_member = _var;
+
+							swap (item, ptr);
+							swap (root_subject, ptr);
+							swap (order, val);
+							swap (re, val);
+
+							#undef swap
+						}
+					}
+				}
+			}
+
 			/* link its siblings onto the end of its children, fix all parent pointers */
 			scan = (CamelFolderThreadNode *) &newtop->child;
 			while (scan->next) {
@@ -803,6 +847,7 @@ thread_items (CamelFolderThread *self)
 		}
 	}
 
+#if d(1)+0
 	/* this is only debug assertion stuff */
 	c = (CamelFolderThreadNode *) &head;
 	while (c->next) {
@@ -812,6 +857,7 @@ thread_items (CamelFolderThread *self)
 		if (c->parent != NULL)
 			g_warning ("base node has a non-null parent: %s\n", c->root_subject);
 	}
+#endif
 
 	self->tree = head;
 
