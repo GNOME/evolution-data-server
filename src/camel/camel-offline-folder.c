@@ -27,6 +27,7 @@
 #include "camel-offline-store.h"
 #include "camel-operation.h"
 #include "camel-session.h"
+#include "camel-stateful-object.h"
 #include "camel-string-utils.h"
 #include "camel-utils.h"
 
@@ -56,7 +57,14 @@ enum {
 	PROP_OFFLINE_SYNC = 0x2400
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER)
+
+static void camel_offline_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER,
+                         G_ADD_PRIVATE (CamelOfflineFolder)
+                         G_IMPLEMENT_INTERFACE (CAMEL_TYPE_STATEFUL_OBJECT,
+                                                camel_offline_folder_stateful_object_init))
+
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -352,6 +360,18 @@ offline_folder_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_offline_folder_parent_class)->finalize (object);
 }
 
+static guint32
+offline_folder_get_property_tag (CamelStatefulObject *self,
+				 guint property_id)
+{
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (self), 0);
+
+	switch (property_id) {
+		case PROP_OFFLINE_SYNC:
+			return 0x2400;
+	}
+}
+
 static gboolean
 offline_folder_downsync_sync (CamelOfflineFolder *offline,
                               const gchar *expression,
@@ -553,6 +573,12 @@ camel_offline_folder_init (CamelOfflineFolder *folder)
 	g_signal_connect (
 		folder, "changed",
 		G_CALLBACK (offline_folder_changed), NULL);
+}
+
+static void
+camel_offline_folder_stateful_object_init (CamelStatefulObjectInterface *iface)
+{
+  iface->get_property_tag = offline_folder_get_property_tag;
 }
 
 /**
