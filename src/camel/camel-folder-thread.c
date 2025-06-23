@@ -782,7 +782,8 @@ thread_items (CamelFolderThread *self)
 			/* unlink pseudo node */
 			c->next = newtop;
 
-			if (!(self->flags & CAMEL_FOLDER_THREAD_FLAG_SORT)) {
+			if (!(self->flags & CAMEL_FOLDER_THREAD_FLAG_SORT) && self->functions.get_date_sent_func &&
+			    self->functions.get_date_received_func) {
 				CamelFolderThreadNode *node;
 				gint64 curr_sent_received;
 

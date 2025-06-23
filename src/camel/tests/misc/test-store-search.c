@@ -3593,6 +3593,96 @@ test_store_search_match_threads_multiple_stores (void)
 }
 
 static void
+test_store_search_match_threads_only_leaves (void)
+{
+	CamelStore *store;
+	CamelStoreSearch *search;
+	CamelStoreSearchIndex *index;
+	CamelFolder *folder;
+	CamelMatchThreadsKind match_threads_kind;
+	CamelFolderThreadFlags thread_flags = 0;
+	GPtrArray *items = NULL;
+	GError *local_error = NULL;
+	gboolean success;
+
+	store = test_store_new ();
+	search = camel_store_search_new (store);
+
+	folder = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (folder);
+	test_add_messages (folder,
+		"uid", "11",
+		"part", "1 1 0",
+		"subject", "single root",
+		"",
+		"uid", "12",
+		"part", "1 2 1 2 1",
+		"subject", "reply to 21 from 12",
+		"",
+		"uid", "13",
+		"part", "1 3 2 9 9 1 2",
+		"subject", "reply to nonexistent 99, referencing 12",
+		"",
+		"uid", "14",
+		"part", "1 4 1 2 1",
+		"subject", "reply to 21 b",
+		"",
+		"uid", "15",
+		"part", "1 5 1 2 1",
+		"subject", "reply to 21",
+		NULL);
+	camel_store_search_add_folder (search, folder);
+
+	/* The thread looks like:
+	     11
+	     12
+	       13
+	       14
+	       15
+	 */
+
+	camel_store_search_set_expression (search, "(header-contains \"subject\" \"root\")");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search, 1, "11", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NONE);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_NONE);
+
+	camel_store_search_set_expression (search, "(match-threads \"all\" (header-contains \"subject\" \"from\"))");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search, 1, "12", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_add_match_threads_items_sync (search, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 5); /* all messages from all folders in the @search */
+	index = camel_store_search_ref_result_index (search);
+	g_assert_nonnull (index);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 1);
+	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search, index);
+	test_store_search_check_result (search, 1, "12", 1, "13", 1, "14", 1, "15", 0, NULL);
+	g_clear_pointer (&index, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
+	g_clear_object (&folder);
+	g_clear_object (&search);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
+static void
 test_store_search_folder (void)
 {
 	CamelStore *store;
@@ -3793,6 +3883,65 @@ test_store_search_folder_match_threads (void)
 	g_assert_nonnull (uids);
 	g_assert_cmpint (uids->len, ==, 7);
 	test_store_search_check_folder_uids (uids, "12", "13", "21", "22", "23", "32", "33", NULL);
+	g_clear_pointer (&uids, g_ptr_array_unref);
+
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
+static void
+test_store_search_folder_match_threads_only_leaves (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	GPtrArray *uids = NULL;
+	GError *local_error = NULL;
+	gboolean success;
+
+	store = test_store_new ();
+
+	folder = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (folder);
+	test_add_messages (folder,
+		"uid", "11",
+		"part", "1 1 0",
+		"subject", "single root",
+		"",
+		"uid", "12",
+		"part", "1 2 1 2 1",
+		"subject", "reply to 21 from 12",
+		"",
+		"uid", "13",
+		"part", "1 3 2 9 9 1 2",
+		"subject", "reply to nonexistent 99, referencing 12",
+		"",
+		"uid", "14",
+		"part", "1 4 1 2 1",
+		"subject", "reply to 21 b",
+		"",
+		"uid", "15",
+		"part", "1 5 1 2 1",
+		"subject", "reply to 21",
+		NULL);
+
+	/* The thread looks like:
+	     11
+	     12
+	       13
+	       14
+	       15
+	 */
+
+	success = camel_folder_search_sync (folder, "(match-threads \"all\" (header-contains \"subject\" \"from\"))", &uids, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (uids);
+	g_assert_cmpint (uids->len, ==, 4);
+	test_store_search_check_folder_uids (uids, "12", "13", "14", "15", NULL);
 	g_clear_pointer (&uids, g_ptr_array_unref);
 
 	g_clear_object (&folder);
@@ -4230,8 +4379,10 @@ main (gint argc,
 	g_test_add_func ("/CamelStoreSearch/Index", test_store_search_index);
 	g_test_add_func ("/CamelStoreSearch/MatchThreads", test_store_search_match_threads);
 	g_test_add_func ("/CamelStoreSearch/MatchThreadsMultipleStores", test_store_search_match_threads_multiple_stores);
+	g_test_add_func ("/CamelStoreSearch/MatchThreadsOnlyLeaves", test_store_search_match_threads_only_leaves);
 	g_test_add_func ("/CamelStoreSearch/Folder", test_store_search_folder);
 	g_test_add_func ("/CamelStoreSearch/FolderMatchThreads", test_store_search_folder_match_threads);
+	g_test_add_func ("/CamelStoreSearch/FolderMatchThreadsOnlyLeaves", test_store_search_folder_match_threads_only_leaves);
 	g_test_add_func ("/CamelStoreSearch/BoolSExp", test_store_search_bool_sexp);
 	g_test_add_func ("/CamelStoreSearch/MatchIndex", test_store_search_match_index);
 	g_test_add_func ("/CamelStoreSearch/SummaryChanges", test_store_search_summary_changes);
