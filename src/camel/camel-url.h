@@ -26,6 +26,7 @@
 #define CAMEL_URL_H
 
 #include <glib.h>
+#include <glib-object.h>
 
 #define CAMEL_TYPE_URL (camel_url_get_type ())
 
