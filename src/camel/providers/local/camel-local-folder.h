@@ -60,6 +60,7 @@ struct _CamelLocalFolder {
 	gchar *base_path;	/* base path of the local folder */
 	gchar *folder_path;	/* the path to the folder itself */
 	gchar *index_path;	/* where the index file lives */
+	gchar *state_file;	/* path to the state file */
 
 	CamelIndex *index;	/* index for this folder */
 
@@ -121,6 +122,9 @@ void		camel_local_folder_unlock_changes
 						(CamelLocalFolder *lf);
 void		camel_local_folder_claim_changes
 						(CamelLocalFolder *lf);
+void		camel_local_folder_set_state_file
+						(CamelLocalFolder *lf,
+						 gchar *file);
 
 G_END_DECLS
 

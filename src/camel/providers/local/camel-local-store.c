@@ -288,17 +288,15 @@ local_store_get_junk_folder_sync (CamelStore *store,
 		get_junk_folder_sync (store, cancellable, error);
 
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state;
 
 		state = camel_local_store_get_meta_path (
 			CAMEL_LOCAL_STORE (store),
 			CAMEL_VJUNK_NAME, ".cmeta");
-		camel_object_set_state_filename (object, state);
-		g_free (state);
+		camel_local_folder_set_state_file (CAMEL_LOCAL_FOLDER (folder), g_steal_pointer (&state));
 
 		/* no defaults? */
-		camel_object_state_read (object);
+		camel_stateful_object_read_state (CAMEL_STATEFUL_OBJECT (folder));
 	}
 
 	return folder;
@@ -316,17 +314,15 @@ local_store_get_trash_folder_sync (CamelStore *store,
 		get_trash_folder_sync (store, cancellable, error);
 
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state;
 
 		state = camel_local_store_get_meta_path (
 			CAMEL_LOCAL_STORE (store),
 			CAMEL_VTRASH_NAME, ".cmeta");
-		camel_object_set_state_filename (object, state);
-		g_free (state);
+		camel_local_folder_set_state_file (CAMEL_LOCAL_FOLDER (folder), g_steal_pointer (&state));
 
 		/* no defaults? */
-		camel_object_state_read (object);
+		camel_stateful_object_read_state (CAMEL_STATEFUL_OBJECT (folder));
 	}
 
 	return folder;
@@ -431,45 +427,29 @@ local_store_delete_folder_sync (CamelStore *store,
 
 	/* remove metadata only */
 	name = g_build_filename (path, folder_name, NULL);
+	g_free (path);
+
 	str = g_strdup_printf ("%s.ibex", name);
+	g_free (name);
 	if (camel_text_index_remove (str) == -1 && errno != ENOENT && errno != ENOTDIR) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not delete folder index file “%s”: %s"),
 			str, g_strerror (errno));
-		success = FALSE;
-		goto exit;
+		g_free (str);
+		return FALSE;
 	}
 
 	g_free (str);
-	str = NULL;
-
 	if ((lf = camel_store_get_folder_sync (store, folder_name, 0, cancellable, NULL))) {
-		CamelObject *object = CAMEL_OBJECT (lf);
-		const gchar *state_filename;
-
-		state_filename = camel_object_get_state_filename (object);
-		str = g_strdup (state_filename);
-
-		camel_object_set_state_filename (object, NULL);
-
-		g_object_unref (lf);
+		if (!camel_stateful_object_delete_state_file (CAMEL_STATEFUL_OBJECT (lf), error)) {
+			g_object_unref (lf);
+			return FALSE;
+		}
 	}
 
-	if (str == NULL)
-		str = g_strdup_printf ("%s.cmeta", name);
-
-	if (g_unlink (str) == -1 && errno != ENOENT && errno != ENOTDIR) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder meta file “%s”: %s"),
-			str, g_strerror (errno));
-		success = FALSE;
-		goto exit;
-	}
-
+	g_object_unref (lf);
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->display_name = g_path_get_basename (folder_name);
@@ -477,11 +457,6 @@ local_store_delete_folder_sync (CamelStore *store,
 
 	camel_store_folder_deleted (store, fi);
 	camel_folder_info_free (fi);
-
-exit:
-	g_free (name);
-	g_free (path);
-	g_free (str);
 
 	return success;
 }

@@ -52,7 +52,13 @@ enum {
 	PROP_INDEX_BODY = 0x2400
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
+
+static void camel_local_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER,
+                         G_ADD_PRIVATE (CamelLocalFolder)
+                         G_IMPLEMENT_INTERFACE (CAMEL_TYPE_STATEFUL_OBJECT,
+                                                camel_local_folder_stateful_object_init))
 
 static void
 local_folder_set_property (GObject *object,
@@ -128,6 +134,7 @@ local_folder_finalize (GObject *object)
 	g_free (local_folder->base_path);
 	g_free (local_folder->folder_path);
 	g_free (local_folder->index_path);
+	g_free (local_folder->state_file);
 
 	camel_folder_change_info_free (local_folder->changes);
 
@@ -219,6 +226,32 @@ local_folder_constructed (GObject *object)
 }
 
 static guint32
+local_folder_get_property_tag (CamelStatefulObject *self,
+			       guint property_id)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_FOLDER (self), 0);
+
+	switch (property_id) {
+		case PROP_INDEX_BODY:
+			return 0x2400;
+	}
+
+	return 0;
+}
+
+static const gchar *
+local_folder_get_state_file (CamelStatefulObject *self)
+{
+	CamelLocalFolder *local_folder;
+
+	g_return_val_if_fail (CAMEL_IS_LOCAL_FOLDER (self), NULL);
+
+	local_folder = CAMEL_LOCAL_FOLDER (self);
+
+	return local_folder->state_file;
+}
+
+static guint32
 local_folder_get_permanent_flags (CamelFolder *folder)
 {
 	return CAMEL_MESSAGE_ANSWERED |
@@ -246,7 +279,6 @@ local_folder_rename (CamelFolder *folder,
                      const gchar *newname)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
-	gchar *statepath;
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
 
@@ -259,12 +291,11 @@ local_folder_rename (CamelFolder *folder,
 
 	g_free (lf->folder_path);
 	g_free (lf->index_path);
+	g_free (lf->state_file);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, newname);
 	lf->index_path = camel_local_store_get_meta_path (ls, newname, ".ibex");
-	statepath = camel_local_store_get_meta_path (ls, newname, ".cmeta");
-	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
-	g_free (statepath);
+	lf->state_file = camel_local_store_get_meta_path (ls, newname, ".cmeta");
 
 	/* FIXME: Poke some internals, sigh */
 	g_free (((CamelLocalSummary *) camel_folder_get_folder_summary (folder))->folder_path);
@@ -339,7 +370,7 @@ local_folder_synchronize_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	camel_object_state_write (CAMEL_OBJECT (lf));
+	camel_stateful_object_write_state (CAMEL_STATEFUL_OBJECT (lf));
 
 	/* if sync fails, we'll pass it up on exit through ex */
 	success = (camel_local_summary_sync (
@@ -416,6 +447,13 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
 }
 
+static void
+camel_local_folder_stateful_object_init (CamelStatefulObjectInterface *iface)
+{
+	iface->get_property_tag = local_folder_get_property_tag;
+	iface->get_state_file = local_folder_get_state_file;
+}
+
 CamelLocalFolder *
 camel_local_folder_construct (CamelLocalFolder *lf,
                               guint32 flags,
@@ -426,7 +464,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	gchar *statepath;
 #ifndef G_OS_WIN32
 #ifdef __GLIBC__
 	gchar *folder_path;
@@ -468,17 +505,14 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
 	lf->index_path = camel_local_store_get_meta_path (ls, full_name, ".ibex");
-	statepath = camel_local_store_get_meta_path (ls, full_name, ".cmeta");
-
-	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
-	g_free (statepath);
+	lf->state_file = camel_local_store_get_meta_path (ls, full_name, ".cmeta");
 
 	lf->flags = flags;
 
-	if (camel_object_state_read (CAMEL_OBJECT (lf)) == -1) {
+	if (!camel_stateful_object_read_state (CAMEL_STATEFUL_OBJECT (lf))) {
 		/* No metadata - load defaults and persitify */
 		camel_local_folder_set_index_body (lf, TRUE);
-		camel_object_state_write (CAMEL_OBJECT (lf));
+		camel_stateful_object_write_state (CAMEL_STATEFUL_OBJECT (lf));
 	}
 
 	/* XXX Canonicalizing the folder path portably is a messy affair.
@@ -674,4 +708,24 @@ camel_local_folder_claim_changes (CamelLocalFolder *lf)
 		camel_folder_changed (CAMEL_FOLDER (lf), changes);
 		camel_folder_change_info_free (changes);
 	}
+}
+
+/**
+ * camel_local_folder_set_state_file:
+ * @lf: a #CamelLocalFolder
+ * @file: (transfer full): the new state file to use
+ *
+ * Set the store file to @file.
+ *
+ * Since: 3.58
+ **/
+void
+camel_local_folder_set_state_file (CamelLocalFolder *lf,
+				   gchar *file)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (lf));
+	g_return_if_fail (lf->state_file == NULL);
+	g_return_if_fail (file != NULL);
+
+	lf->state_file = g_steal_pointer (&file);
 }

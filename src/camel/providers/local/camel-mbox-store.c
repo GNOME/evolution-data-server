@@ -753,38 +753,16 @@ mbox_store_delete_folder_sync (CamelStore *store,
 	}
 
 	g_free (path);
+	g_free (name);
 
-	path = NULL;
 	if ((lf = camel_store_get_folder_sync (store, folder_name, 0, cancellable, NULL))) {
-		CamelObject *object = CAMEL_OBJECT (lf);
-		const gchar *state_filename;
-
-		state_filename = camel_object_get_state_filename (object);
-		path = g_strdup (state_filename);
-
-		camel_object_set_state_filename (object, NULL);
+		if (!camel_stateful_object_delete_state_file (CAMEL_STATEFUL_OBJECT (lf), error)) {
+			g_object_unref (lf);
+			return FALSE;
+		}
 
 		g_object_unref (lf);
 	}
-
-	if (path == NULL)
-		path = camel_local_store_get_meta_path (
-			local_store, folder_name, ".cmeta");
-
-	if (g_unlink (path) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder meta file “%s”: %s"),
-			path, g_strerror (errno));
-
-		g_free (path);
-		g_free (name);
-		return FALSE;
-	}
-
-	g_free (path);
-	g_free (name);
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
