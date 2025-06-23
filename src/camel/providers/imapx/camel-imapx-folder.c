@@ -45,6 +45,7 @@ struct _CamelIMAPXFolderPrivate {
 
 	gboolean check_folder;
 	gint64 last_full_update;
+	gchar *state_file;
 };
 
 /* The custom property ID is a CamelArg artifact.
@@ -57,7 +58,12 @@ enum {
 	PROP_LAST_FULL_UPDATE = 0x2503
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
+static void camel_imapx_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER,
+                         G_ADD_PRIVATE (CamelIMAPXFolder)
+                         G_IMPLEMENT_INTERFACE (CAMEL_TYPE_STATEFUL_OBJECT,
+                                                camel_imapx_folder_stateful_object_init))
 
 static gboolean imapx_folder_get_apply_filters (CamelIMAPXFolder *folder);
 
@@ -252,9 +258,39 @@ imapx_folder_finalize (GObject *object)
 	g_hash_table_destroy (folder->priv->move_to_not_junk_uids);
 
 	g_weak_ref_clear (&folder->priv->mailbox);
+	g_clear_pointer (&folder->priv->state_file, g_free);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
+}
+
+static guint32
+imapx_folder_get_property_tag (CamelStatefulObject *self,
+			       guint property_id)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (self), 0);
+
+	switch (property_id) {
+		case PROP_APPLY_FILTERS:
+			return 0x2501;
+		case PROP_CHECK_FOLDER:
+			return 0x2502;
+		case PROP_LAST_FULL_UPDATE:
+			return 0x2503;
+	}
+
+	return 0;
+}
+
+static const gchar *
+imapx_folder_get_state_file (CamelStatefulObject *self)
+{
+	CamelIMAPXFolder *imapx_folder;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (self), NULL);
+
+	imapx_folder = CAMEL_IMAPX_FOLDER (self);
+	return imapx_folder->priv->state_file;
 }
 
 /* Algorithm for selecting a folder:
@@ -1245,6 +1281,13 @@ camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 	g_weak_ref_init (&imapx_folder->priv->mailbox, NULL);
 }
 
+static void
+camel_imapx_folder_stateful_object_init (CamelStatefulObjectInterface *iface)
+{
+  iface->get_property_tag = imapx_folder_get_property_tag;
+  iface->get_state_file = imapx_folder_get_state_file;
+}
+
 CamelFolder *
 camel_imapx_folder_new (CamelStore *store,
                         const gchar *folder_dir,
@@ -1257,7 +1300,6 @@ camel_imapx_folder_new (CamelStore *store,
 	CamelSettings *settings;
 	CamelIMAPXFolder *imapx_folder;
 	const gchar *short_name;
-	gchar *state_file;
 	gboolean filter_all;
 	gboolean filter_inbox;
 	gboolean filter_junk;
@@ -1321,10 +1363,8 @@ camel_imapx_folder_new (CamelStore *store,
 		return NULL;
 	}
 
-	state_file = g_build_filename (folder_dir, "cmeta", NULL);
-	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
-	g_free (state_file);
-	camel_object_state_read (CAMEL_OBJECT (folder));
+	imapx_folder->priv->state_file = g_build_filename (folder_dir, "cmeta", NULL);
+	camel_stateful_object_read_state (CAMEL_STATEFUL_OBJECT (folder));
 
 	if (offline_limit_by_age)
 		when = camel_time_value_apply (when, offline_limit_unit, offline_limit_value);
@@ -1805,4 +1845,24 @@ camel_imapx_folder_update_cache_expire (CamelFolder *folder,
 		camel_data_cache_set_expire_age (imapx_folder->cache, 60 * 60 * 24 * 7);
 		camel_data_cache_set_expire_access (imapx_folder->cache, 60 * 60 * 24 * 7);
 	}
+}
+
+/**
+ * camel_imapx_folder_set_state_file:
+ * @folder: a #CamelIMAPXFolder
+ * @file: (transfer full): the new state file to use
+ *
+ * Set the store file to @file.
+ *
+ * Since: 3.58
+ **/
+void
+camel_imapx_folder_set_state_file (CamelIMAPXFolder *folder,
+				   gchar *file)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+	g_return_if_fail (file != NULL);
+
+	g_free (folder->priv->state_file);
+	folder->priv->state_file = g_steal_pointer (&file);
 }
