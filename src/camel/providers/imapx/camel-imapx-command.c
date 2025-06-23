@@ -434,14 +434,13 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 
 	switch (type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER: {
-		CamelObject *ob = data;
+		CamelDataWrapper *data_wrapper = CAMEL_DATA_WRAPPER (data);
 		GOutputStream *stream;
 
 		stream = camel_null_output_stream_new ();
-		camel_data_wrapper_write_to_output_stream_sync (
-			CAMEL_DATA_WRAPPER (ob), stream, NULL, NULL);
+		camel_data_wrapper_write_to_output_stream_sync (data_wrapper, stream, NULL, NULL);
 		type |= CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
-		g_object_ref (ob);
+		g_object_ref (data_wrapper);
 		ob_size = camel_null_output_stream_get_bytes_written (
 			CAMEL_NULL_OUTPUT_STREAM (stream));
 		ends_with_crlf = camel_null_output_stream_get_ends_with_crlf (CAMEL_NULL_OUTPUT_STREAM (stream));
@@ -449,16 +448,16 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 		break;
 	}
 	case CAMEL_IMAPX_COMMAND_AUTH: {
-		CamelObject *ob = data;
+		CamelSasl *sasl = CAMEL_SASL (data);
 		const gchar *mechanism;
 
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
-		g_object_ref (ob);
-		mechanism = camel_sasl_get_mechanism (CAMEL_SASL (ob));
+		g_object_ref (sasl);
+		mechanism = camel_sasl_get_mechanism (sasl);
 		if (camel_sasl_is_xoauth2_alias (mechanism))
 			mechanism = "XOAUTH2";
 		g_string_append (buffer, mechanism);
-		if (!camel_sasl_get_authenticated ((CamelSasl *) ob))
+		if (!camel_sasl_get_authenticated (sasl))
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 		break;
 	}
