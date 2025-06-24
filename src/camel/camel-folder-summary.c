@@ -123,6 +123,7 @@ static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, Ca
 static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *summary, CamelMimeMessage *msg);
 
 static gchar *next_uid_string (CamelFolderSummary *summary);
+static gboolean prepare_fetch_all (CamelFolderSummary *summary, GError **error);
 
 static CamelMessageInfo * message_info_from_uid (CamelFolderSummary *summary, const gchar *uid);
 
@@ -139,7 +140,6 @@ enum {
 };
 
 enum {
-	PREPARE_FETCH_ALL,
 	INFO_FLAGS_CHANGED,
 	LAST_SIGNAL
 };
@@ -687,6 +687,7 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 	class->message_info_from_uid = message_info_from_uid;
 
 	class->next_uid_string = next_uid_string;
+	class->prepare_fetch_all = prepare_fetch_all;
 
 	/**
 	 * CamelFolderSummary:folder
@@ -768,23 +769,6 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 			0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties (object_class, N_PROPS, properties);
-
-	/**
-	 * CamelFolderSummary::prepare-fetch-all
-	 * @summary: the #CamelFolderSummary which emitted the signal
-	 *
-	 * Emitted on call to camel_folder_summary_prepare_fetch_all().
-	 *
-	 * Since: 3.26
-	 **/
-	signals[PREPARE_FETCH_ALL] = g_signal_new (
-		"changed",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelFolderSummaryClass, prepare_fetch_all),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 0,
-		G_TYPE_NONE);
 
 	/**
 	 * CamelFolderSummary::info-flags-changed
@@ -1762,31 +1746,56 @@ cfs_load_messages_cb (CamelStoreDB *storedb,
 	return TRUE;
 }
 
-static void
+static gboolean
 cfs_reload_from_db (CamelFolderSummary *summary,
                     GError **error)
 {
 	CamelStore *parent_store;
 	CamelStoreDB *sdb;
 	const gchar *folder_name;
+	gboolean res;
 
 	/* FIXME[disk-summary] baseclass this, and vfolders we may have to
 	 * load better. */
 	d (printf ("\ncamel_folder_summary_reload_from_db called \n"));
 
 	if (is_in_memory_summary (summary))
-		return;
+		return TRUE;
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	if (!parent_store)
-		return;
+		return TRUE;
 
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
 	sdb = camel_store_get_db (parent_store);
 
-	camel_store_db_read_messages (sdb, folder_name, cfs_load_messages_cb, summary, error);
+	res = camel_store_db_read_messages (sdb, folder_name, cfs_load_messages_cb, summary, error);
 
 	cfs_schedule_info_release_timer (summary);
+	return res;
+}
+
+static gboolean
+prepare_fetch_all (CamelFolderSummary *summary,
+		   GError **error)
+{
+	guint loaded, known;
+	gboolean res = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
+
+	loaded = cfs_cache_size (summary);
+	known = camel_folder_summary_count (summary);
+
+	if (known - loaded > 50) {
+		camel_folder_summary_lock (summary);
+		res = cfs_reload_from_db (summary, error);
+		camel_folder_summary_unlock (summary);
+	}
+
+	/* update also cache load time, even when not loaded anything */
+	summary->priv->cache_load_time = time (NULL);
+	return res;
 }
 
 /**
@@ -1799,29 +1808,24 @@ cfs_reload_from_db (CamelFolderSummary *summary,
  * before any mass operation or when all message infos will be needed,
  * for better performance.
  *
+ * Returns: %TRUE on success
+ *
  * Since: 2.32
  **/
-void
+gboolean
 camel_folder_summary_prepare_fetch_all (CamelFolderSummary *summary,
                                         GError **error)
 {
-	guint loaded, known;
+	CamelFolderSummaryClass *klass;
 
-	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
-	loaded = cfs_cache_size (summary);
-	known = camel_folder_summary_count (summary);
+	klass = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
 
-	g_signal_emit (summary, signals[PREPARE_FETCH_ALL], 0);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->prepare_fetch_all != NULL, FALSE);
 
-	if (known - loaded > 50) {
-		camel_folder_summary_lock (summary);
-		cfs_reload_from_db (summary, error);
-		camel_folder_summary_unlock (summary);
-	}
-
-	/* update also cache load time, even when not loaded anything */
-	summary->priv->cache_load_time = time (NULL);
+	return klass->prepare_fetch_all (summary, error);
 }
 
 /**

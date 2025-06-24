@@ -123,8 +123,6 @@ FilterDriver.set_logfile.logfile type="GLib.FileStream"
 
 StoreSummary.store_info_free.info owned
 
-FolderSummary.prepare_fetch_all#virtual_method name="prepare_fetch_all_v"
-
 WeakRefGroup.get type="GLib.Object"
 WeakRefGroup.set.object type="owned GLib.Object"
 

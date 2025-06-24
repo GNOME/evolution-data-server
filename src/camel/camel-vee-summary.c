@@ -83,14 +83,15 @@ message_info_from_uid (CamelFolderSummary *s,
 	return info;
 }
 
-static void
-vee_summary_prepare_fetch_all (CamelFolderSummary *summary)
+static gboolean
+vee_summary_prepare_fetch_all (CamelFolderSummary *summary,
+			       GError **error)
 {
 	GHashTableIter iter;
 	gpointer key, value;
 	CamelVeeSummary *vee_summary;
 
-	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
+	g_return_val_if_fail (CAMEL_IS_VEE_SUMMARY (summary), FALSE);
 
 	camel_folder_summary_lock (summary);
 
@@ -105,12 +106,18 @@ vee_summary_prepare_fetch_all (CamelFolderSummary *summary)
 			CamelFolderSummary *subsummary;
 
 			subsummary = camel_folder_get_folder_summary (subfolder);
-			if (subsummary)
-				camel_folder_summary_prepare_fetch_all (subsummary, NULL);
+			if (subsummary) {
+				if (!camel_folder_summary_prepare_fetch_all (subsummary, error)) {
+					camel_folder_summary_unlock (summary);
+					return FALSE;
+				}
+			}
 		}
 	}
 
 	camel_folder_summary_unlock (summary);
+
+	return CAMEL_FOLDER_SUMMARY_CLASS (camel_vee_summary_parent_class)->prepare_fetch_all (summary, error);
 }
 
 static void

@@ -117,8 +117,9 @@ struct _CamelFolderSummaryClass {
 	gchar *		(*next_uid_string)
 					(CamelFolderSummary *summary);
 
-	void		(* prepare_fetch_all)
-					(CamelFolderSummary *summary);
+	gboolean	(*prepare_fetch_all)
+					(CamelFolderSummary *summary,
+					 GError **error);
 
 	/* Padding for future expansion */
 	gpointer reserved[19];
@@ -250,7 +251,7 @@ GPtrArray *	camel_folder_summary_dup_changed
 						(CamelFolderSummary *summary);
 
 /* reload the summary at any required point if required */
-void		camel_folder_summary_prepare_fetch_all
+gboolean	camel_folder_summary_prepare_fetch_all
 						(CamelFolderSummary *summary,
 						 GError **error);
 
