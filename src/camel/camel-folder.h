@@ -27,7 +27,6 @@
 
 #include <camel/camel-enums.h>
 #include <camel/camel-folder-summary.h>
-#include <camel/camel-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_FOLDER \
@@ -135,12 +134,12 @@ struct _CamelFolderQuotaInfo {
 };
 
 struct _CamelFolder {
-	CamelObject parent;
+	GObject parent;
 	CamelFolderPrivate *priv;
 };
 
 struct _CamelFolderClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Non-Blocking Methods */
 	gint		(*get_message_count)	(CamelFolder *folder);
