@@ -56,11 +56,9 @@ struct _CamelVeeFolderPrivate {
 	gchar *expression;	/* query expression */
 };
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_AUTO_UPDATE = 0x2401
+	PROP_AUTO_UPDATE
 };
 
 enum {
@@ -1374,8 +1372,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 			_("Automatically _update on change in source folders"),
 			TRUE,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	/* private signal, to notify other search folders (which contain this one) that its setup like the expression
 	   or subfolders changed, thus the listener might need to rebuild its content */

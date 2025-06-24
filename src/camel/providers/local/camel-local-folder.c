@@ -45,11 +45,9 @@
 #define PATH_MAX _POSIX_PATH_MAX
 #endif
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_INDEX_BODY = 0x2400
+	PROP_INDEX_BODY
 };
 
 
@@ -432,8 +430,7 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 			_("_Index message body data"),
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void

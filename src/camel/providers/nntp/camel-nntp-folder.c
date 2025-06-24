@@ -32,11 +32,9 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_APPLY_FILTERS = 0x2501
+	PROP_APPLY_FILTERS
 };
 
 static void camel_nntp_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
@@ -775,8 +773,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void

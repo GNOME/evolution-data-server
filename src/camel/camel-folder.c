@@ -1527,8 +1527,7 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS |
-			CAMEL_PARAM_PERSISTENT);
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelFolder:mark-seen-timeout
@@ -1545,8 +1544,7 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS |
-			CAMEL_PARAM_PERSISTENT);
+			G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties (object_class, N_PROPS, properties);
 

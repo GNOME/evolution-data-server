@@ -48,14 +48,12 @@ struct _CamelIMAPXFolderPrivate {
 	gchar *state_file;
 };
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
 	PROP_MAILBOX,
-	PROP_APPLY_FILTERS = 0x2501,
-	PROP_CHECK_FOLDER = 0x2502,
-	PROP_LAST_FULL_UPDATE = 0x2503
+	PROP_APPLY_FILTERS,
+	PROP_CHECK_FOLDER,
+	PROP_LAST_FULL_UPDATE
 };
 
 static void camel_imapx_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
@@ -1204,8 +1202,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,
@@ -1216,8 +1213,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			_("Always check for _new mail in this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,
@@ -1228,8 +1224,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			NULL,
 			G_MININT64, G_MAXINT64, 0,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_EXPLICIT_NOTIFY));
 
 	g_object_class_install_property (
 		object_class,

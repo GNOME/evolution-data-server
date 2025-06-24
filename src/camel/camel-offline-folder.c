@@ -50,11 +50,9 @@ struct _OfflineDownsyncData {
 	CamelFolderChangeInfo *changes;
 };
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_OFFLINE_SYNC = 0x2400
+	PROP_OFFLINE_SYNC
 };
 
 
@@ -557,8 +555,7 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 			CAMEL_TYPE_THREE_STATE,
 			CAMEL_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			G_PARAM_EXPLICIT_NOTIFY));
 }
 
 static void
