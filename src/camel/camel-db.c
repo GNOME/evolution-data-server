@@ -31,7 +31,6 @@
 
 #include "camel-debug.h"
 #include "camel-enums.h"
-#include "camel-object.h"
 #include "camel-operation.h"
 #include "camel-search-utils.h"
 #include "camel-store-search-private.h"

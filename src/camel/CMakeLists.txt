@@ -93,7 +93,6 @@ set(SOURCES
 	camel-nntp-address.c
 	camel-null-output-stream.c
 	camel-object-bag.c
-	camel-object.c
 	camel-offline-folder.c
 	camel-offline-settings.c
 	camel-offline-store.c
@@ -239,7 +238,6 @@ set(HEADERS
 	camel-nntp-address.h
 	camel-null-output-stream.h
 	camel-object-bag.h
-	camel-object.h
 	camel-offline-folder.h
 	camel-offline-settings.h
 	camel-offline-store.h

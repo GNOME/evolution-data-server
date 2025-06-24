@@ -29,7 +29,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-data-cache.h"
-#include "camel-object.h"
 #include "camel-object-bag.h"
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"

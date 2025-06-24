@@ -28,7 +28,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-mime-utils.h"
-#include "camel-object.h"
 #include "camel-service.h"
 #include "camel-string-utils.h"
 #include "camel-url.h"

@@ -30,7 +30,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-file-utils.h"
-#include "camel-object.h"
 #include "camel-operation.h"
 #include "camel-url.h"
 
