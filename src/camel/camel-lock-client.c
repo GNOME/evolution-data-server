@@ -31,7 +31,7 @@
 
 #include "camel-lock-client.h"
 #include "camel-lock-helper.h"
-#include "camel-object.h"
+#include "camel-utils.h"
 
 #define d(x)
 

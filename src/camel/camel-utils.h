@@ -22,6 +22,7 @@
 #define CAMEL_UTILS_H
 
 #include <glib-object.h>
+#include <gio/gio.h>
 #include <time.h>
 #include <camel/camel-enums.h>
 #include <camel/camel-message-info.h>
@@ -30,6 +31,25 @@
 #define CAMEL_UTILS_MAX_USER_HEADERS 3
 
 G_BEGIN_DECLS
+
+/**
+ * CAMEL_ERROR:
+ *
+ * Since: 2.32
+ **/
+#define CAMEL_ERROR (camel_error_quark ())
+
+/**
+ * CamelError:
+ * @CAMEL_ERROR_GENERIC: a generic (fallback) error code
+ *
+ * Since: 2.32
+ **/
+typedef enum {
+	CAMEL_ERROR_GENERIC		/* lazy fallback error */
+} CamelError;
+
+GQuark		camel_error_quark		(void) G_GNUC_CONST;
 
 gint64		camel_util_bdata_get_number	(/* const */ gchar **bdata_ptr,
 						 gint64 default_value);

@@ -33,6 +33,7 @@
 #include "camel-object-bag.h"
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"
+#include "camel-utils.h"
 
 #define d(x)
 
