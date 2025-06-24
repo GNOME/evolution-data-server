@@ -280,7 +280,10 @@ vee_store_delete_folder_sync (CamelStore *store,
 
 	folder = camel_object_bag_get (camel_store_get_folders_bag (store), folder_name);
 	if (folder) {
-		camel_stateful_object_delete_state_file (CAMEL_STATEFUL_OBJECT (folder));
+		if (!camel_stateful_object_delete_state_file (CAMEL_STATEFUL_OBJECT (folder), error)) {
+			g_object_unref (folder);
+			return FALSE;
+		}
 
 		if ((camel_vee_folder_get_flags (CAMEL_VEE_FOLDER (folder)) & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
 			/* what about now-empty parents?  ignore? */

@@ -31,6 +31,7 @@
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"	/* for open flags */
 #include "camel-vee-summary.h"
+#include "camel-stateful-object.h"
 #include "camel-string-utils.h"
 #include "camel-vtrash-folder.h"
 
@@ -44,6 +45,7 @@ struct _CamelVeeFolderPrivate {
 	gboolean destroyed;
 	GHashTable *subfolders;		/* (CamelFolder * ~> NULL); lock using subfolder_lock before changing/accessing */
 	gboolean auto_update;
+	gchar *state_file;
 
 	GRecMutex subfolder_lock;	/* for locking the subfolder list */
 	GRecMutex changed_lock;		/* for locking the folders-changed list and rebuild schedule */
@@ -78,7 +80,12 @@ enum {
 static guint test_signals[LAST_TEST_SIGNAL];
 #endif
 
-G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeFolder, camel_vee_folder, CAMEL_TYPE_FOLDER)
+static void camel_vee_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelVeeFolder, camel_vee_folder, CAMEL_TYPE_FOLDER,
+                         G_ADD_PRIVATE (CamelVeeFolder)
+                         G_IMPLEMENT_INTERFACE (CAMEL_TYPE_STATEFUL_OBJECT,
+                                                camel_vee_folder_stateful_object_init))
 
 static void
 vee_folder_create_subfolder_id (CamelFolder *subfolder,
@@ -935,6 +942,7 @@ vee_folder_finalize (GObject *object)
 	g_rec_mutex_clear (&vf->priv->subfolder_lock);
 	g_rec_mutex_clear (&vf->priv->changed_lock);
 	g_hash_table_destroy (vf->priv->real_subfolders);
+	g_clear_pointer (&vf->priv->state_file, g_free);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_vee_folder_parent_class)->finalize (object);
@@ -972,6 +980,32 @@ vee_folder_set_property (GObject *object,
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static guint32
+vee_folder_get_property_tag (CamelStatefulObject *self,
+			       guint property_id)
+{
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (self), 0);
+
+	switch (property_id) {
+		case PROP_AUTO_UPDATE:
+			return 0x2401;
+	}
+
+	return 0;
+}
+
+static const gchar *
+vee_folder_get_state_file (CamelStatefulObject *self)
+{
+	CamelVeeFolder *vf;
+
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (self), NULL);
+
+	vf = CAMEL_VEE_FOLDER (self);
+
+	return vf->priv->state_file;
 }
 
 static guint
@@ -1390,6 +1424,13 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 	vee_folder->priv->real_subfolders = g_hash_table_new_full (vee_folder_vee_uid_hash, vee_folder_vee_uid_equal, NULL, subfolder_data_free);
 }
 
+static void
+camel_vee_folder_stateful_object_init (CamelStatefulObjectInterface *iface)
+{
+	iface->get_property_tag = vee_folder_get_property_tag;
+	iface->get_state_file = vee_folder_get_state_file;
+}
+
 /**
  * camel_vee_folder_construct:
  * @vf: a #CamelVeeFolder
@@ -1414,22 +1455,18 @@ camel_vee_folder_construct (CamelVeeFolder *vf,
 	/* only for subfolders of vee-store */
 	if (CAMEL_IS_VEE_STORE (parent_store)) {
 		const gchar *user_data_dir;
-		gchar *state_file, *folder_name, *filename;
+		gchar *folder_name, *filename;
 
 		user_data_dir = camel_service_get_user_data_dir (CAMEL_SERVICE (parent_store));
 
 		folder_name = g_uri_escape_string (camel_folder_get_full_name (folder), NULL, TRUE);
 		filename = g_strconcat (folder_name, ".cmeta", NULL);
-		state_file = g_build_filename (user_data_dir, filename, NULL);
-
-		camel_object_set_state_filename (CAMEL_OBJECT (vf), state_file);
-
-		g_free (state_file);
-		g_free (filename);
 		g_free (folder_name);
+		vf->priv->state_file = g_build_filename (user_data_dir, filename, NULL);
+		g_free (filename);
 
 		/* set/load persistent state */
-		camel_object_state_read (CAMEL_OBJECT (vf));
+		camel_stateful_object_read_state (CAMEL_STATEFUL_OBJECT (vf));
 	}
 }
 
