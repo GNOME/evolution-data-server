@@ -879,7 +879,6 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		goto error;
 	}
 
-	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
 	g_object_unref (mp);
 
@@ -888,7 +887,6 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 
 	return 0;
  error:
-	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
 	g_object_unref (mp);
 	if (fd != -1)
@@ -943,7 +941,6 @@ mbox_summary_sync (CamelLocalSummary *cls,
 		g_clear_object (&info);
 	}
 
-	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
 
 	if (quick && expunge) {
