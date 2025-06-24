@@ -568,16 +568,22 @@ e_alarm_notify_process (EAlarmNotify *an,
 	ECalComponentAlarm *alarm;
 	ECalComponentAlarmInstance *instance;
 	ECalComponentAlarmAction action;
+	ICalPropertyStatus status;
 	gboolean keep_in_reminders = FALSE;
 
 	g_return_val_if_fail (an != NULL, FALSE);
 	g_return_val_if_fail (rd != NULL, FALSE);
 
+	status = e_cal_component_get_status (e_reminder_data_get_component (rd));
+	if (status == I_CAL_STATUS_CANCELLED) {
+		ICalComponent  *icomp = e_cal_component_get_icalcomponent (e_reminder_data_get_component (rd));
+
+		ean_debug_print ("Notify: Skipped, because '%s' is cancelled\n", i_cal_component_get_summary (icomp));
+
+		return FALSE;
+	}
+
 	if (e_cal_component_get_vtype (e_reminder_data_get_component (rd)) == E_CAL_COMPONENT_TODO) {
-		ICalPropertyStatus status;
-
-		status = e_cal_component_get_status (e_reminder_data_get_component (rd));
-
 		if (status == I_CAL_STATUS_COMPLETED &&
 		    !g_settings_get_boolean (an->priv->settings, "notify-completed-tasks")) {
 			return FALSE;
