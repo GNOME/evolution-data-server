@@ -39,10 +39,12 @@ enum {
 	PROP_APPLY_FILTERS = 0x2501
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (
-	CamelNNTPFolder,
-	camel_nntp_folder,
-	CAMEL_TYPE_OFFLINE_FOLDER)
+static void camel_nntp_folder_stateful_object_init (CamelStatefulObjectInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_OFFLINE_FOLDER,
+                         G_ADD_PRIVATE (CamelNNTPFolder)
+                         G_IMPLEMENT_INTERFACE (CAMEL_TYPE_STATEFUL_OBJECT,
+                                                camel_nntp_folder_stateful_object_init))
 
 static gboolean
 nntp_folder_get_apply_filters (CamelNNTPFolder *folder)
@@ -135,9 +137,36 @@ nntp_folder_finalize (GObject *object)
 	g_clear_pointer (&nntp_folder->changes, camel_folder_change_info_free);
 
 	g_mutex_clear (&nntp_folder->priv->cache_lock);
+	g_clear_pointer (&nntp_folder->priv->state_file, g_free);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_nntp_folder_parent_class)->finalize (object);
+}
+
+static guint32
+nntp_folder_get_property_tag (CamelStatefulObject *self,
+			      guint property_id)
+{
+	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (self), 0);
+
+	switch (property_id) {
+		case PROP_APPLY_FILTERS:
+			return 0x2501;
+	}
+
+	return 0;
+}
+
+static const gchar *
+nntp_folder_get_state_file (CamelStatefulObject *self)
+{
+	CamelNNTPFolder *nntp_folder;
+
+	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (self), NULL);
+
+	nntp_folder = CAMEL_NNTP_FOLDER (self);
+
+	return nntp_folder->priv->state_file;
 }
 
 gboolean
@@ -759,6 +788,13 @@ camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 	g_mutex_init (&nntp_folder->priv->cache_lock);
 }
 
+static void
+camel_nntp_folder_stateful_object_init (CamelStatefulObjectInterface *iface)
+{
+	iface->get_property_tag = nntp_folder_get_property_tag;
+	iface->get_state_file = nntp_folder_get_state_file;
+}
+
 CamelFolder *
 camel_nntp_folder_new (CamelStore *parent,
                        const gchar *folder_name,
@@ -769,7 +805,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelNNTPFolder *nntp_folder;
 	CamelNNTPStore *nntp_store;
 	CamelNNTPStoreSummary *nntp_store_summary;
-	gchar *storage_path, *root;
+	gchar *storage_path;
 	CamelService *service;
 	CamelSettings *settings;
 	CamelStoreInfo *si;
@@ -800,11 +836,9 @@ camel_nntp_folder_new (CamelStore *parent,
 	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
 
 	storage_path = g_build_filename (user_cache_dir, folder_name, NULL);
-	root = g_strdup_printf ("%s.cmeta", storage_path);
-	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);
-	camel_object_state_read (CAMEL_OBJECT (nntp_folder));
-	g_free (root);
+	nntp_folder->priv->state_file = g_strdup_printf ("%s.cmeta", storage_path);
 	g_free (storage_path);
+	camel_stateful_object_read_state (CAMEL_STATEFUL_OBJECT (nntp_folder));
 
 	camel_folder_take_folder_summary (folder, (CamelFolderSummary *) camel_nntp_summary_new (folder));
 

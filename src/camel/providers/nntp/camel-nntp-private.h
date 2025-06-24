@@ -31,6 +31,7 @@ struct _CamelNNTPFolderPrivate {
 	GMutex cache_lock;     /* for locking the cache object */
 
 	gboolean apply_filters;		/* persistent property */
+	gchar *state_file;
 };
 
 #define CAMEL_NNTP_FOLDER_LOCK(f, l) \
