@@ -70,7 +70,7 @@ header_param_list_decode type="Camel.HeaderParam?" parent="Camel.HeaderParam" na
 localtime_with_offset.tm type="Posix.tm"
 mktime_utc.tm type="Posix.tm"
 
-HeaderParam struct=false
+HeaderParam struct=false free_function="camel_header_param_list_free"
 HeaderParam.name unowned=false
 HeaderParam.value unowned=false
 header_param parent="Camel.HeaderParam" symbol_type="method" instance_idx=0 name="get_value"
@@ -85,8 +85,9 @@ HeaderAddress.v.addr unowned=false
 HeaderAddress.v.members type="Camel.HeaderAddress?"
 
 // They are already covered by FolderSummary.new_message_info_ or FolderSummary.get
-MessageInfo.new skip
-MessageInfo.new_from_headers skip
+MessageInfo.new symbol_type="function" name="new"
+MessageInfo.new_from_headers symbol_type="function" name="from_headers"
+MessageInfo.new_from_message symbol_type="function" name="from_message"
 MessageInfo.ref_summary type="Camel.FolderSummary?"
 MessageInfo.references type_arguments="uint64"
 
@@ -131,3 +132,4 @@ ServiceAuthType struct
 
 // Abstract classes can't have creation methods
 Sasl.new symbol_type="function" name="for_service"
+SaslClass.auth_type skip=false
