@@ -756,13 +756,12 @@ mbox_store_delete_folder_sync (CamelStore *store,
 
 	path = NULL;
 	if ((lf = camel_store_get_folder_sync (store, folder_name, 0, cancellable, NULL))) {
-		CamelObject *object = CAMEL_OBJECT (lf);
 		const gchar *state_filename;
 
-		state_filename = camel_object_get_state_filename (object);
+		state_filename = camel_folder_get_state_filename (lf);
 		path = g_strdup (state_filename);
 
-		camel_object_set_state_filename (object, NULL);
+		camel_folder_take_state_filename (lf, NULL);
 
 		g_object_unref (lf);
 	}

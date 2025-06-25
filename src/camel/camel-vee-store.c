@@ -279,13 +279,12 @@ vee_store_delete_folder_sync (CamelStore *store,
 
 	folder = camel_object_bag_get (camel_store_get_folders_bag (store), folder_name);
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		const gchar *state_filename;
 
-		state_filename = camel_object_get_state_filename (object);
+		state_filename = camel_folder_get_state_filename (folder);
 		if (state_filename != NULL) {
 			g_unlink (state_filename);
-			camel_object_set_state_filename (object, NULL);
+			camel_folder_take_state_filename (folder, NULL);
 		}
 
 		if ((camel_vee_folder_get_flags (CAMEL_VEE_FOLDER (folder)) & CAMEL_STORE_FOLDER_PRIVATE) == 0) {

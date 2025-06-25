@@ -47,14 +47,12 @@ struct _CamelIMAPXFolderPrivate {
 	gint64 last_full_update;
 };
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
 	PROP_MAILBOX,
-	PROP_APPLY_FILTERS = 0x2501,
-	PROP_CHECK_FOLDER = 0x2502,
-	PROP_LAST_FULL_UPDATE = 0x2503
+	PROP_APPLY_FILTERS,
+	PROP_CHECK_FOLDER,
+	PROP_LAST_FULL_UPDATE
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
@@ -1169,7 +1167,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT));
 
 	g_object_class_install_property (
 		object_class,
@@ -1181,7 +1179,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT));
 
 	g_object_class_install_property (
 		object_class,
@@ -1193,7 +1191,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			G_MININT64, G_MAXINT64, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT));
 
 	g_object_class_install_property (
 		object_class,
@@ -1206,6 +1204,10 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS));
+
+	camel_folder_class_map_legacy_property (folder_class, "apply-filters", 0x2501);
+	camel_folder_class_map_legacy_property (folder_class, "check-folder", 0x2502);
+	camel_folder_class_map_legacy_property (folder_class, "last-full-update", 0x2503);
 }
 
 static void
@@ -1322,9 +1324,8 @@ camel_imapx_folder_new (CamelStore *store,
 	}
 
 	state_file = g_build_filename (folder_dir, "cmeta", NULL);
-	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
-	g_free (state_file);
-	camel_object_state_read (CAMEL_OBJECT (folder));
+	camel_folder_take_state_filename (folder, g_steal_pointer (&state_file));
+	camel_folder_load_state (folder);
 
 	if (offline_limit_by_age)
 		when = camel_time_value_apply (when, offline_limit_unit, offline_limit_value);

@@ -45,11 +45,9 @@
 #define PATH_MAX _POSIX_PATH_MAX
 #endif
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_INDEX_BODY = 0x2400
+	PROP_INDEX_BODY
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
@@ -263,8 +261,7 @@ local_folder_rename (CamelFolder *folder,
 	lf->folder_path = camel_local_store_get_full_path (ls, newname);
 	lf->index_path = camel_local_store_get_meta_path (ls, newname, ".ibex");
 	statepath = camel_local_store_get_meta_path (ls, newname, ".cmeta");
-	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
-	g_free (statepath);
+	camel_folder_take_state_filename (folder, g_steal_pointer (&statepath));
 
 	/* FIXME: Poke some internals, sigh */
 	g_free (((CamelLocalSummary *) camel_folder_get_folder_summary (folder))->folder_path);
@@ -339,7 +336,7 @@ local_folder_synchronize_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	camel_object_state_write (CAMEL_OBJECT (lf));
+	camel_folder_save_state (folder);
 
 	/* if sync fails, we'll pass it up on exit through ex */
 	success = (camel_local_summary_sync (
@@ -402,7 +399,9 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT));
+
+	camel_folder_class_map_legacy_property (folder_class, "index-body", 0x2400);
 }
 
 static void
@@ -468,18 +467,11 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
 	lf->index_path = camel_local_store_get_meta_path (ls, full_name, ".ibex");
+	lf->flags = flags;
 	statepath = camel_local_store_get_meta_path (ls, full_name, ".cmeta");
 
-	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
-	g_free (statepath);
-
-	lf->flags = flags;
-
-	if (camel_object_state_read (CAMEL_OBJECT (lf)) == -1) {
-		/* No metadata - load defaults and persitify */
-		camel_local_folder_set_index_body (lf, TRUE);
-		camel_object_state_write (CAMEL_OBJECT (lf));
-	}
+	camel_folder_take_state_filename (folder, g_steal_pointer (&statepath));
+	camel_folder_load_state (folder);
 
 	/* XXX Canonicalizing the folder path portably is a messy affair.
 	 *     The proposed GLib function in [1] would be useful here.

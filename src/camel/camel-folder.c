@@ -22,10 +22,12 @@
 #include <string.h>
 
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-enumtypes.h"
+#include "camel-file-utils.h"
 #include "camel-filter-driver.h"
 #include "camel-folder.h"
 #include "camel-mempool.h"
@@ -46,6 +48,8 @@
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 typedef struct _FolderFilterData FolderFilterData;
+typedef struct _FolderStateMapping FolderStateMapping;
+typedef struct _CamelFolderClassPrivate CamelFolderClassPrivate;
 
 struct _CamelFolderPrivate {
 	CamelFolderSummary *summary;
@@ -68,6 +72,7 @@ struct _CamelFolderPrivate {
 	gchar *full_name;
 	gchar *display_name;
 	gchar *description;
+	gchar *state_filename;
 
 	CamelThreeState mark_seen;
 	gint mark_seen_timeout;
@@ -112,6 +117,16 @@ struct _FolderFilterData {
 	CamelFilterDriver *driver;
 };
 
+struct _FolderStateMapping {
+	const gchar *prop_name;
+	guint32 tag;
+};
+
+struct _CamelFolderClassPrivate {
+	FolderStateMapping state_mapping[10];
+	gint n_state_mapping;
+};
+
 enum {
 	PROP_0,
 	PROP_DESCRIPTION,
@@ -134,13 +149,43 @@ static guint signals[LAST_SIGNAL];
 
 static GParamSpec *properties[N_PROPS] = { NULL, };
 
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT,
+				  G_ADD_PRIVATE (CamelFolder)
+				  g_type_add_class_private (g_define_type_id, sizeof (CamelFolderClassPrivate)))
 
 G_DEFINE_BOXED_TYPE (CamelFolderQuotaInfo,
 		camel_folder_quota_info,
 		camel_folder_quota_info_clone,
 		camel_folder_quota_info_free)
 
+/* Legacy state file for binary data.
+ *
+ * version:uint32
+ *
+ * Version 0 of the file:
+ *
+ * version:uint32 = 0
+ * count:uint32				-- count of meta-data items
+ * ( name:string value:string ) *count		-- meta-data items
+ *
+ * Version 1 of the file adds:
+ * count:uint32					-- count of persistent properties
+ * ( tag:uing32 value:tagtype ) *count		-- persistent properties
+ */
+
+#define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
+
+enum camel_arg_t {
+	CAMEL_ARG_TYPE = 0xf0000000, /* type field for tags */
+	CAMEL_ARG_TAG = 0x0fffffff, /* tag field for args */
+
+	CAMEL_ARG_INT = 0x10000000, /* gint */
+	CAMEL_ARG_BOO = 0x50000000, /* bool */
+	CAMEL_ARG_3ST = 0x60000000, /* three-state */
+	CAMEL_ARG_I64 = 0x70000000  /* gint64 */
+};
+
+#define CAMEL_ARGV_MAX (20)
 
 static void
 folder_store_changes_job_cb (CamelSession *session,
@@ -1420,6 +1465,144 @@ folder_search_body_sync (CamelFolder *folder,
 	return FALSE;
 }
 
+static gboolean
+folder_read_legacy_state (CamelFolder *self,
+			  const gchar *state_filename)
+{
+	GValue gvalue = G_VALUE_INIT;
+	CamelFolderClass *folder_class;
+	CamelFolderClassPrivate *priv;
+	guint32 count, version;
+	guint ii, jj;
+	FILE *fp;
+	gchar magic[4];
+
+	fp = g_fopen (state_filename, "rb");
+	if (fp == NULL)
+		return TRUE;
+
+	if (fread (magic, 4, 1, fp) != 1
+	    || memcmp (magic, CAMEL_OBJECT_STATE_FILE_MAGIC, 4) != 0) {
+		fclose (fp);
+		return FALSE;
+	}
+
+	if (camel_file_util_decode_uint32 (fp, &version) == -1) {
+		fclose (fp);
+		return FALSE;
+	}
+
+	if (version > 2) {
+		fclose (fp);
+		return FALSE;
+	}
+
+	if (camel_file_util_decode_uint32 (fp, &count) == -1) {
+		fclose (fp);
+		return FALSE;
+	}
+
+	/* XXX Camel no longer supports meta-data in state
+	 *     files, so we're just eating dead data here. */
+	for (ii = 0; ii < count; ii++) {
+		gchar *name = NULL;
+		gchar *value = NULL;
+		gboolean success;
+
+		success =
+			camel_file_util_decode_string (fp, &name) == 0 &&
+			camel_file_util_decode_string (fp, &value) == 0;
+
+		g_free (name);
+		g_free (value);
+
+		if (!success) {
+			fclose (fp);
+			return FALSE;
+		}
+	}
+
+	if (version == 0) {
+		fclose (fp);
+		return TRUE;
+	}
+
+	if (camel_file_util_decode_uint32 (fp, &count) == -1) {
+		fclose (fp);
+		return TRUE;
+	}
+
+	if (count == 0 || count > 1024) {
+		/* Maybe it was just version 0 after all. */
+		fclose (fp);
+		return TRUE;
+	}
+
+	count = MIN (count, CAMEL_ARGV_MAX);
+
+	folder_class = CAMEL_FOLDER_GET_CLASS (self);
+	priv = G_TYPE_CLASS_GET_PRIVATE (folder_class, CAMEL_TYPE_FOLDER, CamelFolderClassPrivate);
+
+	for (ii = 0; ii < count; ii++) {
+		guint32 tag, v_uint32;
+		gint32 v_int32;
+		gint64 v_int64;
+
+		if (camel_file_util_decode_uint32 (fp, &tag) == -1)
+			goto exit;
+
+		/* Record state file values into GValues. */
+		switch (tag & CAMEL_ARG_TYPE) {
+			case CAMEL_ARG_BOO:
+				if (camel_file_util_decode_uint32 (fp, &v_uint32) == -1)
+					goto exit;
+				g_value_init (&gvalue, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&gvalue, (gboolean) v_uint32);
+				break;
+			case CAMEL_ARG_INT:
+				if (camel_file_util_decode_fixed_int32 (fp, &v_int32) == -1)
+					goto exit;
+				g_value_init (&gvalue, G_TYPE_INT);
+				g_value_set_int (&gvalue, v_int32);
+				break;
+			case CAMEL_ARG_3ST:
+				if (camel_file_util_decode_uint32 (fp, &v_uint32) == -1)
+					goto exit;
+				g_value_init (&gvalue, CAMEL_TYPE_THREE_STATE);
+				g_value_set_enum (&gvalue, (CamelThreeState) v_uint32);
+				break;
+			case CAMEL_ARG_I64:
+				if (camel_file_util_decode_gint64 (fp, &v_int64) == -1)
+					goto exit;
+				g_value_init (&gvalue, G_TYPE_INT64);
+				g_value_set_int64 (&gvalue, v_int64);
+				break;
+			default:
+				g_warn_if_reached ();
+				goto exit;
+		}
+
+		/* Now we have to match the legacy numeric CamelArg tag
+		 * value with a GObject property. */
+
+		tag &= CAMEL_ARG_TAG;  /* filter out the type code */
+
+		for (jj = 0; jj < priv->n_state_mapping; jj++) {
+			FolderStateMapping *fsm = &priv->state_mapping[jj];
+			if (tag == fsm->tag) {
+				g_object_set_property (G_OBJECT (self), fsm->prop_name, &gvalue);
+				break;
+			}
+		}
+
+		g_value_unset (&gvalue);
+	}
+
+ exit:
+	fclose (fp);
+	return TRUE;
+}
+
 static void
 camel_folder_class_init (CamelFolderClass *class)
 {
@@ -1528,7 +1711,7 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			CAMEL_PARAM_PERSISTENT);
+			CAMEL_FOLDER_PARAM_PERSISTENT);
 
 	/**
 	 * CamelFolder:mark-seen-timeout
@@ -1546,7 +1729,7 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			CAMEL_PARAM_PERSISTENT);
+			CAMEL_FOLDER_PARAM_PERSISTENT);
 
 	g_object_class_install_properties (object_class, N_PROPS, properties);
 
@@ -1589,6 +1772,9 @@ camel_folder_class_init (CamelFolderClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
+
+	camel_folder_class_map_legacy_property(class, "mark-seen", 5);
+	camel_folder_class_map_legacy_property(class, "mark-seen-timeout", 6);
 }
 
 static void
@@ -4569,6 +4755,303 @@ camel_folder_search_body_sync (CamelFolder *folder,
 	g_return_val_if_fail (klass->search_body_sync != NULL, FALSE);
 
 	return klass->search_body_sync (folder, words, out_uids, cancellable, error);
+}
+
+/**
+ * camel_folder_take_state_filename:
+ * @self: a #CamelFolder
+ * @filename: (transfer full): the state filename
+ *
+ * Set the current state filename.
+ *
+ * Since: 3.58
+ **/
+void
+camel_folder_take_state_filename (CamelFolder *self,
+				  gchar *filename)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (self));
+
+	g_free (self->priv->state_filename);
+	self->priv->state_filename = filename;
+}
+
+/**
+ * camel_folder_get_state_filename:
+ * @self: a #CamelFolder
+ *
+ * Get the current state filename.
+ *
+ * Returns: (nullable): the state filename.
+ *
+ * Since: 3.58
+ **/
+const gchar *
+camel_folder_get_state_filename (CamelFolder *self)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (self), NULL);
+
+	return self->priv->state_filename;
+}
+
+/**
+ * camel_folder_save_state:
+ * @self: a #CamelFolder
+ *
+ * Saves properties with #CAMEL_FOLDER_PARAM_PERMANENT into a state file previously
+ * set by camel_folder_take_state_filename(). The function does nothing when no
+ * state file is set.
+ *
+ * Any errors are reported on the terminal, because they are meant non-fatal and
+ * rather informative.
+ *
+ * Since: 3.58
+ **/
+void
+camel_folder_save_state (CamelFolder *self)
+{
+	GObjectClass *class;
+	GParamSpec **all_properties;
+	guint ii, n_properties = 0;
+	GError *local_error = NULL;
+	GKeyFile *key_file;
+	gchar *start_group;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (self));
+
+	if (!self->priv->state_filename)
+		return;
+
+	key_file = g_key_file_new ();
+	class = G_OBJECT_GET_CLASS (G_OBJECT (self));
+	all_properties = g_object_class_list_properties (class, &n_properties);
+	for (ii = 0; ii < n_properties; ii++) {
+		GParamSpec *pspec = all_properties[ii];
+		gboolean key_val_b = FALSE;
+		gint key_val_i = 0;
+		gint64 key_val_i64 = 0;
+		gchar *key_val_s = NULL;
+
+		if ((pspec->flags & CAMEL_FOLDER_PARAM_PERSISTENT) == 0)
+			continue;
+
+		switch (pspec->value_type) {
+		case G_TYPE_BOOLEAN:
+			g_object_get (G_OBJECT (self), pspec->name, &key_val_b, NULL);
+			if (((GParamSpecBoolean *)pspec)->default_value != key_val_b) {
+				g_key_file_set_boolean (key_file, g_type_name (pspec->owner_type), pspec->name, key_val_b);
+			}
+
+			break;
+		case G_TYPE_INT:
+			g_object_get (G_OBJECT (self), pspec->name, &key_val_i, NULL);
+			if (((GParamSpecInt *)pspec)->default_value != key_val_i) {
+				g_key_file_set_integer (key_file, g_type_name (pspec->owner_type), pspec->name, key_val_i);
+			}
+
+			break;
+		case G_TYPE_INT64:
+			g_object_get (G_OBJECT (self), pspec->name, &key_val_i64, NULL);
+			if (((GParamSpecInt64 *)pspec)->default_value != key_val_i64) {
+				g_key_file_set_int64 (key_file, g_type_name (pspec->owner_type), pspec->name, key_val_i64);
+			}
+
+			break;
+		case G_TYPE_STRING:
+			g_object_get (G_OBJECT (self), pspec->name, &key_val_s, NULL);
+			if (g_strcmp0 (((GParamSpecString *)pspec)->default_value, key_val_s)) {
+				g_key_file_set_string (key_file, g_type_name (pspec->owner_type), pspec->name, key_val_s);
+			}
+
+			g_free (key_val_s);
+			break;
+		default:
+			if (g_type_is_a (pspec->value_type, G_TYPE_ENUM)) {
+				gint key_val_e;
+				g_object_get (G_OBJECT (self), pspec->name, &key_val_e, NULL);
+				if (((GParamSpecEnum *)pspec)->default_value != key_val_e) {
+					GEnumValue *enum_value;
+					enum_value = g_enum_get_value (((GParamSpecEnum *)pspec)->enum_class, key_val_e);
+					if (enum_value) {
+						g_key_file_set_string (key_file, g_type_name (pspec->owner_type), pspec->name, enum_value->value_name);
+					}
+				}
+			} else {
+				g_warn_if_reached ();
+			}
+			break;
+		}
+	}
+
+	g_clear_pointer (&all_properties, g_free);
+	/* Do not save and empty file */
+	start_group = g_key_file_get_start_group (key_file);
+	if (!start_group) {
+		g_unlink (self->priv->state_filename);
+		g_clear_pointer (&key_file, g_key_file_free);
+		return;
+	}
+
+	g_clear_pointer (&start_group, g_free);
+	if (!g_key_file_save_to_file (key_file, self->priv->state_filename, &local_error)) {
+		g_warning ("Unable to save '%s': %s", self->priv->state_filename, local_error ? local_error->message : "Unknown error");
+		g_clear_error (&local_error);
+	}
+
+	g_clear_pointer (&key_file, g_key_file_free);
+	return;
+}
+
+/**
+ * camel_folder_load_state:
+ * @self: a #CamelFolder
+ *
+ * Loads properties with #CAMEL_FOLDER_PARAM_PERMANENT from a state file previously
+ * set by camel_folder_take_state_filename(). The function does nothing when no
+ * state file is set.
+ *
+ * Any errors are reported on the terminal, because they are meant non-fatal and
+ * rather informative.
+ *
+ * Since: 3.58
+ **/
+void
+camel_folder_load_state (CamelFolder *self)
+{
+	GObjectClass *class;
+	GParamSpec **all_properties;
+	guint ii, n_properties;
+	GError *local_error = NULL;
+	GKeyFile *key_file;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (self));
+
+	if (!self->priv->state_filename)
+		return;
+
+	key_file = g_key_file_new ();
+	if (!g_key_file_load_from_file (key_file, self->priv->state_filename, G_KEY_FILE_NONE, &local_error)) {
+		g_clear_pointer (&key_file, g_key_file_free);
+		if (!g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+			if (folder_read_legacy_state (self, self->priv->state_filename)) {
+				camel_folder_save_state (self);
+			} else {
+				g_warning ("Unable to read state file '%s'", self->priv->state_filename);
+			}
+		}
+
+		g_clear_error (&local_error);
+		return;
+	}
+
+	class = G_OBJECT_GET_CLASS (G_OBJECT (self));
+	all_properties = g_object_class_list_properties (class, &n_properties);
+	for (ii = 0; ii < n_properties; ii++) {
+		GParamSpec *pspec = all_properties[ii];
+		GValue value = G_VALUE_INIT;
+		gboolean key_val_b;
+		gint key_val_i;
+		gint64 key_val_i64;
+		gchar *key_val_s;
+
+		if ((pspec->flags & CAMEL_FOLDER_PARAM_PERSISTENT) == 0)
+			continue;
+
+		g_value_init (&value, pspec->value_type);
+		switch (pspec->value_type) {
+		case G_TYPE_BOOLEAN:
+			key_val_b = g_key_file_get_boolean (key_file, g_type_name (pspec->owner_type), pspec->name, &local_error);
+			if (!local_error) {
+				g_value_set_boolean (&value, key_val_b);
+				g_object_set_property (G_OBJECT (self), pspec->name, &value);
+			}
+
+			g_clear_error (&local_error);
+			break;
+		case G_TYPE_INT:
+			key_val_i = g_key_file_get_integer (key_file, g_type_name (pspec->owner_type), pspec->name, &local_error);
+			if (!local_error) {
+				g_value_set_int (&value, key_val_i);
+				g_object_set_property (G_OBJECT (self), pspec->name, &value);
+			}
+
+			g_clear_error (&local_error);
+			break;
+		case G_TYPE_INT64:
+			key_val_i64 = g_key_file_get_int64 (key_file, g_type_name (pspec->owner_type), pspec->name, &local_error);
+			if (!local_error) {
+				g_value_set_int64 (&value, key_val_i64);
+				g_object_set_property (G_OBJECT (self), pspec->name, &value);
+			}
+
+			g_clear_error (&local_error);
+			break;
+		case G_TYPE_STRING:
+			key_val_s = g_key_file_get_string (key_file, g_type_name (pspec->owner_type), pspec->name, &local_error);
+			if (!local_error) {
+				g_value_take_string (&value, g_steal_pointer (&key_val_s));
+				g_object_set_property (G_OBJECT (self), pspec->name, &value);
+			}
+
+			g_clear_error (&local_error);
+			break;
+		default:
+			if (g_type_is_a (pspec->value_type, G_TYPE_ENUM)) {
+				gchar *enum_name = g_key_file_get_string (key_file, g_type_name (pspec->owner_type), pspec->name, &local_error);
+				if (!local_error) {
+					GEnumValue *enum_value;
+
+					enum_value = g_enum_get_value_by_name (((GParamSpecEnum *)pspec)->enum_class, enum_name);
+					if (enum_value) {
+						g_value_set_enum (&value, enum_value->value);
+						g_object_set_property (G_OBJECT (self), pspec->name, &value);
+					}
+
+					g_clear_pointer (&enum_name, g_free);
+				}
+
+				g_clear_error (&local_error);
+			} else {
+				g_warn_if_reached ();
+			}
+			break;
+		}
+	}
+
+	g_clear_pointer (&key_file, g_key_file_free);
+	g_free (all_properties);
+	return;
+}
+
+/**
+ * camel_folder_class_map_legacy_property:
+ * @folder_class: the class to add the property mapping
+ * @prop_name: (transfer none): the static property name
+ * @tag: the legacy property tag
+ *
+ * Add the legacy property binding to allow opening legacy binary file states.
+ *
+ * Since: 3.58
+ **/
+void
+camel_folder_class_map_legacy_property (CamelFolderClass *folder_class,
+					const gchar *prop_name,
+					gint32 tag)
+{
+	CamelFolderClassPrivate *priv;
+	FolderStateMapping *fsm;
+
+	priv = G_TYPE_CLASS_GET_PRIVATE (folder_class, CAMEL_TYPE_FOLDER, CamelFolderClassPrivate);
+	if (priv->n_state_mapping >= G_N_ELEMENTS (priv->state_mapping)) {
+		g_warning ("Cannot set legacy property map of '%s' on '%s': Too many legacy properties mapped.",
+			prop_name, g_type_name_from_class ((GTypeClass *) folder_class));
+		return;
+	}
+
+	fsm = &priv->state_mapping[priv->n_state_mapping];
+	fsm->prop_name = prop_name;
+	fsm->tag = tag;
+	priv->n_state_mapping++;
 }
 
 G_DEFINE_BOXED_TYPE (CamelFolderChangeInfo, camel_folder_change_info, camel_folder_change_info_copy, camel_folder_change_info_free)
