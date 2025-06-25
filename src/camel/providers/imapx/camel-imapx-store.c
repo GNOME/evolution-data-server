@@ -2214,7 +2214,6 @@ imapx_store_get_junk_folder_sync (CamelStore *store,
 	folder = store_class->get_junk_folder_sync (store, cancellable, error);
 
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		CamelService *service;
 		const gchar *user_cache_dir;
 		gchar *state;
@@ -2225,10 +2224,9 @@ imapx_store_get_junk_folder_sync (CamelStore *store,
 		state = g_build_filename (
 			user_cache_dir, "system", "Junk.cmeta", NULL);
 
-		camel_object_set_state_filename (object, state);
-		g_free (state);
+		camel_folder_take_state_filename (folder, g_steal_pointer (&state));
 		/* no defaults? */
-		camel_object_state_read (object);
+		camel_folder_load_state (folder);
 	}
 
 	return folder;
@@ -2262,7 +2260,6 @@ imapx_store_get_trash_folder_sync (CamelStore *store,
 	folder = store_class->get_trash_folder_sync (store, cancellable, error);
 
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		CamelService *service;
 		const gchar *user_cache_dir;
 		gchar *state;
@@ -2273,10 +2270,9 @@ imapx_store_get_trash_folder_sync (CamelStore *store,
 		state = g_build_filename (
 			user_cache_dir, "system", "Trash.cmeta", NULL);
 
-		camel_object_set_state_filename (object, state);
-		g_free (state);
+		camel_folder_take_state_filename (folder, g_steal_pointer (&state));
 		/* no defaults? */
-		camel_object_state_read (object);
+		camel_folder_load_state (folder);
 	}
 
 	return folder;

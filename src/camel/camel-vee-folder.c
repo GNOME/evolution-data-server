@@ -54,11 +54,9 @@ struct _CamelVeeFolderPrivate {
 	gchar *expression;	/* query expression */
 };
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_AUTO_UPDATE = 0x2401
+	PROP_AUTO_UPDATE
 };
 
 enum {
@@ -1341,7 +1339,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT));
 
 	/* private signal, to notify other search folders (which contain this one) that its setup like the expression
 	   or subfolders changed, thus the listener might need to rebuild its content */
@@ -1371,6 +1369,8 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 		G_TYPE_NONE, 0,
 		G_TYPE_NONE);
 	#endif /* ENABLE_MAINTAINER_MODE */
+
+	camel_folder_class_map_legacy_property (folder_class, "auto-update", 0x2401);
 }
 
 static void
@@ -1422,14 +1422,13 @@ camel_vee_folder_construct (CamelVeeFolder *vf,
 		filename = g_strconcat (folder_name, ".cmeta", NULL);
 		state_file = g_build_filename (user_data_dir, filename, NULL);
 
-		camel_object_set_state_filename (CAMEL_OBJECT (vf), state_file);
+		camel_folder_take_state_filename (folder, g_steal_pointer (&state_file));
 
-		g_free (state_file);
 		g_free (filename);
 		g_free (folder_name);
 
 		/* set/load persistent state */
-		camel_object_state_read (CAMEL_OBJECT (vf));
+		camel_folder_load_state (folder);
 	}
 }
 

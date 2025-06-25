@@ -28,10 +28,10 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-mime-utils.h"
-#include "camel-object.h"
 #include "camel-service.h"
 #include "camel-string-utils.h"
 #include "camel-url.h"
+#include "camel-utils.h"
 
 static void copy_param (GQuark key_id, gpointer data, gpointer user_data);
 static void output_param (GQuark key_id, gpointer data, gpointer user_data);

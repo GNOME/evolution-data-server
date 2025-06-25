@@ -23,6 +23,8 @@
 #include "camel-mime-utils.h"
 #include "camel-utils.h"
 
+G_DEFINE_QUARK (camel-error-quark, camel_error)
+
 /**
  * camel_util_bdata_get_number:
  * @bdata_ptr: a backend specific data (bdata) pointer

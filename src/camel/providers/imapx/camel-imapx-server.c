@@ -5625,7 +5625,7 @@ camel_imapx_server_check_folder_last_full_update (CamelFolder *folder)
 		return FALSE;
 
 	camel_imapx_folder_set_last_full_update (CAMEL_IMAPX_FOLDER (folder), now);
-	camel_object_state_write (CAMEL_OBJECT (folder));
+	camel_folder_save_state (folder);
 
 	return TRUE;
 }

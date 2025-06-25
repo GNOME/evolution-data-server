@@ -288,17 +288,15 @@ local_store_get_junk_folder_sync (CamelStore *store,
 		get_junk_folder_sync (store, cancellable, error);
 
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state;
 
 		state = camel_local_store_get_meta_path (
 			CAMEL_LOCAL_STORE (store),
 			CAMEL_VJUNK_NAME, ".cmeta");
-		camel_object_set_state_filename (object, state);
-		g_free (state);
+		camel_folder_take_state_filename (folder, g_steal_pointer (&state));
 
 		/* no defaults? */
-		camel_object_state_read (object);
+		camel_folder_load_state (folder);
 	}
 
 	return folder;
@@ -316,17 +314,15 @@ local_store_get_trash_folder_sync (CamelStore *store,
 		get_trash_folder_sync (store, cancellable, error);
 
 	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state;
 
 		state = camel_local_store_get_meta_path (
 			CAMEL_LOCAL_STORE (store),
 			CAMEL_VTRASH_NAME, ".cmeta");
-		camel_object_set_state_filename (object, state);
-		g_free (state);
+		camel_folder_take_state_filename (folder, g_steal_pointer (&state));
 
 		/* no defaults? */
-		camel_object_state_read (object);
+		camel_folder_load_state (folder);
 	}
 
 	return folder;
@@ -446,13 +442,12 @@ local_store_delete_folder_sync (CamelStore *store,
 	str = NULL;
 
 	if ((lf = camel_store_get_folder_sync (store, folder_name, 0, cancellable, NULL))) {
-		CamelObject *object = CAMEL_OBJECT (lf);
 		const gchar *state_filename;
 
-		state_filename = camel_object_get_state_filename (object);
+		state_filename = camel_folder_get_state_filename (lf);
 		str = g_strdup (state_filename);
 
-		camel_object_set_state_filename (object, NULL);
+		camel_folder_take_state_filename (lf, NULL);
 
 		g_object_unref (lf);
 	}

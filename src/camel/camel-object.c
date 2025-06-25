@@ -434,8 +434,6 @@ camel_object_init (CamelObject *object)
 	object->priv = camel_object_get_instance_private (object);
 }
 
-G_DEFINE_QUARK (camel-error-quark, camel_error)
-
 /**
  * camel_object_state_read:
  * @object: a #CamelObject

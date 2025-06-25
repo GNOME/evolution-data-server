@@ -32,11 +32,9 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
-/* The custom property ID is a CamelArg artifact.
- * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_APPLY_FILTERS = 0x2501
+	PROP_APPLY_FILTERS
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -744,7 +742,9 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			CAMEL_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT));
+
+	camel_folder_class_map_legacy_property (folder_class, "apply-filters", 0x2501);
 }
 
 static void
@@ -798,9 +798,9 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	storage_path = g_build_filename (user_cache_dir, folder_name, NULL);
 	root = g_strdup_printf ("%s.cmeta", storage_path);
-	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);
-	camel_object_state_read (CAMEL_OBJECT (nntp_folder));
-	g_free (root);
+	camel_folder_take_state_filename (folder, g_steal_pointer (&root));
+	camel_folder_load_state (folder);
+
 	g_free (storage_path);
 
 	camel_folder_take_folder_summary (folder, (CamelFolderSummary *) camel_nntp_summary_new (folder));

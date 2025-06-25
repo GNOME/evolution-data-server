@@ -49,13 +49,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_OBJECT, CamelObjectClass))
 
-/**
- * CAMEL_ERROR:
- *
- * Since: 2.32
- **/
-#define CAMEL_ERROR \
-	(camel_error_quark ())
 
 G_BEGIN_DECLS
 
@@ -79,15 +72,6 @@ typedef enum {
 	CAMEL_PARAM_PERSISTENT = 1 << (G_PARAM_USER_SHIFT + 0)
 } CamelParamFlags;
 
-/**
- * CamelError:
- * @CAMEL_ERROR_GENERIC: a generic (fallback) error code
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_ERROR_GENERIC		/* lazy fallback error */
-} CamelError;
 
 struct _CamelObject {
 	GObject parent;
@@ -107,7 +91,6 @@ struct _CamelObjectClass {
 };
 
 GType		camel_object_get_type		(void);
-GQuark		camel_error_quark		(void) G_GNUC_CONST;
 gint		camel_object_state_read		(CamelObject *object);
 gint		camel_object_state_write	(CamelObject *object);
 const gchar *	camel_object_get_state_filename	(CamelObject *object);

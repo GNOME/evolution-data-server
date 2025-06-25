@@ -31,11 +31,11 @@
 
 #include "camel-debug.h"
 #include "camel-enums.h"
-#include "camel-object.h"
 #include "camel-operation.h"
 #include "camel-search-utils.h"
 #include "camel-store-search-private.h"
 #include "camel-string-utils.h"
+#include "camel-utils.h"
 
 #include "camel-db.h"
 

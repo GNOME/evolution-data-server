@@ -33,9 +33,9 @@
 #include "camel-mime-parser.h"
 #include "camel-mime-part.h"
 #include "camel-multipart-signed.h"
-#include "camel-object.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
+#include "camel-utils.h"
 
 struct _CamelMultipartSignedPrivate {
 	/* These are the client visible parts,

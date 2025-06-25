@@ -94,6 +94,21 @@ typedef enum {
 } CamelFolderError;
 
 /**
+ * CamelFolderParamFlags:
+ * @CAMEL_FOLDER_PARAM_PERSISTENT:
+ *     The parameter is persistent, which means its value is saved to
+ *     the disk between sessions.
+ *
+ * These flags extend #GParamFlags.  Most of the time you will use them
+ * in conjunction with g_object_class_install_property().
+ *
+ * Since: 3.58
+ **/
+typedef enum {
+	CAMEL_FOLDER_PARAM_PERSISTENT = 1 << (G_PARAM_USER_SHIFT + 0)
+} CamelFolderParamFlags;
+
+/**
  * CamelFetchType:
  * @CAMEL_FETCH_OLD_MESSAGES: fetch old messages
  * @CAMEL_FETCH_NEW_MESSAGES: fetch new messages
@@ -520,6 +535,15 @@ gboolean	camel_folder_search_body_sync	(CamelFolder *folder,
 						 GPtrArray **out_uids, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_folder_take_state_filename (CamelFolder *self,
+						  gchar *filename);
+const gchar *	camel_folder_get_state_filename (CamelFolder *self);
+void		camel_folder_save_state	(CamelFolder *self);
+void		camel_folder_load_state	(CamelFolder *self);
+void		camel_folder_class_map_legacy_property
+						(CamelFolderClass *folder_class,
+						 const gchar *prop_name,
+						 gint32 tag);
 
 /* update functions for change info */
 GType		camel_folder_change_info_get_type
