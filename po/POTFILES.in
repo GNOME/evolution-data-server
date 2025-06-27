@@ -95,7 +95,6 @@ src/camel/camel-multipart-encrypted.c
 src/camel/camel-multipart-signed.c
 src/camel/camel-net-utils.c
 src/camel/camel-network-service.c
-src/camel/camel-object.c
 src/camel/camel-offline-folder.c
 src/camel/camel-offline-store.c
 src/camel/camel-operation.c

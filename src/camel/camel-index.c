@@ -26,7 +26,6 @@
 #include <sys/stat.h>
 
 #include "camel-index.h"
-#include "camel-object.h"
 
 #define w(x)
 #define io(x)

@@ -32,7 +32,6 @@
 
 #include "camel-block-file.h"
 #include "camel-mempool.h"
-#include "camel-object.h"
 #include "camel-partition-table.h"
 #include "camel-text-index.h"
 

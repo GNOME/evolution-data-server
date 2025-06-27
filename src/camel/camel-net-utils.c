@@ -36,7 +36,6 @@
 #include <wspiapi.h>
 #endif
 #endif
-#include "camel-object.h"
 #include "camel-operation.h"
 #include "camel-service.h"
 #include "camel-hostname-utils.h"
