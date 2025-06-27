@@ -420,12 +420,12 @@ camel_vee_summary_to_match_index (CamelVeeSummary *self)
  * Returns a new #GHashTable of the #CamelFolder-s as the key of all the subfolders
  * for which the @self has any message info.
  *
- * Returns: (transfer container) (element-type CamelFolder NULL): all subfolders
+ * Returns: (transfer full) (element-type CamelFolder CamelFolder): all subfolders
  *    the @self has any message info from
  *
  * Since: 3.58
  **/
-GHashTable * /* CamelFolder *~>NULL */
+GHashTable *
 camel_vee_summary_dup_subfolders (CamelVeeSummary *self)
 {
 	CamelFolderSummary *summary;

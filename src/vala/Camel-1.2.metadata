@@ -53,6 +53,8 @@ FolderQuotaInfo.next type="Camel.FolderQuotaInfo?"
 FolderSummary.get_folder type="unowned Camel.Folder"
 FolderSummary.header_load.store type="Camel.Store"
 
+VeeSummary.dup_subfolders skip=false type="GLib.GenericSet<Camel.Folder>"
+
 // Recursive structs are not allowed
 MessageContentInfo.next type="Camel.MessageContentInfo?"
 MessageContentInfo.childs type="Camel.MessageContentInfo?"
