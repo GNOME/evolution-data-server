@@ -1,3 +1,74 @@
+Evolution-Data-Server 3.57.1 2025-06-27
+---------------------------------------
+
+* The libcamel API had been changed in several ways, some deprecated
+  symbols had been removed, some API functions renamed and their return
+  values changed (mostly from "transfer full" to "transfer container").
+
+Bug Fixes:
+	I#592 - Handle changed server pool in WebDAV collection sources
+	I#593 - CamelDataWrapper: Correct return value of size calculate functions (dagosuhn)
+	I#597 - GOA EWS: Fallback to likely EWS host URL when autodicovery fails
+	M!170 - docs: Update URL to libsoup docs (Simon McVittie)
+	M!176 - docs: Add docs_url argument (Corentin Noël)
+	evo-I#2434 - alarm-notify: Should show a visual notification to accompany notification sounds (John Lorentzson)
+
+Miscellaneous:
+	e-data-server-util: Fix a compiler warning about 'const' qualifier discard
+	libecal: Add utility functions to read and convert time to given timezone
+	test-cal-utils: Add a simple additional check
+	libecal: Add an ECalComponentBag object
+	ESourceRegistry: Reject to create an instance when D-Bus service is not available
+	Misc: Correct developer documentation annotations
+	CamelService: Add private construct-only "with-proxy-resolver" property
+	Camel: Add CamelStoreDB and CamelStoreSearch and use them
+	Camel: Rework Search folders
+	CamelFilterDriver: Remove unused "global variables"
+	Camel: Rename camel_folder_summary_get_array() to camel_folder_summary_dup_uids()
+	Camel: Rename camel_folder_get_uids() to camel_folder_dup_uids()
+	Camel: Remove camel_folder_get_summary()
+	Camel: Rename camel_folder_get_uncached_uids() to camel_folder_dup_uncached_uids()
+	Camel: Rename camel_folder_summary_get_changed() to camel_folder_summary_dup_changed()
+	Camel: Rename camel_uid_cache_get_new_uids() to camel_uid_cache_dup_new_uids()
+	Camel: Rename CAMEL_DB_FILE to CAMEL_STORE_DB_FILE
+	CamelDB: Remove unneeded public defines
+	CamelProvider: Remove autodetect function (Corentin Noël)
+	lib-camel-test-utils: Reference CamelProvider struct members by name in initialization
+	Camel: Remove deprecated symbols from CamelStoreSummary (Corentin Noël)
+	Camel: Remove deprecated symbols from CamelOfflineSettings (Corentin Noël)
+	CamelStoreDB: Allow empty folder names
+	CamelStoreGetFolderFlags: Remove deprecated and unused flag (Corentin Noël)
+	CamelFolder: Undeprecate get/set_message_flags (Corentin Noël)
+	CamelFolder: Remove deprecated functions (Corentin Noël)
+	CamelFolderThread: Use the oldest message as a parent of a leaf-only subthread
+	CamelFolder: Add nullable annotation to camel_folder_get_folder_summary (Corentin Noël)
+	CamelFolder: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	CamelFolderSummary: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	CamelMessageInfo: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	CamelMimePart: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	CamelIMAPXMessageInfo: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	CamelFolderThread: Fix a crash caused by the previous commit
+	Camel: Remove extra camel_pstring_free() calls
+	vala: Fix several warnings thrown by Camel (Corentin Noël)
+	CamelFolderSummary: Remove prepare-fetch-all signal (Corentin Noël)
+	alarm-notify: Skip reminders for cancelled components
+	CamelURL: Add glib-object to the header (Corentin Noël)
+	CamelService: Rebase on GObject (Corentin Noël)
+	CamelVeeStore: Remove unused property (Corentin Noël)
+	CamelIMAPXCommand: Remove leftover assignation to CamelObject (Corentin Noël)
+
+Translations:
+	Asier Saratsua Garmendia (eu)
+	Álvaro Burns (pt_BR)
+	Balázs Meskó (hu)
+	Boyuan Yang (zh_CN)
+	Ekaterine Papava (ka)
+	Emin Tufan Çetin (tr)
+	Jordi Mas (ca)
+	Jose Riha (sk)
+	Martin (sl)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.56.0 2025-03-14
 ---------------------------------------
 
