@@ -149,7 +149,7 @@ static guint signals[LAST_SIGNAL];
 
 static GParamSpec *properties[N_PROPS] = { NULL, };
 
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT,
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (CamelFolder, camel_folder, G_TYPE_OBJECT,
 				  G_ADD_PRIVATE (CamelFolder)
 				  g_type_add_class_private (g_define_type_id, sizeof (CamelFolderClassPrivate)))
 

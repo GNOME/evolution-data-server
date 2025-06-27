@@ -26,7 +26,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "camel-object.h"
 #include "camel-text-index.h"
 
 extern gint camel_init (const gchar *certdb_dir, gboolean nss_init);

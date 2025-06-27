@@ -7,10 +7,6 @@ FilterGetFolderFunc skip=false
 FilterDriver.set* skip=false
 
 // We need to skip the methods because the signals and virtual methods have the same name
-Object.state_read#method skip
-Object.state_read.fp type="GLib.FileStream"
-Object.state_write#method skip
-Object.state_write.fp type="GLib.FileStream"
 Operation.push_message#signal name="pushed_message"
 Operation.push_message#function skip=false symbol_type="method" instance_idx=0 printf_format=true
 Operation.pop_message#function symbol_type="method" instance_idx=0
