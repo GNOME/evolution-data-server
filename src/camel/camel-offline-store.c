@@ -40,8 +40,11 @@ struct _CamelOfflineStorePrivate {
 
 enum {
 	PROP_0,
-	PROP_ONLINE
+	PROP_ONLINE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
 
@@ -165,10 +168,10 @@ offline_store_notify (GObject *object,
                       GParamSpec *pspec)
 {
 	if (g_strcmp0 (pspec->name, "host-reachable") == 0)
-		g_object_notify (object, "online");
+		g_object_notify_by_pspec (object, properties[PROP_ONLINE]);
 	else if (g_strcmp0 (pspec->name, "connection-status") == 0 &&
 		 camel_service_get_connection_status (CAMEL_SERVICE (object)) == CAMEL_SERVICE_DISCONNECTED) {
-		g_object_notify (object, "online");
+		g_object_notify_by_pspec (object, properties[PROP_ONLINE]);
 	}
 }
 
@@ -190,15 +193,19 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->get_can_auto_save_changes = offline_store_get_can_auto_save_changes;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ONLINE,
+	/**
+	 * CamelOfflineStore:online
+	 *
+	 * Whether the store is online
+	 **/
+	properties[PROP_ONLINE] =
 		g_param_spec_boolean (
-			"online",
-			"Online",
-			"Whether the store is online",
+			"online", NULL, NULL,
 			FALSE,
-			G_PARAM_READABLE));
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -288,7 +295,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	if (!store_is_online) {
 		store->priv->online = online;
 
-		g_object_notify (G_OBJECT (store), "online");
+		g_object_notify_by_pspec (G_OBJECT (store), properties[PROP_ONLINE]);
 
 		if (camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTING)
 			return TRUE;
@@ -361,7 +368,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	if (store->priv->online != online) {
 		store->priv->online = online;
 
-		g_object_notify (G_OBJECT (store), "online");
+		g_object_notify_by_pspec (G_OBJECT (store), properties[PROP_ONLINE]);
 	}
 
 	return success;

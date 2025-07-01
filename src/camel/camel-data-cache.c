@@ -59,8 +59,11 @@ struct _CamelDataCachePrivate {
 enum {
 	PROP_0,
 	PROP_PATH,
-	PROP_EXPIRE_ENABLED
+	PROP_EXPIRE_ENABLED,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelDataCache, camel_data_cache, G_TYPE_OBJECT)
 
@@ -134,29 +137,35 @@ camel_data_cache_class_init (CamelDataCacheClass *class)
 	object_class->get_property = data_cache_get_property;
 	object_class->finalize = data_cache_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PATH,
+	/**
+	 * CamelDataCache:path
+	 *
+	 * Path
+	 **/
+	properties[PROP_PATH] =
 		g_param_spec_string (
-			"path",
-			"Path",
-			NULL,
+			"path", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_EXPIRE_ENABLED,
+	/**
+	 * CamelDataCache:expire-enabled
+	 *
+	 * Expire Enabled
+	 **/
+	properties[PROP_EXPIRE_ENABLED] =
 		g_param_spec_boolean (
-			"expire-enabled",
-			"Expire Enabled",
-			NULL,
+			"expire-enabled", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -242,7 +251,7 @@ camel_data_cache_set_path (CamelDataCache *cdc,
 	g_free (cdc->priv->path);
 	cdc->priv->path = g_strdup (path);
 
-	g_object_notify (G_OBJECT (cdc), "path");
+	g_object_notify_by_pspec (G_OBJECT (cdc), properties[PROP_PATH]);
 }
 
 /**
@@ -293,7 +302,7 @@ camel_data_cache_set_expire_enabled (CamelDataCache *cdc,
 
 	cdc->priv->expire_enabled = expire_enabled;
 
-	g_object_notify (G_OBJECT (cdc), "expire-enabled");
+	g_object_notify_by_pspec (G_OBJECT (cdc), properties[PROP_EXPIRE_ENABLED]);
 }
 
 /**

@@ -34,8 +34,11 @@ enum {
 	PROP_STAY_SYNCHRONIZED,
 	PROP_LIMIT_BY_AGE,
 	PROP_LIMIT_UNIT,
-	PROP_LIMIT_VALUE
+	PROP_LIMIT_VALUE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelOfflineSettings,
@@ -125,60 +128,67 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 	object_class->set_property = offline_settings_set_property;
 	object_class->get_property = offline_settings_get_property;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_STAY_SYNCHRONIZED,
+	/**
+	 * CamelOfflineSettings:stay-synchronized
+	 *
+	 * Stay synchronized with the remote server
+	 **/
+	properties[PROP_STAY_SYNCHRONIZED] =
 		g_param_spec_boolean (
-			"stay-synchronized",
-			"Stay Synchronized",
-			"Stay synchronized with the remote server",
+			"stay-synchronized", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LIMIT_BY_AGE,
+	/**
+	 * CamelOfflineSettings:limit-by-age
+	 *
+	 * Whether to limit what will be synchronized by message date
+	 **/
+	properties[PROP_LIMIT_BY_AGE] =
 		g_param_spec_boolean (
-			"limit-by-age",
-			"Limit By Age",
-			"Whether to limit what will be synchronized by message date",
+			"limit-by-age", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LIMIT_UNIT,
+	/**
+	 * CamelOfflineSettings:limit-unit
+	 *
+	 * A unit for the limit-value
+	 **/
+	properties[PROP_LIMIT_UNIT] =
 		g_param_spec_enum (
-			"limit-unit",
-			"Limit Unit",
-			"A unit for the limit-value",
+			"limit-unit", NULL, NULL,
 			CAMEL_TYPE_TIME_UNIT,
 			CAMEL_TIME_UNIT_YEARS,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LIMIT_VALUE,
+	/**
+	 * CamelOfflineSettings:limit-value
+	 *
+	 * How many days/weeks/months/years to download into the local cache,
+	 * if limit-by-age is set to %TRUE
+	 **/
+	properties[PROP_LIMIT_VALUE] =
 		g_param_spec_int (
-			"limit-value",
-			"Limit Value",
-			"How many days/weeks/months/years to download into the local cache, if limit-by-age is set to TRUE",
+			"limit-value", NULL, NULL,
 			1,
 			G_MAXINT,
 			1,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -229,7 +239,7 @@ camel_offline_settings_set_stay_synchronized (CamelOfflineSettings *settings,
 
 	settings->priv->stay_synchronized = stay_synchronized;
 
-	g_object_notify (G_OBJECT (settings), "stay-synchronized");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_STAY_SYNCHRONIZED]);
 }
 
 /**
@@ -270,7 +280,7 @@ camel_offline_settings_set_limit_by_age (CamelOfflineSettings *settings,
 
 	settings->priv->limit_by_age = limit_by_age;
 
-	g_object_notify (G_OBJECT (settings), "limit-by-age");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_LIMIT_BY_AGE]);
 }
 
 /**
@@ -310,7 +320,7 @@ camel_offline_settings_set_limit_unit (CamelOfflineSettings *settings,
 
 	settings->priv->limit_unit = limit_unit;
 
-	g_object_notify (G_OBJECT (settings), "limit-unit");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_LIMIT_UNIT]);
 }
 
 /**
@@ -349,5 +359,5 @@ camel_offline_settings_set_limit_value (CamelOfflineSettings *settings,
 
 	settings->priv->limit_value = limit_value;
 
-	g_object_notify (G_OBJECT (settings), "limit-value");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_LIMIT_VALUE]);
 }

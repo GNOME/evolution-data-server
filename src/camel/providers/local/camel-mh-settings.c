@@ -23,8 +23,11 @@ struct _CamelMhSettingsPrivate {
 
 enum {
 	PROP_0,
-	PROP_USE_DOT_FOLDERS
+	PROP_USE_DOT_FOLDERS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelMhSettings,
@@ -75,18 +78,21 @@ camel_mh_settings_class_init (CamelMhSettingsClass *class)
 	object_class->set_property = mh_settings_set_property;
 	object_class->get_property = mh_settings_get_property;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_DOT_FOLDERS,
+	/**
+	 * CamelMhSettings:use-dot-folders
+	 *
+	 * Update the exmh .folders file
+	 **/
+	properties[PROP_USE_DOT_FOLDERS] =
 		g_param_spec_boolean (
-			"use-dot-folders",
-			"Use Dot Folders",
-			"Update the exmh .folders file",
+			"use-dot-folders", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -137,5 +143,5 @@ camel_mh_settings_set_use_dot_folders (CamelMhSettings *settings,
 
 	settings->priv->use_dot_folders = use_dot_folders;
 
-	g_object_notify (G_OBJECT (settings), "use-dot-folders");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_DOT_FOLDERS]);
 }

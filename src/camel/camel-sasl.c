@@ -58,8 +58,11 @@ enum {
 	PROP_AUTHENTICATED,
 	PROP_MECHANISM,
 	PROP_SERVICE,
-	PROP_SERVICE_NAME
+	PROP_SERVICE_NAME,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelSasl, camel_sasl, G_TYPE_OBJECT)
 
@@ -282,49 +285,59 @@ camel_sasl_class_init (CamelSaslClass *class)
 	object_class->dispose = sasl_dispose;
 	object_class->finalize = sasl_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTHENTICATED,
+	/**
+	 * CamelSasl:authenticated
+	 *
+	 * Authenticated
+	 **/
+	properties[PROP_AUTHENTICATED] =
 		g_param_spec_boolean (
-			"authenticated",
-			"Authenticated",
-			NULL,
+			"authenticated", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MECHANISM,
+	/**
+	 * CamelSasl:mechanism
+	 *
+	 * Mechanism
+	 **/
+	properties[PROP_MECHANISM] =
 		g_param_spec_string (
-			"mechanism",
-			"Mechanism",
-			NULL,
+			"mechanism", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVICE,
+	/**
+	 * CamelSasl:service
+	 *
+	 * Service
+	 **/
+	properties[PROP_SERVICE] =
 		g_param_spec_object (
-			"service",
-			"Service",
-			NULL,
+			"service", NULL, NULL,
 			CAMEL_TYPE_SERVICE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVICE_NAME,
+	/**
+	 * CamelSasl:service-name
+	 *
+	 * Service Name
+	 **/
+	properties[PROP_SERVICE_NAME] =
 		g_param_spec_string (
-			"service-name",
-			"Service Name",
-			NULL,
+			"service-name", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -524,7 +537,7 @@ camel_sasl_set_authenticated (CamelSasl *sasl,
 
 	sasl->priv->authenticated = authenticated;
 
-	g_object_notify (G_OBJECT (sasl), "authenticated");
+	g_object_notify_by_pspec (G_OBJECT (sasl), properties[PROP_AUTHENTICATED]);
 }
 
 /**

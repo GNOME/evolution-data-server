@@ -38,8 +38,11 @@ struct _CamelLocalStorePrivate {
 
 enum {
 	PROP_0,
-	PROP_NEED_SUMMARY_CHECK
+	PROP_NEED_SUMMARY_CHECK,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelLocalStore, camel_local_store, CAMEL_TYPE_STORE)
 
@@ -675,18 +678,21 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 	class->get_full_path = local_store_get_full_path;
 	class->get_meta_path = local_store_get_meta_path;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_NEED_SUMMARY_CHECK,
+	/**
+	 * CamelLocalStore:need-summary-check
+	 *
+	 * Whether to check for unexpected file changes
+	 **/
+	properties[PROP_NEED_SUMMARY_CHECK] =
 		g_param_spec_boolean (
-			"need-summary-check",
-			"Need Summary Check",
-			"Whether to check for unexpected file changes",
+			"need-summary-check", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -802,5 +808,5 @@ camel_local_store_set_need_summary_check (CamelLocalStore *store,
 
 	store->priv->need_summary_check = need_summary_check;
 
-	g_object_notify (G_OBJECT (store), "need-summary-check");
+	g_object_notify_by_pspec (G_OBJECT (store), properties[PROP_NEED_SUMMARY_CHECK]);
 }
