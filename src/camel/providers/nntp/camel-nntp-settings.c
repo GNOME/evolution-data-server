@@ -28,18 +28,22 @@ struct _CamelNNTPSettingsPrivate {
 
 enum {
 	PROP_0,
-	PROP_AUTH_MECHANISM,
 	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
 	PROP_FOLDER_HIERARCHY_RELATIVE,
+	PROP_SHORT_FOLDER_NAMES,
+	PROP_USE_LIMIT_LATEST,
+	PROP_LIMIT_LATEST,
+	N_PROPS,
+
+	PROP_AUTH_MECHANISM,
 	PROP_HOST,
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
-	PROP_SHORT_FOLDER_NAMES,
-	PROP_USER,
-	PROP_USE_LIMIT_LATEST,
-	PROP_LIMIT_LATEST
+	PROP_USER
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelNNTPSettings,
@@ -223,24 +227,97 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 	object_class->set_property = nntp_settings_set_property;
 	object_class->get_property = nntp_settings_get_property;
 
+	/**
+	 * CamelNNTPSettings:folder-hierarchy-relative
+	 *
+	 * Show relative folder names when subscribing
+	 **/
+	properties[PROP_FOLDER_HIERARCHY_RELATIVE] =
+		g_param_spec_boolean (
+			"folder-hierarchy-relative", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelNNTPSettings:use-limit-latest
+	 *
+	 * Whether to limit download of the latest messages
+	 **/
+	properties[PROP_USE_LIMIT_LATEST] =
+		g_param_spec_boolean (
+			"use-limit-latest", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelNNTPSettings:limit-latest
+	 *
+	 * The actual limit to download of the latest messages
+	 **/
+	properties[PROP_LIMIT_LATEST] =
+		g_param_spec_uint (
+			"limit-latest", NULL, NULL,
+			100, G_MAXUINT, 1000,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelNNTPSettings:short-folder-names
+	 *
+	 * Use shortened folder names
+	 **/
+	properties[PROP_SHORT_FOLDER_NAMES] =
+		g_param_spec_boolean (
+			"short-folder-names", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelNNTPSettings:filter-all
+	 *
+	 * Whether to apply filters in all folders
+	 **/
+	properties[PROP_FILTER_ALL] =
+		g_param_spec_boolean (
+			"filter-all", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelNNTPSettings:filter-junk
+	 *
+	 * Whether to check new messages for junk
+	 **/
+	properties[PROP_FILTER_JUNK] =
+		g_param_spec_boolean (
+			"filter-junk", NULL, NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
+
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
 		object_class,
 		PROP_AUTH_MECHANISM,
 		"auth-mechanism");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_FOLDER_HIERARCHY_RELATIVE,
-		g_param_spec_boolean (
-			"folder-hierarchy-relative",
-			"Folder Hierarchy Relative",
-			"Show relative folder names when subscribing",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
 
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
@@ -260,76 +337,11 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 		PROP_SECURITY_METHOD,
 		"security-method");
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_LIMIT_LATEST,
-		g_param_spec_boolean (
-			"use-limit-latest",
-			"Use Limit Latest",
-			"Whether to limit download of the latest messages",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_LIMIT_LATEST,
-		g_param_spec_uint (
-			"limit-latest",
-			"Limit Latest",
-			"The actual limit to download of the latest messages",
-			100, G_MAXUINT, 1000,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_SHORT_FOLDER_NAMES,
-		g_param_spec_boolean (
-			"short-folder-names",
-			"Short Folder Names",
-			"Use shortened folder names",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
 		object_class,
 		PROP_USER,
 		"user");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_ALL,
-		g_param_spec_boolean (
-			"filter-all",
-			"Filter All",
-			"Whether to apply filters in all folders",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_JUNK,
-		g_param_spec_boolean (
-			"filter-junk",
-			"Filter Junk",
-			"Whether to check new messages for junk",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -376,7 +388,7 @@ camel_nntp_settings_set_filter_all (CamelNNTPSettings *settings,
 
 	settings->priv->filter_all = filter_all;
 
-	g_object_notify (G_OBJECT (settings), "filter-all");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_ALL]);
 }
 
 /**
@@ -417,7 +429,7 @@ camel_nntp_settings_set_filter_junk (CamelNNTPSettings *settings,
 
 	settings->priv->filter_junk = filter_junk;
 
-	g_object_notify (G_OBJECT (settings), "filter-junk");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_JUNK]);
 }
 
 /**
@@ -466,7 +478,7 @@ camel_nntp_settings_set_folder_hierarchy_relative (CamelNNTPSettings *settings,
 
 	settings->priv->folder_hierarchy_relative = folder_hierarchy_relative;
 
-	g_object_notify (G_OBJECT (settings), "folder-hierarchy-relative");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FOLDER_HIERARCHY_RELATIVE]);
 }
 
 /**
@@ -509,7 +521,7 @@ camel_nntp_settings_set_short_folder_names (CamelNNTPSettings *settings,
 
 	settings->priv->short_folder_names = short_folder_names;
 
-	g_object_notify (G_OBJECT (settings), "short-folder-names");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_SHORT_FOLDER_NAMES]);
 }
 
 /**
@@ -548,7 +560,7 @@ camel_nntp_settings_set_use_limit_latest (CamelNNTPSettings *settings,
 
 	settings->priv->use_limit_latest = use_limit_latest;
 
-	g_object_notify (G_OBJECT (settings), "use-limit-latest");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_LIMIT_LATEST]);
 }
 
 /**
@@ -587,5 +599,5 @@ camel_nntp_settings_set_limit_latest (CamelNNTPSettings *settings,
 
 	settings->priv->limit_latest = limit_latest;
 
-	g_object_notify (G_OBJECT (settings), "limit-latest");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_LIMIT_LATEST]);
 }

@@ -25,8 +25,11 @@ struct _CamelSpoolSettingsPrivate {
 enum {
 	PROP_0,
 	PROP_USE_XSTATUS_HEADERS,
-	PROP_LISTEN_NOTIFICATIONS
+	PROP_LISTEN_NOTIFICATIONS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelSpoolSettings,
@@ -90,31 +93,35 @@ camel_spool_settings_class_init (CamelSpoolSettingsClass *class)
 	object_class->set_property = spool_settings_set_property;
 	object_class->get_property = spool_settings_get_property;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_XSTATUS_HEADERS,
+	/**
+	 * CamelSpoolSettings:use-xstatus-headers
+	 *
+	 * Whether to use X-Status headers
+	 **/
+	properties[PROP_USE_XSTATUS_HEADERS] =
 		g_param_spec_boolean (
-			"use-xstatus-headers",
-			"Use X-Status Headers",
-			"Whether to use X-Status headers",
+			"use-xstatus-headers", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LISTEN_NOTIFICATIONS,
+	/**
+	 * CamelSpoolSettings:listen-notifications
+	 *
+	 * Whether to listen for file/directory change notifications
+	 **/
+	properties[PROP_LISTEN_NOTIFICATIONS] =
 		g_param_spec_boolean (
-			"listen-notifications",
-			"Listen Notifications",
-			"Whether to listen for file/directory change notifications",
+			"listen-notifications", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -163,7 +170,7 @@ camel_spool_settings_set_use_xstatus_headers (CamelSpoolSettings *settings,
 
 	settings->priv->use_xstatus_headers = use_xstatus_headers;
 
-	g_object_notify (G_OBJECT (settings), "use-xstatus-headers");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_XSTATUS_HEADERS]);
 }
 
 gboolean
@@ -185,5 +192,5 @@ camel_spool_settings_set_listen_notifications (CamelSpoolSettings *settings,
 
 	settings->priv->listen_notifications = listen_notifications;
 
-	g_object_notify (G_OBJECT (settings), "listen-notifications");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_LISTEN_NOTIFICATIONS]);
 }

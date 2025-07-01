@@ -52,8 +52,11 @@ enum {
 	PROP_MAILBOX,
 	PROP_APPLY_FILTERS,
 	PROP_CHECK_FOLDER,
-	PROP_LAST_FULL_UPDATE
+	PROP_LAST_FULL_UPDATE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
@@ -137,7 +140,7 @@ imapx_folder_set_apply_filters (CamelIMAPXFolder *folder,
 
 	folder->apply_filters = apply_filters;
 
-	g_object_notify (G_OBJECT (folder), "apply-filters");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_APPLY_FILTERS]);
 }
 
 static void
@@ -1157,53 +1160,64 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->search_header_sync = imapx_folder_search_header_sync;
 	folder_class->search_body_sync = imapx_folder_search_body_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_APPLY_FILTERS,
+	/**
+	 * CamelIMAPXFolder:apply-filters
+	 *
+	 * Apply message filters to this folder
+	 **/
+	properties[PROP_APPLY_FILTERS] =
 		g_param_spec_boolean (
-			"apply-filters",
-			"Apply Filters",
+			"apply-filters", NULL,
 			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_FOLDER_PARAM_PERSISTENT);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CHECK_FOLDER,
+	/**
+	 * CamelIMAPXFolder:check-folder
+	 *
+	 * Always check for new mail in this folder
+	 **/
+	properties[PROP_CHECK_FOLDER] =
 		g_param_spec_boolean (
-			"check-folder",
-			"Check Folder",
+			"check-folder", NULL,
 			_("Always check for _new mail in this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_FOLDER_PARAM_PERSISTENT);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LAST_FULL_UPDATE,
+	/**
+	 * CamelIMAPXFolder:last-full-update
+	 *
+	 * Last Full Update
+	 **/
+	properties[PROP_LAST_FULL_UPDATE] =
 		g_param_spec_int64 (
-			"last-full-update",
-			"Last Full Update",
-			NULL,
+			"last-full-update", NULL, NULL,
 			G_MININT64, G_MAXINT64, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_FOLDER_PARAM_PERSISTENT);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MAILBOX,
+	/**
+	 * CamelIMAPXFolder:mailbox
+	 *
+	 * IMAP mailbox for this folder
+	 **/
+	properties[PROP_MAILBOX] =
 		g_param_spec_object (
-			"mailbox",
-			"Mailbox",
-			"IMAP mailbox for this folder",
+			"mailbox", NULL, NULL,
 			CAMEL_TYPE_IMAPX_MAILBOX,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	camel_folder_class_map_legacy_property (folder_class, "apply-filters", 0x2501);
 	camel_folder_class_map_legacy_property (folder_class, "check-folder", 0x2502);
@@ -1418,7 +1432,7 @@ camel_imapx_folder_set_mailbox (CamelIMAPXFolder *folder,
 	if (uidvalidity > 0 && uidvalidity != imapx_summary->validity)
 		camel_imapx_folder_invalidate_local_cache (folder, uidvalidity);
 
-	g_object_notify (G_OBJECT (folder), "mailbox");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_MAILBOX]);
 }
 
 /**
@@ -1759,7 +1773,7 @@ camel_imapx_folder_set_check_folder (CamelIMAPXFolder *folder,
 
 	folder->priv->check_folder = check_folder;
 
-	g_object_notify (G_OBJECT (folder), "check-folder");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_CHECK_FOLDER]);
 }
 
 gint64
@@ -1783,7 +1797,7 @@ camel_imapx_folder_set_last_full_update (CamelIMAPXFolder *folder,
 
 	folder->priv->last_full_update = last_full_update;
 
-	g_object_notify (G_OBJECT (folder), "last-full-update");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_LAST_FULL_UPDATE]);
 }
 
 void

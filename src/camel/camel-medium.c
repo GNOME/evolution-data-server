@@ -36,8 +36,11 @@ struct _CamelMediumPrivate {
 
 enum {
 	PROP_0,
-	PROP_CONTENT
+	PROP_CONTENT,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (CamelMedium, camel_medium, CAMEL_TYPE_DATA_WRAPPER)
 
@@ -102,18 +105,10 @@ static void
 medium_set_content (CamelMedium *medium,
                     CamelDataWrapper *content)
 {
-	if (medium->priv->content == content)
-		return;
+	g_return_if_fail (CAMEL_IS_MEDIUM (medium));
 
-	if (content != NULL)
-		g_object_ref (content);
-
-	if (medium->priv->content != NULL)
-		g_object_unref (medium->priv->content);
-
-	medium->priv->content = content;
-
-	g_object_notify (G_OBJECT (medium), "content");
+	if (g_set_object (&medium->priv->content, content))
+		g_object_notify_by_pspec (G_OBJECT (medium), properties[PROP_CONTENT]);
 }
 
 static CamelDataWrapper *
@@ -139,16 +134,20 @@ camel_medium_class_init (CamelMediumClass *class)
 	class->set_content = medium_set_content;
 	class->get_content = medium_get_content;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTENT,
+	/**
+	 * CamelMedium:content
+	 *
+	 * Content
+	 **/
+	properties[PROP_CONTENT] =
 		g_param_spec_object (
-			"content",
-			"Content",
-			NULL,
+			"content", NULL, NULL,
 			CAMEL_TYPE_DATA_WRAPPER,
 			G_PARAM_READWRITE |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

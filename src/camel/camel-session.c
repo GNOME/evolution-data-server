@@ -101,7 +101,8 @@ enum {
 	PROP_NETWORK_MONITOR,
 	PROP_ONLINE,
 	PROP_USER_DATA_DIR,
-	PROP_USER_CACHE_DIR
+	PROP_USER_CACHE_DIR,
+	N_PROPS
 };
 
 enum {
@@ -112,6 +113,8 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelSession, camel_session, G_TYPE_OBJECT)
 
@@ -610,80 +613,87 @@ camel_session_class_init (CamelSessionClass *class)
 	class->authenticate_sync = session_authenticate_sync;
 	class->forward_to_sync = session_forward_to_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_JUNK_FILTER,
+	/**
+	 * CamelSession:junk-filter
+	 *
+	 * Classifies messages as junk or not junk
+	 **/
+	properties[PROP_JUNK_FILTER] =
 		g_param_spec_object (
-			"junk-filter",
-			"Junk Filter",
-			"Classifies messages as junk or not junk",
+			"junk-filter", NULL, NULL,
 			CAMEL_TYPE_JUNK_FILTER,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MAIN_CONTEXT,
+	/**
+	 * CamelSession:main-context
+	 *
+	 * The main loop context on which to attach event sources
+	 **/
+	properties[PROP_MAIN_CONTEXT] =
 		g_param_spec_boxed (
-			"main-context",
-			"Main Context",
-			"The main loop context on "
-			"which to attach event sources",
+			"main-context", NULL, NULL,
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_NETWORK_MONITOR,
+	/**
+	 * CamelSession:network-monitor
+	 *
+	 * The #GNetworkMonitor
+	 **/
+	properties[PROP_NETWORK_MONITOR] =
 		g_param_spec_object (
-			"network-monitor",
-			"Network Monitor",
-			NULL,
+			"network-monitor", NULL, NULL,
 			G_TYPE_NETWORK_MONITOR,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ONLINE,
+	/**
+	 * CamelSession:online
+	 *
+	 * Whether the shell is online
+	 **/
+	properties[PROP_ONLINE] =
 		g_param_spec_boolean (
-			"online",
-			"Online",
-			"Whether the shell is online",
+			"online", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USER_DATA_DIR,
+	/**
+	 * CamelSession:user-data-dir
+	 *
+	 * User-specific base directory for mail data
+	 **/
+	properties[PROP_USER_DATA_DIR] =
 		g_param_spec_string (
-			"user-data-dir",
-			"User Data Directory",
-			"User-specific base directory for mail data",
+			"user-data-dir", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USER_CACHE_DIR,
+	/**
+	 * CamelSession:user-cache-dir
+	 *
+	 * User-specific base directory for mail cache
+	 **/
+	properties[PROP_USER_CACHE_DIR] =
 		g_param_spec_string (
-			"user-cache-dir",
-			"User Cache Directory",
-			"User-specific base directory for mail cache",
+			"user-cache-dir", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	signals[JOB_STARTED] = g_signal_new (
 		"job-started",
@@ -836,7 +846,7 @@ camel_session_set_network_monitor (CamelSession *session,
 	g_mutex_unlock (&session->priv->property_lock);
 
 	if (changed)
-		g_object_notify (G_OBJECT (session), "network-monitor");
+		g_object_notify_by_pspec (G_OBJECT (session), properties[PROP_NETWORK_MONITOR]);
 }
 
 /**
@@ -1422,7 +1432,7 @@ camel_session_set_online (CamelSession *session,
 
 	session->priv->online = online;
 
-	g_object_notify (G_OBJECT (session), "online");
+	g_object_notify_by_pspec (G_OBJECT (session), properties[PROP_ONLINE]);
 }
 
 /**
@@ -1501,18 +1511,10 @@ camel_session_set_junk_filter (CamelSession *session,
                                CamelJunkFilter *junk_filter)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (junk_filter == NULL || CAMEL_IS_JUNK_FILTER (junk_filter));
 
-	if (junk_filter != NULL) {
-		g_return_if_fail (CAMEL_IS_JUNK_FILTER (junk_filter));
-		g_object_ref (junk_filter);
-	}
-
-	if (session->priv->junk_filter != NULL)
-		g_object_unref (session->priv->junk_filter);
-
-	session->priv->junk_filter = junk_filter;
-
-	g_object_notify (G_OBJECT (session), "junk-filter");
+	if (g_set_object (&session->priv->junk_filter, junk_filter))
+		g_object_notify_by_pspec (G_OBJECT (session), properties[PROP_JUNK_FILTER]);
 }
 
 /**

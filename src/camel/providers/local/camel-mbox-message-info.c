@@ -29,8 +29,11 @@ struct _CamelMboxMessageInfoPrivate {
 
 enum {
 	PROP_0,
-	PROP_OFFSET
+	PROP_OFFSET,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMboxMessageInfo, camel_mbox_message_info, CAMEL_TYPE_MESSAGE_INFO_BASE)
 
@@ -187,9 +190,7 @@ camel_mbox_message_info_class_init (CamelMboxMessageInfoClass *class)
 	 *
 	 * Since: 3.24
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_OFFSET,
+	properties[PROP_OFFSET] =
 		g_param_spec_int64 (
 			"offset",
 			"Offset",
@@ -197,7 +198,9 @@ camel_mbox_message_info_class_init (CamelMboxMessageInfoClass *class)
 			0, G_MAXINT64, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -244,7 +247,7 @@ camel_mbox_message_info_set_offset (CamelMboxMessageInfo *mmi,
 	camel_message_info_property_unlock (mi);
 
 	if (changed && !camel_message_info_get_abort_notifications (mi)) {
-		g_object_notify (G_OBJECT (mmi), "offset");
+		g_object_notify_by_pspec (G_OBJECT (mmi), properties[PROP_OFFSET]);
 		camel_message_info_set_dirty (mi, TRUE);
 	}
 

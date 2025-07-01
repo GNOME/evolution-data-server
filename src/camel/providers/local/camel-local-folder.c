@@ -47,8 +47,11 @@
 
 enum {
 	PROP_0,
-	PROP_INDEX_BODY
+	PROP_INDEX_BODY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
 
@@ -389,17 +392,22 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	class->lock = local_folder_lock;
 	class->unlock = local_folder_unlock;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INDEX_BODY,
+	/**
+	 * CamelLocalFolder:index-body
+	 *
+	 * Index message body data
+	 **/
+	properties[PROP_INDEX_BODY] =
 		g_param_spec_boolean (
-			"index-body",
-			"Index Body",
+			"index-body", NULL,
 			_("_Index message body data"),
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_FOLDER_PARAM_PERSISTENT);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	camel_folder_class_map_legacy_property (folder_class, "index-body", 0x2400);
 }
@@ -578,7 +586,7 @@ camel_local_folder_set_index_body (CamelLocalFolder *local_folder,
 	else
 		local_folder->flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 
-	g_object_notify (G_OBJECT (local_folder), "index-body");
+	g_object_notify_by_pspec (G_OBJECT (local_folder), properties[PROP_INDEX_BODY]);
 }
 
 /* lock the folder, may be called repeatedly (with matching unlock calls),

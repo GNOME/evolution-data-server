@@ -57,7 +57,6 @@ struct _CamelIMAPXSettingsPrivate {
 
 enum {
 	PROP_0,
-	PROP_AUTH_MECHANISM,
 	PROP_USE_MULTI_FETCH,
 	PROP_CHECK_ALL,
 	PROP_CHECK_SUBSCRIBED,
@@ -66,15 +65,11 @@ enum {
 	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
 	PROP_FILTER_JUNK_INBOX,
-	PROP_HOST,
 	PROP_NAMESPACE,
-	PROP_PORT,
 	PROP_REAL_JUNK_PATH,
 	PROP_REAL_NOT_JUNK_PATH,
 	PROP_REAL_TRASH_PATH,
-	PROP_SECURITY_METHOD,
 	PROP_SHELL_COMMAND,
-	PROP_USER,
 	PROP_USE_IDLE,
 	PROP_USE_NAMESPACE,
 	PROP_USE_QRESYNC,
@@ -87,8 +82,17 @@ enum {
 	PROP_IGNORE_SHARED_FOLDERS_NAMESPACE,
 	PROP_FULL_UPDATE_ON_METERED_NETWORK,
 	PROP_SEND_CLIENT_ID,
-	PROP_SINGLE_CLIENT_MODE
+	PROP_SINGLE_CLIENT_MODE,
+	N_PROPS,
+
+	PROP_AUTH_MECHANISM,
+	PROP_HOST,
+	PROP_PORT,
+	PROP_USER,
+	PROP_SECURITY_METHOD
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXSettings,
@@ -552,118 +556,380 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 	object_class->get_property = imapx_settings_get_property;
 	object_class->finalize = imapx_settings_finalize;
 
-	/* Inherited from CamelNetworkSettings. */
-	g_object_class_override_property (
-		object_class,
-		PROP_AUTH_MECHANISM,
-		"auth-mechanism");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_MULTI_FETCH,
+	/**
+	 * CamelIMAPXSettings:use-multi-fetch
+	 *
+	 * Whether allow downloading of large messages in chunks
+	 **/
+	properties[PROP_USE_MULTI_FETCH] =
 		g_param_spec_boolean (
-			"use-multi-fetch",
-			"Use Multi Fetch",
-			"Whether allow downloading of large messages in chunks",
+			"use-multi-fetch", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CHECK_ALL,
+	/**
+	 * CamelIMAPXSettings:check-all
+	 *
+	 * Check all folders for new messages
+	 **/
+	properties[PROP_CHECK_ALL] =
 		g_param_spec_boolean (
-			"check-all",
-			"Check All",
-			"Check all folders for new messages",
+			"check-all", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CHECK_SUBSCRIBED,
+	/**
+	 * CamelIMAPXSettings:check-subscribed
+	 *
+	 * Check only subscribed folders for new messages
+	 **/
+	properties[PROP_CHECK_SUBSCRIBED] =
 		g_param_spec_boolean (
-			"check-subscribed",
-			"Check Subscribed",
-			"Check only subscribed folders for new messages",
+			"check-subscribed", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONCURRENT_CONNECTIONS,
+	/**
+	 * CamelIMAPXSettings:concurrent-connections
+	 *
+	 * Number of concurrent IMAP connections to use
+	 **/
+	properties[PROP_CONCURRENT_CONNECTIONS] =
 		g_param_spec_uint (
-			"concurrent-connections",
-			"Concurrent Connections",
-			"Number of concurrent IMAP connections to use",
+			"concurrent-connections", NULL, NULL,
 			MIN_CONCURRENT_CONNECTIONS,
 			MAX_CONCURRENT_CONNECTIONS,
 			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FETCH_ORDER,
+	/**
+	 * CamelIMAPXSettings:fetch-order
+	 *
+	 * Order in which new messages should be fetched
+	 **/
+	properties[PROP_FETCH_ORDER] =
 		g_param_spec_enum (
-			"fetch-order",
-			"Fetch Order",
-			"Order in which new messages should be fetched",
+			"fetch-order", NULL, NULL,
 			CAMEL_TYPE_SORT_TYPE,
 			CAMEL_SORT_ASCENDING,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_ALL,
+	/**
+	 * CamelIMAPXSettings:filter-all
+	 *
+	 * Whether to apply filters in all folders
+	 **/
+	properties[PROP_FILTER_ALL] =
 		g_param_spec_boolean (
-			"filter-all",
-			"Filter All",
-			"Whether to apply filters in all folders",
+			"filter-all", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_JUNK,
+	/**
+	 * CamelIMAPXSettings:filter-junk
+	 *
+	 * Whether to filter junk from all folders
+	 **/
+	properties[PROP_FILTER_JUNK] =
 		g_param_spec_boolean (
-			"filter-junk",
-			"Filter Junk",
-			"Whether to filter junk from all folders",
+			"filter-junk", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_JUNK_INBOX,
+	/**
+	 * CamelIMAPXSettings:filter-junk-inbox
+	 *
+	 * Whether to filter junk from Inbox only
+	 **/
+	properties[PROP_FILTER_JUNK_INBOX] =
 		g_param_spec_boolean (
-			"filter-junk-inbox",
-			"Filter Junk Inbox",
-			"Whether to filter junk from Inbox only",
+			"filter-junk-inbox", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:namespace
+	 *
+	 * Custom IMAP namespace
+	 **/
+	properties[PROP_NAMESPACE] =
+		g_param_spec_string (
+			"namespace", NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:real-junk-path
+	 *
+	 * Path for a non-virtual Junk folder
+	 **/
+	properties[PROP_REAL_JUNK_PATH] =
+		g_param_spec_string (
+			"real-junk-path", NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:real-not-junk-path
+	 *
+	 * Path to restore Not-Junk messages from a non-virtual Junk folder
+	 **/
+	properties[PROP_REAL_NOT_JUNK_PATH] =
+		g_param_spec_string (
+			"real-not-junk-path", NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:real-trash-path
+	 *
+	 * Path for a non-virtual Trash folder
+	 **/
+	properties[PROP_REAL_TRASH_PATH] =
+		g_param_spec_string (
+			"real-trash-path", NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:shell-command
+	 *
+	 * Shell command for connecting to the server
+	 **/
+	properties[PROP_SHELL_COMMAND] =
+		g_param_spec_string (
+			"shell-command", NULL, NULL,
+			"ssh -C -l %u %h exec /usr/sbin/imapd",
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-idle
+	 *
+	 * Whether to use the IDLE IMAP extension
+	 **/
+	properties[PROP_USE_IDLE] =
+		g_param_spec_boolean (
+			"use-idle", NULL, NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-namespace
+	 *
+	 * Whether to use a custom IMAP namespace
+	 **/
+	properties[PROP_USE_NAMESPACE] =
+		g_param_spec_boolean (
+			"use-namespace", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-qresync
+	 *
+	 * Whether to use the QRESYNC IMAP extension
+	 **/
+	properties[PROP_USE_QRESYNC] =
+		g_param_spec_boolean (
+			"use-qresync", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-real-junk-path
+	 *
+	 * Whether to use a non-virtual Junk folder
+	 **/
+	properties[PROP_USE_REAL_JUNK_PATH] =
+		g_param_spec_boolean (
+			"use-real-junk-path", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-real-not-junk-path
+	 *
+	 * Whether to use a special folder to restore Not-Junk messages from non-virtual Junk folder to
+	 **/
+	properties[PROP_USE_REAL_NOT_JUNK_PATH] =
+		g_param_spec_boolean (
+			"use-real-not-junk-path", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-real-trash-path
+	 *
+	 * Whether to use a non-virtual Trash folder
+	 **/
+	properties[PROP_USE_REAL_TRASH_PATH] =
+		g_param_spec_boolean (
+			"use-real-trash-path", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-shell-command
+	 *
+	 * Whether to use a custom shell command to connect to the server
+	 **/
+	properties[PROP_USE_SHELL_COMMAND] =
+		g_param_spec_boolean (
+			"use-shell-command", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:use-subscriptions
+	 *
+	 * Whether to honor folder subscriptions
+	 **/
+	properties[PROP_USE_SUBSCRIPTIONS] =
+		g_param_spec_boolean (
+			"use-subscriptions", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:ignore-other-users-namespace
+	 *
+	 * Whether to ignore other users namespace
+	 **/
+	properties[PROP_IGNORE_OTHER_USERS_NAMESPACE] =
+		g_param_spec_boolean (
+			"ignore-other-users-namespace", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:ignore-shared-folders-namespace
+	 *
+	 * Whether to ignore shared folders namespace
+	 **/
+	properties[PROP_IGNORE_SHARED_FOLDERS_NAMESPACE] =
+		g_param_spec_boolean (
+			"ignore-shared-folders-namespace", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:full-update-on-metered-network
+	 *
+	 * Whether can do full folder update even on metered network
+	 **/
+	properties[PROP_FULL_UPDATE_ON_METERED_NETWORK] =
+		g_param_spec_boolean (
+			"full-update-on-metered-network", NULL, NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:send-client-id
+	 *
+	 * Whether to send client ID to the server
+	 **/
+	properties[PROP_SEND_CLIENT_ID] =
+		g_param_spec_boolean (
+			"send-client-id", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelIMAPXSettings:single-client-mode
+	 *
+	 * When set to true, does full folder flags refresh only once per day
+	 **/
+	properties[PROP_SINGLE_CLIENT_MODE] =
+		g_param_spec_boolean (
+			"single-client-mode", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_AUTH_MECHANISM,
+		"auth-mechanism");
 
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
@@ -671,82 +937,11 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 		PROP_HOST,
 		"host");
 
-	g_object_class_install_property (
-		object_class,
-		PROP_NAMESPACE,
-		g_param_spec_string (
-			"namespace",
-			"Namespace",
-			"Custom IMAP namespace",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
 		object_class,
 		PROP_PORT,
 		"port");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_REAL_JUNK_PATH,
-		g_param_spec_string (
-			"real-junk-path",
-			"Real Junk Path",
-			"Path for a non-virtual Junk folder",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_REAL_NOT_JUNK_PATH,
-		g_param_spec_string (
-			"real-not-junk-path",
-			"Real Not Junk Path",
-			"Path to restore Not-Junk messages from a non-virtual Junk folder",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_REAL_TRASH_PATH,
-		g_param_spec_string (
-			"real-trash-path",
-			"Real Trash Path",
-			"Path for a non-virtual Trash folder",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	/* Inherited from CamelNetworkSettings. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SECURITY_METHOD,
-		"security-method");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_SHELL_COMMAND,
-		g_param_spec_string (
-			"shell-command",
-			"Shell Command",
-			"Shell command for connecting to the server",
-			"ssh -C -l %u %h exec /usr/sbin/imapd",
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
 
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
@@ -754,175 +949,11 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 		PROP_USER,
 		"user");
 
-	g_object_class_install_property (
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
 		object_class,
-		PROP_USE_IDLE,
-		g_param_spec_boolean (
-			"use-idle",
-			"Use IDLE",
-			"Whether to use the IDLE IMAP extension",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_NAMESPACE,
-		g_param_spec_boolean (
-			"use-namespace",
-			"Use Namespace",
-			"Whether to use a custom IMAP namespace",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_QRESYNC,
-		g_param_spec_boolean (
-			"use-qresync",
-			"Use QRESYNC",
-			"Whether to use the QRESYNC IMAP extension",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_REAL_JUNK_PATH,
-		g_param_spec_boolean (
-			"use-real-junk-path",
-			"Use Real Junk Path",
-			"Whether to use a non-virtual Junk folder",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_REAL_NOT_JUNK_PATH,
-		g_param_spec_boolean (
-			"use-real-not-junk-path",
-			"Use Real Not Junk Path",
-			"Whether to use a special folder to restore Not-Junk messages from non-virtual Junk folder to",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_REAL_TRASH_PATH,
-		g_param_spec_boolean (
-			"use-real-trash-path",
-			"Use Real Trash Path",
-			"Whether to use a non-virtual Trash folder",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_SHELL_COMMAND,
-		g_param_spec_boolean (
-			"use-shell-command",
-			"Use Shell Command",
-			"Whether to use a custom shell"
-			"command to connect to the server",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_SUBSCRIPTIONS,
-		g_param_spec_boolean (
-			"use-subscriptions",
-			"Use Subscriptions",
-			"Whether to honor folder subscriptions",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_IGNORE_OTHER_USERS_NAMESPACE,
-		g_param_spec_boolean (
-			"ignore-other-users-namespace",
-			"Ignore Other Users Namespace",
-			"Whether to ignore other users namespace",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_IGNORE_SHARED_FOLDERS_NAMESPACE,
-		g_param_spec_boolean (
-			"ignore-shared-folders-namespace",
-			"Ignore Shared Folders Namespace",
-			"Whether to ignore shared folders namespace",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_FULL_UPDATE_ON_METERED_NETWORK,
-		g_param_spec_boolean (
-			"full-update-on-metered-network",
-			"Full Update On Metered Network",
-			"Whether can do full folder update even on metered network",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_SEND_CLIENT_ID,
-		g_param_spec_boolean (
-			"send-client-id",
-			"Send Client ID",
-			"Whether to send client ID to the server",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_SINGLE_CLIENT_MODE,
-		g_param_spec_boolean (
-			"single-client-mode",
-			"Single Client Mode",
-			"When set to true, does full folder flags refresh only once per day",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+		PROP_SECURITY_METHOD,
+		"security-method");
 }
 
 static void
@@ -972,7 +1003,7 @@ camel_imapx_settings_set_use_multi_fetch (CamelIMAPXSettings *settings,
 
 	settings->priv->use_multi_fetch = use_multi_fetch;
 
-	g_object_notify (G_OBJECT (settings), "use-multi-fetch");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_MULTI_FETCH]);
 }
 
 /**
@@ -1013,7 +1044,7 @@ camel_imapx_settings_set_check_all (CamelIMAPXSettings *settings,
 
 	settings->priv->check_all = check_all;
 
-	g_object_notify (G_OBJECT (settings), "check-all");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_CHECK_ALL]);
 }
 
 /**
@@ -1056,7 +1087,7 @@ camel_imapx_settings_set_check_subscribed (CamelIMAPXSettings *settings,
 
 	settings->priv->check_subscribed = check_subscribed;
 
-	g_object_notify (G_OBJECT (settings), "check-subscribed");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_CHECK_SUBSCRIBED]);
 }
 
 /**
@@ -1108,7 +1139,7 @@ camel_imapx_settings_set_concurrent_connections (CamelIMAPXSettings *settings,
 
 	settings->priv->concurrent_connections = concurrent_connections;
 
-	g_object_notify (G_OBJECT (settings), "concurrent-connections");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_CONCURRENT_CONNECTIONS]);
 }
 
 /**
@@ -1151,7 +1182,7 @@ camel_imapx_settings_set_fetch_order (CamelIMAPXSettings *settings,
 
 	settings->priv->fetch_order = fetch_order;
 
-	g_object_notify (G_OBJECT (settings), "fetch-order");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FETCH_ORDER]);
 }
 
 /**
@@ -1192,7 +1223,7 @@ camel_imapx_settings_set_filter_all (CamelIMAPXSettings *settings,
 
 	settings->priv->filter_all = filter_all;
 
-	g_object_notify (G_OBJECT (settings), "filter-all");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_ALL]);
 }
 
 /**
@@ -1235,7 +1266,7 @@ camel_imapx_settings_set_filter_junk (CamelIMAPXSettings *settings,
 
 	settings->priv->filter_junk = filter_junk;
 
-	g_object_notify (G_OBJECT (settings), "filter-junk");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_JUNK]);
 }
 
 /**
@@ -1278,7 +1309,7 @@ camel_imapx_settings_set_filter_junk_inbox (CamelIMAPXSettings *settings,
 
 	settings->priv->filter_junk_inbox = filter_junk_inbox;
 
-	g_object_notify (G_OBJECT (settings), "filter-junk-inbox");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_JUNK_INBOX]);
 }
 
 /**
@@ -1362,7 +1393,7 @@ camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "namespace");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_NAMESPACE]);
 }
 
 /**
@@ -1442,7 +1473,7 @@ camel_imapx_settings_set_real_junk_path (CamelIMAPXSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "real-junk-path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_REAL_JUNK_PATH]);
 }
 
 /**
@@ -1522,7 +1553,7 @@ camel_imapx_settings_set_real_trash_path (CamelIMAPXSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "real-trash-path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_REAL_TRASH_PATH]);
 }
 
 /**
@@ -1619,7 +1650,7 @@ camel_imapx_settings_set_shell_command (CamelIMAPXSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "shell-command");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_SHELL_COMMAND]);
 }
 
 /**
@@ -1662,7 +1693,7 @@ camel_imapx_settings_set_use_idle (CamelIMAPXSettings *settings,
 
 	settings->priv->use_idle = use_idle;
 
-	g_object_notify (G_OBJECT (settings), "use-idle");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_IDLE]);
 }
 
 /**
@@ -1705,7 +1736,7 @@ camel_imapx_settings_set_use_namespace (CamelIMAPXSettings *settings,
 
 	settings->priv->use_namespace = use_namespace;
 
-	g_object_notify (G_OBJECT (settings), "use-namespace");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_NAMESPACE]);
 }
 
 /**
@@ -1746,7 +1777,7 @@ camel_imapx_settings_set_ignore_other_users_namespace (CamelIMAPXSettings *setti
 
 	settings->priv->ignore_other_users_namespace = ignore;
 
-	g_object_notify (G_OBJECT (settings), "ignore-other-users-namespace");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_IGNORE_OTHER_USERS_NAMESPACE]);
 }
 
 /**
@@ -1787,7 +1818,7 @@ camel_imapx_settings_set_ignore_shared_folders_namespace (CamelIMAPXSettings *se
 
 	settings->priv->ignore_shared_folders_namespace = ignore;
 
-	g_object_notify (G_OBJECT (settings), "ignore-shared-folders-namespace");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_IGNORE_SHARED_FOLDERS_NAMESPACE]);
 }
 
 /**
@@ -1832,7 +1863,7 @@ camel_imapx_settings_set_use_qresync (CamelIMAPXSettings *settings,
 
 	settings->priv->use_qresync = use_qresync;
 
-	g_object_notify (G_OBJECT (settings), "use-qresync");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_QRESYNC]);
 }
 
 /**
@@ -1875,7 +1906,7 @@ camel_imapx_settings_set_use_real_junk_path (CamelIMAPXSettings *settings,
 
 	settings->priv->use_real_junk_path = use_real_junk_path;
 
-	g_object_notify (G_OBJECT (settings), "use-real-junk-path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_REAL_JUNK_PATH]);
 }
 
 /**
@@ -1918,7 +1949,7 @@ camel_imapx_settings_set_use_real_trash_path (CamelIMAPXSettings *settings,
 
 	settings->priv->use_real_trash_path = use_real_trash_path;
 
-	g_object_notify (G_OBJECT (settings), "use-real-trash-path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_REAL_TRASH_PATH]);
 }
 
 /**
@@ -1976,7 +2007,7 @@ camel_imapx_settings_set_use_shell_command (CamelIMAPXSettings *settings,
 
 	settings->priv->use_shell_command = use_shell_command;
 
-	g_object_notify (G_OBJECT (settings), "use-shell-command");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_SHELL_COMMAND]);
 }
 
 /**
@@ -2019,7 +2050,7 @@ camel_imapx_settings_set_use_subscriptions (CamelIMAPXSettings *settings,
 
 	settings->priv->use_subscriptions = use_subscriptions;
 
-	g_object_notify (G_OBJECT (settings), "use-subscriptions");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_SUBSCRIPTIONS]);
 }
 
 /**
@@ -2064,7 +2095,7 @@ camel_imapx_settings_set_full_update_on_metered_network (CamelIMAPXSettings *set
 
 	settings->priv->full_update_on_metered_network = full_update_on_metered_network;
 
-	g_object_notify (G_OBJECT (settings), "full-update-on-metered-network");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FULL_UPDATE_ON_METERED_NETWORK]);
 }
 
 /**
@@ -2105,7 +2136,7 @@ camel_imapx_settings_set_send_client_id (CamelIMAPXSettings *settings,
 
 	settings->priv->send_client_id = send_client_id;
 
-	g_object_notify (G_OBJECT (settings), "send-client-id");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_SEND_CLIENT_ID]);
 }
 
 /**
@@ -2148,7 +2179,7 @@ camel_imapx_settings_set_single_client_mode (CamelIMAPXSettings *settings,
 
 	settings->priv->single_client_mode = single_client_mode;
 
-	g_object_notify (G_OBJECT (settings), "single-client-mode");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_SINGLE_CLIENT_MODE]);
 }
 
 /**
@@ -2228,7 +2259,7 @@ camel_imapx_settings_set_real_not_junk_path (CamelIMAPXSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "real-not-junk-path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_REAL_NOT_JUNK_PATH]);
 }
 
 /**
@@ -2271,5 +2302,5 @@ camel_imapx_settings_set_use_real_not_junk_path (CamelIMAPXSettings *settings,
 
 	settings->priv->use_real_not_junk_path = use_real_not_junk_path;
 
-	g_object_notify (G_OBJECT (settings), "use-real-not-junk-path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_REAL_NOT_JUNK_PATH]);
 }

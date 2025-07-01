@@ -87,7 +87,10 @@ enum {
 	PROP_ALWAYS_TRUST,
 	PROP_PREFER_INLINE,
 	PROP_LOCATE_KEYS,
+	N_PROPS,
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
@@ -3301,41 +3304,49 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	cipher_context_class->encrypt_sync = gpg_encrypt_sync;
 	cipher_context_class->decrypt_sync = gpg_decrypt_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ALWAYS_TRUST,
+	/**
+	 * CamelGpgContext:always-trust
+	 *
+	 * Always Trust
+	 **/
+	properties[PROP_ALWAYS_TRUST] =
 		g_param_spec_boolean (
-			"always-trust",
-			"Always Trust",
-			NULL,
+			"always-trust", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PREFER_INLINE,
+	/**
+	 * CamelGpgContext:prefer-inline
+	 *
+	 * Prefer Inline
+	 **/
+	properties[PROP_PREFER_INLINE] =
 		g_param_spec_boolean (
-			"prefer-inline",
-			"Prefer Inline",
-			NULL,
+			"prefer-inline", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LOCATE_KEYS,
+	/**
+	 * CamelGpgContext:locate-keys
+	 *
+	 * Locate Keys
+	 **/
+	properties[PROP_LOCATE_KEYS] =
 		g_param_spec_boolean (
-			"locate-keys",
-			"Locate Keys",
-			NULL,
+			"locate-keys", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY));
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -3396,7 +3407,7 @@ camel_gpg_context_set_always_trust (CamelGpgContext *context,
 
 	context->priv->always_trust = always_trust;
 
-	g_object_notify (G_OBJECT (context), "always-trust");
+	g_object_notify_by_pspec (G_OBJECT (context), properties[PROP_ALWAYS_TRUST]);
 }
 
 /**
@@ -3435,7 +3446,7 @@ camel_gpg_context_set_prefer_inline (CamelGpgContext *context,
 
 	context->priv->prefer_inline = prefer_inline;
 
-	g_object_notify (G_OBJECT (context), "prefer-inline");
+	g_object_notify_by_pspec (G_OBJECT (context), properties[PROP_PREFER_INLINE]);
 }
 
 /**
@@ -3480,7 +3491,7 @@ camel_gpg_context_set_locate_keys (CamelGpgContext *context,
 
 	context->priv->locate_keys = locate_keys;
 
-	g_object_notify (G_OBJECT (context), "locate-keys");
+	g_object_notify_by_pspec (G_OBJECT (context), properties[PROP_LOCATE_KEYS]);
 }
 
 /* keyid can be a key ID or an email; when it's an email, enclose it to "<>", to have exact match */

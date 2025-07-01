@@ -33,8 +33,11 @@ enum {
 	PROP_USE_CUSTOM_ARGS,
 	PROP_CUSTOM_BINARY,
 	PROP_CUSTOM_ARGS,
-	PROP_SEND_IN_OFFLINE
+	PROP_SEND_IN_OFFLINE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelSendmailSettings, camel_sendmail_settings, CAMEL_TYPE_SETTINGS)
 
@@ -151,70 +154,77 @@ camel_sendmail_settings_class_init (CamelSendmailSettingsClass *class)
 	object_class->get_property = sendmail_settings_get_property;
 	object_class->finalize = sendmail_settings_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_CUSTOM_BINARY,
+	/**
+	 * CamelSendmailSettings:use-custom-binary
+	 *
+	 * Whether the custom-binary property identifies binary to run
+	 **/
+	properties[PROP_USE_CUSTOM_BINARY] =
 		g_param_spec_boolean (
-			"use-custom-binary",
-			"Use Custom Binary",
-			"Whether the custom-binary property identifies binary to run",
+			"use-custom-binary", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_CUSTOM_ARGS,
+	/**
+	 * CamelSendmailSettings:use-custom-args
+	 *
+	 * Whether the custom-args property identifies arguments to use
+	 **/
+	properties[PROP_USE_CUSTOM_ARGS] =
 		g_param_spec_boolean (
-			"use-custom-args",
-			"Use Custom Arguments",
-			"Whether the custom-args property identifies arguments to use",
+			"use-custom-args", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CUSTOM_BINARY,
+	/**
+	 * CamelSendmailSettings:custom-binary
+	 *
+	 * Custom binary to run, instead of sendmail
+	 **/
+	properties[PROP_CUSTOM_BINARY] =
 		g_param_spec_string (
-			"custom-binary",
-			"Custom Binary",
-			"Custom binary to run, instead of sendmail",
+			"custom-binary", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CUSTOM_ARGS,
+	/**
+	 * CamelSendmailSettings:custom-args
+	 *
+	 * Custom arguments to use, instead of default (predefined) arguments
+	 **/
+	properties[PROP_CUSTOM_ARGS] =
 		g_param_spec_string (
-			"custom-args",
-			"Custom Arguments",
-			"Custom arguments to use, instead of default (predefined) arguments",
+			"custom-args", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SEND_IN_OFFLINE,
+	/**
+	 * CamelSendmailSettings:send-in-offline
+	 *
+	 * Whether to allow message sending in offline mode
+	 **/
+	properties[PROP_SEND_IN_OFFLINE] =
 		g_param_spec_boolean (
-			"send-in-offline",
-			"Send in offline",
-			"Whether to allow message sending in offline mode",
+			"send-in-offline", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -262,7 +272,7 @@ camel_sendmail_settings_set_use_custom_binary (CamelSendmailSettings *settings,
 
 	settings->priv->use_custom_binary = use_custom_binary;
 
-	g_object_notify (G_OBJECT (settings), "use-custom-binary");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_CUSTOM_BINARY]);
 }
 
 /**
@@ -303,7 +313,7 @@ camel_sendmail_settings_set_use_custom_args (CamelSendmailSettings *settings,
 
 	settings->priv->use_custom_args = use_custom_args;
 
-	g_object_notify (G_OBJECT (settings), "use-custom-args");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_USE_CUSTOM_ARGS]);
 }
 
 /**
@@ -386,7 +396,7 @@ camel_sendmail_settings_set_custom_binary (CamelSendmailSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "custom-binary");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_CUSTOM_BINARY]);
 }
 
 /**
@@ -470,7 +480,7 @@ camel_sendmail_settings_set_custom_args (CamelSendmailSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "custom-args");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_CUSTOM_ARGS]);
 }
 
 /**
@@ -511,5 +521,5 @@ camel_sendmail_settings_set_send_in_offline (CamelSendmailSettings *settings,
 
 	settings->priv->send_in_offline = send_in_offline;
 
-	g_object_notify (G_OBJECT (settings), "send-in-offline");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_SEND_IN_OFFLINE]);
 }

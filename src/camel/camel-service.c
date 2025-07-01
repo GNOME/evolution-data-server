@@ -104,8 +104,11 @@ enum {
 	PROP_SESSION,
 	PROP_SETTINGS,
 	PROP_UID,
-	PROP_WITH_PROXY_RESOLVER
+	PROP_WITH_PROXY_RESOLVER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 void		camel_network_service_init	(CamelNetworkService *service);
@@ -451,7 +454,7 @@ service_notify_connection_status_cb (gpointer user_data)
 {
 	CamelService *service = CAMEL_SERVICE (user_data);
 
-	g_object_notify (G_OBJECT (service), "connection-status");
+	g_object_notify_by_pspec (G_OBJECT (service), properties[PROP_CONNECTION_STATUS]);
 
 	return FALSE;
 }
@@ -960,117 +963,127 @@ camel_service_class_init (CamelServiceClass *class)
 	class->disconnect_sync = service_disconnect_sync;
 	class->query_auth_types_sync = service_query_auth_types_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION_STATUS,
+	/**
+	 * CamelService:connection-status
+	 *
+	 * The connection status for the service
+	 **/
+	properties[PROP_CONNECTION_STATUS] =
 		g_param_spec_enum (
-			"connection-status",
-			"Connection Status",
-			"The connection status for the service",
+			"connection-status", NULL, NULL,
 			CAMEL_TYPE_SERVICE_CONNECTION_STATUS,
 			CAMEL_SERVICE_DISCONNECTED,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DISPLAY_NAME,
+	/**
+	 * CamelService:display-name
+	 *
+	 * The display name for the service
+	 **/
+	properties[PROP_DISPLAY_NAME] =
 		g_param_spec_string (
-			"display-name",
-			"Display Name",
-			"The display name for the service",
+			"display-name", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PASSWORD,
+	/**
+	 * CamelService:password
+	 *
+	 * The password for the service
+	 **/
+	properties[PROP_PASSWORD] =
 		g_param_spec_string (
-			"password",
-			"Password",
-			"The password for the service",
+			"password", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PROVIDER,
+	/**
+	 * CamelService:provider
+	 *
+	 * The #CamelProvider for the service
+	 **/
+	properties[PROP_PROVIDER] =
 		g_param_spec_boxed (
-			"provider",
-			"Provider",
-			"The CamelProvider for the service",
+			"provider", NULL, NULL,
 			CAMEL_TYPE_PROVIDER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PROXY_RESOLVER,
+	/**
+	 * CamelService:proxy-resolver
+	 *
+	 * The proxy resolver for the service
+	 **/
+	properties[PROP_PROXY_RESOLVER] =
 		g_param_spec_object (
-			"proxy-resolver",
-			"Proxy Resolver",
-			"The proxy resolver for the service",
+			"proxy-resolver", NULL, NULL,
 			G_TYPE_PROXY_RESOLVER,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SESSION,
+	/**
+	 * CamelService:session
+	 *
+	 * A #CamelSession instance
+	 **/
+	properties[PROP_SESSION] =
 		g_param_spec_object (
-			"session",
-			"Session",
-			"A CamelSession instance",
+			"session", NULL, NULL,
 			CAMEL_TYPE_SESSION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SETTINGS,
+	/**
+	 * CamelService:settings
+	 *
+	 * A #CamelSettings instance
+	 **/
+	properties[PROP_SETTINGS] =
 		g_param_spec_object (
-			"settings",
-			"Settings",
-			"A CamelSettings instance",
+			"settings", NULL, NULL,
 			CAMEL_TYPE_SETTINGS,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_UID,
+	/**
+	 * CamelService:uid
+	 *
+	 * The unique identity of the service
+	 **/
+	properties[PROP_UID] =
 		g_param_spec_string (
-			"uid",
-			"UID",
-			"The unique identity of the service",
+			"uid", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* private property, to not create GProxyResolver in the tests */
-	g_object_class_install_property (
-		object_class,
-		PROP_WITH_PROXY_RESOLVER,
+	/**
+	 * CamelService:with-proxy-resolver
+	 *
+	 * Private property, to not create #GProxyResolver in the tests
+	 **/
+	properties[PROP_WITH_PROXY_RESOLVER] =
 		g_param_spec_boolean (
-			"with-proxy-resolver",
-			NULL,
-			NULL,
+			"with-proxy-resolver", NULL, NULL,
 			TRUE,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -1308,7 +1321,7 @@ camel_service_set_display_name (CamelService *service,
 
 	g_mutex_unlock (&service->priv->property_lock);
 
-	g_object_notify (G_OBJECT (service), "display-name");
+	g_object_notify_by_pspec (G_OBJECT (service), properties[PROP_DISPLAY_NAME]);
 }
 
 /**
@@ -1390,7 +1403,7 @@ camel_service_set_password (CamelService *service,
 
 	g_mutex_unlock (&service->priv->property_lock);
 
-	g_object_notify (G_OBJECT (service), "password");
+	g_object_notify_by_pspec (G_OBJECT (service), properties[PROP_PASSWORD]);
 }
 
 /**
@@ -1552,7 +1565,7 @@ camel_service_set_proxy_resolver (CamelService *service,
 	g_mutex_unlock (&service->priv->property_lock);
 
 	if (notify)
-		g_object_notify (G_OBJECT (service), "proxy-resolver");
+		g_object_notify_by_pspec (G_OBJECT (service), properties[PROP_PROXY_RESOLVER]);
 }
 
 /**
@@ -1662,7 +1675,7 @@ camel_service_set_settings (CamelService *service,
 		camel_network_service_set_connectable (
 			CAMEL_NETWORK_SERVICE (service), NULL);
 
-	g_object_notify (G_OBJECT (service), "settings");
+	g_object_notify_by_pspec (G_OBJECT (service), properties[PROP_SETTINGS]);
 }
 
 /**

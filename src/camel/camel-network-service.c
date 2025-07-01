@@ -696,22 +696,28 @@ camel_network_service_default_init (CamelNetworkServiceInterface *iface)
 	iface->connect_sync = network_service_connect_sync;
 	iface->new_connectable = network_service_new_connectable;
 
+	/**
+	 * CamelNetworkService:connectable
+	 *
+	 * Socket endpoint of a network service
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_object (
-			"connectable",
-			"Connectable",
-			"Socket endpoint of a network service",
+			"connectable", NULL, NULL,
 			G_TYPE_SOCKET_CONNECTABLE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * CamelNetworkService:host-reachable
+	 *
+	 * Whether the host is reachable
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_boolean (
-			"host-reachable",
-			"Host Reachable",
-			"Whether the host is reachable",
+			"host-reachable", NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));

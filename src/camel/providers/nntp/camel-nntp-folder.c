@@ -34,8 +34,11 @@
 
 enum {
 	PROP_0,
-	PROP_APPLY_FILTERS
+	PROP_APPLY_FILTERS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelNNTPFolder,
@@ -63,7 +66,7 @@ nntp_folder_set_apply_filters (CamelNNTPFolder *folder,
 
 	folder->priv->apply_filters = apply_filters;
 
-	g_object_notify (G_OBJECT (folder), "apply-filters");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_APPLY_FILTERS]);
 }
 
 static void
@@ -731,18 +734,22 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	folder_class->transfer_messages_to_sync = nntp_folder_transfer_messages_to_sync;
 	folder_class->changed = nntp_folder_changed;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_APPLY_FILTERS,
+	/**
+	 * CamelNNTPFolder:apply-filters
+	 *
+	 * Apply message filters to this folder
+	 **/
+	properties[PROP_APPLY_FILTERS] =
 		g_param_spec_boolean (
-			"apply-filters",
-			"Apply Filters",
+			"apply-filters", NULL,
 			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	camel_folder_class_map_legacy_property (folder_class, "apply-filters", 0x2501);
 }

@@ -56,7 +56,8 @@ struct _CamelVeeFolderPrivate {
 
 enum {
 	PROP_0,
-	PROP_AUTO_UPDATE
+	PROP_AUTO_UPDATE,
+	N_PROPS
 };
 
 enum {
@@ -65,6 +66,8 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* signals only for testing purposes */
 #ifdef ENABLE_MAINTAINER_MODE
@@ -1329,17 +1332,21 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 	folder_class->synchronize_sync = vee_folder_synchronize_sync;
 	folder_class->transfer_messages_to_sync = vee_folder_transfer_messages_to_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTO_UPDATE,
+	/**
+	 * CamelVeeFolder:auto-update
+	 *
+	 * Automatically update on change in source folders
+	 **/
+	properties[PROP_AUTO_UPDATE] =
 		g_param_spec_boolean (
-			"auto-update",
-			"Auto Update",
+			"auto-update", NULL,
 			_("Automatically _update on change in source folders"),
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			CAMEL_FOLDER_PARAM_PERSISTENT);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/* private signal, to notify other search folders (which contain this one) that its setup like the expression
 	   or subfolders changed, thus the listener might need to rebuild its content */
@@ -1909,7 +1916,7 @@ camel_vee_folder_set_auto_update (CamelVeeFolder *vfolder,
 
 	vfolder->priv->auto_update = auto_update;
 
-	g_object_notify (G_OBJECT (vfolder), "auto-update");
+	g_object_notify_by_pspec (G_OBJECT (vfolder), properties[PROP_AUTO_UPDATE]);
 }
 
 /**

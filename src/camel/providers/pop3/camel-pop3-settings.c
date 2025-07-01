@@ -29,19 +29,23 @@ struct _CamelPOP3SettingsPrivate {
 
 enum {
 	PROP_0,
-	PROP_AUTH_MECHANISM,
 	PROP_DELETE_AFTER_DAYS,
 	PROP_DELETE_EXPUNGED,
 	PROP_DISABLE_EXTENSIONS,
-	PROP_HOST,
 	PROP_KEEP_ON_SERVER,
-	PROP_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_USER,
 	PROP_AUTO_FETCH,
 	PROP_ENABLE_UTF8,
-	PROP_LAST_CACHE_EXPUNGE
+	PROP_LAST_CACHE_EXPUNGE,
+	N_PROPS,
+
+	PROP_AUTH_MECHANISM,
+	PROP_HOST,
+	PROP_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_USER
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelPOP3Settings,
@@ -238,114 +242,124 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 	object_class->set_property = pop3_settings_set_property;
 	object_class->get_property = pop3_settings_get_property;
 
-	/* Inherited from CamelNetworkSettings. */
-	g_object_class_override_property (
-		object_class,
-		PROP_AUTH_MECHANISM,
-		"auth-mechanism");
-
-	/* Default to 0 days (i.e. do not delete) so we don't delete
-	 * mail on the POP server when the user's not expecting it. */
-	g_object_class_install_property (
-		object_class,
-		PROP_DELETE_AFTER_DAYS,
+	/**
+	 * CamelPOP3Settings:delete-after-days
+	 *
+	 * Delete messages left on server after N days.
+	 *
+	 * Default to 0 days (i.e. do not delete) so we don't delete
+	 * mail on the POP server when the user's not expecting it.
+	 **/
+	properties[PROP_DELETE_AFTER_DAYS] =
 		g_param_spec_int (
-			"delete-after-days",
-			"Delete After Days",
-			"Delete messages left on server after N days",
+			"delete-after-days", NULL, NULL,
 			0,
 			365,
 			0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DELETE_EXPUNGED,
+	/**
+	 * CamelPOP3Settings:delete-expunged
+	 *
+	 * Delete expunged from local Inbox
+	 **/
+	properties[PROP_DELETE_EXPUNGED] =
 		g_param_spec_boolean (
-			"delete-expunged",
-			"Delete Expunged",
-			"Delete expunged from local Inbox",
+			"delete-expunged", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DISABLE_EXTENSIONS,
+	/**
+	 * CamelPOP3Settings:disable-extensions
+	 *
+	 * Disable support for all POP3 extensions
+	 **/
+	properties[PROP_DISABLE_EXTENSIONS] =
 		g_param_spec_boolean (
-			"disable-extensions",
-			"Disable Extensions",
-			"Disable support for all POP3 extensions",
+			"disable-extensions", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* Inherited from CamelNetworkSettings. */
-	g_object_class_override_property (
-		object_class,
-		PROP_HOST,
-		"host");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_KEEP_ON_SERVER,
+	/**
+	 * CamelPOP3Settings:keep-on-server
+	 *
+	 * Leave messages on POP3 server
+	 **/
+	properties[PROP_KEEP_ON_SERVER] =
 		g_param_spec_boolean (
-			"keep-on-server",
-			"Keep On Server",
-			"Leave messages on POP3 server",
+			"keep-on-server", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LAST_CACHE_EXPUNGE,
+	/**
+	 * CamelPOP3Settings:last-cache-expunge
+	 *
+	 * Date as Julian value, when the cache had been checked for orphaned files the last time
+	 **/
+	properties[PROP_LAST_CACHE_EXPUNGE] =
 		g_param_spec_uint (
-			"last-cache-expunge",
-			"Last Cache Expunge",
-			"Date as Julian value, when the cache had been checked for orphaned files the last time",
+			"last-cache-expunge", NULL, NULL,
 			0,
 			G_MAXUINT32,
 			0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTO_FETCH,
+	/**
+	 * CamelPOP3Settings:auto-fetch
+	 *
+	 * Automatically fetch additional mails that may be downloaded later
+	 **/
+	properties[PROP_AUTO_FETCH] =
 		g_param_spec_boolean (
-			"auto-fetch",
-			"Auto Fetch mails",
-			"Automatically fetch additional mails that may be downloaded later.",
+			"auto-fetch", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENABLE_UTF8,
+	/**
+	 * CamelPOP3Settings:enable-utf8
+	 *
+	 * Whether can use UTF-8 extension, when the server supports it
+	 **/
+	properties[PROP_ENABLE_UTF8] =
 		g_param_spec_boolean (
-			"enable-utf8",
-			"Enable UTF8",
-			"Whether can use UTF-8 extension, when the server supports it",
+			"enable-utf8", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_AUTH_MECHANISM,
+		"auth-mechanism");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST,
+		"host");
 
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
@@ -418,7 +432,7 @@ camel_pop3_settings_set_delete_after_days (CamelPOP3Settings *settings,
 
 	settings->priv->delete_after_days = delete_after_days;
 
-	g_object_notify (G_OBJECT (settings), "delete-after-days");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DELETE_AFTER_DAYS]);
 }
 
 /**
@@ -467,7 +481,7 @@ camel_pop3_settings_set_delete_expunged (CamelPOP3Settings *settings,
 
 	settings->priv->delete_expunged = delete_expunged;
 
-	g_object_notify (G_OBJECT (settings), "delete-expunged");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DELETE_EXPUNGED]);
 }
 
 /**
@@ -512,7 +526,7 @@ camel_pop3_settings_set_disable_extensions (CamelPOP3Settings *settings,
 
 	settings->priv->disable_extensions = disable_extensions;
 
-	g_object_notify (G_OBJECT (settings), "disable-extensions");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DISABLE_EXTENSIONS]);
 }
 
 /**
@@ -555,7 +569,7 @@ camel_pop3_settings_set_keep_on_server (CamelPOP3Settings *settings,
 
 	settings->priv->keep_on_server = keep_on_server;
 
-	g_object_notify (G_OBJECT (settings), "keep-on-server");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_KEEP_ON_SERVER]);
 }
 
 /**
@@ -596,7 +610,7 @@ camel_pop3_settings_set_auto_fetch (CamelPOP3Settings *settings,
 
 	settings->priv->auto_fetch = auto_fetch;
 
-	g_object_notify (G_OBJECT (settings), "auto-fetch");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_AUTO_FETCH]);
 }
 
 guint32
@@ -618,7 +632,7 @@ camel_pop3_settings_set_last_cache_expunge (CamelPOP3Settings *settings,
 
 	settings->priv->last_cache_expunge = last_cache_expunge;
 
-	g_object_notify (G_OBJECT (settings), "last-cache-expunge");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_LAST_CACHE_EXPUNGE]);
 }
 
 /**
@@ -657,5 +671,5 @@ camel_pop3_settings_set_enable_utf8 (CamelPOP3Settings *settings,
 
 	settings->priv->enable_utf8 = enable;
 
-	g_object_notify (G_OBJECT (settings), "enable-utf8");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_ENABLE_UTF8]);
 }

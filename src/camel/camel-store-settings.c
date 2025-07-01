@@ -25,8 +25,11 @@ struct _CamelStoreSettingsPrivate {
 enum {
 	PROP_0,
 	PROP_FILTER_INBOX,
-	PROP_STORE_CHANGES_INTERVAL
+	PROP_STORE_CHANGES_INTERVAL,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelStoreSettings,
@@ -90,33 +93,37 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 	object_class->set_property = store_settings_set_property;
 	object_class->get_property = store_settings_get_property;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_INBOX,
+	/**
+	 * CamelStoreSettings:filter-inbox
+	 *
+	 * Whether to filter new messages in Inbox
+	 **/
+	properties[PROP_FILTER_INBOX] =
 		g_param_spec_boolean (
-			"filter-inbox",
-			"Filter Inbox",
-			"Whether to filter new messages in Inbox",
+			"filter-inbox", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_STORE_CHANGES_INTERVAL,
+	/**
+	 * CamelStoreSettings:store-changes-interval
+	 *
+	 * Interval, in seconds, to store folder changes
+	 **/
+	properties[PROP_STORE_CHANGES_INTERVAL] =
 		g_param_spec_int (
-			"store-changes-interval",
-			"Store Changes Interval",
-			"Interval, in seconds, to store folder changes",
+			"store-changes-interval", NULL, NULL,
 			-1,
 			999,
 			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -165,7 +172,7 @@ camel_store_settings_set_filter_inbox (CamelStoreSettings *settings,
 
 	settings->priv->filter_inbox = filter_inbox;
 
-	g_object_notify (G_OBJECT (settings), "filter-inbox");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_INBOX]);
 }
 
 /**
@@ -210,5 +217,5 @@ camel_store_settings_set_store_changes_interval (CamelStoreSettings *settings,
 
 	settings->priv->store_changes_interval = interval;
 
-	g_object_notify (G_OBJECT (settings), "store-changes-interval");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_STORE_CHANGES_INTERVAL]);
 }

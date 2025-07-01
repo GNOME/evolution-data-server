@@ -32,8 +32,11 @@ enum {
 	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
 	PROP_MAILDIR_ALT_FLAG_SEP,
-	PROP_PATH
+	PROP_PATH,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelLocalSettings,
@@ -139,57 +142,63 @@ camel_local_settings_class_init (CamelLocalSettingsClass *class)
 	object_class->get_property = local_settings_get_property;
 	object_class->finalize = local_settings_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PATH,
+	/**
+	 * CamelLocalSettings:path
+	 *
+	 * File path to the local store
+	 **/
+	properties[PROP_PATH] =
 		g_param_spec_string (
-			"path",
-			"Path",
-			"File path to the local store",
+			"path", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_ALL,
+	/**
+	 * CamelLocalSettings:filter-all
+	 *
+	 * Whether to apply filters in all folders
+	 **/
+	properties[PROP_FILTER_ALL] =
 		g_param_spec_boolean (
-			"filter-all",
-			"Filter All",
-			"Whether to apply filters in all folders",
+			"filter-all", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER_JUNK,
+	/**
+	 * CamelLocalSettings:filter-junk
+	 *
+	 * Whether to check new messages for junk
+	 **/
+	properties[PROP_FILTER_JUNK] =
 		g_param_spec_boolean (
-			"filter-junk",
-			"Filter Junk",
-			"Whether to check new messages for junk",
+			"filter-junk", NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MAILDIR_ALT_FLAG_SEP,
+	/**
+	 * CamelLocalSettings:maildir-alt-flag-sep
+	 *
+	 * Whether to use alternative flag separator in Maildir file name
+	 **/
+	properties[PROP_MAILDIR_ALT_FLAG_SEP] =
 		g_param_spec_boolean (
-			"maildir-alt-flag-sep",
-			"Maildir Alt Flag Sep",
-			"Whether to use alternative flag separator in Maildir file name",
+			"maildir-alt-flag-sep", NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -294,7 +303,7 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
 
 	g_mutex_unlock (&settings->priv->property_lock);
 
-	g_object_notify (G_OBJECT (settings), "path");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_PATH]);
 }
 
 /**
@@ -335,7 +344,7 @@ camel_local_settings_set_filter_all (CamelLocalSettings *settings,
 
 	settings->priv->filter_all = filter_all;
 
-	g_object_notify (G_OBJECT (settings), "filter-all");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_ALL]);
 }
 
 /**
@@ -376,7 +385,7 @@ camel_local_settings_set_filter_junk (CamelLocalSettings *settings,
 
 	settings->priv->filter_junk = filter_junk;
 
-	g_object_notify (G_OBJECT (settings), "filter-junk");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_FILTER_JUNK]);
 }
 
 /**
@@ -426,5 +435,5 @@ camel_local_settings_set_maildir_alt_flag_sep (CamelLocalSettings *settings,
 
 	settings->priv->maildir_alt_flag_sep = maildir_alt_flag_sep;
 
-	g_object_notify (G_OBJECT (settings), "maildir-alt-flag-sep");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_MAILDIR_ALT_FLAG_SEP]);
 }

@@ -27,17 +27,21 @@ struct _CamelSmtpSettingsPrivate {
 
 enum {
 	PROP_0,
-	PROP_AUTH_MECHANISM,
-	PROP_HOST,
-	PROP_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_USER,
 	PROP_REENCODE_DATA,
 	PROP_DSN_RET_FULL,
 	PROP_DSN_NOTIFY_SUCCESS,
 	PROP_DSN_NOTIFY_FAILURE,
-	PROP_DSN_NOTIFY_DELAY
+	PROP_DSN_NOTIFY_DELAY,
+	N_PROPS,
+
+	PROP_AUTH_MECHANISM,
+	PROP_HOST,
+	PROP_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_USER
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_CODE (CamelSmtpSettings, camel_smtp_settings, CAMEL_TYPE_SETTINGS,
 	G_ADD_PRIVATE (CamelSmtpSettings)
@@ -204,6 +208,78 @@ camel_smtp_settings_class_init (CamelSmtpSettingsClass *class)
 	object_class->set_property = smtp_settings_set_property;
 	object_class->get_property = smtp_settings_get_property;
 
+	/**
+	 * CamelSmtpSettings:reencode-data
+	 *
+	 * Whether to re-encode data on send
+	 **/
+	properties[PROP_REENCODE_DATA] =
+		g_param_spec_boolean (
+			"reencode-data", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelSmtpSettings:dsn-ret-full
+	 *
+	 * Whether to return full messages in DSN responses
+	 **/
+	properties[PROP_DSN_RET_FULL] =
+		g_param_spec_boolean (
+			"dsn-ret-full", NULL, NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelSmtpSettings:dsn-notify-success
+	 *
+	 * Whether to DSN-notify on success
+	 **/
+	properties[PROP_DSN_NOTIFY_SUCCESS] =
+		g_param_spec_boolean (
+			"dsn-notify-success", NULL, NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelSmtpSettings:dsn-notify-failure
+	 *
+	 * Whether to DSN-notify on failure
+	 **/
+	properties[PROP_DSN_NOTIFY_FAILURE] =
+		g_param_spec_boolean (
+			"dsn-notify-failure", NULL, NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * CamelSmtpSettings:dsn-notify-delay
+	 *
+	 * Whether to DSN-notify on delay
+	 **/
+	properties[PROP_DSN_NOTIFY_DELAY] =
+		g_param_spec_boolean (
+			"dsn-notify-delay", NULL, NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
+
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
 		object_class,
@@ -233,71 +309,6 @@ camel_smtp_settings_class_init (CamelSmtpSettingsClass *class)
 		object_class,
 		PROP_USER,
 		"user");
-
-	g_object_class_install_property (
-		object_class,
-		PROP_REENCODE_DATA,
-		g_param_spec_boolean (
-			"reencode-data",
-			"Reencode Data",
-			"Whether to re-encode data on send",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_DSN_RET_FULL,
-		g_param_spec_boolean (
-			"dsn-ret-full",
-			"DSN Ret Full",
-			"Whether to return full messages in DSN responses",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_DSN_NOTIFY_SUCCESS,
-		g_param_spec_boolean (
-			"dsn-notify-success",
-			"DSN Notify Success",
-			"Whether to DSN-notify on success",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_DSN_NOTIFY_FAILURE,
-		g_param_spec_boolean (
-			"dsn-notify-failure",
-			"DSN Notify Failure",
-			"Whether to DSN-notify on failure",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_DSN_NOTIFY_DELAY,
-		g_param_spec_boolean (
-			"dsn-notify-delay",
-			"DSN Notify Delay",
-			"Whether to DSN-notify on delay",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -325,7 +336,7 @@ camel_smtp_settings_set_reencode_data (CamelSmtpSettings *settings,
 
 	settings->priv->reencode_data = reencode_data;
 
-	g_object_notify (G_OBJECT (settings), "reencode-data");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_REENCODE_DATA]);
 }
 
 gboolean
@@ -347,7 +358,7 @@ camel_smtp_settings_set_dsn_ret_full (CamelSmtpSettings *settings,
 
 	settings->priv->dsn_ret_full = dsn_ret_full;
 
-	g_object_notify (G_OBJECT (settings), "dsn-ret-full");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DSN_RET_FULL]);
 }
 
 gboolean
@@ -369,7 +380,7 @@ camel_smtp_settings_set_dsn_notify_success (CamelSmtpSettings *settings,
 
 	settings->priv->dsn_notify_success = dsn_notify_success;
 
-	g_object_notify (G_OBJECT (settings), "dsn-notify-success");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DSN_NOTIFY_SUCCESS]);
 }
 
 gboolean
@@ -391,7 +402,7 @@ camel_smtp_settings_set_dsn_notify_failure (CamelSmtpSettings *settings,
 
 	settings->priv->dsn_notify_failure = dsn_notify_failure;
 
-	g_object_notify (G_OBJECT (settings), "dsn-notify-failure");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DSN_NOTIFY_FAILURE]);
 }
 
 gboolean
@@ -413,5 +424,5 @@ camel_smtp_settings_set_dsn_notify_delay (CamelSmtpSettings *settings,
 
 	settings->priv->dsn_notify_delay = dsn_notify_delay;
 
-	g_object_notify (G_OBJECT (settings), "dsn-notify-delay");
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DSN_NOTIFY_DELAY]);
 }

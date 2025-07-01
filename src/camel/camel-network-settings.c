@@ -40,57 +40,72 @@ G_DEFINE_INTERFACE (
 static void
 camel_network_settings_default_init (CamelNetworkSettingsInterface *iface)
 {
+	/**
+	 * CamelNetworkSettings:auth-mechanism
+	 *
+	 * Authentication mechanism name
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_string (
-			"auth-mechanism",
-			"Auth Mechanism",
-			"Authentication mechanism name",
+			"auth-mechanism", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * CamelNetworkSettings:host
+	 *
+	 * Host name for the network service
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_string (
-			"host",
-			"Host",
-			"Host name for the network service",
+			"host", NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * CamelNetworkSettings:port
+	 *
+	 * Port number for the network service
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_uint (
-			"port",
-			"Port",
-			"Port number for the network service",
+			"port", NULL, NULL,
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * CamelNetworkSettings:security-method
+	 *
+	 * Method used to establish a network connection
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_enum (
-			"security-method",
-			"Security Method",
-			"Method used to establish a network connection",
+			"security-method", NULL, NULL,
 			CAMEL_TYPE_NETWORK_SECURITY_METHOD,
 			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * CamelNetworkSettings:user
+	 *
+	 * User name for the network account
+	 **/
 	g_object_interface_install_property (
 		iface,
 		g_param_spec_string (
-			"user",
-			"User",
-			"User name for the network account",
+			"user", NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |

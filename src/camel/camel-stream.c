@@ -33,8 +33,11 @@ struct _CamelStreamPrivate {
 
 enum {
 	PROP_0,
-	PROP_BASE_STREAM
+	PROP_BASE_STREAM,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void	camel_stream_seekable_init	(GSeekableIface *iface);
@@ -362,17 +365,20 @@ camel_stream_class_init (CamelStreamClass *class)
 	class->flush = stream_flush;
 	class->eos = stream_eos;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BASE_STREAM,
+	/**
+	 * CamelStream:base-stream
+	 *
+	 * The base #GIOStream
+	 **/
+	properties[PROP_BASE_STREAM] =
 		g_param_spec_object (
-			"base-stream",
-			"Base Stream",
-			"The base GIOStream",
+			"base-stream", NULL, NULL,
 			G_TYPE_IO_STREAM,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -459,17 +465,19 @@ void
 camel_stream_set_base_stream (CamelStream *stream,
                               GIOStream *base_stream)
 {
+	gboolean changed;
+
 	g_return_if_fail (CAMEL_IS_STREAM (stream));
 	g_return_if_fail (G_IS_IO_STREAM (base_stream));
 
 	g_mutex_lock (&stream->priv->base_stream_lock);
 
-	g_clear_object (&stream->priv->base_stream);
-	stream->priv->base_stream = g_object_ref (base_stream);
+	changed = g_set_object (&stream->priv->base_stream, base_stream);
 
 	g_mutex_unlock (&stream->priv->base_stream_lock);
 
-	g_object_notify (G_OBJECT (stream), "base-stream");
+	if (changed)
+		g_object_notify_by_pspec (G_OBJECT (stream), properties[PROP_BASE_STREAM]);
 }
 
 /**

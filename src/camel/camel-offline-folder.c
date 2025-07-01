@@ -51,8 +51,11 @@ struct _OfflineDownsyncData {
 
 enum {
 	PROP_0,
-	PROP_OFFLINE_SYNC
+	PROP_OFFLINE_SYNC,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER)
 
@@ -526,18 +529,23 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 
 	class->downsync_sync = offline_folder_downsync_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OFFLINE_SYNC,
+	/**
+	 * CamelOfflineFolder:offline-sync
+	 *
+	 * Copy folder content locally for offline operation
+	 **/
+	properties[PROP_OFFLINE_SYNC] =
 		g_param_spec_enum (
-			"offline-sync",
-			"Offline Sync",
+			"offline-sync", NULL,
 			_("Copy folder content locally for _offline operation"),
 			CAMEL_TYPE_THREE_STATE,
 			CAMEL_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			CAMEL_FOLDER_PARAM_PERSISTENT));
+			G_PARAM_STATIC_STRINGS |
+			CAMEL_FOLDER_PARAM_PERSISTENT);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	camel_folder_class_map_legacy_property (folder_class, "offline-sync", 0x2400);
@@ -591,7 +599,7 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *folder,
 
 	folder->priv->offline_sync = offline_sync;
 
-	g_object_notify (G_OBJECT (folder), "offline-sync");
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_OFFLINE_SYNC]);
 }
 
 /**
