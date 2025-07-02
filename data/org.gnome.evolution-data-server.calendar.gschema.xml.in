@@ -107,11 +107,15 @@
     </key>
     <key name="notify-last-snooze-minutes" type="i">
       <default>5</default>
-      <summary>The last used snooze time, in minutes</summary>
+      <summary>The last used snooze time, in minutes; negative number always means before start, otherwise the actual value is used in conjunction with “notify-last-snooze-from-start”</summary>
     </key>
-    <key name="notify-custom-snooze-minutes" type="ai">
+    <key name="notify-last-snooze-from-start" type="b">
+      <default>false</default>
+      <summary>Whether the last snooze time is calculated relative to the event/task start; false to count relative to the current time</summary>
+    </key>
+    <key name="notify-custom-snooze-times" type="as">
       <default>[]</default>
-      <summary>User-defined snooze times, in minutes</summary>
+      <summary>User-defined snooze times, in minutes, encoded into string as a number, where zero or negative means “before start”. When the number is prefixed with a star, then it means after start, otherwise the time is relative to the current time, aka “snooze for N minutes”</summary>
     </key>
     <key name="delete-meeting-on-decline" type="b">
       <default>true</default>
