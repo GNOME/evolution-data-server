@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2025-06-18 15:28+0000\n"
-"PO-Revision-Date: 2025-06-18 21:14+0300\n"
+"POT-Creation-Date: 2025-07-02 12:01+0000\n"
+"PO-Revision-Date: 2025-07-02 21:22+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -179,7 +179,7 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/calendar/libecal/e-cal-client.c:6391
 #: src/calendar/libecal/e-cal-client.c:6596
 #: src/calendar/libedata-cal/e-cal-cache.c:1836
-#: src/camel/camel-filter-driver.c:1812 src/camel/camel-filter-driver.c:1947
+#: src/camel/camel-filter-driver.c:1829 src/camel/camel-filter-driver.c:1964
 #: src/camel/camel-gpg-context.c:3218
 #: src/camel/providers/imapx/camel-imapx-server.c:3374
 #: src/camel/providers/imapx/camel-imapx-server.c:3380
@@ -191,7 +191,7 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/libedataserver/e-soup-session.c:2151
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
-#: src/libedataserverui/e-reminders-widget.c:2140
+#: src/libedataserverui/e-reminders-widget.c:2302
 #: src/tools/list-sources/list-sources.c:428
 msgid "Unknown error"
 msgstr "Невідома помилка"
@@ -2409,7 +2409,7 @@ msgid "Undefined"
 msgstr "Невизначено"
 
 #: src/calendar/libecal/e-cal-util.c:1174
-#: src/libedataserverui/e-reminders-widget.c:336
+#: src/libedataserverui/e-reminders-widget.c:431
 #, c-format
 msgid "%d week"
 msgid_plural "%d weeks"
@@ -2419,7 +2419,7 @@ msgstr[2] "%d тижнів"
 msgstr[3] "%d тижнів"
 
 #: src/calendar/libecal/e-cal-util.c:1183
-#: src/libedataserverui/e-reminders-widget.c:332
+#: src/libedataserverui/e-reminders-widget.c:427
 #, c-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -2429,7 +2429,7 @@ msgstr[2] "%d днів"
 msgstr[3] "%d день"
 
 #: src/calendar/libecal/e-cal-util.c:1192
-#: src/libedataserverui/e-reminders-widget.c:328
+#: src/libedataserverui/e-reminders-widget.c:423
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -2439,7 +2439,7 @@ msgstr[2] "%d годин"
 msgstr[3] "%d година"
 
 #: src/calendar/libecal/e-cal-util.c:1201
-#: src/libedataserverui/e-reminders-widget.c:324
+#: src/libedataserverui/e-reminders-widget.c:419
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -2765,11 +2765,10 @@ msgstr "Не вдалося вилучити кешований елемент: 
 
 #: src/camel/camel-db.c:839
 #, c-format
-#| msgid "Failed to remove file “%s”: %s"
 msgid "There is already opened file “%s”"
 msgstr "Вже відкрито файл «%s»"
 
-#: src/camel/camel-db.c:907 src/camel/providers/local/camel-mbox-store.c:912
+#: src/camel/camel-db.c:907 src/camel/providers/local/camel-mbox-store.c:914
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Не вдалося перейменувати «%s»: у %s: %s"
@@ -2782,84 +2781,84 @@ msgstr "Не вдалося перейменувати «%s»: у %s: %s"
 msgid "Transferring filtered messages in “%s : %s”"
 msgstr "Передавання відфільтрованих повідомлень у «%s : %s»"
 
-#: src/camel/camel-filter-driver.c:1214 src/camel/camel-filter-search.c:936
+#: src/camel/camel-filter-driver.c:1231 src/camel/camel-filter-search.c:936
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Не вдалося створити дочірній процес «%s»: %s"
 
-#: src/camel/camel-filter-driver.c:1268
+#: src/camel/camel-filter-driver.c:1285
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Отримано неправильний потік повідомлень з %s: %s"
 
-#: src/camel/camel-filter-driver.c:1492 src/camel/camel-filter-driver.c:1505
+#: src/camel/camel-filter-driver.c:1509 src/camel/camel-filter-driver.c:1522
 msgid "Syncing folders"
 msgstr "Синхронізація тек"
 
-#: src/camel/camel-filter-driver.c:1613
+#: src/camel/camel-filter-driver.c:1630
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Помилка аналізу фільтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1624
+#: src/camel/camel-filter-driver.c:1641
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Помилка виконання фільтра: %s: %s"
 
-#: src/camel/camel-filter-driver.c:1722
+#: src/camel/camel-filter-driver.c:1739
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Не вдалося відкрити буферну теку"
 
-#: src/camel/camel-filter-driver.c:1734
+#: src/camel/camel-filter-driver.c:1751
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Не вдалося обробити буферну теку"
 
-#: src/camel/camel-filter-driver.c:1762
+#: src/camel/camel-filter-driver.c:1779
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Отримання повідомлення %d (%d%%)"
 
-#: src/camel/camel-filter-driver.c:1771 src/camel/camel-filter-driver.c:1794
+#: src/camel/camel-filter-driver.c:1788 src/camel/camel-filter-driver.c:1811
 #, c-format
 msgid "Failed on message %d"
 msgstr "Помилка на повідомленні %d"
 
-#: src/camel/camel-filter-driver.c:1812 src/camel/camel-filter-driver.c:1947
+#: src/camel/camel-filter-driver.c:1829 src/camel/camel-filter-driver.c:1964
 #, c-format
 msgid "Failed to transfer messages: %s"
 msgstr "Не вдалося перенести повідомлення: %s"
 
-#: src/camel/camel-filter-driver.c:1822 src/camel/camel-filter-driver.c:1972
+#: src/camel/camel-filter-driver.c:1839 src/camel/camel-filter-driver.c:1989
 msgid "Syncing folder"
 msgstr "Синхронізація теки"
 
-#: src/camel/camel-filter-driver.c:1827 src/camel/camel-filter-driver.c:1980
+#: src/camel/camel-filter-driver.c:1844 src/camel/camel-filter-driver.c:1997
 msgid "Complete"
 msgstr "Виконано"
 
-#: src/camel/camel-filter-driver.c:1895
+#: src/camel/camel-filter-driver.c:1912
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Отримання повідомлення %d з %d"
 
-#: src/camel/camel-filter-driver.c:1919
+#: src/camel/camel-filter-driver.c:1936
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Помилка на повідомленні %d з %d"
 
-#: src/camel/camel-filter-driver.c:2138 src/camel/camel-filter-driver.c:2162
+#: src/camel/camel-filter-driver.c:2155 src/camel/camel-filter-driver.c:2179
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "Помилка виконання фільтра «%s»: "
 
-#: src/camel/camel-filter-driver.c:2152
+#: src/camel/camel-filter-driver.c:2169
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Помилка аналізу фільтра «%s»: %s: %s"
 
-#: src/camel/camel-filter-driver.c:2171
+#: src/camel/camel-filter-driver.c:2188
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Помилка виконання фільтра «%s»: %s: %s"
@@ -2888,7 +2887,7 @@ msgstr "Помилка виконання фільтрованого пошук�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:171
+#: src/camel/camel-folder.c:219
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Збереження змін у теці «%s : %s»"
@@ -2896,7 +2895,7 @@ msgstr "Збереження змін у теці «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:447
+#: src/camel/camel-folder.c:495
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2908,7 +2907,7 @@ msgstr[3] "Вивчення нового повідомлення спаму у 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:490
+#: src/camel/camel-folder.c:538
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2920,7 +2919,7 @@ msgstr[3] "Вивчення нового зміненого повідомлен
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:538
+#: src/camel/camel-folder.c:586
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
@@ -2929,19 +2928,19 @@ msgstr[1] "Фільтруємо нові повідомлення у «%s : %s»
 msgstr[2] "Фільтруємо нові повідомлення у «%s : %s»"
 msgstr[3] "Фільтруємо нове повідомлення у «%s : %s»"
 
-#: src/camel/camel-folder.c:1221
+#: src/camel/camel-folder.c:1181
 #: src/camel/providers/local/camel-maildir-folder.c:331
 msgid "Moving messages"
 msgstr "Переміщення повідомлень"
 
-#: src/camel/camel-folder.c:1224
+#: src/camel/camel-folder.c:1184
 msgid "Copying messages"
 msgstr "Копіювання повідомлень"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1269
+#: src/camel/camel-folder.c:1229
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Для теки «%s : %s» не передбачено підтримки даних щодо квоти"
@@ -2949,36 +2948,33 @@ msgstr "Для теки «%s : %s» не передбачено підтримк
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1371
+#: src/camel/camel-folder.c:1331
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Фільтруємо теку «%s : %s»"
 
-#: src/camel/camel-folder.c:1473
-#| msgid "Cannot get message with message ID %s: %s"
+#: src/camel/camel-folder.c:1433
 msgid "Cannot get message headers, local message file not found"
 msgstr ""
-"Не вдалося отримати заголовки повідомлення, локальний файл повідомлення не"
-" знайдено"
+"Не вдалося отримати заголовки повідомлення, локальний файл повідомлення не "
+"знайдено"
 
-#: src/camel/camel-folder.c:1489
-#| msgid "Cannot send message: sender address not valid."
+#: src/camel/camel-folder.c:1449
 msgid "Cannot search message headers remotely, not supported"
 msgstr ""
-"Не вдалося виконати пошук заголовків повідомлень віддалено, підтримки не"
-" передбачено"
+"Не вдалося виконати пошук заголовків повідомлень віддалено, підтримки не "
+"передбачено"
 
-#: src/camel/camel-folder.c:1503
-#| msgid "Forwarding messages is not supported"
+#: src/camel/camel-folder.c:1463
 msgid "Cannot search message bodies remotely, not supported"
 msgstr ""
-"Не вдалося виконати пошук вмісту повідомлень віддалено, підтримки не"
-" передбачено"
+"Не вдалося виконати пошук вмісту повідомлень віддалено, підтримки не "
+"передбачено"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3282
+#: src/camel/camel-folder.c:3201
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Знищення теки «%s : %s»"
@@ -2986,7 +2982,7 @@ msgstr "Знищення теки «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3417
+#: src/camel/camel-folder.c:3336
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Отримання повідомлення «%s» у «%s : %s»"
@@ -2994,7 +2990,7 @@ msgstr "Отримання повідомлення «%s» у «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3642
+#: src/camel/camel-folder.c:3561
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Отримання відомостей про квоту для «%s : %s»"
@@ -3002,7 +2998,7 @@ msgstr "Отримання відомостей про квоту для «%s : 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3942
+#: src/camel/camel-folder.c:3861
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Оновлюємо теку «%s : %s»"
@@ -3010,7 +3006,7 @@ msgstr "Оновлюємо теку «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1713
+#: src/camel/camel-folder-summary.c:1675
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Звільнення невикористаної пам'яті для теки «%s : %s»"
@@ -3084,7 +3080,7 @@ msgstr ""
 "Зашифровані дані не містять відомостей про одержувача. Для кожного закритого "
 "ключа буде запропоновано ввести пароль."
 
-#: src/camel/camel-gpg-context.c:1435 src/camel/camel-net-utils.c:523
+#: src/camel/camel-gpg-context.c:1435 src/camel/camel-net-utils.c:522
 #: src/camel/providers/nntp/camel-nntp-summary.c:391
 #: src/libedataserver/e-client.c:156
 #, c-format
@@ -3355,21 +3351,21 @@ msgstr "Підпис недоступний"
 msgid "parse error"
 msgstr "помилка обробки"
 
-#: src/camel/camel-net-utils.c:715
+#: src/camel/camel-net-utils.c:714
 #, c-format
 msgid "Resolving: %s"
 msgstr "Пошук вузла: %s"
 
-#: src/camel/camel-net-utils.c:740
+#: src/camel/camel-net-utils.c:739
 msgid "Host lookup failed"
 msgstr "Помилка пошуку вузла"
 
-#: src/camel/camel-net-utils.c:746
+#: src/camel/camel-net-utils.c:745
 #, c-format
 msgid "Host lookup “%s” failed. Check your host name for spelling errors."
 msgstr "Вузол «%s» не знайдено. Перевірте правильність назви вузла."
 
-#: src/camel/camel-net-utils.c:750
+#: src/camel/camel-net-utils.c:749
 #, c-format
 msgid "Host lookup “%s” failed: %s"
 msgstr "Помилка пошуку вузла «%s»: %s"
@@ -3382,7 +3378,7 @@ msgstr "Перевірка доступності облікового запи�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:174
+#: src/camel/camel-offline-folder.c:172
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr "Отримуємо нові повідомлення для автономної роботи з «%s : %s»"
@@ -3390,7 +3386,7 @@ msgstr "Отримуємо нові повідомлення для автоно
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:293
+#: src/camel/camel-offline-folder.c:291
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
@@ -3399,7 +3395,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:369
+#: src/camel/camel-offline-folder.c:367
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Синхронізація повідомлень у теці «%s : %s» на диск"
@@ -3409,16 +3405,16 @@ msgstr "Синхронізація повідомлень у теці «%s : %s�
 #. The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-offline-folder.c:473
+#: src/camel/camel-offline-folder.c:471
 #, c-format
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Синхронізація повідомлення %d з %d у теці «%s : %s» на диск"
 
-#: src/camel/camel-offline-folder.c:536
+#: src/camel/camel-offline-folder.c:535
 msgid "Copy folder content locally for _offline operation"
 msgstr "Скопіювати вміст теки на локальну машину для _автономної роботи"
 
-#: src/camel/camel-offline-store.c:325
+#: src/camel/camel-offline-store.c:321
 #, c-format
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Синхронізація повідомлень в обліковому записі «%s» на диск"
@@ -4832,7 +4828,7 @@ msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Не вдалося вилучити теку: %s: недопустима операція"
 
 #: src/camel/camel-store.c:2816
-#: src/camel/providers/local/camel-maildir-store.c:911
+#: src/camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Не вдалося перейменувати теку: %s: неправильна операція"
@@ -4842,7 +4838,6 @@ msgid "Gathering existing summary data…"
 msgstr "Збираємо наявні дані резюме…"
 
 #: src/camel/camel-store-db.c:1174
-#| msgid "Creating folder “%s”"
 msgid "Migrating folder data…"
 msgstr "Перенесення даних тек…"
 
@@ -4860,13 +4855,11 @@ msgstr "Чищення даних…"
 
 #: src/camel/camel-store-db.c:1985
 #, c-format
-#| msgid "Cannot transfer message to destination folder: %s"
 msgid "Cannot write message information: Folder “%s” not found"
 msgstr "Не вдалося записати дані повідомлення: теку «%s» не знайдено"
 
 #: src/camel/camel-store-db.c:2147 src/camel/camel-store-db.c:2210
 #, c-format
-#| msgid "Cannot transfer message to destination folder: %s"
 msgid "Cannot read message information: Folder “%s” not found"
 msgstr "Не вдалося прочитати дані повідомлення: теку «%s» не знайдено"
 
@@ -4874,42 +4867,36 @@ msgstr "Не вдалося прочитати дані повідомлення
 #, c-format
 msgid "Cannot read message information in folder “%s”: Message “%s” not found"
 msgstr ""
-"Не вдалося прочитати дані повідомлення у теці «%s»: повідомлення «%s» не"
-" знайдено"
+"Не вдалося прочитати дані повідомлення у теці «%s»: повідомлення «%s» не "
+"знайдено"
 
 #: src/camel/camel-store-db.c:2290
 #, c-format
-#| msgid "Cannot get folder “%s”: not a directory."
 msgid "Cannot delete message: Folder “%s” not found"
 msgstr "Не вдалося вилучити повідомлення: теку «%s» не знайдено"
 
 #: src/camel/camel-store-db.c:2362
 #, c-format
-#| msgid "Cannot get folder “%s”: not a directory."
 msgid "Cannot delete messages: Folder “%s” not found"
 msgstr "Не вдалося вилучити повідомлення: теку «%s» не знайдено"
 
 #: src/camel/camel-store-db.c:2439
 #, c-format
-#| msgid "Cannot create folder “%s”: %s"
 msgid "Cannot count messages: Folder “%s” not found"
 msgstr "Не вдалося полічити повідомлення: теку «%s» не знайдено"
 
 #: src/camel/camel-store-db.c:2513
 #, c-format
-#| msgid "Cannot get folder “%s”: not a directory."
 msgid "Cannot get UIDs and flags: Folder “%s” not found"
 msgstr "Не вдалося отримати UID та прапорці: теку «%s» не знайдено"
 
 #: src/camel/camel-store-db.c:2581
 #, c-format
-#| msgid "Cannot get folder “%s”: not a directory."
 msgid "Cannot get junk UIDs: Folder “%s” not found"
 msgstr "Не вдалося отримати небажані UID: теку «%s» не знайдено"
 
 #: src/camel/camel-store-db.c:2630
 #, c-format
-#| msgid "Cannot get folder “%s”: not a directory."
 msgid "Cannot get deleted UIDs: Folder “%s” not found"
 msgstr "Не вдалося отримати вилучені UID: теку «%s» не знайдено"
 
@@ -4956,12 +4943,12 @@ msgstr "Відписка від теки «%s»"
 msgid "Could not parse URL “%s”"
 msgstr "Не вдалося обробити адресу «%s»"
 
-#: src/camel/camel-vee-folder.c:282
+#: src/camel/camel-vee-folder.c:280
 #, c-format
 msgid "Updating search folder “%s”"
 msgstr "Оновлення теки пошуку «%s»"
 
-#: src/camel/camel-vee-folder.c:1132 src/camel/camel-vee-folder.c:1258
+#: src/camel/camel-vee-folder.c:1130 src/camel/camel-vee-folder.c:1256
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
@@ -4971,26 +4958,26 @@ msgstr ""
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1169
+#: src/camel/camel-vee-folder.c:1167
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Немає повідомлення %s у «%s : %s»"
 
-#: src/camel/camel-vee-folder.c:1234
+#: src/camel/camel-vee-folder.c:1232
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Помилка при збереженні «%s»: "
 
-#: src/camel/camel-vee-folder.c:1340
+#: src/camel/camel-vee-folder.c:1338
 msgid "Automatically _update on change in source folders"
 msgstr "Автоматично _оновлювати при зміні тек-джерел"
 
-#: src/camel/camel-vee-store.c:337
+#: src/camel/camel-vee-store.c:300
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Не вдалося вилучити теку: %s: немає такої теки"
 
-#: src/camel/camel-vee-store.c:364
+#: src/camel/camel-vee-store.c:327
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Не вдалося перейменувати теку: %s: немає такої теки"
@@ -5011,9 +4998,9 @@ msgstr "Для завершення цієї операції необхідне
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:986
 #: src/camel/providers/imapx/camel-imapx-server.c:3467
 #: src/camel/providers/nntp/camel-nntp-store.c:347
-#: src/camel/providers/nntp/camel-nntp-store.c:1342
-#: src/camel/providers/nntp/camel-nntp-store.c:2155
-#: src/camel/providers/nntp/camel-nntp-store.c:2308
+#: src/camel/providers/nntp/camel-nntp-store.c:1341
+#: src/camel/providers/nntp/camel-nntp-store.c:2154
+#: src/camel/providers/nntp/camel-nntp-store.c:2307
 #: src/camel/providers/pop3/camel-pop3-folder.c:446
 #: src/camel/providers/pop3/camel-pop3-folder.c:629
 #: src/camel/providers/pop3/camel-pop3-folder.c:914
@@ -5049,7 +5036,7 @@ msgstr "Не вдалося перемістити повідомлення не
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:695
+#: src/camel/providers/imapx/camel-imapx-folder.c:693
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Для теки «%s : %s» немає даних щодо квоти"
@@ -5058,36 +5045,34 @@ msgstr "Для теки «%s : %s» немає даних щодо квоти"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:962
+#: src/camel/providers/imapx/camel-imapx-folder.c:960
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Вилучення застарілих файлів кешу у теці «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1028
-#| msgid "You must be working online to complete this operation"
+#: src/camel/providers/imapx/camel-imapx-folder.c:1026
 msgid "You must be working online to search in headers"
 msgstr "Для пошуку у заголовках потрібне з'єднання з мережею"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1082
-#| msgid "You must be working online to complete this operation"
+#: src/camel/providers/imapx/camel-imapx-folder.c:1080
 msgid "You must be working online to search in message body"
 msgstr "Для пошуку у вмісті повідомлень потрібне з'єднання з мережею"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1168
-#: src/camel/providers/nntp/camel-nntp-folder.c:745
+#: src/camel/providers/imapx/camel-imapx-folder.c:1166
+#: src/camel/providers/nntp/camel-nntp-folder.c:740
 msgid "Apply message _filters to this folder"
 msgstr "Застосувати _фільтри повідомлень до цієї теки"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1180
+#: src/camel/providers/imapx/camel-imapx-folder.c:1178
 msgid "Always check for _new mail in this folder"
 msgstr "Завжди перевіряти _нову пошту у цій теці"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1306
+#: src/camel/providers/imapx/camel-imapx-folder.c:1308
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Не вдалося створити теку зведення для %s"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1318
+#: src/camel/providers/imapx/camel-imapx-folder.c:1320
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Не вдалося створити кеш для %s: "
@@ -5095,7 +5080,7 @@ msgstr "Не вдалося створити кеш для %s: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1516
+#: src/camel/providers/imapx/camel-imapx-folder.c:1517
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Для теки «%s : %s» немає доступної поштової скриньки IMAP"
@@ -5137,9 +5122,9 @@ msgstr "_Показувати лише підписані теки"
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:50
 #: src/camel/providers/local/camel-local-provider.c:36
-#: src/camel/providers/local/camel-local-provider.c:62
-#: src/camel/providers/local/camel-local-provider.c:83
-#: src/camel/providers/local/camel-local-provider.c:107
+#: src/camel/providers/local/camel-local-provider.c:63
+#: src/camel/providers/local/camel-local-provider.c:84
+#: src/camel/providers/local/camel-local-provider.c:109
 #: src/camel/providers/nntp/camel-nntp-provider.c:35
 msgid "Options"
 msgstr "Параметри"
@@ -5157,9 +5142,9 @@ msgstr ""
 
 #: src/camel/providers/imapx/camel-imapx-provider.c:56
 #: src/camel/providers/local/camel-local-provider.c:40
-#: src/camel/providers/local/camel-local-provider.c:66
-#: src/camel/providers/local/camel-local-provider.c:87
-#: src/camel/providers/local/camel-local-provider.c:113
+#: src/camel/providers/local/camel-local-provider.c:67
+#: src/camel/providers/local/camel-local-provider.c:88
+#: src/camel/providers/local/camel-local-provider.c:115
 #: src/camel/providers/nntp/camel-nntp-provider.c:39
 msgid "Check new messages for _Junk contents"
 msgstr "Перевіряти, чи є нові повідомлення _спамом"
@@ -5477,55 +5462,55 @@ msgstr "Помилка виконання IDLE"
 #: src/camel/providers/imapx/camel-imapx-store.c:349
 #: src/camel/providers/local/camel-maildir-folder.c:484
 #: src/camel/providers/local/camel-maildir-store.c:341
-#: src/camel/providers/local/camel-maildir-store.c:823
-#: src/camel/providers/local/camel-maildir-store.c:829
-#: src/camel/providers/local/camel-maildir-store.c:912
-#: src/camel/providers/local/camel-spool-store.c:396
+#: src/camel/providers/local/camel-maildir-store.c:826
+#: src/camel/providers/local/camel-maildir-store.c:832
+#: src/camel/providers/local/camel-maildir-store.c:915
+#: src/camel/providers/local/camel-spool-store.c:399
 msgid "Inbox"
 msgstr "Вхідні"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:958
+#: src/camel/providers/imapx/camel-imapx-store.c:956
 #, c-format
 msgid "IMAP server %s"
 msgstr "Сервер IMAP %s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:961
+#: src/camel/providers/imapx/camel-imapx-store.c:959
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Служба IMAP для %s на %s"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1052
+#: src/camel/providers/imapx/camel-imapx-store.c:1050
 msgid "No IMAPx connection object provided"
 msgstr "Немає наданих об'єктів з'єднання IMAPx"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1069
+#: src/camel/providers/imapx/camel-imapx-store.c:1067
 #: src/camel/providers/nntp/camel-nntp-provider.c:94
 #: src/camel/providers/pop3/camel-pop3-provider.c:81
 msgid "Password"
 msgstr "Пароль"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1071
+#: src/camel/providers/imapx/camel-imapx-store.c:1069
 msgid ""
 "This option will connect to the IMAP server using a plaintext password."
 msgstr "З'єднуватись з IMAP сервером використовуючи нешифрований пароль."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1155
+#: src/camel/providers/imapx/camel-imapx-store.c:1153
 #, c-format
 msgid "No such folder %s"
 msgstr "Немає такої теки «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1639
+#: src/camel/providers/imapx/camel-imapx-store.c:1636
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Немає простору імен IMAP для теки зі шляхом «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:1909
-#: src/camel/providers/imapx/camel-imapx-store.c:2104
+#: src/camel/providers/imapx/camel-imapx-store.c:1906
+#: src/camel/providers/imapx/camel-imapx-store.c:2101
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Отримання списку тек для «%s»"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2347
+#: src/camel/providers/imapx/camel-imapx-store.c:2340
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
@@ -5533,7 +5518,7 @@ msgstr ""
 "Для облікового запису не передбачено підтримки ієрархії тек. Натомість, "
 "створіть теку на рівні облікового запису."
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2394
+#: src/camel/providers/imapx/camel-imapx-store.c:2387
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Назва теки «%s» некоректна, оскільки містить символ «%c»"
@@ -5543,97 +5528,97 @@ msgstr "Назва теки «%s» некоректна, оскільки міс
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: src/camel/providers/imapx/camel-imapx-store.c:2807
+#: src/camel/providers/imapx/camel-imapx-store.c:2800
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Чернетки"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2808
+#: src/camel/providers/imapx/camel-imapx-store.c:2801
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Чернетки"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2809
+#: src/camel/providers/imapx/camel-imapx-store.c:2802
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Чернетка"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2812
+#: src/camel/providers/imapx/camel-imapx-store.c:2805
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Шаблони"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2815
+#: src/camel/providers/imapx/camel-imapx-store.c:2808
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Архів"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2818
+#: src/camel/providers/imapx/camel-imapx-store.c:2811
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Надіслана пошта"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2819
+#: src/camel/providers/imapx/camel-imapx-store.c:2812
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Надіслані"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2820
+#: src/camel/providers/imapx/camel-imapx-store.c:2813
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Надіслані записи"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2821
+#: src/camel/providers/imapx/camel-imapx-store.c:2814
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Надіслані повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2824
+#: src/camel/providers/imapx/camel-imapx-store.c:2817
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2825
+#: src/camel/providers/imapx/camel-imapx-store.c:2818
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2826
+#: src/camel/providers/imapx/camel-imapx-store.c:2819
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Небажана пошта"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2827
+#: src/camel/providers/imapx/camel-imapx-store.c:2820
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2828
+#: src/camel/providers/imapx/camel-imapx-store.c:2821
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Спам"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2829
+#: src/camel/providers/imapx/camel-imapx-store.c:2822
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Пакетне розсилання пошти"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2832
+#: src/camel/providers/imapx/camel-imapx-store.c:2825
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Смітник"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2833
+#: src/camel/providers/imapx/camel-imapx-store.c:2826
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Смітник"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2834
+#: src/camel/providers/imapx/camel-imapx-store.c:2827
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Вилучені записи"
 
-#: src/camel/providers/imapx/camel-imapx-store.c:2835
+#: src/camel/providers/imapx/camel-imapx-store.c:2828
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Вилучені повідомлення"
@@ -5642,7 +5627,7 @@ msgstr "Вилучені повідомлення"
 #. * for folders being under $HOME.  The first %s is replaced
 #. * with a relative path under $HOME, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: src/camel/providers/local/camel-local-folder.c:183
+#: src/camel/providers/local/camel-local-folder.c:181
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
@@ -5656,8 +5641,8 @@ msgstr "~%s (%s)"
 #. * folders being under /var/mail.  The first %s is replaced
 #. * with a relative path under /var/mail, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: src/camel/providers/local/camel-local-folder.c:193
-#: src/camel/providers/local/camel-local-folder.c:202
+#: src/camel/providers/local/camel-local-folder.c:191
+#: src/camel/providers/local/camel-local-folder.c:200
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "поштова скринька: %s (%s)"
@@ -5666,19 +5651,19 @@ msgstr "поштова скринька: %s (%s)"
 #. * The first %s is replaced with a folder's full path,
 #. * the second %s is replaced with a protocol name, like
 #. * mbox/maldir/...
-#: src/camel/providers/local/camel-local-folder.c:211
+#: src/camel/providers/local/camel-local-folder.c:209
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/camel/providers/local/camel-local-folder.c:401
+#: src/camel/providers/local/camel-local-folder.c:398
 msgid "_Index message body data"
 msgstr "_Індексувати дані вмісту повідомлення"
 
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
 #. * the third %s is replaced with a detailed error string
-#: src/camel/providers/local/camel-local-folder.c:637
+#: src/camel/providers/local/camel-local-folder.c:629
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -5699,15 +5684,15 @@ msgstr "Поштові каталоги формату UNIX MH"
 msgid "For storing local mail in MH-like mail directories."
 msgstr "Збереження локальної пошти у форматі поштових каталогів MH"
 
-#: src/camel/providers/local/camel-local-provider.c:64
+#: src/camel/providers/local/camel-local-provider.c:65
 msgid "Apply _filters to new messages"
 msgstr "Застосувати _фільтри для нових повідомлень"
 
-#: src/camel/providers/local/camel-local-provider.c:72
+#: src/camel/providers/local/camel-local-provider.c:73
 msgid "Local delivery"
 msgstr "Локальна доставка"
 
-#: src/camel/providers/local/camel-local-provider.c:73
+#: src/camel/providers/local/camel-local-provider.c:74
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
@@ -5715,33 +5700,33 @@ msgstr ""
 "Отримання (перенесення) локальної пошти зі стандартних файлів формату mbox у "
 "теки, які використовує Evolution."
 
-#: src/camel/providers/local/camel-local-provider.c:85
-#: src/camel/providers/local/camel-local-provider.c:111
+#: src/camel/providers/local/camel-local-provider.c:86
+#: src/camel/providers/local/camel-local-provider.c:113
 msgid "_Apply filters to new messages in Inbox"
 msgstr "_Застосовувати фільтри до нових повідомлень у теці \"Вхідні\""
 
-#: src/camel/providers/local/camel-local-provider.c:94
+#: src/camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
 msgstr "Поштові каталоги формату maildir"
 
-#: src/camel/providers/local/camel-local-provider.c:95
+#: src/camel/providers/local/camel-local-provider.c:96
 msgid "For storing local mail in maildir directories."
 msgstr "Збереження локальної пошти у форматі поштових каталогів maildir."
 
-#: src/camel/providers/local/camel-local-provider.c:109
+#: src/camel/providers/local/camel-local-provider.c:111
 msgid "_Listen for change notifications"
 msgstr "_Стежити за повідомленнями про зміни"
 
-#: src/camel/providers/local/camel-local-provider.c:114
+#: src/camel/providers/local/camel-local-provider.c:116
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr "З_берігати заголовки статусу в форматі Elm/Pine/Mutt"
 
-#: src/camel/providers/local/camel-local-provider.c:121
+#: src/camel/providers/local/camel-local-provider.c:123
 msgid "Standard Unix mbox spool file"
 msgstr "Стандартна для Unix скринька mbox"
 
-#: src/camel/providers/local/camel-local-provider.c:122
-#: src/camel/providers/local/camel-local-provider.c:136
+#: src/camel/providers/local/camel-local-provider.c:124
+#: src/camel/providers/local/camel-local-provider.c:138
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -5750,7 +5735,7 @@ msgstr ""
 "Також може використовуватись для читання дерева тек в стилі  Elm, Pine або "
 "Mutt."
 
-#: src/camel/providers/local/camel-local-provider.c:135
+#: src/camel/providers/local/camel-local-provider.c:137
 msgid "Standard Unix mbox spool directory"
 msgstr "Стандартний для Unix каталог пошти"
 
@@ -5765,9 +5750,9 @@ msgid "Local mail file %s"
 msgstr "Файл локальної пошти %s"
 
 #: src/camel/providers/local/camel-local-store.c:206
-#: src/camel/providers/local/camel-local-store.c:366
+#: src/camel/providers/local/camel-local-store.c:362
 #: src/camel/providers/local/camel-maildir-store.c:117
-#: src/camel/providers/local/camel-mbox-store.c:578
+#: src/camel/providers/local/camel-mbox-store.c:581
 #: src/camel/providers/local/camel-spool-store.c:89
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -5780,7 +5765,7 @@ msgstr "Сховище %s не є каталогом"
 
 #: src/camel/providers/local/camel-local-store.c:227
 #: src/camel/providers/local/camel-local-store.c:237
-#: src/camel/providers/local/camel-local-store.c:379
+#: src/camel/providers/local/camel-local-store.c:375
 #: src/camel/providers/local/camel-maildir-store.c:159
 #, c-format
 msgid "Cannot get folder: %s: %s"
@@ -5791,19 +5776,19 @@ msgstr "Не вдалося отримати теку: %s: %s"
 msgid "Local stores do not have an inbox"
 msgstr "Локальне сховище не містить теку \"Вхідні\""
 
-#: src/camel/providers/local/camel-local-store.c:439
-#: src/camel/providers/local/camel-mbox-store.c:745
+#: src/camel/providers/local/camel-local-store.c:435
+#: src/camel/providers/local/camel-mbox-store.c:748
 #, c-format
 msgid "Could not delete folder index file “%s”: %s"
 msgstr "Не вдалося вилучити файл покажчика теки «%s»: %s"
 
-#: src/camel/providers/local/camel-local-store.c:467
-#: src/camel/providers/local/camel-mbox-store.c:775
+#: src/camel/providers/local/camel-local-store.c:462
+#: src/camel/providers/local/camel-mbox-store.c:777
 #, c-format
 msgid "Could not delete folder meta file “%s”: %s"
 msgstr "Не вдалося вилучити метафайл теки «%s»: %s"
 
-#: src/camel/providers/local/camel-local-store.c:580
+#: src/camel/providers/local/camel-local-store.c:575
 #, c-format
 msgid "Could not rename “%s”: %s"
 msgstr "Не вдалося перейменувати теку «%s»: %s"
@@ -5836,36 +5821,36 @@ msgid "Cannot transfer message to destination folder: %s"
 msgstr "Не вдалося перемістити повідомлення у цільову теку: %s"
 
 #: src/camel/providers/local/camel-maildir-store.c:125
-#: src/camel/providers/local/camel-maildir-store.c:928
+#: src/camel/providers/local/camel-maildir-store.c:931
 #, c-format
 msgid "Cannot create folder containing “%s”"
 msgstr "Не вдалося створити теку, яка містить «%s»"
 
 #: src/camel/providers/local/camel-maildir-store.c:133
 #: src/camel/providers/local/camel-maildir-store.c:152
-#: src/camel/providers/local/camel-maildir-store.c:920
+#: src/camel/providers/local/camel-maildir-store.c:923
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Тека %s вже існує"
 
 #: src/camel/providers/local/camel-maildir-store.c:260
 #: src/camel/providers/local/camel-maildir-store.c:291
-#: src/camel/providers/local/camel-mbox-store.c:409
-#: src/camel/providers/local/camel-mbox-store.c:430
+#: src/camel/providers/local/camel-mbox-store.c:412
+#: src/camel/providers/local/camel-mbox-store.c:433
 #, c-format
 msgid "Cannot create folder “%s”: %s"
 msgstr "Не вдалося створити теку «%s»: %s"
 
 #: src/camel/providers/local/camel-maildir-store.c:275
-#: src/camel/providers/local/camel-mbox-store.c:375
-#: src/camel/providers/local/camel-mh-store.c:518
+#: src/camel/providers/local/camel-mbox-store.c:378
+#: src/camel/providers/local/camel-mh-store.c:521
 #, c-format
 msgid "Cannot get folder “%s”: %s"
 msgstr "Не вдалося отримати теку «%s»: %s"
 
 #: src/camel/providers/local/camel-maildir-store.c:281
-#: src/camel/providers/local/camel-mbox-store.c:385
-#: src/camel/providers/local/camel-mh-store.c:527
+#: src/camel/providers/local/camel-mbox-store.c:388
+#: src/camel/providers/local/camel-mh-store.c:530
 #, c-format
 msgid "Cannot get folder “%s”: folder does not exist."
 msgstr "Не вдалося отримати теку «%s»: тека не існує."
@@ -5877,7 +5862,7 @@ msgstr "Не вдалося отримати теку «%s»: не є катал
 
 #: src/camel/providers/local/camel-maildir-store.c:372
 #: src/camel/providers/local/camel-maildir-store.c:412
-#: src/camel/providers/local/camel-mh-store.c:671
+#: src/camel/providers/local/camel-mh-store.c:674
 #, c-format
 msgid "Could not delete folder “%s”: %s"
 msgstr "Не вдалося вилучити теку «%s»: %s"
@@ -5886,10 +5871,10 @@ msgstr "Не вдалося вилучити теку «%s»: %s"
 msgid "not a maildir directory"
 msgstr "не є каталогом Maildir"
 
-#: src/camel/providers/local/camel-maildir-store.c:663
-#: src/camel/providers/local/camel-maildir-store.c:1141
-#: src/camel/providers/local/camel-spool-store.c:216
-#: src/camel/providers/local/camel-spool-store.c:235
+#: src/camel/providers/local/camel-maildir-store.c:666
+#: src/camel/providers/local/camel-maildir-store.c:1144
+#: src/camel/providers/local/camel-spool-store.c:219
+#: src/camel/providers/local/camel-spool-store.c:238
 #, c-format
 msgid "Could not scan folder “%s”: %s"
 msgstr "Не вдалося просканувати теку «%s»: %s"
@@ -5936,34 +5921,34 @@ msgstr "Схоже тека невиправно зіпсована."
 msgid "Cannot create folder lock on %s: %s"
 msgstr "Не вдалося заблокувати теку на %s: %s"
 
-#: src/camel/providers/local/camel-mbox-store.c:397
-#: src/camel/providers/local/camel-mbox-store.c:586
+#: src/camel/providers/local/camel-mbox-store.c:400
+#: src/camel/providers/local/camel-mbox-store.c:589
 #, c-format
 msgid "Cannot create a folder by this name."
 msgstr "Не вдалося створити теку з цією назвою."
 
-#: src/camel/providers/local/camel-mbox-store.c:441
+#: src/camel/providers/local/camel-mbox-store.c:444
 #, c-format
 msgid "Cannot get folder “%s”: not a regular file."
 msgstr "Не вдалося отримати теку «%s»: не є звичайним файлом"
 
-#: src/camel/providers/local/camel-mbox-store.c:602
+#: src/camel/providers/local/camel-mbox-store.c:605
 #, c-format
 msgid "Cannot create directory “%s”: %s."
 msgstr "Не вдалося створити каталог «%s»: %s"
 
-#: src/camel/providers/local/camel-mbox-store.c:614
+#: src/camel/providers/local/camel-mbox-store.c:617
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "Не вдалося створити теку: %s: %s"
 
-#: src/camel/providers/local/camel-mbox-store.c:616
+#: src/camel/providers/local/camel-mbox-store.c:619
 msgid "Folder already exists"
 msgstr "Тека вже існує"
 
-#: src/camel/providers/local/camel-mbox-store.c:656
-#: src/camel/providers/local/camel-mbox-store.c:669
-#: src/camel/providers/local/camel-mbox-store.c:698
+#: src/camel/providers/local/camel-mbox-store.c:659
+#: src/camel/providers/local/camel-mbox-store.c:672
+#: src/camel/providers/local/camel-mbox-store.c:701
 #, c-format
 msgid ""
 "Could not delete folder “%s”:\n"
@@ -5972,28 +5957,28 @@ msgstr ""
 "Не вдалося вилучити теку «%s»:\n"
 "%s"
 
-#: src/camel/providers/local/camel-mbox-store.c:679
+#: src/camel/providers/local/camel-mbox-store.c:682
 #, c-format
 msgid "“%s” is not a regular file."
 msgstr "«%s» не є звичайним файлом."
 
-#: src/camel/providers/local/camel-mbox-store.c:688
+#: src/camel/providers/local/camel-mbox-store.c:691
 #, c-format
 msgid "Folder “%s” is not empty. Not deleted."
 msgstr "Тека «%s» не порожня. Не вилучено."
 
-#: src/camel/providers/local/camel-mbox-store.c:715
-#: src/camel/providers/local/camel-mbox-store.c:730
+#: src/camel/providers/local/camel-mbox-store.c:718
+#: src/camel/providers/local/camel-mbox-store.c:733
 #, c-format
 msgid "Could not delete folder summary file “%s”: %s"
 msgstr "Не вдалося вилучити файл резюме теки «%s»: %s"
 
-#: src/camel/providers/local/camel-mbox-store.c:812
+#: src/camel/providers/local/camel-mbox-store.c:814
 #, c-format
 msgid "The new folder name is illegal."
 msgstr "Нова назва теки є некоректною."
 
-#: src/camel/providers/local/camel-mbox-store.c:828
+#: src/camel/providers/local/camel-mbox-store.c:830
 #, c-format
 msgid "Could not rename “%s”: “%s”: %s"
 msgstr "Не вдалося перейменувати «%s»: «%s»: %s"
@@ -6038,13 +6023,13 @@ msgid "Could not rename folder: %s"
 msgstr "Не вдалося перейменувати теку: %s"
 
 #: src/camel/providers/local/camel-mbox-summary.c:768
-#: src/camel/providers/local/camel-mbox-summary.c:1036
+#: src/camel/providers/local/camel-mbox-summary.c:1033
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Не вдалося зберегти теку: %s"
 
 #: src/camel/providers/local/camel-mbox-summary.c:809
-#: src/camel/providers/local/camel-mbox-summary.c:1079
+#: src/camel/providers/local/camel-mbox-summary.c:1076
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
@@ -6054,24 +6039,24 @@ msgstr ""
 "але він не був отриманий.)"
 
 #: src/camel/providers/local/camel-mbox-summary.c:819
-#: src/camel/providers/local/camel-mbox-summary.c:1091
+#: src/camel/providers/local/camel-mbox-summary.c:1088
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Зведення та тека відрізняються навіть після синхронізації"
 
-#: src/camel/providers/local/camel-mbox-summary.c:985
+#: src/camel/providers/local/camel-mbox-summary.c:982
 #: src/camel/providers/local/camel-spool-summary.c:357
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Невідома помилка: %s"
 
-#: src/camel/providers/local/camel-mbox-summary.c:1154
-#: src/camel/providers/local/camel-mbox-summary.c:1184
+#: src/camel/providers/local/camel-mbox-summary.c:1151
+#: src/camel/providers/local/camel-mbox-summary.c:1181
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Помилка запису в тимчасову поштову скриньку: %s"
 
-#: src/camel/providers/local/camel-mbox-summary.c:1173
+#: src/camel/providers/local/camel-mbox-summary.c:1170
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Помилка запису в тимчасову поштову скриньку: %s: %s"
@@ -6081,12 +6066,12 @@ msgstr "Помилка запису в тимчасову поштову скр�
 msgid "Cannot append message to mh folder: %s: "
 msgstr "Не вдалося додати повідомлення у теку mh: %s: "
 
-#: src/camel/providers/local/camel-mh-store.c:537
+#: src/camel/providers/local/camel-mh-store.c:540
 #, c-format
 msgid "Could not create folder “%s”: %s"
 msgstr "Не вдалося створити теку «%s»:%s"
 
-#: src/camel/providers/local/camel-mh-store.c:553
+#: src/camel/providers/local/camel-mh-store.c:556
 #, c-format
 msgid "Cannot get folder “%s”: not a directory."
 msgstr "Не вдалося отримати теку «%s»: не є каталогом."
@@ -6106,26 +6091,26 @@ msgstr "Не вдалося відкрити сховище «%s»: %s"
 msgid "Spool “%s” is not a regular file or directory"
 msgstr "Сховище «%s» не є звичайним файлом або каталогом"
 
-#: src/camel/providers/local/camel-spool-store.c:428
+#: src/camel/providers/local/camel-spool-store.c:431
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Накопичувальний файл пошти %s"
 
-#: src/camel/providers/local/camel-spool-store.c:432
+#: src/camel/providers/local/camel-spool-store.c:435
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Дерево тек накопичувача %s"
 
-#: src/camel/providers/local/camel-spool-store.c:435
+#: src/camel/providers/local/camel-spool-store.c:438
 msgid "Invalid spool"
 msgstr "Неправильний буфер"
 
-#: src/camel/providers/local/camel-spool-store.c:484
+#: src/camel/providers/local/camel-spool-store.c:487
 #, c-format
 msgid "Folder “%s/%s” does not exist."
 msgstr "Теки «%s/%s» не існує."
 
-#: src/camel/providers/local/camel-spool-store.c:497
+#: src/camel/providers/local/camel-spool-store.c:500
 #, c-format
 msgid ""
 "Could not open folder “%s”:\n"
@@ -6134,12 +6119,12 @@ msgstr ""
 "Не вдалося відкрити теку «%s»:\n"
 "%s"
 
-#: src/camel/providers/local/camel-spool-store.c:503
+#: src/camel/providers/local/camel-spool-store.c:506
 #, c-format
 msgid "Folder “%s” does not exist."
 msgstr "Тека «%s» не існує."
 
-#: src/camel/providers/local/camel-spool-store.c:511
+#: src/camel/providers/local/camel-spool-store.c:514
 #, c-format
 msgid ""
 "Could not create folder “%s”:\n"
@@ -6148,27 +6133,27 @@ msgstr ""
 "Не вдалося створити теку «%s»:\n"
 "%s"
 
-#: src/camel/providers/local/camel-spool-store.c:524
+#: src/camel/providers/local/camel-spool-store.c:527
 #, c-format
 msgid "“%s” is not a mailbox file."
 msgstr "«%s» не є файлом поштової скриньки."
 
-#: src/camel/providers/local/camel-spool-store.c:588
+#: src/camel/providers/local/camel-spool-store.c:591
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Сховище не підтримує INBOX"
 
-#: src/camel/providers/local/camel-spool-store.c:607
+#: src/camel/providers/local/camel-spool-store.c:610
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Накопичувальні теки не можна вилучати"
 
-#: src/camel/providers/local/camel-spool-store.c:622
+#: src/camel/providers/local/camel-spool-store.c:625
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Накопичувальні теки не можна перейменовувати"
 
-#: src/camel/providers/local/camel-spool-store.c:778
+#: src/camel/providers/local/camel-spool-store.c:781
 msgid "Refreshing spool folder"
 msgstr "Освіження буферної теки"
 
@@ -6195,22 +6180,22 @@ msgstr ""
 "Не вдалося синхронізувати буферну теку %s: %s\n"
 "Можливо тека пошкоджена, копію збережено у «%s»"
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:210
-#: src/camel/providers/nntp/camel-nntp-folder.c:546
+#: src/camel/providers/nntp/camel-nntp-folder.c:208
+#: src/camel/providers/nntp/camel-nntp-folder.c:544
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Внутрішня помилка: UID у неправильному форматі: %s"
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:278
-#: src/camel/providers/nntp/camel-nntp-folder.c:283
+#: src/camel/providers/nntp/camel-nntp-folder.c:276
+#: src/camel/providers/nntp/camel-nntp-folder.c:281
 #: src/camel/providers/pop3/camel-pop3-folder.c:571
 #: src/camel/providers/pop3/camel-pop3-folder.c:1083
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Не вдалося отримати повідомлення %s: %s"
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:290
-#: src/camel/providers/nntp/camel-nntp-folder.c:580
+#: src/camel/providers/nntp/camel-nntp-folder.c:288
+#: src/camel/providers/nntp/camel-nntp-folder.c:578
 #: src/camel/providers/pop3/camel-pop3-folder.c:475
 #: src/camel/providers/pop3/camel-pop3-folder.c:507
 #: src/camel/providers/pop3/camel-pop3-folder.c:539
@@ -6220,22 +6205,22 @@ msgstr "Не вдалося отримати повідомлення %s: %s"
 msgid "Cannot get message %s: "
 msgstr "Не вдалося отримати повідомлення %s: "
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:338
-#: src/camel/providers/nntp/camel-nntp-folder.c:344
+#: src/camel/providers/nntp/camel-nntp-folder.c:336
+#: src/camel/providers/nntp/camel-nntp-folder.c:342
 #, c-format
 msgid "Posting failed: %s"
 msgstr "Помилка при надсиланні: %s"
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:396
+#: src/camel/providers/nntp/camel-nntp-folder.c:394
 msgid "Posting failed: "
 msgstr "Помилка при надсиланні: "
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:569
+#: src/camel/providers/nntp/camel-nntp-folder.c:567
 #, c-format
 msgid "This message is not currently available"
 msgstr "Цього повідомлення наразі недоступне"
 
-#: src/camel/providers/nntp/camel-nntp-folder.c:678
+#: src/camel/providers/nntp/camel-nntp-folder.c:673
 #, c-format
 msgid "You cannot copy messages from a NNTP folder"
 msgstr "Ви не можете копіювати повідомлення з теки NNTP"
@@ -6329,23 +6314,23 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1359
+#: src/camel/providers/nntp/camel-nntp-store.c:1358
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Не можна створювати теку у групах новин: натомість слід підписатись."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1375
+#: src/camel/providers/nntp/camel-nntp-store.c:1374
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Не можна перейменовувати теку у групах новин."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1398
+#: src/camel/providers/nntp/camel-nntp-store.c:1397
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Не можна переміщувати теку у групах новин: натомість слід відписатись."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1615
+#: src/camel/providers/nntp/camel-nntp-store.c:1614
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -6356,7 +6341,7 @@ msgstr ""
 "\n"
 "Такої групи новин немає. Вибраний пункт можливо є батьківською текою."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1682
+#: src/camel/providers/nntp/camel-nntp-store.c:1681
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -6367,17 +6352,17 @@ msgstr ""
 "\n"
 "група новин не існує!"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2106
+#: src/camel/providers/nntp/camel-nntp-store.c:2105
 msgid "NNTP Command failed: "
 msgstr "Збій команди NNTP: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2212
-#: src/camel/providers/nntp/camel-nntp-store.c:2245
+#: src/camel/providers/nntp/camel-nntp-store.c:2211
+#: src/camel/providers/nntp/camel-nntp-store.c:2244
 #, c-format
 msgid "Not connected."
 msgstr "Немає з'єднання."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2322
+#: src/camel/providers/nntp/camel-nntp-store.c:2321
 #, c-format
 msgid "No such folder: %s"
 msgstr "Немає такої теки: %s"
@@ -7110,14 +7095,36 @@ msgid "Show reminder notification for past events"
 msgstr "Показувати нагадування про минулі події"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:110
-msgid "The last used snooze time, in minutes"
-msgstr "Останній використаний час затримки, у хвилинах"
+msgid ""
+"The last used snooze time, in minutes; negative number always means before "
+"start, otherwise the actual value is used in conjunction with “notify-last-"
+"snooze-from-start”"
+msgstr ""
+"Останній використаний час відкладення у хвилинах; від'ємне число завжди"
+" означає час перед початком, інакше буде використано фактичне значення у"
+" поєднанні із «notify-last-snooze-from-start»"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:114
-msgid "User-defined snooze times, in minutes"
-msgstr "Визначений користувачем час затримки у хвилинах"
+msgid ""
+"Whether the last snooze time is calculated relative to the event/task start; "
+"false to count relative to the current time"
+msgstr ""
+"Визначає, чи буде обчислено час відкладення відносно початку події або"
+" виконання завдання; «false» — облік часу відносно поточного моменту"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:118
+msgid ""
+"User-defined snooze times, in minutes, encoded into string as a number, "
+"where zero or negative means “before start”. When the number is prefixed "
+"with a star, then it means after start, otherwise the time is relative to "
+"the current time, aka “snooze for N minutes”"
+msgstr ""
+"Визначений користувачем час відкладення у хвилинах, закодований у рядок як"
+" число, де нуль або від’ємне значення означає «перед початком». Якщо до"
+" числа додано префікс-зірочку, це означає «після початку», інакше час"
+" встановлюється відносно поточного часу, тобто «відкласти на N хвилин»."
+
+#: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:122
 msgid "Delete meeting from calendar on Decline"
 msgstr "Вилучити зустріч з календаря при відхиленні"
 
@@ -8801,25 +8808,79 @@ msgstr "_Пароль:"
 msgid "_Add this password to your keyring"
 msgstr "_Додати цей пароль у зв'язку ключів"
 
-#. Translators: meaning as "Snooze, until event start time"
-#: src/libedataserverui/e-reminders-widget.c:236
-msgid "until start time"
-msgstr "до часу початку"
+#. Translators: short version of "Snooze until start"
+#: src/libedataserverui/e-reminders-widget.c:173
+#| msgid "until start time"
+msgctxt "snooze-time"
+msgid "until start"
+msgstr "до початку"
 
-#: src/libedataserverui/e-reminders-widget.c:261
-msgid "Add custom time…"
-msgstr "Додати нетиповий час…"
+#: src/libedataserverui/e-reminders-widget.c:175
+#| msgid "until start time"
+msgctxt "snooze-time"
+msgid "Snooze until start"
+msgstr "Відкласти до початку"
 
-#: src/libedataserverui/e-reminders-widget.c:265
-msgid "Clear custom times"
-msgstr "Зняти нетиповий час"
+#. Translators: short version of "Snooze until 10 minutes before" ...start
+#: src/libedataserverui/e-reminders-widget.c:184
+#, c-format
+msgctxt "snooze-time"
+msgid "until %s before start"
+msgstr "до %s перед початком"
 
-#: src/libedataserverui/e-reminders-widget.c:322
+#. Translators: the '%s' is replaced with actual time interval, like "10 minutes", making it "Snooze until 10 minutes before" ...start
+#: src/libedataserverui/e-reminders-widget.c:187
+#, c-format
+msgctxt "snooze-time"
+msgid "Snooze until %s before start"
+msgstr "Відкласти до %s перед початком"
+
+#. Translators: short version of "Snooze until 10 minutes after start"
+#: src/libedataserverui/e-reminders-widget.c:191
+#, c-format
+#| msgid "until start time"
+msgctxt "snooze-time"
+msgid "until %s after start"
+msgstr "до %s після початку"
+
+#. Translators: the '%s' is replaced with actual time interval, like "10 minutes", making it "Snooze until 10 minutes after start"
+#: src/libedataserverui/e-reminders-widget.c:194
+#, c-format
+msgctxt "snooze-time"
+msgid "Snooze until %s after start"
+msgstr "Відкласти до %s після початку"
+
+#. Translators: short version of "Snooze for 10 minutes"
+#: src/libedataserverui/e-reminders-widget.c:198
+#, c-format
+msgctxt "snooze-time"
+msgid "for %s"
+msgstr "на %s"
+
+#. Translators: the '%s' is replaced with actual time interval, like "10 minutes", making it "Snooze for 10 minutes"
+#: src/libedataserverui/e-reminders-widget.c:201
+#, c-format
+#| msgid "_Snooze"
+msgctxt "snooze-time"
+msgid "Snooze for %s"
+msgstr "Відкласти на %s"
+
+#: src/libedataserverui/e-reminders-widget.c:366
+#| msgid "Add custom time…"
+msgid "_Add custom time"
+msgstr "_Додати нетиповий час"
+
+#: src/libedataserverui/e-reminders-widget.c:369
+#| msgid "Clear custom times"
+msgid "_Clear custom times"
+msgstr "Ви_лучити нетипові часи"
+
+#: src/libedataserverui/e-reminders-widget.c:417
 msgctxt "overdue"
 msgid "now"
 msgstr "зараз"
 
-#: src/libedataserverui/e-reminders-widget.c:340
+#: src/libedataserverui/e-reminders-widget.c:435
 #, c-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -8828,74 +8889,82 @@ msgstr[1] "%d роки"
 msgstr[2] "%d років"
 msgstr[3] "%d років"
 
-#: src/libedataserverui/e-reminders-widget.c:346
+#: src/libedataserverui/e-reminders-widget.c:441
 msgctxt "overdue"
 msgid "overdue"
 msgstr "термін збіг"
 
-#: src/libedataserverui/e-reminders-widget.c:982
+#: src/libedataserverui/e-reminders-widget.c:1077
 #, c-format
 msgid "Failed to launch URI “%s”:"
 msgstr "Не вдалося відкрити адресу «%s»:"
 
-#: src/libedataserverui/e-reminders-widget.c:1033
+#: src/libedataserverui/e-reminders-widget.c:1127
 msgid "No reminder is selected."
 msgstr "Не вибрано жодного нагадування."
 
-#: src/libedataserverui/e-reminders-widget.c:1115
+#: src/libedataserverui/e-reminders-widget.c:1196
 msgid "No details are available."
 msgstr "Немає доступних подробиць."
 
-#: src/libedataserverui/e-reminders-widget.c:1119
+#: src/libedataserverui/e-reminders-widget.c:1200
 msgid "Multiple reminders are selected."
 msgstr "Позначено декілька нагадувань."
 
-#: src/libedataserverui/e-reminders-widget.c:1153
+#: src/libedataserverui/e-reminders-widget.c:1234
 msgid "Failed to dismiss reminder:"
 msgstr "Не вдалося відхилити нагадування:"
 
-#: src/libedataserverui/e-reminders-widget.c:1174
+#: src/libedataserverui/e-reminders-widget.c:1255
 msgid "Failed to dismiss all:"
 msgstr "Не вдалося відхилити все:"
 
-#: src/libedataserverui/e-reminders-widget.c:1334
+#: src/libedataserverui/e-reminders-widget.c:1424
 msgid "Set a custom snooze time for"
 msgstr "Встановити спеціальний час затримки для"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: src/libedataserverui/e-reminders-widget.c:1347
+#: src/libedataserverui/e-reminders-widget.c:1437
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "д_нів"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: src/libedataserverui/e-reminders-widget.c:1363
+#: src/libedataserverui/e-reminders-widget.c:1453
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_годин"
 
 #. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
-#: src/libedataserverui/e-reminders-widget.c:1379
+#: src/libedataserverui/e-reminders-widget.c:1469
 msgctxt "reminders-snooze"
 msgid "_minutes"
 msgstr "_хвилин"
 
-#: src/libedataserverui/e-reminders-widget.c:1385
+#: src/libedataserverui/e-reminders-widget.c:1476
+msgid "from now"
+msgstr "від поточного моменту"
+
+#: src/libedataserverui/e-reminders-widget.c:1477
+msgid "before start"
+msgstr "перед початком"
+
+#: src/libedataserverui/e-reminders-widget.c:1478
+msgid "after start"
+msgstr "після початку"
+
+#: src/libedataserverui/e-reminders-widget.c:1483
 msgid "_Add Snooze time"
 msgstr "Дод_ати час затримки"
 
-#: src/libedataserverui/e-reminders-widget.c:1748
-#: src/services/evolution-user-prompter/prompt-user-gtk.c:119
-msgid "_Dismiss"
-msgstr "_Скасувати"
-
-#: src/libedataserverui/e-reminders-widget.c:1749
+#: src/libedataserverui/e-reminders-widget.c:1913
 msgid "Dismiss _All"
 msgstr "Скасувати _все"
 
-#: src/libedataserverui/e-reminders-widget.c:1751
-msgid "_Snooze"
-msgstr "_Затримка"
+#: src/libedataserverui/e-reminders-widget.c:1918
+#: src/services/evolution-user-prompter/prompt-user-gtk.c:119
+msgid "_Dismiss"
+msgstr "_Скасувати"
 
 #: src/libedataserverui/e-trust-prompt.c:116
 #: src/modules/trust-prompt/trust-prompt-gtk.c:129
@@ -9116,8 +9185,8 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:340
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:351
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:887
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:1135
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:893
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1141
 msgid "Reminders"
 msgstr "Нагадування"
 
@@ -9154,35 +9223,35 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Не питайте мене знову про цю програму"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Display Reminders window with _notifications"
 msgstr "Показувати вікно нагадувань за допомогою с_повіщень"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Keep reminder notification window always on _top"
 msgstr "Тримати вікно сповіщень нагадування завжди _над іншими"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:792
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:798
 msgid "Enable _desktop notifications"
 msgstr "Увімкнути с_тільничні сповіщення"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:793
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:799
 msgid "Enable _audio notifications"
 msgstr "Увімкнути зв_укові сповіщення"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:800
 msgid "Display reminders for _completed tasks"
 msgstr "Відображення нагадувань про _виконані завдання"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:801
 msgid "Display reminders for _past events"
 msgstr "Показувати нагадування _минулих завдань"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:809
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:815
 msgid "Reminders Options:"
 msgstr "Параметри нагадувань:"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:903
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:909
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
@@ -9464,6 +9533,12 @@ msgstr "У інтернеті"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
 msgid "WebDAV Notes"
 msgstr "Нотатки WebDAV"
+
+#~ msgid "The last used snooze time, in minutes"
+#~ msgstr "Останній використаний час затримки, у хвилинах"
+
+#~ msgid "User-defined snooze times, in minutes"
+#~ msgstr "Визначений користувачем час затримки у хвилинах"
 
 #, c-format
 #~ msgid "(%s) requires a single bool result"
