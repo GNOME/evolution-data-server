@@ -1487,6 +1487,7 @@ store_search_header (CamelSExp *sexp,
 	ResultFlags max_flags = 0;
 	gint ii;
 	gboolean is_message_id_match;
+	gboolean is_x_camel_msgid_match;
 
 	if (cmp_kind == CMP_HEADER_EXISTS || cmp_kind == CMP_HEADER_FULL_REGEX)
 		g_return_val_if_fail (argc == 1, res);
@@ -1536,7 +1537,9 @@ store_search_header (CamelSExp *sexp,
 		return res;
 	}
 
+	/* the difference is that the later is already hashed message id */
 	is_message_id_match = cmp_kind == CMP_HEADER_MATCHES && header_name && g_ascii_strcasecmp (header_name, "Message-ID") == 0;
+	is_x_camel_msgid_match = cmp_kind == CMP_HEADER_MATCHES && header_name && g_ascii_strcasecmp (header_name, "x-camel-msgid") == 0;
 
 	stmt = g_string_new ("");
 
@@ -1564,6 +1567,8 @@ store_search_header (CamelSExp *sexp,
 
 			g_string_append_printf (stmt, "(part IS NOT NULL AND part LIKE '%lu %lu %%') THEN 1",
 				(gulong) message_id.id.part.hi, (gulong) message_id.id.part.lo);
+		} else if (is_x_camel_msgid_match) {
+			g_string_append_printf (stmt, "(part IS NOT NULL AND part LIKE '%s %%') THEN 1", value);
 		} else if (column_name) {
 			gboolean is_email_column = g_str_equal (column_name, "mail_from") ||
 				g_str_equal (column_name, "mail_to") ||

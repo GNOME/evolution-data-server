@@ -1634,13 +1634,12 @@ test_store_search_message_id (void)
 	CamelStoreSearch *search;
 	CamelFolder *f1, *f2, *f3;
 	CamelSummaryMessageID message_id;
-	gchar *msgid1, *msgid2, *msgid3;
+	gchar *msgid1, *msgid2, *msgid3, *expr;
 	GError *local_error = NULL;
 	gboolean success;
 
 	store = test_store_new ();
 	search = camel_store_search_new (store);
-
 
 	message_id.id.id = camel_search_util_hash_message_id ("<123>", TRUE);
 	msgid1 = g_strdup_printf ("%lu %lu 0", (gulong) message_id.id.part.hi, (gulong) message_id.id.part.lo);
@@ -1714,6 +1713,22 @@ test_store_search_message_id (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "11", 2, "22", 0, NULL);
+
+	camel_store_search_set_expression (search, "(header-matches \"x-camel-msgid\" \"123 456\")");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search, 0, NULL);
+
+	/* cut the " 0" from the end of the msgid, to be able to match it */
+	msgid2[strlen (msgid2) - 2] = '\0';
+	expr = g_strdup_printf ("(header-matches \"x-camel-msgid\" \"%s\")", msgid2);
+	camel_store_search_set_expression (search, expr);
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search, 2, "22", 0, NULL);
+	g_free (expr);
 
 	g_free (msgid1);
 	g_free (msgid2);
