@@ -28,10 +28,10 @@
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
 
-#define PRIVATE_KEY "CamelNetworkService:private"
+static GQuark camel_network_service_key = 0;
 
 #define CAMEL_NETWORK_SERVICE_GET_PRIVATE(obj) \
-	(g_object_get_data (G_OBJECT (obj), PRIVATE_KEY))
+	(g_object_get_qdata (G_OBJECT (obj), camel_network_service_key))
 
 #define G_IS_IO_ERROR(error, code) \
 	(g_error_matches ((error), G_IO_ERROR, (code)))
@@ -63,10 +63,9 @@ struct _CamelNetworkServicePrivate {
 /* Forward Declarations */
 void		camel_network_service_init	(CamelNetworkService *service);
 
-G_DEFINE_INTERFACE (
-	CamelNetworkService,
-	camel_network_service,
-	CAMEL_TYPE_SERVICE)
+
+G_DEFINE_INTERFACE_WITH_CODE (CamelNetworkService, camel_network_service, CAMEL_TYPE_SERVICE,
+	camel_network_service_key = g_quark_from_static_string ("CamelNetworkService:private");)
 
 static gchar *
 network_service_generate_fingerprint (GTlsCertificate *certificate)
@@ -726,8 +725,8 @@ camel_network_service_init (CamelNetworkService *service)
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
 
-	g_object_set_data_full (
-		G_OBJECT (service), PRIVATE_KEY,
+	g_object_set_qdata_full (
+		G_OBJECT (service), camel_network_service_key,
 		network_service_private_new (service),
 		(GDestroyNotify) network_service_private_free);
 }
