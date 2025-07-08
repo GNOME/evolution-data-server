@@ -874,6 +874,7 @@ folder_finalize (GObject *object)
 	g_free (priv->full_name);
 	g_free (priv->display_name);
 	g_free (priv->description);
+	g_free (priv->state_filename);
 
 	camel_folder_change_info_free (priv->changed_frozen);
 
