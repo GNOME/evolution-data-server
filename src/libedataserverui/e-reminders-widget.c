@@ -1868,31 +1868,18 @@ reminders_widget_constructed (GObject *object)
 		"vexpand", TRUE,
 		"editable", FALSE,
 		"wrap-mode", GTK_WRAP_WORD_CHAR,
+		"margin-start", 6,
+		"margin-end", 6,
+		"margin-top", 6,
+		"margin-bottom", 6,
 		NULL);
-
-	css_provider = gtk_css_provider_new ();
-
-	gtk_css_provider_load_from_data (css_provider, "textview { padding: 6px; }", -1
-		#if !GTK_CHECK_VERSION(4, 0, 0)
-		, &error
-		#endif
-		);
-	if (!error) {
-		gtk_style_context_add_provider (
-			gtk_widget_get_style_context (GTK_WIDGET (reminders->priv->details_text_view)),
-				GTK_STYLE_PROVIDER (css_provider),
-				GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	} else {
-		g_warning ("%s: Failed to parse CSS: %s", G_STRFUNC, error ? error->message : "Unknown error");
-	}
-
-	g_clear_object (&css_provider);
-	g_clear_error (&error);
 
 #if GTK_CHECK_VERSION(4, 0, 0)
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), GTK_WIDGET (reminders->priv->details_text_view));
+	gtk_widget_add_css_class (scrolled_window, "view");
 #else
 	gtk_container_add (GTK_CONTAINER (scrolled_window), GTK_WIDGET (reminders->priv->details_text_view));
+	gtk_style_context_add_class (gtk_widget_get_style_context (scrolled_window), "view");
 #endif
 
 	e_buffer_tagger_connect (reminders->priv->details_text_view);
