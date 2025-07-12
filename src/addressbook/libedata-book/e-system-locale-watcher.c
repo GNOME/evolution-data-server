@@ -45,8 +45,11 @@ G_DEFINE_TYPE_WITH_PRIVATE (ESystemLocaleWatcher, e_system_locale_watcher, G_TYP
 
 enum {
 	PROP_0,
-	PROP_LOCALE
+	PROP_LOCALE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static gchar *
 system_locale_watcher_interpret_locale_value (const gchar *value)
@@ -113,7 +116,7 @@ system_locale_watcher_set_locale (ESystemLocaleWatcher *watcher,
 
 		g_mutex_unlock (&watcher->priv->lock);
 
-		g_object_notify (G_OBJECT (watcher), "locale");
+		g_object_notify_by_pspec (G_OBJECT (watcher), properties[PROP_LOCALE]);
 	} else {
 		g_mutex_unlock (&watcher->priv->lock);
 	}
@@ -293,16 +296,15 @@ e_system_locale_watcher_class_init (ESystemLocaleWatcherClass *klass)
 	 *
 	 * Since: 3.30
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_LOCALE,
+	properties[PROP_LOCALE] =
 		g_param_spec_string (
 			"locale",
-			"Locale",
-			NULL,
+			NULL, NULL,
 			NULL,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

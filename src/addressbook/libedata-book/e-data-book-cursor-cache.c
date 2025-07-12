@@ -41,7 +41,10 @@ enum {
 	PROP_0,
 	PROP_BOOK_CACHE,
 	PROP_CURSOR,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (EDataBookCursorCache, e_data_book_cursor_cache, E_TYPE_DATA_BOOK_CURSOR);
 
@@ -347,24 +350,30 @@ e_data_book_cursor_cache_class_init (EDataBookCursorCacheClass *class)
 	cursor_class->compare_contact = edbcc_compare_contact;
 	cursor_class->load_locale = edbcc_load_locale;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BOOK_CACHE,
+	/**
+	 * EDataBookCursorCache:book-cache
+	 *
+	 * The #EBookCache to use for queries
+	 **/
+	properties[PROP_BOOK_CACHE] =
 		g_param_spec_object (
 			"book-cache",
-			"Book Cache",
-			"The EBookCache to use for queries",
+			NULL, NULL,
 			E_TYPE_BOOK_CACHE,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CURSOR,
+	/**
+	 * EDataBookCursorCache:cursor
+	 *
+	 * The #EBookCacheCursor pointer
+	 **/
+	properties[PROP_CURSOR] =
 		g_param_spec_pointer (
 			"cursor",
-			"Cursor",
-			"The EBookCacheCursor pointer",
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+			NULL, NULL,
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

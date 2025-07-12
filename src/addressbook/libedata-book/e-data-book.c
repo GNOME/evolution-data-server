@@ -72,8 +72,11 @@ enum {
 	PROP_0,
 	PROP_BACKEND,
 	PROP_CONNECTION,
-	PROP_OBJECT_PATH
+	PROP_OBJECT_PATH,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void e_data_book_initable_init (GInitableIface *iface);
@@ -1948,43 +1951,49 @@ e_data_book_class_init (EDataBookClass *class)
 	object_class->finalize = data_book_finalize;
 	object_class->constructed = data_book_constructed;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND,
+	/**
+	 * EDataBook:backend
+	 *
+	 * The backend driving this connection
+	 **/
+	properties[PROP_BACKEND] =
 		g_param_spec_object (
 			"backend",
-			"Backend",
-			"The backend driving this connection",
+			NULL, NULL,
 			E_TYPE_BOOK_BACKEND,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	/**
+	 * EDataBook:connection
+	 *
+	 * The GDBusConnection on which to export the address book interface
+	 **/
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection on which to "
-			"export the address book interface",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	/**
+	 * EDataBook:object-path
+	 *
+	 * The object path at which to export the address book interface
+	 **/
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path at which to "
-			"export the address book interface",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

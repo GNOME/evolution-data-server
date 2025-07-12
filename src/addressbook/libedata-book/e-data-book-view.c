@@ -82,7 +82,8 @@ enum {
 	PROP_OBJECT_PATH,
 	PROP_SEXP,
 	PROP_N_TOTAL,
-	PROP_INDICES
+	PROP_INDICES,
+	N_PROPS
 };
 
 enum {
@@ -91,6 +92,8 @@ enum {
 	OBJECTS_REMOVED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -690,72 +693,86 @@ e_data_book_view_class_init (EDataBookViewClass *class)
 	object_class->dispose = data_book_view_dispose;
 	object_class->finalize = data_book_view_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND,
+	/**
+	 * EDataBookView:backend
+	 *
+	 * The backend being monitored
+	 **/
+	properties[PROP_BACKEND] =
 		g_param_spec_object (
 			"backend",
-			"Backend",
-			"The backend being monitored",
+			NULL, NULL,
 			E_TYPE_BOOK_BACKEND,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	/**
+	 * EDataBookView:connection
+	 *
+	 * The #GDBusConnection on which to export the view interface
+	 **/
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection on which "
-			"to export the view interface",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	/**
+	 * EDataBookView:object-path
+	 *
+	 * The object path at which to export the view interface
+	 **/
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path at which to "
-			"export the view interface",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SEXP,
+	/**
+	 * EDataBookView:sexp
+	 *
+	 * The query expression for this view
+	 **/
+	properties[PROP_SEXP] =
 		g_param_spec_object (
 			"sexp",
-			"S-Expression",
-			"The query expression for this view",
+			NULL, NULL,
 			E_TYPE_BOOK_BACKEND_SEXP,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_N_TOTAL,
+	/**
+	 * EDataBookView:n-total
+	 *
+	 * How many contacts are available in the view
+	 **/
+	properties[PROP_N_TOTAL] =
 		g_param_spec_uint (
 			"n-total", NULL, NULL,
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INDICES,
+	/**
+	 * EDataBookView:indices
+	 *
+	 * List of #EBookIndices holding indices of the contacts in the view
+	 **/
+	properties[PROP_INDICES] =
 		g_param_spec_pointer (
 			"indices", NULL, NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * EDataBookView::objects-added:

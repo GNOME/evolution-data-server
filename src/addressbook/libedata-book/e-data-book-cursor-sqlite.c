@@ -78,7 +78,10 @@ enum {
 	PROP_EBSQL,
 	PROP_REVISION_KEY,
 	PROP_CURSOR,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (EDataBookCursorSqlite, e_data_book_cursor_sqlite, E_TYPE_DATA_BOOK_CURSOR);
 
@@ -104,31 +107,39 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 	cursor_class->compare_contact = e_data_book_cursor_sqlite_compare_contact;
 	cursor_class->load_locale = e_data_book_cursor_sqlite_load_locale;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_EBSQL,
+	/**
+	 * EDataBookCursorSqlite:ebsql
+	 *
+	 * The #EBookSqlite to use for queries
+	 **/
+	properties[PROP_EBSQL] =
 		g_param_spec_object (
-			"ebsql", "EBookSqlite",
-			"The EBookSqlite to use for queries",
+			"ebsql", NULL, NULL,
 			E_TYPE_BOOK_SQLITE,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REVISION_KEY,
+	/**
+	 * EDataBookCursorSqlite:revision-key
+	 *
+	 * The key name to fetch the revision from the sqlite backend
+	 **/
+	properties[PROP_REVISION_KEY] =
 		g_param_spec_string (
-			"revision-key", "Revision Key",
-			"The key name to fetch the revision from the sqlite backend",
+			"revision-key", NULL, NULL,
 			NULL,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CURSOR,
+	/**
+	 * EDataBookCursorSqlite:cursor
+	 *
+	 * The #EbSqlCursor pointer
+	 **/
+	properties[PROP_CURSOR] =
 		g_param_spec_pointer (
-			"cursor", "Cursor",
-			"The EbSqlCursor pointer",
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+			"cursor", NULL, NULL,
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

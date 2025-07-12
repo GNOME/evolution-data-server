@@ -281,7 +281,10 @@ enum {
 	PROP_BACKEND,
 	PROP_TOTAL,
 	PROP_POSITION,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	EDataBookCursor,
@@ -302,34 +305,42 @@ e_data_book_cursor_class_init (EDataBookCursorClass *class)
 	object_class->get_property = e_data_book_cursor_get_property;
 	object_class->set_property = e_data_book_cursor_set_property;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND,
+	/**
+	 * EDataBookCursor:backend
+	 *
+	 * The backend which created this cursor
+	 **/
+	properties[PROP_BACKEND] =
 		g_param_spec_object (
 			"backend",
-			"Backend",
-			"The backend which created this cursor",
+			NULL, NULL,
 			E_TYPE_BOOK_BACKEND,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_TOTAL,
+	/**
+	 * EDataBookCursor:total
+	 *
+	 * The total results for this cursor
+	 **/
+	properties[PROP_TOTAL] =
 		g_param_spec_int (
-			"total", "Total",
-			"The total results for this cursor",
+			"total", NULL, NULL,
 			0, G_MAXINT, 0,
-			G_PARAM_READABLE));
+			G_PARAM_READABLE);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_POSITION,
+	/**
+	 * EDataBookCursor:position
+	 *
+	 * The current position of this cursor
+	 **/
+	properties[PROP_POSITION] =
 		g_param_spec_int (
-			"position", "Position",
-			"The current position of this cursor",
+			"position", NULL, NULL,
 			0, G_MAXINT, 0,
-			G_PARAM_READABLE));
+			G_PARAM_READABLE);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -442,13 +453,13 @@ data_book_cursor_set_values (EDataBookCursor *cursor,
 
 	if (priv->total != total) {
 		priv->total = total;
-		g_object_notify (G_OBJECT (cursor), "total");
+		g_object_notify_by_pspec (G_OBJECT (cursor), properties[PROP_TOTAL]);
 		changed = TRUE;
 	}
 
 	if (priv->position != position) {
 		priv->position = position;
-		g_object_notify (G_OBJECT (cursor), "position");
+		g_object_notify_by_pspec (G_OBJECT (cursor), properties[PROP_POSITION]);
 		changed = TRUE;
 	}
 

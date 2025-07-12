@@ -95,7 +95,8 @@ enum {
 	PROP_CACHE_DIR,
 	PROP_PROXY_RESOLVER,
 	PROP_REGISTRY,
-	PROP_WRITABLE
+	PROP_WRITABLE,
+	N_PROPS
 };
 
 enum {
@@ -103,6 +104,8 @@ enum {
 	SHUTDOWN,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -354,7 +357,7 @@ book_backend_update_proxy_resolver (EBookBackend *backend)
 	g_mutex_unlock (&backend->priv->property_lock);
 
 	if (notify)
-		g_object_notify (G_OBJECT (backend), "proxy-resolver");
+		g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_PROXY_RESOLVER]);
 
 	g_clear_object (&source);
 }
@@ -782,52 +785,62 @@ e_book_backend_class_init (EBookBackendClass *class)
 	class->impl_dup_view_indices = book_backend_dup_view_indices;
 	class->impl_dup_view_contacts = book_backend_dup_view_contacts;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CACHE_DIR,
+	/**
+	 * EBookBackend:cache-dir
+	 *
+	 * The backend's cache directory
+	 **/
+	properties[PROP_CACHE_DIR] =
 		g_param_spec_string (
 			"cache-dir",
-			"Cache Dir",
-			"The backend's cache directory",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PROXY_RESOLVER,
+	/**
+	 * EBookBackend:proxy-resolver
+	 *
+	 * The proxy resolver for this backend
+	 **/
+	properties[PROP_PROXY_RESOLVER] =
 		g_param_spec_object (
 			"proxy-resolver",
-			"Proxy Resolver",
-			"The proxy resolver for this backend",
+			NULL, NULL,
 			G_TYPE_PROXY_RESOLVER,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	/**
+	 * EBookBackend:registry
+	 *
+	 * Data source registry
+	 **/
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"Data source registry",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_WRITABLE,
+	/**
+	 * EBookBackend:writable
+	 *
+	 * Whether the backend will accept changes
+	 **/
+	properties[PROP_WRITABLE] =
 		g_param_spec_boolean (
 			"writable",
-			"Writable",
-			"Whether the backend will accept changes",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * EBookBackend::closed:
@@ -964,7 +977,7 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
 
 	g_mutex_unlock (&backend->priv->property_lock);
 
-	g_object_notify (G_OBJECT (backend), "cache-dir");
+	g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_CACHE_DIR]);
 }
 
 /**
@@ -1110,7 +1123,7 @@ e_book_backend_set_writable (EBookBackend *backend,
 
 	backend->priv->writable = writable;
 
-	g_object_notify (G_OBJECT (backend), "writable");
+	g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_WRITABLE]);
 }
 
 /**

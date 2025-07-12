@@ -135,7 +135,8 @@ struct _EBookCachePrivate {
 
 enum {
 	PROP_0,
-	PROP_LOCALE
+	PROP_LOCALE,
+	N_PROPS
 };
 
 enum {
@@ -144,6 +145,8 @@ enum {
 	CATEGORIES_CHANGED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -5090,7 +5093,7 @@ e_book_cache_set_locale (EBookCache *book_cache,
 	g_free (stored_lc_collate);
 
 	if (success || changed)
-		g_object_notify (G_OBJECT (book_cache), "locale");
+		g_object_notify_by_pspec (G_OBJECT (book_cache), properties[PROP_LOCALE]);
 
 	return success;
 }
@@ -6790,16 +6793,20 @@ e_book_cache_class_init (EBookCacheClass *klass)
 
 	klass->dup_contact_revision = ebc_dup_contact_revision;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LOCALE,
+	/**
+	 * EBookCache:locale
+	 *
+	 * The locale currently being used
+	 **/
+	properties[PROP_LOCALE] =
 		g_param_spec_string (
 			"locale",
-			"Locate",
-			"The locale currently being used",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	signals[E164_CHANGED] = g_signal_new (
 		"e164-changed",
