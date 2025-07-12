@@ -82,7 +82,8 @@ struct _ECollectionBackendPrivate {
 enum {
 	PROP_0,
 	PROP_PROXY_RESOLVER,
-	PROP_SERVER
+	PROP_SERVER,
+	N_PROPS
 };
 
 enum {
@@ -90,6 +91,8 @@ enum {
 	CHILD_REMOVED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -735,7 +738,7 @@ collection_backend_update_proxy_resolver (ECollectionBackend *backend)
 	g_mutex_unlock (&backend->priv->property_lock);
 
 	if (notify)
-		g_object_notify (G_OBJECT (backend), "proxy-resolver");
+		g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_PROXY_RESOLVER]);
 
 	g_clear_object (&source);
 }
@@ -1203,28 +1206,34 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 	class->delete_resource = collection_backend_delete_resource;
 	class->delete_resource_finish = collection_backend_delete_resource_finish;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PROXY_RESOLVER,
+	/**
+	 * ECollectionBackend:proxy-resolver
+	 *
+	 * The proxy resolver for this backend
+	 **/
+	properties[PROP_PROXY_RESOLVER] =
 		g_param_spec_object (
 			"proxy-resolver",
-			"Proxy Resolver",
-			"The proxy resolver for this backend",
+			NULL, NULL,
 			G_TYPE_PROXY_RESOLVER,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVER,
+	/**
+	 * ECollectionBackend:server
+	 *
+	 * The server to which the backend belongs
+	 **/
+	properties[PROP_SERVER] =
 		g_param_spec_object (
 			"server",
-			"Server",
-			"The server to which the backend belongs",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY_SERVER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ECollectionBackend::child-added:

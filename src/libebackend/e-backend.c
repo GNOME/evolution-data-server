@@ -76,8 +76,11 @@ enum {
 	PROP_MAIN_CONTEXT,
 	PROP_ONLINE,
 	PROP_SOURCE,
-	PROP_USER_PROMPTER
+	PROP_USER_PROMPTER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (EBackend, e_backend, G_TYPE_OBJECT)
 
@@ -796,64 +799,75 @@ e_backend_class_init (EBackendClass *class)
 	class->get_destination_address = backend_get_destination_address;
 	class->prepare_shutdown = backend_prepare_shutdown;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTABLE,
+	/**
+	 * EBackend:connectable
+	 *
+	 * Socket endpoint of a network service
+	 **/
+	properties[PROP_CONNECTABLE] =
 		g_param_spec_object (
 			"connectable",
-			"Connectable",
-			"Socket endpoint of a network service",
+			NULL, NULL,
 			G_TYPE_SOCKET_CONNECTABLE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MAIN_CONTEXT,
+	/**
+	 * EBackend:main-context
+	 *
+	 * The main loop context on which to attach event sources
+	 **/
+	properties[PROP_MAIN_CONTEXT] =
 		g_param_spec_boxed (
 			"main-context",
-			"Main Context",
-			"The main loop context on "
-			"which to attach event sources",
+			NULL, NULL,
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ONLINE,
+	/**
+	 * EBackend:online
+	 *
+	 * Whether the backend is online
+	 **/
+	properties[PROP_ONLINE] =
 		g_param_spec_boolean (
 			"online",
-			"Online",
-			"Whether the backend is online",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE,
+	/**
+	 * EBackend:source
+	 *
+	 * The data source being acted upon
+	 **/
+	properties[PROP_SOURCE] =
 		g_param_spec_object (
 			"source",
-			"Source",
-			"The data source being acted upon",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USER_PROMPTER,
+	/**
+	 * EBackend:user-prompter
+	 *
+	 * User prompter instance
+	 **/
+	properties[PROP_USER_PROMPTER] =
 		g_param_spec_object (
 			"user-prompter",
-			"User Prompter",
-			"User prompter instance",
+			NULL, NULL,
 			E_TYPE_USER_PROMPTER,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -956,7 +970,7 @@ e_backend_set_online (EBackend *backend,
 	g_cancellable_cancel (backend->priv->network_monitor_cancellable);
 	g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 
-	g_object_notify (G_OBJECT (backend), "online");
+	g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_ONLINE]);
 
 	if (!backend->priv->online && backend->priv->source)
 		backend_set_source_disconnected (backend->priv->source);
@@ -1096,7 +1110,7 @@ e_backend_set_connectable (EBackend *backend,
 
 	backend_update_online_state (backend);
 
-	g_object_notify (G_OBJECT (backend), "connectable");
+	g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_CONNECTABLE]);
 }
 
 /**

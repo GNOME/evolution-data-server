@@ -95,8 +95,11 @@ enum {
 	PROP_0,
 	PROP_REGISTRY,
 	PROP_RELOAD_SUPPORTED,
-	PROP_BACKEND_PER_PROCESS
+	PROP_BACKEND_PER_PROCESS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void	e_data_factory_initable_init	(GInitableIface *iface);
@@ -1173,41 +1176,49 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	dbus_server_class->run_server = data_factory_run_server;
 	dbus_server_class->quit_server = data_factory_quit_server;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	/**
+	 * EDataFactory:registry
+	 *
+	 * Data source registry
+	 **/
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"Data source registry",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_RELOAD_SUPPORTED,
+	/**
+	 * EDataFactory:reload-supported
+	 *
+	 * Whether the data factory supports Reload
+	 **/
+	properties[PROP_RELOAD_SUPPORTED] =
 		g_param_spec_boolean (
 			"reload-supported",
-			"Reload Supported",
-			"Whether the data factory supports Reload",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND_PER_PROCESS,
+	/**
+	 * EDataFactory:backend-per-process
+	 *
+	 * Override backend-per-process compile-time option
+	 **/
+	properties[PROP_BACKEND_PER_PROCESS] =
 		g_param_spec_int (
 			"backend-per-process",
-			"Backend Per Process",
-			"Override backend-per-process compile-time option",
+			NULL, NULL,
 			G_MININT, G_MAXINT,
 			-1,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

@@ -44,13 +44,16 @@ enum {
 	PROP_CACHE,
 	PROP_TABLE_NAME,
 	PROP_KEY_COLUMN_NAME,
-	PROP_VALUE_COLUMN_NAME
+	PROP_VALUE_COLUMN_NAME,
+	N_PROPS
 };
 
 enum {
 	CHANGED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -155,18 +158,15 @@ e_cache_keys_class_init (ECacheKeysClass *klass)
 	 *
 	 * Since: 3.48
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_CACHE,
+	properties[PROP_CACHE] =
 		g_param_spec_object (
 			"cache",
-			"Cache",
-			NULL,
+			NULL, NULL,
 			E_TYPE_CACHE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECacheKeys:table-name:
@@ -175,18 +175,15 @@ e_cache_keys_class_init (ECacheKeysClass *klass)
 	 *
 	 * Since: 3.48
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_TABLE_NAME,
+	properties[PROP_TABLE_NAME] =
 		g_param_spec_string (
 			"table-name",
-			"Table Name",
-			NULL,
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECacheKeys:key-column-name:
@@ -195,18 +192,15 @@ e_cache_keys_class_init (ECacheKeysClass *klass)
 	 *
 	 * Since: 3.48
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_KEY_COLUMN_NAME,
+	properties[PROP_KEY_COLUMN_NAME] =
 		g_param_spec_string (
 			"key-column-name",
-			"Key Column Name",
-			NULL,
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECacheKeys:value-column-name:
@@ -215,18 +209,17 @@ e_cache_keys_class_init (ECacheKeysClass *klass)
 	 *
 	 * Since: 3.48
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_VALUE_COLUMN_NAME,
+	properties[PROP_VALUE_COLUMN_NAME] =
 		g_param_spec_string (
 			"value-column-name",
-			"Value Column Name",
-			NULL,
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ECacheKeys::changed:
