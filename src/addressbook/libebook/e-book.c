@@ -61,7 +61,8 @@ typedef struct {
 
 enum {
 	PROP_0,
-	PROP_SOURCE
+	PROP_SOURCE,
+	N_PROPS
 };
 
 enum {
@@ -71,6 +72,8 @@ enum {
 	BACKEND_DIED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -236,17 +239,21 @@ e_book_class_init (EBookClass *class)
 	object_class->dispose = book_dispose;
 	object_class->finalize = book_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE,
+	/**
+	 * EBook:source
+	 *
+	 * The data source for this EBook
+	 **/
+	properties[PROP_SOURCE] =
 		g_param_spec_object (
 			"source",
-			"Source",
-			"The data source for this EBook",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	signals[WRITABLE_STATUS] = g_signal_new (
 		"writable_status",

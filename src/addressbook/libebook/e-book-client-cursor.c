@@ -629,12 +629,15 @@ enum {
 	PROP_ALPHABET,
 	PROP_TOTAL,
 	PROP_POSITION,
+	N_PROPS
 };
 
 enum {
 	REFRESH,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -672,17 +675,14 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_SORT_FIELDS,
+	properties[PROP_SORT_FIELDS] =
 		g_param_spec_boxed (
 			"sort-fields",
-			"Sort Fields",
-			"The #EContactField names to sort this cursor with",
+			NULL, NULL,
 			G_TYPE_STRV,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:client:
@@ -691,17 +691,14 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_CLIENT,
+	properties[PROP_CLIENT] =
 		g_param_spec_object (
 			"client",
-			"Client",
-			"The EBookClient for the cursor",
+			NULL, NULL,
 			E_TYPE_BOOK_CLIENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:context:
@@ -714,17 +711,14 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTEXT,
+	properties[PROP_CONTEXT] =
 		g_param_spec_boxed (
 			"context",
-			"Context",
-			"The GMainContext in which this cursor was created",
+			NULL, NULL,
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:connection:
@@ -737,18 +731,14 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection used "
-			"to create the D-Bus proxy",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:object-path:
@@ -761,18 +751,14 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path used "
-			"to create the D-Bus proxy",
+			NULL, NULL,
 			NULL,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:direct-cursor:
@@ -785,17 +771,14 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_DIRECT_CURSOR,
+	properties[PROP_DIRECT_CURSOR] =
 		g_param_spec_object (
 			"direct-cursor",
-			"Direct Cursor",
-			"The EDataBookCursor for direct read access",
+			NULL, NULL,
 			E_TYPE_DATA_BOOK_CURSOR,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:alphabet:
@@ -818,16 +801,13 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_ALPHABET,
+	properties[PROP_ALPHABET] =
 		g_param_spec_boxed (
 			"alphabet",
-			"Alphabet",
-			"The active alphabet",
+			NULL, NULL,
 			G_TYPE_STRV,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:total:
@@ -840,16 +820,13 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_TOTAL,
+	properties[PROP_TOTAL] =
 		g_param_spec_int (
 			"total",
-			"Total",
-			"The total contacts for this cursor's query",
+			NULL, NULL,
 			0, G_MAXINT, 0,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientCursor:position:
@@ -874,16 +851,15 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_POSITION,
+	properties[PROP_POSITION] =
 		g_param_spec_int (
 			"position",
-			"Position",
-			"The current cursor position",
+			NULL, NULL,
 			0, G_MAXINT, 0,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * EBookClientCursor::refresh:
@@ -1458,7 +1434,7 @@ book_client_cursor_set_locale (EBookClientCursor *cursor,
 	}
 
 	/* Notify the alphabet change */
-	g_object_notify (G_OBJECT (cursor), "alphabet");
+	g_object_notify_by_pspec (G_OBJECT (cursor), properties[PROP_ALPHABET]);
 
 	/* The alphabet changing should have been enough,
 	 * but still trigger a refresh
@@ -1506,7 +1482,7 @@ book_client_cursor_set_total (EBookClientCursor *cursor,
 
 	if (priv->total != total) {
 		priv->total = total;
-		g_object_notify (G_OBJECT (cursor), "total");
+		g_object_notify_by_pspec (G_OBJECT (cursor), properties[PROP_TOTAL]);
 	}
 }
 
@@ -1518,7 +1494,7 @@ book_client_cursor_set_position (EBookClientCursor *cursor,
 
 	if (priv->position != position) {
 		priv->position = position;
-		g_object_notify (G_OBJECT (cursor), "position");
+		g_object_notify_by_pspec (G_OBJECT (cursor), properties[PROP_POSITION]);
 	}
 }
 

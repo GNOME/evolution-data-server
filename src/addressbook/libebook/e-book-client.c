@@ -108,8 +108,11 @@ static void     book_client_set_locale  (EBookClient *client,
 
 enum {
 	PROP_0,
-	PROP_LOCALE
+	PROP_LOCALE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookClient,
@@ -1268,16 +1271,15 @@ e_book_client_class_init (EBookClientClass *class)
 	 *
 	 * Since: 3.12
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_LOCALE,
+	properties[PROP_LOCALE] =
 		g_param_spec_string (
 			"locale",
-			"Locale",
-			"The currently active locale for this addressbook",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -4378,7 +4380,7 @@ book_client_set_locale (EBookClient *client,
 		g_free (client->priv->locale);
 		client->priv->locale = g_strdup (locale);
 
-		g_object_notify (G_OBJECT (client), "locale");
+		g_object_notify_by_pspec (G_OBJECT (client), properties[PROP_LOCALE]);
 	}
 }
 
