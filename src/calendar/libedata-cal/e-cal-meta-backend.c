@@ -94,7 +94,8 @@ struct _ECalMetaBackendPrivate {
 
 enum {
 	PROP_0,
-	PROP_CACHE
+	PROP_CACHE,
+	N_PROPS
 };
 
 enum {
@@ -102,6 +103,8 @@ enum {
 	SOURCE_CHANGED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -3579,17 +3582,16 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	 *
 	 * The #ECalCache being used for this meta backend.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_CACHE,
+	properties[PROP_CACHE] =
 		g_param_spec_object (
 			"cache",
-			"Cache",
-			"Calendar Cache",
+			NULL, NULL,
 			E_TYPE_CAL_CACHE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/* This signal is meant for testing purposes mainly */
 	signals[REFRESH_COMPLETED] = g_signal_new (
@@ -3938,7 +3940,7 @@ e_cal_meta_backend_set_cache (ECalMetaBackend *meta_backend,
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
-	g_object_notify (G_OBJECT (meta_backend), "cache");
+	g_object_notify_by_pspec (G_OBJECT (meta_backend), properties[PROP_CACHE]);
 }
 
 /**

@@ -63,8 +63,11 @@ enum {
 	PROP_0,
 	PROP_BACKEND,
 	PROP_CONNECTION,
-	PROP_OBJECT_PATH
+	PROP_OBJECT_PATH,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void	e_data_cal_initable_init	(GInitableIface *iface);
@@ -2359,43 +2362,49 @@ e_data_cal_class_init (EDataCalClass *class)
 	object_class->finalize = data_cal_finalize;
 	object_class->constructed = data_cal_constructed;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND,
+	/**
+	 * EDataCal:backend
+	 *
+	 * The backend driving this connection
+	 **/
+	properties[PROP_BACKEND] =
 		g_param_spec_object (
 			"backend",
-			"Backend",
-			"The backend driving this connection",
+			NULL, NULL,
 			E_TYPE_CAL_BACKEND,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	/**
+	 * EDataCal:connection
+	 *
+	 * The #GDBusConnection on which to export the calendar interface
+	 **/
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection on which to "
-			"export the calendar interface",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	/**
+	 * EDataCal:object-path
+	 *
+	 * The object path at which to export the calendar interface
+	 **/
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path at which to "
-			"export the calendar interface",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

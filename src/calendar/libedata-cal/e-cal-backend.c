@@ -121,7 +121,8 @@ enum {
 	PROP_KIND,
 	PROP_PROXY_RESOLVER,
 	PROP_REGISTRY,
-	PROP_WRITABLE
+	PROP_WRITABLE,
+	N_PROPS
 };
 
 enum {
@@ -129,6 +130,8 @@ enum {
 	SHUTDOWN,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -619,7 +622,7 @@ cal_backend_update_proxy_resolver (ECalBackend *backend)
 	g_mutex_unlock (&backend->priv->property_lock);
 
 	if (notify)
-		g_object_notify (G_OBJECT (backend), "proxy-resolver");
+		g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_PROXY_RESOLVER]);
 
 	g_clear_object (&source);
 }
@@ -1137,67 +1140,78 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	class->impl_get_backend_property = cal_backend_get_backend_property;
 	class->shutdown = cal_backend_shutdown;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CACHE_DIR,
+	/**
+	 * ECalBackend:cache-dir
+	 *
+	 * The backend's cache directory
+	 **/
+	properties[PROP_CACHE_DIR] =
 		g_param_spec_string (
 			"cache-dir",
-			"Cache Dir",
-			"The backend's cache directory",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_KIND,
+	/**
+	 * ECalBackend:kind
+	 *
+	 * The kind of iCalendar components this backend manages
+	 **/
+	properties[PROP_KIND] =
 		g_param_spec_ulong (
 			"kind",
-			"Kind",
-			"The kind of iCalendar components "
-			"this backend manages",
+			NULL, NULL,
 			I_CAL_NO_COMPONENT,
 			I_CAL_XLICMIMEPART_COMPONENT,
 			I_CAL_NO_COMPONENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PROXY_RESOLVER,
+	/**
+	 * ECalBackend:proxy-resolver
+	 *
+	 * The proxy resolver for this backend
+	 **/
+	properties[PROP_PROXY_RESOLVER] =
 		g_param_spec_object (
 			"proxy-resolver",
-			"Proxy Resolver",
-			"The proxy resolver for this backend",
+			NULL, NULL,
 			G_TYPE_PROXY_RESOLVER,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	/**
+	 * ECalBackend:registry
+	 *
+	 * Data source registry
+	 **/
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"Data source registry",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_WRITABLE,
+	/**
+	 * ECalBackend:writable
+	 *
+	 * Whether the backend will accept changes
+	 **/
+	properties[PROP_WRITABLE] =
 		g_param_spec_boolean (
 			"writable",
-			"Writable",
-			"Whether the backend will accept changes",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ECalBackend::closed:
@@ -1433,7 +1447,7 @@ e_cal_backend_set_writable (ECalBackend *backend,
 
 	backend->priv->writable = writable;
 
-	g_object_notify (G_OBJECT (backend), "writable");
+	g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_WRITABLE]);
 }
 
 /**
@@ -1554,7 +1568,7 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
 
 	g_mutex_unlock (&backend->priv->property_lock);
 
-	g_object_notify (G_OBJECT (backend), "cache-dir");
+	g_object_notify_by_pspec (G_OBJECT (backend), properties[PROP_CACHE_DIR]);
 }
 
 /**
