@@ -53,7 +53,10 @@ struct _ESubprocessFactoryPrivate {
 enum {
 	PROP_0,
 	PROP_REGISTRY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void	e_subprocess_factory_initable_init		(GInitableIface *iface);
@@ -176,16 +179,20 @@ e_subprocess_factory_class_init (ESubprocessFactoryClass *class)
 	object_class->dispose = subprocess_factory_dispose;
 	object_class->finalize = subprocess_factory_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	/**
+	 * ESubprocessFactory:registry
+	 *
+	 * Data source registry
+	 **/
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"Data source registry",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

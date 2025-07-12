@@ -81,8 +81,11 @@ enum {
 	PROP_REMOVABLE,
 	PROP_SERVER,
 	PROP_WRITABLE,
-	PROP_WRITE_DIRECTORY
+	PROP_WRITE_DIRECTORY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static GInitableIface *initable_parent_interface;
 
@@ -1602,124 +1605,145 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	source_class->invoke_authenticate_impl = server_side_source_invoke_authenticate_impl;
 	source_class->unset_last_credentials_required_arguments_impl = server_side_source_unset_last_credentials_required_arguments_impl;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_EXPORTED,
+	/**
+	 * EServerSideSource:exported
+	 *
+	 * Whether the source has been exported over D-Bus
+	 **/
+	properties[PROP_EXPORTED] =
 		g_param_spec_boolean (
 			"exported",
-			"Exported",
-			"Whether the source has been exported over D-Bus",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILE,
+	/**
+	 * EServerSideSource:file
+	 *
+	 * The key file for the data source
+	 **/
+	properties[PROP_FILE] =
 		g_param_spec_object (
 			"file",
-			"File",
-			"The key file for the data source",
+			NULL, NULL,
 			G_TYPE_FILE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OAUTH2_SUPPORT,
+	/**
+	 * EServerSideSource:oauth2-support
+	 *
+	 * The object providing OAuth 2.0 support
+	 **/
+	properties[PROP_OAUTH2_SUPPORT] =
 		g_param_spec_object (
 			"oauth2-support",
-			"OAuth2 Support",
-			"The object providing OAuth 2.0 support",
+			NULL, NULL,
 			E_TYPE_OAUTH2_SUPPORT,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* This overrides the "remote-creatable" property
-	 * in ESourceClass with a writable version. */
-	g_object_class_install_property (
-		object_class,
-		PROP_REMOTE_CREATABLE,
+	/**
+	 * EServerSideSource:remote-creatable
+	 *
+	 * Whether the data source can create remote resources
+	 *
+	 * Note: This overrides the "remote-creatable" property in ESourceClass with a writable
+	 * version.
+	 **/
+	properties[PROP_REMOTE_CREATABLE] =
 		g_param_spec_boolean (
 			"remote-creatable",
-			"Remote Creatable",
-			"Whether the data source "
-			"can create remote resources",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* This overrides the "remote-deletable" property
-	 * in ESourceClass with a writable version. */
-	g_object_class_install_property (
-		object_class,
-		PROP_REMOTE_DELETABLE,
+	/**
+	 * EServerSideSource:remote-deletable
+	 *
+	 * Whether the data source can delete remote resources
+	 *
+	 * Note: This overrides the "remote-deletable" property in ESourceClass with a writable
+	 * version.
+	 **/
+	properties[PROP_REMOTE_DELETABLE] =
 		g_param_spec_boolean (
 			"remote-deletable",
-			"Remote Deletable",
-			"Whether the data source "
-			"can delete remote resources",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* This overrides the "removable" property
-	 * in ESourceClass with a writable version. */
-	g_object_class_install_property (
-		object_class,
-		PROP_REMOVABLE,
+	/**
+	 * EServerSideSource:removable
+	 *
+	 * Whether the data source is removable
+	 *
+	 * Note: This overrides the "removable" property in ESourceClass with a writable version.
+	 **/
+	properties[PROP_REMOVABLE] =
 		g_param_spec_boolean (
 			"removable",
-			"Removable",
-			"Whether the data source is removable",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVER,
+	/**
+	 * EServerSideSource:server
+	 *
+	 * The server to which the data source belongs
+	 **/
+	properties[PROP_SERVER] =
 		g_param_spec_object (
 			"server",
-			"Server",
-			"The server to which the data source belongs",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY_SERVER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* This overrides the "writable" property
-	 * in ESourceClass with a writable version. */
-	g_object_class_install_property (
-		object_class,
-		PROP_WRITABLE,
+	/**
+	 * EServerSideSource:writable
+	 *
+	 * Whether the data source is writable
+	 *
+	 * Note: This overrides the "writable" property in ESourceClass with a writable version.
+	 **/
+	properties[PROP_WRITABLE] =
 		g_param_spec_boolean (
 			"writable",
-			"Writable",
-			"Whether the data source is writable",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	/* Do not use G_PARAM_CONSTRUCT.  We initialize the
-	 * property ourselves in e_server_side_source_init(). */
-	g_object_class_install_property (
-		object_class,
-		PROP_WRITE_DIRECTORY,
+	/**
+	 * EServerSideSource:write-directory
+	 *
+	 * Directory in which to write changes to disk
+	 *
+	 * Note: Do not use G_PARAM_CONSTRUCT.  We initialize the property ourselves in
+	 * e_server_side_source_init().
+	 **/
+	properties[PROP_WRITE_DIRECTORY] =
 		g_param_spec_string (
 			"write-directory",
-			"Write Directory",
-			"Directory in which to write changes to disk",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -2190,7 +2214,7 @@ e_server_side_source_set_write_directory (EServerSideSource *source,
 	g_free (source->priv->write_directory);
 	source->priv->write_directory = g_strdup (write_directory);
 
-	g_object_notify (G_OBJECT (source), "write-directory");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_WRITE_DIRECTORY]);
 }
 
 /**
@@ -2241,7 +2265,7 @@ e_server_side_source_set_removable (EServerSideSource *source,
 	if (dbus_interface != NULL)
 		g_object_unref (dbus_interface);
 
-	g_object_notify (G_OBJECT (source), "removable");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_REMOVABLE]);
 }
 
 /**
@@ -2292,7 +2316,7 @@ e_server_side_source_set_writable (EServerSideSource *source,
 	if (dbus_interface != NULL)
 		g_object_unref (dbus_interface);
 
-	g_object_notify (G_OBJECT (source), "writable");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_WRITABLE]);
 }
 
 /**
@@ -2348,7 +2372,7 @@ e_server_side_source_set_remote_creatable (EServerSideSource *source,
 	if (dbus_interface != NULL)
 		g_object_unref (dbus_interface);
 
-	g_object_notify (G_OBJECT (source), "remote-creatable");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_REMOTE_CREATABLE]);
 }
 
 /**
@@ -2405,7 +2429,7 @@ e_server_side_source_set_remote_deletable (EServerSideSource *source,
 	if (dbus_interface != NULL)
 		g_object_unref (dbus_interface);
 
-	g_object_notify (G_OBJECT (source), "remote-deletable");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_REMOTE_DELETABLE]);
 }
 
 /**
@@ -2479,5 +2503,5 @@ e_server_side_source_set_oauth2_support (EServerSideSource *source,
 	if (dbus_interface != NULL)
 		g_object_unref (dbus_interface);
 
-	g_object_notify (G_OBJECT (source), "oauth2-support");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_OAUTH2_SUPPORT]);
 }

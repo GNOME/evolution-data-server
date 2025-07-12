@@ -45,8 +45,11 @@ struct _EFileCachePrivate {
 
 enum {
 	PROP_0,
-	PROP_FILENAME
+	PROP_FILENAME,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (EFileCache, e_file_cache, G_TYPE_OBJECT)
 
@@ -159,17 +162,16 @@ e_file_cache_class_init (EFileCacheClass *class)
 	 *
 	 * The filename of the cache.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_FILENAME,
+	properties[PROP_FILENAME] =
 		g_param_spec_string (
 			"filename",
-			"Filename",
-			"The filename of the cache",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
