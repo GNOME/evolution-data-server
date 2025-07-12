@@ -45,8 +45,11 @@ struct _ESourceUoaPrivate {
 
 enum {
 	PROP_0,
-	PROP_ACCOUNT_ID
+	PROP_ACCOUNT_ID,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceUoa,
@@ -101,19 +104,23 @@ e_source_uoa_class_init (ESourceUoaClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_UOA;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ACCOUNT_ID,
+	/**
+	 * ESourceUoa:account-id
+	 *
+	 * Ubuntu Online Account ID
+	 **/
+	properties[PROP_ACCOUNT_ID] =
 		g_param_spec_uint (
 			"account-id",
-			"Account ID",
-			"Ubuntu Online Account ID",
+			NULL, NULL,
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -162,6 +169,6 @@ e_source_uoa_set_account_id (ESourceUoa *extension,
 
 	extension->priv->account_id = account_id;
 
-	g_object_notify (G_OBJECT (extension), "account-id");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ACCOUNT_ID]);
 }
 

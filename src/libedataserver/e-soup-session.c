@@ -72,8 +72,11 @@ enum {
 	PROP_SOURCE,
 	PROP_CREDENTIALS,
 	PROP_FORCE_HTTP1,
-	PROP_HANDLE_BACKOFF_RESPONSES
+	PROP_HANDLE_BACKOFF_RESPONSES,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
 
@@ -622,17 +625,14 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 	 *
 	 * Since: 3.26
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE,
+	properties[PROP_SOURCE] =
 		g_param_spec_object (
 			"source",
-			"Source",
-			NULL,
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESoupSession:credentials:
@@ -641,17 +641,14 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 	 *
 	 * Since: 3.26
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_CREDENTIALS,
+	properties[PROP_CREDENTIALS] =
 		g_param_spec_boxed (
 			"credentials",
-			"Credentials",
-			NULL,
+			NULL, NULL,
 			E_TYPE_NAMED_PARAMETERS,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESoupSession:force-http1:
@@ -664,17 +661,14 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 	 *
 	 * Since: 3.48
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_FORCE_HTTP1,
+	properties[PROP_FORCE_HTTP1] =
 		g_param_spec_boolean (
 			"force-http1",
-			"Force HTTP/1",
-			NULL,
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESoupSession:handle-backoff-responses:
@@ -687,17 +681,16 @@ e_soup_session_class_init (ESoupSessionClass *klass)
 	 *
 	 * Since: 3.54
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_HANDLE_BACKOFF_RESPONSES,
+	properties[PROP_HANDLE_BACKOFF_RESPONSES] =
 		g_param_spec_boolean (
 			"handle-backoff-responses",
-			"Handle Backoff Responses",
-			NULL,
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -870,7 +863,7 @@ e_soup_session_set_credentials (ESoupSession *session,
 
 	g_mutex_unlock (&session->priv->property_lock);
 
-	g_object_notify (G_OBJECT (session), "credentials");
+	g_object_notify_by_pspec (G_OBJECT (session), properties[PROP_CREDENTIALS]);
 
 	/* Update also internal SoupSession state */
 	g_rec_mutex_lock (&session->priv->session_lock);
@@ -937,7 +930,7 @@ e_soup_session_set_force_http1 (ESoupSession *session,
 
 	session->priv->force_http1 = force_http1;
 
-	g_object_notify (G_OBJECT (session), "force-http1");
+	g_object_notify_by_pspec (G_OBJECT (session), properties[PROP_FORCE_HTTP1]);
 	#endif
 }
 
@@ -985,7 +978,7 @@ e_soup_session_set_handle_backoff_responses (ESoupSession *session,
 
 	session->priv->handle_backoff_responses = handle_backoff_responses;
 
-	g_object_notify (G_OBJECT (session), "handle-backoff-responses");
+	g_object_notify_by_pspec (G_OBJECT (session), properties[PROP_HANDLE_BACKOFF_RESPONSES]);
 }
 
 /**

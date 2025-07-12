@@ -84,8 +84,11 @@ enum {
 	PROP_URI,
 	PROP_SSL_TRUST,
 	PROP_ORDER,
-	PROP_TIMEOUT
+	PROP_TIMEOUT,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceWebdav,
@@ -97,7 +100,7 @@ source_webdav_notify_cb (GObject *object,
                          GParamSpec *pspec,
                          ESourceWebdav *extension)
 {
-	g_object_notify (G_OBJECT (extension), "uri");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_URI]);
 }
 
 static gboolean
@@ -532,158 +535,181 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_AVOID_IFMATCH,
+	/**
+	 * ESourceWebdav:avoid-ifmatch
+	 *
+	 * Work around a bug in old Apache servers
+	 **/
+	properties[PROP_AVOID_IFMATCH] =
 		g_param_spec_boolean (
 			"avoid-ifmatch",
-			"Avoid If-Match",
-			"Work around a bug in old Apache servers",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CALENDAR_AUTO_SCHEDULE,
+	/**
+	 * ESourceWebdav:calendar-auto-schedule
+	 *
+	 * Whether the server handles meeting invitations (CalDAV-only)
+	 **/
+	properties[PROP_CALENDAR_AUTO_SCHEDULE] =
 		g_param_spec_boolean (
 			"calendar-auto-schedule",
-			"Calendar Auto-Schedule",
-			"Whether the server handles meeting "
-			"invitations (CalDAV-only)",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_COLOR,
+	/**
+	 * ESourceWebdav:color
+	 *
+	 * Color of the WebDAV resource
+	 **/
+	properties[PROP_COLOR] =
 		g_param_spec_string (
 			"color",
-			"Color",
-			"Color of the WebDAV resource",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DISPLAY_NAME,
+	/**
+	 * ESourceWebdav:display-name
+	 *
+	 * Display name of the WebDAV resource
+	 **/
+	properties[PROP_DISPLAY_NAME] =
 		g_param_spec_string (
 			"display-name",
-			"Display Name",
-			"Display name of the WebDAV resource",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_EMAIL_ADDRESS,
+	/**
+	 * ESourceWebdav:email-address
+	 *
+	 * The user's email address
+	 **/
+	properties[PROP_EMAIL_ADDRESS] =
 		g_param_spec_string (
 			"email-address",
-			"Email Address",
-			"The user's email address",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_RESOURCE_PATH,
+	/**
+	 * ESourceWebdav:resource-path
+	 *
+	 * Absolute path to a WebDAV resource
+	 **/
+	properties[PROP_RESOURCE_PATH] =
 		g_param_spec_string (
 			"resource-path",
-			"Resource Path",
-			"Absolute path to a WebDAV resource",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_RESOURCE_QUERY,
+	/**
+	 * ESourceWebdav:resource-query
+	 *
+	 * Query to access a WebDAV resource
+	 **/
+	properties[PROP_RESOURCE_QUERY] =
 		g_param_spec_string (
 			"resource-query",
-			"Resource Query",
-			"Query to access a WebDAV resource",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_URI,
+	/**
+	 * ESourceWebdav:uri
+	 *
+	 * WebDAV service as a GUri
+	 **/
+	properties[PROP_URI] =
 		g_param_spec_boxed (
 			"uri",
-			"Uri",
-			"WebDAV service as a GUri",
+			NULL, NULL,
 			G_TYPE_URI,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SSL_TRUST,
+	/**
+	 * ESourceWebdav:ssl-trust
+	 *
+	 * SSL/TLS certificate trust setting, for invalid server certificates
+	 **/
+	properties[PROP_SSL_TRUST] =
 		g_param_spec_string (
 			"ssl-trust",
-			"SSL/TLS Trust",
-			"SSL/TLS certificate trust setting, for invalid server certificates",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ORDER,
+	/**
+	 * ESourceWebdav:order
+	 *
+	 * A sorting order of the resource
+	 **/
+	properties[PROP_ORDER] =
 		g_param_spec_uint (
 			"order",
-			"Order",
-			"A sorting order of the resource",
+			NULL, NULL,
 			0, G_MAXUINT, (guint) -1,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_TIMEOUT,
+	/**
+	 * ESourceWebdav:timeout
+	 *
+	 * Connection timeout, in seconds
+	 **/
+	properties[PROP_TIMEOUT] =
 		g_param_spec_uint (
 			"timeout",
-			"Timeout",
-			"Connection timeout, in seconds",
+			NULL, NULL,
 			0, G_MAXUINT, 90,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -754,7 +780,7 @@ e_source_webdav_set_avoid_ifmatch (ESourceWebdav *extension,
 
 	extension->priv->avoid_ifmatch = avoid_ifmatch;
 
-	g_object_notify (G_OBJECT (extension), "avoid-ifmatch");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_AVOID_IFMATCH]);
 }
 
 /**
@@ -794,7 +820,7 @@ e_source_webdav_set_calendar_auto_schedule (ESourceWebdav *extension,
 
 	extension->priv->calendar_auto_schedule = calendar_auto_schedule;
 
-	g_object_notify (G_OBJECT (extension), "calendar-auto-schedule");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CALENDAR_AUTO_SCHEDULE]);
 }
 
 /**
@@ -882,7 +908,7 @@ e_source_webdav_set_display_name (ESourceWebdav *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "display-name");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_DISPLAY_NAME]);
 }
 
 /**
@@ -965,7 +991,7 @@ e_source_webdav_set_color (ESourceWebdav *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "color");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_COLOR]);
 }
 
 /**
@@ -1050,7 +1076,7 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "email-address");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_EMAIL_ADDRESS]);
 }
 
 /**
@@ -1134,7 +1160,7 @@ e_source_webdav_set_resource_path (ESourceWebdav *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "resource-path");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_RESOURCE_PATH]);
 }
 
 /**
@@ -1228,7 +1254,7 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "resource-query");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_RESOURCE_QUERY]);
 }
 
 /**
@@ -1315,7 +1341,7 @@ e_source_webdav_set_ssl_trust (ESourceWebdav *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "ssl-trust");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SSL_TRUST]);
 }
 
 /**
@@ -1380,7 +1406,7 @@ e_source_webdav_set_uri (ESourceWebdav *extension,
 
 	g_object_freeze_notify (G_OBJECT (extension));
 	source_webdav_update_properties_from_uri (extension);
-	g_object_notify (G_OBJECT (extension), "uri");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_URI]);
 	g_object_thaw_notify (G_OBJECT (extension));
 }
 
@@ -1690,7 +1716,7 @@ e_source_webdav_set_order (ESourceWebdav *extension,
 
 	extension->priv->order = order;
 
-	g_object_notify (G_OBJECT (extension), "order");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ORDER]);
 }
 
 /**
@@ -1730,5 +1756,5 @@ e_source_webdav_set_timeout (ESourceWebdav *extension,
 
 	extension->priv->timeout = timeout;
 
-	g_object_notify (G_OBJECT (extension), "timeout");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_TIMEOUT]);
 }

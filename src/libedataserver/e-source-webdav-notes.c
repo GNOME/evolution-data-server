@@ -32,8 +32,11 @@ struct _ESourceWebDAVNotesPrivate {
 
 enum {
 	PROP_0,
-	PROP_DEFAULT_EXT
+	PROP_DEFAULT_EXT,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ESourceWebDAVNotes, e_source_webdav_notes, E_TYPE_SOURCE_EXTENSION)
 
@@ -99,19 +102,23 @@ e_source_webdav_notes_class_init (ESourceWebDAVNotesClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_WEBDAV_NOTES;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_EXT,
+	/**
+	 * ESourceWebDAVNotes:default-ext
+	 *
+	 * Default file extension for new notes
+	 **/
+	properties[PROP_DEFAULT_EXT] =
 		g_param_spec_string (
 			"default-ext",
-			"Default Ext",
-			"Default file extension for new notes",
+			NULL, NULL,
 			".md",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -201,5 +208,5 @@ e_source_webdav_notes_set_default_ext (ESourceWebDAVNotes *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "default-ext");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_DEFAULT_EXT]);
 }

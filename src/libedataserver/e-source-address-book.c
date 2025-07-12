@@ -44,8 +44,11 @@ struct _ESourceAddressBookPrivate {
 
 enum {
 	PROP_0,
-	PROP_ORDER
+	PROP_ORDER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ESourceAddressBook, e_source_address_book, E_TYPE_SOURCE_BACKEND)
 
@@ -97,19 +100,23 @@ e_source_address_book_class_init (ESourceAddressBookClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ORDER,
+	/**
+	 * ESourceAddressBook:order
+	 *
+	 * A sorting order of the source
+	 **/
+	properties[PROP_ORDER] =
 		g_param_spec_uint (
 			"order",
-			"Order",
-			"A sorting order of the source",
+			NULL, NULL,
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -154,5 +161,5 @@ e_source_address_book_set_order (ESourceAddressBook *extension,
 
 	extension->priv->order = order;
 
-	g_object_notify (G_OBJECT (extension), "order");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ORDER]);
 }

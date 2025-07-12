@@ -72,7 +72,8 @@ enum {
 	PROP_ONLINE,
 	PROP_OPENED,
 	PROP_READONLY,
-	PROP_SOURCE
+	PROP_SOURCE,
+	N_PROPS
 };
 
 enum {
@@ -82,6 +83,8 @@ enum {
 	BACKEND_PROPERTY_CHANGED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -741,16 +744,13 @@ e_client_class_init (EClientClass *class)
 	 *
 	 * The capabilities of this client
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_CAPABILITIES,
+	properties[PROP_CAPABILITIES] =
 		g_param_spec_pointer (
 			"capabilities",
-			"Capabilities",
-			"The capabilities of this client",
+			NULL, NULL,
 			G_PARAM_READABLE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EClient:main-context:
@@ -758,34 +758,27 @@ e_client_class_init (EClientClass *class)
 	 * The main loop context in which notifications for
 	 * this client will be delivered.
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_MAIN_CONTEXT,
+	properties[PROP_MAIN_CONTEXT] =
 		g_param_spec_boxed (
 			"main-context",
-			"Main Context",
-			"The main loop context on "
-			"which to attach event sources",
+			NULL, NULL,
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EClient:online:
 	 *
 	 * Whether this client's backing data is online.
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_ONLINE,
+	properties[PROP_ONLINE] =
 		g_param_spec_boolean (
 			"online",
-			"Online",
-			"Whether this client is online",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EClient:opened:
@@ -796,49 +789,42 @@ e_client_class_init (EClientClass *class)
 	 * will always be %TRUE after successfully creating any concrete
 	 * type of #EClient.
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_OPENED,
+	properties[PROP_OPENED] =
 		g_param_spec_boolean (
 			"opened",
-			"Opened",
-			"Whether this client is open and ready to use",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EClient:readonly:
 	 *
 	 * Whether this client's backing data is readonly.
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_READONLY,
+	properties[PROP_READONLY] =
 		g_param_spec_boolean (
 			"readonly",
-			"Read only",
-			"Whether this client's backing data is readonly",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EClient:source:
 	 *
 	 * The #ESource for which this client was created.
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE,
+	properties[PROP_SOURCE] =
 		g_param_spec_object (
 			"source",
-			"Source",
-			"The ESource for which this client was created",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * EClient::opened-signal: (skip)
@@ -1048,7 +1034,7 @@ e_client_set_capabilities (EClient *client,
 
 	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
-	g_object_notify (G_OBJECT (client), "capabilities");
+	g_object_notify_by_pspec (G_OBJECT (client), properties[PROP_CAPABILITIES]);
 }
 
 /**
@@ -1085,7 +1071,7 @@ e_client_set_readonly (EClient *client,
 
 	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
-	g_object_notify (G_OBJECT (client), "readonly");
+	g_object_notify_by_pspec (G_OBJECT (client), properties[PROP_READONLY]);
 }
 
 /**
@@ -1125,7 +1111,7 @@ e_client_set_online (EClient *client,
 
 	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
-	g_object_notify (G_OBJECT (client), "online");
+	g_object_notify_by_pspec (G_OBJECT (client), properties[PROP_ONLINE]);
 }
 
 /**

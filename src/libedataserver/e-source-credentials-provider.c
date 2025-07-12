@@ -44,8 +44,11 @@ struct _ESourceCredentialsProviderPrivate {
 
 enum {
 	PROP_0,
-	PROP_REGISTRY
+	PROP_REGISTRY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_CODE (ESourceCredentialsProvider, e_source_credentials_provider, G_TYPE_OBJECT,
 	G_ADD_PRIVATE (ESourceCredentialsProvider)
@@ -185,17 +188,16 @@ e_source_credentials_provider_class_init (ESourceCredentialsProviderClass *class
 	 *
 	 * The Source Registry object, which can be either #ESourceregistry or #ESourceRegistryServer.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"An ESourceRegistry",
+			NULL, NULL,
 			G_TYPE_OBJECT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/* Ensure built-in credential providers implementation types */
 	g_type_ensure (E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD);

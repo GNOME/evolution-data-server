@@ -47,8 +47,11 @@ struct _ESourceSecurityPrivate {
 enum {
 	PROP_0,
 	PROP_METHOD,
-	PROP_SECURE
+	PROP_SECURE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceSecurity,
@@ -130,31 +133,37 @@ e_source_security_class_init (ESourceSecurityClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_SECURITY;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_METHOD,
+	/**
+	 * ESourceSecurity:method
+	 *
+	 * Security method
+	 **/
+	properties[PROP_METHOD] =
 		g_param_spec_string (
 			"method",
-			"Method",
-			"Security method",
+			NULL, NULL,
 			"none",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SECURE,
+	/**
+	 * ESourceSecurity:secure
+	 *
+	 * Secure the network connection
+	 **/
+	properties[PROP_SECURE] =
 		g_param_spec_boolean (
 			"secure",
-			"Secure",
-			"Secure the network connection",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -254,8 +263,8 @@ e_source_security_set_method (ESourceSecurity *extension,
 
 	object = G_OBJECT (extension);
 	g_object_freeze_notify (object);
-	g_object_notify (object, "method");
-	g_object_notify (object, "secure");
+	g_object_notify_by_pspec (object, properties[PROP_METHOD]);
+	g_object_notify_by_pspec (object, properties[PROP_SECURE]);
 	g_object_thaw_notify (object);
 }
 

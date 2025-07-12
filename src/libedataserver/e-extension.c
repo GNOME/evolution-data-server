@@ -48,8 +48,11 @@ struct _EExtensionPrivate {
 
 enum {
 	PROP_0,
-	PROP_EXTENSIBLE
+	PROP_EXTENSIBLE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	EExtension,
@@ -148,16 +151,20 @@ e_extension_class_init (EExtensionClass *class)
 	object_class->get_property = extension_get_property;
 	object_class->dispose = extension_dispose;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_EXTENSIBLE,
+	/**
+	 * EExtension:extensible
+	 *
+	 * The object being extended
+	 **/
+	properties[PROP_EXTENSIBLE] =
 		g_param_spec_object (
 			"extensible",
-			"Extensible Object",
-			"The object being extended",
+			NULL, NULL,
 			E_TYPE_EXTENSIBLE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

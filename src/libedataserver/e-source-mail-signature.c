@@ -51,8 +51,11 @@ struct _ESourceMailSignaturePrivate {
 enum {
 	PROP_0,
 	PROP_FILE,
-	PROP_MIME_TYPE
+	PROP_MIME_TYPE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailSignature,
@@ -175,30 +178,36 @@ e_source_mail_signature_class_init (ESourceMailSignatureClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_MAIL_SIGNATURE;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILE,
+	/**
+	 * ESourceMailSignature:file
+	 *
+	 * File containing signature content
+	 **/
+	properties[PROP_FILE] =
 		g_param_spec_object (
 			"file",
-			"File",
-			"File containing signature content",
+			NULL, NULL,
 			G_TYPE_FILE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MIME_TYPE,
+	/**
+	 * ESourceMailSignature:mime-type
+	 *
+	 * MIME type of the signature content
+	 **/
+	properties[PROP_MIME_TYPE] =
 		g_param_spec_string (
 			"mime-type",
-			"MIME Type",
-			"MIME type of the signature content",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -318,7 +327,7 @@ e_source_mail_signature_set_mime_type (ESourceMailSignature *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "mime-type");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_MIME_TYPE]);
 }
 
 /********************** e_source_mail_signature_load() ***********************/

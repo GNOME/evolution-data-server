@@ -50,8 +50,11 @@ struct _ESourceResourcePrivate {
 
 enum {
 	PROP_0,
-	PROP_IDENTITY
+	PROP_IDENTITY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceResource,
@@ -120,19 +123,23 @@ e_source_resource_class_init (ESourceResourceClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_RESOURCE;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_IDENTITY,
+	/**
+	 * ESourceResource:identity
+	 *
+	 * Resource identity
+	 **/
+	properties[PROP_IDENTITY] =
 		g_param_spec_string (
 			"identity",
-			"Identity",
-			"Resource identity",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -223,6 +230,6 @@ e_source_resource_set_identity (ESourceResource *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "identity");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_IDENTITY]);
 }
 

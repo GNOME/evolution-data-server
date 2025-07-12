@@ -42,8 +42,11 @@ struct _ESourceOfflinePrivate {
 
 enum {
 	PROP_0,
-	PROP_STAY_SYNCHRONIZED
+	PROP_STAY_SYNCHRONIZED,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceOffline,
@@ -98,19 +101,23 @@ e_source_offline_class_init (ESourceOfflineClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_OFFLINE;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_STAY_SYNCHRONIZED,
+	/**
+	 * ESourceOffline:stay-synchronized
+	 *
+	 * Keep remote content synchronized locally
+	 **/
+	properties[PROP_STAY_SYNCHRONIZED] =
 		g_param_spec_boolean (
 			"stay-synchronized",
-			"StaySynchronized",
-			"Keep remote content synchronized locally",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -161,5 +168,5 @@ e_source_offline_set_stay_synchronized (ESourceOffline *extension,
 
 	extension->priv->stay_synchronized = stay_synchronized;
 
-	g_object_notify (G_OBJECT (extension), "stay-synchronized");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_STAY_SYNCHRONIZED]);
 }

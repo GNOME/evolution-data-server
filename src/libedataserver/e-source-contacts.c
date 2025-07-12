@@ -27,8 +27,11 @@ struct _ESourceContactsPrivate {
 
 enum {
 	PROP_0,
-	PROP_INCLUDE_ME
+	PROP_INCLUDE_ME,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceContacts,
@@ -114,17 +117,21 @@ e_source_contacts_class_init (ESourceContactsClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_CONTACTS_BACKEND;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INCLUDE_ME,
+	/**
+	 * ESourceContacts:include-me
+	 *
+	 * Include this address book in the contacts calendar
+	 **/
+	properties[PROP_INCLUDE_ME] =
 		g_param_spec_boolean (
 			"include-me",
-			"Include Me",
-			"Include this address book in the contacts calendar",
+			NULL, NULL,
 			FALSE,  /* see constructed () */
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -152,5 +159,5 @@ e_source_contacts_set_include_me (ESourceContacts *extension,
 
 	extension->priv->include_me = include_me;
 
-	g_object_notify (G_OBJECT (extension), "include-me");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_INCLUDE_ME]);
 }

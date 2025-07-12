@@ -42,8 +42,11 @@ struct _ESourceAutocompletePrivate {
 
 enum {
 	PROP_0,
-	PROP_INCLUDE_ME
+	PROP_INCLUDE_ME,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAutocomplete,
@@ -98,19 +101,23 @@ e_source_autocomplete_class_init (ESourceAutocompleteClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_AUTOCOMPLETE;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INCLUDE_ME,
+	/**
+	 * ESourceAutocomplete:include-me
+	 *
+	 * Include this source when autocompleting
+	 **/
+	properties[PROP_INCLUDE_ME] =
 		g_param_spec_boolean (
 			"include-me",
-			"IncludeMe",
-			"Include this source when autocompleting",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -161,5 +168,5 @@ e_source_autocomplete_set_include_me (ESourceAutocomplete *extension,
 
 	extension->priv->include_me = include_me;
 
-	g_object_notify (G_OBJECT (extension), "include-me");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_INCLUDE_ME]);
 }

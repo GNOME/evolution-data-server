@@ -80,8 +80,11 @@ enum {
 	PROP_IGNORE_HOSTS,
 	PROP_METHOD,
 	PROP_SOCKS_HOST,
-	PROP_SOCKS_PORT
+	PROP_SOCKS_PORT,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceProxy,
@@ -428,203 +431,232 @@ e_source_proxy_class_init (ESourceProxyClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_PROXY;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTOCONFIG_URL,
+	/**
+	 * ESourceProxy:autoconfig-url
+	 *
+	 * Proxy autoconfiguration URL
+	 **/
+	properties[PROP_AUTOCONFIG_URL] =
 		g_param_spec_string (
 			"autoconfig-url",
-			"Autoconfig URL",
-			"Proxy autoconfiguration URL",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FTP_HOST,
+	/**
+	 * ESourceProxy:ftp-host
+	 *
+	 * FTP proxy host name
+	 **/
+	properties[PROP_FTP_HOST] =
 		g_param_spec_string (
 			"ftp-host",
-			"FTP Host",
-			"FTP proxy host name",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FTP_PORT,
+	/**
+	 * ESourceProxy:ftp-port
+	 *
+	 * FTP proxy port
+	 **/
+	properties[PROP_FTP_PORT] =
 		g_param_spec_uint (
 			"ftp-port",
-			"FTP Port",
-			"FTP proxy port",
+			NULL, NULL,
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTP_AUTH_PASSWORD,
+	/**
+	 * ESourceProxy:http-auth-password
+	 *
+	 * HTTP proxy password
+	 **/
+	properties[PROP_HTTP_AUTH_PASSWORD] =
 		g_param_spec_string (
 			"http-auth-password",
-			"HTTP Auth Password",
-			"HTTP proxy password",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTP_AUTH_USER,
+	/**
+	 * ESourceProxy:http-auth-user
+	 *
+	 * HTTP proxy username
+	 **/
+	properties[PROP_HTTP_AUTH_USER] =
 		g_param_spec_string (
 			"http-auth-user",
-			"HTTP Auth User",
-			"HTTP proxy username",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTP_HOST,
+	/**
+	 * ESourceProxy:http-host
+	 *
+	 * HTTP proxy host name
+	 **/
+	properties[PROP_HTTP_HOST] =
 		g_param_spec_string (
 			"http-host",
-			"HTTP Host",
-			"HTTP proxy host name",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTP_PORT,
+	/**
+	 * ESourceProxy:http-port
+	 *
+	 * HTTP proxy port
+	 **/
+	properties[PROP_HTTP_PORT] =
 		g_param_spec_uint (
 			"http-port",
-			"HTTP Port",
-			"HTTP proxy port",
+			NULL, NULL,
 			0, G_MAXUINT16, 8080,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTP_USE_AUTH,
+	/**
+	 * ESourceProxy:http-use-auth
+	 *
+	 * Whether HTTP proxy server connections require authentication
+	 **/
+	properties[PROP_HTTP_USE_AUTH] =
 		g_param_spec_boolean (
 			"http-use-auth",
-			"HTTP Use Auth",
-			"Whether HTTP proxy server "
-			"connections require authentication",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTPS_HOST,
+	/**
+	 * ESourceProxy:https-host
+	 *
+	 * Secure HTTP proxy host name
+	 **/
+	properties[PROP_HTTPS_HOST] =
 		g_param_spec_string (
 			"https-host",
-			"HTTPS Host",
-			"Secure HTTP proxy host name",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HTTPS_PORT,
+	/**
+	 * ESourceProxy:https-port
+	 *
+	 * Secure HTTP proxy port
+	 **/
+	properties[PROP_HTTPS_PORT] =
 		g_param_spec_uint (
 			"https-port",
-			"HTTPS Port",
-			"Secure HTTP proxy port",
+			NULL, NULL,
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_IGNORE_HOSTS,
+	/**
+	 * ESourceProxy:ignore-hosts
+	 *
+	 * Hosts to connect directly
+	 **/
+	properties[PROP_IGNORE_HOSTS] =
 		g_param_spec_boxed (
 			"ignore-hosts",
-			"Ignore Hosts",
-			"Hosts to connect directly",
+			NULL, NULL,
 			G_TYPE_STRV,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_METHOD,
+	/**
+	 * ESourceProxy:method
+	 *
+	 * Proxy configuration method
+	 **/
+	properties[PROP_METHOD] =
 		g_param_spec_enum (
 			"method",
-			"Method",
-			"Proxy configuration method",
+			NULL, NULL,
 			E_TYPE_PROXY_METHOD,
 			E_PROXY_METHOD_DEFAULT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SOCKS_HOST,
+	/**
+	 * ESourceProxy:socks-host
+	 *
+	 * SOCKS proxy host name
+	 **/
+	properties[PROP_SOCKS_HOST] =
 		g_param_spec_string (
 			"socks-host",
-			"SOCKS Host",
-			"SOCKS proxy host name",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SOCKS_PORT,
+	/**
+	 * ESourceProxy:socks-port
+	 *
+	 * SOCKS proxy port
+	 **/
+	properties[PROP_SOCKS_PORT] =
 		g_param_spec_uint (
 			"socks-port",
-			"SOCKS Port",
-			"SOCKS proxy port",
+			NULL, NULL,
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -679,7 +711,7 @@ e_source_proxy_set_method (ESourceProxy *extension,
 
 	extension->priv->method = method;
 
-	g_object_notify (G_OBJECT (extension), "method");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_METHOD]);
 }
 
 /**
@@ -762,7 +794,7 @@ e_source_proxy_set_autoconfig_url (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "autoconfig-url");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_AUTOCONFIG_URL]);
 }
 
 /**
@@ -862,7 +894,7 @@ e_source_proxy_set_ignore_hosts (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "ignore-hosts");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_IGNORE_HOSTS]);
 }
 
 /**
@@ -943,7 +975,7 @@ e_source_proxy_set_ftp_host (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "ftp-host");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_FTP_HOST]);
 }
 
 /**
@@ -986,7 +1018,7 @@ e_source_proxy_set_ftp_port (ESourceProxy *extension,
 
 	extension->priv->ftp_port = ftp_port;
 
-	g_object_notify (G_OBJECT (extension), "ftp-port");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_FTP_PORT]);
 }
 
 /**
@@ -1067,7 +1099,7 @@ e_source_proxy_set_http_host (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "http-host");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTP_HOST]);
 }
 
 /**
@@ -1110,7 +1142,7 @@ e_source_proxy_set_http_port (ESourceProxy *extension,
 
 	extension->priv->http_port = http_port;
 
-	g_object_notify (G_OBJECT (extension), "http-port");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTP_PORT]);
 }
 
 /**
@@ -1161,7 +1193,7 @@ e_source_proxy_set_http_use_auth (ESourceProxy *extension,
 
 	extension->priv->http_use_auth = http_use_auth;
 
-	g_object_notify (G_OBJECT (extension), "http-use-auth");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTP_USE_AUTH]);
 }
 
 /**
@@ -1242,7 +1274,7 @@ e_source_proxy_set_http_auth_user (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "http-auth-user");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTP_AUTH_USER]);
 }
 
 /**
@@ -1323,7 +1355,7 @@ e_source_proxy_set_http_auth_password (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "http-auth-password");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTP_AUTH_PASSWORD]);
 }
 
 /**
@@ -1404,7 +1436,7 @@ e_source_proxy_set_https_host (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "https-host");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTPS_HOST]);
 }
 
 /**
@@ -1447,7 +1479,7 @@ e_source_proxy_set_https_port (ESourceProxy *extension,
 
 	extension->priv->https_port = https_port;
 
-	g_object_notify (G_OBJECT (extension), "https-port");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HTTPS_PORT]);
 }
 
 /**
@@ -1528,7 +1560,7 @@ e_source_proxy_set_socks_host (ESourceProxy *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "socks-host");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SOCKS_HOST]);
 }
 
 /**
@@ -1571,7 +1603,7 @@ e_source_proxy_set_socks_port (ESourceProxy *extension,
 
 	extension->priv->socks_port = socks_port;
 
-	g_object_notify (G_OBJECT (extension), "socks-port");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SOCKS_PORT]);
 }
 
 /**

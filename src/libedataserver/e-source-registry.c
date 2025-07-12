@@ -152,8 +152,11 @@ enum {
 	PROP_DEFAULT_MAIL_ACCOUNT,
 	PROP_DEFAULT_MAIL_IDENTITY,
 	PROP_DEFAULT_MEMO_LIST,
-	PROP_DEFAULT_TASK_LIST
+	PROP_DEFAULT_TASK_LIST,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 enum {
 	SOURCE_ADDED,
@@ -1511,102 +1514,116 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 *
 	 * The default address book #ESource.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_ADDRESS_BOOK,
+	/**
+	 * ESourceRegistry:default-address-book
+	 *
+	 * The default address book ESource
+	 **/
+	properties[PROP_DEFAULT_ADDRESS_BOOK] =
 		g_param_spec_object (
 			"default-address-book",
-			"Default Address Book",
-			"The default address book ESource",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESourceRegistry:default-calendar:
 	 *
 	 * The default calendar #ESource.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_CALENDAR,
+	/**
+	 * ESourceRegistry:default-calendar
+	 *
+	 * The default calendar ESource
+	 **/
+	properties[PROP_DEFAULT_CALENDAR] =
 		g_param_spec_object (
 			"default-calendar",
-			"Default Calendar",
-			"The default calendar ESource",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESourceRegistry:default-mail-account:
 	 *
 	 * The default mail account #ESource.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_MAIL_ACCOUNT,
+	/**
+	 * ESourceRegistry:default-mail-account
+	 *
+	 * The default mail account ESource
+	 **/
+	properties[PROP_DEFAULT_MAIL_ACCOUNT] =
 		g_param_spec_object (
 			"default-mail-account",
-			"Default Mail Account",
-			"The default mail account ESource",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESourceRegistry:default-mail-identity:
 	 *
 	 * The default mail identity #ESource.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_MAIL_IDENTITY,
+	/**
+	 * ESourceRegistry:default-mail-identity
+	 *
+	 * The default mail identity ESource
+	 **/
+	properties[PROP_DEFAULT_MAIL_IDENTITY] =
 		g_param_spec_object (
 			"default-mail-identity",
-			"Default Mail Identity",
-			"The default mail identity ESource",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESourceRegistry:default-memo-list:
 	 *
 	 * The default memo list #ESource.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_MEMO_LIST,
+	/**
+	 * ESourceRegistry:default-memo-list
+	 *
+	 * The default memo list ESource
+	 **/
+	properties[PROP_DEFAULT_MEMO_LIST] =
 		g_param_spec_object (
 			"default-memo-list",
-			"Default Memo List",
-			"The default memo list ESource",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ESourceRegistry:default-task-list:
 	 *
 	 * The default task list #ESource.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_TASK_LIST,
+	/**
+	 * ESourceRegistry:default-task-list
+	 *
+	 * The default task list ESource
+	 **/
+	properties[PROP_DEFAULT_TASK_LIST] =
 		g_param_spec_object (
 			"default-task-list",
-			"Default Task List",
-			"The default task list ESource",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ESourceRegistry::source-added:

@@ -54,8 +54,11 @@ struct _ESourceCamelPrivate {
 
 enum {
 	PROP_0,
-	PROP_SETTINGS
+	PROP_SETTINGS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 typedef struct {
 	const gchar *extension_name;
@@ -347,8 +350,8 @@ subclass_class_init (gpointer g_class,
 	GObjectClass *settings_class;
 	GObjectClass *object_class;
 	SubclassData *data = class_data;
-	GParamSpec **properties;
-	guint ii, n_properties;
+	GParamSpec **props;
+	guint ii, n_props;
 	guint prop_id = 1;
 
 	class = E_SOURCE_CAMEL_CLASS (g_class);
@@ -362,18 +365,17 @@ subclass_class_init (gpointer g_class,
 	 * an equivalent GObject property in this class and add an
 	 * E_SOURCE_PARAM_SETTING flag so the value gets written to
 	 * the ESource's key file. */
-	properties = g_object_class_list_properties (
-		settings_class, &n_properties);
+	props = g_object_class_list_properties (settings_class, &n_props);
 
-	for (ii = 0; ii < n_properties; ii++) {
+	for (ii = 0; ii < n_props; ii++) {
 		GParamSpec *pspec;
 
 		/* Some properties in CamelSettings may be covered
 		 * by other ESourceExtensions.  Skip them here. */
-		if (subclass_get_binding_index (properties[ii]) >= 0)
+		if (subclass_get_binding_index (props[ii]) >= 0)
 			continue;
 
-		pspec = param_spec_clone (properties[ii]);
+		pspec = param_spec_clone (props[ii]);
 		if (!pspec)
 			continue;
 
@@ -388,7 +390,7 @@ subclass_class_init (gpointer g_class,
 			G_OBJECT_CLASS (class), prop_id++, pspec);
 	}
 
-	g_free (properties);
+	g_free (props);
 
 	/* Initialize more class members. */
 	class->settings_type = G_OBJECT_CLASS_TYPE (settings_class);
@@ -458,8 +460,8 @@ source_camel_constructed (GObject *object)
 	ESourceCamelClass *class;
 	ESourceCamelPrivate *priv;
 	GObjectClass *settings_class;
-	GParamSpec **properties;
-	guint ii, n_properties;
+	GParamSpec **props;
+	guint ii, n_props;
 	guint array_index = 0;
 
 	/* Chain up to parent's constructed() method. */
@@ -479,16 +481,15 @@ source_camel_constructed (GObject *object)
 
 	settings_class = G_OBJECT_GET_CLASS (priv->settings);
 
-	properties = g_object_class_list_properties (
-		settings_class, &n_properties);
+	props = g_object_class_list_properties (settings_class, &n_props);
 
 	/* Allocate more elements than we need, since some CamelSettings
 	 * properties get bound to properties of other ESourceExtensions.
 	 * We'll trim off the extra elements later. */
-	g_array_set_size (priv->value_array, n_properties);
+	g_array_set_size (priv->value_array, n_props);
 
-	for (ii = 0; ii < n_properties; ii++) {
-		GParamSpec *pspec = properties[ii];
+	for (ii = 0; ii < n_props; ii++) {
+		GParamSpec *pspec = props[ii];
 		GBindingTransformFunc transform_to = NULL;
 		GBindingTransformFunc transform_from = NULL;
 		ESourceExtension *extension;
@@ -548,7 +549,7 @@ source_camel_constructed (GObject *object)
 	/* Trim off any extra array elements. */
 	g_array_set_size (priv->value_array, array_index);
 
-	g_free (properties);
+	g_free (props);
 
 	g_object_unref (source);
 }
@@ -567,19 +568,24 @@ e_source_camel_class_init (ESourceCamelClass *class)
 	/* CamelSettings itself has no properties. */
 	class->settings_type = CAMEL_TYPE_SETTINGS;
 
-	/* XXX This kind of stomps on CamelSettings' namespace, but it's
+	/**
+	 * ESourceCamel:settings
+	 *
+	 * The #CamelSettings instance being proxied
+	 *
+	 * Note: This kind of stomps on CamelSettings' namespace, but it's
 	 *     unlikely a CamelSettings subclass would define a property
-	 *     named "settings". */
-	g_object_class_install_property (
-		object_class,
-		PROP_SETTINGS,
+	 *     named "settings".
+	 **/
+	properties[PROP_SETTINGS] =
 		g_param_spec_object (
 			"settings",
-			"Settings",
-			"The CamelSettings instance being proxied",
+			NULL, NULL,
 			CAMEL_TYPE_SETTINGS,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

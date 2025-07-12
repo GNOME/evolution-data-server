@@ -64,8 +64,11 @@ enum {
 	PROP_REMEMBER_PASSWORD,
 	PROP_USER,
 	PROP_CREDENTIAL_NAME,
-	PROP_IS_EXTERNAL
+	PROP_IS_EXTERNAL,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAuthentication,
@@ -269,132 +272,152 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_AUTHENTICATION;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTABLE,
+	/**
+	 * ESourceAuthentication:connectable
+	 *
+	 * A #GSocketConnectable constructed from the host and port properties
+	 **/
+	properties[PROP_CONNECTABLE] =
 		g_param_spec_object (
 			"connectable",
-			"Connectable",
-			"A GSocketConnectable constructed "
-			"from the host and port properties",
+			NULL, NULL,
 			G_TYPE_SOCKET_CONNECTABLE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_HOST,
+	/**
+	 * ESourceAuthentication:host
+	 *
+	 * Host name for the remote account
+	 **/
+	properties[PROP_HOST] =
 		g_param_spec_string (
 			"host",
-			"Host",
-			"Host name for the remote account",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_METHOD,
+	/**
+	 * ESourceAuthentication:method
+	 *
+	 * Authentication method
+	 **/
+	properties[PROP_METHOD] =
 		g_param_spec_string (
 			"method",
-			"Method",
-			"Authentication method",
+			NULL, NULL,
 			"none",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PORT,
+	/**
+	 * ESourceAuthentication:port
+	 *
+	 * Port number for the remote account
+	 **/
+	properties[PROP_PORT] =
 		g_param_spec_uint (
 			"port",
-			"Port",
-			"Port number for the remote account",
+			NULL, NULL,
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PROXY_UID,
+	/**
+	 * ESourceAuthentication:proxy-uid
+	 *
+	 * ESource UID of a proxy profile
+	 **/
+	properties[PROP_PROXY_UID] =
 		g_param_spec_string (
 			"proxy-uid",
-			"Proxy UID",
-			"ESource UID of a proxy profile",
+			NULL, NULL,
 			"system-proxy",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REMEMBER_PASSWORD,
+	/**
+	 * ESourceAuthentication:remember-password
+	 *
+	 * Whether to offer to remember the password by default when prompted
+	 **/
+	properties[PROP_REMEMBER_PASSWORD] =
 		g_param_spec_boolean (
 			"remember-password",
-			"Remember Password",
-			"Whether to offer to remember the "
-			"password by default when prompted",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USER,
+	/**
+	 * ESourceAuthentication:user
+	 *
+	 * User name for the remote account
+	 **/
+	properties[PROP_USER] =
 		g_param_spec_string (
 			"user",
-			"User",
-			"User name for the remote account",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	/* An empty string or NULL means to use E_SOURCE_CREDENTIAL_PASSWORD to pass
-	   the stored "password" into the backend with e_source_invoke_authenticate()/_sync() */
-	g_object_class_install_property (
-		object_class,
-		PROP_CREDENTIAL_NAME,
+	/**
+	 * ESourceAuthentication:credential-name
+	 *
+	 * What name to use for the authentication method in credentials for authentication.
+	 *
+	 * An empty string or %NULL means to use E_SOURCE_CREDENTIAL_PASSWORD to pass the stored
+	 * "password" into the backend with e_source_invoke_authenticate()/_sync()
+	 **/
+	properties[PROP_CREDENTIAL_NAME] =
 		g_param_spec_string (
 			"credential-name",
-			"Credential Name",
-			"What name to use for the authentication method in credentials for authentication",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_IS_EXTERNAL,
+	/**
+	 * ESourceAuthentication:is-external
+	 *
+	 * Whether the authentication is done by another authentication manager (like any
+	 * Single Sign On daemon)
+	 **/
+	properties[PROP_IS_EXTERNAL] =
 		g_param_spec_boolean (
 			"is-external",
-			"Is External",
-			"Whether the authentication is done by another authentication manager (like any Single Sign On daemon)",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -543,10 +566,10 @@ e_source_authentication_set_host (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "host");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_HOST]);
 
 	/* Changing the host also changes the connectable. */
-	g_object_notify (G_OBJECT (extension), "connectable");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CONNECTABLE]);
 }
 
 /**
@@ -636,7 +659,7 @@ e_source_authentication_set_method (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "method");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_METHOD]);
 }
 
 /**
@@ -685,10 +708,10 @@ e_source_authentication_set_port (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "port");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_PORT]);
 
 	/* Changing the port also changes the connectable. */
-	g_object_notify (G_OBJECT (extension), "connectable");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CONNECTABLE]);
 }
 
 /**
@@ -770,7 +793,7 @@ e_source_authentication_set_proxy_uid (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "proxy-uid");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_PROXY_UID]);
 }
 
 /**
@@ -815,7 +838,7 @@ e_source_authentication_set_remember_password (ESourceAuthentication *extension,
 
 	extension->priv->remember_password = remember_password;
 
-	g_object_notify (G_OBJECT (extension), "remember-password");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_REMEMBER_PASSWORD]);
 }
 
 /**
@@ -898,7 +921,7 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "user");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_USER]);
 }
 
 /**
@@ -987,7 +1010,7 @@ e_source_authentication_set_credential_name (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "credential-name");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CREDENTIAL_NAME]);
 }
 
 /**
@@ -1038,5 +1061,5 @@ e_source_authentication_set_is_external (ESourceAuthentication *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "is-external");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_IS_EXTERNAL]);
 }

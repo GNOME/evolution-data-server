@@ -65,8 +65,11 @@ enum {
 	PROP_LOCATE_KEYS,
 	PROP_SEND_PUBLIC_KEY,
 	PROP_SEND_PREFER_ENCRYPT,
-	PROP_ASK_SEND_PUBLIC_KEY
+	PROP_ASK_SEND_PUBLIC_KEY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceOpenPGP,
@@ -266,159 +269,183 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_OPENPGP;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ALWAYS_TRUST,
+	/**
+	 * ESourceOpenPGP:always-trust
+	 *
+	 * Always trust keys in my keyring
+	 **/
+	properties[PROP_ALWAYS_TRUST] =
 		g_param_spec_boolean (
 			"always-trust",
-			"Always Trust",
-			"Always trust keys in my keyring",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENCRYPT_TO_SELF,
+	/**
+	 * ESourceOpenPGP:encrypt-to-self
+	 *
+	 * Always encrypt to myself
+	 **/
+	properties[PROP_ENCRYPT_TO_SELF] =
 		g_param_spec_boolean (
 			"encrypt-to-self",
-			"Encrypt To Self",
-			"Always encrypt to myself",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_KEY_ID,
+	/**
+	 * ESourceOpenPGP:key-id
+	 *
+	 * PGP/GPG Key ID
+	 **/
+	properties[PROP_KEY_ID] =
 		g_param_spec_string (
 			"key-id",
-			"Key ID",
-			"PGP/GPG Key ID",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGNING_ALGORITHM,
+	/**
+	 * ESourceOpenPGP:signing-algorithm
+	 *
+	 * Hash algorithm used to sign messages
+	 **/
+	properties[PROP_SIGNING_ALGORITHM] =
 		g_param_spec_string (
 			"signing-algorithm",
-			"Signing Algorithm",
-			"Hash algorithm used to sign messages",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGN_BY_DEFAULT,
+	/**
+	 * ESourceOpenPGP:sign-by-default
+	 *
+	 * Sign outgoing messages by default
+	 **/
+	properties[PROP_SIGN_BY_DEFAULT] =
 		g_param_spec_boolean (
 			"sign-by-default",
-			"Sign By Default",
-			"Sign outgoing messages by default",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENCRYPT_BY_DEFAULT,
+	/**
+	 * ESourceOpenPGP:encrypt-by-default
+	 *
+	 * Encrypt outgoing messages by default
+	 **/
+	properties[PROP_ENCRYPT_BY_DEFAULT] =
 		g_param_spec_boolean (
 			"encrypt-by-default",
-			"Encrypt By Default",
-			"Encrypt outgoing messages by default",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PREFER_INLINE,
+	/**
+	 * ESourceOpenPGP:prefer-inline
+	 *
+	 * Prefer inline sign/encrypt
+	 **/
+	properties[PROP_PREFER_INLINE] =
 		g_param_spec_boolean (
 			"prefer-inline",
-			"Prefer inline",
-			"Prefer inline sign/encrypt",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LOCATE_KEYS,
+	/**
+	 * ESourceOpenPGP:locate-keys
+	 *
+	 * Locate keys in WKD for encryption
+	 **/
+	properties[PROP_LOCATE_KEYS] =
 		g_param_spec_boolean (
 			"locate-keys",
-			"Locate Keys",
-			"Locate keys in WKD for encryption",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SEND_PUBLIC_KEY,
+	/**
+	 * ESourceOpenPGP:send-public-key
+	 *
+	 * Send public key in messages
+	 **/
+	properties[PROP_SEND_PUBLIC_KEY] =
 		g_param_spec_boolean (
 			"send-public-key",
-			"Send Public Key",
-			"Send public key in messages",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SEND_PREFER_ENCRYPT,
+	/**
+	 * ESourceOpenPGP:send-prefer-encrypt
+	 *
+	 * Send whether prefers encryption together with the public key in messages
+	 **/
+	properties[PROP_SEND_PREFER_ENCRYPT] =
 		g_param_spec_boolean (
 			"send-prefer-encrypt",
-			"Send Prefer Encrypt",
-			"Send whether prefers encryption together with the public key in messages",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ASK_SEND_PUBLIC_KEY,
+	/**
+	 * ESourceOpenPGP:ask-send-public-key
+	 *
+	 * Ask before sending public key in messages
+	 **/
+	properties[PROP_ASK_SEND_PUBLIC_KEY] =
 		g_param_spec_boolean (
 			"ask-send-public-key",
-			"Ask Send Public Key",
-			"Ask before sending public key in messages",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 }
 
@@ -468,7 +495,7 @@ e_source_openpgp_set_always_trust (ESourceOpenPGP *extension,
 
 	extension->priv->always_trust = always_trust;
 
-	g_object_notify (G_OBJECT (extension), "always-trust");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ALWAYS_TRUST]);
 }
 
 /**
@@ -509,7 +536,7 @@ e_source_openpgp_set_encrypt_to_self (ESourceOpenPGP *extension,
 
 	extension->priv->encrypt_to_self = encrypt_to_self;
 
-	g_object_notify (G_OBJECT (extension), "encrypt-to-self");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENCRYPT_TO_SELF]);
 }
 
 /**
@@ -592,7 +619,7 @@ e_source_openpgp_set_key_id (ESourceOpenPGP *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "key-id");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_KEY_ID]);
 }
 
 /**
@@ -678,7 +705,7 @@ e_source_openpgp_set_signing_algorithm (ESourceOpenPGP *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "signing-algorithm");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGNING_ALGORITHM]);
 }
 
 /**
@@ -721,7 +748,7 @@ e_source_openpgp_set_sign_by_default (ESourceOpenPGP *extension,
 
 	extension->priv->sign_by_default = sign_by_default;
 
-	g_object_notify (G_OBJECT (extension), "sign-by-default");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGN_BY_DEFAULT]);
 }
 
 /**
@@ -764,7 +791,7 @@ e_source_openpgp_set_encrypt_by_default (ESourceOpenPGP *extension,
 
 	extension->priv->encrypt_by_default = encrypt_by_default;
 
-	g_object_notify (G_OBJECT (extension), "encrypt-by-default");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENCRYPT_BY_DEFAULT]);
 }
 
 /**
@@ -805,7 +832,7 @@ e_source_openpgp_set_prefer_inline (ESourceOpenPGP *extension,
 
 	extension->priv->prefer_inline = prefer_inline;
 
-	g_object_notify (G_OBJECT (extension), "prefer-inline");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_PREFER_INLINE]);
 }
 
 /**
@@ -851,7 +878,7 @@ e_source_openpgp_set_locate_keys (ESourceOpenPGP *extension,
 
 	extension->priv->locate_keys = locate_keys;
 
-	g_object_notify (G_OBJECT (extension), "locate-keys");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LOCATE_KEYS]);
 }
 
 /**
@@ -893,7 +920,7 @@ e_source_openpgp_set_send_public_key (ESourceOpenPGP *extension,
 
 	extension->priv->send_public_key = send_public_key;
 
-	g_object_notify (G_OBJECT (extension), "send-public-key");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SEND_PUBLIC_KEY]);
 }
 
 /**
@@ -938,7 +965,7 @@ e_source_openpgp_set_send_prefer_encrypt (ESourceOpenPGP *extension,
 
 	extension->priv->send_prefer_encrypt = send_prefer_encrypt;
 
-	g_object_notify (G_OBJECT (extension), "send-prefer-encrypt");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SEND_PREFER_ENCRYPT]);
 }
 
 /**
@@ -980,5 +1007,5 @@ e_source_openpgp_set_ask_send_public_key (ESourceOpenPGP *extension,
 
 	extension->priv->ask_send_public_key = ask_send_public_key;
 
-	g_object_notify (G_OBJECT (extension), "ask-send-public-key");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ASK_SEND_PUBLIC_KEY]);
 }

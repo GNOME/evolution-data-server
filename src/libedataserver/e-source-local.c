@@ -31,8 +31,11 @@ enum {
 	PROP_0,
 	PROP_CUSTOM_FILE,
 	PROP_EMAIL_ADDRESS,
-	PROP_WRITABLE
+	PROP_WRITABLE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceLocal,
@@ -126,44 +129,52 @@ e_source_local_class_init (ESourceLocalClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CUSTOM_FILE,
+	/**
+	 * ESourceLocal:custom-file
+	 *
+	 * Custom iCalendar file
+	 **/
+	properties[PROP_CUSTOM_FILE] =
 		g_param_spec_object (
 			"custom-file",
-			"Custom File",
-			"Custom iCalendar file",
+			NULL, NULL,
 			G_TYPE_FILE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_EMAIL_ADDRESS,
+	/**
+	 * ESourceLocal:email-address
+	 *
+	 * Email address associated with the calendar
+	 **/
+	properties[PROP_EMAIL_ADDRESS] =
 		g_param_spec_string (
 			"email-address",
-			"Email Address",
-			"Email address associated with the calendar",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_WRITABLE,
+	/**
+	 * ESourceLocal:writable
+	 *
+	 * Whether the file can be opened in writable mode
+	 **/
+	properties[PROP_WRITABLE] =
 		g_param_spec_boolean (
 			"writable",
-			"Writable",
-			"Whether the file can be opened in writable mode",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -246,7 +257,7 @@ e_source_local_set_custom_file (ESourceLocal *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "custom-file");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CUSTOM_FILE]);
 }
 
 /**
@@ -299,7 +310,7 @@ e_source_local_set_writable (ESourceLocal *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	if (changed)
-		g_object_notify (G_OBJECT (extension), "writable");
+		g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_WRITABLE]);
 }
 
 /**
@@ -380,5 +391,5 @@ e_source_local_set_email_address (ESourceLocal *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "email-address");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_EMAIL_ADDRESS]);
 }

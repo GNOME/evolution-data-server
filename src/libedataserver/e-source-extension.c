@@ -37,8 +37,11 @@ struct _ESourceExtensionPrivate {
 
 enum {
 	PROP_0,
-	PROP_SOURCE
+	PROP_SOURCE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	ESourceExtension,
@@ -144,17 +147,21 @@ e_source_extension_class_init (ESourceExtensionClass *class)
 	object_class->finalize = source_extension_finalize;
 	object_class->notify = source_extension_notify;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE,
+	/**
+	 * ESourceExtension:source
+	 *
+	 * The #ESource being extended
+	 **/
+	properties[PROP_SOURCE] =
 		g_param_spec_object (
 			"source",
-			"Source",
-			"The ESource being extended",
+			NULL, NULL,
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

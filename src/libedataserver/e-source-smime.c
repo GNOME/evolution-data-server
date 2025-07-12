@@ -55,8 +55,11 @@ enum {
 	PROP_ENCRYPT_TO_SELF,
 	PROP_SIGNING_ALGORITHM,
 	PROP_SIGNING_CERTIFICATE,
-	PROP_SIGN_BY_DEFAULT
+	PROP_SIGN_BY_DEFAULT,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceSMIME,
@@ -192,89 +195,103 @@ e_source_smime_class_init (ESourceSMIMEClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_SMIME;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENCRYPTION_CERTIFICATE,
+	/**
+	 * ESourceSMIME:encryption-certificate
+	 *
+	 * S/MIME certificate for encrypting messages
+	 **/
+	properties[PROP_ENCRYPTION_CERTIFICATE] =
 		g_param_spec_string (
 			"encryption-certificate",
-			"Encryption Certificate",
-			"S/MIME certificate for encrypting messages",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENCRYPT_BY_DEFAULT,
+	/**
+	 * ESourceSMIME:encrypt-by-default
+	 *
+	 * Encrypt outgoing messages by default
+	 **/
+	properties[PROP_ENCRYPT_BY_DEFAULT] =
 		g_param_spec_boolean (
 			"encrypt-by-default",
-			"Encrypt By Default",
-			"Encrypt outgoing messages by default",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENCRYPT_TO_SELF,
+	/**
+	 * ESourceSMIME:encrypt-to-self
+	 *
+	 * Always encrypt to myself
+	 **/
+	properties[PROP_ENCRYPT_TO_SELF] =
 		g_param_spec_boolean (
 			"encrypt-to-self",
-			"Encrypt To Self",
-			"Always encrypt to myself",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGNING_ALGORITHM,
+	/**
+	 * ESourceSMIME:signing-algorithm
+	 *
+	 * Hash algorithm used to sign messages
+	 **/
+	properties[PROP_SIGNING_ALGORITHM] =
 		g_param_spec_string (
 			"signing-algorithm",
-			"Signing Algorithm",
-			"Hash algorithm used to sign messages",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGNING_CERTIFICATE,
+	/**
+	 * ESourceSMIME:signing-certificate
+	 *
+	 * S/MIME certificate for signing messages
+	 **/
+	properties[PROP_SIGNING_CERTIFICATE] =
 		g_param_spec_string (
 			"signing-certificate",
-			"Signing Certificate",
-			"S/MIME certificate for signing messages",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGN_BY_DEFAULT,
+	/**
+	 * ESourceSMIME:sign-by-default
+	 *
+	 * Sign outgoing messages by default
+	 **/
+	properties[PROP_SIGN_BY_DEFAULT] =
 		g_param_spec_boolean (
 			"sign-by-default",
-			"Sign By Default",
-			"Sign outgoing messages by default",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -367,7 +384,7 @@ e_source_smime_set_encryption_certificate (ESourceSMIME *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "encryption-certificate");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENCRYPTION_CERTIFICATE]);
 }
 
 /**
@@ -410,7 +427,7 @@ e_source_smime_set_encrypt_by_default (ESourceSMIME *extension,
 
 	extension->priv->encrypt_by_default = encrypt_by_default;
 
-	g_object_notify (G_OBJECT (extension), "encrypt-by-default");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENCRYPT_BY_DEFAULT]);
 }
 
 /**
@@ -451,7 +468,7 @@ e_source_smime_set_encrypt_to_self (ESourceSMIME *extension,
 
 	extension->priv->encrypt_to_self = encrypt_to_self;
 
-	g_object_notify (G_OBJECT (extension), "encrypt-to-self");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENCRYPT_TO_SELF]);
 }
 
 /**
@@ -538,7 +555,7 @@ e_source_smime_set_signing_algorithm (ESourceSMIME *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "signing-algorithm");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGNING_ALGORITHM]);
 }
 
 /**
@@ -623,7 +640,7 @@ e_source_smime_set_signing_certificate (ESourceSMIME *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "signing-certificate");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGNING_CERTIFICATE]);
 }
 
 /**
@@ -666,6 +683,6 @@ e_source_smime_set_sign_by_default (ESourceSMIME *extension,
 
 	extension->priv->sign_by_default = sign_by_default;
 
-	g_object_notify (G_OBJECT (extension), "sign-by-default");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGN_BY_DEFAULT]);
 }
 

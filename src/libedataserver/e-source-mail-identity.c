@@ -59,8 +59,11 @@ enum {
 	PROP_NAME,
 	PROP_ORGANIZATION,
 	PROP_REPLY_TO,
-	PROP_SIGNATURE_UID
+	PROP_SIGNATURE_UID,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailIdentity,
@@ -199,89 +202,103 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ADDRESS,
+	/**
+	 * ESourceMailIdentity:address
+	 *
+	 * Sender's email address
+	 **/
+	properties[PROP_ADDRESS] =
 		g_param_spec_string (
 			"address",
-			"Address",
-			"Sender's email address",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ALIASES,
+	/**
+	 * ESourceMailIdentity:aliases
+	 *
+	 * Sender's email address aliases
+	 **/
+	properties[PROP_ALIASES] =
 		g_param_spec_string (
 			"aliases",
-			"Aliases",
-			"Sender's email address aliases",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_NAME,
+	/**
+	 * ESourceMailIdentity:name
+	 *
+	 * Sender's name
+	 **/
+	properties[PROP_NAME] =
 		g_param_spec_string (
 			"name",
-			"Name",
-			"Sender's name",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ORGANIZATION,
+	/**
+	 * ESourceMailIdentity:organization
+	 *
+	 * Sender's organization
+	 **/
+	properties[PROP_ORGANIZATION] =
 		g_param_spec_string (
 			"organization",
-			"Organization",
-			"Sender's organization",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REPLY_TO,
+	/**
+	 * ESourceMailIdentity:reply-to
+	 *
+	 * Sender's reply-to address
+	 **/
+	properties[PROP_REPLY_TO] =
 		g_param_spec_string (
 			"reply-to",
-			"Reply-To",
-			"Sender's reply-to address",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGNATURE_UID,
+	/**
+	 * ESourceMailIdentity:signature-uid
+	 *
+	 * ESource UID of the sender's signature
+	 **/
+	properties[PROP_SIGNATURE_UID] =
 		g_param_spec_string (
 			"signature-uid",
-			"Signature UID",
-			"ESource UID of the sender's signature",
+			NULL, NULL,
 			"none",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -371,7 +388,7 @@ e_source_mail_identity_set_address (ESourceMailIdentity *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "address");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ADDRESS]);
 }
 
 /**
@@ -453,7 +470,7 @@ e_source_mail_identity_set_name (ESourceMailIdentity *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "name");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_NAME]);
 }
 
 /**
@@ -536,7 +553,7 @@ e_source_mail_identity_set_organization (ESourceMailIdentity *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "organization");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ORGANIZATION]);
 }
 
 /**
@@ -621,7 +638,7 @@ e_source_mail_identity_set_reply_to (ESourceMailIdentity *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "reply-to");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_REPLY_TO]);
 }
 
 /**
@@ -713,7 +730,7 @@ e_source_mail_identity_set_signature_uid (ESourceMailIdentity *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "signature-uid");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGNATURE_UID]);
 }
 
 /**
@@ -801,7 +818,7 @@ e_source_mail_identity_set_aliases (ESourceMailIdentity *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "aliases");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ALIASES]);
 }
 
 /**
