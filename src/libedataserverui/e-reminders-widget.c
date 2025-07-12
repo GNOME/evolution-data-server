@@ -85,8 +85,11 @@ enum {
 enum {
 	PROP_0,
 	PROP_WATCHER,
-	PROP_EMPTY
+	PROP_EMPTY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -664,7 +667,7 @@ reminders_widget_set_is_empty (ERemindersWidget *reminders,
 
 	reminders->priv->is_empty = is_empty;
 
-	g_object_notify (G_OBJECT (reminders), "empty");
+	g_object_notify_by_pspec (G_OBJECT (reminders), properties[PROP_EMPTY]);
 
 	reminders_widget_maybe_schedule_overdue_update (reminders);
 }
@@ -2056,17 +2059,14 @@ e_reminders_widget_class_init (ERemindersWidgetClass *klass)
 	 *
 	 * Since: 3.30
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_WATCHER,
+	properties[PROP_WATCHER] =
 		g_param_spec_object (
 			"watcher",
-			"Reminder Watcher",
-			"The reminder watcher used to work with reminders",
+			NULL, NULL,
 			E_TYPE_REMINDER_WATCHER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ERemindersWidget::empty:
@@ -2075,16 +2075,15 @@ e_reminders_widget_class_init (ERemindersWidgetClass *klass)
 	 *
 	 * Since: 3.30
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_EMPTY,
+	properties[PROP_EMPTY] =
 		g_param_spec_boolean (
 			"empty",
-			"Empty",
-			"Whether there are no past reminders",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ERemindersWidget:changed:

@@ -65,7 +65,8 @@ enum {
 	PROP_0,
 	PROP_AUTO_PROMPT,
 	PROP_REGISTRY,
-	PROP_PROVIDER
+	PROP_PROVIDER,
+	N_PROPS
 };
 
 enum {
@@ -73,6 +74,8 @@ enum {
 	GET_DIALOG_PARENT_FULL,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -1071,18 +1074,15 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 *
 	 * Since: 3.16
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTO_PROMPT,
+	properties[PROP_AUTO_PROMPT] =
 		g_param_spec_boolean (
 			"auto-prompt",
-			"Auto Prompt",
-			"Whether can response to credential requests automatically",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECredentialsPrompter:registry:
@@ -1091,17 +1091,14 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 *
 	 * Since: 3.16
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"An ESourceRegistry",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECredentialsPrompter:provider:
@@ -1110,16 +1107,15 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 *
 	 * Since: 3.16
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_PROVIDER,
+	properties[PROP_PROVIDER] =
 		g_param_spec_object (
 			"provider",
-			"Provider",
-			"An ESourceCredentialsProvider",
+			NULL, NULL,
 			E_TYPE_SOURCE_CREDENTIALS_PROVIDER,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ECredentialsPrompter::get-dialog-parent:
@@ -1291,7 +1287,7 @@ e_credentials_prompter_set_auto_prompt (ECredentialsPrompter *prompter,
 
 	prompter->priv->auto_prompt = auto_prompt;
 
-	g_object_notify (G_OBJECT (prompter), "auto-prompt");
+	g_object_notify_by_pspec (G_OBJECT (prompter), properties[PROP_AUTO_PROMPT]);
 }
 
 /**

@@ -24,8 +24,11 @@
 
 enum {
 	PROP_0,
-	PROP_RGBA
+	PROP_RGBA,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 struct _ECellRendererColorPrivate {
 	GdkRGBA rgba;
@@ -270,15 +273,19 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 	cell_class->render = cell_renderer_color_render;
 #endif
 
-	g_object_class_install_property (
-		object_class,
-		PROP_RGBA,
+	/**
+	 * ECellRendererColor:rgba
+	 *
+	 * The GdkRGBA color to render
+	 **/
+	properties[PROP_RGBA] =
 		g_param_spec_boxed (
-			"rgba",
-			"Color Info",
-			"The GdkRGBA color to render",
+			"rgba", NULL, NULL,
 			GDK_TYPE_RGBA,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
