@@ -80,13 +80,16 @@ struct _ConnectionInfo {
 
 enum {
 	PROP_0,
-	PROP_STORE
+	PROP_STORE,
+	N_PROPS
 };
 
 enum {
 	CONNECTION_CREATED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -654,17 +657,20 @@ camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 	object_class->dispose = imapx_conn_manager_dispose;
 	object_class->finalize = imapx_conn_manager_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_STORE,
+	/**
+	 * CamelIMAPXConnManager:store
+	 *
+	 * The CamelIMAPXStore to which we belong
+	 **/
+	properties[PROP_STORE] =
 		g_param_spec_object (
-			"store",
-			"Store",
-			"The CamelIMAPXStore to which we belong",
+			"store", NULL, NULL,
 			CAMEL_TYPE_IMAPX_STORE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	signals[CONNECTION_CREATED] = g_signal_new (
 		"connection-created",

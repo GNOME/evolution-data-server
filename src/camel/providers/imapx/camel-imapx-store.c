@@ -83,10 +83,14 @@ struct _CamelIMAPXStorePrivate {
 
 enum {
 	PROP_0,
+	PROP_CONN_MANAGER,
+	N_PROPS,
+
 	PROP_CONNECTABLE,
-	PROP_HOST_REACHABLE,
-	PROP_CONN_MANAGER
+	PROP_HOST_REACHABLE
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 enum {
 	MAILBOX_CREATED,
@@ -3317,16 +3321,19 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	class->mailbox_renamed = imapx_store_mailbox_renamed;
 	class->mailbox_updated = imapx_store_mailbox_updated;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONN_MANAGER,
+	/**
+	 * CamelIMAPXStore:conn-manager
+	 *
+	 * The Connection Manager being used for remote operations
+	 **/
+	properties[PROP_CONN_MANAGER] =
 		g_param_spec_object (
-			"conn-manager",
-			"Connection Manager",
-			"The Connection Manager being used for remote operations",
+			"conn-manager", NULL, NULL,
 			CAMEL_TYPE_IMAPX_CONN_MANAGER,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/* Inherited from CamelNetworkService. */
 	g_object_class_override_property (

@@ -41,8 +41,11 @@ struct _CamelIMAPXLoggerPrivate {
 enum {
 	PROP_0,
 	PROP_PREFIX,
-	PROP_SERVER
+	PROP_SERVER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void	camel_imapx_logger_interface_init
@@ -217,29 +220,33 @@ camel_imapx_logger_class_init (CamelIMAPXLoggerClass *class)
 	object_class->get_property = imapx_logger_get_property;
 	object_class->finalize = imapx_logger_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PREFIX,
+	/**
+	 * CamelIMAPXLogger:prefix
+	 *
+	 * Output prefix to distinguish connections
+	 **/
+	properties[PROP_PREFIX] =
 		g_param_spec_char (
-			"prefix",
-			"Prefix",
-			"Output prefix to distinguish connections",
+			"prefix", NULL, NULL,
 			0x20, 0x7F, '*',
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SERVER,
+	/**
+	 * CamelIMAPXLogger:server
+	 *
+	 * The #CamelIMAPXServer
+	 **/
+	properties[PROP_SERVER] =
 		g_param_spec_object (
-			"server",
-			"CamelIMAPXServer",
-			NULL,
+			"server", NULL, NULL,
 			CAMEL_TYPE_IMAPX_SERVER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

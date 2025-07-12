@@ -327,8 +327,11 @@ struct _CamelIMAPXServerPrivate {
 
 enum {
 	PROP_0,
-	PROP_STORE
+	PROP_STORE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 enum {
 	REFRESH_MAILBOX,
@@ -3799,17 +3802,20 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 	object_class->dispose = imapx_server_dispose;
 	object_class->constructed = imapx_server_constructed;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_STORE,
+	/**
+	 * CamelIMAPXServer:store
+	 *
+	 * IMAPX store for this server
+	 **/
+	properties[PROP_STORE] =
 		g_param_spec_object (
-			"store",
-			"Store",
-			"IMAPX store for this server",
+			"store", NULL, NULL,
 			CAMEL_TYPE_IMAPX_STORE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	signals[REFRESH_MAILBOX] = g_signal_new (
 		"refresh-mailbox",

@@ -63,8 +63,11 @@ struct _AsyncContext {
 
 enum {
 	PROP_0,
-	PROP_SESSION
+	PROP_SESSION,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_QUARK (camel-cipher-context-error-quark, camel_cipher_context_error)
 G_DEFINE_TYPE_WITH_PRIVATE (CamelCipherContext, camel_cipher_context, G_TYPE_OBJECT)
@@ -259,16 +262,20 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 	class->encrypt_sync = cipher_context_encrypt_sync;
 	class->decrypt_sync = cipher_context_decrypt_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SESSION,
+	/**
+	 * CamelCipherContext:session
+	 *
+	 * The corresponding #CamelSession
+	 **/
+	properties[PROP_SESSION] =
 		g_param_spec_object (
 			"session",
-			"Session",
-			NULL,
+			NULL, NULL,
 			CAMEL_TYPE_SESSION,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
