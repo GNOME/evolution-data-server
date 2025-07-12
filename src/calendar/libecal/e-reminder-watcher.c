@@ -93,7 +93,8 @@ enum {
 	PROP_0,
 	PROP_REGISTRY,
 	PROP_DEFAULT_ZONE,
-	PROP_TIMERS_ENABLED
+	PROP_TIMERS_ENABLED,
+	N_PROPS
 };
 
 enum {
@@ -102,6 +103,8 @@ enum {
 	CHANGED,
 	LAST_SIGNAL
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -2670,17 +2673,14 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 	 *
 	 * Since: 3.30
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_REGISTRY,
+	properties[PROP_REGISTRY] =
 		g_param_spec_object (
 			"registry",
-			"Registry",
-			"Data source registry",
+			NULL, NULL,
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EReminderWatcher:default-zone:
@@ -2689,17 +2689,14 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 	 *
 	 * Since: 3.30
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_ZONE,
+	properties[PROP_DEFAULT_ZONE] =
 		g_param_spec_object (
 			"default-zone",
-			"Default Zone",
-			"The default time zone",
+			NULL, NULL,
 			I_CAL_TYPE_TIMEZONE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EReminderWatcher:timers-enabled:
@@ -2712,17 +2709,16 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 	 *
 	 * Since: 3.30
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_TIMERS_ENABLED,
+	properties[PROP_TIMERS_ENABLED] =
 		g_param_spec_boolean (
 			"timers-enabled",
-			"Timers Enabled",
-			"Whether can schedule timers",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * EReminderWatcher::format-time:
@@ -2994,7 +2990,7 @@ e_reminder_watcher_set_default_zone (EReminderWatcher *watcher,
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
 
-	g_object_notify (G_OBJECT (watcher), "default-zone");
+	g_object_notify_by_pspec (G_OBJECT (watcher), properties[PROP_DEFAULT_ZONE]);
 }
 
 /**
@@ -3084,7 +3080,7 @@ e_reminder_watcher_set_timers_enabled (EReminderWatcher *watcher,
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
 
-	g_object_notify (G_OBJECT (watcher), "timers-enabled");
+	g_object_notify_by_pspec (G_OBJECT (watcher), properties[PROP_TIMERS_ENABLED]);
 }
 
 static gchar *

@@ -22,7 +22,7 @@
 /**
  * SECTION: e-cal-client-view
  * @include: libecal/libecal.h
- * @short_description: Recieving change notifications on calendars 
+ * @short_description: Receiving change notifications on calendars
  *
  * This class provides functionality for watching for changes on a
  * given calendar opened with an #ECalClient. Use e_cal_client_get_view()
@@ -71,7 +71,8 @@ enum {
 	PROP_0,
 	PROP_CLIENT,
 	PROP_CONNECTION,
-	PROP_OBJECT_PATH
+	PROP_OBJECT_PATH,
+	N_PROPS
 };
 
 enum {
@@ -85,6 +86,8 @@ enum {
 
 /* Forward Declarations */
 static void	e_cal_client_view_initable_init	(GInitableIface *iface);
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -737,55 +740,46 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 	/**
 	 * ECalClientView:client:
 	 *
-	 * The ECalClient for the view
+	 * The #ECalClient for the view
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_CLIENT,
+	properties[PROP_CLIENT] =
 		g_param_spec_object (
 			"client",
-			"Client",
-			"The ECalClient for the view",
+			NULL, NULL,
 			E_TYPE_CAL_CLIENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECalClientView:connection:
 	 *
-	 * The GDBusConnection used to create the D-Bus proxy
+	 * The #GDBusConnection used to create the D-Bus proxy
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection used "
-			"to create the D-Bus proxy",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * ECalClientView:object-path:
 	 *
 	 * The object path used to create the D-Bus proxy
 	 */
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path used "
-			"to create the D-Bus proxy",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ECalClientView::objects-added:
@@ -931,7 +925,7 @@ e_cal_client_view_get_object_path (ECalClientView *client_view)
  * e_cal_client_view_is_running:
  * @client_view: an #ECalClientView
  *
- * Retunrs: Whether view is running. Not running views are ignoring
+ * Returns: Whether view is running. Not running views are ignoring
  * all events sent from the server.
  *
  * Since: 3.2

@@ -112,7 +112,8 @@ struct _SendObjectResult {
 enum {
 	PROP_0,
 	PROP_DEFAULT_TIMEZONE,
-	PROP_SOURCE_TYPE
+	PROP_SOURCE_TYPE,
+	N_PROPS
 };
 
 enum {
@@ -127,6 +128,8 @@ static void	e_cal_client_async_initable_init
 					(GAsyncInitableIface *iface);
 static void	e_cal_client_timezone_cache_init
 					(ETimezoneCacheInterface *iface);
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -1529,30 +1532,36 @@ e_cal_client_class_init (ECalClientClass *class)
 	client_class->refresh_sync = cal_client_refresh_sync;
 	client_class->retrieve_properties_sync = cal_client_retrieve_properties_sync;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DEFAULT_TIMEZONE,
+	/**
+	 * ECalClient:default-timezone
+	 *
+	 * Timezone used to resolve DATE and floating DATE-TIME values
+	 **/
+	properties[PROP_DEFAULT_TIMEZONE] =
 		g_param_spec_object (
 			"default-timezone",
-			"Default Timezone",
-			"Timezone used to resolve DATE and floating DATE-TIME values",
+			NULL, NULL,
 			I_CAL_TYPE_TIMEZONE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE_TYPE,
+	/**
+	 * ECalClient:source-type
+	 *
+	 * The iCalendar data type
+	 **/
+	properties[PROP_SOURCE_TYPE] =
 		g_param_spec_enum (
 			"source-type",
-			"Source Type",
-			"The iCalendar data type",
+			NULL, NULL,
 			E_TYPE_CAL_CLIENT_SOURCE_TYPE,
 			E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ECalClient::free-busy-data
@@ -1977,7 +1986,7 @@ e_cal_client_set_default_timezone (ECalClient *client,
 	else
 		client->priv->default_zone = e_cal_util_copy_timezone (zone);
 
-	g_object_notify (G_OBJECT (client), "default-timezone");
+	g_object_notify_by_pspec (G_OBJECT (client), properties[PROP_DEFAULT_TIMEZONE]);
 }
 
 /**
