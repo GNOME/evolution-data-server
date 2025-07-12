@@ -82,8 +82,11 @@ enum {
 	PROP_BACKEND,
 	PROP_CONNECTION,
 	PROP_OBJECT_PATH,
-	PROP_SEXP
+	PROP_SEXP,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 /* Forward Declarations */
 static void	e_data_cal_view_initable_init	(GInitableIface *iface);
@@ -508,55 +511,63 @@ e_data_cal_view_class_init (EDataCalViewClass *class)
 	object_class->dispose = data_cal_view_dispose;
 	object_class->finalize = data_cal_view_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND,
+	/**
+	 * EDataCalView:backend
+	 *
+	 * The backend being monitored
+	 **/
+	properties[PROP_BACKEND] =
 		g_param_spec_object (
 			"backend",
-			"Backend",
-			"The backend being monitored",
+			NULL, NULL,
 			E_TYPE_CAL_BACKEND,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	/**
+	 * EDataCalView:connection
+	 *
+	 * The #GDBusConnection on which to export the view interface
+	 **/
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection on which "
-			"to export the view interface",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	/**
+	 * EDataCalView:object-path
+	 *
+	 * The object path at which to export the view interface
+	 **/
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path at which to "
-			"export the view interface",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SEXP,
+	/**
+	 * EDataCalView:sexp
+	 *
+	 * The query expression for this view
+	 **/
+	properties[PROP_SEXP] =
 		g_param_spec_object (
 			"sexp",
-			"S-Expression",
-			"The query expression for this view",
+			NULL, NULL,
 			E_TYPE_CAL_BACKEND_SEXP,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
