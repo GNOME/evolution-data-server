@@ -54,8 +54,11 @@ struct _ESourceBackendSummarySetupPrivate {
 enum {
 	PROP_0,
 	PROP_SUMMARY_FIELDS,
-	PROP_INDEXED_FIELDS
+	PROP_INDEXED_FIELDS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceBackendSummarySetup,
@@ -90,23 +93,20 @@ source_backend_summary_setup_dup_literal_fields (ESourceBackendSummarySetup *ext
 static void
 source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *extension,
                                                  const gchar *literal_fields,
-                                                 gint which)
+                                                 gint property_id)
 {
-	const gchar *property_name;
 	gchar **target;
 
-	switch (which) {
+	switch (property_id) {
 		case PROP_SUMMARY_FIELDS:
 			target = &(extension->priv->summary_fields);
-			property_name = "summary-fields";
 			break;
 		case PROP_INDEXED_FIELDS:
 			target = &(extension->priv->indexed_fields);
-			property_name = "indexed-fields";
 			break;
 		default:
 			g_return_if_reached ();
-			break;
+			return;
 	}
 
 	g_mutex_lock (&extension->priv->property_lock);
@@ -121,7 +121,7 @@ source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *ext
 
 	g_mutex_unlock (&extension->priv->property_lock);
 
-	g_object_notify (G_OBJECT (extension), property_name);
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[property_id]);
 }
 
 static void
@@ -192,34 +192,39 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SUMMARY_FIELDS,
+	/**
+	 * ESourceBackendSummarySetup:summary-fields
+	 *
+	 * The list of quick reference summary fields
+	 **/
+	properties[PROP_SUMMARY_FIELDS] =
 		g_param_spec_string (
 			"summary-fields",
-			"Summary Fields",
-			"The list of quick reference summary fields",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INDEXED_FIELDS,
+	/**
+	 * ESourceBackendSummarySetup:indexed-fields
+	 *
+	 * The list of summary fields which are to be given indexes in the underlying database
+	 **/
+	properties[PROP_INDEXED_FIELDS] =
 		g_param_spec_string (
 			"indexed-fields",
-			"Indexed Fields",
-			"The list of summary fields which are to be "
-			"given indexes in the underlying database",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
