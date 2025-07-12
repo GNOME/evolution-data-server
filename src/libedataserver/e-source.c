@@ -178,8 +178,11 @@ enum {
 	PROP_REMOVABLE,
 	PROP_UID,
 	PROP_WRITABLE,
-	PROP_CONNECTION_STATUS
+	PROP_CONNECTION_STATUS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 enum {
 	CHANGED,
@@ -681,24 +684,24 @@ source_load_from_key_file (GObject *object,
                            const gchar *group_name)
 {
 	GObjectClass *class;
-	GParamSpec **properties;
-	guint n_properties, ii;
+	GParamSpec **props;
+	guint n_props, ii;
 
 	class = G_OBJECT_GET_CLASS (object);
-	properties = g_object_class_list_properties (class, &n_properties);
+	props = g_object_class_list_properties (class, &n_props);
 
 	g_object_freeze_notify (object);
 
-	for (ii = 0; ii < n_properties; ii++) {
-		if (properties[ii]->flags & E_SOURCE_PARAM_SETTING) {
+	for (ii = 0; ii < n_props; ii++) {
+		if (props[ii]->flags & E_SOURCE_PARAM_SETTING) {
 			source_set_property_from_key_file (
-				object, properties[ii], key_file, group_name);
+				object, props[ii], key_file, group_name);
 		}
 	}
 
 	g_object_thaw_notify (object);
 
-	g_free (properties);
+	g_free (props);
 }
 
 static void
@@ -707,20 +710,20 @@ source_save_to_key_file (GObject *object,
                          const gchar *group_name)
 {
 	GObjectClass *class;
-	GParamSpec **properties;
-	guint n_properties, ii;
+	GParamSpec **props;
+	guint n_props, ii;
 
 	class = G_OBJECT_GET_CLASS (object);
-	properties = g_object_class_list_properties (class, &n_properties);
+	props = g_object_class_list_properties (class, &n_props);
 
-	for (ii = 0; ii < n_properties; ii++) {
-		if (properties[ii]->flags & E_SOURCE_PARAM_SETTING) {
+	for (ii = 0; ii < n_props; ii++) {
+		if (props[ii]->flags & E_SOURCE_PARAM_SETTING) {
 			source_set_key_file_from_property (
-				object, properties[ii], key_file, group_name);
+				object, props[ii], key_file, group_name);
 		}
 	}
 
-	g_free (properties);
+	g_free (props);
 }
 
 static gboolean
@@ -876,7 +879,7 @@ source_update_connection_status (ESource *source)
 	}
 
 	if (changed)
-		g_object_notify (G_OBJECT (source), "connection-status");
+		g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_CONNECTION_STATUS]);
 
 	g_mutex_unlock (&source->priv->property_lock);
 	g_object_thaw_notify (G_OBJECT (source));
@@ -2145,141 +2148,162 @@ e_source_class_init (ESourceClass *class)
 	class->invoke_authenticate_impl = source_invoke_authenticate_impl;
 	class->unset_last_credentials_required_arguments_impl = source_unset_last_credentials_required_arguments_impl;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DBUS_OBJECT,
+	/**
+	 * ESource:dbus-object
+	 *
+	 * The D-Bus object for the data source
+	 **/
+	properties[PROP_DBUS_OBJECT] =
 		g_param_spec_object (
 			"dbus-object",
-			"D-Bus Object",
-			"The D-Bus object for the data source",
+			NULL, NULL,
 			E_DBUS_TYPE_OBJECT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DISPLAY_NAME,
+	/**
+	 * ESource:display-name
+	 *
+	 * The human-readable name of the data source
+	 **/
+	properties[PROP_DISPLAY_NAME] =
 		g_param_spec_string (
 			"display-name",
-			"Display Name",
-			"The human-readable name of the data source",
+			NULL, NULL,
 			_("Unnamed"),
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENABLED,
+	/**
+	 * ESource:enabled
+	 *
+	 * Whether the data source is enabled
+	 **/
+	properties[PROP_ENABLED] =
 		g_param_spec_boolean (
 			"enabled",
-			"Enabled",
-			"Whether the data source is enabled",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MAIN_CONTEXT,
+	/**
+	 * ESource:main-context
+	 *
+	 * The main loop context on which to attach event sources
+	 **/
+	properties[PROP_MAIN_CONTEXT] =
 		g_param_spec_boxed (
 			"main-context",
-			"Main Context",
-			"The main loop context on "
-			"which to attach event sources",
+			NULL, NULL,
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_PARENT,
+	/**
+	 * ESource:parent
+	 *
+	 * The unique identity of the parent data source
+	 **/
+	properties[PROP_PARENT] =
 		g_param_spec_string (
 			"parent",
-			"Parent",
-			"The unique identity of the parent data source",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REMOTE_CREATABLE,
+	/**
+	 * ESource:remote-creatable
+	 *
+	 * Whether the data source can create remote resources
+	 **/
+	properties[PROP_REMOTE_CREATABLE] =
 		g_param_spec_boolean (
 			"remote-creatable",
-			"Remote Creatable",
-			"Whether the data source "
-			"can create remote resources",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REMOTE_DELETABLE,
+	/**
+	 * ESource:remote-deletable
+	 *
+	 * Whether the data source can delete remote resources
+	 **/
+	properties[PROP_REMOTE_DELETABLE] =
 		g_param_spec_boolean (
 			"remote-deletable",
-			"Remote Deletable",
-			"Whether the data source "
-			"can delete remote resources",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REMOVABLE,
+	/**
+	 * ESource:removable
+	 *
+	 * Whether the data source is removable
+	 **/
+	properties[PROP_REMOVABLE] =
 		g_param_spec_boolean (
 			"removable",
-			"Removable",
-			"Whether the data source is removable",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_UID,
+	/**
+	 * ESource:uid
+	 *
+	 * The unique identity of the data source
+	 **/
+	properties[PROP_UID] =
 		g_param_spec_string (
 			"uid",
-			"UID",
-			"The unique identity of the data source",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_WRITABLE,
+	/**
+	 * ESource:writable
+	 *
+	 * Whether the data source is writable
+	 **/
+	properties[PROP_WRITABLE] =
 		g_param_spec_boolean (
 			"writable",
-			"Writable",
-			"Whether the data source is writable",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION_STATUS,
+	/**
+	 * ESource:connection-status
+	 *
+	 * Connection status of the source
+	 **/
+	properties[PROP_CONNECTION_STATUS] =
 		g_param_spec_enum (
 			"connection-status",
-			"Connection Status",
-			"Connection status of the source",
+			NULL, NULL,
 			E_TYPE_SOURCE_CONNECTION_STATUS,
 			E_SOURCE_CONNECTION_STATUS_DISCONNECTED,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * ESource::changed:
@@ -2463,7 +2487,7 @@ __e_source_private_replace_dbus_object (ESource *source,
 	source_connect_dbus_source (source);
 	source_update_connection_status (source);
 
-	g_object_notify (G_OBJECT (source), "dbus-object");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_DBUS_OBJECT]);
 }
 
 /**
@@ -2752,7 +2776,7 @@ e_source_set_parent (ESource *source,
 
 	g_mutex_unlock (&source->priv->property_lock);
 
-	g_object_notify (G_OBJECT (source), "parent");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_PARENT]);
 }
 
 /**
@@ -2809,7 +2833,7 @@ e_source_set_enabled (ESource *source,
 
 	source->priv->enabled = enabled;
 
-	g_object_notify (G_OBJECT (source), "enabled");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_ENABLED]);
 }
 
 /**
@@ -3228,7 +3252,7 @@ e_source_set_display_name (ESource *source,
 
 	g_mutex_unlock (&source->priv->property_lock);
 
-	g_object_notify (G_OBJECT (source), "display-name");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_DISPLAY_NAME]);
 }
 
 /**
@@ -3523,7 +3547,7 @@ e_source_set_connection_status (ESource *source,
 
 	g_type_class_unref (enum_class);
 
-	g_object_notify (G_OBJECT (source), "connection-status");
+	g_object_notify_by_pspec (G_OBJECT (source), properties[PROP_CONNECTION_STATUS]);
 }
 
 /**

@@ -63,8 +63,11 @@ enum {
 	PROP_TEMPLATES_FOLDER,
 	PROP_START_BOTTOM,
 	PROP_TOP_SIGNATURE,
-	PROP_LANGUAGE
+	PROP_LANGUAGE,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailComposition,
@@ -242,134 +245,154 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_MAIL_COMPOSITION;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BCC,
+	/**
+	 * ESourceMailComposition:bcc
+	 *
+	 * Recipients to blind carbon-copy
+	 **/
+	properties[PROP_BCC] =
 		g_param_spec_boxed (
 			"bcc",
-			"Bcc",
-			"Recipients to blind carbon-copy",
+			NULL, NULL,
 			G_TYPE_STRV,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CC,
+	/**
+	 * ESourceMailComposition:cc
+	 *
+	 * Recipients to carbon-copy
+	 **/
+	properties[PROP_CC] =
 		g_param_spec_boxed (
 			"cc",
-			"Cc",
-			"Recipients to carbon-copy",
+			NULL, NULL,
 			G_TYPE_STRV,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DRAFTS_FOLDER,
+	/**
+	 * ESourceMailComposition:drafts-folder
+	 *
+	 * Preferred folder for draft messages
+	 **/
+	properties[PROP_DRAFTS_FOLDER] =
 		g_param_spec_string (
 			"drafts-folder",
-			"Drafts Folder",
-			"Preferred folder for draft messages",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REPLY_STYLE,
+	/**
+	 * ESourceMailComposition:reply-style
+	 *
+	 * What reply style to prefer
+	 **/
+	properties[PROP_REPLY_STYLE] =
 		g_param_spec_enum (
 			"reply-style",
-			"Reply Style",
-			"What reply style to prefer",
+			NULL, NULL,
 			E_TYPE_SOURCE_MAIL_COMPOSITION_REPLY_STYLE,
 			E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SIGN_IMIP,
+	/**
+	 * ESourceMailComposition:sign-imip
+	 *
+	 * Include iMIP messages when signing
+	 **/
+	properties[PROP_SIGN_IMIP] =
 		g_param_spec_boolean (
 			"sign-imip",
-			"Sign iMIP",
-			"Include iMIP messages when signing",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_START_BOTTOM,
+	/**
+	 * ESourceMailComposition:start-bottom
+	 *
+	 * Whether start at bottom on reply or forward
+	 **/
+	properties[PROP_START_BOTTOM] =
 		g_param_spec_enum (
 			"start-bottom",
-			"Start Bottom",
-			"Whether start at bottom on reply or forward",
+			NULL, NULL,
 			E_TYPE_THREE_STATE,
 			E_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_TEMPLATES_FOLDER,
+	/**
+	 * ESourceMailComposition:templates-folder
+	 *
+	 * Preferred folder for message templates
+	 **/
+	properties[PROP_TEMPLATES_FOLDER] =
 		g_param_spec_string (
 			"templates-folder",
-			"Templates Folder",
-			"Preferred folder for message templates",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_TOP_SIGNATURE,
+	/**
+	 * ESourceMailComposition:top-signature
+	 *
+	 * Whether place signature at the top on reply or forward
+	 **/
+	properties[PROP_TOP_SIGNATURE] =
 		g_param_spec_enum (
 			"top-signature",
-			"Top Signature",
-			"Whether place signature at the top on reply or forward",
+			NULL, NULL,
 			E_TYPE_THREE_STATE,
 			E_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LANGUAGE,
+	/**
+	 * ESourceMailComposition:language
+	 *
+	 * Preferred language
+	 **/
+	properties[PROP_LANGUAGE] =
 		g_param_spec_string (
 			"language",
-			"Language",
-			"Preferred language",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -463,7 +486,7 @@ e_source_mail_composition_set_bcc (ESourceMailComposition *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "bcc");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_BCC]);
 }
 
 /**
@@ -551,7 +574,7 @@ e_source_mail_composition_set_cc (ESourceMailComposition *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "cc");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CC]);
 }
 
 /**
@@ -637,7 +660,7 @@ e_source_mail_composition_set_drafts_folder (ESourceMailComposition *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "drafts-folder");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_DRAFTS_FOLDER]);
 }
 
 /**
@@ -682,7 +705,7 @@ e_source_mail_composition_set_sign_imip (ESourceMailComposition *extension,
 
 	extension->priv->sign_imip = sign_imip;
 
-	g_object_notify (G_OBJECT (extension), "sign-imip");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SIGN_IMIP]);
 }
 
 /**
@@ -768,7 +791,7 @@ e_source_mail_composition_set_templates_folder (ESourceMailComposition *extensio
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "templates-folder");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_TEMPLATES_FOLDER]);
 }
 
 /**
@@ -814,7 +837,7 @@ e_source_mail_composition_set_reply_style (ESourceMailComposition *extension,
 
 	extension->priv->reply_style = reply_style;
 
-	g_object_notify (G_OBJECT (extension), "reply-style");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_REPLY_STYLE]);
 }
 
 /**
@@ -858,7 +881,7 @@ e_source_mail_composition_set_start_bottom (ESourceMailComposition *extension,
 
 	extension->priv->start_bottom = start_bottom;
 
-	g_object_notify (G_OBJECT (extension), "start-bottom");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_START_BOTTOM]);
 }
 
 /**
@@ -902,7 +925,7 @@ e_source_mail_composition_set_top_signature (ESourceMailComposition *extension,
 
 	extension->priv->top_signature = top_signature;
 
-	g_object_notify (G_OBJECT (extension), "top-signature");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_TOP_SIGNATURE]);
 }
 
 /**
@@ -986,5 +1009,5 @@ e_source_mail_composition_set_language (ESourceMailComposition *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "language");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LANGUAGE]);
 }

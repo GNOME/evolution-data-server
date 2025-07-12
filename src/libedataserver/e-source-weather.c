@@ -29,8 +29,11 @@ struct _ESourceWeatherPrivate {
 enum {
 	PROP_0,
 	PROP_LOCATION,
-	PROP_UNITS
+	PROP_UNITS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceWeather,
@@ -112,32 +115,38 @@ e_source_weather_class_init (ESourceWeatherClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LOCATION,
+	/**
+	 * ESourceWeather:location
+	 *
+	 * Weather location code
+	 **/
+	properties[PROP_LOCATION] =
 		g_param_spec_string (
 			"location",
-			"Location",
-			"Weather location code",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_UNITS,
+	/**
+	 * ESourceWeather:units
+	 *
+	 * Fahrenheit, Centigrade or Kelvin units
+	 **/
+	properties[PROP_UNITS] =
 		g_param_spec_enum (
 			"units",
-			"Units",
-			"Fahrenheit, Centigrade or Kelvin units",
+			NULL, NULL,
 			E_TYPE_SOURCE_WEATHER_UNITS,
 			E_SOURCE_WEATHER_UNITS_CENTIGRADE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -190,7 +199,7 @@ e_source_weather_set_location (ESourceWeather *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "location");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LOCATION]);
 }
 
 ESourceWeatherUnits
@@ -212,5 +221,5 @@ e_source_weather_set_units (ESourceWeather *extension,
 
 	extension->priv->units = units;
 
-	g_object_notify (G_OBJECT (extension), "units");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_UNITS]);
 }

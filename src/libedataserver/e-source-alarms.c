@@ -45,8 +45,11 @@ enum {
 	PROP_0,
 	PROP_INCLUDE_ME,
 	PROP_LAST_NOTIFIED,
-	PROP_FOR_EVERY_EVENT
+	PROP_FOR_EVERY_EVENT,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAlarms,
@@ -141,47 +144,55 @@ e_source_alarms_class_init (ESourceAlarmsClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_ALARMS;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INCLUDE_ME,
+	/**
+	 * ESourceAlarms:include-me
+	 *
+	 * Include this source in alarm notifications
+	 **/
+	properties[PROP_INCLUDE_ME] =
 		g_param_spec_boolean (
 			"include-me",
-			"IncludeMe",
-			"Include this source in alarm notifications",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LAST_NOTIFIED,
+	/**
+	 * ESourceAlarms:last-notified
+	 *
+	 * Last alarm notification (in ISO 8601 format)
+	 **/
+	properties[PROP_LAST_NOTIFIED] =
 		g_param_spec_string (
 			"last-notified",
-			"LastNotified",
-			"Last alarm notification (in ISO 8601 format)",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FOR_EVERY_EVENT,
+	/**
+	 * ESourceAlarms:for-every-event
+	 *
+	 * Show a notification before every event in this source
+	 **/
+	properties[PROP_FOR_EVERY_EVENT] =
 		g_param_spec_boolean (
 			"for-every-event",
-			"ForEveryEvent",
-			"Show a notification before every event in this source",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -236,7 +247,7 @@ e_source_alarms_set_include_me (ESourceAlarms *extension,
 
 	extension->priv->include_me = include_me;
 
-	g_object_notify (G_OBJECT (extension), "include-me");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_INCLUDE_ME]);
 }
 
 /**
@@ -344,7 +355,7 @@ e_source_alarms_set_last_notified (ESourceAlarms *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "last-notified");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LAST_NOTIFIED]);
 }
 
 /**
@@ -393,5 +404,5 @@ e_source_alarms_set_for_every_event (ESourceAlarms *extension,
 
 	extension->priv->for_every_event = for_every_event;
 
-	g_object_notify (G_OBJECT (extension), "for-every-event");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_FOR_EVERY_EVENT]);
 }

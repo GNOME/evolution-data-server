@@ -46,8 +46,11 @@ struct _ESourceAutoconfigPrivate {
 
 enum {
 	PROP_0,
-	PROP_REVISION
+	PROP_REVISION,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceAutoconfig,
@@ -116,19 +119,23 @@ e_source_autoconfig_class_init (ESourceAutoconfigClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_AUTOCONFIG;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REVISION,
+	/**
+	 * ESourceAutoconfig:revision
+	 *
+	 * Identifier to map a particular version of a system-wide source to a user-specific source
+	 **/
+	properties[PROP_REVISION] =
 		g_param_spec_string (
 			"revision",
-			"Revision",
-			"Identifier to map a particular version of a system-wide source to a user-specific source",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -230,5 +237,5 @@ e_source_autoconfig_set_revision (ESourceAutoconfig *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "revision");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_REVISION]);
 }

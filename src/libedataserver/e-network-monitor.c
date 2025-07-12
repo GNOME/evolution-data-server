@@ -34,10 +34,14 @@ struct _ENetworkMonitorPrivate {
 enum {
 	PROP_0,
 	PROP_GIO_NAME,
+	N_PROPS,
+
 	PROP_CONNECTIVITY,
 	PROP_NETWORK_METERED,
 	PROP_NETWORK_AVAILABLE
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint network_changed_signal = 0;
 
@@ -303,17 +307,16 @@ e_network_monitor_class_init (ENetworkMonitorClass *class)
 	 *
 	 * The GIO name of the underlying #GNetworkMonitor to use.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_GIO_NAME,
+	properties[PROP_GIO_NAME] =
 		g_param_spec_string (
 			"gio-name",
-			"GIO name",
-			NULL,
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	g_object_class_override_property (object_class, PROP_NETWORK_AVAILABLE, "network-available");
 	g_object_class_override_property (object_class, PROP_NETWORK_METERED, "network-metered");
@@ -627,7 +630,7 @@ e_network_monitor_set_gio_name (ENetworkMonitor *network_monitor,
 	object = G_OBJECT (network_monitor);
 
 	g_object_freeze_notify (object);
-	g_object_notify (object, "gio-name");
+	g_object_notify_by_pspec (object, properties[PROP_GIO_NAME]);
 	g_object_notify (object, "network-available");
 	g_object_notify (object, "network-metered");
 	g_object_notify (object, "connectivity");

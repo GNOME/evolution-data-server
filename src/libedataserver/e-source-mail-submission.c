@@ -50,8 +50,11 @@ enum {
 	PROP_SENT_FOLDER,
 	PROP_TRANSPORT_UID,
 	PROP_REPLIES_TO_ORIGIN_FOLDER,
-	PROP_USE_SENT_FOLDER
+	PROP_USE_SENT_FOLDER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailSubmission,
@@ -161,62 +164,72 @@ e_source_mail_submission_class_init (ESourceMailSubmissionClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_MAIL_SUBMISSION;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SENT_FOLDER,
+	/**
+	 * ESourceMailSubmission:sent-folder
+	 *
+	 * Preferred folder for sent messages
+	 **/
+	properties[PROP_SENT_FOLDER] =
 		g_param_spec_string (
 			"sent-folder",
-			"Sent Folder",
-			"Preferred folder for sent messages",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_SENT_FOLDER,
+	/**
+	 * ESourceMailSubmission:use-sent-folder
+	 *
+	 * Whether to save sent messages to sent-folder
+	 **/
+	properties[PROP_USE_SENT_FOLDER] =
 		g_param_spec_boolean (
 			"use-sent-folder",
-			"Use Sent Folder",
-			"Whether to save sent messages to sent-folder",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_TRANSPORT_UID,
+	/**
+	 * ESourceMailSubmission:transport-uid
+	 *
+	 * ESource UID of a Mail Transport
+	 **/
+	properties[PROP_TRANSPORT_UID] =
 		g_param_spec_string (
 			"transport-uid",
-			"Transport UID",
-			"ESource UID of a Mail Transport",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_REPLIES_TO_ORIGIN_FOLDER,
+	/**
+	 * ESourceMailSubmission:replies-to-origin-folder
+	 *
+	 * Whether to save replies to folder of the message being replied to, instead of
+	 * the Sent folder
+	 **/
+	properties[PROP_REPLIES_TO_ORIGIN_FOLDER] =
 		g_param_spec_boolean (
 			"replies-to-origin-folder",
-			"Replies to origin folder",
-			"Whether to save replies to folder of the message "
-			"being replied to, instead of the Sent folder",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -308,7 +321,7 @@ e_source_mail_submission_set_sent_folder (ESourceMailSubmission *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "sent-folder");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SENT_FOLDER]);
 }
 
 /**
@@ -347,7 +360,7 @@ e_source_mail_submission_set_use_sent_folder (ESourceMailSubmission *extension,
 
 	extension->priv->use_sent_folder = use_sent_folder;
 
-	g_object_notify (G_OBJECT (extension), "use-sent-folder");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_USE_SENT_FOLDER]);
 }
 
 /**
@@ -428,7 +441,7 @@ e_source_mail_submission_set_transport_uid (ESourceMailSubmission *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "transport-uid");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_TRANSPORT_UID]);
 }
 
 /**
@@ -471,5 +484,5 @@ e_source_mail_submission_set_replies_to_origin_folder (ESourceMailSubmission *ex
 
 	extension->priv->replies_to_origin_folder = replies_to_origin_folder;
 
-	g_object_notify (G_OBJECT (extension), "replies-to-origin-folder");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_REPLIES_TO_ORIGIN_FOLDER]);
 }

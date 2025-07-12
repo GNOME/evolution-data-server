@@ -45,8 +45,11 @@ struct _ESourceMDNPrivate {
 
 enum {
 	PROP_0,
-	PROP_RESPONSE_POLICY
+	PROP_RESPONSE_POLICY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMDN,
@@ -101,20 +104,24 @@ e_source_mdn_class_init (ESourceMDNClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_MDN;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_RESPONSE_POLICY,
+	/**
+	 * ESourceMDN:response-policy
+	 *
+	 * Policy for responding to MDN requests
+	 **/
+	properties[PROP_RESPONSE_POLICY] =
 		g_param_spec_enum (
 			"response-policy",
-			"Response Policy",
-			"Policy for responding to MDN requests",
+			NULL, NULL,
 			E_TYPE_MDN_RESPONSE_POLICY,
 			E_MDN_RESPONSE_POLICY_ASK,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -165,5 +172,5 @@ e_source_mdn_set_response_policy (ESourceMDN *extension,
 
 	extension->priv->response_policy = response_policy;
 
-	g_object_notify (G_OBJECT (extension), "response-policy");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_RESPONSE_POLICY]);
 }

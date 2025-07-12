@@ -39,8 +39,11 @@ enum {
 	PROP_0,
 	PROP_COLOR,
 	PROP_SELECTED,
-	PROP_ORDER
+	PROP_ORDER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	ESourceSelectable,
@@ -134,47 +137,55 @@ e_source_selectable_class_init (ESourceSelectableClass *class)
 	/* We do not provide an extension name,
 	 * which is why the class is abstract. */
 
-	g_object_class_install_property (
-		object_class,
-		PROP_COLOR,
+	/**
+	 * ESourceSelectable:color
+	 *
+	 * Textual specification of a color
+	 **/
+	properties[PROP_COLOR] =
 		g_param_spec_string (
 			"color",
-			"Color",
-			"Textual specification of a color",
+			NULL, NULL,
 			"#62a0ea",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SELECTED,
+	/**
+	 * ESourceSelectable:selected
+	 *
+	 * Whether the data source is selected
+	 **/
+	properties[PROP_SELECTED] =
 		g_param_spec_boolean (
 			"selected",
-			"Selected",
-			"Whether the data source is selected",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ORDER,
+	/**
+	 * ESourceSelectable:order
+	 *
+	 * Preferred sorting order
+	 **/
+	properties[PROP_ORDER] =
 		g_param_spec_uint (
 			"order",
-			"Order",
-			"Preferred sorting order",
+			NULL, NULL,
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -269,7 +280,7 @@ e_source_selectable_set_color (ESourceSelectable *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "color");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_COLOR]);
 }
 
 /**
@@ -314,7 +325,7 @@ e_source_selectable_set_selected (ESourceSelectable *extension,
 
 	extension->priv->selected = selected;
 
-	g_object_notify (G_OBJECT (extension), "selected");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SELECTED]);
 }
 
 /**
@@ -356,5 +367,5 @@ e_source_selectable_set_order (ESourceSelectable *extension,
 
 	extension->priv->order = order;
 
-	g_object_notify (G_OBJECT (extension), "order");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ORDER]);
 }
