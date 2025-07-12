@@ -21,7 +21,7 @@
 /**
  * SECTION: e-book-client-view
  * @include: libebook/libebook.h
- * @short_description: Recieving change notifications on addressbooks 
+ * @short_description: Receiving change notifications on addressbooks
  *
  * This class provides functionality for watching for changes on a
  * given addressbook opened with an #EBookClient. Use e_book_client_get_view()
@@ -80,7 +80,8 @@ enum {
 	PROP_DIRECT_BACKEND,
 	PROP_OBJECT_PATH,
 	PROP_N_TOTAL,
-	PROP_INDICES
+	PROP_INDICES,
+	N_PROPS
 };
 
 enum {
@@ -96,6 +97,8 @@ enum {
 /* Forward Declarations */
 static void	e_book_client_view_initable_init
 						(GInitableIface *iface);
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static guint signals[LAST_SIGNAL];
 
@@ -728,7 +731,7 @@ book_client_view_notify_n_total_idle_cb (gpointer user_data)
 	self = g_weak_ref_get (weak_ref);
 
 	if (self) {
-		g_object_notify (G_OBJECT (self), "n-total");
+		g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_N_TOTAL]);
 		g_object_unref (self);
 	}
 
@@ -756,7 +759,7 @@ book_client_view_notify_indices_idle_cb (gpointer user_data)
 	self = g_weak_ref_get (weak_ref);
 
 	if (self) {
-		g_object_notify (G_OBJECT (self), "indices");
+		g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_INDICES]);
 		g_object_unref (self);
 	}
 
@@ -1079,57 +1082,61 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 	object_class->dispose = book_client_view_dispose;
 	object_class->finalize = book_client_view_finalize;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CLIENT,
+	/**
+	 * EBookClientView:client
+	 *
+	 * The #EBookClient for the view
+	 **/
+	properties[PROP_CLIENT] =
 		g_param_spec_object (
 			"client",
-			"Client",
-			"The EBookClient for the view",
+			NULL, NULL,
 			E_TYPE_BOOK_CLIENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONNECTION,
+	/**
+	 * EBookClientView:connection
+	 *
+	 * The #GDBusConnection used to create the D-Bus proxy
+	 **/
+	properties[PROP_CONNECTION] =
 		g_param_spec_object (
 			"connection",
-			"Connection",
-			"The GDBusConnection used "
-			"to create the D-Bus proxy",
+			NULL, NULL,
 			G_TYPE_DBUS_CONNECTION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_DIRECT_BACKEND,
+	/**
+	 * EBookClientView:direct-backend
+	 *
+	 * The #EBookBackend to fetch contact data from, if direct read access is enabled
+	 **/
+	properties[PROP_DIRECT_BACKEND] =
 		g_param_spec_object (
 			"direct-backend",
-			"Direct Backend",
-			"The EBookBackend to fetch contact "
-			"data from, if direct read access "
-			"is enabled",
+			NULL, NULL,
 			E_TYPE_BOOK_BACKEND,
 			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_OBJECT_PATH,
+	/**
+	 * EBookClientView:object-path
+	 *
+	 * The object path used to create the D-Bus proxy
+	 **/
+	properties[PROP_OBJECT_PATH] =
 		g_param_spec_string (
 			"object-path",
-			"Object Path",
-			"The object path used "
-			"to create the D-Bus proxy",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientView:n-total:
@@ -1140,16 +1147,13 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 	 *
 	 * Since: 3.50
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_N_TOTAL,
+	properties[PROP_N_TOTAL] =
 		g_param_spec_uint (
 			"n-total",
-			"How many contacts are in the view",
-			NULL,
+			NULL, NULL,
 			0, G_MAXUINT, 0,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * EBookClientView:indices:
@@ -1163,16 +1167,15 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 	 *
 	 * Since: 3.50
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_INDICES,
+	properties[PROP_INDICES] =
 		g_param_spec_boxed (
 			"indices",
-			"Contact indices in the view",
-			NULL,
+			NULL, NULL,
 			E_TYPE_BOOK_INDICES,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
 	 * EBookClientView::objects-added:
