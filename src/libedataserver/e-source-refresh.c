@@ -62,8 +62,11 @@ enum {
 	PROP_0,
 	PROP_ENABLED,
 	PROP_ENABLED_ON_METERED_NETWORK,
-	PROP_INTERVAL_MINUTES
+	PROP_INTERVAL_MINUTES,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceRefresh,
@@ -350,47 +353,55 @@ e_source_refresh_class_init (ESourceRefreshClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_REFRESH;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENABLED,
+	/**
+	 * ESourceRefresh:enabled
+	 *
+	 * Whether to periodically refresh
+	 **/
+	properties[PROP_ENABLED] =
 		g_param_spec_boolean (
 			"enabled",
-			"Enabled",
-			"Whether to periodically refresh",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENABLED_ON_METERED_NETWORK,
+	/**
+	 * ESourceRefresh:enabled-on-metered-network
+	 *
+	 * Whether to enable refresh on metered network
+	 **/
+	properties[PROP_ENABLED_ON_METERED_NETWORK] =
 		g_param_spec_boolean (
 			"enabled-on-metered-network",
-			"Enabled on Metered Network",
-			"Whether to enable refresh on metered network",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_INTERVAL_MINUTES,
+	/**
+	 * ESourceRefresh:interval-minutes
+	 *
+	 * Refresh interval in minutes
+	 **/
+	properties[PROP_INTERVAL_MINUTES] =
 		g_param_spec_uint (
 			"interval-minutes",
-			"Interval in Minutes",
-			"Refresh interval in minutes",
+			NULL, NULL,
 			0, G_MAXUINT, 60,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -451,7 +462,7 @@ e_source_refresh_set_enabled (ESourceRefresh *extension,
 
 	extension->priv->enabled = enabled;
 
-	g_object_notify (G_OBJECT (extension), "enabled");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENABLED]);
 
 	source_refresh_update_timeouts (extension, FALSE);
 }
@@ -502,7 +513,7 @@ e_source_refresh_set_enabled_on_metered_network (ESourceRefresh *extension,
 
 	extension->priv->enabled_on_metered_network = enabled;
 
-	g_object_notify (G_OBJECT (extension), "enabled-on-metered-network");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENABLED_ON_METERED_NETWORK]);
 }
 
 /**
@@ -549,7 +560,7 @@ e_source_refresh_set_interval_minutes (ESourceRefresh *extension,
 
 	extension->priv->interval_minutes = interval_minutes;
 
-	g_object_notify (G_OBJECT (extension), "interval-minutes");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_INTERVAL_MINUTES]);
 
 	source_refresh_update_timeouts (extension, FALSE);
 }

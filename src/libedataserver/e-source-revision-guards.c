@@ -49,8 +49,11 @@ struct _ESourceRevisionGuardsPrivate {
 
 enum {
 	PROP_0,
-	PROP_ENABLED
+	PROP_ENABLED,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceRevisionGuards,
@@ -105,19 +108,23 @@ e_source_revision_guards_class_init (ESourceRevisionGuardsClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_REVISION_GUARDS;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ENABLED,
+	/**
+	 * ESourceRevisionGuards:enabled
+	 *
+	 * Whether to enable or disable the revision guards
+	 **/
+	properties[PROP_ENABLED] =
 		g_param_spec_boolean (
 			"enabled",
-			"Enabled",
-			"Whether to enable or disable the revision guards",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -166,6 +173,6 @@ e_source_revision_guards_set_enabled (ESourceRevisionGuards *extension,
 
 	extension->priv->enabled = enabled;
 
-	g_object_notify (G_OBJECT (extension), "enabled");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ENABLED]);
 }
 

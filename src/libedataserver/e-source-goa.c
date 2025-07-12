@@ -53,8 +53,11 @@ enum {
 	PROP_CALENDAR_URL,
 	PROP_CONTACTS_URL,
 	PROP_NAME,
-	PROP_ADDRESS
+	PROP_ADDRESS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceGoa,
@@ -179,75 +182,87 @@ e_source_goa_class_init (ESourceGoaClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_GOA;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ACCOUNT_ID,
+	/**
+	 * ESourceGoa:account-id
+	 *
+	 * GNOME Online Account ID
+	 **/
+	properties[PROP_ACCOUNT_ID] =
 		g_param_spec_string (
 			"account-id",
-			"Account ID",
-			"GNOME Online Account ID",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CALENDAR_URL,
+	/**
+	 * ESourceGoa:calendar-url
+	 *
+	 * GNOME Online Calendar URL
+	 **/
+	properties[PROP_CALENDAR_URL] =
 		g_param_spec_string (
 			"calendar-url",
-			"Calendar URL",
-			"GNOME Online Calendar URL",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTACTS_URL,
+	/**
+	 * ESourceGoa:contacts-url
+	 *
+	 * GNOME Online Contacts URL
+	 **/
+	properties[PROP_CONTACTS_URL] =
 		g_param_spec_string (
 			"contacts-url",
-			"Contacts URL",
-			"GNOME Online Contacts URL",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_NAME,
+	/**
+	 * ESourceGoa:name
+	 *
+	 * GNOME Online Account's original Name
+	 **/
+	properties[PROP_NAME] =
 		g_param_spec_string (
 			"name",
-			"Name",
-			"GNOME Online Account's original Name",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ADDRESS,
+	/**
+	 * ESourceGoa:address
+	 *
+	 * GNOME Online Account's original Address
+	 **/
+	properties[PROP_ADDRESS] =
 		g_param_spec_string (
 			"address",
-			"Address",
-			"GNOME Online Account's original Address",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -338,7 +353,7 @@ e_source_goa_set_account_id (ESourceGoa *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "account-id");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ACCOUNT_ID]);
 }
 
 /**
@@ -425,7 +440,7 @@ e_source_goa_set_calendar_url (ESourceGoa *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "calendar-url");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CALENDAR_URL]);
 }
 
 /**
@@ -512,7 +527,7 @@ e_source_goa_set_contacts_url (ESourceGoa *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "contacts-url");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CONTACTS_URL]);
 }
 
 /**
@@ -598,7 +613,7 @@ e_source_goa_set_name (ESourceGoa *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "name");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_NAME]);
 }
 
 /**
@@ -684,5 +699,5 @@ e_source_goa_set_address (ESourceGoa *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "address");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ADDRESS]);
 }

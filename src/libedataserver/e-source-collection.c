@@ -63,8 +63,11 @@ enum {
 	PROP_MAIL_ENABLED,
 	PROP_ALLOW_SOURCES_RENAME,
 	PROP_CALENDAR_URL,
-	PROP_CONTACTS_URL
+	PROP_CONTACTS_URL,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceCollection,
@@ -213,104 +216,119 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_COLLECTION;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CALENDAR_ENABLED,
+	/**
+	 * ESourceCollection:calendar-enabled
+	 *
+	 * Whether calendar resources are enabled
+	 **/
+	properties[PROP_CALENDAR_ENABLED] =
 		g_param_spec_boolean (
 			"calendar-enabled",
-			"Calendar Enabled",
-			"Whether calendar resources are enabled",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTACTS_ENABLED,
+	/**
+	 * ESourceCollection:contacts-enabled
+	 *
+	 * Whether contact resources are enabled
+	 **/
+	properties[PROP_CONTACTS_ENABLED] =
 		g_param_spec_boolean (
 			"contacts-enabled",
-			"Contacts Enabled",
-			"Whether contact resources are enabled",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_IDENTITY,
+	/**
+	 * ESourceCollection:identity
+	 *
+	 * Uniquely identifies the account at the service provider
+	 **/
+	properties[PROP_IDENTITY] =
 		g_param_spec_string (
 			"identity",
-			"Identity",
-			"Uniquely identifies the account "
-			"at the service provider",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MAIL_ENABLED,
+	/**
+	 * ESourceCollection:mail-enabled
+	 *
+	 * Whether mail resources are enabled
+	 **/
+	properties[PROP_MAIL_ENABLED] =
 		g_param_spec_boolean (
 			"mail-enabled",
-			"Mail Enabled",
-			"Whether mail resources are enabled",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ALLOW_SOURCES_RENAME,
+	/**
+	 * ESourceCollection:allow-sources-rename
+	 *
+	 * Set to TRUE when the collection source allows user rename the child sources
+	 **/
+	properties[PROP_ALLOW_SOURCES_RENAME] =
 		g_param_spec_boolean (
 			"allow-sources-rename",
-			"Allow Sources Rename",
-			"Set to TRUE when the collection source allows user rename the child sources",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CALENDAR_URL,
+	/**
+	 * ESourceCollection:calendar-url
+	 *
+	 * Calendar top URL
+	 **/
+	properties[PROP_CALENDAR_URL] =
 		g_param_spec_string (
 			"calendar-url",
-			"Calendar URL",
-			"Calendar top URL",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CONTACTS_URL,
+	/**
+	 * ESourceCollection:contacts-url
+	 *
+	 * Contacts top URL
+	 **/
+	properties[PROP_CONTACTS_URL] =
 		g_param_spec_string (
 			"contacts-url",
-			"Contacts URL",
-			"Contacts top URL",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -401,7 +419,7 @@ e_source_collection_set_identity (ESourceCollection *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "identity");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_IDENTITY]);
 }
 
 /**
@@ -455,7 +473,7 @@ e_source_collection_set_calendar_enabled (ESourceCollection *extension,
 
 	extension->priv->calendar_enabled = calendar_enabled;
 
-	g_object_notify (G_OBJECT (extension), "calendar-enabled");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CALENDAR_ENABLED]);
 }
 
 /**
@@ -509,7 +527,7 @@ e_source_collection_set_contacts_enabled (ESourceCollection *extension,
 
 	extension->priv->contacts_enabled = contacts_enabled;
 
-	g_object_notify (G_OBJECT (extension), "contacts-enabled");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CONTACTS_ENABLED]);
 }
 
 /**
@@ -562,7 +580,7 @@ e_source_collection_set_mail_enabled (ESourceCollection *extension,
 
 	extension->priv->mail_enabled = mail_enabled;
 
-	g_object_notify (G_OBJECT (extension), "mail-enabled");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_MAIL_ENABLED]);
 }
 
 /**
@@ -645,7 +663,7 @@ e_source_collection_set_calendar_url (ESourceCollection *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "calendar-url");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CALENDAR_URL]);
 }
 
 /**
@@ -728,7 +746,7 @@ e_source_collection_set_contacts_url (ESourceCollection *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "contacts-url");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CONTACTS_URL]);
 }
 
 /**
@@ -771,5 +789,5 @@ e_source_collection_set_allow_sources_rename (ESourceCollection *extension,
 
 	extension->priv->allow_sources_rename = allow_sources_rename;
 
-	g_object_notify (G_OBJECT (extension), "allow-sources-rename");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ALLOW_SOURCES_RENAME]);
 }

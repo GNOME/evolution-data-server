@@ -44,8 +44,11 @@ enum {
 	PROP_LIMIT,
 	PROP_ROOT_DN,
 	PROP_SCOPE,
-	PROP_SECURITY
+	PROP_SECURITY,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceLDAP,
@@ -348,104 +351,120 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 
 	/* This is bound to the authentication extension.
 	 * Do not use E_SOURCE_PARAM_SETTING here. */
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTHENTICATION,
+	/**
+	 * ESourceLDAP:authentication
+	 *
+	 * LDAP authentication method
+	 **/
+	properties[PROP_AUTHENTICATION] =
 		g_param_spec_enum (
 			"authentication",
-			"Authentication",
-			"LDAP authentication method",
+			NULL, NULL,
 			E_TYPE_SOURCE_LDAP_AUTHENTICATION,
 			E_SOURCE_LDAP_AUTHENTICATION_NONE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_CAN_BROWSE,
+	/**
+	 * ESourceLDAP:can-browse
+	 *
+	 * Allow browsing contacts
+	 **/
+	properties[PROP_CAN_BROWSE] =
 		g_param_spec_boolean (
 			"can-browse",
-			"Can Browse",
-			"Allow browsing contacts",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER,
+	/**
+	 * ESourceLDAP:filter
+	 *
+	 * LDAP search filter
+	 **/
+	properties[PROP_FILTER] =
 		g_param_spec_string (
 			"filter",
-			"Filter",
-			"LDAP search filter",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_LIMIT,
+	/**
+	 * ESourceLDAP:limit
+	 *
+	 * Download limit
+	 **/
+	properties[PROP_LIMIT] =
 		g_param_spec_uint (
 			"limit",
-			"Limit",
-			"Download limit",
+			NULL, NULL,
 			0, G_MAXUINT, 100,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ROOT_DN,
+	/**
+	 * ESourceLDAP:root-dn
+	 *
+	 * LDAP search base
+	 **/
+	properties[PROP_ROOT_DN] =
 		g_param_spec_string (
 			"root-dn",
-			"Root DN",
-			"LDAP search base",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_SCOPE,
+	/**
+	 * ESourceLDAP:scope
+	 *
+	 * LDAP search scope
+	 **/
+	properties[PROP_SCOPE] =
 		g_param_spec_enum (
 			"scope",
-			"Scope",
-			"LDAP search scope",
+			NULL, NULL,
 			E_TYPE_SOURCE_LDAP_SCOPE,
 			E_SOURCE_LDAP_SCOPE_ONELEVEL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
 	/* This is bound to the security extension.
 	 * Do not use E_SOURCE_PARAM_SETTING here. */
-	g_object_class_install_property (
-		object_class,
-		PROP_SECURITY,
+	/**
+	 * ESourceLDAP:security
+	 *
+	 * LDAP security method
+	 **/
+	properties[PROP_SECURITY] =
 		g_param_spec_enum (
 			"security",
-			"Security",
-			"LDAP security method",
+			NULL, NULL,
 			E_TYPE_SOURCE_LDAP_SECURITY,
 			E_SOURCE_LDAP_SECURITY_NONE,
 			G_PARAM_READWRITE |
 			G_PARAM_EXPLICIT_NOTIFY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -473,7 +492,7 @@ e_source_ldap_set_authentication (ESourceLDAP *extension,
 
 	extension->priv->authentication = authentication;
 
-	g_object_notify (G_OBJECT (extension), "authentication");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_AUTHENTICATION]);
 }
 
 gboolean
@@ -495,7 +514,7 @@ e_source_ldap_set_can_browse (ESourceLDAP *extension,
 
 	extension->priv->can_browse = can_browse;
 
-	g_object_notify (G_OBJECT (extension), "can-browse");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CAN_BROWSE]);
 }
 
 const gchar *
@@ -556,7 +575,7 @@ e_source_ldap_set_filter (ESourceLDAP *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "filter");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_FILTER]);
 }
 
 guint
@@ -578,7 +597,7 @@ e_source_ldap_set_limit (ESourceLDAP *extension,
 
 	extension->priv->limit = limit;
 
-	g_object_notify (G_OBJECT (extension), "limit");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LIMIT]);
 }
 
 const gchar *
@@ -625,7 +644,7 @@ e_source_ldap_set_root_dn (ESourceLDAP *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "root-dn");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ROOT_DN]);
 }
 
 ESourceLDAPScope
@@ -647,7 +666,7 @@ e_source_ldap_set_scope (ESourceLDAP *extension,
 
 	extension->priv->scope = scope;
 
-	g_object_notify (G_OBJECT (extension), "scope");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SCOPE]);
 }
 
 ESourceLDAPSecurity
@@ -669,5 +688,5 @@ e_source_ldap_set_security (ESourceLDAP *extension,
 
 	extension->priv->security = security;
 
-	g_object_notify (G_OBJECT (extension), "security");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_SECURITY]);
 }

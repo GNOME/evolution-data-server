@@ -35,8 +35,11 @@ struct _ESourceBackendPrivate {
 
 enum {
 	PROP_0,
-	PROP_BACKEND_NAME
+	PROP_BACKEND_NAME,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (
 	ESourceBackend,
@@ -104,19 +107,23 @@ e_source_backend_class_init (ESourceBackendClass *class)
 	/* We do not provide an extension name,
 	 * which is why the class is abstract. */
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BACKEND_NAME,
+	/**
+	 * ESourceBackend:backend-name
+	 *
+	 * The name of the backend handling the data source
+	 **/
+	properties[PROP_BACKEND_NAME] =
 		g_param_spec_string (
 			"backend-name",
-			"Backend Name",
-			"The name of the backend handling the data source",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -205,6 +212,6 @@ e_source_backend_set_backend_name (ESourceBackend *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "backend-name");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_BACKEND_NAME]);
 }
 

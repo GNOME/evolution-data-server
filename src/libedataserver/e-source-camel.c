@@ -54,8 +54,11 @@ struct _ESourceCamelPrivate {
 
 enum {
 	PROP_0,
-	PROP_SETTINGS
+	PROP_SETTINGS,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 typedef struct {
 	const gchar *extension_name;
@@ -567,19 +570,24 @@ e_source_camel_class_init (ESourceCamelClass *class)
 	/* CamelSettings itself has no properties. */
 	class->settings_type = CAMEL_TYPE_SETTINGS;
 
-	/* XXX This kind of stomps on CamelSettings' namespace, but it's
+	/**
+	 * ESourceCamel:settings
+	 *
+	 * The #CamelSettings instance being proxied
+	 *
+	 * Note: This kind of stomps on CamelSettings' namespace, but it's
 	 *     unlikely a CamelSettings subclass would define a property
-	 *     named "settings". */
-	g_object_class_install_property (
-		object_class,
-		PROP_SETTINGS,
+	 *     named "settings".
+	 **/
+	properties[PROP_SETTINGS] =
 		g_param_spec_object (
 			"settings",
-			"Settings",
-			"The CamelSettings instance being proxied",
+			NULL, NULL,
 			CAMEL_TYPE_SETTINGS,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

@@ -44,8 +44,11 @@ struct _EModulePrivate {
 
 enum {
 	PROP_0,
-	PROP_FILENAME
+	PROP_FILENAME,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	EModule,
@@ -200,17 +203,16 @@ e_module_class_init (EModuleClass *class)
 	 *
 	 * The filename of the module.
 	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_FILENAME,
+	properties[PROP_FILENAME] =
 		g_param_spec_string (
 			"filename",
-			"Filename",
-			"The filename of the module",
+			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

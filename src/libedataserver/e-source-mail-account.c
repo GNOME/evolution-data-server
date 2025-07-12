@@ -56,8 +56,11 @@ enum {
 	PROP_NEEDS_INITIAL_SETUP,
 	PROP_MARK_SEEN,
 	PROP_MARK_SEEN_TIMEOUT,
-	PROP_BUILTIN
+	PROP_BUILTIN,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	ESourceMailAccount,
@@ -192,91 +195,105 @@ e_source_mail_account_class_init (ESourceMailAccountClass *class)
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_IDENTITY_UID,
+	/**
+	 * ESourceMailAccount:identity-uid
+	 *
+	 * ESource UID of a Mail Identity
+	 **/
+	properties[PROP_IDENTITY_UID] =
 		g_param_spec_string (
 			"identity-uid",
-			"Identity UID",
-			"ESource UID of a Mail Identity",
+			NULL, NULL,
 			"self",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_ARCHIVE_FOLDER,
+	/**
+	 * ESourceMailAccount:archive-folder
+	 *
+	 * Folder to Archive messages in
+	 **/
+	properties[PROP_ARCHIVE_FOLDER] =
 		g_param_spec_string (
 			"archive-folder",
-			"Archive Folder",
-			"Folder to Archive messages in",
+			NULL, NULL,
 			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_NEEDS_INITIAL_SETUP,
+	/**
+	 * ESourceMailAccount:needs-initial-setup
+	 *
+	 * Whether the account needs to do an initial setup
+	 **/
+	properties[PROP_NEEDS_INITIAL_SETUP] =
 		g_param_spec_boolean (
 			"needs-initial-setup",
-			"Needs Initial Setup",
-			"Whether the account needs to do an initial setup",
+			NULL, NULL,
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MARK_SEEN,
+	/**
+	 * ESourceMailAccount:mark-seen
+	 *
+	 * Three-state option for Mark messages as read after N seconds
+	 **/
+	properties[PROP_MARK_SEEN] =
 		g_param_spec_enum (
 			"mark-seen",
-			"Mark Seen",
-			"Three-state option for Mark messages as read after N seconds",
+			NULL, NULL,
 			E_TYPE_THREE_STATE,
 			E_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_MARK_SEEN_TIMEOUT,
+	/**
+	 * ESourceMailAccount:mark-seen-timeout
+	 *
+	 * Timeout in milliseconds for Mark messages as read after N seconds
+	 **/
+	properties[PROP_MARK_SEEN_TIMEOUT] =
 		g_param_spec_int (
 			"mark-seen-timeout",
-			"Mark Seen Timeout",
-			"Timeout in milliseconds for Mark messages as read after N seconds",
+			NULL, NULL,
 			0, G_MAXINT,
 			1500,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
 
-	g_object_class_install_property (
-		object_class,
-		PROP_BUILTIN,
+	/**
+	 * ESourceMailAccount:builtin
+	 *
+	 * Whether the account is builtin
+	 **/
+	properties[PROP_BUILTIN] =
 		g_param_spec_boolean (
 			"builtin",
-			"Builtin",
-			"Whether the account is builtin",
+			NULL, NULL,
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
 			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
+			E_SOURCE_PARAM_SETTING);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -363,7 +380,7 @@ e_source_mail_account_set_identity_uid (ESourceMailAccount *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "identity-uid");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_IDENTITY_UID]);
 }
 
 /**
@@ -448,7 +465,7 @@ e_source_mail_account_set_archive_folder (ESourceMailAccount *extension,
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
-	g_object_notify (G_OBJECT (extension), "archive-folder");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ARCHIVE_FOLDER]);
 }
 
 /**
@@ -489,7 +506,7 @@ e_source_mail_account_set_needs_initial_setup (ESourceMailAccount *extension,
 
 	extension->priv->needs_initial_setup = needs_initial_setup;
 
-	g_object_notify (G_OBJECT (extension), "needs-initial-setup");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_NEEDS_INITIAL_SETUP]);
 }
 
 /**
@@ -531,7 +548,7 @@ e_source_mail_account_set_mark_seen (ESourceMailAccount *extension,
 
 	extension->priv->mark_seen = mark_seen;
 
-	g_object_notify (G_OBJECT (extension), "mark-seen");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_MARK_SEEN]);
 }
 
 /**
@@ -573,7 +590,7 @@ e_source_mail_account_set_mark_seen_timeout (ESourceMailAccount *extension,
 
 	extension->priv->mark_seen_timeout = timeout;
 
-	g_object_notify (G_OBJECT (extension), "mark-seen-timeout");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_MARK_SEEN_TIMEOUT]);
 }
 
 /**
@@ -616,5 +633,5 @@ e_source_mail_account_set_builtin (ESourceMailAccount *extension,
 
 	extension->priv->builtin = builtin;
 
-	g_object_notify (G_OBJECT (extension), "builtin");
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_BUILTIN]);
 }
