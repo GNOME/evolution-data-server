@@ -87,7 +87,7 @@ enum {
 	PROP_ALWAYS_TRUST,
 	PROP_PREFER_INLINE,
 	PROP_LOCATE_KEYS,
-	N_PROPS,
+	N_PROPS
 };
 
 static GParamSpec *properties[N_PROPS] = { NULL, };

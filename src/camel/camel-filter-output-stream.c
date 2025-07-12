@@ -41,8 +41,11 @@ struct _CamelFilterOutputStreamPrivate {
 
 enum {
 	PROP_0,
-	PROP_FILTER
+	PROP_FILTER,
+	N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
 	CamelFilterOutputStream,
@@ -212,17 +215,20 @@ camel_filter_output_stream_class_init (CamelFilterOutputStreamClass *class)
 	stream_class->write_fn = filter_output_stream_write;
 	stream_class->flush = filter_output_stream_flush;
 
-	g_object_class_install_property (
-		object_class,
-		PROP_FILTER,
+	/**
+	 * CamelFilterOutputStream:filter
+	 *
+	 * The MIME filter object
+	 **/
+	properties[PROP_FILTER] =
 		g_param_spec_object (
-			"filter",
-			"Filter",
-			"The MIME filter object",
+			"filter", NULL, NULL,
 			CAMEL_TYPE_MIME_FILTER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
