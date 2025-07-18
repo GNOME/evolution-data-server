@@ -1,3 +1,14 @@
+if(WITH_SYSTEMD_USER_UNITS)
+	configure_file(evolution-alarm-notify.service.in
+		evolution-alarm-notify.service
+		@ONLY
+	)
+
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/evolution-alarm-notify.service
+		DESTINATION ${WITH_SYSTEMDUSERUNITDIR}
+	)
+endif(WITH_SYSTEMD_USER_UNITS)
+
 set(DEPENDENCIES
 	ecal
 	edataserverui

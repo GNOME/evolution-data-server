@@ -9,3 +9,4 @@ Categories=
 NoDisplay=true
 X-Meego-Priority=Low
 X-GNOME-UsesNotifications=true
+X-systemd-skip=true

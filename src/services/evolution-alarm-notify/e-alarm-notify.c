@@ -33,12 +33,6 @@
 
 #include "e-alarm-notify.h"
 
-#ifdef DBUS_SERVICES_PREFIX
-#define APPLICATION_ID DBUS_SERVICES_PREFIX "." "org.gnome.Evolution-alarm-notify"
-#else
-#define APPLICATION_ID "org.gnome.Evolution-alarm-notify"
-#endif
-
 struct _EAlarmNotifyPrivate {
 	ESourceRegistry *registry;
 	EReminderWatcher *watcher;
@@ -1286,7 +1280,7 @@ e_alarm_notify_new (GCancellable *cancellable,
 {
 	return g_initable_new (
 		E_TYPE_ALARM_NOTIFY, cancellable, error,
-		"application-id", APPLICATION_ID,
+		"application-id", ALARM_NOTIFY_DBUS_SERVICE_NAME,
 		#if GLIB_CHECK_VERSION(2, 60, 0)
 		"flags", G_APPLICATION_ALLOW_REPLACEMENT,
 		#endif
