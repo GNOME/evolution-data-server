@@ -1,0 +1,13 @@
+[Unit]
+Description=Event and Task Reminders
+PartOf=graphical-session.target
+
+[Service]
+Type=dbus
+Slice=app.slice
+BusName=@ALARM_NOTIFY_DBUS_SERVICE_NAME@
+ExecStart=@privlibexecdir@/evolution-alarm-notify
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target

@@ -40,6 +40,7 @@ set(PROJECT_DISTCONFIGURE_PARAMS
 # ******************************
 # Actual name can be modified with DBUS_SERVICES_PREFIX option
 set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.AddressBook10")
+set(ALARM_NOTIFY_DBUS_SERVICE_NAME	"org.gnome.Evolution-alarm-notify")
 set(CALENDAR_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Calendar8")
 set(SOURCES_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Sources5")
 set(USER_PROMPTER_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.UserPrompter0")
@@ -186,6 +187,7 @@ add_printable_variable(DBUS_SERVICES_PREFIX "Prefix for D-Bus services, usually 
 
 if(NOT ("${DBUS_SERVICES_PREFIX}" STREQUAL ""))
 	set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"${DBUS_SERVICES_PREFIX}.${ADDRESS_BOOK_DBUS_SERVICE_NAME}")
+	set(ALARM_NOTIFY_DBUS_SERVICE_NAME	"${DBUS_SERVICES_PREFIX}.${ALARM_NOTIFY_DBUS_SERVICE_NAME}")
 	set(CALENDAR_DBUS_SERVICE_NAME		"${DBUS_SERVICES_PREFIX}.${CALENDAR_DBUS_SERVICE_NAME}")
 	set(SOURCES_DBUS_SERVICE_NAME		"${DBUS_SERVICES_PREFIX}.${SOURCES_DBUS_SERVICE_NAME}")
 	set(USER_PROMPTER_DBUS_SERVICE_NAME	"${DBUS_SERVICES_PREFIX}.${USER_PROMPTER_DBUS_SERVICE_NAME}")
