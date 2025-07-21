@@ -18,6 +18,23 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+	CMP_HEADER_CONTAINS,
+	CMP_HEADER_MATCHES,
+	CMP_HEADER_STARTS_WITH,
+	CMP_HEADER_ENDS_WITH,
+	CMP_HEADER_EXISTS,
+	CMP_HEADER_SOUNDEX,
+	CMP_HEADER_REGEX,
+	CMP_HEADER_FULL_REGEX,
+	CMP_HEADER_HAS_WORDS
+} CmpHeaderKind;
+
+typedef enum {
+	CMP_BODY_TEXT,
+	CMP_BODY_REGEX
+} CmpBodyKind;
+
 sqlite3 *	_camel_db_get_sqlite_db			(CamelDB *self);
 
 void		_camel_store_db_register_search		(CamelStoreDB *self,
@@ -25,13 +42,23 @@ void		_camel_store_db_register_search		(CamelStoreDB *self,
 void		_camel_store_db_unregister_search	(CamelStoreDB *self,
 							 CamelStoreSearch *search);
 
-gboolean	_camel_store_search_body_contains	(CamelStoreSearch *self,
+gboolean	_camel_store_search_compare_text	(CamelStoreSearch *self,
 							 const gchar *uid,
-							 const gchar *cmpkind,
+							 const gchar *default_charset,
+							 const gchar *header_name,
+							 CmpHeaderKind cmp_kind,
+							 const gchar *haystack,
+							 const gchar *needle);
+gboolean	_camel_store_search_search_body		(CamelStoreSearch *self,
+							 const gchar *uid,
+							 CmpBodyKind cmp_kind,
 							 const gchar *encoded_words);
-gchar *		_camel_store_search_dup_header_value	(CamelStoreSearch *self,
+gboolean	_camel_store_search_search_header	(CamelStoreSearch *self,
 							 const gchar *uid,
-							 const gchar *header_name);
+							 const gchar *header_name,
+							 CmpHeaderKind cmp_kind,
+							 const gchar *needle,
+							 const gchar *db_value);
 gchar *		_camel_store_search_dup_user_tag	(CamelStoreSearch *self,
 							 const gchar *uid,
 							 const gchar *tag_name,
@@ -41,10 +68,6 @@ gchar *		_camel_store_search_from_loaded_info_or_db
 							 const gchar *uid,
 							 const gchar *column_name,
 							 const gchar *dbvalue);
-gboolean	_camel_store_search_cmp_any_headers	(CamelStoreSearch *self,
-							 const gchar *uid,
-							 camel_search_match_t how,
-							 const gchar *needle);
 gboolean	_camel_store_search_addressbook_contains(CamelStoreSearch *self,
 							 const gchar *book_uid,
 							 const gchar *email);

@@ -132,87 +132,56 @@ camel_store_db_init (CamelStoreDB *self)
 	self->priv->searches = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
-static camel_search_match_t
-csdb_cmp_kind_to_match (const gchar *kind,
-			gboolean *out_know_kind)
-{
-	camel_search_match_t how = CAMEL_SEARCH_MATCH_EXACT;
-
-	/* default or known kind is used */
-	*out_know_kind = TRUE;
-
-	if (kind && *kind) {
-		if (g_ascii_strcasecmp (kind, "contains") == 0)
-			how = CAMEL_SEARCH_MATCH_CONTAINS;
-		else if (g_ascii_strcasecmp (kind, "matches") == 0)
-			how = CAMEL_SEARCH_MATCH_EXACT;
-		else if (g_ascii_strcasecmp (kind, "starts") == 0)
-			how = CAMEL_SEARCH_MATCH_STARTS;
-		else if (g_ascii_strcasecmp (kind, "ends") == 0)
-			how = CAMEL_SEARCH_MATCH_ENDS;
-		else if (g_ascii_strcasecmp (kind, "words") == 0)
-			how = CAMEL_SEARCH_MATCH_WORD;
-		else if (g_ascii_strcasecmp (kind, "soundex") == 0)
-			how = CAMEL_SEARCH_MATCH_SOUNDEX;
-		else if (g_ascii_strcasecmp (kind, "regex") == 0)
-			how = CAMEL_SEARCH_MATCH_REGEX_SINGLELINE;
-		else if (g_ascii_strcasecmp (kind, "fullregex") == 0)
-			how = CAMEL_SEARCH_MATCH_REGEX_MULTILINE;
-		else
-			*out_know_kind = FALSE;
-
-		if (!*out_know_kind)
-			g_warning ("%s: Unknown compare kind '%s'", G_STRFUNC, kind);
-	}
-
-	return how;
-}
-
-/* bool camelcmptext(string header_name, string kind, string haystack, string needle) */
+/* bool camelcmptext(string context, string uid, string header_name, int cmp_kind, string haystack, string needle) */
 static void
 csdb_camel_cmp_text_func (sqlite3_context *ctx,
 			  gint nArgs,
 			  sqlite3_value **values)
 {
 	gboolean matches = FALSE;
-	const gchar *header_name, *kind, *haystack, *needle;
-	const gchar *charset = NULL; /* do not know how to get it here */
-	camel_search_match_t how;
-	camel_search_t type;
-	gboolean know_kind = TRUE;
+	CamelStoreDB *self = sqlite3_user_data (ctx);
+	CamelStoreSearch *search;
+	const gchar *context, *uid, *header_name, *haystack, *needle;
+	gint cmp_kind;
 
 	g_return_if_fail (ctx != NULL);
-	g_return_if_fail (nArgs == 4);
+	g_return_if_fail (nArgs == 6);
 	g_return_if_fail (values != NULL);
 
-	header_name = (const gchar *) sqlite3_value_text (values[0]);
-	kind = (const gchar *) sqlite3_value_text (values[1]);
-	haystack = (const gchar *) sqlite3_value_text (values[2]);
-	needle = (const gchar *) sqlite3_value_text (values[3]);
+	context = (const gchar *) sqlite3_value_text (values[0]);
+	uid = (const gchar *) sqlite3_value_text (values[1]);
+	header_name = (const gchar *) sqlite3_value_text (values[2]);
+	cmp_kind = (gint) sqlite3_value_int64 (values[3]);
+	haystack = (const gchar *) sqlite3_value_text (values[4]);
+	needle = (const gchar *) sqlite3_value_text (values[5]);
 
-	if (camel_search_header_is_address (header_name))
-		type = CAMEL_SEARCH_TYPE_ADDRESS;
+	LOCK (self);
+	search = g_hash_table_lookup (self->priv->searches, context);
+	if (search)
+		g_object_ref (search);
+	UNLOCK (self);
+
+	if (search)
+		matches = _camel_store_search_compare_text (search, uid, NULL, header_name, cmp_kind, haystack, needle);
 	else
-		type = CAMEL_SEARCH_TYPE_ASIS;
+		g_warn_if_reached ();
 
-	how = csdb_cmp_kind_to_match (kind, &know_kind);
-
-	if (know_kind)
-		matches = camel_search_header_match (haystack ? haystack : "", needle ? needle : "", how, type, charset);
+	g_clear_object (&search);
 
 	sqlite3_result_int (ctx, matches ? 1 : 0);
 }
 
-/* bool camelbodycontains(string context, string uid, string cmpkind, string encoded_words) */
+/* bool camelsearchbody(string context, string uid, int cmp_kind, string encoded_words) */
 static void
-csdb_camel_body_contains_func (sqlite3_context *ctx,
-			       gint nArgs,
-			       sqlite3_value **values)
+csdb_camel_search_body_func (sqlite3_context *ctx,
+			     gint nArgs,
+			     sqlite3_value **values)
 {
 	CamelStoreDB *self = sqlite3_user_data (ctx);
 	CamelStoreSearch *search;
 	gboolean matches = FALSE;
-	const gchar *context, *uid, *cmpkind, *encoded_words;
+	const gchar *context, *uid, *encoded_words;
+	gint cmp_kind;
 
 	g_return_if_fail (ctx != NULL);
 	g_return_if_fail (nArgs == 4);
@@ -220,7 +189,7 @@ csdb_camel_body_contains_func (sqlite3_context *ctx,
 
 	context = (const gchar *) sqlite3_value_text (values[0]);
 	uid = (const gchar *) sqlite3_value_text (values[1]);
-	cmpkind = (const gchar *) sqlite3_value_text (values[2]);
+	cmp_kind = (gint) sqlite3_value_int64 (values[2]);
 	encoded_words = (const gchar *) sqlite3_value_text (values[3]);
 
 	LOCK (self);
@@ -230,7 +199,7 @@ csdb_camel_body_contains_func (sqlite3_context *ctx,
 	UNLOCK (self);
 
 	if (search)
-		matches = _camel_store_search_body_contains (search, uid, cmpkind, encoded_words);
+		matches = _camel_store_search_search_body (search, uid, cmp_kind, encoded_words);
 	else
 		g_warn_if_reached ();
 
@@ -239,24 +208,28 @@ csdb_camel_body_contains_func (sqlite3_context *ctx,
 	sqlite3_result_int (ctx, matches ? 1 : 0);
 }
 
-/* string camelgetheader(string context, string uid, string header_name) */
+/* bool camelsearchheader(string context, string uid, string header_name, int cmp_kind, string needle, string db_value) */
 static void
-csdb_camel_get_header_func (sqlite3_context *ctx,
-			    gint nArgs,
-			    sqlite3_value **values)
+csdb_camel_search_header_func (sqlite3_context *ctx,
+			       gint nArgs,
+			       sqlite3_value **values)
 {
 	CamelStoreDB *self = sqlite3_user_data (ctx);
 	CamelStoreSearch *search;
-	gchar *header_value = NULL;
-	const gchar *context, *uid, *header_name;
+	const gchar *context, *uid, *header_name, *needle, *db_value;
+	gint cmp_kind;
+	gboolean matches = FALSE;
 
 	g_return_if_fail (ctx != NULL);
-	g_return_if_fail (nArgs == 3);
+	g_return_if_fail (nArgs == 6);
 	g_return_if_fail (values != NULL);
 
 	context = (const gchar *) sqlite3_value_text (values[0]);
 	uid = (const gchar *) sqlite3_value_text (values[1]);
 	header_name = (const gchar *) sqlite3_value_text (values[2]);
+	cmp_kind = (gint) sqlite3_value_int64 (values[3]);
+	needle = (const gchar *) sqlite3_value_text (values[4]);
+	db_value = (const gchar *) sqlite3_value_text (values[5]);
 
 	LOCK (self);
 	search = g_hash_table_lookup (self->priv->searches, context);
@@ -265,61 +238,11 @@ csdb_camel_get_header_func (sqlite3_context *ctx,
 	UNLOCK (self);
 
 	if (search)
-		header_value = _camel_store_search_dup_header_value (search, uid, header_name);
+		matches = _camel_store_search_search_header (search, uid, header_name, cmp_kind, needle, db_value);
 	else
 		g_warn_if_reached ();
 
 	g_clear_object (&search);
-
-	if (header_value)
-		sqlite3_result_text (ctx, header_value, -1, g_free);
-	else
-		sqlite3_result_null (ctx);
-}
-
-/* string camelcmpanyheader(string context, string uid, string kind, string needle) */
-static void
-csdb_camel_cmp_any_header_func (sqlite3_context *ctx,
-				gint nArgs,
-				sqlite3_value **values)
-{
-	CamelStoreDB *self = sqlite3_user_data (ctx);
-	CamelStoreSearch *search;
-	gboolean matches = FALSE;
-	const gchar *context, *uid, *kind, *needle;
-
-	g_return_if_fail (ctx != NULL);
-	g_return_if_fail (nArgs == 4);
-	g_return_if_fail (values != NULL);
-
-	context = (const gchar *) sqlite3_value_text (values[0]);
-	uid = (const gchar *) sqlite3_value_text (values[1]);
-	kind = (const gchar *) sqlite3_value_text (values[2]);
-	needle = (const gchar *) sqlite3_value_text (values[3]);
-
-	if (!needle || !*needle) {
-		matches = TRUE;
-	} else {
-		camel_search_match_t how = CAMEL_SEARCH_MATCH_EXACT;
-		gboolean know_kind = FALSE;
-
-		how = csdb_cmp_kind_to_match (kind, &know_kind);
-
-		if (know_kind) {
-			LOCK (self);
-			search = g_hash_table_lookup (self->priv->searches, context);
-			if (search)
-				g_object_ref (search);
-			UNLOCK (self);
-
-			if (search)
-				matches = _camel_store_search_cmp_any_headers (search, uid, how, needle);
-			else
-				g_warn_if_reached ();
-
-			g_clear_object (&search);
-		}
-	}
 
 	sqlite3_result_int (ctx, matches ? 1 : 0);
 }
@@ -642,17 +565,14 @@ camel_store_db_init_sqlite_functions (CamelStoreDB *self)
 
 	g_return_if_fail (sdb != NULL);
 
-	/* bool camelcmptext(string header_name, string kind, string haystack, string needle) */
-	sqlite3_create_function (sdb, "camelcmptext", 4, flags, self, csdb_camel_cmp_text_func, NULL, NULL);
+	/* bool camelcmptext(string context, string uid, string header_name, int cmp_kind, string haystack, string needle) */
+	sqlite3_create_function (sdb, "camelcmptext", 6, flags, self, csdb_camel_cmp_text_func, NULL, NULL);
 
-	/* bool camelbodycontains(string context, string uid, string cmpkind, string encoded_words) */
-	sqlite3_create_function (sdb, "camelbodycontains", 4, flags, self, csdb_camel_body_contains_func, NULL, NULL);
+	/* bool camelsearchbody(string context, string uid, int cmp_kind, string encoded_words) */
+	sqlite3_create_function (sdb, "camelsearchbody", 4, flags, self, csdb_camel_search_body_func, NULL, NULL);
 
-	/* string camelgetheader(string context, string uid, string header_name) */
-	sqlite3_create_function (sdb, "camelgetheader", 3, flags, self, csdb_camel_get_header_func, NULL, NULL);
-
-	/* string camelcmpanyheader(string context, string uid, string kind, string needle) */
-	sqlite3_create_function (sdb, "camelcmpanyheader", 4, flags, self, csdb_camel_cmp_any_header_func, NULL, NULL);
+	/* bool camelsearchheader(string context, string uid, string header_name, int cmp_kind, string needle, string db_value) */
+	sqlite3_create_function (sdb, "camelsearchheader", 6, flags, self, csdb_camel_search_header_func, NULL, NULL);
 
 	/* string camelgetusertag(string context, string uid, string tag_name, string db_tags) */
 	sqlite3_create_function (sdb, "camelgetusertag", 4, flags, self, csdb_camel_get_user_tag_func, NULL, NULL);

@@ -11,6 +11,9 @@
 
 #include "lib-camel-test-utils.c"
 
+#define SIMULTANEOUS_TIMEOUT_SECS 10
+#define SIMULTANEOUS_N_REPEATS 100
+
 static void
 test_store_search_check_folder_uids (GPtrArray *uids, /* const gchar * */
 				     ...) G_GNUC_NULL_TERMINATED;
@@ -4369,6 +4372,165 @@ test_store_search_summary_changes (void)
 	test_session_check_finalized ();
 }
 
+typedef struct _SimultaneousData {
+	GMainLoop *loop;
+	CamelStore *store;
+	CamelFolder *f1;
+	gint n_pending;
+} SimultaneousData;
+
+static gboolean
+test_simultaneous_timeout_cb (gpointer user_data)
+{
+	g_assert_not_reached ();
+
+	return G_SOURCE_REMOVE;
+}
+
+/* only for testing purposes */
+void _camel_folder_summary_unload_uid (CamelFolderSummary *self, const gchar *uid);
+
+static gpointer
+test_simultaneous_stress_thread (SimultaneousData *sd,
+				const gchar *uid)
+{
+	CamelDB *cdb;
+	CamelFolder *f1 = sd->f1;
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (f1);
+	CamelMessageInfo *mi;
+	GError *local_error = NULL;
+	gboolean success;
+	gboolean is_repeated = g_strcmp0 (uid, "11") == 0;
+	guint ii;
+
+	g_assert_nonnull (sd);
+
+	cdb = CAMEL_DB (camel_store_get_db (sd->store));
+	g_assert_nonnull (cdb);
+
+	for (ii = 0; ii < SIMULTANEOUS_N_REPEATS; ii++) {
+		mi = camel_folder_summary_get (summary, uid);
+		g_assert_nonnull (mi);
+		camel_message_info_set_size (mi, ii);
+		g_clear_object (&mi);
+
+		success = camel_folder_summary_save (summary, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+
+		mi = camel_folder_summary_get (summary, uid);
+		g_assert_nonnull (mi);
+		if (!is_repeated)
+			g_assert_cmpuint (camel_message_info_get_size (mi), ==, ii);
+		g_clear_object (&mi);
+
+		_camel_folder_summary_unload_uid (summary, uid);
+
+		mi = camel_folder_summary_get (summary, uid);
+		g_assert_nonnull (mi);
+		if (!is_repeated)
+			g_assert_cmpuint (camel_message_info_get_size (mi), ==, ii);
+		g_clear_object (&mi);
+	}
+
+	if (g_atomic_int_dec_and_test (&sd->n_pending))
+		g_main_loop_quit (sd->loop);
+
+	return NULL;
+}
+
+static gpointer
+test_simultaneous_stress_thread1 (gpointer user_data)
+{
+	return test_simultaneous_stress_thread (user_data, "11");
+}
+
+static gpointer
+test_simultaneous_stress_thread2 (gpointer user_data)
+{
+	return test_simultaneous_stress_thread (user_data, "12");
+}
+
+static gpointer
+test_simultaneous_stress_thread3 (gpointer user_data)
+{
+	return test_simultaneous_stress_thread (user_data, "13");
+}
+
+static gpointer
+test_simultaneous_stress_thread4 (gpointer user_data)
+{
+	return test_simultaneous_stress_thread (user_data, "11");
+}
+
+static gboolean
+test_simultaneous_stress_start_idle_cb (gpointer user_data)
+{
+	SimultaneousData *sd = user_data;
+
+	sd->n_pending = 4;
+
+	g_thread_unref (g_thread_new ("test_simultaneous_stress_thread1", test_simultaneous_stress_thread1, user_data));
+	g_thread_unref (g_thread_new ("test_simultaneous_stress_thread2", test_simultaneous_stress_thread2, user_data));
+	g_thread_unref (g_thread_new ("test_simultaneous_stress_thread3", test_simultaneous_stress_thread3, user_data));
+	g_thread_unref (g_thread_new ("test_simultaneous_stress_thread4", test_simultaneous_stress_thread4, user_data));
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_store_search_simultaneous_read_write_stress (void)
+{
+	SimultaneousData sd = { NULL, };
+	CamelStore *store;
+	CamelStoreDB *sdb;
+	CamelFolder *f1;
+	GMainLoop *loop;
+	GError *local_error = NULL;
+	guint source_id;
+
+	store = test_store_new ();
+
+	f1 = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (f1);
+	test_add_messages (f1,
+		"uid", "11",
+		"subject", "s11",
+		"flags", (guint32) (CAMEL_MESSAGE_SEEN),
+		"",
+		"uid", "12",
+		"subject", "s12",
+		"",
+		"uid", "13",
+		"subject", "s13",
+		NULL);
+
+	sdb = camel_store_get_db (store);
+	g_assert_nonnull (sdb);
+
+	loop = g_main_loop_new (NULL, FALSE);
+
+	/* this is testing deadlock, thus set a short timeout for the test and run it in a thread */
+	source_id = g_timeout_add_seconds (SIMULTANEOUS_TIMEOUT_SECS, test_simultaneous_timeout_cb, NULL);
+	g_assert_cmpuint (source_id, !=, 0);
+
+	sd.loop = loop;
+	sd.store = store;
+	sd.f1 = f1;
+
+	g_idle_add (test_simultaneous_stress_start_idle_cb, &sd);
+	g_main_loop_run (loop);
+
+	g_source_remove (source_id);
+	g_main_loop_unref (loop);
+	g_clear_object (&f1);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -4401,6 +4563,7 @@ main (gint argc,
 	g_test_add_func ("/CamelStoreSearch/BoolSExp", test_store_search_bool_sexp);
 	g_test_add_func ("/CamelStoreSearch/MatchIndex", test_store_search_match_index);
 	g_test_add_func ("/CamelStoreSearch/SummaryChanges", test_store_search_summary_changes);
+	g_test_add_func ("/CamelStoreSearch/SimultaneousReadWriteStress", test_store_search_simultaneous_read_write_stress);
 
 	return g_test_run ();
 }

@@ -189,6 +189,25 @@ remove_all_loaded (CamelFolderSummary *summary)
 	camel_folder_summary_unlock (summary);
 }
 
+/* only for testing purposes */
+void _camel_folder_summary_unload_uid (CamelFolderSummary *self, const gchar *uid);
+
+void
+_camel_folder_summary_unload_uid (CamelFolderSummary *self,
+				  const gchar *uid)
+{
+	CamelMessageInfo *mi;
+
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (self));
+
+	camel_folder_summary_lock (self);
+	mi = g_hash_table_lookup (self->priv->loaded_infos, uid);
+	g_hash_table_remove (self->priv->loaded_infos, uid);
+	camel_folder_summary_unlock (self);
+
+	g_clear_object (&mi);
+}
+
 static void
 free_o_name (gpointer key,
              gpointer value,
