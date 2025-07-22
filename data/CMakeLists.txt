@@ -2,27 +2,29 @@
 # evolution-alarm-notify
 # ********************************
 
-set(autostartdir ${SYSCONF_INSTALL_DIR}/xdg/autostart)
-set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
-set(alarm_notify_icon hicolor_apps_scalable_org.gnome.Evolution-alarm-notify.svg)
+if(HAVE_GTK)
+	set(autostartdir ${SYSCONF_INSTALL_DIR}/xdg/autostart)
+	set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
+	set(alarm_notify_icon hicolor_apps_scalable_org.gnome.Evolution-alarm-notify.svg)
 
-configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
-	org.gnome.Evolution-alarm-notify.desktop.in
-	@ONLY
-)
+	configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
+		org.gnome.Evolution-alarm-notify.desktop.in
+		@ONLY
+	)
 
-i18n_merge_file(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop.in org.gnome.Evolution-alarm-notify.desktop ${CMAKE_SOURCE_DIR}/po)
+	i18n_merge_file(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop.in org.gnome.Evolution-alarm-notify.desktop ${CMAKE_SOURCE_DIR}/po)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
-	DESTINATION ${autostartdir}
-)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
+		DESTINATION ${autostartdir}
+	)
 
-# To have GNOME Shell show the GNotification notifications from it; otherwise it ignores them
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
-	DESTINATION ${desktopdir}
-)
+	# To have GNOME Shell show the GNotification notifications from it; otherwise it ignores them
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
+		DESTINATION ${desktopdir}
+	)
 
-add_icon_cache_files("${SHARE_INSTALL_PREFIX}" alarm_notify_icon)
+	add_icon_cache_files("${SHARE_INSTALL_PREFIX}" alarm_notify_icon)
+endif(HAVE_GTK)
 
 # ********************************
 # OAuth2 Handler helper
