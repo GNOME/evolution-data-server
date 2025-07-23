@@ -293,32 +293,32 @@ data_book_encode_properties (EDBusAddressBook *dbus_interface)
 	properties_array = g_ptr_array_new_with_free_func (g_free);
 
 	if (dbus_interface) {
-		GParamSpec **properties;
-		guint ii, n_properties = 0;
+		GParamSpec **props;
+		guint ii, n_props = 0;
 
-		properties = g_object_class_list_properties (G_OBJECT_GET_CLASS (dbus_interface), &n_properties);
+		props = g_object_class_list_properties (G_OBJECT_GET_CLASS (dbus_interface), &n_props);
 
-		for (ii = 0; ii < n_properties; ii++) {
+		for (ii = 0; ii < n_props; ii++) {
 			gboolean can_process =
-				g_type_is_a (properties[ii]->value_type, G_TYPE_BOOLEAN) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_STRING) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_STRV) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_UCHAR) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_INT) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_UINT) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_INT64) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_UINT64) ||
-				g_type_is_a (properties[ii]->value_type, G_TYPE_DOUBLE);
+				g_type_is_a (props[ii]->value_type, G_TYPE_BOOLEAN) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_STRING) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_STRV) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_UCHAR) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_INT) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_UINT) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_INT64) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_UINT64) ||
+				g_type_is_a (props[ii]->value_type, G_TYPE_DOUBLE);
 
 			if (can_process) {
 				GValue value = G_VALUE_INIT;
 				GVariant *stored = NULL;
 
-				g_value_init (&value, properties[ii]->value_type);
-				g_object_get_property ((GObject *) dbus_interface, properties[ii]->name, &value);
+				g_value_init (&value, props[ii]->value_type);
+				g_object_get_property ((GObject *) dbus_interface, props[ii]->name, &value);
 
 				#define WORKOUT(gvl, gvr) \
-					if (g_type_is_a (properties[ii]->value_type, G_TYPE_ ## gvl)) \
+					if (g_type_is_a (props[ii]->value_type, G_TYPE_ ## gvl)) \
 						stored = g_dbus_gvalue_to_gvariant (&value, G_VARIANT_TYPE_ ## gvr);
 
 				WORKOUT (BOOLEAN, BOOLEAN);
@@ -336,7 +336,7 @@ data_book_encode_properties (EDBusAddressBook *dbus_interface)
 				g_value_unset (&value);
 
 				if (stored) {
-					g_ptr_array_add (properties_array, g_strdup (properties[ii]->name));
+					g_ptr_array_add (properties_array, g_strdup (props[ii]->name));
 					g_ptr_array_add (properties_array, g_variant_print (stored, TRUE));
 
 					g_variant_unref (stored);
@@ -344,7 +344,7 @@ data_book_encode_properties (EDBusAddressBook *dbus_interface)
 			}
 		}
 
-		g_free (properties);
+		g_free (props);
 	}
 
 	g_ptr_array_add (properties_array, NULL);

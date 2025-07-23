@@ -766,7 +766,7 @@ book_client_finalize (GObject *object)
 
 static void
 book_client_process_properties (EBookClient *book_client,
-				gchar * const *properties)
+				gchar * const *props)
 {
 	GObject *dbus_proxy;
 	GObjectClass *object_class;
@@ -777,21 +777,21 @@ book_client_process_properties (EBookClient *book_client,
 	dbus_proxy = G_OBJECT (book_client->priv->dbus_proxy);
 	g_return_if_fail (G_IS_OBJECT (dbus_proxy));
 
-	if (!properties)
+	if (!props)
 		return;
 
 	object_class = G_OBJECT_GET_CLASS (dbus_proxy);
 
-	for (ii = 0; properties[ii]; ii++) {
-		if (!(ii & 1) && properties[ii + 1]) {
+	for (ii = 0; props[ii]; ii++) {
+		if (!(ii & 1) && props[ii + 1]) {
 			GParamSpec *param;
 			GVariant *expected = NULL;
 
-			param = g_object_class_find_property (object_class, properties[ii]);
+			param = g_object_class_find_property (object_class, props[ii]);
 			if (param) {
 				#define WORKOUT(gvl, gvr) \
 					if (g_type_is_a (param->value_type, G_TYPE_ ## gvl)) { \
-						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, properties[ii + 1], NULL, NULL, NULL); \
+						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, props[ii + 1], NULL, NULL, NULL); \
 					}
 
 				WORKOUT (BOOLEAN, BOOLEAN);
@@ -954,7 +954,7 @@ book_client_open_sync (EClient *client,
                        GError **error)
 {
 	EBookClient *book_client;
-	gchar **properties = NULL;
+	gchar **props = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -962,10 +962,10 @@ book_client_open_sync (EClient *client,
 	book_client = E_BOOK_CLIENT (client);
 
 	e_dbus_address_book_call_open_sync (
-		book_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+		book_client->priv->dbus_proxy, &props, cancellable, &local_error);
 
-	book_client_process_properties (book_client, properties);
-	g_strfreev (properties);
+	book_client_process_properties (book_client, props);
+	g_strfreev (props);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1006,7 +1006,7 @@ book_client_retrieve_properties_sync (EClient *client,
 				      GError **error)
 {
 	EBookClient *book_client;
-	gchar **properties = NULL;
+	gchar **props = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1014,10 +1014,10 @@ book_client_retrieve_properties_sync (EClient *client,
 	book_client = E_BOOK_CLIENT (client);
 
 	e_dbus_address_book_call_retrieve_properties_sync (
-		book_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+		book_client->priv->dbus_proxy, &props, cancellable, &local_error);
 
-	book_client_process_properties (book_client, properties);
-	g_strfreev (properties);
+	book_client_process_properties (book_client, props);
+	g_strfreev (props);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1355,13 +1355,13 @@ e_book_client_connect_sync (ESource *source,
 	g_initable_init (G_INITABLE (client), cancellable, &local_error);
 
 	if (local_error == NULL) {
-		gchar **properties = NULL;
+		gchar **props = NULL;
 
 		e_dbus_address_book_call_open_sync (
-			client->priv->dbus_proxy, &properties, cancellable, &local_error);
+			client->priv->dbus_proxy, &props, cancellable, &local_error);
 
-		book_client_process_properties (client, properties);
-		g_strfreev (properties);
+		book_client_process_properties (client, props);
+		g_strfreev (props);
 	}
 
 	if (!local_error && wait_for_connected_seconds != (guint32) -1) {
@@ -1405,17 +1405,17 @@ book_client_connect_open_cb (GObject *source_object,
                              gpointer user_data)
 {
 	GTask *task = G_TASK (user_data);
-	gchar **properties = NULL;
+	gchar **props = NULL;
 	GObject *client_object;
 	GError *local_error = NULL;
 
 	e_dbus_address_book_call_open_finish (
-		E_DBUS_ADDRESS_BOOK (source_object), &properties, result, &local_error);
+		E_DBUS_ADDRESS_BOOK (source_object), &props, result, &local_error);
 
 	client_object = g_task_get_source_object (task);
 	if (client_object) {
-		book_client_process_properties (E_BOOK_CLIENT (client_object), properties);
-		g_clear_pointer (&properties, g_strfreev);
+		book_client_process_properties (E_BOOK_CLIENT (client_object), props);
+		g_clear_pointer (&props, g_strfreev);
 
 		if (!local_error) {
 			ConnectClosure *closure = g_task_get_task_data (task);
@@ -1440,7 +1440,7 @@ book_client_connect_open_cb (GObject *source_object,
 	}
 
 	g_clear_object (&task);
-	g_clear_pointer (&properties, g_strfreev);
+	g_clear_pointer (&props, g_strfreev);
 }
 
 /* Helper for e_book_client_connect() */

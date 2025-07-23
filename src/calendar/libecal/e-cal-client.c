@@ -904,7 +904,7 @@ cal_client_finalize (GObject *object)
 
 static void
 cal_client_process_properties (ECalClient *cal_client,
-			       gchar * const *properties)
+			       gchar * const *props)
 {
 	GObject *dbus_proxy;
 	GObjectClass *object_class;
@@ -915,21 +915,21 @@ cal_client_process_properties (ECalClient *cal_client,
 	dbus_proxy = G_OBJECT (cal_client->priv->dbus_proxy);
 	g_return_if_fail (G_IS_OBJECT (dbus_proxy));
 
-	if (!properties)
+	if (!props)
 		return;
 
 	object_class = G_OBJECT_GET_CLASS (dbus_proxy);
 
-	for (ii = 0; properties[ii]; ii++) {
-		if (!(ii & 1) && properties[ii + 1]) {
+	for (ii = 0; props[ii]; ii++) {
+		if (!(ii & 1) && props[ii + 1]) {
 			GParamSpec *param;
 			GVariant *expected = NULL;
 
-			param = g_object_class_find_property (object_class, properties[ii]);
+			param = g_object_class_find_property (object_class, props[ii]);
 			if (param) {
 				#define WORKOUT(gvl, gvr) \
 					if (g_type_is_a (param->value_type, G_TYPE_ ## gvl)) { \
-						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, properties[ii + 1], NULL, NULL, NULL); \
+						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, props[ii + 1], NULL, NULL, NULL); \
 					}
 
 				WORKOUT (BOOLEAN, BOOLEAN);
@@ -1077,7 +1077,7 @@ cal_client_open_sync (EClient *client,
                       GError **error)
 {
 	ECalClient *cal_client;
-	gchar **properties = NULL;
+	gchar **props = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
@@ -1085,10 +1085,10 @@ cal_client_open_sync (EClient *client,
 	cal_client = E_CAL_CLIENT (client);
 
 	e_dbus_calendar_call_open_sync (
-		cal_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+		cal_client->priv->dbus_proxy, &props, cancellable, &local_error);
 
-	cal_client_process_properties (cal_client, properties);
-	g_strfreev (properties);
+	cal_client_process_properties (cal_client, props);
+	g_strfreev (props);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1129,17 +1129,17 @@ cal_client_retrieve_properties_sync (EClient *client,
 				     GError **error)
 {
 	ECalClient *cal_client;
-	gchar **properties = NULL;
+	gchar **props = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
 
-	e_dbus_calendar_call_retrieve_properties_sync (cal_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+	e_dbus_calendar_call_retrieve_properties_sync (cal_client->priv->dbus_proxy, &props, cancellable, &local_error);
 
-	cal_client_process_properties (cal_client, properties);
-	g_strfreev (properties);
+	cal_client_process_properties (cal_client, props);
+	g_strfreev (props);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1668,13 +1668,13 @@ e_cal_client_connect_sync (ESource *source,
 	g_initable_init (G_INITABLE (client), cancellable, &local_error);
 
 	if (local_error == NULL) {
-		gchar **properties = NULL;
+		gchar **props = NULL;
 
 		e_dbus_calendar_call_open_sync (
-			client->priv->dbus_proxy, &properties, cancellable, &local_error);
+			client->priv->dbus_proxy, &props, cancellable, &local_error);
 
-		cal_client_process_properties (client, properties);
-		g_strfreev (properties);
+		cal_client_process_properties (client, props);
+		g_strfreev (props);
 	}
 
 	if (!local_error && wait_for_connected_seconds != (guint32) -1) {
@@ -1718,18 +1718,18 @@ cal_client_connect_open_cb (GObject *source_object,
                             gpointer user_data)
 {
 	GTask *task;
-	gchar **properties = NULL;
+	gchar **props = NULL;
 	ECalClient *client_object;
 	GError *local_error = NULL;
 
 	task = G_TASK (user_data);
 
 	e_dbus_calendar_call_open_finish (
-		E_DBUS_CALENDAR (source_object), &properties, result, &local_error);
+		E_DBUS_CALENDAR (source_object), &props, result, &local_error);
 
 	client_object = g_task_get_source_object (task);
 	if (client_object) {
-		cal_client_process_properties (client_object, properties);
+		cal_client_process_properties (client_object, props);
 
 		if (!local_error) {
 			ConnectClosure *closure;
@@ -1756,7 +1756,7 @@ cal_client_connect_open_cb (GObject *source_object,
 	}
 
 	g_clear_object (&task);
-	g_strfreev (properties);
+	g_strfreev (props);
 }
 
 /* Helper for e_cal_client_connect() */
