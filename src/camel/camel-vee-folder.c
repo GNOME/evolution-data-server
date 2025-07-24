@@ -778,7 +778,7 @@ vee_folder_rebuild_for_expression_sync (CamelVeeFolder *vfolder,
 			}
 		}
 
-		if (success)
+		if (success && search_index)
 			camel_store_search_index_apply_match_threads (search_index, items, threads_kind, threads_flags, cancellable);
 	}
 
