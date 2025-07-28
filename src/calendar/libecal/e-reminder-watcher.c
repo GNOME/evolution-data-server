@@ -239,6 +239,32 @@ e_reminder_watcher_dump_scheduled (EReminderWatcher *watcher)
 	g_rec_mutex_unlock (&watcher->priv->lock);
 }
 
+static void
+e_reminder_watcher_dump_objects (const GSList *objects) /* ICalComponent * */
+{
+	GSList *link;
+
+	if (!e_reminder_watcher_debug_enabled ())
+		return;
+
+	for (link = (GSList *) objects; link; link = g_slist_next (link)) {
+		ICalComponent *icomp = link->data;
+		gchar *rid;
+
+		rid = e_cal_util_component_get_recurid_as_string (icomp);
+
+		e_reminder_watcher_debug_print ("   - %s '%s' uid:'%s'%s%s%s\n",
+			i_cal_component_kind_to_string (i_cal_component_isa (icomp)),
+			i_cal_component_get_summary (icomp),
+			i_cal_component_get_uid (icomp),
+			rid ? " rid:'" : "",
+			rid ? rid : "",
+			rid ? "'" : "");
+
+		g_free (rid);
+	}
+}
+
 static gboolean
 e_reminder_watcher_is_for_every_event_client (ECalClient *client)
 {
@@ -1326,6 +1352,7 @@ e_reminder_watcher_objects_added_cb (ECalClientView *view,
 	e_reminder_watcher_debug_print ("View for %s added %d objects\n",
 		source ? e_source_get_uid (source) : "[null]",
 		g_slist_length ((GSList *) objects));
+	e_reminder_watcher_dump_objects (objects);
 
 	if (source)
 		e_reminder_watcher_objects_changed (watcher, client, objects);
@@ -1347,9 +1374,10 @@ e_reminder_watcher_objects_modified_cb (ECalClientView *view,
 	client = e_cal_client_view_ref_client (view);
 	source = client ? e_client_get_source (E_CLIENT (client)) : NULL;
 
-	e_reminder_watcher_debug_print ("View for %s modified %d objects\n",
+	e_reminder_watcher_debug_print ("View for %s modified %u objects\n",
 		source ? e_source_get_uid (source) : "[null]",
 		g_slist_length ((GSList *) objects));
+	e_reminder_watcher_dump_objects (objects);
 
 	if (source)
 		e_reminder_watcher_objects_changed (watcher, client, objects);
@@ -1374,6 +1402,20 @@ e_reminder_watcher_objects_removed_cb (ECalClientView *view,
 	e_reminder_watcher_debug_print ("View for %s removed %d objects\n",
 		source ? e_source_get_uid (source) : "[null]",
 		g_slist_length ((GSList *) uids));
+	if (e_reminder_watcher_debug_enabled ()) {
+		GSList *link;
+
+		for (link = (GSList *) uids; link; link = g_slist_next (link)) {
+			ECalComponentId *id = link->data;
+			const gchar *rid = e_cal_component_id_get_rid (id);
+
+			e_reminder_watcher_debug_print ("   - uid:'%s'%s%s%s\n",
+				e_cal_component_id_get_uid (id),
+				rid ? " rid:'" : "",
+				rid ? rid : "",
+				rid ? "'" : "");
+		}
+	}
 
 	if (source)
 		e_reminder_watcher_objects_removed (watcher, e_source_get_uid (source), uids);
