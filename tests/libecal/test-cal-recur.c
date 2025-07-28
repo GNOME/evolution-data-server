@@ -157,20 +157,25 @@ instance_equal (gconstpointer ptr1,
 
 static void
 verify_received_instances (GHashTable *instances,
-			   ICalTimezone *comp_zone)
+			   ICalTimezone *comp_zone,
+			   const gchar **expected_times) /* nullable */
 {
-	const gchar *expected_times[] = {
+	const gchar *default_expected_times[] = {
 		"20190107T080000",
 		"20190108T080000",
 		"20190109T080000",
 		"20190110T080000",
-		"20190111T080000"
+		"20190111T080000",
+		NULL
 	};
 	gint ii;
 
 	g_assert_nonnull (instances);
 
-	for (ii = 0; ii < G_N_ELEMENTS (expected_times); ii++) {
+	if (!expected_times)
+		expected_times = default_expected_times;
+
+	for (ii = 0; expected_times[ii]; ii++) {
 		ICalTime *expected_start;
 		Instance ins = { 0, };
 
@@ -249,7 +254,7 @@ test_recur_plain_run (ECalClient *client,
 
 	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 5);
 
-	verify_received_instances (rd.instances, comp_zone);
+	verify_received_instances (rd.instances, comp_zone, NULL);
 
 	g_hash_table_destroy (rd.instances);
 	g_clear_object (&icomp);
@@ -291,7 +296,7 @@ test_recur_client_run (ECalClient *client,
 
 	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 5);
 
-	verify_received_instances (rd.instances, comp_zone);
+	verify_received_instances (rd.instances, comp_zone, NULL);
 
 	g_hash_table_destroy (rd.instances);
 
@@ -307,7 +312,7 @@ test_recur_client_run (ECalClient *client,
 
 	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 5);
 
-	verify_received_instances (rd.instances, comp_zone);
+	verify_received_instances (rd.instances, comp_zone, NULL);
 
 	g_hash_table_destroy (rd.instances);
 	g_clear_object (&icomp);
@@ -966,6 +971,486 @@ test_recur_reminders (ETestServerFixture *fixture,
 	g_object_unref (end);
 }
 
+static void
+test_recur_detached (ETestServerFixture *fixture,
+		     gconstpointer user_data)
+{
+	const gchar *expected_first[] = {
+		"20250726T150000Z",
+		"20250727T150000Z",
+		"20250728T150000Z",
+		NULL
+	};
+	const gchar *expected_second[] = {
+		"20250726T150000Z",
+		"20250727T170000Z",
+		"20250728T150000Z",
+		NULL
+	};
+	const gchar *expected_third[] = {
+		"20250726T150000Z",
+		"20250727T170000Z",
+		NULL
+	};
+	const gchar *expected_fourth[] = {
+		"20250726T150000Z",
+		"20250727T170000Z",
+		"20250729T130000Z",
+		"20250729T150000Z",
+		NULL
+	};
+	const gchar *expected_fifth[] = {
+		"20250726T150000Z",
+		NULL
+	};
+	ECalClient *client;
+	ICalComponent *icomp;
+	ICalProperty *prop;
+	ICalTime *start, *end;
+	GError *error = NULL;
+	RecurData rd = { 0, };
+	gchar *uid;
+	gboolean success;
+
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DTSTART:20250724T150000Z\r\n"
+		"DTEND:20250724T151500Z\r\n"
+		"RRULE:FREQ=DAILY;COUNT=7\r\n"
+		"SUMMARY:test\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	if (!e_cal_client_remove_object_sync (client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error)) {
+		g_assert_error (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+		g_clear_error (&error);
+	} else {
+		g_assert_no_error (error);
+	}
+
+	success = e_cal_client_create_object_sync (client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (uid);
+
+	g_object_unref (icomp);
+	g_free (uid);
+
+	success = e_cal_client_get_object_sync (client, "1", NULL, &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&icomp);
+
+	start = i_cal_time_new_from_string ("20250726T000000Z");
+	end = i_cal_time_new_from_string ("20250728T235959Z");
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	e_cal_client_generate_instances_for_uid_sync (client, "1", i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+		NULL, recur_instance_cb, &rd);
+	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 3);
+	verify_received_instances (rd.instances, NULL, expected_first);
+	g_hash_table_destroy (rd.instances);
+
+	/* move the instance on the 27th by two hours */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"RECURRENCE-ID:20250727T150000Z\r\n"
+		"DTSTART:20250727T170000Z\r\n"
+		"DTEND:20250727T171500Z\r\n"
+		"SUMMARY:moved by two hours\r\n"
+		"END:VEVENT\r\n");
+
+	success = e_cal_client_modify_object_sync (client, icomp, E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", NULL, &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", "20250727T150000Z", &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_nonnull ((prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY)));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	e_cal_client_generate_instances_for_uid_sync (client, "1", i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+		NULL, recur_instance_cb, &rd);
+	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 3);
+	verify_received_instances (rd.instances, NULL, expected_second);
+	g_hash_table_destroy (rd.instances);
+
+	/* move the instance on the 28th to the next day, which is out of the search interval */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"RECURRENCE-ID:20250728T150000Z\r\n"
+		"DTSTART:20250729T130000Z\r\n"
+		"DTEND:20250729T131500Z\r\n"
+		"SUMMARY:moved by day\r\n"
+		"END:VEVENT\r\n");
+
+	success = e_cal_client_modify_object_sync (client, icomp, E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", NULL, &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", "20250727T150000Z", &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_nonnull ((prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY)));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", "20250728T150000Z", &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_nonnull ((prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY)));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	e_cal_client_generate_instances_for_uid_sync (client, "1", i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+		NULL, recur_instance_cb, &rd);
+	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 2);
+	verify_received_instances (rd.instances, NULL, expected_third);
+	g_hash_table_destroy (rd.instances);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* extend the interval to include both detached instances */
+	start = i_cal_time_new_from_string ("20250726T000000Z");
+	end = i_cal_time_new_from_string ("20250729T235959Z");
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	e_cal_client_generate_instances_for_uid_sync (client, "1", i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+		NULL, recur_instance_cb, &rd);
+	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 4);
+	verify_received_instances (rd.instances, NULL, expected_fourth);
+	g_hash_table_destroy (rd.instances);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* shorten the interval to not include any detached instances */
+	start = i_cal_time_new_from_string ("20250726T000000Z");
+	end = i_cal_time_new_from_string ("20250726T235959Z");
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	e_cal_client_generate_instances_for_uid_sync (client, "1", i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+		NULL, recur_instance_cb, &rd);
+	g_assert_cmpint (g_hash_table_size (rd.instances), ==, 1);
+	verify_received_instances (rd.instances, NULL, expected_fifth);
+	g_hash_table_destroy (rd.instances);
+
+	g_object_unref (start);
+	g_object_unref (end);
+}
+
+static void
+verified_received_alarms (ECalComponentAlarms *alarms,
+			  const gchar **expected)
+{
+	GSList *link;
+	GHashTable *received;
+	guint ii;
+
+	received = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	for (link = e_cal_component_alarms_get_instances (alarms); link; link = g_slist_next (link)) {
+		ECalComponentAlarmInstance *instance = link->data;
+		ICalTime *itt;
+		gchar *tt_str;
+
+		itt = i_cal_time_new_from_timet_with_zone (e_cal_component_alarm_instance_get_occur_start (instance), FALSE, NULL);
+		tt_str = i_cal_time_as_ical_string (itt);
+		g_hash_table_add (received, tt_str);
+		g_clear_object (&itt);
+	}
+
+	for (ii = 0; expected[ii]; ii++) {
+		g_assert_true (g_hash_table_remove (received, expected[ii]));
+	}
+
+	g_assert_cmpuint (g_hash_table_size (received), ==, 0);
+	g_hash_table_destroy (received);
+}
+
+static void
+test_recur_reminders_detached (ETestServerFixture *fixture,
+			       gconstpointer user_data)
+{
+	const gchar *expected_first[] = {
+		"20250726T150000",
+		"20250727T150000",
+		"20250728T150000",
+		NULL
+	};
+	const gchar *expected_second[] = {
+		"20250726T150000",
+		"20250727T170000",
+		"20250728T150000",
+		NULL
+	};
+	const gchar *expected_third[] = {
+		"20250726T150000",
+		"20250727T170000",
+		NULL
+	};
+	const gchar *expected_fourth[] = {
+		"20250726T150000",
+		"20250727T170000",
+		"20250729T130000",
+		"20250729T150000",
+		NULL
+	};
+	const gchar *expected_fifth[] = {
+		"20250726T150000",
+		NULL
+	};
+	ECalComponentAlarmAction omit[] = { -1 };
+	ECalComponentAlarms *alarms;
+	ECalClient *client;
+	ICalComponent *icomp;
+	ICalProperty *prop;
+	ICalTime *start, *end;
+	ICalTimezone *default_timezone;
+	GError *error = NULL;
+	gchar *uid;
+	gboolean success;
+
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+	default_timezone = e_cal_client_get_default_timezone (client);
+
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DTSTART:20250724T150000Z\r\n"
+		"DTEND:20250724T151500Z\r\n"
+		"RRULE:FREQ=DAILY;COUNT=7\r\n"
+		"SUMMARY:test\r\n"
+		"BEGIN:VALARM\r\n"
+		"X-EVOLUTION-ALARM-UID:a1\r\n"
+		"ACTION:DISPLAY\r\n"
+		"DESCRIPTION:test\r\n"
+		"TRIGGER;RELATED=START:-PT10M\r\n"
+		"END:VALARM\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	if (!e_cal_client_remove_object_sync (client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &error)) {
+		g_assert_error (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+		g_clear_error (&error);
+	} else {
+		g_assert_no_error (error);
+	}
+
+	success = e_cal_client_create_object_sync (client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (uid);
+
+	g_object_unref (icomp);
+	g_free (uid);
+
+	success = e_cal_client_get_object_sync (client, "1", NULL, &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&icomp);
+
+	start = i_cal_time_new_from_string ("20250726T000000Z");
+	end = i_cal_time_new_from_string ("20250728T235959Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 3);
+	verified_received_alarms (alarms, expected_first);
+	e_cal_component_alarms_free (alarms);
+
+	/* move the instance on the 27th by two hours */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"RECURRENCE-ID:20250727T150000Z\r\n"
+		"DTSTART:20250727T170000Z\r\n"
+		"DTEND:20250727T171500Z\r\n"
+		"SUMMARY:moved by two hours\r\n"
+		"BEGIN:VALARM\r\n"
+		"X-EVOLUTION-ALARM-UID:a1\r\n"
+		"ACTION:DISPLAY\r\n"
+		"DESCRIPTION:test\r\n"
+		"TRIGGER;RELATED=START:-PT10M\r\n"
+		"END:VALARM\r\n"
+		"END:VEVENT\r\n");
+
+	success = e_cal_client_modify_object_sync (client, icomp, E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", NULL, &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", "20250727T150000Z", &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_nonnull ((prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY)));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 3);
+	verified_received_alarms (alarms, expected_second);
+	e_cal_component_alarms_free (alarms);
+
+	/* move the instance on the 28th to the next day, which is out of the search interval */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"RECURRENCE-ID:20250728T150000Z\r\n"
+		"DTSTART:20250729T130000Z\r\n"
+		"DTEND:20250729T131500Z\r\n"
+		"SUMMARY:moved by day\r\n"
+		"BEGIN:VALARM\r\n"
+		"X-EVOLUTION-ALARM-UID:a1\r\n"
+		"ACTION:DISPLAY\r\n"
+		"DESCRIPTION:test\r\n"
+		"TRIGGER;RELATED=START:-PT10M\r\n"
+		"END:VALARM\r\n"
+		"END:VEVENT\r\n");
+
+	success = e_cal_client_modify_object_sync (client, icomp, E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", NULL, &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", "20250727T150000Z", &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_nonnull ((prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY)));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	success = e_cal_client_get_object_sync (client, "1", "20250728T150000Z", &icomp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (icomp);
+	g_assert_nonnull ((prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY)));
+	g_assert_null (i_cal_component_get_first_property (icomp, I_CAL_EXDATE_PROPERTY));
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 2);
+	verified_received_alarms (alarms, expected_third);
+	e_cal_component_alarms_free (alarms);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* extend the interval to include both detached instances */
+	start = i_cal_time_new_from_string ("20250726T000000Z");
+	end = i_cal_time_new_from_string ("20250729T235959Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 4);
+	verified_received_alarms (alarms, expected_fourth);
+	e_cal_component_alarms_free (alarms);
+
+	g_object_unref (start);
+	g_object_unref (end);
+
+	/* shorten the interval to not include any detached instances */
+	start = i_cal_time_new_from_string ("20250726T000000Z");
+	end = i_cal_time_new_from_string ("20250726T235959Z");
+
+	alarms = e_cal_util_generate_alarms_for_uid_sync (client, "1",
+		i_cal_time_as_timet (start),
+		i_cal_time_as_timet (end),
+		omit, e_cal_client_tzlookup_cb, client, default_timezone, -1,
+		NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (alarms);
+	g_assert_cmpint (g_slist_length (e_cal_component_alarms_get_instances (alarms)), ==, 1);
+	verified_received_alarms (alarms, expected_fifth);
+	e_cal_component_alarms_free (alarms);
+
+	g_object_unref (start);
+	g_object_unref (end);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -1014,6 +1499,20 @@ main (gint argc,
 		&test_closure,
 		e_test_server_utils_setup,
 		test_recur_reminders,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/Detached",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_detached,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/RemindersDetached",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_reminders_detached,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);

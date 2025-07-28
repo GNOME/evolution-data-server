@@ -2261,9 +2261,12 @@ process_detached_instances (GSList *instances,
 			    GSList *detached_instances,
 			    ECalRecurResolveTimezoneCb tz_cb,
 			    gpointer tz_cb_data,
-			    ICalTimezone *default_timezone)
+			    ICalTimezone *default_timezone,
+			    ICalTime *starttt,
+			    ICalTime *endtt)
 {
 	struct comp_instance *ci, *cid;
+	GPtrArray *remove_instances = NULL; /* comp_instance * (from "instances") */
 	GSList *dl, *unprocessed_instances = NULL;
 
 	for (dl = detached_instances; dl != NULL; dl = dl->next) {
@@ -2318,12 +2321,18 @@ process_detached_instances (GSList *instances,
 				i_rid = convert_to_tt_with_zone (e_cal_component_range_get_datetime (instance_recur_id), tz_cb, tz_cb_data, default_timezone);
 
 				if (e_cal_component_range_get_kind (recur_id) == E_CAL_COMPONENT_RANGE_SINGLE && i_rid == d_rid) {
-					g_object_unref (ci->comp);
-					g_clear_object (&ci->start);
-					g_clear_object (&ci->end);
-					ci->comp = g_object_ref (cid->comp);
-					ci->start = i_cal_time_clone (cid->start);
-					ci->end = i_cal_time_clone (cid->end);
+					if (i_cal_time_compare (cid->start, endtt) <= 0 && i_cal_time_compare (cid->end, starttt) >= 0) {
+						g_object_unref (ci->comp);
+						g_clear_object (&ci->start);
+						g_clear_object (&ci->end);
+						ci->comp = g_object_ref (cid->comp);
+						ci->start = i_cal_time_clone (cid->start);
+						ci->end = i_cal_time_clone (cid->end);
+					} else {
+						if (!remove_instances)
+							remove_instances = g_ptr_array_new_with_free_func (comp_instance_free);
+						g_ptr_array_add (remove_instances, ci);
+					}
 
 					processed = TRUE;
 				} else {
@@ -2347,8 +2356,19 @@ process_detached_instances (GSList *instances,
 
 		e_cal_component_range_free (recur_id);
 
-		if (!processed)
+		if (!processed && i_cal_time_compare (cid->start, endtt) <= 0 && i_cal_time_compare (cid->end, starttt) >= 0)
 			unprocessed_instances = g_slist_prepend (unprocessed_instances, cid);
+	}
+
+	if (remove_instances) {
+		guint ii;
+
+		for (ii = 0; ii < remove_instances->len; ii++) {
+			ci = g_ptr_array_index (remove_instances, ii);
+			instances = g_slist_remove (instances, ci);
+		}
+
+		g_clear_pointer (&remove_instances, g_ptr_array_unref);
 	}
 
 	/* add the unprocessed instances
@@ -2401,6 +2421,7 @@ generate_instances (ECalClient *client,
 		if (e_cal_component_is_instance (comp)) {
 			struct comp_instance *ci;
 			ECalComponentDateTime *dtstart, *dtend;
+			ICalTime *rid;
 
 			/* keep the detached instances apart */
 			ci = comp_instance_new ();
@@ -2450,12 +2471,18 @@ generate_instances (ECalClient *client,
 			e_cal_component_datetime_free (dtstart);
 			e_cal_component_datetime_free (dtend);
 
-			if (i_cal_time_compare (ci->start, endtt) <= 0 && i_cal_time_compare (ci->end, starttt) >= 0) {
+			rid = i_cal_component_get_recurrenceid (e_cal_component_get_icalcomponent (comp));
+
+			/* either the instance belongs to the interval or it did belong to it before it had been moved */
+			if ((i_cal_time_compare (ci->start, endtt) <= 0 && i_cal_time_compare (ci->end, starttt) >= 0) ||
+			    (rid && i_cal_time_compare (rid, endtt) <= 0 && i_cal_time_compare (rid, starttt) >= 0)) {
 				detached_instances = g_slist_prepend (detached_instances, ci);
 			} else {
 				/* it doesn't fit to our time range, thus skip it */
 				comp_instance_free (ci);
 			}
+
+			g_clear_object (&rid);
 		} else {
 			struct instances_info instances_hold;
 
@@ -2476,7 +2503,7 @@ generate_instances (ECalClient *client,
 	if (!g_cancellable_is_cancelled (cancellable)) {
 		instances = g_slist_sort (instances, compare_comp_instance);
 		instances = process_detached_instances (instances, detached_instances,
-			e_cal_client_tzlookup_cb, client, default_zone);
+			e_cal_client_tzlookup_cb, client, default_zone, starttt, endtt);
 	}
 
 	for (l = instances; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
