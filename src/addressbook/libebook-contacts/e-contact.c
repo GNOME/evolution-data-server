@@ -827,26 +827,32 @@ fileas_getter (EContact *contact,
 
 	if (!p) {
 		/* Generate a FILE_AS field */
-		EContactName *name;
+		const gchar *full_name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
 		gchar *new_file_as = NULL;
 
-		name = e_contact_get (contact, E_CONTACT_NAME);
+		/* Full Name is close to what the user prefers */
+		if (full_name && *full_name)
+			new_file_as = g_strdup (full_name);
 
-		/* Use name if available */
-		if (name) {
-			gchar *strings[3], **stringptr;
+		if (!new_file_as) {
+			EContactName *name = e_contact_get (contact, E_CONTACT_NAME);
 
-			stringptr = strings;
-			if (name->family && *name->family)
-				*(stringptr++) = name->family;
-			if (name->given && *name->given)
-				*(stringptr++) = name->given;
-			if (stringptr != strings) {
-				*stringptr = NULL;
-				new_file_as = g_strjoinv (", ", strings);
+			/* Use name if available */
+			if (name) {
+				gchar *strings[3], **stringptr;
+
+				stringptr = strings;
+				if (name->family && *name->family)
+					*(stringptr++) = name->family;
+				if (name->given && *name->given)
+					*(stringptr++) = name->given;
+				if (stringptr != strings) {
+					*stringptr = NULL;
+					new_file_as = g_strjoinv (", ", strings);
+				}
+
+				e_contact_name_free (name);
 			}
-
-			e_contact_name_free (name);
 		}
 
 		/* Use org as fallback */
