@@ -97,6 +97,10 @@ struct _CamelFolderSummaryPrivate {
 	struct _CamelFolder *folder; /* parent folder, for events */
 	time_t cache_load_time;
 	guint timeout_handle;
+
+	GMutex info_flags_changed_lock;
+	GHashTable *info_flags_changes; /* gchar *uid ~> guint32 new_flags */
+	guint info_flags_changed_id;
 };
 
 /* this should probably be conditional on it existing */
@@ -267,6 +271,14 @@ folder_summary_dispose (GObject *object)
 		summary->priv->timeout_handle = 0;
 	}
 
+	g_mutex_lock (&summary->priv->info_flags_changed_lock);
+	if (summary->priv->info_flags_changed_id) {
+		g_source_remove (summary->priv->info_flags_changed_id);
+		summary->priv->info_flags_changed_id = 0;
+	}
+	g_clear_pointer (&summary->priv->info_flags_changes, g_hash_table_unref);
+	g_mutex_unlock (&summary->priv->info_flags_changed_lock);
+
 	g_clear_object (&summary->priv->filter_index);
 	g_clear_object (&summary->priv->filter_64);
 	g_clear_object (&summary->priv->filter_qp);
@@ -299,6 +311,7 @@ folder_summary_finalize (GObject *object)
 
 	g_rec_mutex_clear (&summary->priv->summary_lock);
 	g_rec_mutex_clear (&summary->priv->filter_lock);
+	g_mutex_clear (&summary->priv->info_flags_changed_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->finalize (object);
@@ -588,6 +601,57 @@ summary_header_save (CamelFolderSummary *summary,
 	return TRUE;
 }
 
+static gboolean
+folder_summary_emit_info_flags_changed_idle_cb (gpointer user_data)
+{
+	CamelFolderSummary *self = user_data;
+	GHashTable *changes;
+
+	g_mutex_lock (&self->priv->info_flags_changed_lock);
+	changes = g_steal_pointer (&self->priv->info_flags_changes);
+	self->priv->info_flags_changed_id = 0;
+	g_mutex_unlock (&self->priv->info_flags_changed_lock);
+
+	if (changes) {
+		GHashTableIter iter;
+		gpointer key = NULL, value = NULL;
+
+		g_hash_table_iter_init (&iter, changes);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			const gchar *uid = key;
+			guint32 new_flags = GPOINTER_TO_UINT (value);
+
+			g_signal_emit (self, signals[INFO_FLAGS_CHANGED], 0, uid, new_flags, NULL);
+		}
+
+		g_hash_table_unref (changes);
+	}
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+folder_summary_schedule_info_flags_changed (CamelFolderSummary *self,
+					    const gchar *uid,
+					    guint32 new_flags)
+{
+	g_mutex_lock (&self->priv->info_flags_changed_lock);
+
+	if (!self->priv->info_flags_changes) {
+		/* can use g_direct_... because the UID-s come from the string pool */
+		self->priv->info_flags_changes = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
+	}
+
+	g_hash_table_insert (self->priv->info_flags_changes, (gpointer) camel_pstring_strdup (uid), GUINT_TO_POINTER (new_flags));
+
+	if (!self->priv->info_flags_changed_id) {
+		self->priv->info_flags_changed_id = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE + 50,
+			folder_summary_emit_info_flags_changed_idle_cb, self, NULL);
+	}
+
+	g_mutex_unlock (&self->priv->info_flags_changed_lock);
+}
+
 /**
  * camel_folder_summary_replace_flags:
  * @summary: a #CamelFolderSummary
@@ -678,7 +742,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 	camel_folder_summary_unlock (summary);
 
 	if (changed)
-		g_signal_emit (summary, signals[INFO_FLAGS_CHANGED], 0, uid, new_flags, NULL);
+		folder_summary_schedule_info_flags_changed (summary, uid, new_flags);
 
 	return changed;
 }
@@ -828,6 +892,7 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 
 	g_rec_mutex_init (&summary->priv->summary_lock);
 	g_rec_mutex_init (&summary->priv->filter_lock);
+	g_mutex_init (&summary->priv->info_flags_changed_lock);
 
 	summary->priv->cache_load_time = 0;
 	summary->priv->timeout_handle = 0;

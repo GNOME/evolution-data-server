@@ -1040,7 +1040,8 @@ test_vee_folder_changes (void)
 	g_assert_cmpuint (camel_message_info_get_flags (mi) & CAMEL_MESSAGE_SEEN, !=, 0);
 	g_assert_cmpuint (camel_message_info_get_flags (vmi) & CAMEL_MESSAGE_SEEN, !=, 0);
 	g_assert_cmpuint (camel_folder_summary_get_info_flags (f_summary, camel_message_info_get_uid (mi)) & CAMEL_MESSAGE_SEEN, !=, 0);
-	g_assert_cmpuint (camel_folder_summary_get_info_flags (v_summary, camel_message_info_get_uid (vmi)) & CAMEL_MESSAGE_SEEN, !=, 0);
+	/* this change is propagated on idle, not immediately */
+	g_assert_cmpuint (camel_folder_summary_get_info_flags (v_summary, camel_message_info_get_uid (vmi)) & CAMEL_MESSAGE_SEEN, ==, 0);
 
 	changes = test_vee_folder_wait_for_change_info (vf1);
 	g_assert_nonnull (changes);
@@ -1049,6 +1050,7 @@ test_vee_folder_changes (void)
 	g_assert_cmpuint (changes->uid_removed->len, ==, 0);
 	test_vee_folder_check_uid_array (changes->uid_changed, "21", NULL);
 	g_clear_pointer (&changes, camel_folder_change_info_free);
+	g_assert_cmpuint (camel_folder_summary_get_info_flags (v_summary, camel_message_info_get_uid (vmi)) & CAMEL_MESSAGE_SEEN, !=, 0);
 
 	g_clear_object (&mi);
 	g_clear_object (&vmi);
