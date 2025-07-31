@@ -2122,7 +2122,7 @@ struct comp_instance {
 static struct comp_instance *
 comp_instance_new (void)
 {
-	return g_slice_new0 (struct comp_instance);
+	return g_new0 (struct comp_instance, 1);
 }
 
 static void
@@ -2134,15 +2134,10 @@ comp_instance_free (gpointer ptr)
 		g_clear_object (&ci->comp);
 		g_clear_object (&ci->start);
 		g_clear_object (&ci->end);
-		g_slice_free (struct comp_instance, ci);
+		g_free (ci);
 	}
 }
 
-struct instances_info {
-	GSList **instances;
-};
-
-/* Called from cal_recur_generate_instances(); adds an instance to the list */
 static gboolean
 add_instance_cb (ICalComponent *icomp,
 		 ICalTime *start,
@@ -2151,12 +2146,14 @@ add_instance_cb (ICalComponent *icomp,
 		 GCancellable *cancellable,
 		 GError **error)
 {
-	GSList **list;
+	GHashTable *instances_by_uid = user_data;
+	GPtrArray *instances;
 	struct comp_instance *ci;
-	struct instances_info *instances_hold;
 
-	instances_hold = user_data;
-	list = instances_hold->instances;
+	if (!i_cal_component_get_uid (icomp)) {
+		g_warning ("%s: Received component without UID", G_STRFUNC);
+		return TRUE;
+	}
 
 	ci = comp_instance_new ();
 
@@ -2209,20 +2206,24 @@ add_instance_cb (ICalComponent *icomp,
 	ci->start = i_cal_time_clone (start);
 	ci->end = i_cal_time_clone (end);
 
-	*list = g_slist_prepend (*list, ci);
+	instances = g_hash_table_lookup (instances_by_uid, e_cal_component_get_uid (ci->comp));
+	if (!instances) {
+		instances = g_ptr_array_new_with_free_func (comp_instance_free);
+		g_hash_table_insert (instances_by_uid, (gpointer) e_cal_component_get_uid (ci->comp), instances);
+	}
+
+	g_ptr_array_add (instances, ci);
 
 	return TRUE;
 }
 
-/* Used from g_slist_sort(); compares two struct comp_instance structures */
+/* Used from g_ptr_array_sort(); compares two struct comp_instance structures */
 static gint
 compare_comp_instance (gconstpointer a,
                        gconstpointer b)
 {
-	const struct comp_instance *cia, *cib;
-
-	cia = a;
-	cib = b;
+	const struct comp_instance *cia = *((const struct comp_instance **) a);
+	const struct comp_instance *cib = *((const struct comp_instance **) b);
 
 	return i_cal_time_compare (cia->start, cib->start);
 }
@@ -2256,9 +2257,9 @@ convert_to_tt_with_zone (const ECalComponentDateTime *dt,
 	return tt;
 }
 
-static GSList *
-process_detached_instances (GSList *instances,
-			    GSList *detached_instances,
+static void
+process_detached_instances (GHashTable *instances_by_uid,
+			    GPtrArray *detached_instances,
 			    ECalRecurResolveTimezoneCb tz_cb,
 			    gpointer tz_cb_data,
 			    ICalTimezone *default_timezone,
@@ -2266,20 +2267,22 @@ process_detached_instances (GSList *instances,
 			    ICalTime *endtt)
 {
 	struct comp_instance *ci, *cid;
-	GPtrArray *remove_instances = NULL; /* comp_instance * (from "instances") */
-	GSList *dl, *unprocessed_instances = NULL;
+	GPtrArray *unprocessed_instances = NULL;
+	guint ii;
 
-	for (dl = detached_instances; dl != NULL; dl = dl->next) {
-		GSList *il;
+	for (ii = 0; detached_instances && ii < detached_instances->len; ii++) {
+		GPtrArray *instances;
 		const gchar *uid;
 		gboolean processed;
 		ECalComponentRange *recur_id;
 		time_t d_rid, i_rid;
+		guint jj;
 
 		processed = FALSE;
 
-		cid = dl->data;
+		cid = g_ptr_array_index (detached_instances, ii);
 		uid = e_cal_component_get_uid (cid->comp);
+
 		recur_id = e_cal_component_get_recurid (cid->comp);
 
 		if (!recur_id ||
@@ -2289,18 +2292,16 @@ process_detached_instances (GSList *instances,
 			continue;
 		}
 
-		d_rid = convert_to_tt_with_zone (e_cal_component_range_get_datetime (recur_id), tz_cb, tz_cb_data, default_timezone);
+		instances = g_hash_table_lookup (instances_by_uid, uid);
+		if (instances) {
+			d_rid = convert_to_tt_with_zone (e_cal_component_range_get_datetime (recur_id), tz_cb, tz_cb_data, default_timezone);
 
-		/* search for coincident instances already expanded */
-		for (il = instances; il != NULL; il = il->next) {
-			const gchar *instance_uid;
-			gint cmp;
-
-			ci = il->data;
-			instance_uid = e_cal_component_get_uid (ci->comp);
-
-			if (g_strcmp0 (uid, instance_uid) == 0) {
+			/* search for coincident instances already expanded */
+			for (jj = 0; jj < instances->len; jj++) {
 				ECalComponentRange *instance_recur_id;
+				gint cmp;
+
+				ci = g_ptr_array_index (instances, jj);
 
 				instance_recur_id = e_cal_component_get_recurid (ci->comp);
 
@@ -2329,9 +2330,8 @@ process_detached_instances (GSList *instances,
 						ci->start = i_cal_time_clone (cid->start);
 						ci->end = i_cal_time_clone (cid->end);
 					} else {
-						if (!remove_instances)
-							remove_instances = g_ptr_array_new_with_free_func (comp_instance_free);
-						g_ptr_array_add (remove_instances, ci);
+						g_ptr_array_remove_index_fast (instances, jj);
+						jj--;
 					}
 
 					processed = TRUE;
@@ -2352,39 +2352,30 @@ process_detached_instances (GSList *instances,
 
 				e_cal_component_range_free (instance_recur_id);
 			}
+
+			e_cal_component_range_free (recur_id);
 		}
 
-		e_cal_component_range_free (recur_id);
-
-		if (!processed && i_cal_time_compare (cid->start, endtt) <= 0 && i_cal_time_compare (cid->end, starttt) >= 0)
-			unprocessed_instances = g_slist_prepend (unprocessed_instances, cid);
-	}
-
-	if (remove_instances) {
-		guint ii;
-
-		for (ii = 0; ii < remove_instances->len; ii++) {
-			ci = g_ptr_array_index (remove_instances, ii);
-			instances = g_slist_remove (instances, ci);
+		if (!processed && i_cal_time_compare (cid->start, endtt) <= 0 && i_cal_time_compare (cid->end, starttt) >= 0) {
+			if (!unprocessed_instances)
+				unprocessed_instances = g_ptr_array_new_with_free_func (comp_instance_free);
+			g_ptr_array_add (unprocessed_instances, cid);
+			/* steal the instance */
+			detached_instances->pdata[ii] = NULL;
 		}
-
-		g_clear_pointer (&remove_instances, g_ptr_array_unref);
 	}
 
 	/* add the unprocessed instances
 	 * (ie, detached instances with no master object) */
-	while (unprocessed_instances != NULL) {
-		cid = unprocessed_instances->data;
-		ci = comp_instance_new ();
-		ci->comp = g_object_ref (cid->comp);
-		ci->start = i_cal_time_clone (cid->start);
-		ci->end = i_cal_time_clone (cid->end);
-		instances = g_slist_append (instances, ci);
+	if (unprocessed_instances) {
+		GPtrArray *instances;
 
-		unprocessed_instances = g_slist_remove (unprocessed_instances, cid);
+		/* the used UID does not matter, just do not clash with other */
+		instances = g_hash_table_lookup (instances_by_uid, "\n");
+		g_warn_if_fail (instances == NULL);
+		g_hash_table_insert (instances_by_uid, (gpointer) "\n", g_steal_pointer (&unprocessed_instances));
+		g_clear_pointer (&unprocessed_instances, g_ptr_array_unref);
 	}
-
-	return instances;
 }
 
 static void
@@ -2396,15 +2387,19 @@ generate_instances (ECalClient *client,
                     ECalRecurInstanceCb cb,
                     gpointer cb_data)
 {
-	GSList *instances, *detached_instances = NULL;
-	GSList *l;
+	GHashTable *instances_by_uid; /* gchar *uid ~> GPtrArray { comp_instance * } */
+	GPtrArray *detached_instances = NULL; /* comp_instance * */
+	GSList *link;
 	ECalClientPrivate *priv;
 	ICalTimezone *default_zone;
 	ICalTime *starttt, *endtt;
+	GHashTableIter iter;
+	gpointer value = NULL;
+	guint ii;
 
 	priv = client->priv;
 
-	instances = NULL;
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
 
 	if (priv->default_zone)
 		default_zone = priv->default_zone;
@@ -2414,10 +2409,9 @@ generate_instances (ECalClient *client,
 	starttt = i_cal_time_new_from_timet_with_zone (start, FALSE, i_cal_timezone_get_utc_timezone ());
 	endtt = i_cal_time_new_from_timet_with_zone (end, FALSE, i_cal_timezone_get_utc_timezone ());
 
-	for (l = objects; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
-		ECalComponent *comp;
+	for (link = objects; link && !g_cancellable_is_cancelled (cancellable); link = g_slist_next (link)) {
+		ECalComponent *comp = link->data;
 
-		comp = l->data;
 		if (e_cal_component_is_instance (comp)) {
 			struct comp_instance *ci;
 			ECalComponentDateTime *dtstart, *dtend;
@@ -2476,7 +2470,9 @@ generate_instances (ECalClient *client,
 			/* either the instance belongs to the interval or it did belong to it before it had been moved */
 			if ((i_cal_time_compare (ci->start, endtt) <= 0 && i_cal_time_compare (ci->end, starttt) >= 0) ||
 			    (rid && i_cal_time_compare (rid, endtt) <= 0 && i_cal_time_compare (rid, starttt) >= 0)) {
-				detached_instances = g_slist_prepend (detached_instances, ci);
+				if (!detached_instances)
+					detached_instances = g_ptr_array_new_with_free_func (comp_instance_free);
+				g_ptr_array_add (detached_instances, ci);
 			} else {
 				/* it doesn't fit to our time range, thus skip it */
 				comp_instance_free (ci);
@@ -2484,13 +2480,8 @@ generate_instances (ECalClient *client,
 
 			g_clear_object (&rid);
 		} else {
-			struct instances_info instances_hold;
-
-			memset (&instances_hold, 0, sizeof (struct instances_info));
-			instances_hold.instances = &instances;
-
 			e_cal_recur_generate_instances_sync (
-				e_cal_component_get_icalcomponent (comp), starttt, endtt, add_instance_cb, &instances_hold,
+				e_cal_component_get_icalcomponent (comp), starttt, endtt, add_instance_cb, instances_by_uid,
 				e_cal_client_tzlookup_cb, client,
 				default_zone, cancellable, NULL);
 		}
@@ -2501,18 +2492,22 @@ generate_instances (ECalClient *client,
 	/* Generate instances and spew them out */
 
 	if (!g_cancellable_is_cancelled (cancellable)) {
-		instances = g_slist_sort (instances, compare_comp_instance);
-		instances = process_detached_instances (instances, detached_instances,
+		process_detached_instances (instances_by_uid, detached_instances,
 			e_cal_client_tzlookup_cb, client, default_zone, starttt, endtt);
 	}
 
-	for (l = instances; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
-		struct comp_instance *ci;
-		gboolean result;
+	g_hash_table_iter_init (&iter, instances_by_uid);
+	while (g_hash_table_iter_next (&iter, NULL, &value) && !g_cancellable_is_cancelled (cancellable)) {
+		GPtrArray *instances = value;
+		gboolean result = TRUE;
 
-		ci = l->data;
+		g_ptr_array_sort (instances, compare_comp_instance);
 
-		result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, cancellable, NULL);
+		for (ii = 0; ii < instances->len && result; ii++) {
+			struct comp_instance *ci = g_ptr_array_index (instances, ii);
+
+			result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, cancellable, NULL);
+		}
 
 		if (!result)
 			break;
@@ -2520,8 +2515,8 @@ generate_instances (ECalClient *client,
 
 	/* Clean up */
 
-	g_slist_free_full (instances, comp_instance_free);
-	g_slist_free_full (detached_instances, comp_instance_free);
+	g_clear_pointer (&instances_by_uid, g_hash_table_unref);
+	g_clear_pointer (&detached_instances, g_ptr_array_unref);
 	g_clear_object (&starttt);
 	g_clear_object (&endtt);
 }
@@ -2847,65 +2842,64 @@ static void
 process_instances (ECalClient *client,
 		   const gchar *uid,
 		   const gchar *rid,
-                   GSList *instances, /* (transfer full) */
+                   GHashTable *instances_by_uid, /* (transfer none) */
                    ECalRecurInstanceCb cb,
                    gpointer cb_data)
 {
-	GSList *link;
-	gboolean result;
+	GHashTableIter iter;
+	gpointer value = NULL;
+	gboolean result = TRUE;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (uid != NULL);
 	g_return_if_fail (cb != NULL);
 
-	/* Reverse the instances list because the add_instance_cb() function
-	 * is prepending. */
-	instances = g_slist_reverse (instances);
+	g_hash_table_iter_init (&iter, instances_by_uid);
+	while (result && g_hash_table_iter_next (&iter, NULL, &value)) {
+		GPtrArray *instances = value;
+		guint ii;
 
-	/* now only return back the instances for the given object */
-	result = TRUE;
-	for (link = instances; link && result; link = g_slist_next (link)) {
-		struct comp_instance *ci = link->data;
+		/* now only return back the instances for the given object */
+		for (ii = 0; ii < instances->len && result; ii++) {
+			struct comp_instance *ci = g_ptr_array_index (instances, ii);
 
-		if (rid && *rid) {
-			gchar *instance_rid = e_cal_component_get_recurid_as_string (ci->comp);
+			if (rid && *rid) {
+				gchar *instance_rid = e_cal_component_get_recurid_as_string (ci->comp);
 
-			if (g_strcmp0 (rid, instance_rid) == 0)
+				if (g_strcmp0 (rid, instance_rid) == 0)
+					result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, NULL, NULL);
+
+				g_free (instance_rid);
+			} else {
 				result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, NULL, NULL);
-
-			g_free (instance_rid);
-		} else {
-			result = (* cb) (e_cal_component_get_icalcomponent (ci->comp), ci->start, ci->end, cb_data, NULL, NULL);
+			}
 		}
 	}
-
-	g_slist_free_full (instances, comp_instance_free);
 }
 
 static void
 generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goad,
                                               GSList *objects)
 {
-	struct instances_info instances_hold;
-	GSList *instances = NULL;
+	GHashTable *instances_by_uid;
 
 	g_return_if_fail (goad != NULL);
 
-	memset (&instances_hold, 0, sizeof (struct instances_info));
-	instances_hold.instances = &instances;
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
 
 	/* generate all instances in the given time range */
 	generate_instances (
 		goad->client, goad->start, goad->end, objects,
-		goad->cancellable, add_instance_cb, &instances_hold);
+		goad->cancellable, add_instance_cb, instances_by_uid);
 
 	/* it also frees 'instances' GSList */
 	process_instances (
-		goad->client, goad->uid, goad->rid, *(instances_hold.instances),
+		goad->client, goad->uid, goad->rid, instances_by_uid,
 		goad->cb, goad->cb_data);
 
 	/* clean up */
 	free_get_objects_async_data (goad);
+	g_hash_table_destroy (instances_by_uid);
 }
 
 /**
@@ -3022,8 +3016,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 {
 	const gchar *uid;
 	gchar *rid;
-	GSList *instances = NULL;
-	struct instances_info instances_hold;
+	GHashTable *instances_by_uid;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
@@ -3051,19 +3044,19 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	uid = i_cal_component_get_uid (icalcomp);
 	rid = e_cal_util_component_get_recurid_as_string (icalcomp);
 
-	memset (&instances_hold, 0, sizeof (struct instances_info));
-	instances_hold.instances = &instances;
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
 
 	/* generate all instances in the given time range */
 	generate_instances (
 		client, start, end,
 		get_objects_sync (client, start, end, uid),
-		cancellable, add_instance_cb, &instances_hold);
+		cancellable, add_instance_cb, instances_by_uid);
 
 	/* it also frees 'instances' GSList */
-	process_instances (client, uid, rid, *(instances_hold.instances), cb, cb_data);
+	process_instances (client, uid, rid, instances_by_uid, cb, cb_data);
 
 	/* clean up */
+	g_hash_table_destroy (instances_by_uid);
 	g_free (rid);
 }
 
@@ -3096,8 +3089,7 @@ e_cal_client_generate_instances_for_uid_sync (ECalClient *client,
 					      ECalRecurInstanceCb cb,
 					      gpointer cb_data)
 {
-	GSList *instances = NULL;
-	struct instances_info instances_hold;
+	GHashTable *instances_by_uid;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (uid != NULL);
@@ -3105,17 +3097,18 @@ e_cal_client_generate_instances_for_uid_sync (ECalClient *client,
 	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
 
-	memset (&instances_hold, 0, sizeof (struct instances_info));
-	instances_hold.instances = &instances;
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
 
 	/* generate all instances in the given time range */
 	generate_instances (
 		client, start, end,
 		get_objects_sync (client, start, end, uid),
-		cancellable, add_instance_cb, &instances_hold);
+		cancellable, add_instance_cb, instances_by_uid);
 
 	/* it also frees 'instances' GSList */
-	process_instances (client, uid, NULL, *(instances_hold.instances), cb, cb_data);
+	process_instances (client, uid, NULL, instances_by_uid, cb, cb_data);
+
+	g_hash_table_destroy (instances_by_uid);
 }
 
 typedef struct _ForeachTZIDCallbackData ForeachTZIDCallbackData;
