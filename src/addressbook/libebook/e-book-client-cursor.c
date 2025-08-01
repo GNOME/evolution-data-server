@@ -1206,7 +1206,7 @@ book_client_cursor_set_proxy (EBookClientCursor *cursor,
 			/* Call D-Bus dispose() asynchronously
 			 * so we don't block in our dispose() phase.*/
 			e_dbus_address_book_cursor_call_dispose (
-				priv->dbus_proxy, NULL,
+				priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL,
 				proxy_dispose_cb, NULL);
 
 			g_object_unref (priv->dbus_proxy);
@@ -1800,6 +1800,7 @@ set_sexp_sync_internal (EBookClientCursor *cursor,
 	e_dbus_address_book_cursor_call_set_query_sync (
 		priv->dbus_proxy,
 		utf8_sexp,
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		new_total,
 		new_position,
 		cancellable,
@@ -1921,6 +1922,7 @@ step_sync_internal (EBookClientCursor *cursor,
 		flags,
 		origin,
 		count,
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		&n_results,
 		&vcards,
 		new_total,
@@ -2016,6 +2018,7 @@ set_alphabetic_index_sync_internal (EBookClientCursor *cursor,
 	e_dbus_address_book_cursor_call_set_alphabetic_index_sync (
 		cursor->priv->dbus_proxy,
 		index, locale,
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		new_total,
 		new_position,
 		cancellable,

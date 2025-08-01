@@ -737,7 +737,7 @@ book_client_dispose (GObject *object)
 		 * Also omit a callback function, so the GDBusMessage uses
 		 * G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED. */
 		e_dbus_address_book_call_close (
-			priv->dbus_proxy, NULL, NULL, NULL);
+			priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
@@ -962,7 +962,7 @@ book_client_open_sync (EClient *client,
 	book_client = E_BOOK_CLIENT (client);
 
 	e_dbus_address_book_call_open_sync (
-		book_client->priv->dbus_proxy, &props, cancellable, &local_error);
+		book_client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, &props, cancellable, &local_error);
 
 	book_client_process_properties (book_client, props);
 	g_strfreev (props);
@@ -989,7 +989,7 @@ book_client_refresh_sync (EClient *client,
 	book_client = E_BOOK_CLIENT (client);
 
 	e_dbus_address_book_call_refresh_sync (
-		book_client->priv->dbus_proxy, cancellable, &local_error);
+		book_client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1014,7 +1014,7 @@ book_client_retrieve_properties_sync (EClient *client,
 	book_client = E_BOOK_CLIENT (client);
 
 	e_dbus_address_book_call_retrieve_properties_sync (
-		book_client->priv->dbus_proxy, &props, cancellable, &local_error);
+		book_client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, &props, cancellable, &local_error);
 
 	book_client_process_properties (book_client, props);
 	g_strfreev (props);
@@ -1086,7 +1086,7 @@ book_client_init_in_dbus_thread (GTask *task,
 	}
 
 	e_dbus_address_book_factory_call_open_address_book_sync (
-		factory_proxy, uid, &object_path, &bus_name, cancellable, &local_error);
+		factory_proxy, uid, G_DBUS_CALL_FLAGS_NONE, -1, &object_path, &bus_name, cancellable, &local_error);
 
 	g_object_unref (factory_proxy);
 
@@ -1358,7 +1358,7 @@ e_book_client_connect_sync (ESource *source,
 		gchar **props = NULL;
 
 		e_dbus_address_book_call_open_sync (
-			client->priv->dbus_proxy, &props, cancellable, &local_error);
+			client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, &props, cancellable, &local_error);
 
 		book_client_process_properties (client, props);
 		g_strfreev (props);
@@ -1465,7 +1465,7 @@ book_client_connect_init_cb (GObject *source_object,
 
 	e_dbus_address_book_call_open (
 		client->priv->dbus_proxy,
-		cancellable,
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable,
 		book_client_connect_open_cb,
 		g_steal_pointer (&task));
 }
@@ -1730,7 +1730,7 @@ book_client_connect_direct_init_cb (GObject *source_object,
 	g_set_object (&cancellable, g_task_get_cancellable (task));
 	e_dbus_address_book_call_open (
 		client->priv->dbus_proxy,
-		cancellable,
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable,
 		book_client_connect_open_cb,
 		g_steal_pointer (&task));
 
@@ -2387,7 +2387,7 @@ e_book_client_add_contacts_sync (EBookClient *client,
 	e_dbus_address_book_call_create_contacts_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv, opflags,
-		&uids, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &uids, cancellable, &local_error);
 
 	g_strfreev (strv);
 
@@ -2687,7 +2687,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 	e_dbus_address_book_call_modify_contacts_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv, opflags,
-		cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_strfreev (strv);
 
@@ -3091,7 +3091,7 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 	e_dbus_address_book_call_remove_contacts_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv, opflags,
-		cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_strfreev (strv);
 
@@ -3259,7 +3259,7 @@ e_book_client_get_contact_sync (EBookClient *client,
 
 	e_dbus_address_book_call_get_contact_sync (
 		client->priv->dbus_proxy, utf8_uid,
-		&vcard, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &vcard, cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
@@ -3456,7 +3456,7 @@ e_book_client_get_contacts_sync (EBookClient *client,
 
 	e_dbus_address_book_call_get_contact_list_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&vcards, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &vcards, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
@@ -3662,7 +3662,7 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 
 	e_dbus_address_book_call_get_contact_list_uids_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&uids, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &uids, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
@@ -3822,7 +3822,7 @@ e_book_client_contains_email_sync (EBookClient *client,
 	utf8_email_address = e_util_utf8_make_valid (email_address);
 
 	e_dbus_address_book_call_contains_email_sync (
-		client->priv->dbus_proxy, utf8_email_address, &success,
+		client->priv->dbus_proxy, utf8_email_address, G_DBUS_CALL_FLAGS_NONE, -1, &success,
 		cancellable, &local_error);
 
 	g_free (utf8_email_address);
@@ -3851,7 +3851,7 @@ book_client_get_view_in_dbus_thread (GTask *task,
 
 	e_dbus_address_book_call_get_view_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&object_path, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &object_path, cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
@@ -4141,7 +4141,7 @@ book_client_get_cursor_in_dbus_thread (GTask *task,
 			client->priv->dbus_proxy, utf8_sexp,
 			(const gchar *const *) sort_fields,
 			(const gchar *const *) sort_types,
-			&object_path, cancellable, &local_error);
+			G_DBUS_CALL_FLAGS_NONE, -1, &object_path, cancellable, &local_error);
 
 		g_free (utf8_sexp);
 
