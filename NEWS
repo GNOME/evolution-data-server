@@ -1,3 +1,40 @@
+Evolution-Data-Server 3.57.2 2025-08-01
+---------------------------------------
+
+* The libcamel API dropped CamelObject, it was not needed anymore.
+
+Bug Fixes:
+	I#449 - alarm-notify: Rework snooze options
+	I#591 - alarm-notify: Sometimes uses original reminder time for modified instance
+	evo-I#3089 - Camel: App freezes often when performing various threaded tasks
+	evo-I#3093 - EContact: Consider also FullName as FileAs
+
+Miscellaneous:
+	CamelVeeSummary: Fix dub-subfolders annotations (Corentin Noël)
+	CamelFolder: Add state saving API directly (Corentin Noël)
+	Camel: Remove CamelObject (Corentin Noël)
+	Camel: Remove index of deprecated symbols (Corentin Noël)
+	CamelStoreSearch: Make it possible to search for a hashed message ID
+	CamelFolder: Fix a memory leak
+	EReminderWatcher: Debug-print what changes had been received from the calendars
+	ERemindersWidget: Change gap around description text view
+	CamelNetworkService: Cache the GQuark locally for the private data (Corentin Noël)
+	Camel: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	ECal: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	EDataServerUI: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	EBook: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	EBackend: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	EDataBook: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	EDataCal: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	Camel: Use GParamSpec consistently to create properties (Corentin Noël)
+	CamelVeeFolder: Fix a runtime warning when rebuilding the folder
+	CamelFolderSummary: Notify about flag changes on idle
+	ECalClient: Improve performance of generate_instances() function
+
+Translations:
+	Martin (sl)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.57.1 2025-06-27
 ---------------------------------------
 
