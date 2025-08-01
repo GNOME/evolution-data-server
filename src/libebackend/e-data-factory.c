@@ -514,7 +514,7 @@ data_factory_connections_remove (EDataFactory *data_factory,
 	if (array != NULL) {
 		if (proxy != NULL) {
 			if (!data_factory_verify_subprocess_backend_proxy_is_used (data_factory, name, proxy))
-				e_dbus_subprocess_backend_call_close_sync (proxy, NULL, NULL);
+				e_dbus_subprocess_backend_call_close_sync (proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL);
 
 			removed = g_ptr_array_remove_fast (array, proxy);
 		} else if (array->len > 0) {
@@ -531,7 +531,7 @@ data_factory_connections_remove (EDataFactory *data_factory,
 				proxy1 = g_ptr_array_index (array, 0);
 
 				if (!data_factory_verify_subprocess_backend_proxy_is_used (data_factory, name, proxy1))
-					e_dbus_subprocess_backend_call_close_sync (proxy1, NULL, NULL);
+					e_dbus_subprocess_backend_call_close_sync (proxy1, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL);
 
 				g_ptr_array_remove_fast (array, proxy1);
 			}
@@ -662,7 +662,7 @@ data_factory_call_subprocess_backend_create_sync (EDataFactory *data_factory,
 	gchar *object_path = NULL;
 
 	e_dbus_subprocess_backend_call_create_sync (
-		proxy, uid, type_name, module_filename, &object_path, NULL, &error);
+		proxy, uid, type_name, module_filename, G_DBUS_CALL_FLAGS_NONE, -1, &object_path, NULL, &error);
 
 	if (object_path != NULL) {
 		EDataFactoryClass *class;
@@ -901,7 +901,7 @@ data_factory_connections_remove_all (EDataFactory *data_factory)
 		for (l = proxies; l != NULL; l = g_list_next (l)) {
 			EDBusSubprocessBackend *proxy = l->data;
 
-			e_dbus_subprocess_backend_call_close_sync (proxy, NULL, NULL);
+			e_dbus_subprocess_backend_call_close_sync (proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL);
 		}
 
 		g_list_free_full (proxies, g_object_unref);

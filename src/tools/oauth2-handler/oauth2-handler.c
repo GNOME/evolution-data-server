@@ -46,7 +46,7 @@ proxy_created_cb (GObject *source_object,
 		return;
 	}
 
-	e_dbus_oauth2_response_call_response_uri (proxy, glob_uri, NULL,
+	e_dbus_oauth2_response_call_response_uri (proxy, glob_uri, G_DBUS_CALL_FLAGS_NONE, -1, NULL,
 		called_reponse_uri_cb, loop);
 
 	g_clear_object (&proxy);

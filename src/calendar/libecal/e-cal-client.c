@@ -870,7 +870,7 @@ cal_client_dispose (GObject *object)
 		 * Also omit a callback function, so the GDBusMessage uses
 		 * G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED. */
 		e_dbus_calendar_call_close (
-			priv->dbus_proxy, NULL, NULL, NULL);
+			priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
@@ -1085,7 +1085,7 @@ cal_client_open_sync (EClient *client,
 	cal_client = E_CAL_CLIENT (client);
 
 	e_dbus_calendar_call_open_sync (
-		cal_client->priv->dbus_proxy, &props, cancellable, &local_error);
+		cal_client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, &props, cancellable, &local_error);
 
 	cal_client_process_properties (cal_client, props);
 	g_strfreev (props);
@@ -1112,7 +1112,7 @@ cal_client_refresh_sync (EClient *client,
 	cal_client = E_CAL_CLIENT (client);
 
 	e_dbus_calendar_call_refresh_sync (
-		cal_client->priv->dbus_proxy, cancellable, &local_error);
+		cal_client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1136,7 +1136,7 @@ cal_client_retrieve_properties_sync (EClient *client,
 
 	cal_client = E_CAL_CLIENT (client);
 
-	e_dbus_calendar_call_retrieve_properties_sync (cal_client->priv->dbus_proxy, &props, cancellable, &local_error);
+	e_dbus_calendar_call_retrieve_properties_sync (cal_client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, &props, cancellable, &local_error);
 
 	cal_client_process_properties (cal_client, props);
 	g_strfreev (props);
@@ -1210,17 +1210,20 @@ cal_client_init_in_dbus_thread (GTask *task,
 	switch (e_cal_client_get_source_type (E_CAL_CLIENT (client))) {
 		case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
 			e_dbus_calendar_factory_call_open_calendar_sync (
-				factory_proxy, uid, &object_path, &bus_name,
+				factory_proxy, uid, G_DBUS_CALL_FLAGS_NONE, -1,
+				&object_path, &bus_name,
 				cancellable, &local_error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
 			e_dbus_calendar_factory_call_open_task_list_sync (
-				factory_proxy, uid, &object_path, &bus_name,
+				factory_proxy, uid, G_DBUS_CALL_FLAGS_NONE, -1,
+				&object_path, &bus_name,
 				cancellable, &local_error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
 			e_dbus_calendar_factory_call_open_memo_list_sync (
-				factory_proxy, uid, &object_path, &bus_name,
+				factory_proxy, uid, G_DBUS_CALL_FLAGS_NONE, -1,
+				&object_path, &bus_name,
 				cancellable, &local_error);
 			break;
 		default:
@@ -1671,7 +1674,7 @@ e_cal_client_connect_sync (ESource *source,
 		gchar **props = NULL;
 
 		e_dbus_calendar_call_open_sync (
-			client->priv->dbus_proxy, &props, cancellable, &local_error);
+			client->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, &props, cancellable, &local_error);
 
 		cal_client_process_properties (client, props);
 		g_strfreev (props);
@@ -1789,7 +1792,7 @@ cal_client_connect_init_cb (GObject *source_object,
 
 	e_dbus_calendar_call_open (
 		priv->dbus_proxy,
-		cancellable,
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable,
 		cal_client_connect_open_cb,
 		g_steal_pointer (&task));
 
@@ -3565,7 +3568,7 @@ e_cal_client_get_object_sync (ECalClient *client,
 
 	e_dbus_calendar_call_get_object_sync (
 		client->priv->dbus_proxy, utf8_uid, utf8_rid,
-		&string, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &string, cancellable, &local_error);
 
 	g_free (utf8_uid);
 	g_free (utf8_rid);
@@ -3804,7 +3807,7 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 
 	e_dbus_calendar_call_get_object_sync (
 		client->priv->dbus_proxy, utf8_uid, "",
-		&string, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &string, cancellable, &local_error);
 
 	g_free (utf8_uid);
 
@@ -4023,7 +4026,7 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
 	e_dbus_calendar_call_get_object_list_sync (
-		client->priv->dbus_proxy, utf8_sexp,
+		client->priv->dbus_proxy, utf8_sexp, G_DBUS_CALL_FLAGS_NONE, -1,
 		&strv, cancellable, &local_error);
 
 	g_free (utf8_sexp);
@@ -4390,7 +4393,7 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 		client->priv->dbus_proxy,
 		(gint64) start, (gint64) end,
 		(const gchar * const *) strv,
-		&freebusy_strv,
+		G_DBUS_CALL_FLAGS_NONE, -1, &freebusy_strv,
 		cancellable, &local_error);
 
 	g_strfreev (strv);
@@ -4778,7 +4781,7 @@ e_cal_client_create_objects_sync (ECalClient *client,
 	e_dbus_calendar_call_create_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		opflags, &uids, cancellable, &local_error);
+		opflags, G_DBUS_CALL_FLAGS_NONE, -1, &uids, cancellable, &local_error);
 
 	g_strfreev (strv);
 
@@ -5123,7 +5126,7 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	e_dbus_calendar_call_modify_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		mod_flags->str, opflags, cancellable, &local_error);
+		mod_flags->str, opflags, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_strfreev (strv);
 
@@ -5491,7 +5494,7 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 		e_dbus_calendar_call_remove_objects_sync (
 			client->priv->dbus_proxy,
 			g_variant_builder_end (&builder),
-			mod_flags->str, opflags, cancellable, &local_error);
+			mod_flags->str, opflags, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 	} else {
 		g_variant_builder_clear (&builder);
 	}
@@ -5637,7 +5640,7 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 
 	e_dbus_calendar_call_receive_objects_sync (
 		client->priv->dbus_proxy, ical_string, opflags,
-		cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_free (ical_string);
 
@@ -5828,7 +5831,7 @@ e_cal_client_send_objects_sync (ECalClient *client,
 
 	e_dbus_calendar_call_send_objects_sync (
 		client->priv->dbus_proxy, ical_string, opflags,
-		&users, &out_ical_string, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &users, &out_ical_string, cancellable, &local_error);
 
 	g_free (ical_string);
 
@@ -6032,7 +6035,7 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 
 	e_dbus_calendar_call_get_attachment_uris_sync (
 		client->priv->dbus_proxy, utf8_uid, utf8_rid,
-		&uris, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &uris, cancellable, &local_error);
 
 	g_free (utf8_uid);
 	g_free (utf8_rid);
@@ -6213,7 +6216,7 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 	e_dbus_calendar_call_discard_alarm_sync (
 		client->priv->dbus_proxy,
 		utf8_uid, utf8_rid, utf8_auid, opflags,
-		cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_free (utf8_uid);
 	g_free (utf8_rid);
@@ -6242,7 +6245,7 @@ cal_client_get_view_in_dbus_thread (GTask *task,
 
 	e_dbus_calendar_call_get_view_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&object_path, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &object_path, cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
@@ -6540,7 +6543,7 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 
 	e_dbus_calendar_call_get_timezone_sync (
 		client->priv->dbus_proxy, utf8_tzid,
-		&string, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &string, cancellable, &local_error);
 
 	g_free (utf8_tzid);
 
@@ -6735,7 +6738,7 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 
 	e_dbus_calendar_call_add_timezone_sync (
 		client->priv->dbus_proxy, utf8_zone_str,
-		cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_free (zone_str);
 	g_free (utf8_zone_str);

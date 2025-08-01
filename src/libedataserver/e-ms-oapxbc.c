@@ -177,7 +177,7 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 	g_object_unref (generator);
 
 	success = e_dbus_identity_broker1_call_get_accounts_sync (
-		self->broker, "0.0", self->session_id, data,
+		self->broker, "0.0", self->session_id, data, G_DBUS_CALL_FLAGS_NONE, -1,
 		&response, cancellable, error);
 	g_free (data);
 	if (!success) {
@@ -339,7 +339,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	json_object_unref (auth_params);
 
 	success = e_dbus_identity_broker1_call_acquire_prt_sso_cookie_sync (
-		self->broker, "0.0", self->session_id, data,
+		self->broker, "0.0", self->session_id, data, G_DBUS_CALL_FLAGS_NONE, -1,
 		&response, cancellable, error);
 	g_free (data);
 	if (!success) {

@@ -144,6 +144,7 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 		async_data->secondary_text ? async_data->secondary_text : "",
 		async_data->use_markup,
 		(const gchar *const *) async_data->button_captions,
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		&async_data->prompt_id,
 		cancellable, &local_error);
 
@@ -194,6 +195,7 @@ user_prompter_extension_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 		dbus_prompter,
 		async_data->dialog_name,
 		(const gchar *const *) params,
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		&async_data->prompt_id,
 		cancellable, &local_error);
 

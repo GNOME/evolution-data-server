@@ -180,6 +180,9 @@ if(NOT GDBUS_CODEGEN)
 endif(NOT GDBUS_CODEGEN)
 
 function(gdbus_codegen_custom _xml _interface_prefix _c_namespace _files_prefix _list_gens _args)
+	if(DEFINED glib_minimum_version)
+		 list(APPEND _args --glib-min-required ${glib_minimum_version})
+	endif(DEFINED glib_minimum_version)
 	add_custom_command(
 		OUTPUT ${${_list_gens}}
 		COMMAND ${GDBUS_CODEGEN}
