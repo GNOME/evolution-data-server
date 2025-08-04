@@ -76,9 +76,12 @@ struct _CamelIMAPXCommand {
 	GQueue parts;
 	GList *current_part;
 
-	/* list of expunged indexes, not UID-s,
-           received during copy/move operation, in reverse order */
-	GSList *copy_move_expunged;
+	/* array of expunged UID-s received during copy/move operation */
+	GPtrArray *copy_move_expunged;
+	/* folder summary with applied removals from copy_move_expunged;
+	   set with the first EXPUNGE untagged response */
+	GPtrArray *copy_move_summary;
+	CamelFolder *copy_move_folder; /* not referenced */
 };
 
 CamelIMAPXCommand *

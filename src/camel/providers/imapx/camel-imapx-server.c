@@ -781,6 +781,7 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
                         GCancellable *cancellable,
                         GError **error)
 {
+	CamelIMAPXCommand *cmd;
 	gulong expunged_idx;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -825,12 +826,31 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 		return TRUE;
 	}
 
-	c (is->priv->tagprefix, "expunged: %lu\n", expunged_idx);
-
-	is->priv->current_command->copy_move_expunged = g_slist_prepend (
-		is->priv->current_command->copy_move_expunged, GUINT_TO_POINTER (expunged_idx));
+	cmd = camel_imapx_command_ref (is->priv->current_command);
 
 	COMMAND_UNLOCK (is);
+
+	if (!cmd->copy_move_summary && cmd->copy_move_folder) {
+		cmd->copy_move_summary = camel_folder_summary_dup_uids (camel_folder_get_folder_summary (cmd->copy_move_folder));
+
+		if (cmd->copy_move_summary)
+			camel_folder_sort_uids (cmd->copy_move_folder, cmd->copy_move_summary);
+	}
+
+	if (cmd->copy_move_summary) {
+		if (expunged_idx - 1 < cmd->copy_move_summary->len) {
+			const gchar *uid = g_ptr_array_index (cmd->copy_move_summary, expunged_idx - 1);
+			c (is->priv->tagprefix, "expunged idx %lu is uid '%s'\n", expunged_idx, uid);
+			if (!cmd->copy_move_expunged)
+				cmd->copy_move_expunged = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+			g_ptr_array_add (cmd->copy_move_expunged, (gpointer) camel_pstring_strdup (uid));
+			g_ptr_array_remove_index (cmd->copy_move_summary, expunged_idx - 1);
+		} else {
+			c (is->priv->tagprefix, "expunged idx %lu is out of bounds (1..%u)\n", expunged_idx, cmd->copy_move_summary->len);
+		}
+	}
+
+	camel_imapx_command_unref (cmd);
 
 	return TRUE;
 }
@@ -4752,6 +4772,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	gboolean use_move_command = FALSE;
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder;
+	CamelFolderSummary *source_summary;
 	CamelFolderChangeInfo *changes = NULL;
 	GHashTable *source_infos;
 	gboolean remove_junk_flags;
@@ -4779,6 +4800,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
+	source_summary = camel_folder_get_folder_summary (folder);
 	remove_deleted_flags = remove_deleted_flags || (camel_folder_get_flags (folder) & CAMEL_FOLDER_IS_TRASH) != 0;
 	remove_junk_flags = (camel_folder_get_flags (folder) & CAMEL_FOLDER_IS_JUNK) != 0;
 
@@ -4803,7 +4825,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 		g_ptr_array_add (data_uids, uid);
 
-		source_info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
+		source_info = camel_folder_summary_get (source_summary, uid);
 		if (source_info)
 			g_hash_table_insert (source_infos, uid, source_info);
 	}
@@ -4831,9 +4853,11 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 				break;
 		}
 
-		g_warn_if_fail (imapx_uidset_done (&uidset, ic));
+		/* it can be called also within imapx_uidset_add(), then it returns FALSE here */
+		imapx_uidset_done (&uidset, ic);
 
 		camel_imapx_command_add (ic, " %M", destination);
+		ic->copy_move_folder = folder;
 
 		imapx_free_status (is->priv->copyuid_status);
 		is->priv->copyuid_status = NULL;
@@ -4856,53 +4880,15 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 		g_mutex_unlock (&is->priv->changes_lock);
 
 		if (ic->copy_move_expunged) {
-			CamelFolderSummary *summary;
+			camel_folder_summary_remove_uids (source_summary, ic->copy_move_expunged);
 
-			ic->copy_move_expunged = g_slist_reverse (ic->copy_move_expunged);
+			for (ii = 0; ii < ic->copy_move_expunged->len; ii++) {
+				const gchar *uid = g_ptr_array_index (ic->copy_move_expunged, ii);
 
-			summary = camel_folder_get_folder_summary (folder);
-			if (summary) {
-				GPtrArray *array;
+				if (!changes)
+					changes = camel_folder_change_info_new ();
 
-				array = camel_folder_summary_dup_uids (summary);
-				if (array) {
-					GSList *slink;
-					GPtrArray *removed_uids = NULL;
-
-					camel_folder_sort_uids (folder, array);
-
-					for (slink = ic->copy_move_expunged; slink; slink = g_slist_next (slink)) {
-						guint expunged_idx = GPOINTER_TO_UINT (slink->data) - 1;
-
-						if (expunged_idx < array->len) {
-							const gchar *uid = g_ptr_array_index (array, expunged_idx);
-
-							if (uid) {
-								if (!removed_uids)
-									removed_uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
-								g_ptr_array_add (removed_uids, (gpointer) camel_pstring_strdup (uid));
-								g_ptr_array_remove_index (array, expunged_idx);
-							}
-						}
-					}
-
-					if (removed_uids) {
-						camel_folder_summary_remove_uids (summary, removed_uids);
-
-						for (ii = 0; ii < removed_uids->len; ii++) {
-							const gchar *uid = g_ptr_array_index (removed_uids, ii);
-
-							if (!changes)
-								changes = camel_folder_change_info_new ();
-
-							camel_folder_change_info_remove_uid (changes, uid);
-						}
-
-						g_ptr_array_unref (removed_uids);
-					}
-
-					g_clear_pointer (&array, g_ptr_array_unref);
-				}
+				camel_folder_change_info_remove_uid (changes, uid);
 			}
 		}
 
@@ -5004,12 +4990,12 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 			if (delete_originals || use_move_command) {
 				for (ii = last_index; ii < jj; ii++) {
-					const gchar *uid = uids->pdata[ii];
+					const gchar *uid = g_ptr_array_index (data_uids, ii);
 
 					if (delete_originals) {
 						camel_folder_delete_message (folder, uid);
 					} else {
-						if (camel_folder_summary_remove_uid (camel_folder_get_folder_summary (folder), uid)) {
+						if (camel_folder_summary_remove_uid (source_summary, uid)) {
 							if (!changes)
 								changes = camel_folder_change_info_new ();
 
@@ -5030,8 +5016,8 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 	if (changes) {
 		if (camel_folder_change_info_changed (changes)) {
-			camel_folder_summary_touch (camel_folder_get_folder_summary (folder));
-			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+			camel_folder_summary_touch (source_summary);
+			camel_folder_summary_save (source_summary, NULL);
 
 			imapx_update_store_summary (folder);
 
