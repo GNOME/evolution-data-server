@@ -2211,7 +2211,7 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 	/* This function sinks the floating GVariant reference. */
 	e_dbus_source_manager_call_create_sources_sync (
 		registry->priv->dbus_source_manager,
-		variant, cancellable, &local_error);
+		variant, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_variant_builder_clear (&builder);
 
@@ -2355,7 +2355,7 @@ e_source_registry_refresh_backend_sync (ESourceRegistry *registry,
 
 	return e_dbus_source_manager_call_refresh_backend_sync (
 		registry->priv->dbus_source_manager,
-		source_uid, cancellable, error);
+		source_uid, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, error);
 }
 
 static void

@@ -623,7 +623,7 @@ cal_client_view_dispose (GObject *object)
 		 * Also omit a callback function, so the GDBusMessage
 		 * uses G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED.
 		 */
-		e_dbus_calendar_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
+		e_dbus_calendar_view_call_dispose (priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
@@ -964,7 +964,7 @@ e_cal_client_view_start (ECalClientView *client_view,
 	client_view->priv->running = TRUE;
 
 	e_dbus_calendar_view_call_start_sync (
-		client_view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 
 	if (local_error != NULL) {
 		client_view->priv->running = FALSE;
@@ -993,7 +993,7 @@ e_cal_client_view_stop (ECalClientView *client_view,
 	client_view->priv->running = FALSE;
 
 	e_dbus_calendar_view_call_stop_sync (
-		client_view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1034,6 +1034,7 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *client_view,
 	e_dbus_calendar_view_call_set_fields_of_interest_sync (
 		client_view->priv->dbus_proxy,
 		(const gchar * const *) strv,
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		NULL, &local_error);
 	g_strfreev (strv);
 
@@ -1063,7 +1064,7 @@ e_cal_client_view_set_flags (ECalClientView *client_view,
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
 	e_dbus_calendar_view_call_set_flags_sync (
-		client_view->priv->dbus_proxy, flags, NULL, &local_error);
+		client_view->priv->dbus_proxy, flags, G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);

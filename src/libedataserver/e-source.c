@@ -1392,7 +1392,7 @@ source_remove_sync (ESource *source,
 		remove_context);
 
 	e_dbus_source_removable_call_remove_sync (
-		dbus_interface, cancellable, &local_error);
+		dbus_interface, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	/* Wait for the ESourceRegistry to remove our GDBusObject while
 	 * handling an "object-removed" signal from the registry service.
@@ -1501,7 +1501,7 @@ source_write_sync (ESource *source,
 	data = e_source_to_string (source, NULL);
 
 	e_dbus_source_writable_call_write_sync (
-		dbus_interface, data, cancellable, &local_error);
+		dbus_interface, data, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_free (data);
 
@@ -1592,7 +1592,7 @@ source_remote_create_sync (ESource *source,
 	data = e_source_to_string (scratch_source, NULL);
 
 	e_dbus_source_remote_creatable_call_create_sync (
-		dbus_interface, uid, data, cancellable, &local_error);
+		dbus_interface, uid, data, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_free (data);
 	g_free (uid);
@@ -1685,7 +1685,7 @@ source_remote_delete_sync (ESource *source,
 	}
 
 	e_dbus_source_remote_deletable_call_delete_sync (
-		dbus_interface, cancellable, &local_error);
+		dbus_interface, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_object_unref (dbus_interface);
 
@@ -1806,7 +1806,7 @@ source_get_oauth2_access_token_sync (ESource *source,
 	}
 
 	e_dbus_source_oauth2_support_call_get_access_token_sync (
-		dbus_interface, out_access_token,
+		dbus_interface, G_DBUS_CALL_FLAGS_NONE, -1, out_access_token,
 		out_expires_in, cancellable, &local_error);
 
 	g_object_unref (dbus_interface);
@@ -1905,6 +1905,7 @@ source_invoke_credentials_required_impl (ESource *source,
 		arg_certificate_errors ? arg_certificate_errors : "",
 		arg_dbus_error_name ? arg_dbus_error_name : "",
 		arg_dbus_error_message ? arg_dbus_error_message : "",
+		G_DBUS_CALL_FLAGS_NONE, -1,
 		cancellable, error);
 }
 
@@ -1917,7 +1918,8 @@ source_invoke_authenticate_impl (ESource *source,
 {
 	g_return_val_if_fail (E_DBUS_IS_SOURCE (dbus_source), FALSE);
 
-	return e_dbus_source_call_invoke_authenticate_sync (dbus_source, arg_credentials, cancellable, error);
+	return e_dbus_source_call_invoke_authenticate_sync (dbus_source, arg_credentials,
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, error);
 }
 
 static gboolean
@@ -1941,7 +1943,8 @@ source_unset_last_credentials_required_arguments_impl (ESource *source,
 	if (!dbus_source)
 		return FALSE;
 
-	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source, cancellable, &local_error);
+	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source,
+		G_DBUS_CALL_FLAGS_NONE, -1, cancellable, &local_error);
 
 	g_object_unref (dbus_source);
 
@@ -4982,8 +4985,9 @@ e_source_get_last_credentials_required_arguments_sync (ESource *source,
 		return FALSE;
 
 	success = e_dbus_source_call_get_last_credentials_required_arguments_sync (dbus_source,
-		&arg_reason, out_certificate_pem, &arg_certificate_errors,
-		&arg_dbus_error_name, &arg_dbus_error_message, cancellable, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, &arg_reason, out_certificate_pem,
+		&arg_certificate_errors, &arg_dbus_error_name, &arg_dbus_error_message,
+		cancellable, &local_error);
 
 	g_object_unref (dbus_source);
 

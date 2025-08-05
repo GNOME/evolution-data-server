@@ -944,7 +944,7 @@ book_client_view_dispose (GObject *object)
 		 * Also omit a callback function, so the GDBusMessage
 		 * uses G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED.
 		 */
-		e_dbus_address_book_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
+		e_dbus_address_book_view_call_dispose (priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
@@ -1390,7 +1390,7 @@ e_book_client_view_start (EBookClientView *client_view,
 	client_view->priv->running = TRUE;
 
 	e_dbus_address_book_view_call_start_sync (
-		client_view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 
 	if (local_error != NULL) {
 		client_view->priv->running = FALSE;
@@ -1417,7 +1417,7 @@ e_book_client_view_stop (EBookClientView *client_view,
 	client_view->priv->running = FALSE;
 
 	e_dbus_address_book_view_call_stop_sync (
-		client_view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1445,7 +1445,7 @@ e_book_client_view_set_flags (EBookClientView *client_view,
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
 
 	e_dbus_address_book_view_call_set_flags_sync (
-		client_view->priv->dbus_proxy, flags, NULL, &local_error);
+		client_view->priv->dbus_proxy, flags, G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1497,7 +1497,7 @@ e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
 	e_dbus_address_book_view_call_set_fields_of_interest_sync (
 		client_view->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		NULL, &local_error);
+		G_DBUS_CALL_FLAGS_NONE, -1, NULL, &local_error);
 	g_strfreev (strv);
 
 	if (local_error != NULL) {
@@ -1548,7 +1548,7 @@ e_book_client_view_set_sort_fields_sync (EBookClientView *self,
 	}
 
 	return e_dbus_address_book_view_call_set_sort_fields_sync (self->priv->dbus_proxy,
-		g_variant_builder_end (&builder), cancellable, error);
+		g_variant_builder_end (&builder), G_DBUS_CALL_FLAGS_NONE, -1, cancellable, error);
 }
 
 /**
@@ -1728,7 +1728,7 @@ e_book_client_view_dup_contacts (EBookClientView *self,
 	g_task_set_source_tag (dcd->task, e_book_client_view_dup_contacts);
 
 	e_dbus_address_book_view_call_dup_contacts (self->priv->dbus_proxy,
-		range_start, range_length, cancellable, e_book_client_view_got_contacts_cb, dcd);
+		range_start, range_length, G_DBUS_CALL_FLAGS_NONE, -1, cancellable, e_book_client_view_got_contacts_cb, dcd);
 }
 
 /**
