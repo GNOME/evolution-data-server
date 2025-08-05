@@ -582,7 +582,9 @@ cdb_sql_exec (CamelDB *cdb,
 	if (out_sqlite_error_code)
 		*out_sqlite_error_code = ret;
 
-	if (ret != SQLITE_OK) {
+	/* the abort can happen when the callback returns to stop further processing,
+	   which is not a problem, it's requested to stop, thus do not error out */
+	if (ret != SQLITE_OK && ret != SQLITE_ABORT) {
 		d (g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
 		if (ret == SQLITE_CORRUPT) {
 			if (cdb->priv->filename && *cdb->priv->filename) {
