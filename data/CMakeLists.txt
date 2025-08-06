@@ -2,9 +2,9 @@
 # evolution-alarm-notify
 # ********************************
 
+set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
 if(HAVE_GTK)
 	set(autostartdir ${SYSCONF_INSTALL_DIR}/xdg/autostart)
-	set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
 	set(alarm_notify_icon hicolor_apps_scalable_org.gnome.Evolution-alarm-notify.svg)
 
 	configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
