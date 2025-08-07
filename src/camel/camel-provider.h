@@ -172,9 +172,6 @@ typedef struct {
 	/* GList of CamelServiceAuthTypes the provider supports */
 	GList *authtypes;
 
-	GHashFunc url_hash;
-	GEqualFunc url_equal;
-
 	/* gettext translation domain (NULL for providers in the
 	 * evolution source tree).
 	 */

@@ -175,8 +175,6 @@ provider_setup (gpointer param)
 		(GEqualFunc) camel_strcase_equal);
 
 	vee_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_TYPE_VEE_STORE;
-	vee_provider.url_hash = (GHashFunc) camel_url_hash;
-	vee_provider.url_equal = (GEqualFunc) camel_url_equal;
 	provider_register_internal (&vee_provider);
 
 	return NULL;

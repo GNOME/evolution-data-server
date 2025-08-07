@@ -49,7 +49,7 @@ set(OAUTH2_RESPONSE_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.OAuth2Resp
 # ******************************
 # Library versioning
 # ******************************
-set(LIBCAMEL_CURRENT 66)
+set(LIBCAMEL_CURRENT 67)
 set(LIBCAMEL_REVISION 0)
 set(LIBCAMEL_AGE 0)
 

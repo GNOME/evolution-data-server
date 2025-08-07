@@ -149,86 +149,6 @@ static CamelProvider spool_directory_provider = {
 
 #endif
 
-/* build a canonical 'path' */
-static gchar *
-make_can_path (gchar *p,
-               gchar *o)
-{
-	gchar c, last, *start = o;
-
-	d (printf ("canonical '%s' = ", p));
-
-	last = 0;
-	while ((c = *p++)) {
-		if (c != '/'
-		    || (c == '/' && last != '/'))
-			*o++ = c;
-		last = c;
-	}
-	if (o > start && o[-1] == '/')
-		o[-1] = 0;
-	else
-		*o = 0;
-
-	d (printf ("'%s'\n", start));
-
-	return start;
-}
-
-/* 'helper' function for it */
-#define get_can_path(p) ((p == NULL) ? NULL : (make_can_path ((p), g_alloca (strlen (p) + 1))))
-
-static guint
-local_url_hash (gconstpointer v)
-{
-	const CamelURL *u = v;
-	guint hash = 0;
-
-#define ADD_HASH(s) if (s && *s) hash ^= g_str_hash (s);
-
-	ADD_HASH (u->protocol);
-	ADD_HASH (u->user);
-	ADD_HASH (u->authmech);
-	ADD_HASH (u->host);
-	if (u->path)
-		hash ^= g_str_hash (get_can_path (u->path));
-	ADD_HASH (u->path);
-	ADD_HASH (u->query);
-	hash ^= u->port;
-
-	return hash;
-}
-
-static gint
-check_equal (gchar *s1,
-             gchar *s2)
-{
-	if (s1 == NULL || *s1 == 0) {
-		if (s2 == NULL || *s2 == 0)
-			return TRUE;
-		else
-			return FALSE;
-	}
-
-	if (s2 == NULL)
-		return FALSE;
-
-	return strcmp (s1, s2) == 0;
-}
-
-static gint
-local_url_equal (gconstpointer v,
-                 gconstpointer v2)
-{
-	const CamelURL *u1 = v, *u2 = v2;
-	gchar *p1, *p2;
-
-	p1 = get_can_path (u1->path);
-	p2 = get_can_path (u2->path);
-	return check_equal (p1, p2)
-		&& check_equal (u1->protocol, u2->protocol);
-}
-
 void
 camel_provider_module_init (void)
 {
@@ -241,35 +161,25 @@ camel_provider_module_init (void)
 #ifndef G_OS_WIN32
 	mh_conf_entries[0].value = "";  /* default path */
 	mh_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mh_store_get_type ();
-	mh_provider.url_hash = local_url_hash;
-	mh_provider.url_equal = local_url_equal;
 	mh_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&mh_provider);
 #endif
 
 	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_TYPE_MBOX_STORE;
-	mbox_provider.url_hash = local_url_hash;
-	mbox_provider.url_equal = local_url_equal;
 	mbox_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&mbox_provider);
 
 #ifndef G_OS_WIN32
 	spool_file_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
-	spool_file_provider.url_hash = local_url_hash;
-	spool_file_provider.url_equal = local_url_equal;
 	spool_file_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&spool_file_provider);
 
 	spool_directory_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
-	spool_directory_provider.url_hash = local_url_hash;
-	spool_directory_provider.url_equal = local_url_equal;
 	spool_directory_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&spool_directory_provider);
 #endif
 
 	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type ();
-	maildir_provider.url_hash = local_url_hash;
-	maildir_provider.url_equal = local_url_equal;
 	maildir_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&maildir_provider);
 }

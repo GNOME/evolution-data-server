@@ -27,9 +27,6 @@
 
 #include "camel-imapx-store.h"
 
-static guint imapx_url_hash (gconstpointer key);
-static gint  imapx_url_equal (gconstpointer a, gconstpointer b);
-
 CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for New Mail") },
@@ -137,8 +134,6 @@ camel_imapx_module_init (void)
 {
 	imapx_provider.object_types[CAMEL_PROVIDER_STORE] =
 		CAMEL_TYPE_IMAPX_STORE;
-	imapx_provider.url_hash = imapx_url_hash;
-	imapx_provider.url_equal = imapx_url_equal;
 	imapx_provider.authtypes = camel_sasl_authtype_list (FALSE);
 	imapx_provider.authtypes = g_list_prepend (
 		imapx_provider.authtypes, &camel_imapx_password_authtype);
@@ -151,54 +146,4 @@ void
 camel_provider_module_init (void)
 {
 	camel_imapx_module_init ();
-}
-
-static void
-imapx_add_hash (guint *hash,
-                gchar *s)
-{
-	if (s)
-		*hash ^= g_str_hash(s);
-}
-
-static guint
-imapx_url_hash (gconstpointer key)
-{
-	const CamelURL *u = (CamelURL *) key;
-	guint hash = 0;
-
-	imapx_add_hash (&hash, u->user);
-	imapx_add_hash (&hash, u->host);
-	hash ^= u->port;
-
-	return hash;
-}
-
-static gint
-imapx_check_equal (gchar *s1,
-                   gchar *s2)
-{
-	if (s1 == NULL) {
-		if (s2 == NULL)
-			return TRUE;
-		else
-			return FALSE;
-	}
-
-	if (s2 == NULL)
-		return FALSE;
-
-	return strcmp (s1, s2) == 0;
-}
-
-static gint
-imapx_url_equal (gconstpointer a,
-                 gconstpointer b)
-{
-	const CamelURL *u1 = a, *u2 = b;
-
-	return imapx_check_equal (u1->protocol, u2->protocol)
-		&& imapx_check_equal (u1->user, u2->user)
-		&& imapx_check_equal (u1->host, u2->host)
-		&& u1->port == u2->port;
 }
