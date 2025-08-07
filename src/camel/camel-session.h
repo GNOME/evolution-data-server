@@ -193,10 +193,6 @@ void		camel_session_remove_service	(CamelSession *session,
 						 CamelService *service);
 CamelService *	camel_session_ref_service	(CamelSession *session,
 						 const gchar *uid);
-CamelService *	camel_session_ref_service_by_url
-						(CamelSession *session,
-						 CamelURL *url,
-						 CamelProviderType type);
 GList *		camel_session_list_services	(CamelSession *session);
 void		camel_session_remove_services	(CamelSession *session);
 gchar *		camel_session_get_password	(CamelSession *session,
