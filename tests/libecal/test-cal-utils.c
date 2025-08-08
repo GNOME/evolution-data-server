@@ -20,6 +20,7 @@
 #include "e-test-server-utils.h"
 
 static ETestServerClosure test_closure = { E_TEST_SERVER_NONE, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
+static ETestServerClosure test_closure_calendar = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
 
 #define DEF_SUBCOMP(x, dt) \
 	"BEGIN:" x "\r\n" \
@@ -1719,6 +1720,216 @@ test_time_convert_icaltime (ETestServerFixture *fixture,
 	g_clear_object (&vcalendar);
 }
 
+static void
+test_remove_as_all (ETestServerFixture *fixture,
+		    gconstpointer user_data)
+{
+	struct _zones {
+		const gchar *location;
+		const gchar *tzid_param;
+		const gchar *time_suffix;
+	} zones[] = {
+		{ "UTC",		"",			  "Z" },
+		{ "Europe/Berlin",	";TZID=Europe/Berlin",	  "" },
+		{ "America/New_York",	";TZID=America/New_York", "" }
+	};
+	struct _instances_def {
+		const gchar *insts[3];
+	} instances_def[] = {
+		{ { NULL } }, /* no detached instance, not a sentinel */
+		{ { "20250805T100000", NULL } }, /* first */
+		{ { "20250807T100000", NULL } }, /* mid */
+		{ { "20250809T100000", NULL } }, /* last */
+		{ { "20250805T100000", "20250806T100000", NULL } }, /* first - multiple */
+		{ { "20250806T100000", "20250808T100000", NULL } }, /* mid - multiple */
+		{ { "20250808T100000", "20250809T100000", NULL } }, /* last - multiple */
+	};
+	ECalClient *client;
+	guint ii, jj;
+
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	for (jj = 0; jj < G_N_ELEMENTS (instances_def); jj++) {
+		const gchar **instances = instances_def[jj].insts;
+
+		for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+			ECalComponent *comp;
+			ICalTime *rid;
+			ICalTimezone *zone;
+			GSList *detached_instances = NULL;
+			GString *exdates = NULL;
+			gchar *str;
+			guint kk;
+
+			zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+			g_assert_nonnull (zone);
+
+			for (kk = 0; instances[kk]; kk++) {
+				const gchar *instance_time_str = instances[kk];
+				ECalComponent *instance;
+
+				if (!exdates)
+					exdates = g_string_new ("");
+
+				g_string_append_printf (exdates, "EXDATE%s:%s%s\r\n", zones[ii].tzid_param, instance_time_str, zones[ii].time_suffix);
+
+				str = g_strdup_printf (
+					"BEGIN:VEVENT\r\n"
+					"UID:1\r\n"
+					"DTSTART%s:20250811T111100%s\r\n"
+					"DTEND%s:20250811T112200%s\r\n"
+					"RECURRENCE-ID%s:%s%s\r\n"
+					"SUMMARY:test - detached\r\n"
+					"END:VEVENT\r\n",
+					zones[ii].tzid_param, zones[ii].time_suffix,
+					zones[ii].tzid_param, zones[ii].time_suffix,
+					zones[ii].tzid_param, instance_time_str, zones[ii].time_suffix);
+
+				instance = e_cal_component_new_from_string (str);
+				g_assert_nonnull (instance);
+
+				g_free (str);
+
+				detached_instances = g_slist_prepend (detached_instances, instance);
+			}
+
+			/* using COUNT */
+			str = g_strdup_printf (
+				"BEGIN:VEVENT\r\n"
+				"UID:1\r\n"
+				"DTSTART%s:20250805T100000%s\r\n"
+				"DTEND%s:20250805T101500%s\r\n"
+				"RRULE:FREQ=DAILY;COUNT=5\r\n"
+				"%s"
+				"SUMMARY:test\r\n"
+				"END:VEVENT\r\n",
+				zones[ii].tzid_param, zones[ii].time_suffix,
+				zones[ii].tzid_param, zones[ii].time_suffix,
+				exdates ? exdates->str : "");
+
+			comp = e_cal_component_new_from_string (str);
+			g_assert_nonnull (comp);
+
+			rid = i_cal_time_new_from_string ("20250805T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250806T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250807T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250808T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250809T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			g_clear_object (&comp);
+			g_free (str);
+
+			/* using UNTIL */
+			str = g_strdup_printf (
+				"BEGIN:VEVENT\r\n"
+				"UID:1\r\n"
+				"DTSTART%s:20250805T100000%s\r\n"
+				"DTEND%s:20250805T101500%s\r\n"
+				"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+				"%s"
+				"SUMMARY:test\r\n"
+				"END:VEVENT\r\n",
+				zones[ii].tzid_param, zones[ii].time_suffix,
+				zones[ii].tzid_param, zones[ii].time_suffix,
+				exdates ? exdates->str : "");
+
+			comp = e_cal_component_new_from_string (str);
+			g_assert_nonnull (comp);
+
+			rid = i_cal_time_new_from_string ("20250805T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250806T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250807T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250808T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			rid = i_cal_time_new_from_string ("20250809T100000");
+			i_cal_time_set_timezone (rid, zone);
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ONLY_THIS, e_cal_client_tzlookup_cb, client));
+			g_assert_false (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, e_cal_client_tzlookup_cb, client));
+			g_assert_true (e_cal_util_check_may_remove_all (comp, detached_instances, rid, E_CAL_OBJ_MOD_ALL, e_cal_client_tzlookup_cb, client));
+			g_clear_object (&rid);
+
+			g_clear_object (&comp);
+			g_free (str);
+
+			g_slist_free_full (detached_instances, g_object_unref);
+			if (exdates)
+				g_string_free (exdates, TRUE);
+		}
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -1738,6 +1949,8 @@ main (gint argc,
 		e_test_server_utils_setup, test_time_convert_props, e_test_server_utils_teardown);
 	g_test_add ("/ECalUtils/TimeConvertICalTime", ETestServerFixture, &test_closure,
 		e_test_server_utils_setup, test_time_convert_icaltime, e_test_server_utils_teardown);
+	g_test_add ("/ECalUtils/RemoveAsAll", ETestServerFixture, &test_closure_calendar,
+		e_test_server_utils_setup, test_remove_as_all, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
 }

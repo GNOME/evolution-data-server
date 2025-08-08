@@ -49,7 +49,7 @@
 typedef struct {
 	ECalComponent *full_object;
 	GHashTable *recurrences;
-	GList *recurrences_list;
+	GSList *recurrences_slist;
 } ECalBackendFileObject;
 
 /* Private part of the ECalBackendFile structure */
@@ -135,7 +135,7 @@ free_object_data (gpointer data)
 	if (obj_data->full_object)
 		g_object_unref (obj_data->full_object);
 	g_hash_table_destroy (obj_data->recurrences);
-	g_list_free (obj_data->recurrences_list);
+	g_slist_free (obj_data->recurrences_slist);
 
 	g_free (obj_data);
 }
@@ -569,6 +569,8 @@ resolve_tzid_cb (const gchar *tzid,
 	}
 
 	zone = i_cal_timezone_get_builtin_timezone_from_tzid (tzid);
+	if (!zone)
+		zone = i_cal_timezone_get_builtin_timezone (tzid);
 	if (zone)
 		g_object_ref (zone);
 	else if (rtd->vcalendar)
@@ -771,7 +773,7 @@ add_component (ECalBackendFile *cbfile,
 		}
 
 		g_hash_table_insert (obj_data->recurrences, rid, comp);
-		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
+		obj_data->recurrences_slist = g_slist_prepend (obj_data->recurrences_slist, comp);
 	} else {
 		if (obj_data) {
 			if (obj_data->full_object) {
@@ -2464,7 +2466,7 @@ remove_object_instance_cb (gpointer key,
 				e_cal_component_get_icalcomponent (instance));
 			rrdata->cbfile->priv->comp = g_list_remove (rrdata->cbfile->priv->comp, instance);
 
-			rrdata->obj_data->recurrences_list = g_list_remove (rrdata->obj_data->recurrences_list, instance);
+			rrdata->obj_data->recurrences_slist = g_slist_remove (rrdata->obj_data->recurrences_slist, instance);
 
 			return TRUE;
 		}
@@ -2564,7 +2566,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 	for (l = icomps; l; l = l->next) {
 		ICalTime *current;
 		RemoveRecurrenceData rrdata;
-		GList *detached = NULL;
+		GSList *detached = NULL;
 		gchar *rid = NULL;
 		const gchar *comp_uid;
 		ICalComponent * icomp = l->data, *split_icomp = NULL;
@@ -2635,7 +2637,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 					priv->vcalendar,
 					e_cal_component_get_icalcomponent (recurrence));
 				priv->comp = g_list_remove (priv->comp, recurrence);
-				obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
+				obj_data->recurrences_slist = g_slist_remove (obj_data->recurrences_slist, recurrence);
 				g_hash_table_remove (obj_data->recurrences, rid);
 			} else {
 				if (old_components)
@@ -2651,7 +2653,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				priv->vcalendar,
 				e_cal_component_get_icalcomponent (comp));
 			priv->comp = g_list_append (priv->comp, comp);
-			obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
+			obj_data->recurrences_slist = g_slist_prepend (obj_data->recurrences_slist, comp);
 			break;
 		case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
 		case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
@@ -2697,7 +2699,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 					priv->vcalendar,
 					e_cal_component_get_icalcomponent (recurrence));
 				priv->comp = g_list_remove (priv->comp, recurrence);
-				obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
+				obj_data->recurrences_slist = g_slist_remove (obj_data->recurrences_slist, recurrence);
 				g_hash_table_remove (obj_data->recurrences, rid);
 			} else {
 				if (old_components)
@@ -2781,12 +2783,12 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			if (old_components)
 				*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);
 
-			if (obj_data->recurrences_list) {
+			if (obj_data->recurrences_slist) {
 				/* has detached components, preserve them */
-				GList *ll;
+				GSList *ll;
 
-				for (ll = obj_data->recurrences_list; ll; ll = ll->next) {
-					detached = g_list_prepend (detached, g_object_ref (ll->data));
+				for (ll = obj_data->recurrences_slist; ll; ll = g_slist_next (ll)) {
+					detached = g_slist_prepend (detached, g_object_ref (ll->data));
 				}
 			}
 
@@ -2802,7 +2804,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				comp_uid = i_cal_component_get_uid (e_cal_component_get_icalcomponent (comp));
 
 				if ((obj_data = g_hash_table_lookup (priv->comp_uid_hash, comp_uid)) != NULL) {
-					GList *ll;
+					GSList *ll;
 
 					for (ll = detached; ll; ll = ll->next) {
 						ECalComponent *c = ll->data;
@@ -2810,11 +2812,11 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 						g_hash_table_insert (obj_data->recurrences, e_cal_component_get_recurid_as_string (c), c);
 						i_cal_component_add_component (priv->vcalendar, e_cal_component_get_icalcomponent (c));
 						priv->comp = g_list_append (priv->comp, c);
-						obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, c);
+						obj_data->recurrences_slist = g_slist_prepend (obj_data->recurrences_slist, c);
 					}
 				}
 
-				g_list_free (detached);
+				g_slist_free (detached);
 			}
 			break;
 		/* coverity[dead_error_begin] */
@@ -2920,6 +2922,26 @@ e_cal_backend_file_discard_alarm_sync (ECalBackendSync *backend,
 	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
+static ICalTime *
+rid_from_string (const gchar *str,
+		 ECalComponent *full_object)
+{
+	ICalTime *rid_struct;
+
+	rid_struct = i_cal_time_new_from_string (str);
+	if (!i_cal_time_get_timezone (rid_struct)) {
+		ICalTime *dtstart = i_cal_component_get_dtstart (e_cal_component_get_icalcomponent (full_object));
+
+		if (dtstart && i_cal_time_get_timezone (dtstart)) {
+			i_cal_time_convert_to_zone_inplace (rid_struct, i_cal_time_get_timezone (dtstart));
+		}
+
+		g_clear_object (&dtstart);
+	}
+
+	return rid_struct;
+}
+
 /**
  * Remove one and only one instance. The object may be empty
  * afterwards, in which case it will be removed completely.
@@ -2986,7 +3008,7 @@ remove_instance (ECalBackendFile *cbfile,
 				cbfile->priv->vcalendar,
 				e_cal_component_get_icalcomponent (comp));
 			cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
-			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
+			obj_data->recurrences_slist = g_slist_remove (obj_data->recurrences_slist, comp);
 			g_hash_table_remove (obj_data->recurrences, rid);
 		} else if (mod == E_CAL_OBJ_MOD_ONLY_THIS) {
 			if (error)
@@ -2997,7 +3019,7 @@ remove_instance (ECalBackendFile *cbfile,
 		}
 		/* component empty? */
 		if (!obj_data->full_object) {
-			if (!obj_data->recurrences_list) {
+			if (!obj_data->recurrences_slist) {
 				/* empty now, remove it */
 				remove_component (cbfile, uid, obj_data);
 				return NULL;
@@ -3005,10 +3027,6 @@ remove_instance (ECalBackendFile *cbfile,
 				return obj_data;
 			}
 		}
-
-		/* avoid modifying parent? */
-		if (mod == E_CAL_OBJ_MOD_ONLY_THIS)
-			return obj_data;
 
 		/* remove the main component from our data before modifying it */
 		i_cal_component_remove_component (
@@ -3021,14 +3039,7 @@ remove_instance (ECalBackendFile *cbfile,
 			*old_comp = e_cal_component_clone (obj_data->full_object);
 		}
 
-		rid_struct = i_cal_time_new_from_string (rid);
-		if (!i_cal_time_get_timezone (rid_struct)) {
-			ICalTime *master_dtstart = i_cal_component_get_dtstart (e_cal_component_get_icalcomponent (obj_data->full_object));
-
-			if (master_dtstart && i_cal_time_get_timezone (master_dtstart)) {
-				i_cal_time_convert_to_zone_inplace (rid_struct, i_cal_time_get_timezone (master_dtstart));
-			}
-		}
+		rid_struct = rid_from_string (rid, obj_data->full_object);
 
 		resolve_tzid_data_init (&rtd, cbfile->priv->vcalendar);
 
@@ -3086,7 +3097,7 @@ remove_instance (ECalBackendFile *cbfile,
 		obj_data->full_object = NULL;
 
 		/* component may be empty now, check that */
-		if (!obj_data->recurrences_list) {
+		if (!obj_data->recurrences_slist) {
 			remove_component (cbfile, uid, obj_data);
 			return NULL;
 		}
@@ -3153,6 +3164,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ResolveTzidData rtd;
 	const GSList *l;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
@@ -3208,24 +3220,44 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 		}
 	}
 
+	resolve_tzid_data_init (&rtd, priv->vcalendar);
+
 	/* Second step, remove objects from the calendar */
 	for (l = ids; l; l = l->next) {
 		const gchar *recur_id = NULL;
 		ECalComponent *comp;
 		RemoveRecurrenceData rrdata;
 		ECalBackendFileObject *obj_data;
-		ECalComponentId *id = l->data;
+		ECalComponentId *id = l->data, *tmp_id;
+		ECalObjModType use_mod = mod;
+		ICalTime *rid_struct = NULL;
 
 		obj_data = g_hash_table_lookup (priv->comp_uid_hash, e_cal_component_id_get_uid (id));
 		recur_id = e_cal_component_id_get_rid (id);
 
-		switch (mod) {
+		if (recur_id && *recur_id) {
+			rid_struct = rid_from_string (recur_id, obj_data->full_object);
+
+			if (e_cal_util_check_may_remove_all (obj_data->full_object, obj_data->recurrences_slist, rid_struct, use_mod, resolve_tzid_cb, &rtd)) {
+				use_mod = E_CAL_OBJ_MOD_ALL;
+				recur_id = NULL;
+			}
+
+			g_clear_object (&rid_struct);
+		}
+
+		switch (use_mod) {
 		case E_CAL_OBJ_MOD_ALL :
 			*old_components = g_slist_prepend (*old_components, clone_ecalcomp_from_fileobject (obj_data, recur_id));
 			*new_components = g_slist_prepend (*new_components, NULL);
 
-			if (obj_data->recurrences_list)
-				g_list_foreach (obj_data->recurrences_list, notify_comp_removed_cb, cbfile);
+			if (obj_data->recurrences_slist)
+				g_slist_foreach (obj_data->recurrences_slist, notify_comp_removed_cb, cbfile);
+
+			tmp_id = e_cal_component_id_new (e_cal_component_id_get_uid (id), NULL);
+			e_cal_backend_notify_component_removed (E_CAL_BACKEND (cbfile), tmp_id, obj_data->full_object, NULL);
+			e_cal_component_id_free (tmp_id);
+
 			remove_component (cbfile, e_cal_component_id_get_uid (id), obj_data);
 			break;
 		case E_CAL_OBJ_MOD_ONLY_THIS:
@@ -3234,7 +3266,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			ECalComponent *new_component = NULL;
 
 			remove_instance (
-				cbfile, obj_data, e_cal_component_id_get_uid (id), recur_id, mod,
+				cbfile, obj_data, e_cal_component_id_get_uid (id), recur_id, use_mod,
 				&old_component, &new_component, error);
 
 			*old_components = g_slist_prepend (*old_components, old_component);
@@ -3246,9 +3278,6 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			comp = obj_data->full_object;
 
 			if (comp) {
-				ICalTime *rid_struct;
-				ResolveTzidData rtd;
-
 				*old_components = g_slist_prepend (*old_components, e_cal_component_clone (comp));
 
 				/* remove the component from our data, temporarily */
@@ -3257,24 +3286,12 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 					e_cal_component_get_icalcomponent (comp));
 				priv->comp = g_list_remove (priv->comp, comp);
 
-				rid_struct = i_cal_time_new_from_string (recur_id);
-				if (!i_cal_time_get_timezone (rid_struct)) {
-					ICalTime *master_dtstart = i_cal_component_get_dtstart (e_cal_component_get_icalcomponent (comp));
-
-					if (master_dtstart && i_cal_time_get_timezone (master_dtstart)) {
-						i_cal_time_convert_to_zone_inplace (rid_struct, i_cal_time_get_timezone (master_dtstart));
-					}
-
-					i_cal_time_convert_to_zone_inplace (rid_struct, i_cal_timezone_get_utc_timezone ());
-				}
-
-				resolve_tzid_data_init (&rtd, priv->vcalendar);
+				rid_struct = rid_from_string (recur_id, comp);
 
 				e_cal_util_remove_instances_ex (
 					e_cal_component_get_icalcomponent (comp),
-					rid_struct, mod, resolve_tzid_cb, &rtd);
+					rid_struct, use_mod, resolve_tzid_cb, &rtd);
 
-				resolve_tzid_data_clear (&rtd);
 				g_object_unref (rid_struct);
 			} else {
 				*old_components = g_slist_prepend (*old_components, NULL);
@@ -3284,7 +3301,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			rrdata.cbfile = cbfile;
 			rrdata.obj_data = obj_data;
 			rrdata.rid = recur_id;
-			rrdata.mod = mod;
+			rrdata.mod = use_mod;
 			g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_object_instance_cb, &rrdata);
 
 			/* add the modified object to the beginning of the list,
@@ -3301,6 +3318,8 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			break;
 		}
 	}
+
+	resolve_tzid_data_clear (&rtd);
 
 	save (cbfile, TRUE);
 

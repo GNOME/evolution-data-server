@@ -2247,6 +2247,29 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 		}
 	}
 
+	if (mod != E_CAL_OBJ_MOD_ALL && master_comp && rid) {
+		ICalTime *rid_tm;
+
+		instances = g_slist_remove (instances, master_comp);
+
+		rid_tm = i_cal_time_new_from_string (rid);
+		if (!i_cal_time_get_timezone (rid_tm)) {
+			ICalTime *dtstart = i_cal_component_get_dtstart (e_cal_component_get_icalcomponent (master_comp));
+
+			if (dtstart && i_cal_time_get_timezone (dtstart)) {
+				i_cal_time_convert_to_zone_inplace (rid_tm, i_cal_time_get_timezone (dtstart));
+			}
+
+			g_clear_object (&dtstart);
+		}
+
+		if (e_cal_util_check_may_remove_all (master_comp, instances, rid_tm, mod, e_cal_cache_resolve_timezone_cb, cal_cache))
+			mod = E_CAL_OBJ_MOD_ALL;
+
+		instances = g_slist_prepend (instances, master_comp);
+		g_clear_object (&rid_tm);
+	}
+
 	switch (mod) {
 	case E_CAL_OBJ_MOD_ALL:
 		/* Will remove the whole component below */

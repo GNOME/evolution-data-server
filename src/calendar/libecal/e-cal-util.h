@@ -369,6 +369,12 @@ gboolean	e_cal_util_is_first_instance	(ECalComponent *comp,
 						 const ICalTime *rid,
 						 ECalRecurResolveTimezoneCb tz_cb,
 						 gpointer tz_cb_data);
+gboolean	e_cal_util_check_may_remove_all	(ECalComponent *comp,
+						 GSList *detached_instances, /* ECalComponent * */
+						 const ICalTime *rid,
+						 ECalObjModType mod,
+						 ECalRecurResolveTimezoneCb tz_cb,
+						 gpointer tz_cb_data);
 
 gchar *		e_cal_util_get_system_timezone_location (void);
 ICalTimezone *	e_cal_util_get_system_timezone (void);

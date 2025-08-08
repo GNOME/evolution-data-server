@@ -1647,7 +1647,8 @@ e_cal_util_normalize_rrule_until_value (ICalComponent *icalcomp,
 								tz = tz_cb (tzid, tz_cb_data, NULL, NULL);
 
 							if (tz) {
-								i_cal_time_set_timezone (ttuntil, tz);
+								if (!i_cal_time_get_timezone (ttuntil))
+									i_cal_time_set_timezone (ttuntil, tz);
 								i_cal_time_convert_to_zone_inplace (ttuntil, i_cal_timezone_get_utc_timezone ());
 							}
 						}
@@ -1726,7 +1727,7 @@ e_cal_util_remove_instances_impl (ICalComponent *icalcomp,
 	remove_props = NULL;
 
 	/* If we're only removing one instance, just add an EXDATE. */
-	if (mod == E_CAL_OBJ_MOD_THIS) {
+	if (mod == E_CAL_OBJ_MOD_THIS || mod == E_CAL_OBJ_MOD_ONLY_THIS) {
 		prop = i_cal_property_new_exdate ((ICalTime *) rid);
 		i_cal_component_take_property (icalcomp, prop);
 		return;
@@ -2121,6 +2122,8 @@ e_cal_util_split_at_instance_ex (ICalComponent *icalcomp,
 typedef struct {
 	const ICalTime *rid;
 	gboolean matches;
+	gboolean found_any;
+	gint cmp_res;
 } CheckFirstInstanceData;
 
 static gboolean
@@ -2137,7 +2140,9 @@ check_first_instance_cb (ICalComponent *icalcomp,
 
 	g_return_val_if_fail (ifs != NULL, FALSE);
 
-	ifs->matches = i_cal_time_compare ((ICalTime *) ifs->rid, instance_start) == 0;
+	ifs->found_any = TRUE;
+	ifs->cmp_res = i_cal_time_compare ((ICalTime *) ifs->rid, instance_start);
+	ifs->matches = ifs->cmp_res == 0;
 	if (ifs->matches)
 		return FALSE;
 
@@ -2157,11 +2162,142 @@ check_first_instance_cb (ICalComponent *icalcomp,
 		g_clear_object (&dtstart);
 	}
 
-	ifs->matches = i_cal_time_compare ((ICalTime *) ifs->rid, rid) == 0;
+	ifs->cmp_res = i_cal_time_compare ((ICalTime *) ifs->rid, rid);
+	ifs->matches = ifs->cmp_res == 0;
 
 	g_clear_object (&rid);
 
 	return FALSE;
+}
+
+static ICalTime *
+e_cal_util_dup_rid_from_slist (GSList *detached_instances, /* ECalComponent * */
+			       gboolean first_by_time, /* FALSE to get last by time */
+			       ECalRecurResolveTimezoneCb tz_cb,
+			       gpointer tz_cb_data)
+{
+	GSList *link;
+	ICalTime *adept_rid = NULL;
+
+	for (link = detached_instances; link; link = g_slist_next (link)) {
+		ECalComponent *ecomp = link->data;
+		ICalComponent *icomp = e_cal_component_get_icalcomponent (ecomp);
+		ICalProperty *prop;
+
+		prop = i_cal_component_get_first_property (icomp, I_CAL_RECURRENCEID_PROPERTY);
+		if (prop) {
+			ICalTime *rid;
+
+			rid = i_cal_property_get_recurrenceid (prop);
+
+			if (rid && !i_cal_time_get_timezone (rid)) {
+				ICalParameter *param;
+
+				param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+
+				if (param) {
+					const gchar *tzid;
+
+					tzid = i_cal_parameter_get_tzid (param);
+
+					if (tzid && *tzid) {
+						ICalTimezone *tz = NULL;
+
+						if (g_ascii_strcasecmp (tzid, "UTC") == 0)
+							tz = i_cal_timezone_get_utc_timezone ();
+						else if (tz_cb)
+							tz = tz_cb (tzid, tz_cb_data, NULL, NULL);
+
+						if (tz)
+							i_cal_time_set_timezone (rid, tz);
+					}
+
+					g_object_unref (param);
+				}
+			}
+
+			if (rid) {
+				if (!adept_rid) {
+					adept_rid = rid;
+				} else {
+					gint cmp_res = i_cal_time_compare (adept_rid, rid);
+
+					if (!first_by_time)
+						cmp_res *= -1;
+
+					if (cmp_res > 0) {
+						g_clear_object (&adept_rid);
+						adept_rid = rid;
+					} else {
+						g_clear_object (&rid);
+					}
+				}
+			}
+
+			g_object_unref (prop);
+		}
+	}
+
+	return adept_rid;
+}
+
+static gboolean
+e_cal_util_is_first_instance_impl (ECalComponent *ecomp,
+				   GSList *detached_instances, /* ECalComponent * */
+				   const ICalTime *rid,
+				   ECalRecurResolveTimezoneCb tz_cb,
+				   gpointer tz_cb_data)
+{
+	CheckFirstInstanceData ifs;
+	ICalComponent *icalcomp;
+	ICalTime *start, *end;
+
+	ifs.rid = rid;
+	ifs.matches = FALSE;
+	ifs.found_any = FALSE;
+	ifs.cmp_res = 0;
+
+	icalcomp = e_cal_component_get_icalcomponent (ecomp);
+	start = i_cal_component_get_dtstart (icalcomp);
+	i_cal_time_adjust (start, -1, 0, 0, 0);
+
+	end = i_cal_component_get_dtend (icalcomp);
+	/* in case some early instances were detached or removed */
+	i_cal_time_adjust (end, +100 * 366, 0, 0, 0);
+
+	e_cal_recur_generate_instances_sync (icalcomp,
+		start, end,
+		check_first_instance_cb, &ifs,
+		tz_cb, tz_cb_data, i_cal_timezone_get_utc_timezone (),
+		NULL, NULL);
+
+	g_clear_object (&start);
+	g_clear_object (&end);
+
+	/* when the rid did not match the first found instance, and it was before it,
+	   then the first instance can be detached, then check the detached instances */
+	if (!ifs.matches && ifs.cmp_res < 0) {
+		ICalTime *instance_rid;
+
+		instance_rid = e_cal_util_dup_rid_from_slist (detached_instances, TRUE, tz_cb, tz_cb_data);
+		if (instance_rid) {
+			ifs.matches = i_cal_time_compare ((ICalTime *) rid, instance_rid) == 0;
+
+			g_clear_object (&instance_rid);
+		}
+	} else if (ifs.matches) {
+		ICalTime *instance_rid;
+
+		/* maybe any detached instance is before the found instance */
+		instance_rid = e_cal_util_dup_rid_from_slist (detached_instances, TRUE, tz_cb, tz_cb_data);
+		if (instance_rid) {
+			ifs.matches = i_cal_time_compare ((ICalTime *) rid, instance_rid) < 0;
+
+			g_clear_object (&instance_rid);
+		}
+	}
+
+	return ifs.matches;
 }
 
 /**
@@ -2184,34 +2320,198 @@ e_cal_util_is_first_instance (ECalComponent *comp,
 			      ECalRecurResolveTimezoneCb tz_cb,
 			      gpointer tz_cb_data)
 {
-	CheckFirstInstanceData ifs;
-	ICalComponent *icalcomp;
-	ICalTime *start, *end;
-
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (rid && !i_cal_time_is_null_time ((ICalTime *) rid), FALSE);
 
-	ifs.rid = rid;
-	ifs.matches = FALSE;
+	return e_cal_util_is_first_instance_impl (comp, NULL, rid, tz_cb, tz_cb_data);
+}
+
+typedef struct {
+	const ICalTime *rid;
+	gboolean found;
+	gboolean has_more;
+} CheckLastInstanceData;
+
+static gboolean
+check_last_instance_cb (ICalComponent *icalcomp,
+			 ICalTime *instance_start,
+			 ICalTime *instance_end,
+			 gpointer user_data,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	CheckLastInstanceData *cli = user_data;
+	ICalProperty *prop;
+	ICalTime *rid;
+	gint cmp;
+
+	g_return_val_if_fail (cli != NULL, FALSE);
+
+	if (cli->found) {
+		cli->has_more = TRUE;
+		return FALSE;
+	}
+
+	cli->found = i_cal_time_compare ((ICalTime *) cli->rid, instance_start) == 0;
+	if (cli->found)
+		return TRUE;
+
+	prop = i_cal_component_get_first_property (icalcomp, I_CAL_RECURRENCEID_PROPERTY);
+	if (prop) {
+		rid = i_cal_property_get_recurrenceid (prop);
+		g_object_unref (prop);
+	} else {
+		ICalTime *dtstart;
+		ICalTimezone *zone;
+
+		dtstart = i_cal_component_get_dtstart (icalcomp);
+		zone = i_cal_time_get_timezone (dtstart);
+
+		rid = i_cal_time_new_from_timet_with_zone (i_cal_time_as_timet (instance_start), i_cal_time_is_date (dtstart), zone);
+
+		g_clear_object (&dtstart);
+	}
+
+	cmp = i_cal_time_compare ((ICalTime *) cli->rid, rid);
+	/* it's past the needed instance, stop now */
+	if (cmp < 0) {
+		cli->has_more = TRUE;
+		g_clear_object (&rid);
+		return FALSE;
+	}
+
+	cli->found = cmp == 0;
+
+	g_clear_object (&rid);
+
+	return TRUE;
+}
+
+static gboolean
+e_cal_util_is_last_instance_ical (ECalComponent *comp,
+				  GSList *detached_instances, /* ECalComponent * */
+				  const ICalTime *rid,
+				  ECalRecurResolveTimezoneCb tz_cb,
+				  gpointer tz_cb_data)
+{
+	CheckLastInstanceData cli;
+	ICalComponent *icalcomp;
+	ICalProperty *prop;
+	ICalTime *start, *end;
+	gboolean is_forever = FALSE;
 
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 
-	start = i_cal_component_get_dtstart (icalcomp);
+	for (prop = i_cal_component_get_first_property (icalcomp, I_CAL_RRULE_PROPERTY);
+	     prop && !is_forever;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icalcomp, I_CAL_RRULE_PROPERTY)) {
+		ICalRecurrence *rrule;
+
+		rrule = i_cal_property_get_rrule (prop);
+		if (rrule && !i_cal_recurrence_get_count (rrule)) {
+			ICalTime *until;
+
+			until = i_cal_recurrence_get_until (rrule);
+
+			is_forever = !(until && !i_cal_time_is_null_time (until) && i_cal_time_is_valid_time (until));
+
+			g_clear_object (&until);
+		}
+
+		g_clear_object (&rrule);
+	}
+
+	g_clear_object (&prop);
+
+	if (is_forever)
+		return FALSE;
+
+	cli.rid = rid;
+	cli.found = FALSE;
+	cli.has_more = FALSE;
+
+	start = i_cal_time_clone (rid);
 	i_cal_time_adjust (start, -1, 0, 0, 0);
 
-	end = i_cal_component_get_dtend (icalcomp);
-	i_cal_time_adjust (end, +1, 0, 0, 0);
+	end = i_cal_time_clone (rid);
+	/* hard to guess, but suppose the next instance will be in less than 100 years;
+	   the recurrence expansion ends as soon as the first following instance is encountered */
+	i_cal_time_adjust (end, 100 * 366, 0, 0, 0);
 
-	e_cal_recur_generate_instances_sync (e_cal_component_get_icalcomponent (comp),
+	e_cal_recur_generate_instances_sync (icalcomp,
 		start, end,
-		check_first_instance_cb, &ifs,
+		check_last_instance_cb, &cli,
 		tz_cb, tz_cb_data, i_cal_timezone_get_utc_timezone (),
 		NULL, NULL);
 
 	g_clear_object (&start);
 	g_clear_object (&end);
 
-	return ifs.matches;
+	if (!cli.found && !cli.has_more) {
+		ICalTime *instance_rid;
+
+		instance_rid = e_cal_util_dup_rid_from_slist (detached_instances, FALSE, tz_cb, tz_cb_data);
+		if (instance_rid) {
+			cli.found = i_cal_time_compare ((ICalTime *) rid, instance_rid) == 0;
+
+			g_clear_object (&instance_rid);
+		}
+	} else if (cli.found && !cli.has_more) {
+		ICalTime *instance_rid;
+
+		instance_rid = e_cal_util_dup_rid_from_slist (detached_instances, FALSE, tz_cb, tz_cb_data);
+		if (instance_rid) {
+			cli.has_more = i_cal_time_compare ((ICalTime *) rid, instance_rid) < 0;
+
+			g_clear_object (&instance_rid);
+		}
+	}
+
+	return cli.found && !cli.has_more;
+}
+
+/**
+ * e_cal_util_check_may_remove_all:
+ * @comp: an #ECalComponent
+ * @detached_instances: (element-type ECalComponent) (nullable): a #GSList of detached instances as #ECalComponent, or %NULL
+ * @rid: (nullable): recurrence ID to remove, or %NULL
+ * @mod: an #ECalObjModType removal mode
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneCb to call
+ * @tz_cb_data: User data to be passed to the @tz_cb callback
+ *
+ * Checks whether removing the instance with recurrence ID @rid from
+ * the series defined in the @icalcomp using the @mod mode is equal
+ * to remove all events.
+ *
+ * Returns: %TRUE, when the whole series should be removed
+ *
+ * Since: 3.58
+ **/
+gboolean
+e_cal_util_check_may_remove_all (ECalComponent *comp,
+				 GSList *detached_instances,
+				 const ICalTime *rid,
+				 ECalObjModType mod,
+				 ECalRecurResolveTimezoneCb tz_cb,
+				 gpointer tz_cb_data)
+{
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
+
+	if (mod == E_CAL_OBJ_MOD_ALL)
+		return TRUE;
+
+	if (!rid)
+		return FALSE;
+
+	if (mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE &&
+	    e_cal_util_is_first_instance_impl (comp, detached_instances, rid, tz_cb, tz_cb_data))
+		return TRUE;
+
+	if (mod == E_CAL_OBJ_MOD_THIS_AND_PRIOR &&
+	    e_cal_util_is_last_instance_ical (comp, detached_instances, rid, tz_cb, tz_cb_data))
+		return TRUE;
+
+	return FALSE;
 }
 
 /**

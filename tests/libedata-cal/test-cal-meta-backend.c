@@ -3932,6 +3932,1365 @@ test_refresh (ECalMetaBackend *meta_backend)
 	g_object_unref (cal_cache);
 }
 
+static void
+remove_all_from_cache (ECalMetaBackend *meta_backend)
+{
+	ECalCache *cal_cache;
+	GError *error = NULL;
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_assert_nonnull (cal_cache);
+
+	/* Empty local cache */
+	e_cache_remove_all (E_CACHE (cal_cache), NULL, &error);
+	g_assert_no_error (error);
+
+	g_clear_object (&cal_cache);
+}
+
+typedef struct _Instance {
+	ICalTime *start;
+	ICalTime *end;
+	ICalComponent *icomp;
+} Instance;
+
+static Instance *
+instance_new (ICalTime *start,
+	      ICalTime *end,
+	      ICalComponent *icomp)
+{
+	Instance *ins;
+
+	ins = g_new0 (Instance, 1);
+	ins->start = i_cal_time_clone (start);
+	ins->end = i_cal_time_clone (end);
+	ins->icomp = i_cal_component_clone (icomp);
+
+	return ins;
+}
+
+static void
+instance_free (gpointer ptr)
+{
+	Instance *ins = ptr;
+
+	if (ins) {
+		g_clear_object (&ins->start);
+		g_clear_object (&ins->end);
+		g_clear_object (&ins->icomp);
+		g_free (ins);
+	}
+}
+
+static guint
+instance_hash (gconstpointer ptr)
+{
+	/* Place everything into a single basket */
+	return 0;
+}
+
+static gboolean
+instance_equal (gconstpointer ptr1,
+		gconstpointer ptr2)
+{
+	Instance *ins1 = (Instance *) ptr1;
+	Instance *ins2 = (Instance *) ptr2;
+
+	if (!ins1 || !ins2)
+		return ins1 == ins2;
+
+	return i_cal_time_compare (ins1->start, ins2->start) == 0;
+}
+
+static GSList * /* ICalComponent * */
+get_uid_icalcomps (ECalMetaBackendTest *test_backend,
+		   const gchar *uid)
+{
+	ECalBackendSyncClass *backend_class;
+	ICalComponent *icomp;
+	GError *local_error = NULL;
+	GSList *icomps = NULL;
+	gchar *calobj = NULL;
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (test_backend);
+	g_return_val_if_fail (backend_class != NULL, NULL);
+	g_return_val_if_fail (backend_class->get_object_sync != NULL, NULL);
+
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (test_backend), NULL, NULL, uid, NULL, &calobj, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (calobj);
+
+	icomp = i_cal_component_new_from_string (calobj);
+	g_assert_nonnull (icomp);
+
+	if (i_cal_component_isa (icomp) == I_CAL_VCALENDAR_COMPONENT) {
+		ICalComponent *subcomp;
+
+		for (subcomp = i_cal_component_get_first_component (icomp, I_CAL_VEVENT_COMPONENT);
+		     subcomp;
+		     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (icomp, I_CAL_VEVENT_COMPONENT)) {
+			icomps = g_slist_prepend (icomps, g_object_ref (subcomp));
+		}
+	} else {
+		icomps = g_slist_prepend (icomps, g_object_ref (icomp));
+	}
+
+	g_clear_object (&icomp);
+	g_free (calobj);
+
+	return g_slist_reverse (icomps);
+}
+
+static ICalTimezone *
+get_timezone_from_timezone_cache (const gchar *tzid,
+				  gpointer user_data,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	return e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (user_data), tzid);
+}
+
+static void
+generate_instances_for_uid (ECalMetaBackendTest *test_backend,
+			    const gchar *uid,
+			    ICalTime *start,
+			    ICalTime *end,
+			    ECalRecurInstanceCb cb,
+			    gpointer cb_user_data)
+{
+	ICalTimezone *utc_zone;
+	GSList *icomps, *link;
+
+	utc_zone = i_cal_timezone_get_utc_timezone ();
+	icomps = get_uid_icalcomps (test_backend, uid);
+
+	for (link = icomps; link; link = g_slist_next (link)) {
+		ICalComponent *icomp = link->data;
+		GError *local_error = NULL;
+		gboolean success;
+
+		success = e_cal_recur_generate_instances_sync (icomp, start, end, cb, cb_user_data,
+			get_timezone_from_timezone_cache, test_backend, utc_zone, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+	}
+
+	g_slist_free_full (icomps, g_object_unref);
+}
+
+static void
+verify_received_instances (GHashTable *instances,
+			   ICalTimezone *comp_zone,
+			   const gchar **expected_times)
+{
+	gint ii;
+
+	g_assert_nonnull (instances);
+	g_assert_nonnull (expected_times);
+
+	for (ii = 0; expected_times[ii]; ii++) {
+		ICalTime *expected_start;
+		Instance ins = { 0, };
+
+		expected_start = i_cal_time_new_from_string (expected_times[ii]);
+		g_assert_nonnull (expected_start);
+
+		ins.start = expected_start;
+		g_assert_true (g_hash_table_remove (instances, &ins));
+
+		g_object_unref (expected_start);
+	}
+
+	g_assert_cmpint (g_hash_table_size (instances), ==, 0);
+}
+
+typedef struct _RecurData {
+	GHashTable *instances;
+} RecurData;
+
+static gboolean
+recur_instance_cb (ICalComponent *icomp,
+		   ICalTime *instance_start,
+		   ICalTime *instance_end,
+		   gpointer user_data,
+		   GCancellable *cancellable,
+		   GError **error)
+{
+	RecurData *rd = user_data;
+	Instance *ins;
+	gsize pre;
+
+	g_assert_nonnull (rd);
+
+	ins = instance_new (instance_start, instance_end, icomp);
+
+	pre = g_hash_table_size (rd->instances);
+	g_hash_table_insert (rd->instances, ins, NULL);
+
+	g_assert_cmpint (pre + 1, ==, g_hash_table_size (rd->instances));
+
+	return TRUE;
+}
+
+static void
+unref_nonnull_object (gpointer ptr)
+{
+	GObject *obj = ptr;
+
+	g_clear_object (&obj);
+}
+
+static void
+test_remove_instance_case (ECalMetaBackendTest *test_backend,
+			   ICalComponent *new_icomp,
+			   ICalTime *start,
+			   ICalTime *end,
+			   ICalTime *rid,
+			   ECalObjModType mod,
+			   const gchar **expected_all,
+			   const gchar **expected_shortened,
+			   ICalPropertyKind expected_property)
+{
+	ECalBackendSyncClass *backend_class;
+	GError *local_error = NULL;
+	gchar *uid = NULL, *rid_str;
+	GSList *ids = NULL, *objects = NULL, *uids = NULL, *icomps = NULL;
+	GSList *old_components = NULL, *new_components = NULL;
+	RecurData rd = { 0, };
+	guint n_expected_all, n_expected_shortened;
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (test_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->create_objects_sync != NULL);
+	g_return_if_fail (backend_class->modify_objects_sync != NULL);
+	g_return_if_fail (backend_class->remove_objects_sync != NULL);
+
+	for (n_expected_all = 0; expected_all[n_expected_all]; n_expected_all++) {
+		/* just count them */
+	}
+
+	for (n_expected_shortened = 0; expected_shortened[n_expected_shortened]; n_expected_shortened++) {
+		/* just count them */
+	}
+
+	/* this can fail, it's only to prepare the backend */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (i_cal_component_get_uid (new_icomp), NULL));
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, 0, &old_components, &new_components, NULL);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free_full (new_components, unref_nonnull_object);
+	ids = NULL;
+	old_components = NULL;
+	new_components = NULL;
+
+	objects = g_slist_prepend (NULL, i_cal_component_as_ical_string (new_icomp));
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+		NULL, NULL, objects, 0, &uids, &new_components, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_cmpint (g_slist_length (uids), ==, 1);
+	g_assert_cmpstr (uids->data, ==, "1");
+	uid = g_strdup (uids->data);
+	g_slist_free_full (uids, g_free);
+	g_slist_free_full (objects, g_free);
+	g_slist_free_full (new_components, g_object_unref);
+	uids = NULL;
+	objects = NULL;
+	new_components = NULL;
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	generate_instances_for_uid (test_backend, uid, start, end, recur_instance_cb, &rd);
+	g_assert_cmpuint (g_hash_table_size (rd.instances), ==, n_expected_all);
+	verify_received_instances (rd.instances, i_cal_time_get_timezone (rid), expected_all);
+	g_clear_pointer (&rd.instances, g_hash_table_unref);
+
+	icomps = get_uid_icalcomps (test_backend, uid);
+	g_assert_cmpuint (g_slist_length (icomps), ==, 1);
+
+	if (expected_property != I_CAL_NO_PROPERTY)
+		g_assert_false (e_cal_util_component_has_property (icomps->data, expected_property));
+
+	/* mod only-this requires that to be a detached instance, thus create it first */
+	if (mod == E_CAL_OBJ_MOD_ONLY_THIS) {
+		ICalComponent *icomp = icomps->data;
+
+		i_cal_component_set_recurrenceid (icomp, rid);
+		i_cal_component_set_summary (icomp, "modified");
+
+		objects = g_slist_prepend (NULL, i_cal_component_as_ical_string (icomp));
+		backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+			NULL, NULL, objects, E_CAL_OBJ_MOD_THIS, 0, &old_components, &new_components, &local_error);
+		g_assert_no_error (local_error);
+		g_slist_free_full (objects, g_free);
+		g_slist_free_full (old_components, g_object_unref);
+		g_slist_free_full (new_components, unref_nonnull_object);
+		objects = NULL;
+		old_components = NULL;
+		new_components = NULL;
+	}
+
+	g_slist_free_full (icomps, g_object_unref);
+	icomps = NULL;
+
+	rid_str = i_cal_time_as_ical_string (rid);
+	g_assert_nonnull (rid_str);
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (uid, rid_str));
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+		NULL, NULL, ids, mod, 0, &old_components, &new_components, &local_error);
+	g_assert_no_error (local_error);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free_full (new_components, unref_nonnull_object);
+	ids = NULL;
+	old_components = NULL;
+	new_components = NULL;
+	g_free (rid_str);
+
+	icomps = get_uid_icalcomps (test_backend, uid);
+	g_assert_cmpuint (g_slist_length (icomps), ==, 1);
+
+	if (expected_property != I_CAL_NO_PROPERTY)
+		g_assert_true (e_cal_util_component_has_property (icomps->data, expected_property));
+
+	g_slist_free_full (icomps, g_object_unref);
+	icomps = NULL;
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	generate_instances_for_uid (test_backend, uid, start, end, recur_instance_cb, &rd);
+	g_assert_cmpuint (g_hash_table_size (rd.instances), ==, n_expected_shortened);
+	verify_received_instances (rd.instances, i_cal_time_get_timezone (rid), expected_shortened);
+	g_clear_pointer (&rd.instances, g_hash_table_unref);
+
+	g_free (uid);
+}
+
+static void
+test_remove_instance_like_all_case (ECalMetaBackendTest *test_backend,
+				    ICalComponent *new_icomp,
+				    ICalTime *start,
+				    ICalTime *end,
+				    ICalTime *rid,
+				    ECalObjModType mod,
+				    const gchar **expected_all)
+{
+	ECalBackendSyncClass *backend_class;
+	GError *local_error = NULL;
+	gchar *uid = NULL, *rid_str;
+	GSList *ids = NULL, *objects = NULL, *uids = NULL, *icomps = NULL;
+	GSList *old_components = NULL, *new_components = NULL;
+	gchar *calobj = NULL;
+	RecurData rd = { 0, };
+	guint n_expected_all;
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (test_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->create_objects_sync != NULL);
+	g_return_if_fail (backend_class->modify_objects_sync != NULL);
+	g_return_if_fail (backend_class->remove_objects_sync != NULL);
+	g_return_if_fail (backend_class->get_object_sync != NULL);
+
+	for (n_expected_all = 0; expected_all[n_expected_all]; n_expected_all++) {
+		/* just count them */
+	}
+
+	/* this can fail, it's only to prepare the backend */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (i_cal_component_get_uid (new_icomp), NULL));
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, 0, &old_components, &new_components, NULL);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free_full (new_components, unref_nonnull_object);
+	ids = NULL;
+	old_components = NULL;
+	new_components = NULL;
+
+	objects = g_slist_prepend (NULL, i_cal_component_as_ical_string (new_icomp));
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+		NULL, NULL, objects, 0, &uids, &new_components, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_cmpint (g_slist_length (uids), ==, 1);
+	g_assert_cmpstr (uids->data, ==, "1");
+	uid = g_strdup (uids->data);
+	g_slist_free_full (uids, g_free);
+	g_slist_free_full (objects, g_free);
+	g_slist_free_full (new_components, g_object_unref);
+	uids = NULL;
+	objects = NULL;
+	new_components = NULL;
+
+	rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+	generate_instances_for_uid (test_backend, uid, start, end, recur_instance_cb, &rd);
+	g_assert_cmpuint (g_hash_table_size (rd.instances), ==, n_expected_all);
+	verify_received_instances (rd.instances, i_cal_time_get_timezone (rid), expected_all);
+	g_clear_pointer (&rd.instances, g_hash_table_unref);
+
+	icomps = get_uid_icalcomps (test_backend, uid);
+	g_assert_cmpuint (g_slist_length (icomps), ==, 1);
+	g_slist_free_full (icomps, g_object_unref);
+	icomps = NULL;
+
+	rid_str = i_cal_time_as_ical_string (rid);
+	g_assert_nonnull (rid_str);
+	ids = g_slist_prepend (NULL, e_cal_component_id_new (uid, rid_str));
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (test_backend),
+		NULL, NULL, ids, mod, 0, &old_components, &new_components, &local_error);
+	g_assert_no_error (local_error);
+	g_slist_free_full (ids, e_cal_component_id_free);
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free_full (new_components, unref_nonnull_object);
+	ids = NULL;
+	old_components = NULL;
+	new_components = NULL;
+	g_free (rid_str);
+
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (test_backend), NULL, NULL, uid, NULL, &calobj, &local_error);
+	g_assert_error (local_error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+	g_assert_null (calobj);
+	g_clear_error (&local_error);
+
+	g_free (uid);
+}
+
+static void
+test_remove_instance_first (ECalMetaBackend *meta_backend)
+{
+	struct _zones {
+		const gchar *location;
+		const gchar *tzid_param;
+		const gchar *time_suffix;
+	} zones[] = {
+		{ "UTC",		"",			  "Z" },
+		{ "Europe/Berlin",	";TZID=Europe/Berlin",	  "" },
+		{ "America/New_York",	";TZID=America/New_York", "" }
+	};
+	ECalMetaBackendTest *test_backend;
+	ICalTime *start, *end;
+	guint ii;
+
+	g_assert_nonnull (meta_backend);
+
+	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
+
+	remove_all_from_cache (meta_backend);
+	start = i_cal_time_new_from_string ("20250801T000000");
+	end = i_cal_time_new_from_string ("20250831T235959");
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_ONLY_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_ONLY_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR,
+			expected_all, expected_shortened, I_CAL_EXRULE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR,
+			expected_all, expected_shortened, I_CAL_EXRULE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_like_all_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, expected_all);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250805T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_like_all_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE, expected_all);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	g_clear_object (&start);
+	g_clear_object (&end);
+}
+
+static void
+test_remove_instance_mid (ECalMetaBackend *meta_backend)
+{
+	struct _zones {
+		const gchar *location;
+		const gchar *tzid_param;
+		const gchar *time_suffix;
+	} zones[] = {
+		{ "UTC",		"",			  "Z" },
+		{ "Europe/Berlin",	";TZID=Europe/Berlin",	  "" },
+		{ "America/New_York",	";TZID=America/New_York", "" }
+	};
+	ECalMetaBackendTest *test_backend;
+	ICalTime *start, *end;
+	guint ii;
+
+	g_assert_nonnull (meta_backend);
+
+	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
+
+	remove_all_from_cache (meta_backend);
+	start = i_cal_time_new_from_string ("20250801T000000");
+	end = i_cal_time_new_from_string ("20250831T235959");
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_ONLY_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_ONLY_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR,
+			expected_all, expected_shortened, I_CAL_EXRULE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR,
+			expected_all, expected_shortened, I_CAL_EXRULE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250805T100000",
+			"20250806T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE,
+			expected_all, expected_shortened, I_CAL_NO_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE,
+			expected_all, expected_shortened, I_CAL_NO_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	g_clear_object (&start);
+	g_clear_object (&end);
+}
+
+static void
+test_remove_instance_last (ECalMetaBackend *meta_backend)
+{
+	struct _zones {
+		const gchar *location;
+		const gchar *tzid_param;
+		const gchar *time_suffix;
+	} zones[] = {
+		{ "UTC",		"",			  "Z" },
+		{ "Europe/Berlin",	";TZID=Europe/Berlin",	  "" },
+		{ "America/New_York",	";TZID=America/New_York", "" }
+	};
+	ECalMetaBackendTest *test_backend;
+	ICalTime *start, *end;
+	guint ii;
+
+	g_assert_nonnull (meta_backend);
+
+	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
+
+	remove_all_from_cache (meta_backend);
+	start = i_cal_time_new_from_string ("20250801T000000");
+	end = i_cal_time_new_from_string ("20250831T235959");
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_ONLY_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_ONLY_THIS,
+			expected_all, expected_shortened, I_CAL_EXDATE_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_like_all_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, expected_all);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_like_all_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_PRIOR, expected_all);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		const gchar *expected_all[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			"20250809T100000",
+			NULL };
+		const gchar *expected_shortened[] = {
+			"20250805T100000",
+			"20250806T100000",
+			"20250807T100000",
+			"20250808T100000",
+			NULL };
+		ICalComponent *icomp;
+		ICalTime *rid;
+		ICalTimezone *zone;
+		gchar *str;
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* using COUNT */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE,
+			expected_all, expected_shortened, I_CAL_NO_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+
+		/* using UNTIL */
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;UNTIL=20250809T235959Z\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+
+		rid = i_cal_time_new_from_string ("20250809T100000");
+		i_cal_time_set_timezone (rid, zone);
+
+		test_remove_instance_case (test_backend, icomp, start, end, rid, E_CAL_OBJ_MOD_THIS_AND_FUTURE,
+			expected_all, expected_shortened, I_CAL_NO_PROPERTY);
+
+		g_clear_object (&icomp);
+		g_clear_object (&rid);
+		g_free (str);
+	}
+
+	g_clear_object (&start);
+	g_clear_object (&end);
+}
+
 typedef void (* TestWithMainLoopFunc) (ECalMetaBackend *meta_backend);
 
 typedef struct _MainLoopThreadData {
@@ -4030,6 +5389,9 @@ main_loop_wrapper (test_receive_and_remove)
 main_loop_wrapper (test_get_object)
 main_loop_wrapper (test_get_object_list)
 main_loop_wrapper (test_refresh)
+main_loop_wrapper (test_remove_instance_first)
+main_loop_wrapper (test_remove_instance_mid)
+main_loop_wrapper (test_remove_instance_last)
 
 #undef main_loop_wrapper
 
@@ -4098,6 +5460,12 @@ main (gint argc,
 		tcu_fixture_setup, test_get_object_list_tcu, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/Refresh", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_refresh_tcu, tcu_fixture_teardown);
+	g_test_add ("/ECalMetaBackend/RemoveInstanceFirst", TCUFixture, &closure_events,
+		tcu_fixture_setup, test_remove_instance_first_tcu, tcu_fixture_teardown);
+	g_test_add ("/ECalMetaBackend/RemoveInstanceMid", TCUFixture, &closure_events,
+		tcu_fixture_setup, test_remove_instance_mid_tcu, tcu_fixture_teardown);
+	g_test_add ("/ECalMetaBackend/RemoveInstanceLast", TCUFixture, &closure_events,
+		tcu_fixture_setup, test_remove_instance_last_tcu, tcu_fixture_teardown);
 
 	res = g_test_run ();
 
