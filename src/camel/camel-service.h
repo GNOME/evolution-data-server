@@ -133,7 +133,6 @@ typedef struct {
 
 GType		camel_service_get_type		(void);
 GQuark		camel_service_error_quark	(void) G_GNUC_CONST;
-void		camel_service_migrate_files	(CamelService *service);
 CamelURL *	camel_service_new_camel_url	(CamelService *service);
 CamelServiceConnectionStatus
 		camel_service_get_connection_status
