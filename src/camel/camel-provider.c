@@ -93,7 +93,7 @@ static CamelProvider vee_provider = {
 	.domain = "vfolder",
 
 	.flags = CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_FRAGMENT_IS_PATH,
 
 	.extra_conf = NULL,
 

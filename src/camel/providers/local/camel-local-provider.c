@@ -50,8 +50,7 @@ static CamelProvider mh_provider = {
 	.description = N_("For storing local mail in MH-like mail directories."),
 	.domain = "mail",
 	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE |
-	CAMEL_URL_FRAGMENT_IS_PATH,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_FRAGMENT_IS_PATH,
 	.extra_conf = mh_conf_entries,
 	.port_entries = NULL,
 	/* ... */
@@ -74,7 +73,7 @@ static CamelProvider mbox_provider = {
 	.description = N_("For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."),
 	.domain = "mail",
 	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_FRAGMENT_IS_PATH,
 	.extra_conf = mbox_conf_entries,  /* semi-empty entries, thus evolution will show "Receiving Options" page */
 	.port_entries = NULL,
 	/* ... */
@@ -96,8 +95,7 @@ static CamelProvider maildir_provider = {
 	.description = N_("For storing local mail in maildir directories."),
 	.domain = "mail",
 	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE |
-	CAMEL_URL_FRAGMENT_IS_PATH,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_FRAGMENT_IS_PATH,
 	.extra_conf = maildir_conf_entries,
 	.port_entries = NULL,
 	/* ... */
@@ -126,7 +124,7 @@ static CamelProvider spool_file_provider = {
 	"style folders."),
 	.domain = "mail",
 	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
-	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_FRAGMENT_IS_PATH,
 	.extra_conf = spool_conf_entries,
 	.port_entries = NULL,
 	/* ... */
@@ -140,8 +138,7 @@ static CamelProvider spool_directory_provider = {
 	"style folders."),
 	.domain = "mail",
 	.flags = CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
-	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE |
-	CAMEL_URL_FRAGMENT_IS_PATH,
+	.url_flags = CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_FRAGMENT_IS_PATH,
 	.extra_conf = spool_conf_entries,
 	.port_entries = NULL,
 	/* ... */
