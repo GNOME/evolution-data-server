@@ -1026,69 +1026,6 @@ camel_service_init (CamelService *service)
 G_DEFINE_QUARK (camel-service-error-quark, camel_service_error)
 
 /**
- * camel_service_new_camel_url:
- * @service: a #CamelService
- *
- * Returns a new #CamelURL representing @service.
- * Free the returned #CamelURL with camel_url_free().
- *
- * Returns: a new #CamelURL
- *
- * Since: 3.2
- **/
-CamelURL *
-camel_service_new_camel_url (CamelService *service)
-{
-	CamelURL *url;
-	CamelProvider *provider;
-	CamelSettings *settings;
-	gchar *host = NULL;
-	gchar *user = NULL;
-	gchar *path = NULL;
-	guint16 port = 0;
-
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-
-	provider = camel_service_get_provider (service);
-	g_return_val_if_fail (provider != NULL, NULL);
-
-	settings = camel_service_ref_settings (service);
-
-	/* Allocate as camel_url_new_with_base() does. */
-	url = g_new0 (CamelURL, 1);
-
-	if (CAMEL_IS_NETWORK_SETTINGS (settings)) {
-		CamelNetworkSettings *network_settings;
-
-		network_settings = CAMEL_NETWORK_SETTINGS (settings);
-		host = camel_network_settings_dup_host (network_settings);
-		port = camel_network_settings_get_port (network_settings);
-		user = camel_network_settings_dup_user (network_settings);
-	}
-
-	if (CAMEL_IS_LOCAL_SETTINGS (settings)) {
-		CamelLocalSettings *local_settings;
-
-		local_settings = CAMEL_LOCAL_SETTINGS (settings);
-		path = camel_local_settings_dup_path (local_settings);
-	}
-
-	camel_url_set_protocol (url, provider->protocol);
-	camel_url_set_host (url, host);
-	camel_url_set_port (url, port);
-	camel_url_set_user (url, user);
-	camel_url_set_path (url, path);
-
-	g_free (host);
-	g_free (user);
-	g_free (path);
-
-	g_object_unref (settings);
-
-	return url;
-}
-
-/**
  * camel_service_get_connection_status:
  * @service: a #CamelService
  *
