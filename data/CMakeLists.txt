@@ -90,7 +90,7 @@ add_custom_command(OUTPUT gschemas.compiled
 
 add_custom_target(data-files ALL
 	DEPENDS gschemas.compiled
-		org.gnome.Evolution-alarm-notify.desktop
+		$<$<BOOL:${HAVE_GTK}>:org.gnome.Evolution-alarm-notify.desktop>
 		org.gnome.evolution-data-server.OAuth2-handler.desktop
 )
 
