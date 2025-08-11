@@ -358,97 +358,6 @@ service_task_dispatch (CamelService *service,
 		service_task_table_done (service, task);
 }
 
-static gchar *
-service_find_old_data_dir (CamelService *service)
-{
-	CamelProvider *provider;
-	CamelSession *session;
-	CamelURL *url;
-	GString *path;
-	gboolean allows_host;
-	gboolean allows_user;
-	gboolean needs_host;
-	gboolean needs_path;
-	gboolean needs_user;
-	const gchar *base_dir;
-	gchar *old_data_dir;
-
-	provider = camel_service_get_provider (service);
-	url = camel_service_new_camel_url (service);
-
-	allows_host = CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_HOST);
-	allows_user = CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_USER);
-
-	needs_host = CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_HOST);
-	needs_path = CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_PATH);
-	needs_user = CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_USER);
-
-	/* This function reproduces the way service data directories used
-	 * to be determined before we moved to just using the UID.  If the
-	 * old data directory exists, try renaming it to the new form.
-	 *
-	 * A virtual class method was used to determine the directory path,
-	 * but no known CamelProviders ever overrode the default algorithm
-	 * below.  So this should work for everyone. */
-
-	path = g_string_new (provider->protocol);
-
-	if (allows_user) {
-		g_string_append_c (path, '/');
-		if (url->user != NULL)
-			g_string_append (path, url->user);
-		if (allows_host) {
-			g_string_append_c (path, '@');
-			if (url->host != NULL)
-				g_string_append (path, url->host);
-			if (url->port) {
-				g_string_append_c (path, ':');
-				g_string_append_printf (path, "%d", url->port);
-			}
-		} else if (!needs_user) {
-			g_string_append_c (path, '@');
-		}
-
-	} else if (allows_host) {
-		g_string_append_c (path, '/');
-		if (!needs_host)
-			g_string_append_c (path, '@');
-		if (url->host != NULL)
-			g_string_append (path, url->host);
-		if (url->port) {
-			g_string_append_c (path, ':');
-			g_string_append_printf (path, "%d", url->port);
-		}
-	}
-
-	if (needs_path && url->path) {
-		if (*url->path != '/')
-			g_string_append_c (path, '/');
-		g_string_append (path, url->path);
-	}
-
-	session = camel_service_ref_session (service);
-	if (session) {
-		base_dir = camel_session_get_user_data_dir (session);
-		old_data_dir = g_build_filename (base_dir, path->str, NULL);
-
-		g_object_unref (session);
-	} else {
-		old_data_dir = NULL;
-	}
-
-	g_string_free (path, TRUE);
-
-	if (old_data_dir && !g_file_test (old_data_dir, G_FILE_TEST_IS_DIR)) {
-		g_free (old_data_dir);
-		old_data_dir = NULL;
-	}
-
-	camel_url_free (url);
-
-	return old_data_dir;
-}
-
 static gboolean
 service_notify_connection_status_cb (gpointer user_data)
 {
@@ -1115,39 +1024,6 @@ camel_service_init (CamelService *service)
 }
 
 G_DEFINE_QUARK (camel-service-error-quark, camel_service_error)
-
-/**
- * camel_service_migrate_files:
- * @service: a #CamelService
- *
- * Performs any necessary file migrations for @service.  This should be
- * called after installing or configuring the @service's #CamelSettings,
- * since it requires building a URL string for @service.
- *
- * Since: 3.4
- **/
-void
-camel_service_migrate_files (CamelService *service)
-{
-	const gchar *new_data_dir;
-	gchar *old_data_dir;
-
-	g_return_if_fail (CAMEL_IS_SERVICE (service));
-
-	new_data_dir = camel_service_get_user_data_dir (service);
-	old_data_dir = service_find_old_data_dir (service);
-
-	/* If the old data directory name exists, try renaming
-	 * it to the new data directory.  Failure is non-fatal. */
-	if (old_data_dir != NULL) {
-		if (g_rename (old_data_dir, new_data_dir) == -1) {
-			g_warning (
-				"%s: Failed to rename '%s' to '%s': %s",
-				G_STRFUNC, old_data_dir, new_data_dir, g_strerror (errno));
-		}
-		g_free (old_data_dir);
-	}
-}
 
 /**
  * camel_service_new_camel_url:
