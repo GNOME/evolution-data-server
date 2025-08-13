@@ -3253,8 +3253,10 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	}
 
 	if (success) {
+		const gchar *diagnostics = gpg_ctx_get_diagnostics (gpg);
+
 		valid = camel_cipher_validity_new ();
-		valid->encrypt.description = g_strdup (_("Encrypted content"));
+		valid->encrypt.description = g_strdup (diagnostics && *diagnostics ? diagnostics : _("Encrypted content"));
 		valid->encrypt.status = CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED;
 
 		if (gpg->hadsig) {
@@ -3271,7 +3273,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 			}
 
-			add_signers (valid, gpg_ctx_get_diagnostics (gpg), gpg->signers, gpg->signers_keyid, gpg->photos_filename);
+			add_signers (valid, diagnostics, gpg->signers, gpg->signers_keyid, gpg->photos_filename);
 		}
 	}
 
