@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
 "POT-Creation-Date: 2023-04-25 14:50+0000\n"
-"PO-Revision-Date: 2025-03-23 21:32+0100\n"
+"PO-Revision-Date: 2025-08-14 21:32+0100\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
 "Language: ca\n"
@@ -201,7 +201,7 @@ msgstr "No connectat"
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:890
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr ""
-"Ha fallat la vinculació tant amb la versió 2 com la versió 3 vinculades"
+"Ha fallat la vinculació tant amb els vincles de la versió 2 com de la versió 3"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:997
 msgid "Reconnecting to LDAP server..."
@@ -1087,7 +1087,7 @@ msgstr ""
 #: src/libedataserver/e-client.c:170
 #, c-format
 msgid "Invalid query"
-msgstr "La sol·licitud no és vàlida"
+msgstr "La consulta no és vàlida"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4437
 #, c-format
@@ -1841,7 +1841,7 @@ msgstr[1] "Cada %d mesos"
 #: src/calendar/libecal/e-cal-recur.c:5713
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr "el darrer dissabte"
+msgstr "el darrer diumenge"
 
 #: src/calendar/libecal/e-cal-recur.c:5395
 #: src/calendar/libecal/e-cal-recur.c:5563
@@ -2388,7 +2388,7 @@ msgstr "La reunió és recurrent"
 #: src/calendar/libecal/e-cal-recur.c:5896
 msgctxt "recur-description"
 msgid "The appointment recurs"
-msgstr "La nota es repeteix"
+msgstr "La cita es repeteix"
 
 #: src/calendar/libecal/e-cal-recur.c:5876
 #: src/calendar/libecal/e-cal-recur.c:5899
@@ -4828,7 +4828,7 @@ msgstr "Elements enviats"
 #: src/camel/providers/imapx/camel-imapx-store.c:2779
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
-msgstr "S'està enviant el missatge"
+msgstr "Missatges enviats"
 
 #: src/camel/providers/imapx/camel-imapx-store.c:2782
 msgctxt "IMAPDefaults"
@@ -5074,7 +5074,7 @@ msgstr "No es pot obtenir el missatge %s de la carpeta %s: "
 #: src/camel/providers/local/camel-maildir-folder.c:372
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
-msgstr "No es poden transferir els missatges a la carpeta de destinació: %s"
+msgstr "No es pot transferir el missatge a la carpeta de destinació: %s"
 
 #: src/camel/providers/local/camel-maildir-store.c:126
 #: src/camel/providers/local/camel-maildir-store.c:929
@@ -6246,7 +6246,7 @@ msgstr "Recordatoris anteriors per EReminderWatcher"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr "Repetir recordatoris per EReminderWatcher"
+msgstr "Recordatoris posposats per EReminderWatcher"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:37
 msgid ""
@@ -6374,7 +6374,7 @@ msgstr ""
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:14
 msgid "Whether to load photos of signers/encrypters"
-msgstr "Si cal carregar fotografies de les signatures/xifrats"
+msgstr "Si cal carregar fotografies dels signants/xifradors"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:15
 msgid ""
@@ -6409,7 +6409,7 @@ msgstr ""
 "Aquestes capçaleres es poden emmagatzemar en el resum de la carpeta, i "
 "eventualment es poden veure a la IGU. El valor pot contenir un caràcter de "
 "canonada («|»), que delimita el nom de visualització del nom de la "
-"capçalera. Exemple: «Span Score|X-Spam-Score»"
+"capçalera. Exemple: «Spam Score|X-Spam-Score»"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:29
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
@@ -6693,7 +6693,7 @@ msgstr "Notificador d'alarmes Evolution"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:5
 msgid "Calendar event notifications"
-msgstr "Sol·licitud d'esdeveniment del calendari"
+msgstr "Notificacions d'esdeveniments del calendari"
 
 #: src/libebackend/e-cache.c:750
 msgid "Out of memory"
@@ -6983,7 +6983,7 @@ msgstr "S'ha excedit el límit de temps de la cerca"
 
 #: src/libedataserver/e-client.c:172
 msgid "Query refused"
-msgstr "S'ha rebutjat la sol·licitud"
+msgstr "S'ha rebutjat la consulta"
 
 #: src/libedataserver/e-client.c:174
 msgid "D-Bus error"
@@ -7451,7 +7451,7 @@ msgstr "No s'ha pogut bloquejar el recurs"
 #: src/libedataserver/e-webdav-session.c:2744
 #: src/libedataserver/e-webdav-session.c:2931
 msgid "Expected application/xml response, but none returned"
-msgstr "Resposta prevista aplicació/XML, però cap va tornar"
+msgstr "S'esperava una resposta application/xml, però no se n'ha rebut cap"
 
 #: src/libedataserver/e-webdav-session.c:2747
 #: src/libedataserver/e-webdav-session.c:2934
@@ -7545,7 +7545,7 @@ msgstr "Ctrl-clic per a obrir un enllaç"
 #. x509 certificate usage types
 #: src/libedataserverui/e-certificate-widget.c:288
 msgid "Digital Signature"
-msgstr "Signatura del correu"
+msgstr "Signatura digital"
 
 #: src/libedataserverui/e-certificate-widget.c:289
 msgid "Key Encipherment"
@@ -7882,7 +7882,7 @@ msgstr "Sol·licitud d'autenticació"
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
 msgid "Please enter the password for address book “%s”."
-msgstr "Introduïu la contrasenya per la llibreta d'adreces «%s»."
+msgstr "Introduïu la contrasenya per a la llibreta d'adreces «%s»."
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
@@ -7902,12 +7902,12 @@ msgstr "Introduïu la contrasenya per al transport de correu «%s»."
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
 msgid "Please enter the password for memo list “%s”."
-msgstr "Introduïu la contrasenya per la llista d'anotacions «%s»."
+msgstr "Introduïu la contrasenya per a la llista d'anotacions «%s»."
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
 msgid "Please enter the password for task list “%s”."
-msgstr "Introduïu la contrasenya per la llista de tasques «%s»."
+msgstr "Introduïu la contrasenya per a la llista de tasques «%s»."
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:181
 #, c-format
