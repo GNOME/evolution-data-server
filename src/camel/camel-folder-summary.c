@@ -2605,10 +2605,10 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
 	camel_folder_summary_lock (summary);
-	if (camel_folder_summary_count (summary) == 0) {
-		camel_folder_summary_unlock (summary);
-		return TRUE;
-	}
+
+	/* Do not check the camel_folder_summary_count() or similar here, the clear()
+	   can be called before the summary is loaded, thus the shortcut could mean
+	   the messages are still left in the DB file. */
 
 	g_hash_table_remove_all (summary->priv->uids);
 	remove_all_loaded (summary);
