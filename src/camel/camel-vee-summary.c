@@ -156,7 +156,7 @@ camel_vee_summary_init (CamelVeeSummary *vee_summary)
 	vee_summary->priv->vuids_by_subfolder = g_hash_table_new_full (
 		(GHashFunc) g_direct_hash,
 		(GEqualFunc) g_direct_equal,
-		(GDestroyNotify) NULL,
+		(GDestroyNotify) g_object_unref,
 		(GDestroyNotify) g_hash_table_destroy);
 }
 
@@ -271,7 +271,7 @@ camel_vee_summary_add (CamelVeeSummary *summary,
 	} else {
 		vuids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
 		g_hash_table_insert (vuids, (gpointer) camel_pstring_strdup (vuid), GINT_TO_POINTER (1));
-		g_hash_table_insert (summary->priv->vuids_by_subfolder, subfolder, vuids);
+		g_hash_table_insert (summary->priv->vuids_by_subfolder, g_object_ref (subfolder), vuids);
 	}
 
 	camel_folder_summary_add (CAMEL_FOLDER_SUMMARY (summary), (CamelMessageInfo *) vmi, TRUE);
