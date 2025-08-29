@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.57.3 2025-08-29
+---------------------------------------
+
+Bug Fixes:
+	I#555 - Calendar: Deleting "This and Future Occurrences" instances can duplicate events
+	I#602 - IMAP: Sometimes removes message from local summary in error
+	I#604 - CamelGpgContext: Provide information about encrypted content
+	I#605 - Camel: MH account busy-loops when reading directory content
+	M!188 - EDataServer: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	M!193 - EBookContacts: Use g_object_notify_by_pspec when possible (Corentin Noël)
+	M!198 - alarm-notify: Add a systemd service (Adrian Vovk)
+	M!198 - data: Conditionalize installation of alarm-notify (Adrian Vovk)
+	M!199 - cmake: Specify GLib minimal version to gdbus-codegen (Corentin Noël)
+	M!200 - data: Set desktop directory outside the condition (Hari Rana)
+	M!202 - build: Conditionally install org.gnome.Evolution-alarm-notify.desktop (Georges Basile Stavracas Neto)
+
+Miscellaneous:
+	CamelDB: Do not error out on SQLITE_ABORT
+	CamelVeeFolder: Fix runtime warning when rebuilding folder content
+	CamelVeeSummary: Reference subfolder in the internal hash table
+
+Translations:
+	Anders Jonsson (sv)
+	Artur S0 (ru)
+	Asier Saratsua Garmendia (eu)
+	Jordi Mas (ca)
+	Juliano de Souza Camargo (pt_BR)
+	Piotr Drąg (pl)
+
 Evolution-Data-Server 3.57.2 2025-08-01
 ---------------------------------------
 
