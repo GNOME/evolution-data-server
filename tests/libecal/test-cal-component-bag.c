@@ -8,6 +8,8 @@
 #include <glib.h>
 #include <libecal/libecal.h>
 
+#include "e-test-server-utils.h"
+
 #define SKIP_TIME_VAL ((guint) ~0)
 
 /* #define WITH_DEBUG 1 */
@@ -2114,5 +2116,5 @@ main (gint argc,
 	g_test_add_func ("/ECalComponentBag/Changes", test_component_bag_changes);
 	g_test_add_func ("/ECalComponentBag/Rebuild", test_component_bag_rebuild);
 
-	return g_test_run ();
+	return e_test_server_utils_run (argc, argv);
 }
