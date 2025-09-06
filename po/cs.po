@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-02-04 17:18+0000\n"
-"PO-Revision-Date: 2025-02-23 16:22+0100\n"
+"POT-Creation-Date: 2025-08-10 13:20+0000\n"
+"PO-Revision-Date: 2025-09-07 00:06+0200\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Gtranslator 47.1\n"
+"X-Generator: Poedit 3.7\n"
 "X-DamnedLies-Scope: partial\n"
 "X-DL-Team: cs\n"
 "X-DL-Module: evolution-data-server\n"
@@ -4900,7 +4900,7 @@ msgstr "Povolit složku _Nepřiřazené"
 
 #: src/camel/camel-vee-store.c:1112
 msgid "Updating Unmatched search folder"
-msgstr "Aktualizuje se vyhledávací složka _Nepřiřazené"
+msgstr "Aktualizuje se vyhledávací složka Nepřiřazené"
 
 #: src/camel/camel-vtrash-folder.c:48
 msgid "Cannot copy messages to the Trash folder"
@@ -6513,7 +6513,7 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Úložiště POP3 nemá hierarchii složek"
 
 #: src/camel/providers/sendmail/camel-sendmail-provider.c:30
-#: src/services/evolution-source-registry/builtin/sendmail.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/sendmail.source.desktop.in:3
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -7143,8 +7143,8 @@ msgstr ""
 "že skutečnou adresu URL, na které se žádá o tiket a jeho obnovení, není "
 "možné změnit zde, hostitel je tu jen kvůli umožnění dalších serverů, na "
 "kterých se může OAuth2 použít. Například: Company:mail.company.com povolí "
-"ověření OAuth2 „Company“ pro hostitele „mail.company.com“; Company-CalDAV:"
-"caldav.company.com povolí ověření OAuth2 „Company“ pro nějaký zdroj "
+"ověření OAuth2 „Company“ pro hostitele „mail.company.com“; Company-"
+"CalDAV:caldav.company.com povolí ověření OAuth2 „Company“ pro nějaký zdroj "
 "„CalDAV“, který čte data z hostitele „caldav.company.com“"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:61
@@ -7337,19 +7337,19 @@ msgstr "(zastaralé) Číslo portu pro požadavky SOCKS"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(zastaralé) URL pro automatické nastavení proxy"
 
-#: data/org.gnome.Evolution-alarm-notify.desktop.in.in:4
+#: data/org.gnome.Evolution-alarm-notify.desktop.in.in:3
 msgid "Events and Tasks Reminders"
 msgstr "Připomínky událostí a úkolů"
 
-#: data/org.gnome.Evolution-alarm-notify.desktop.in.in:5
+#: data/org.gnome.Evolution-alarm-notify.desktop.in.in:4
 msgid "Event and task notifications"
 msgstr "Upozornění na události a úkoly"
 
-#: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:4
+#: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:3
 msgid "Evolution Data Server OAuth2 Handler"
 msgstr "Obslužný nástroj OAuth2 Evolution Data Server"
 
-#: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:5
+#: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:4
 msgid ""
 "Handles OAuth2 responses and passes them to the OAuth2 prompter "
 "implementation"
@@ -8022,7 +8022,7 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%H"
 
-#: src/libedataserver/e-webdav-discover.c:339
+#: src/libedataserver/e-webdav-discover.c:391
 msgid "Notes"
 msgstr "Poznámky"
 
@@ -8943,7 +8943,7 @@ msgstr "Nelze najít prvek Účet"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nelze najít odpovědi autodiscover ASUrl a OABUrl"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1459
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1482
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -8952,7 +8952,7 @@ msgstr ""
 "Nelze nalézt odpovídající účet ve službě org.gnome.OnlineAccounts, ze které "
 "se získává přístupový tiket pro „%s“"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1509
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1532
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Selhalo získání přístupového tiketu pro „%s“:"
@@ -9270,59 +9270,59 @@ msgstr "Selhalo připojení k registru zdroje: %s\n"
 msgid "No sources had been found\n"
 msgstr "Nebyly nalezeny žádné zdroje\n"
 
-#: src/services/evolution-source-registry/builtin/birthdays.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/birthdays.source.desktop.in:3
 msgid "Birthdays & Anniversaries"
 msgstr "Narozeniny a výročí"
 
-#: src/services/evolution-source-registry/builtin/caldav-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/caldav-stub.source.desktop.in:3
 msgid "CalDAV"
 msgstr "CalDAV"
 
-#: src/services/evolution-source-registry/builtin/carddav-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/carddav-stub.source.desktop.in:3
 msgid "CardDAV"
 msgstr "CardDAV"
 
-#: src/services/evolution-source-registry/builtin/contacts-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/contacts-stub.source.desktop.in:3
 msgid "Contacts"
 msgstr "Kontakty"
 
-#: src/services/evolution-source-registry/builtin/google-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/google-stub.source.desktop.in:3
 msgid "Google"
 msgstr "Google"
 
-#: src/services/evolution-source-registry/builtin/ldap-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/ldap-stub.source.desktop.in:3
 msgid "On LDAP Servers"
 msgstr "Na serverech LDAP"
 
-#: src/services/evolution-source-registry/builtin/local.source.desktop.in:5
-#: src/services/evolution-source-registry/builtin/local-stub.source.desktop.in:6
+#: src/services/evolution-source-registry/builtin/local.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/local-stub.source.desktop.in:5
 msgid "On This Computer"
 msgstr "Na tomto počítači"
 
-#: src/services/evolution-source-registry/builtin/system-address-book.source.desktop.in:4
-#: src/services/evolution-source-registry/builtin/system-calendar.source.desktop.in:4
-#: src/services/evolution-source-registry/builtin/system-memo-list.source.desktop.in:4
-#: src/services/evolution-source-registry/builtin/system-task-list.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/system-address-book.source.desktop.in:3
+#: src/services/evolution-source-registry/builtin/system-calendar.source.desktop.in:3
+#: src/services/evolution-source-registry/builtin/system-memo-list.source.desktop.in:3
+#: src/services/evolution-source-registry/builtin/system-task-list.source.desktop.in:3
 msgid "Personal"
 msgstr "Osobní"
 
-#: src/services/evolution-source-registry/builtin/system-proxy.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/system-proxy.source.desktop.in:3
 msgid "Default Proxy Settings"
 msgstr "Výchozí nastavení proxy"
 
-#: src/services/evolution-source-registry/builtin/vfolder.source.desktop.in:5
+#: src/services/evolution-source-registry/builtin/vfolder.source.desktop.in:4
 msgid "Search Folders"
 msgstr "Složky hledání"
 
-#: src/services/evolution-source-registry/builtin/weather-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/weather-stub.source.desktop.in:3
 msgid "Weather"
 msgstr "Počasí"
 
-#: src/services/evolution-source-registry/builtin/webcal-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/webcal-stub.source.desktop.in:3
 msgid "On The Web"
 msgstr "Na webu"
 
-#: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:4
+#: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:3
 msgid "WebDAV Notes"
 msgstr "Poznámky WebDAV"
 
