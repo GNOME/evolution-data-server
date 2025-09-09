@@ -5542,6 +5542,11 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 				camel_imapx_command_unref (ic);
 				ic = NULL;
 
+				if (preview_enabled && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
+					preview_enabled = FALSE;
+					camel_imapx_store_set_preview_enabled (imapx_store, FALSE);
+				}
+
 				/* Some servers can return broken BODYSTRUCTURE response, thus disable it
 				   even when it's not 100% sure the BODYSTRUCTURE response was the broken one. */
 				if (bodystructure_enabled && !success &&
