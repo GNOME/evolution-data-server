@@ -238,6 +238,18 @@
 		},
 
 		{
+			"name": "gweather-locations",
+			"buildsystem": "meson",
+			"sources": [
+				{
+					"type": "git",
+					"url": "https://gitlab.gnome.org/GNOME/gweather-locations.git",
+					"branch": "main"
+				}
+			]
+		},
+
+		{
 			"name": "libgweather4",
 			"buildsystem": "meson",
 			"config-opts": [
