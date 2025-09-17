@@ -30,6 +30,9 @@
 
 #define E_CALDAV_X_ETAG "X-EVOLUTION-CALDAV-ETAG"
 
+/* download limit for the first check of the components */
+#define E_CALDAV_DEFAULT_LIMIT_DAYS (5 * 7)
+
 #define EC_ERROR(_code) e_client_error_create (_code, NULL)
 #define ECC_ERROR(_code) e_cal_client_error_create (_code, NULL)
 #define ECC_ERROR_EX(_code, _msg) e_cal_client_error_create (_code, _msg)
@@ -63,6 +66,10 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* The iCloud.com requires timezone IDs as locations */
 	gboolean is_icloud;
+
+	gboolean force_refresh;
+	/* last known value, to recognize changes */
+	guint limit_download_days;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_META_BACKEND)
@@ -849,6 +856,36 @@ ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
 	}
 }
 
+static void
+cbdav_add_limit_days_filter (EXmlDocument *xml,
+			     guint limit_days_before,
+			     guint limit_days_after)
+{
+	if (limit_days_before || limit_days_after) {
+		ICalTimezone *utc = i_cal_timezone_get_utc_timezone ();
+		time_t now;
+		gchar *tmp;
+
+		time (&now);
+
+		e_xml_document_start_element (xml, NULL, "time-range");
+
+		if (limit_days_before) {
+			tmp = isodate_from_time_t (time_add_day_with_zone (now, - ((gint) limit_days_before), utc));
+			e_xml_document_add_attribute (xml, NULL, "start", tmp);
+			g_free (tmp);
+		}
+
+		if (limit_days_after) {
+			tmp = isodate_from_time_t (time_add_day_with_zone (now, (gint) limit_days_after, utc));
+			e_xml_document_add_attribute (xml, NULL, "end", tmp);
+			g_free (tmp);
+		}
+
+		e_xml_document_end_element (xml); /* time-range */
+	}
+}
+
 static gboolean
 ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 			     const gchar *last_sync_tag,
@@ -864,8 +901,10 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
 	EXmlDocument *xml;
+	ESource *source;
 	GHashTable *known_items; /* gchar *href ~> ECalMetaBackendInfo * */
 	GHashTableIter iter;
+	guint limit_days_before = 0, limit_days_after = 0, limit_days = 0;
 	gpointer key = NULL, value = NULL;
 	gboolean success;
 	GError *local_error = NULL;
@@ -895,7 +934,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 				g_clear_object (&webdav);
 				return FALSE;
 			}
-		} else if (!is_repeat && new_sync_tag && last_sync_tag && g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
+		} else if (!is_repeat && !cbdav->priv->force_refresh && new_sync_tag && last_sync_tag && g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
 			*out_new_sync_tag = new_sync_tag;
 			g_clear_object (&webdav);
 			return TRUE;
@@ -907,6 +946,16 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 			*out_new_sync_tag = new_sync_tag;
 		else
 			g_free (new_sync_tag);
+	}
+
+	cbdav->priv->force_refresh = FALSE;
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		limit_days = e_source_webdav_get_limit_download_days (webdav_extension);
 	}
 
 	xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "calendar-query");
@@ -927,9 +976,11 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	default:
 	case I_CAL_VEVENT_COMPONENT:
 		e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
+		limit_days_before = limit_days;
 		break;
 	case I_CAL_VJOURNAL_COMPONENT:
 		e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
+		limit_days_before = limit_days;
 		break;
 	case I_CAL_VTODO_COMPONENT:
 		e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
@@ -937,28 +988,17 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (!is_repeat) {
-		ICalTimezone *utc = i_cal_timezone_get_utc_timezone ();
-		time_t now;
-		gchar *tmp;
-
-		time (&now);
-
-		*out_repeat = TRUE;
-
 		/* Check for events in the month before/after today first,
 		   to show user actual data as soon as possible. */
-		e_xml_document_start_element (xml, NULL, "time-range");
+		if (!limit_days_before || limit_days_before > E_CALDAV_DEFAULT_LIMIT_DAYS)
+			limit_days_before = E_CALDAV_DEFAULT_LIMIT_DAYS;
+		if (!limit_days_after || limit_days_after > E_CALDAV_DEFAULT_LIMIT_DAYS)
+			limit_days_after = E_CALDAV_DEFAULT_LIMIT_DAYS;
 
-		tmp = isodate_from_time_t (time_add_week_with_zone (now, -5, utc));
-		e_xml_document_add_attribute (xml, NULL, "start", tmp);
-		g_free (tmp);
-
-		tmp = isodate_from_time_t (time_add_week_with_zone (now, +5, utc));
-		e_xml_document_add_attribute (xml, NULL, "end", tmp);
-		g_free (tmp);
-
-		e_xml_document_end_element (xml); /* time-range */
+		*out_repeat = TRUE;
 	}
+
+	cbdav_add_limit_days_filter (xml, limit_days_before, limit_days_after);
 
 	e_xml_document_end_element (xml); /* comp-filter / VEVENT|VJOURNAL|VTODO */
 	e_xml_document_end_element (xml); /* comp-filter / VCALENDAR*/
@@ -1116,7 +1156,9 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	EWebDAVSession *webdav;
 	ICalComponentKind kind;
 	EXmlDocument *xml;
+	ESource *source;
 	GError *local_error = NULL;
+	guint limit_days_before = 0, limit_days_after = 0, limit_days = 0;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
@@ -1126,6 +1168,14 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav));
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		limit_days = e_source_webdav_get_limit_download_days (webdav_extension);
+	}
 
 	xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "calendar-query");
 	g_return_val_if_fail (xml != NULL, FALSE);
@@ -1158,12 +1208,18 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "comp-filter");
 	e_xml_document_add_attribute (xml, NULL, "name", "VCALENDAR");
 	e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "comp-filter");
-	if (kind == I_CAL_VEVENT_COMPONENT)
+	if (kind == I_CAL_VEVENT_COMPONENT) {
 		e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
-	else if (kind == I_CAL_VJOURNAL_COMPONENT)
+		limit_days_before = limit_days;
+	} else if (kind == I_CAL_VJOURNAL_COMPONENT) {
 		e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
-	else if (kind == I_CAL_VTODO_COMPONENT)
+		limit_days_before = limit_days;
+	} else if (kind == I_CAL_VTODO_COMPONENT) {
 		e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
+	}
+
+	cbdav_add_limit_days_filter (xml, limit_days_before, limit_days_after);
+
 	e_xml_document_end_element (xml); /* comp-filter / VEVENT|VJOURNAL|VTODO */
 	e_xml_document_end_element (xml); /* comp-filter / VCALENDAR */
 	e_xml_document_end_element (xml); /* filter */
@@ -1766,6 +1822,30 @@ ecb_caldav_get_ssl_error_details (ECalMetaBackend *meta_backend,
 	g_clear_object (&webdav);
 
 	return res;
+}
+
+static void
+ecb_caldav_source_changed (ECalMetaBackend *meta_backend)
+{
+	ECalBackendCalDAV *cbdav;
+	ESource *source;
+	ESourceWebdav *webdav_extension;
+	guint limit_download_days;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend));
+
+	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+	source = e_backend_get_source (E_BACKEND (cbdav));
+	webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+	limit_download_days = e_source_webdav_get_limit_download_days (webdav_extension);
+
+	if (cbdav->priv->limit_download_days != limit_download_days) {
+		cbdav->priv->limit_download_days = limit_download_days;
+		cbdav->priv->force_refresh = TRUE;
+
+		if (e_backend_get_online (E_BACKEND (cbdav)))
+			e_cal_meta_backend_schedule_refresh (meta_backend);
+	}
 }
 
 static gboolean
@@ -2544,6 +2624,8 @@ e_cal_backend_caldav_constructed (GObject *object)
 	source = e_backend_get_source (E_BACKEND (cbdav));
 	webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
+	cbdav->priv->limit_download_days = e_source_webdav_get_limit_download_days (webdav_extension);
+
 	g_signal_connect_object (webdav_extension, "notify::calendar-auto-schedule",
 		G_CALLBACK (ecb_caldav_notify_property_changed_cb), cbdav, 0);
 
@@ -2602,6 +2684,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *klass)
 	cal_meta_backend_class->save_component_sync = ecb_caldav_save_component_sync;
 	cal_meta_backend_class->remove_component_sync = ecb_caldav_remove_component_sync;
 	cal_meta_backend_class->get_ssl_error_details = ecb_caldav_get_ssl_error_details;
+	cal_meta_backend_class->source_changed = ecb_caldav_source_changed;
 
 	cal_backend_sync_class = E_CAL_BACKEND_SYNC_CLASS (klass);
 	cal_backend_sync_class->refresh_sync = ecb_caldav_refresh_sync;

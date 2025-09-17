@@ -155,6 +155,11 @@ void		e_source_webdav_set_order	(ESourceWebdav *extension,
 guint		e_source_webdav_get_timeout	(ESourceWebdav *extension);
 void		e_source_webdav_set_timeout	(ESourceWebdav *extension,
 						 guint timeout);
+guint		e_source_webdav_get_limit_download_days
+						(ESourceWebdav *extension);
+void		e_source_webdav_set_limit_download_days
+						(ESourceWebdav *extension,
+						 guint value);
 
 G_END_DECLS
 

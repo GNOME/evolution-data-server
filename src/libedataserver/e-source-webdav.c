@@ -70,6 +70,7 @@ struct _ESourceWebdavPrivate {
 	GUri *uri;
 	guint order;
 	guint timeout;
+	guint limit_download_days;
 };
 
 enum {
@@ -85,6 +86,7 @@ enum {
 	PROP_SSL_TRUST,
 	PROP_ORDER,
 	PROP_TIMEOUT,
+	PROP_LIMIT_DOWNLOAD_DAYS,
 	N_PROPS
 };
 
@@ -346,6 +348,12 @@ source_webdav_set_property (GObject *object,
 				E_SOURCE_WEBDAV (object),
 				g_value_get_uint (value));
 			return;
+
+		case PROP_LIMIT_DOWNLOAD_DAYS:
+			e_source_webdav_set_limit_download_days (
+				E_SOURCE_WEBDAV (object),
+				g_value_get_uint (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -432,6 +440,13 @@ source_webdav_get_property (GObject *object,
 			g_value_set_uint (
 				value,
 				e_source_webdav_get_timeout (
+				E_SOURCE_WEBDAV (object)));
+			return;
+
+		case PROP_LIMIT_DOWNLOAD_DAYS:
+			g_value_set_uint (
+				value,
+				e_source_webdav_get_limit_download_days (
 				E_SOURCE_WEBDAV (object)));
 			return;
 	}
@@ -703,6 +718,24 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"timeout",
 			NULL, NULL,
 			0, G_MAXUINT, 15,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING);
+
+	/**
+	 * ESourceWebdav:limit-download-days
+	 *
+	 * Limit how many past days can be downloaded. Zero means unlimited.
+	 *
+	 * Since: 3.60
+	 **/
+	properties[PROP_LIMIT_DOWNLOAD_DAYS] =
+		g_param_spec_uint (
+			"limit-download-days",
+			NULL, NULL,
+			0, G_MAXUINT, 90,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1757,4 +1790,44 @@ e_source_webdav_set_timeout (ESourceWebdav *extension,
 	extension->priv->timeout = timeout;
 
 	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_TIMEOUT]);
+}
+
+/**
+ * e_source_webdav_get_limit_download_days:
+ * @extension: an #ESourceWebdav
+ *
+ * Returns: limit how many past days can be downloaded. Zero means unlimited.
+ *    The default is 90 days.
+ *
+ * Since: 3.60
+ **/
+guint
+e_source_webdav_get_limit_download_days (ESourceWebdav *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), 0);
+
+	return extension->priv->limit_download_days;
+}
+
+/**
+ * e_source_webdav_set_limit_download_days:
+ * @extension: an #ESourceWebdav
+ * @timeout: a timeout, in seconds
+ *
+ * Limit how many past days can be downloaded. Zero means unlimited.
+ *
+ * Since: 3.60
+ **/
+void
+e_source_webdav_set_limit_download_days (ESourceWebdav *extension,
+					 guint value)
+{
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if (extension->priv->limit_download_days == value)
+		return;
+
+	extension->priv->limit_download_days = value;
+
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LIMIT_DOWNLOAD_DAYS]);
 }
