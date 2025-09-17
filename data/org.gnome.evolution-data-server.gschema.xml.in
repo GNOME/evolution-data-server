@@ -1,9 +1,5 @@
 <schemalist>
   <schema gettext-domain="evolution-data-server" id="org.gnome.evolution-data-server" path="/org/gnome/evolution-data-server/">
-    <key name="migrated" type="b">
-      <default>false</default>
-      <summary>Whether the migration of old setting was already done</summary>
-    </key>
     <key name="camel-gpg-binary" type="s">
       <default>''</default>
       <summary>An absolute path where the gpg (or gpg2) binary is</summary>

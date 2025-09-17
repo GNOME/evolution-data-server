@@ -24,9 +24,6 @@ gboolean	evolution_source_registry_merge_autoconfig_sources
 							(ESourceRegistryServer *server,
 							 GError **error);
 
-void		evolution_source_registry_migrate_basedir
-							(void);
-
 void		evolution_source_registry_migrate_proxies
 							(ESourceRegistryServer *server);
 

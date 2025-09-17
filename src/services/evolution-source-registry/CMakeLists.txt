@@ -69,7 +69,6 @@ set(SOURCES
 	evolution-source-registry.c
 	evolution-source-registry-autoconfig.c
 	evolution-source-registry-methods.h
-	evolution-source-registry-migrate-basedir.c
 	evolution-source-registry-migrate-proxies.c
 	evolution-source-registry-migrate-tweaks.c
 	${CMAKE_CURRENT_BINARY_DIR}/evolution-source-registry-resource.c

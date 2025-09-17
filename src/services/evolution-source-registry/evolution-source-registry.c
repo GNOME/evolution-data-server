@@ -180,22 +180,6 @@ main (gint argc,
 	e_xml_initialize_in_main ();
 
 reload:
-
-	settings = g_settings_new ("org.gnome.evolution-data-server");
-
-	if (!opt_disable_migration && !g_settings_get_boolean (settings, "migrated")) {
-		g_settings_set_boolean (settings, "migrated", TRUE);
-
-		/* Migrate user data from ~/.evolution to XDG base directories. */
-		evolution_source_registry_migrate_basedir ();
-	} else if (opt_disable_migration) {
-		e_source_registry_debug_print (" * Skipping old account data migration, disabled on command line\n");
-	} else {
-		e_source_registry_debug_print (" * Skipping old account data migration, already migrated\n");
-	}
-
-	g_object_unref (settings);
-
 	server = e_source_registry_server_new ();
 
 	g_signal_connect (
