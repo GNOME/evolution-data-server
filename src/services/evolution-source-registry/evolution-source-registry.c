@@ -188,11 +188,6 @@ reload:
 
 		/* Migrate user data from ~/.evolution to XDG base directories. */
 		evolution_source_registry_migrate_basedir ();
-
-		/* Migrate ESource data from GConf XML blobs to key files.
-		 * Do this AFTER XDG base directory migration since the key
-		 * files are saved according to XDG base directory settings. */
-		evolution_source_registry_migrate_sources ();
 	} else if (opt_disable_migration) {
 		e_source_registry_debug_print (" * Skipping old account data migration, disabled on command line\n");
 	} else {

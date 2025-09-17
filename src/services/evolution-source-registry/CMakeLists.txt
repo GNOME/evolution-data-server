@@ -71,7 +71,6 @@ set(SOURCES
 	evolution-source-registry-methods.h
 	evolution-source-registry-migrate-basedir.c
 	evolution-source-registry-migrate-proxies.c
-	evolution-source-registry-migrate-sources.c
 	evolution-source-registry-migrate-tweaks.c
 	${CMAKE_CURRENT_BINARY_DIR}/evolution-source-registry-resource.c
 	${CMAKE_CURRENT_BINARY_DIR}/evolution-source-registry-resource.h
@@ -114,49 +113,5 @@ target_link_libraries(evolution-source-registry
 )
 
 install(TARGETS evolution-source-registry
-	DESTINATION ${LIBEXEC_INSTALL_DIR}
-)
-
-set(SOURCES
-	evolution-scan-gconf-tree-xml.c
-	evolution-source-registry-migrate-sources.c
-)
-
-add_executable(evolution-scan-gconf-tree-xml
-	${SOURCES}
-)
-
-add_dependencies(evolution-scan-gconf-tree-xml
-	${DEPENDENCIES}
-)
-
-target_compile_definitions(evolution-scan-gconf-tree-xml PRIVATE
-	-DG_LOG_DOMAIN=\"evolution-scan-gconf-tree-xml\"
-	-DLOCALEDIR=\"${LOCALE_INSTALL_DIR}\"
-)
-
-target_compile_options(evolution-scan-gconf-tree-xml PUBLIC
-	${BACKEND_CFLAGS}
-	${DATA_SERVER_CFLAGS}
-	${GTK_CFLAGS}
-)
-
-target_include_directories(evolution-scan-gconf-tree-xml PUBLIC
-	${CMAKE_BINARY_DIR}
-	${CMAKE_BINARY_DIR}/src
-	${CMAKE_SOURCE_DIR}/src
-	${BACKEND_INCLUDE_DIRS}
-	${DATA_SERVER_INCLUDE_DIRS}
-	${GTK_INCLUDE_DIRS}
-)
-
-target_link_libraries(evolution-scan-gconf-tree-xml
-	${DEPENDENCIES}
-	${BACKEND_LDFLAGS}
-	${DATA_SERVER_LDFLAGS}
-	${GTK_LDFLAGS}
-)
-
-install(TARGETS evolution-scan-gconf-tree-xml
 	DESTINATION ${LIBEXEC_INSTALL_DIR}
 )

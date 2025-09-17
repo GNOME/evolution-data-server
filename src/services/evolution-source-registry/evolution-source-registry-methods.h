@@ -30,13 +30,6 @@ void		evolution_source_registry_migrate_basedir
 void		evolution_source_registry_migrate_proxies
 							(ESourceRegistryServer *server);
 
-void		evolution_source_registry_migrate_sources
-							(void);
-
-gboolean	evolution_source_registry_migrate_gconf_tree_xml
-							(const gchar *filename,
-							 GError **error);
-
 gboolean	evolution_source_registry_migrate_tweak_key_file
 							(ESourceRegistryServer *server,
 							 GKeyFile *key_file,
