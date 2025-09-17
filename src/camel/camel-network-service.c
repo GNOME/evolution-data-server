@@ -617,7 +617,7 @@ network_service_connect_sync (CamelNetworkService *service,
 	g_return_val_if_fail (connectable != NULL, NULL);
 
 	client = g_socket_client_new ();
-	g_socket_client_set_timeout (client, 90);
+	g_socket_client_set_timeout (client, 15);
 
 	g_signal_connect (
 		client, "event",
@@ -644,7 +644,7 @@ network_service_connect_sync (CamelNetworkService *service,
 
 		socket = g_socket_connection_get_socket (connection);
 		if (socket) {
-			g_socket_set_timeout (socket, 90);
+			g_socket_set_timeout (socket, 15);
 			g_socket_set_keepalive (socket, TRUE);
 		}
 	}
