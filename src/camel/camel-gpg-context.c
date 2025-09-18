@@ -2926,10 +2926,15 @@ gpg_verify_sync (CamelCipherContext *context,
 	return NULL;
 }
 
+/* private helper function */
+GPtrArray *
+_camel_cipher_context_dup_recipients_with_aliases (const GPtrArray *in_recipients,
+						   const gchar *debug_key);
+
 static gboolean
 gpg_encrypt_sync (CamelCipherContext *context,
                   const gchar *userid,
-                  GPtrArray *recipients,
+                  GPtrArray *in_recipients,
                   CamelMimePart *ipart,
                   CamelMimePart *opart,
                   GCancellable *cancellable,
@@ -2943,17 +2948,24 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
 	CamelMultipartEncrypted *mpe;
+	GPtrArray *recipients;
 	gboolean success = FALSE;
 	gboolean prefer_inline;
 	GSList *gathered_keys = NULL, *link;
 	gint i;
 
+	g_return_val_if_fail (in_recipients != NULL, FALSE);
+
+	recipients = _camel_cipher_context_dup_recipients_with_aliases (in_recipients, "gpg:aliases");
+
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
 	if (camel_cipher_context_get_session (context) &&
 	    !camel_session_get_recipient_certificates_sync (camel_cipher_context_get_session (context),
-		CAMEL_RECIPIENT_CERTIFICATE_PGP, recipients, &gathered_keys, cancellable, error))
+		CAMEL_RECIPIENT_CERTIFICATE_PGP, recipients, &gathered_keys, cancellable, error)) {
+		g_ptr_array_unref (recipients);
 		return FALSE;
+	}
 
 	prefer_inline = ctx->priv->prefer_inline &&
 		camel_content_type_is (camel_mime_part_get_content_type (ipart), "text", "plain");
@@ -3081,6 +3093,7 @@ fail:
 	gpg_ctx_free (gpg);
 fail1:
 	g_slist_free_full (gathered_keys, g_free);
+	g_ptr_array_unref (recipients);
 	g_object_unref (istream);
 	g_object_unref (ostream);
 

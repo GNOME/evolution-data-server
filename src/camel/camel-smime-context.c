@@ -1374,10 +1374,15 @@ camel_smime_cert_equal (gconstpointer ptr1,
 	return memcmp (cert1->derCert.data, cert2->derCert.data, cert1->derCert.len) == 0;
 }
 
+/* private helper function */
+GPtrArray *
+_camel_cipher_context_dup_recipients_with_aliases (const GPtrArray *in_recipients,
+						   const gchar *debug_key);
+
 static gboolean
 smime_context_encrypt_sync (CamelCipherContext *context,
                             const gchar *userid,
-                            GPtrArray *recipients,
+                            GPtrArray *in_recipients,
                             CamelMimePart *ipart,
                             CamelMimePart *opart,
                             GCancellable *cancellable,
@@ -1401,16 +1406,24 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
 	GByteArray *buffer;
+	GPtrArray *recipients;
 	GSList *gathered_certificates = NULL, *link;
 
+	g_return_val_if_fail (in_recipients != NULL, FALSE);
+
+	recipients = _camel_cipher_context_dup_recipients_with_aliases (in_recipients, "smime:aliases");
+
 	if (!camel_session_get_recipient_certificates_sync (camel_cipher_context_get_session (context),
-		CAMEL_RECIPIENT_CERTIFICATE_SMIME, recipients, &gathered_certificates, cancellable, error))
+		CAMEL_RECIPIENT_CERTIFICATE_SMIME, recipients, &gathered_certificates, cancellable, error)) {
+		g_clear_pointer (&recipients, g_ptr_array_unref);
 		return FALSE;
+	}
 
 	poolp = PORT_NewArena (1024);
 	if (poolp == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
 		g_slist_free_full (gathered_certificates, g_free);
+		g_clear_pointer (&recipients, g_ptr_array_unref);
 		return FALSE;
 	}
 
@@ -1626,6 +1639,8 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	camel_mime_part_set_description (opart, "S/MIME Encrypted Message");
 	camel_mime_part_set_encoding (opart, CAMEL_TRANSFER_ENCODING_BASE64);
 
+	g_clear_pointer (&recipients, g_ptr_array_unref);
+
 	return TRUE;
 
 fail:
@@ -1642,6 +1657,8 @@ fail:
 				CERT_DestroyCertificate (recipient_certs[i]);
 		}
 	}
+
+	g_clear_pointer (&recipients, g_ptr_array_unref);
 
 	PORT_FreeArena (poolp, PR_FALSE);
 

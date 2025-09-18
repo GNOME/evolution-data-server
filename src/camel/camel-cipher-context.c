@@ -36,6 +36,7 @@
 #include "camel-mime-message.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-stream-filter.h"
+#include "camel-string-utils.h"
 
 #define CIPHER_LOCK(ctx) \
 	g_mutex_lock (&((CamelCipherContext *) ctx)->priv->lock)
@@ -1642,4 +1643,148 @@ camel_cipher_can_load_photos (void)
 	g_clear_object (&settings);
 
 	return load_photos;
+}
+
+static GHashTable *
+dup_group_case_insensitive (GKeyFile *aliases,
+			    const gchar *group)
+{
+	GHashTable *values;
+	gchar **keys;
+	guint ii;
+
+	keys = g_key_file_get_keys (aliases, group, NULL, NULL);
+	if (!keys)
+		return NULL;
+
+	values = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, g_free);
+
+	for (ii = 0; keys[ii]; ii++) {
+		const gchar *key = keys[ii];
+		gchar *value = g_strstrip (g_key_file_get_string (aliases, group, key, NULL));
+
+		if (value && *value) {
+			g_hash_table_insert (values, g_strstrip (g_strdup (key)), value);
+		} else {
+			g_free (value);
+		}
+	}
+
+	g_strfreev (keys);
+
+	return values;
+}
+
+/* private helper function */
+GPtrArray *
+_camel_cipher_context_dup_recipients_with_aliases (const GPtrArray *in_recipients,
+						   const gchar *debug_key);
+
+/*
+ * Expects a key file with content:
+ *    [users]
+ *    email1=keyid1
+ *    email2=keyid2
+ *
+ *    [domains]
+ *    domain.com = keyid3
+ *    domain.co.uk = keyid4
+ *
+ * where "keyid" is not necessarily a key ID, it can be anything what gpg can use
+ * to identify the recipient's key. A match in "[users]" has precedence over a match
+ * in "[domains]".
+ */
+
+/* private helper function */
+GPtrArray *
+_camel_cipher_context_dup_recipients_with_aliases (const GPtrArray *in_recipients,
+						   const gchar *debug_key)
+{
+	GPtrArray *recipients;
+	GHashTable *users_aliases = NULL, *domains_aliases = NULL;
+	GKeyFile *aliases;
+	GError *error = NULL;
+	gchar *filename;
+	guint ii;
+	gboolean debug_print;
+
+	g_return_val_if_fail (in_recipients != NULL, NULL);
+
+	debug_print = debug_key != NULL ? camel_debug (debug_key) : FALSE;
+	recipients = g_ptr_array_new_full (in_recipients->len, g_free);
+
+	aliases = g_key_file_new ();
+	filename = g_build_filename (g_get_user_config_dir (), "evolution", "encrypt-aliases.ini", NULL);
+	/* the file is optional, do not claim an error */
+	if (!g_key_file_load_from_file (aliases, filename, G_KEY_FILE_NONE, &error)) {
+		g_clear_pointer (&aliases, g_key_file_free);
+		if (debug_print) {
+			if (g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
+				printf ("[%s] File '%s' does not exist\n", debug_key, filename);
+			else
+				printf ("[%s] Cannot load '%s': %s\n", debug_key, filename, error ? error->message : "Unknown error");
+		}
+	} else if (debug_print) {
+		printf ("[%s] Loaded '%s'\n", debug_key, filename);
+	}
+
+	g_clear_error (&error);
+	g_free (filename);
+
+	/* the GKeyFile is case sensitive, but this needs case insensitive search,
+	   thus turn the groups into the hash tables */
+	if (aliases) {
+		users_aliases = dup_group_case_insensitive (aliases, "users");
+		domains_aliases = dup_group_case_insensitive (aliases, "domains");
+		g_clear_pointer (&aliases, g_key_file_free);
+	}
+
+	debug_print = debug_print && (users_aliases || domains_aliases);
+
+	for (ii = 0; ii < in_recipients->len; ii++) {
+		const gchar *recip = g_ptr_array_index (in_recipients, ii);
+		gboolean added = FALSE;
+
+		if ((users_aliases || domains_aliases) && recip) {
+			const gchar *value;
+
+			value = users_aliases ? g_hash_table_lookup (users_aliases, recip) : NULL;
+
+			if (!value || !*value)
+				value = NULL;
+
+			if (!value) {
+				const gchar *at = strchr (recip, '@');
+
+				if (at && at[1] && domains_aliases) {
+					value = g_hash_table_lookup (domains_aliases, at + 1);
+
+					if (value && !*value)
+						value = NULL;
+
+					if (value && debug_print)
+						printf ("[%s]   replacing user '%s' with '%s', match on domain '%s'\n", debug_key, recip, value, at + 1);
+				}
+			} else if (debug_print) {
+				printf ("[%s]   replacing user '%s' with '%s', match on user\n", debug_key, recip, value);
+			}
+
+			if (value) {
+				g_ptr_array_add (recipients, g_strdup (value));
+				added = TRUE;
+			}
+		}
+
+		if (!added) {
+			if (debug_print)
+				printf ("[%s]   no match for user '%s', left as is\n", debug_key, recip);
+
+			g_ptr_array_add (recipients, g_strdup (recip));
+		}
+	}
+
+	g_clear_pointer (&users_aliases, g_hash_table_unref);
+	g_clear_pointer (&domains_aliases, g_hash_table_unref);
+
+	return recipients;
 }
