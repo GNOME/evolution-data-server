@@ -1599,8 +1599,15 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 					err_code = 0;
 
 				addr = strchr ((gchar *) status, '<');
+				/* fallback to use everything after the read number */
+				if (!addr && end_ptr && g_ascii_isspace (*end_ptr))
+					addr = end_ptr + 1;
+				/* yet another fallback to place after the prefix */
 				if (!addr)
 					addr = ((gchar *) status) + 10;
+
+				while (g_ascii_isspace (*addr))
+					addr++;
 
 				switch (err_code) {
 				case 0:
@@ -1608,42 +1615,42 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 						error, CAMEL_CIPHER_CONTEXT_ERROR, CAMEL_CIPHER_CONTEXT_ERROR_KEY_NOT_FOUND,
 						/* Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 						   the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2' */
-						_("Failed to encrypt: Invalid recipient %s specified. A common issue is that the %s doesn’t have imported public key for this recipient."),
+						_("Failed to encrypt: Invalid recipient “%s” specified. A common issue is that the “%s” doesn’t have imported public key for this recipient."),
 						addr, gpg_ctx_get_executable_name ());
 					break;
 				case 1:
 					g_set_error (
 						error, CAMEL_CIPHER_CONTEXT_ERROR, CAMEL_CIPHER_CONTEXT_ERROR_KEY_NOT_FOUND,
 						/* Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>' */
-						_("Failed to encrypt: The public key for recipient %s was not found."),
+						_("Failed to encrypt: The public key for recipient “%s” was not found."),
 						addr);
 					break;
 				case 4:
 					g_set_error (
 						error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 						/* Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>' */
-						_("Failed to encrypt: The key for recipient %s is revoked."),
+						_("Failed to encrypt: The key for recipient “%s” is revoked."),
 						addr);
 					break;
 				case 5:
 					g_set_error (
 						error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 						/* Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>' */
-						_("Failed to encrypt: The key for recipient %s is expired."),
+						_("Failed to encrypt: The key for recipient “%s” is expired."),
 						addr);
 					break;
 				case 10:
 					g_set_error (
 						error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 						/* Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>' */
-						_("Failed to encrypt: The key for recipient %s is not trusted."),
+						_("Failed to encrypt: The key for recipient “%s” is not trusted."),
 						addr);
 					break;
 				case 13:
 					g_set_error (
 						error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 						/* Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>' */
-						_("Failed to encrypt: The key for recipient %s is disabled."),
+						_("Failed to encrypt: The key for recipient “%s” is disabled."),
 						addr);
 					break;
 				default:
@@ -1651,7 +1658,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 						error, CAMEL_CIPHER_CONTEXT_ERROR, CAMEL_CIPHER_CONTEXT_ERROR_KEY_NOT_FOUND,
 						/* Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 						   the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2' */
-						_("Failed to encrypt: Invalid recipient %s specified (code %d). A common issue is that the %s doesn’t have imported public key for this recipient."),
+						_("Failed to encrypt: Invalid recipient “%s” specified (code %d). A common issue is that the “%s” doesn’t have imported public key for this recipient."),
 						addr, (gint) err_code, gpg_ctx_get_executable_name ());
 					break;
 				}
