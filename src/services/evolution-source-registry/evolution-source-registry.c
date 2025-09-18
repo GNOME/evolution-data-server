@@ -144,7 +144,6 @@ main (gint argc,
 	GOptionContext *context;
 	EDBusServer *server;
 	EDBusServerExitCode exit_code;
-	GSettings *settings;
 	GError *error = NULL;
 
 #ifdef G_OS_WIN32
