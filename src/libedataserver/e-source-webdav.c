@@ -735,7 +735,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 		g_param_spec_uint (
 			"limit-download-days",
 			NULL, NULL,
-			0, G_MAXUINT, 90,
+			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1797,7 +1797,7 @@ e_source_webdav_set_timeout (ESourceWebdav *extension,
  * @extension: an #ESourceWebdav
  *
  * Returns: limit how many past days can be downloaded. Zero means unlimited.
- *    The default is 90 days.
+ *    The default is 0 days.
  *
  * Since: 3.60
  **/
