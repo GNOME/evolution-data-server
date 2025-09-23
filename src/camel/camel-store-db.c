@@ -947,7 +947,7 @@ camel_store_db_read_disposable_table_names_cb (gpointer user_data,
 	SplitTableNames *stn = user_data;
 	const gchar *table_name = cols[0];
 
-	if (table_name && *table_name && !g_str_equal (table_name, "folders"))
+	if (table_name && *table_name && !g_str_equal (table_name, "folders") && !g_str_equal (table_name, "sqlite_sequence"))
 		g_ptr_array_add (stn->disposable_table_names, g_strdup (table_name));
 
 	return TRUE;
@@ -1135,24 +1135,30 @@ camel_store_db_maybe_migrate (CamelStoreDB *self,
 
 	for (ii = 0; ii < stn.disposable_table_names->len; ii++) {
 		const gchar *table_name = g_ptr_array_index (stn.disposable_table_names, ii);
+		GError *local_error = NULL;
 
 		camel_operation_progress (cancellable, (current_op++) * 100.0 / n_ops);
 		stmt = sqlite3_mprintf ("DROP TABLE IF EXISTS %Q", table_name);
-		success = camel_db_exec_statement (cdb, stmt, error);
+		if (!camel_db_exec_statement (cdb, stmt, &local_error)) {
+			g_warning ("%s: Failed to drop table '%s' in '%s': %s", G_STRFUNC, table_name, camel_db_get_filename (cdb),
+				local_error ? local_error->message : "Unknown error");
+		}
+		g_clear_error (&local_error);
 		sqlite3_free (stmt);
-		if (!success)
-			goto exit;
 	}
 
 	for (ii = 0; ii < stn.disposable_indexes->len; ii++) {
 		const gchar *name = g_ptr_array_index (stn.disposable_indexes, ii);
+		GError *local_error = NULL;
 
 		camel_operation_progress (cancellable, (current_op++) * 100.0 / n_ops);
 		stmt = sqlite3_mprintf ("DROP INDEX IF EXISTS %Q", name);
-		success = camel_db_exec_statement (cdb, stmt, error);
+		if (!camel_db_exec_statement (cdb, stmt, &local_error)) {
+			g_warning ("%s: Failed to drop index '%s' in '%s': %s", G_STRFUNC, name, camel_db_get_filename (cdb),
+				local_error ? local_error->message : "Unknown error");
+		}
+		g_clear_error (&local_error);
 		sqlite3_free (stmt);
-		if (!success)
-			goto exit;
 	}
 
 	success = camel_store_db_create_keys_table_with_defauls (self, error);
