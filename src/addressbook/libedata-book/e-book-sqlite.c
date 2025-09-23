@@ -1013,7 +1013,7 @@ collect_lean_results_cb (gpointer ref,
 		}
 	}
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard = e_vcard_to_string (E_VCARD (contact));
 	search_data->vcard = vcard;
 	*vcard_data = g_slist_prepend (*vcard_data, search_data);
 
@@ -1654,7 +1654,7 @@ ebsql_encode_vcard_sort_key (const gchar *sort_key)
 		vcard,
 		e_vcard_attribute_new (NULL, EBSQL_VCARD_SORT_KEY),
 		base64);
-	encoded = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+	encoded = e_vcard_to_string (vcard);
 
 	g_free (base64);
 	g_object_unref (vcard);
@@ -3933,7 +3933,7 @@ ebsql_insert_contact (EBookSqlite *ebsql,
 	if (e164_changed || original_vcard == NULL) {
 
 		/* Generate a new one if it changed (or if we don't have one) */
-		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (E_VCARD (contact));
 
 		if (e164_changed &&
 		    change_type != EBSQL_CHANGE_LAST &&

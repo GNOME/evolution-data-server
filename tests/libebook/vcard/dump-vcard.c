@@ -49,12 +49,16 @@ main (gint argc,
 
 	e_vcard_dump_structure (vcard);
 
-	parsed_vcard = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_21);
+	parsed_vcard = e_vcard_convert_to_string (vcard, E_VCARD_VERSION_21);
 	printf ("\nvCard 2.1: %s\n", parsed_vcard);
 	g_free (parsed_vcard);
 
-	parsed_vcard = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+	parsed_vcard = e_vcard_convert_to_string (vcard, E_VCARD_VERSION_30);
 	printf ("\nvCard 3.0: %s\n", parsed_vcard);
+	g_free (parsed_vcard);
+
+	parsed_vcard = e_vcard_convert_to_string (vcard, E_VCARD_VERSION_40);
+	printf ("\nvCard 4.0: %s\n", parsed_vcard);
 	g_free (parsed_vcard);
 
 	g_object_unref (vcard);

@@ -64,6 +64,8 @@ struct _EBookClientPrivate {
 	gulong dbus_proxy_notify_handler_id;
 
 	gchar *locale;
+
+	EVCardVersion prefer_vcard_version;
 };
 
 struct _AsyncContext {
@@ -578,6 +580,18 @@ book_client_dbus_proxy_property_changed (EClient *client,
 		backend_prop_name = "locale";
 	}
 
+	if (g_str_equal (property_name, "prefer-vcard-version")) {
+		EVCardVersion version;
+		const gchar *str;
+
+		backend_prop_name = E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION;
+
+		str = g_value_get_string (value);
+		version = e_vcard_version_from_string (str);
+		if (version != E_VCARD_VERSION_UNKNOWN)
+			E_BOOK_CLIENT (client)->priv->prefer_vcard_version = version;
+	}
+
 	if (backend_prop_name != NULL) {
 		SignalClosure *signal_closure;
 
@@ -924,6 +938,11 @@ book_client_get_backend_property_sync (EClient *client,
 		return TRUE;
 	}
 
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION)) {
+		*prop_value = e_dbus_address_book_dup_prefer_vcard_version (dbus_proxy);
+		return TRUE;
+	}
+
 	g_set_error (
 		error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
 		_("Unknown book property “%s”"), prop_name);
@@ -1239,7 +1258,6 @@ book_client_get_property (GObject *object,
 				value,
 				book_client->priv->locale);
 			return;
-
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -2043,6 +2061,42 @@ e_book_client_is_self (EContact *contact)
 	return is_self;
 }
 
+/**
+ * e_book_client_get_prefer_vcard_version:
+ * @client: an #EBookClient
+ *
+ * Gets a preferred vCard version by the @client backend. When not known,
+ * the latest supported vCard version is returned.
+ *
+ * Returns: an #EVCardVersion as the preferred vCard version
+ *
+ * Since: 3.60
+ **/
+EVCardVersion
+e_book_client_get_prefer_vcard_version (EBookClient *client)
+{
+	EVCardVersion version = E_VCARD_VERSION_40; /* a guessed default fallback */
+	gchar *value = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), E_VCARD_VERSION_UNKNOWN);
+
+	if (client->priv->prefer_vcard_version != E_VCARD_VERSION_UNKNOWN)
+		return client->priv->prefer_vcard_version;
+
+	if (e_client_get_backend_property_sync (E_CLIENT (client), E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION, &value, NULL, NULL)) {
+		version = e_vcard_version_from_string (value);
+
+		if (version == E_VCARD_VERSION_UNKNOWN)
+			version = E_VCARD_VERSION_40;
+		else
+			client->priv->prefer_vcard_version = version;
+
+		g_free (value);
+	}
+
+	return version;
+}
+
 /* Helper for e_book_client_add_contact() */
 static void
 book_client_add_contact_thread (GTask *task,
@@ -2379,7 +2433,7 @@ e_book_client_add_contacts_sync (EBookClient *client,
 		gchar *string;
 
 		vcard = E_VCARD (link->data);
-		string = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+		string = e_vcard_to_string (vcard);
 		strv[ii++] = e_util_utf8_make_valid (string);
 		g_free (string);
 	}
@@ -2679,7 +2733,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 		gchar *string;
 
 		vcard = E_VCARD (link->data);
-		string = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+		string = e_vcard_to_string (vcard);
 		strv[ii++] = e_util_utf8_make_valid (string);
 		g_free (string);
 	}

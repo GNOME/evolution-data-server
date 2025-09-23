@@ -126,7 +126,7 @@ book_utils_get_recipient_certificates_thread (gpointer data,
 						if (!base64_data) {
 							GList *cert_attrs, *clink;
 
-							cert_attrs = e_contact_get_attributes (contact, field_id);
+							cert_attrs = e_vcard_get_attributes_by_name (E_VCARD (contact), e_contact_vcard_attribute (field_id));
 							for (clink = cert_attrs; clink; clink = g_list_next (clink)) {
 								EVCardAttribute *cattr = clink->data;
 
@@ -162,7 +162,7 @@ book_utils_get_recipient_certificates_thread (gpointer data,
 								}
 							}
 
-							g_list_free_full (cert_attrs, (GDestroyNotify) e_vcard_attribute_free);
+							g_list_free (cert_attrs);
 
 							/* First insert takes ownership of the base64_data */
 							if (base64_data)

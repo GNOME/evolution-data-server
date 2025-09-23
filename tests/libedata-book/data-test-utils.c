@@ -189,7 +189,7 @@ fetch_vcard_from_hash (const gchar *uid,
 	/* vCards not stored in shallow addressbooks, instead loaded on the fly */
 	contact = g_hash_table_lookup (fixture->contacts, extra);
 	if (contact)
-		return e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		return e_vcard_to_string (E_VCARD (contact));
 
 	return NULL;
 }

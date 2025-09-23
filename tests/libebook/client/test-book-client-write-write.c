@@ -310,7 +310,7 @@ test_concurrent_writes (ETestServerFixture *fixture,
 		if (g_strcmp0 (field_tests[i].value, value) != 0) {
 			gchar *vcard;
 
-			vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+			vcard = e_vcard_to_string (E_VCARD (contact));
 
 			g_error (
 				"Lost data in concurrent writes, expected "

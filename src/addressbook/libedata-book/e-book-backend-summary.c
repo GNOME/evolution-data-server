@@ -1326,7 +1326,7 @@ e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary,
 		e_contact_set (contact, E_CONTACT_LIST_SHOW_ADDRESSES, GINT_TO_POINTER (item->list_show_addresses));
 		e_contact_set (contact, E_CONTACT_WANTS_HTML, GINT_TO_POINTER (item->wants_html));
 
-		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (E_VCARD (contact));
 
 		g_object_unref (contact);
 

@@ -787,7 +787,7 @@ ebc_encode_vcard_sort_key (const gchar *sort_key)
 		vcard,
 		e_vcard_attribute_new (NULL, EBC_VCARD_SORT_KEY),
 		base64);
-	encoded = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+	encoded = e_vcard_to_string (vcard);
 
 	g_free (base64);
 	g_object_unref (vcard);
@@ -3076,7 +3076,7 @@ ebc_search_meta_contacts_cb (ECache *cache,
 	if (revision)
 		e_contact_set (contact, E_CONTACT_REV, revision);
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard = e_vcard_to_string (E_VCARD (contact));
 
 	g_object_unref (contact);
 
@@ -5268,7 +5268,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 
 		g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
-		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (E_VCARD (contact));
 		g_return_val_if_fail (vcard != NULL, FALSE);
 
 		e_cache_column_values_remove_all (other_columns);
@@ -5495,7 +5495,7 @@ e_book_cache_get_vcard (EBookCache *book_cache,
 		if (revision)
 			e_contact_set (contact, E_CONTACT_REV, revision);
 
-		*out_vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		*out_vcard = e_vcard_to_string (E_VCARD (contact));
 
 		g_object_unref (contact);
 		g_free (full_vcard);
@@ -6641,7 +6641,7 @@ e_book_cache_put_locked (ECache *cache,
 	e164_changed = update_e164_attribute_params (book_cache, contact, book_cache->priv->region_code);
 
 	if (e164_changed) {
-		updated_vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		updated_vcard = e_vcard_to_string (E_VCARD (contact));
 		object = updated_vcard;
 	}
 

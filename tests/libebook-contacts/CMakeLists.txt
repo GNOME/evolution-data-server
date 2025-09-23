@@ -21,7 +21,7 @@ set(TESTS
 	test-contact
 	test-contact-types
 	test-indices-updater
-	test-vcard-parsing
+	test-vcard
 	test-untyped-phones
 	test-type-param
 	test-query

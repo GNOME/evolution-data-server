@@ -116,6 +116,8 @@ gboolean	e_book_client_set_self		(EBookClient *client,
 						 EContact *contact,
 						 GError **error);
 gboolean	e_book_client_is_self		(EContact *contact);
+EVCardVersion	e_book_client_get_prefer_vcard_version
+						(EBookClient *client);
 void		e_book_client_add_contact	(EBookClient *client,
 						 EContact *contact,
 						 guint32 opflags, /* bit-or of EBookOperationFlags */

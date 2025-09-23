@@ -3152,3 +3152,144 @@ e_util_guess_source_is_readonly	(ESource *source)
 
 	return res;
 }
+
+/**
+ * e_util_split_data_uri:
+ * @uri: a "data:" URI
+ * @out_mime_type: (optional) (out) (transfer full): location to store MIME type parameter, or %NULL when not interested
+ * @out_charset: (optional) (out) (transfer full): location to store charset parameter, or %NULL when not interested
+ * @out_is_base64: (out): location to store whether the URI content is base64 encoded
+ * @out_data_start: (out) (transfer none): location to store the first byte in the @uri where the actual data starts
+ *
+ * Splits a "data:" URI (of form data:[mime type][;charset=charset][;base64][,]encoded-data) into
+ * respective components. The @out_data_start points to the first byte inside the @uri.
+ *
+ * Returns: whether could split the @uri
+ *
+ * Since: 3.60
+ **/
+gboolean
+e_util_split_data_uri (const gchar *uri,
+			     gchar **out_mime_type,
+			     gchar **out_charset,
+			     gboolean *out_is_base64,
+			     const gchar **out_data_start)
+{
+	const gchar *ptr, *from;
+	gchar *charset = NULL, *mime_type = NULL;
+	gboolean is_base64 = FALSE;
+
+	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_val_if_fail (out_is_base64 != NULL, FALSE);
+	g_return_val_if_fail (out_data_start != NULL, FALSE);
+
+	if (g_ascii_strncasecmp (uri, "data:", 5) != 0)
+		return FALSE;
+
+	ptr = uri + 5;
+	from = ptr;
+	while (*ptr && *ptr != ',') {
+		ptr++;
+
+		if (*ptr == ',' || *ptr == ';') {
+			if (g_ascii_strncasecmp (from, "base64", ptr - from) == 0) {
+				is_base64 = TRUE;
+			} else if (ptr - from > 8 /* strlen ("charset=") */ &&
+				 g_ascii_strncasecmp (from, "charset=", 8) == 0) {
+				if (out_charset) {
+					g_free (charset);
+					charset = g_strndup (from + 8, ptr - from - 8);
+				}
+			} else if (ptr - from > 0 && out_mime_type && !mime_type) {
+				mime_type = g_strndup (from, ptr - from);
+			}
+
+			from = ptr + 1;
+		}
+	}
+
+	if (*ptr && *ptr != ',') {
+		g_free (mime_type);
+		g_free (charset);
+
+		return FALSE;
+	}
+
+	/* it's just "data:encoded-data" */
+	if (!*ptr)
+		ptr = uri + 4;
+
+	if (out_mime_type)
+		*out_mime_type = g_steal_pointer (&mime_type);
+	if (out_charset)
+		*out_charset = g_steal_pointer (&charset);
+
+	*out_is_base64 = is_base64;
+	*out_data_start = ptr + 1;
+
+	g_free (mime_type);
+	g_free (charset);
+
+	return TRUE;
+}
+
+/**
+ * e_util_construct_data_uri:
+ * @mime_type: (nullable): optional MIME type to use, or %NULL
+ * @charset: (nullable): optional charset to use, or %NULL
+ * @is_base64: %TRUE, when the @data is base64 encoded
+ * @data: actual data
+ *
+ * Constructs a "data:" URI (of form "data:[mime type][;charset=charset][;base64][,]encoded_data").
+ * The @mime_type neither the @charset cannot contain ',' nor ';',
+ *
+ * Returns: (transfer full): a newly allocated "data:" URI constructed
+ *    from the provided arguments. Free it with g_free(), when no longer
+ *    needed.
+ *
+ * Since: 3.60
+ **/
+gchar *
+e_util_construct_data_uri (const gchar *mime_type,
+			   const gchar *charset,
+			   gboolean is_base64,
+			   const gchar *data)
+{
+	GString *uri;
+	gboolean has_param = FALSE;
+
+	if (mime_type != NULL)
+		g_return_val_if_fail (strchr (mime_type, ',') == NULL && strchr (mime_type, ';') == NULL, NULL);
+	if (charset != NULL)
+		g_return_val_if_fail (strchr (charset, ',') == NULL && strchr (charset, ';') == NULL, NULL);
+	g_return_val_if_fail (data != NULL, NULL);
+
+	uri = g_string_new ("data:");
+
+	if (mime_type) {
+		g_string_append (uri, mime_type);
+		has_param = TRUE;
+	}
+
+	if (charset) {
+		if (has_param)
+			g_string_append_c (uri, ';');
+		g_string_append (uri, "charset=");
+		g_string_append (uri, charset);
+		has_param = TRUE;
+	}
+
+	if (is_base64) {
+		if (has_param)
+			g_string_append_c (uri, ';');
+		g_string_append (uri, "base64");
+		has_param = TRUE;
+	}
+
+	if (has_param)
+		g_string_append_c (uri, ',');
+
+	g_string_append (uri, data);
+
+	return g_string_free (uri, FALSE);
+}

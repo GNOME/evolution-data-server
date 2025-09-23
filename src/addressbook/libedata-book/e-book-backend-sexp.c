@@ -154,6 +154,15 @@ compare_im_groupwise (EContact *contact,
 }
 
 static gboolean
+compare_impp (EContact *contact,
+	      const gchar *str,
+	      const gchar *region,
+	      CompareFunc compare)
+{
+	return compare_im (contact, str, region, compare, E_CONTACT_IMPP);
+}
+
+static gboolean
 compare_email (EContact *contact,
                const gchar *str,
                const gchar *region,
@@ -342,7 +351,7 @@ compare_date (EContactDate *date,
               const gchar *region,
               CompareFunc compare)
 {
-	gchar *date_str = e_contact_date_to_string (date);
+	gchar *date_str = e_contact_date_to_string (date, E_VCARD_VERSION_30);
 	gboolean ret_val = FALSE;
 
 	if (date_str) {
@@ -381,6 +390,7 @@ static struct prop_info {
 	LIST_PROP ( "photo", compare_photo_uri ), /* not really a list, but we need to compare the uri in the struct */
 	DATE_PROP ( E_CONTACT_BIRTH_DATE, "birth_date" ),
 	DATE_PROP ( E_CONTACT_ANNIVERSARY, "anniversary" ),
+	DATE_PROP ( E_CONTACT_DEATHDATE, "death_date" ),
 	NORMAL_PROP ( E_CONTACT_GIVEN_NAME, "given_name"),
 	NORMAL_PROP ( E_CONTACT_FAMILY_NAME, "family_name"),
 	NORMAL_PROP ( E_CONTACT_HOMEPAGE_URL, "url"),
@@ -410,6 +420,7 @@ static struct prop_info {
 	LIST_PROP ( "im_yahoo",  compare_im_yahoo ),
 	LIST_PROP ( "im_gadugadu",  compare_im_gadugadu ),
 	LIST_PROP ( "im_groupwise", compare_im_groupwise ),
+	LIST_PROP ( "impp", compare_impp ),
 	LIST_PROP ( "email",     compare_email ),
 	LIST_PROP ( "phone",     compare_phone ),
 	LIST_PROP ( "address",   compare_address ),

@@ -198,30 +198,35 @@ test_type_param_label (void)
 {
 	TestData datas[] = {
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL;TYPE=home:V1\r\n"
 		  "END:VCARD\r\n",
 		  E_CONTACT_ADDRESS_LABEL_HOME, "V1" },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_WORK, NULL },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_OTHER, NULL },
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL:V1\r\n"
 		  "END:VCARD\r\n",
 		  E_CONTACT_ADDRESS_LABEL_HOME, NULL },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_WORK, "V1" },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_OTHER, NULL },
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL;TYPE=work:V1\r\n"
 		  "END:VCARD\r\n",
 		  E_CONTACT_ADDRESS_LABEL_HOME, NULL },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_WORK, "V1" },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_OTHER, NULL },
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL;TYPE=other:V1\r\n"
 		  "END:VCARD\r\n",
 		  E_CONTACT_ADDRESS_LABEL_HOME, NULL },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_WORK, NULL },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_OTHER, "V1" },
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL;TYPE=dom;TYPE=home:V1\r\n"
 		  "LABEL;TYPE=postal,work:V2\r\n"
 		  "LABEL;TYPE=postal,intl;TYPE=parcel,other:V3\r\n"
@@ -230,6 +235,7 @@ test_type_param_label (void)
 		{ NULL, E_CONTACT_ADDRESS_LABEL_WORK, "V2" },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_OTHER, "V3" },
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL:V1\r\n"
 		  "LABEL;TYPE=dom;TYPE=home:V2\r\n"
 		  "LABEL;TYPE=postal,intl;TYPE=parcel,other:V3\r\n"
@@ -238,6 +244,7 @@ test_type_param_label (void)
 		{ NULL, E_CONTACT_ADDRESS_LABEL_WORK, "V1" },
 		{ NULL, E_CONTACT_ADDRESS_LABEL_OTHER, "V3" },
 		{ "BEGIN:VCARD\r\n"
+		  "VERSION:3.0\r\n"
 		  "LABEL;TYPE=dom:V1\r\n"
 		  "LABEL:V2\r\n"
 		  "LABEL;TYPE=postal,intl;TYPE=parcel,other:V3\r\n"

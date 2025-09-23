@@ -17,6 +17,7 @@
   <property name="Locale" type="s" access="read"/>
   <property name="Writable" type="b" access="read"/>
   <property name="Categories" type="as" access="read"/>
+  <property name="PreferVcardVersion" type="s" access="read"/>
 
   <!-- These properties are static. -->
 

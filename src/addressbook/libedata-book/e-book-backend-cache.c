@@ -123,7 +123,7 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
-	vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard_str = e_vcard_to_string (E_VCARD (contact));
 
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), uid))
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), uid, vcard_str);

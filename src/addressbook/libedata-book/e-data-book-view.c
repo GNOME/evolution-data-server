@@ -458,7 +458,7 @@ impl_DataBookView_dup_contacts (EDBusAddressBookView *object,
 		for (ii = 0; ii < contacts->len; ii++) {
 			EContact *contact = g_ptr_array_index (contacts, ii);
 
-			vcards[ii] = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+			vcards[ii] = e_vcard_to_string (E_VCARD (contact));
 		}
 
 		g_ptr_array_unref (contacts);
@@ -1248,9 +1248,7 @@ e_data_book_view_notify_update (EDataBookView *view,
 		view->priv->sexp, (EContact *) contact);
 
 	if (want_in_view) {
-		vcard = e_vcard_to_string (
-			E_VCARD (contact),
-			EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (E_VCARD (contact));
 
 		if (currently_in_view)
 			notify_change (view, id, vcard);

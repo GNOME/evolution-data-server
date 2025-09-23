@@ -50,11 +50,13 @@
 	((obj), E_TYPE_CONTACT, EContactClass))
 
 #define E_TYPE_CONTACT_DATE       (e_contact_date_get_type ())
+#define E_TYPE_CONTACT_DATE_TIME  (e_contact_date_time_get_type ())
 #define E_TYPE_CONTACT_NAME       (e_contact_name_get_type ())
 #define E_TYPE_CONTACT_PHOTO      (e_contact_photo_get_type ())
 #define E_TYPE_CONTACT_CERT       (e_contact_cert_get_type ())
 #define E_TYPE_CONTACT_ADDRESS    (e_contact_address_get_type ())
 #define E_TYPE_CONTACT_ATTR_LIST  (e_contact_attr_list_get_type ())
+#define E_TYPE_CONTACT_GENDER     (e_contact_gender_get_type ())
 
 G_BEGIN_DECLS
 
@@ -256,6 +258,26 @@ typedef enum {
 	E_CONTACT_IM_MATRIX_WORK_3,	/* Synthetic string field */
 	E_CONTACT_IM_MATRIX,		/* Multi-valued */
 
+	/* vCard 4.0 properties */
+	E_CONTACT_KIND,			/* string */
+	E_CONTACT_SOURCE,		/* string (uri) */
+	E_CONTACT_XML,			/* string */
+	E_CONTACT_GENDER,		/* structured field (EContactGender) */
+	E_CONTACT_IMPP,			/* Multi-valued; read IMPP as attributes, which are either EVC_IMPP (vCard 4.0) or EVC_X_EVOLUTION_IMPP (vCard 3.0 for unknown IM schemes) */
+	E_CONTACT_LANG,			/* Multi-valued */
+	E_CONTACT_MEMBER,		/* Multi-valued */
+	E_CONTACT_RELATED,		/* Multi-valued */
+	E_CONTACT_BIRTHPLACE,		/* string */
+	E_CONTACT_DEATHPLACE,		/* string */
+	E_CONTACT_DEATHDATE,		/* structured field (EContactDate) */
+	E_CONTACT_EXPERTISE,		/* Multi-valued */
+	E_CONTACT_HOBBY,		/* Multi-valued */
+	E_CONTACT_INTEREST,		/* Multi-valued */
+	E_CONTACT_ORG_DIRECTORY,	/* Multi-valued */
+	E_CONTACT_CONTACT_URI,		/* string */
+	E_CONTACT_CREATED,		/* structured field (EContactDateTime) */
+	E_CONTACT_SOCIALPROFILE,	/* string */
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST = E_CONTACT_UID,
 
@@ -329,6 +351,16 @@ typedef struct {
 } EContactDate;
 
 typedef struct {
+	gushort year;	/* zero for unset */
+	gushort month;	/* zero for unset */
+	gushort day;	/* zero for unset */
+	gushort hour;	/* out of bounds for unset (0-23) */
+	gushort minute;	/* out of bounds for unset (0-59) */
+	gushort second;	/* out of bounds for unset (0-59) */
+	gint utc_offset;/* out of bounds for unset (-1400 - +1400, as HHMM) */
+} EContactDateTime;
+
+typedef struct {
 	gsize length;
 	gchar *data;
 } EContactCert;
@@ -357,6 +389,8 @@ EContact *	e_contact_new_from_vcard_with_uid
 						(const gchar *vcard,
 						 const gchar *uid);
 EContact *	e_contact_duplicate		(EContact *contact);
+EContact *	e_contact_convert		(EContact *self,
+						 EVCardVersion to_version);
 gpointer	e_contact_get			(EContact *contact,
 						 EContactField field_id);
 gconstpointer	e_contact_get_const		(EContact *contact,
@@ -365,26 +399,30 @@ void		e_contact_set			(EContact *contact,
 						 EContactField field_id,
 						 gconstpointer value);
 
-/* the following three calls return and take a GList of
- * EVCardAttribute*'s. */
-GList *		e_contact_get_attributes	(EContact *contact,
-						 EContactField field_id);
-GList *		e_contact_get_attributes_set	(EContact *contact,
-						 const EContactField field_ids[],
-						 gint size);
-
-void		e_contact_set_attributes	(EContact *contact,
-						 EContactField field_id,
-						 GList *attributes);
-
 /* misc functions for structured values */
 GType		e_contact_date_get_type		(void);
 EContactDate *	e_contact_date_new		(void);
 EContactDate *	e_contact_date_from_string	(const gchar *str);
-gchar *		e_contact_date_to_string	(EContactDate *dt);
+gchar *		e_contact_date_to_string	(EContactDate *dt,
+						 EVCardVersion for_version);
 gboolean	e_contact_date_equal		(EContactDate *dt1,
 						 EContactDate *dt2);
 void		e_contact_date_free		(EContactDate *date);
+
+GType		e_contact_date_time_get_type	(void);
+EContactDateTime *
+		e_contact_date_time_new		(void);
+EContactDateTime *
+		e_contact_date_time_from_string	(const gchar *str,
+						 EContactDateTimeFlags flags);
+gchar *		e_contact_date_time_to_string	(const EContactDateTime *self,
+						 EVCardVersion for_version,
+						 EContactDateTimeFlags flags);
+gboolean	e_contact_date_time_equal	(const EContactDateTime *dt1,
+						 const EContactDateTime *dt2);
+gboolean	e_contact_date_time_has_date	(const EContactDateTime *self);
+gboolean	e_contact_date_time_has_time	(const EContactDateTime *self);
+void		e_contact_date_time_free	(EContactDateTime *self);
 
 GType		e_contact_name_get_type		(void);
 EContactName *	e_contact_name_new		(void);
@@ -428,13 +466,41 @@ GType		e_contact_attr_list_get_type	(void);
 GList *		e_contact_attr_list_copy	(GList *list);
 void		e_contact_attr_list_free	(GList *list);
 
+typedef enum _EContactGenderSex {
+	E_CONTACT_GENDER_SEX_UNKNOWN,
+	E_CONTACT_GENDER_SEX_NOT_SET,
+	E_CONTACT_GENDER_SEX_MALE,
+	E_CONTACT_GENDER_SEX_FEMALE,
+	E_CONTACT_GENDER_SEX_OTHER,
+	E_CONTACT_GENDER_SEX_NOT_APPLICABLE
+} EContactGenderSex;
+
+const gchar *	e_contact_gender_sex_to_string	(EContactGenderSex sex);
+EContactGenderSex
+		e_contact_gender_sex_from_string(const gchar *string);
+
+typedef struct _EContactGender {
+	EContactGenderSex sex;
+	gchar *identity;
+} EContactGender;
+
+GType		e_contact_gender_get_type	(void);
+EContactGender *e_contact_gender_new		(void);
+EContactGender *e_contact_gender_copy		(EContactGender *self);
+void		e_contact_gender_free		(EContactGender *self);
+
 GType		e_contact_field_type		(EContactField field_id);
 const gchar *	e_contact_field_name		(EContactField field_id);
 const gchar *	e_contact_pretty_name		(EContactField field_id);
 const gchar *	e_contact_vcard_attribute	(EContactField field_id);
+const gchar *	e_contact_vcard_attribute_fallback
+						(EContactField field_id);
 gboolean	e_contact_field_is_string	(EContactField field_id);
 EContactField	e_contact_field_id		(const gchar *field_name);
 EContactField	e_contact_field_id_from_vcard	(const gchar *vcard_field);
+EContactField	e_contact_impp_scheme_to_field	(const gchar *scheme,
+						 guint *out_scheme_len);
+const gchar *	e_contact_impp_field_to_scheme	(EContactField field);
 
 G_END_DECLS
 

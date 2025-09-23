@@ -495,9 +495,7 @@ data_book_complete_get_contact_cb (GObject *source_object,
 		gchar *vcard;
 		gchar *utf8_vcard;
 
-		vcard = e_vcard_to_string (
-			E_VCARD (contact),
-			EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (E_VCARD (contact));
 		utf8_vcard = e_util_utf8_make_valid (vcard);
 		e_dbus_address_book_complete_get_contact (
 			async_context->dbus_interface,
@@ -565,9 +563,7 @@ data_book_complete_get_contact_list_cb (GObject *source_object,
 
 			contact = g_queue_pop_head (&queue);
 
-			vcard = e_vcard_to_string (
-				E_VCARD (contact),
-				EVC_FORMAT_VCARD_30);
+			vcard = e_vcard_to_string (E_VCARD (contact));
 			strv[ii++] = e_util_utf8_make_valid (vcard);
 			g_free (vcard);
 
@@ -1672,6 +1668,9 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 		g_strfreev (strv);
 	}
 
+	if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION))
+		e_dbus_address_book_set_prefer_vcard_version (dbus_interface, prop_value);
+
 	/* Ensure the property change signal on the D-Bus is invoked immediately, not on idle */
 	g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (dbus_interface));
 
@@ -1876,6 +1875,11 @@ data_book_constructed (GObject *object)
 	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);
+	g_free (prop_value);
+
+	prop_name = E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION;
+	prop_value = e_book_backend_get_backend_property (backend, prop_name);
+	e_data_book_report_backend_property_changed (book, prop_name, prop_value);
 	g_free (prop_value);
 
 	/* Initialize the locale to the value reported by setlocale() until

@@ -704,13 +704,13 @@ e_contact_get_csv (EContact *contact,
 	guint n_emails;
 	gchar *full_name;
 
-	emails = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
+	emails = e_vcard_get_attributes_by_name (E_VCARD (contact), EVC_EMAIL);
 	n_emails = g_list_length (emails);
 	full_name = e_contact_get (contact, E_CONTACT_FULL_NAME);
 	if (n_emails > 4)
 		g_warning ("%s: only 4 out of %i emails have been exported", full_name, n_emails);
 	g_free (full_name);
-	g_list_free_full (emails, (GDestroyNotify) e_vcard_attribute_free);
+	g_list_free (emails);
 
 	return e_contact_to_csv (contact, csv_all_fields);
 }
@@ -726,7 +726,7 @@ output_n_cards_file (FILE *outputfile,
 	if (format == CARD_FORMAT_VCARD) {
 		for (i = begin_no; i < size + begin_no; i++) {
 			EContact *contact = g_slist_nth_data (contacts, i);
-			gchar *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+			gchar *vcard = e_vcard_to_string (E_VCARD (contact));
 			fprintf (outputfile, "%s\n", vcard);
 			g_free (vcard);
 		}

@@ -741,7 +741,7 @@ step_print_results (GSList *results,
 	g_print ("\nPRINTING RESULTS:\n");
 	for (l = results; l; l = l->next) {
 		EContact *contact = l->data;
-		gchar    *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		gchar    *vcard = e_vcard_to_string (E_VCARD (contact));
 
 		g_print ("\n%s\n", vcard);
 		g_free (vcard);

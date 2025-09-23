@@ -148,6 +148,67 @@ typedef enum { /*< flags >*/
 	E_BOOK_OPERATION_FLAG_CONFLICT_WRITE_COPY	= (1 << 3)
 } EBookOperationFlags;
 
+/**
+ * EVCardVersion:
+ * @E_VCARD_VERSION_UNKNOWN: unknown vCard version
+ * @E_VCARD_VERSION_21: vCard 2.1
+ * @E_VCARD_VERSION_30: vCard 3.0
+ * @E_VCARD_VERSION_40: vCard 4.0
+ *
+ * Declares vCard version.
+ *
+ * Since: 3.60
+ **/
+typedef enum {
+	E_VCARD_VERSION_UNKNOWN	= 0,
+	E_VCARD_VERSION_21	= 21,
+	E_VCARD_VERSION_30	= 30,
+	E_VCARD_VERSION_40 	= 40
+} EVCardVersion;
+
+/**
+ * EContactDateTimeFlags:
+ * @E_CONTACT_DATE_TIME_FLAG_NONE: no flag
+ * @E_CONTACT_DATE_TIME_FLAG_DATE_TIME: date-time value
+ * @E_CONTACT_DATE_TIME_FLAG_TIME: time value
+ *
+ * Flags to export the #EContactDateTime to string. The default behavior
+ * is to export only the set parts of the structure.
+ * With the @E_CONTACT_DATE_TIME_FLAG_DATE_TIME the exported text
+ * will always contain the time delimiter.
+ * The import uses the @E_CONTACT_DATE_TIME_FLAG_TIME to distinguish whether
+ * the time delimiter is expected or not.
+ *
+ * Since: 3.60
+ **/
+typedef enum { /*< flags >*/
+	E_CONTACT_DATE_TIME_FLAG_NONE		= 0,
+	E_CONTACT_DATE_TIME_FLAG_DATE_TIME	= 1 << 0,
+	E_CONTACT_DATE_TIME_FLAG_TIME		= 1 << 1
+} EContactDateTimeFlags;
+
+/**
+ * EVCardForeachFlags:
+ * @E_VCARD_FOREACH_FLAG_NONE: no flags
+ * @E_VCARD_FOREACH_FLAG_WILL_MODIFY: whether the callback will modify the #EVCard
+ *
+ * Behavior flags for the e_vcard_foreach().
+ *
+ * When the @E_VCARD_FOREACH_FLAG_WILL_MODIFY is set, it's expected the callback
+ * will modify the list of the attributes in the #EVCard, thus the walk-through is done
+ * on a copy of the list of the attributes. The attributes cannot be removed in
+ * the callback though, use e_vcard_foreach_remove() for that instead.
+ *
+ * Without the @E_VCARD_FOREACH_FLAG_WILL_MODIFY flag the callback promises it'll
+ * not modify the list of the attributes in the vCard.
+ *
+ * Since: 3.60
+ **/
+typedef enum { /*< flags >*/
+	E_VCARD_FOREACH_FLAG_NONE		= 0,
+	E_VCARD_FOREACH_FLAG_WILL_MODIFY	= 1 << 0
+} EVCardForeachFlags;
+
 G_END_DECLS
 
 #endif /* E_BOOK_CONTACTS_ENUMS_H */

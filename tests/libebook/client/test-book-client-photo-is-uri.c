@@ -293,7 +293,8 @@ setup_and_start_view (EBookClientView *view)
 }
 
 static void
-add_contact_inline (EBookClient *book)
+add_contact_inline (EBookClient *book,
+		    EVCardVersion version)
 {
 	EContact *contact;
 	EContactPhoto *photo;
@@ -301,6 +302,7 @@ add_contact_inline (EBookClient *book)
 	gsize length = 0;
 
 	contact = e_contact_new ();
+	e_vcard_add_attribute_with_value (E_VCARD (contact), e_vcard_attribute_new (NULL, EVC_VERSION), e_vcard_version_to_string (version));
 
 	data = g_base64_decode (photo_data, &length);
 
@@ -325,12 +327,14 @@ add_contact_inline (EBookClient *book)
 }
 
 static void
-add_contact_uri (EBookClient *book)
+add_contact_uri (EBookClient *book,
+		 EVCardVersion version)
 {
 	EContact *contact;
 	EContactPhoto *photo;
 
 	contact = e_contact_new ();
+	e_vcard_add_attribute_with_value (E_VCARD (contact), e_vcard_attribute_new (NULL, EVC_VERSION), e_vcard_version_to_string (version));
 
 	photo = e_contact_photo_new ();
 	photo->type = E_CONTACT_PHOTO_TYPE_URI;
@@ -352,7 +356,8 @@ add_contact_uri (EBookClient *book)
 
 static void
 test_photo_is_uri (ETestServerFixture *fixture,
-                   gconstpointer user_data)
+		   gconstpointer user_data,
+		   EVCardVersion version)
 {
 	EBookClient *book_client;
 	EBookClientView *view;
@@ -360,10 +365,12 @@ test_photo_is_uri (ETestServerFixture *fixture,
 	GError     *error = NULL;
 	gchar      *sexp;
 
+	iteration = ITERATION_SWAP_FACE;
+
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	add_contact_inline (book_client);
-	add_contact_uri (book_client);
+	add_contact_inline (book_client, version);
+	add_contact_uri (book_client, version);
 
 	query = e_book_query_any_field_contains ("");
 	sexp = e_book_query_to_string (query);
@@ -379,6 +386,20 @@ test_photo_is_uri (ETestServerFixture *fixture,
 	g_main_loop_run (loop);
 }
 
+static void
+test_photo_is_uri_30 (ETestServerFixture *fixture,
+		      gconstpointer user_data)
+{
+	test_photo_is_uri (fixture, user_data, E_VCARD_VERSION_30);
+}
+
+static void
+test_photo_is_uri_40 (ETestServerFixture *fixture,
+		      gconstpointer user_data)
+{
+	test_photo_is_uri (fixture, user_data, E_VCARD_VERSION_40);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -389,11 +410,18 @@ main (gint argc,
 	client_test_utils_read_args (argc, argv);
 
 	g_test_add (
-		"/EBookClient/PhotoIsUri",
+		"/EBookClient/PhotoIsUri30",
 		ETestServerFixture,
 		&book_closure,
 		e_test_server_utils_setup,
-		test_photo_is_uri,
+		test_photo_is_uri_30,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/PhotoIsUri40",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_photo_is_uri_40,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);

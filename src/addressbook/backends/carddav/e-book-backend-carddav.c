@@ -44,6 +44,8 @@ struct _EBookBackendCardDAVPrivate {
 	GUri *last_uri;
 	GMutex webdav_lock;
 
+	EVCardVersion vcard_version; /* the highest supported vCard version the server can work with */
+
 	/* If already been connected, then the connect_sync() will relax server checks,
 	   to avoid unnecessary requests towards the server. */
 	gboolean been_connected;
@@ -448,6 +450,115 @@ ebb_carddav_ref_session (EBookBackendCardDAV *bbdav)
 	return webdav;
 }
 
+typedef struct _CtagVersionData {
+	gchar **out_ctag;
+	EVCardVersion *out_vcard_version;
+} CtagVersionData;
+
+static gboolean
+ebb_carddav_getctag_and_version_cb (EWebDAVSession *webdav,
+				    xmlNodePtr prop_node,
+				    const GUri *request_uri,
+				    const gchar *href,
+				    guint status_code,
+				    gpointer user_data)
+{
+	CtagVersionData *data = user_data;
+
+	if (status_code == SOUP_STATUS_OK) {
+		xmlNodePtr child;
+		const xmlChar *content;
+
+		content = e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_CALENDARSERVER, "getctag");
+
+		if (content && *content) {
+			g_free (*data->out_ctag);
+			*data->out_ctag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) content));
+		}
+
+		child = e_xml_find_child (prop_node, E_WEBDAV_NS_CARDDAV, "supported-address-data");
+		if (child && child->children) {
+			/* the lowest meaningful version, used before vCard 4.0 was added */
+			EVCardVersion version = E_VCARD_VERSION_30;
+			xmlNodePtr parent = child;
+			const gchar *address_data_node_name = "address-data";
+			child = e_xml_find_sibling (parent->children, E_WEBDAV_NS_CARDDAV, "address-data");
+			if (!child) {
+				child = e_xml_find_sibling (parent->children, E_WEBDAV_NS_CARDDAV, "address-data-type");
+				if (child) {
+					address_data_node_name = "address-data-type";
+				}
+			}
+
+			for (;
+			     child && version == E_VCARD_VERSION_30;
+			     child = e_xml_find_next_sibling (child, E_WEBDAV_NS_CARDDAV, address_data_node_name)) {
+				xmlChar *value;
+
+				value = xmlGetProp (child, (const xmlChar *) "content-type");
+				if (!value || g_ascii_strcasecmp ((const gchar *) value, "text/vcard") != 0) {
+					g_clear_pointer (&value, xmlFree);
+					continue;
+				}
+
+				g_clear_pointer (&value, xmlFree);
+
+				value = xmlGetProp (child, (const xmlChar *) "version");
+				if (g_strcmp0 ((const gchar *) value, "4.0") == 0)
+					version = E_VCARD_VERSION_40;
+
+				g_clear_pointer (&value, xmlFree);
+			}
+
+			*data->out_vcard_version = version;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
+ebb_carddav_getctag_and_vcard_version_sync (EWebDAVSession *webdav,
+					    gchar **out_ctag,
+					    EVCardVersion *out_vcard_version,
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	EXmlDocument *xml;
+	CtagVersionData data = { 0, };
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_ctag != NULL, FALSE);
+	g_return_val_if_fail (out_vcard_version != NULL, FALSE);
+
+	*out_ctag = NULL;
+	*out_vcard_version = E_VCARD_VERSION_30;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_add_namespaces (xml,
+		"CS", E_WEBDAV_NS_CALENDARSERVER,
+		"CD", E_WEBDAV_NS_CARDDAV,
+		NULL);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "supported-address-data");
+	e_xml_document_end_element (xml); /* prop */
+
+	data.out_ctag = out_ctag;
+	data.out_vcard_version = out_vcard_version;
+
+	success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
+		ebb_carddav_getctag_and_version_cb, &data, cancellable, error);
+
+	g_object_unref (xml);
+
+	return success;
+}
+
 static gboolean
 ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 			  const ENamedParameters *credentials,
@@ -664,6 +775,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 	if (success) {
 		gchar *ctag = NULL;
+		EVCardVersion before = bbdav->priv->vcard_version;
 
 		/* Some servers, notably Google, allow OPTIONS when not
 		   authorized (aka without credentials), thus try something
@@ -671,11 +783,16 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
-		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
+		if (!ebb_carddav_getctag_and_vcard_version_sync (webdav, &ctag, &bbdav->priv->vcard_version, cancellable, &local_error) &&
 		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
 			g_clear_error (&local_error);
+		}
+
+		if (before != bbdav->priv->vcard_version && bbdav->priv->vcard_version != E_VCARD_VERSION_UNKNOWN) {
+			e_book_backend_notify_property_changed (E_BOOK_BACKEND (bbdav), E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION,
+				e_vcard_version_to_string (bbdav->priv->vcard_version));
 		}
 
 		g_free (ctag);
@@ -742,7 +859,8 @@ ebb_carddav_disconnect_sync (EBookMetaBackend *meta_backend,
 static void
 ebb_carddav_update_nfo_with_contact (EBookMetaBackendInfo *nfo,
 				     EContact *contact,
-				     const gchar *etag)
+				     const gchar *etag,
+				     EVCardVersion vcard_version)
 {
 	const gchar *uid;
 
@@ -757,7 +875,7 @@ ebb_carddav_update_nfo_with_contact (EBookMetaBackendInfo *nfo,
 	e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, etag);
 
 	g_warn_if_fail (nfo->object == NULL);
-	nfo->object = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	nfo->object = e_vcard_convert_to_string (E_VCARD (contact), vcard_version);
 
 	if (!nfo->uid || !*(nfo->uid)) {
 		g_free (nfo->uid);
@@ -885,7 +1003,7 @@ ebb_carddav_multiget_response_cb (EWebDAVSession *webdav,
 							if (link == *from_link)
 								*from_link = g_slist_next (*from_link);
 
-							ebb_carddav_update_nfo_with_contact (nfo, contact, dequoted_etag);
+							ebb_carddav_update_nfo_with_contact (nfo, contact, dequoted_etag, gcd->bbdav->priv->vcard_version);
 
 							break;
 						}
@@ -1630,7 +1748,7 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 
 	contact = ebb_carddav_prepare_save (bbdav, in_contact, cancellable);
 
-	vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard_string = e_vcard_convert_to_string (E_VCARD (contact), bbdav->priv->vcard_version);
 
 	if (uid && vcard_string && (!overwrite_existing || (extra && *extra))) {
 		gchar *new_extra = NULL, *new_etag = NULL;
@@ -1665,7 +1783,7 @@ ebb_carddav_save_contact_sync (EBookMetaBackend *meta_backend,
 				e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, new_etag);
 
 				g_free (vcard_string);
-				vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+				vcard_string = e_vcard_convert_to_string (E_VCARD (contact), bbdav->priv->vcard_version);
 
 				/* Encodes the href and the vCard into one string, which
 				   will be decoded in the load function */
@@ -1861,6 +1979,14 @@ ebb_carddav_get_backend_property (EBookBackend *book_backend,
 			"contact-lists",
 			e_book_meta_backend_get_capabilities (E_BOOK_META_BACKEND (book_backend)),
 			NULL);
+	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION)) {
+		EBookBackendCardDAV *bbdav = E_BOOK_BACKEND_CARDDAV (book_backend);
+		EVCardVersion version = bbdav->priv->vcard_version;
+
+		if (version == E_VCARD_VERSION_UNKNOWN)
+			version = E_VCARD_VERSION_30;
+
+		return g_strdup (e_vcard_version_to_string (version));
 	}
 
 	/* Chain up to parent's method. */
@@ -1938,6 +2064,7 @@ static void
 e_book_backend_carddav_init (EBookBackendCardDAV *bbdav)
 {
 	bbdav->priv = e_book_backend_carddav_get_instance_private (bbdav);
+	bbdav->priv->vcard_version = E_VCARD_VERSION_30;
 
 	g_mutex_init (&bbdav->priv->webdav_lock);
 }

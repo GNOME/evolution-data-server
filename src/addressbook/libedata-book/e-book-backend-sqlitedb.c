@@ -2204,7 +2204,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			g_warn_if_reached ();
 	}
 
-	vcard_str = store_vcard ? e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30) : NULL;
+	vcard_str = store_vcard ? e_vcard_to_string (E_VCARD (contact)) : NULL;
 	str = sqlite3_mprintf (", %Q, %Q)", vcard_str, NULL);
 
 	g_string_append (string, str);
@@ -2973,7 +2973,7 @@ store_data_to_vcard (gpointer ref,
 			search_data->bdata = g_strdup (cols[i]);
 	}
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard = e_vcard_to_string (E_VCARD (contact));
 	search_data->vcard = vcard;
 	*vcard_data = g_slist_prepend (*vcard_data, search_data);
 

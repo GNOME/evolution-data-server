@@ -1355,6 +1355,8 @@ book_backend_file_get_backend_property (EBookBackend *backend,
 		return prop_value;
 	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_CATEGORIES)) {
 		return ebb_file_dup_categories (bf);
+	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION)) {
+		return g_strdup (e_vcard_version_to_string (E_VCARD_VERSION_40));
 	}
 
 	/* Chain up to parent's method. */

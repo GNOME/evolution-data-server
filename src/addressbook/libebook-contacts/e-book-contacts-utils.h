@@ -79,6 +79,20 @@
 #define E_BOOK_BACKEND_PROPERTY_CATEGORIES		"categories"
 
 /**
+ * E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION:
+ *
+ * A book backend string property name containing a vCard version
+ * the backend prefers. Common values are "3.0" and "4.0". It is
+ * only what the backend prefers for the exchange, it can receive
+ * other vCard versions too, the same as it can return vCard data
+ * in a different version (like when the server has stored vCards
+ * in multiple versions, then they are not converted by the backend.
+ *
+ * Since: 3.60
+ **/
+#define E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION "prefer-vcard-version"
+
+/**
  * E_BOOK_CLIENT_ERROR:
  *
  * Error domain for #EBookClient errors

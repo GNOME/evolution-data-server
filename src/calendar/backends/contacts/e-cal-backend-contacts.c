@@ -68,8 +68,10 @@ typedef struct _BookRecord {
 typedef struct _ContactRecord {
 	ECalBackendContacts *cbc;
 	EBookClient *book_client; /* where it comes from */
-	EContact	    *contact;
-	ECalComponent       *comp_birthday, *comp_anniversary;
+	EContact *contact;
+	ECalComponent *comp_anniversary;
+	ECalComponent *comp_birthday;
+	ECalComponent *comp_deathday;
 } ContactRecord;
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -81,13 +83,23 @@ G_DEFINE_TYPE_WITH_PRIVATE (
 
 #define ANNIVERSARY_UID_EXT "-anniversary"
 #define BIRTHDAY_UID_EXT   "-birthday"
+#define DEATHDAY_UID_EXT "-deathday"
 
 static ECalComponent *
 		create_birthday			(ECalBackendContacts *cbc,
-						 EContact *contact);
+						 const gchar *base_uid,
+						 EContactDate *date,
+						 const gchar *name);
 static ECalComponent *
 		create_anniversary		(ECalBackendContacts *cbc,
-						 EContact *contact);
+						 const gchar *base_uid,
+						 EContactDate *date,
+						 const gchar *name);
+static ECalComponent *
+		create_deathday			(ECalBackendContacts *cbc,
+						 const gchar *base_uid,
+						 EContactDate *date,
+						 const gchar *name);
 static void	contacts_modified_cb		(EBookClientView *book_view,
 						 const GSList *contacts,
 						 gpointer user_data);
@@ -260,6 +272,7 @@ book_record_get_view_thread (gpointer user_data)
 		e_book_query_orv (
 			e_book_query_field_exists (E_CONTACT_BIRTH_DATE),
 			e_book_query_field_exists (E_CONTACT_ANNIVERSARY),
+			e_book_query_field_exists (E_CONTACT_DEATHDATE),
 			NULL),
 		NULL);
 	query_sexp = e_book_query_to_string (query);
@@ -383,19 +396,47 @@ contact_record_new (ECalBackendContacts *cbc,
                     EBookClient *book_client,
                     EContact *contact)
 {
-	ContactRecord *cr = g_new0 (ContactRecord, 1);
+	EContactDate *anniversary, *birthday, *deathday;
+	ContactRecord *cr;
+	const gchar *base_uid, *name;
 
+	anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
+	birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
+	deathday = e_contact_get (contact, E_CONTACT_DEATHDATE);
+
+	if (!anniversary && !birthday && !deathday)
+		return NULL;
+
+	base_uid = e_contact_get_const (contact, E_CONTACT_UID);
+
+	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+	if (!name || !*name)
+		name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
+	if (!name || !*name)
+		name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
+	if (!name)
+		name = "";
+
+	cr = g_new0 (ContactRecord, 1);
 	cr->cbc = cbc;
 	cr->book_client = book_client;
 	cr->contact = contact;
-	cr->comp_birthday = create_birthday (cbc, contact);
-	cr->comp_anniversary = create_anniversary (cbc, contact);
+	cr->comp_anniversary = create_anniversary (cbc, base_uid, anniversary, name);
+	cr->comp_birthday = create_birthday (cbc, base_uid, birthday, name);
+	cr->comp_deathday = create_deathday (cbc, base_uid, deathday, name);
+
+	g_clear_pointer (&anniversary, e_contact_date_free);
+	g_clear_pointer (&birthday, e_contact_date_free);
+	g_clear_pointer (&deathday, e_contact_date_free);
+
+	if (cr->comp_anniversary)
+		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbc), cr->comp_anniversary);
 
 	if (cr->comp_birthday)
 		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbc), cr->comp_birthday);
 
-	if (cr->comp_anniversary)
-		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbc), cr->comp_anniversary);
+	if (cr->comp_deathday)
+		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbc), cr->comp_deathday);
 
 	g_object_ref (G_OBJECT (contact));
 
@@ -426,6 +467,15 @@ contact_record_free (ContactRecord *cr)
 
 		e_cal_component_id_free (id);
 		g_object_unref (G_OBJECT (cr->comp_anniversary));
+	}
+
+	if (cr->comp_deathday) {
+		id = e_cal_component_get_id (cr->comp_deathday);
+
+		e_cal_backend_notify_component_removed (E_CAL_BACKEND (cr->cbc), id, cr->comp_deathday, NULL);
+
+		e_cal_component_id_free (id);
+		g_object_unref (G_OBJECT (cr->comp_deathday));
 	}
 
 	g_free (cr);
@@ -493,6 +543,15 @@ contact_record_cb (gpointer key,
 			data = e_cal_component_get_as_string (record->comp_anniversary);
 		else
 			data = record->comp_anniversary;
+
+		cb_data->result = g_slist_prepend (cb_data->result, data);
+	}
+
+	if (record->comp_deathday && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_deathday, timezone_cache)) {
+		if (cb_data->as_string)
+			data = e_cal_component_get_as_string (record->comp_deathday);
+		else
+			data = record->comp_deathday;
 
 		cb_data->result = g_slist_prepend (cb_data->result, data);
 	}
@@ -571,23 +630,16 @@ contacts_modified_cb (EBookClientView *book_view,
 	for (ii = contacts; ii; ii = ii->next) {
 		EContact *contact = E_CONTACT (ii->data);
 		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
-		EContactDate *birthday, *anniversary;
+		ContactRecord *cr;
 
 		/* Because this is a change of contact, then always remove old tracked data
 		 * and if possible, add with (possibly) new values.
 		*/
 		g_hash_table_remove (cbc->priv->tracked_contacts, (gchar *) uid);
 
-		birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
-		anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
-
-		if (birthday || anniversary) {
-			ContactRecord *cr = contact_record_new (cbc, book_client, contact);
+		cr = contact_record_new (cbc, book_client, contact);
+		if (cr)
 			g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
-		}
-
-		e_contact_date_free (birthday);
-		e_contact_date_free (anniversary);
 	}
 
 	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
@@ -613,20 +665,14 @@ contacts_added_cb (EBookClientView *book_view,
 	/* See if any new contacts have BIRTHDAY or ANNIVERSARY fields */
 	for (ii = contacts; ii; ii = ii->next) {
 		EContact *contact = E_CONTACT (ii->data);
-		EContactDate *birthday, *anniversary;
+		ContactRecord *cr;
 
-		birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
-		anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
-
-		if (birthday || anniversary) {
-			ContactRecord *cr = contact_record_new (cbc, book_client, contact);
-			const gchar    *uid = e_contact_get_const (contact, E_CONTACT_UID);
+		cr = contact_record_new (cbc, book_client, contact);
+		if (cr) {
+			const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
 
 			g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
 		}
-
-		e_contact_date_free (birthday);
-		e_contact_date_free (anniversary);
 	}
 
 	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
@@ -711,6 +757,9 @@ update_alarm_cb (gpointer key,
 
 	if (record->comp_anniversary)
 		manage_comp_alarm_update (cbc, record->comp_anniversary);
+
+	if (record->comp_deathday)
+		manage_comp_alarm_update (cbc, record->comp_deathday);
 }
 
 static gboolean
@@ -854,9 +903,30 @@ create_component (ECalBackendContacts *cbc,
 
 	icomp = i_cal_component_new (I_CAL_VEVENT_COMPONENT);
 
-	since_year = g_strdup_printf ("%04d", cdate->year);
-	e_cal_util_component_set_x_property (icomp, "X-EVOLUTION-SINCE-YEAR", since_year);
-	g_free (since_year);
+	if (cdate->year != 0) {
+		since_year = g_strdup_printf ("%04d", cdate->year);
+		e_cal_util_component_set_x_property (icomp, "X-EVOLUTION-SINCE-YEAR", since_year);
+		g_free (since_year);
+	}
+
+	if (!cdate->year || !cdate->month || !cdate->day) {
+		if (!cdate->year) {
+			time_t tt = time (NULL);
+			struct tm *tm;
+
+			tm = localtime (&tt);
+			if (tm)
+				cdate->year = tm->tm_year + 1900; /* default to the current year */
+			else
+				cdate->year = 2025; /* when cannot get, then let it be some "random" value */
+		}
+
+		if (!cdate->month)
+			cdate->month = 1; /* default to January */
+
+		if (!cdate->day)
+			cdate->day = 1; /* default to the first day of the month */
+	}
 
 	/* Create the event object */
 	cal_comp = e_cal_component_new_from_icalcomponent (icomp);
@@ -908,6 +978,8 @@ create_component (ECalBackendContacts *cbc,
 		e_cal_component_set_categories (cal_comp, _("Anniversary"));
 	else if (g_str_has_suffix (uid, BIRTHDAY_UID_EXT))
 		e_cal_component_set_categories (cal_comp, _("Birthday"));
+	else if (g_str_has_suffix (uid, DEATHDAY_UID_EXT))
+		e_cal_component_set_categories (cal_comp, _("Deathday"));
 
 	e_cal_component_set_classification (cal_comp, E_CAL_COMPONENT_CLASS_PRIVATE);
 
@@ -925,29 +997,23 @@ create_component (ECalBackendContacts *cbc,
 
 static ECalComponent *
 create_birthday (ECalBackendContacts *cbc,
-                 EContact *contact)
+		 const gchar *base_uid,
+		 EContactDate *date,
+		 const gchar *name)
 {
-	EContactDate  *cdate;
 	ECalComponent *cal_comp;
-	gchar          *summary;
-	const gchar    *name;
+	gchar *summary;
 	gchar *uid;
 
-	cdate = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
-	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
-	if (!name || !*name)
-		name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
-	if (!name || !*name)
-		name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
-	if (!name)
-		name = "";
+	if (!date)
+		return NULL;
 
-	uid = g_strdup_printf ("%s%s", (gchar *) e_contact_get_const (contact, E_CONTACT_UID), BIRTHDAY_UID_EXT);
+	uid = g_strdup_printf ("%s%s", base_uid, BIRTHDAY_UID_EXT);
+	/* Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Anniversary: %s" and "Death day: %s" strings */
 	summary = g_strdup_printf (_("Birthday: %s"), name);
 
-	cal_comp = create_component (cbc, uid, cdate, summary);
+	cal_comp = create_component (cbc, uid, date, summary);
 
-	e_contact_date_free (cdate);
 	g_free (uid);
 	g_free (summary);
 
@@ -956,29 +1022,48 @@ create_birthday (ECalBackendContacts *cbc,
 
 static ECalComponent *
 create_anniversary (ECalBackendContacts *cbc,
-                    EContact *contact)
+		    const gchar *base_uid,
+		    EContactDate *date,
+		    const gchar *name)
 {
-	EContactDate  *cdate;
 	ECalComponent *cal_comp;
-	gchar          *summary;
-	const gchar    *name;
+	gchar *summary;
 	gchar *uid;
 
-	cdate = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
-	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
-	if (!name || !*name)
-		name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
-	if (!name || !*name)
-		name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
-	if (!name)
-		name = "";
+	if (!date)
+		return NULL;
 
-	uid = g_strdup_printf ("%s%s", (gchar *) e_contact_get_const (contact, E_CONTACT_UID), ANNIVERSARY_UID_EXT);
+	uid = g_strdup_printf ("%s%s", base_uid, ANNIVERSARY_UID_EXT);
+	/* Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Death day: %s" strings */
 	summary = g_strdup_printf (_("Anniversary: %s"), name);
 
-	cal_comp = create_component (cbc, uid, cdate, summary);
+	cal_comp = create_component (cbc, uid, date, summary);
 
-	e_contact_date_free (cdate);
+	g_free (uid);
+	g_free (summary);
+
+	return cal_comp;
+}
+
+static ECalComponent *
+create_deathday (ECalBackendContacts *cbc,
+		 const gchar *base_uid,
+		 EContactDate *date,
+		 const gchar *name)
+{
+	ECalComponent *cal_comp;
+	gchar *summary;
+	gchar *uid;
+
+	if (!date)
+		return NULL;
+
+	uid = g_strdup_printf ("%s%s", base_uid, DEATHDAY_UID_EXT);
+	/* Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Anniversary: %s" strings */
+	summary = g_strdup_printf (_("Death day: %s"), name);
+
+	cal_comp = create_component (cbc, uid, date, summary);
+
 	g_free (uid);
 	g_free (summary);
 
@@ -1035,6 +1120,8 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend,
 		real_uid = g_strndup (uid, strlen (uid) - strlen (ANNIVERSARY_UID_EXT));
 	else if (g_str_has_suffix (uid, BIRTHDAY_UID_EXT))
 		real_uid = g_strndup (uid, strlen (uid) - strlen (BIRTHDAY_UID_EXT));
+	else if (g_str_has_suffix (uid, DEATHDAY_UID_EXT))
+		real_uid = g_strndup (uid, strlen (uid) - strlen (DEATHDAY_UID_EXT));
 	else {
 		g_propagate_error (perror, ECC_ERROR (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 		return;
@@ -1063,6 +1150,14 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend,
 		g_rec_mutex_unlock (&priv->tracked_contacts_lock);
 
 		d (g_message ("Return anniversary: %s", *object));
+		return;
+	}
+
+	if (record->comp_deathday && g_str_has_suffix (uid, DEATHDAY_UID_EXT)) {
+		*object = e_cal_component_get_as_string (record->comp_deathday);
+		g_rec_mutex_unlock (&priv->tracked_contacts_lock);
+
+		d (g_message ("Return deathday: %s", *object));
 		return;
 	}
 

@@ -26,6 +26,8 @@
 
 #include <glib-object.h>
 
+#include <libebook-contacts/e-book-contacts-enums.h>
+
 G_BEGIN_DECLS
 
 #define EVC_ADR				"ADR"
@@ -172,10 +174,88 @@ G_BEGIN_DECLS
 #define EVC_X_DEST_NAME			"X-EVOLUTION-DEST-NAME"
 #endif /* EDS_DISABLE_DEPRECATED */
 
-typedef enum {
-	EVC_FORMAT_VCARD_21,
-	EVC_FORMAT_VCARD_30
-} EVCardFormat;
+#define EVC_TZ "TZ"
+#define EVC_SOUND "SOUND"
+
+/* vCard 4.0 (RFC 6350) properties */
+#define EVC_SOURCE "SOURCE"
+#define EVC_KIND "KIND"
+#define EVC_XML "XML"
+#define EVC_ANNIVERSARY "ANNIVERSARY"
+#define EVC_GENDER "GENDER"
+#define EVC_IMPP "IMPP"
+#define EVC_LANG "LANG"
+#define EVC_MEMBER "MEMBER"
+#define EVC_RELATED "RELATED"
+#define EVC_CLIENTPIDMAP "CLIENTPIDMAP"
+#define EVC_CALADRURI "CALADRURI"
+
+/* vCard 4.0 (RFC 6350) parameters */
+#define EVC_LANGUAGE "LANGUAGE"
+#define EVC_PREF "PREF"
+#define EVC_ALTID "ALTID"
+#define EVC_PID "PID"
+#define EVC_MEDIATYPE "MEDIATYPE"
+#define EVC_CALSCALE "CALSCALE"
+#define EVC_SORT_AS "SORT-AS"
+
+/* RFC 6474 */
+#define EVC_BIRTHPLACE "BIRTHPLACE"
+#define EVC_DEATHPLACE "DEATHPLACE"
+#define EVC_DEATHDATE "DEATHDATE"
+
+/* RFC 6715 */
+#define EVC_EXPERTISE "EXPERTISE"
+#define EVC_HOBBY "HOBBY"
+#define EVC_INTEREST "INTEREST"
+#define EVC_ORG_DIRECTORY "ORG-DIRECTORY"
+
+/* RFC 8605 */
+#define EVC_CONTACT_URI "CONTACT-URI"
+
+/* RFC 9554 */
+#define EVC_CREATED "CREATED"
+/* EVC_LANGUAGE */
+#define EVC_GRAMGENDER "GRAMGENDER"
+#define EVC_PRONOUNS "PRONOUNS"
+#define EVC_SOCIALPROFILE "SOCIALPROFILE"
+
+/* RFC 9555 */
+#define EVC_JSPROP "JSPROP"
+
+#define E_VCARD_X_EVOLUTION_PREFIX(_nm) "X-EVOLUTION-" _nm
+
+/* counter-part properties for vCard 4.0 (and its extensions) in vCard 3.0 */
+#define EVC_X_EVOLUTION_SOURCE E_VCARD_X_EVOLUTION_PREFIX (EVC_SOURCE)
+#define EVC_X_EVOLUTION_KIND E_VCARD_X_EVOLUTION_PREFIX (EVC_KIND)
+#define EVC_X_EVOLUTION_XML E_VCARD_X_EVOLUTION_PREFIX (EVC_XML)
+#define EVC_X_EVOLUTION_GENDER E_VCARD_X_EVOLUTION_PREFIX (EVC_GENDER)
+#define EVC_X_EVOLUTION_IMPP E_VCARD_X_EVOLUTION_PREFIX (EVC_IMPP)
+#define EVC_X_EVOLUTION_LANG E_VCARD_X_EVOLUTION_PREFIX (EVC_LANG)
+#define EVC_X_EVOLUTION_MEMBER E_VCARD_X_EVOLUTION_PREFIX (EVC_MEMBER)
+#define EVC_X_EVOLUTION_RELATED E_VCARD_X_EVOLUTION_PREFIX (EVC_RELATED)
+#define EVC_X_EVOLUTION_CLIENTPIDMAP E_VCARD_X_EVOLUTION_PREFIX (EVC_CLIENTPIDMAP)
+#define EVC_X_EVOLUTION_CALADRURI E_VCARD_X_EVOLUTION_PREFIX (EVC_CALADRURI)
+#define EVC_X_EVOLUTION_BIRTHPLACE E_VCARD_X_EVOLUTION_PREFIX (EVC_BIRTHPLACE)
+#define EVC_X_EVOLUTION_DEATHPLACE E_VCARD_X_EVOLUTION_PREFIX (EVC_DEATHPLACE)
+#define EVC_X_EVOLUTION_DEATHDATE E_VCARD_X_EVOLUTION_PREFIX (EVC_DEATHDATE)
+#define EVC_X_EVOLUTION_EXPERTISE E_VCARD_X_EVOLUTION_PREFIX (EVC_EXPERTISE)
+#define EVC_X_EVOLUTION_HOBBY E_VCARD_X_EVOLUTION_PREFIX (EVC_HOBBY)
+#define EVC_X_EVOLUTION_INTEREST E_VCARD_X_EVOLUTION_PREFIX (EVC_INTEREST)
+#define EVC_X_EVOLUTION_ORG_DIRECTORY E_VCARD_X_EVOLUTION_PREFIX (EVC_ORG_DIRECTORY)
+#define EVC_X_EVOLUTION_CONTACT_URI E_VCARD_X_EVOLUTION_PREFIX (EVC_CONTACT_URI)
+#define EVC_X_EVOLUTION_CREATED E_VCARD_X_EVOLUTION_PREFIX (EVC_CREATED)
+#define EVC_X_EVOLUTION_GRAMGENDER E_VCARD_X_EVOLUTION_PREFIX (EVC_GRAMGENDER)
+#define EVC_X_EVOLUTION_PRONOUNS E_VCARD_X_EVOLUTION_PREFIX (EVC_PRONOUNS)
+#define EVC_X_SOCIALPROFILE "X-SOCIALPROFILE" /* RFC 9554 mentions it being used by others */
+/* counter-part parameters */
+#define EVC_X_EVOLUTION_LANGUAGE E_VCARD_X_EVOLUTION_PREFIX (EVC_LANGUAGE)
+#define EVC_X_EVOLUTION_PREF E_VCARD_X_EVOLUTION_PREFIX (EVC_PREF)
+#define EVC_X_EVOLUTION_ALTID E_VCARD_X_EVOLUTION_PREFIX (EVC_ALTID)
+#define EVC_X_EVOLUTION_PID E_VCARD_X_EVOLUTION_PREFIX (EVC_PID)
+#define EVC_X_EVOLUTION_MEDIATYPE E_VCARD_X_EVOLUTION_PREFIX (EVC_MEDIATYPE)
+#define EVC_X_EVOLUTION_CALSCALE E_VCARD_X_EVOLUTION_PREFIX (EVC_CALSCALE)
+#define EVC_X_EVOLUTION_SORT_AS E_VCARD_X_EVOLUTION_PREFIX (EVC_SORT_AS)
 
 #define E_TYPE_VCARD            (e_vcard_get_type ())
 #define E_VCARD(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_VCARD, EVCard))
@@ -185,33 +265,7 @@ typedef enum {
 #define E_VCARD_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_VCARD, EVCardClass))
 
 #define E_TYPE_VCARD_ATTRIBUTE  (e_vcard_attribute_get_type ())
-
 #define E_TYPE_VCARD_PARAM_ATTRIBUTE  (e_vcard_attribute_param_get_type ())
-
-/**
- * E_VCARD_21_VALID_PROPERTIES:
- *
- * FIXME: Document me!
- *
- * Since: 3.4
- **/
-#define E_VCARD_21_VALID_PROPERTIES \
-	"ADR,ORG,N,AGENT,LOGO,PHOTO,LABEL,FN,TITLE,SOUND,VERSION,TEL," \
-	"EMAIL,TZ,GEO,NOTE,URL,BDAY,ROLE,REV,UID,KEY,MAILER"
-
-/**
- * E_VCARD_21_VALID_PARAMETERS:
- *
- * FIXME: Document me!
- *
- * Since: 3.4
- **/
-#define E_VCARD_21_VALID_PARAMETERS \
-	"TYPE,VALUE,ENCODING,CHARSET,LANGUAGE,DOM,INTL,POSTAL,PARCEL," \
-	"HOME,WORK,PREF,VOICE,FAX,MSG,CELL,PAGER,BBS,MODEM,CAR,ISDN,VIDEO," \
-	"AOL,APPLELINK,ATTMAIL,CIS,EWORLD,INTERNET,IBMMAIL,MCIMAIL," \
-	"POWERSHARE,PRODIGY,TLX,X400,GIF,CGM,WMF,BMP,MET,PMB,DIB,PICT,TIFF," \
-	"PDF,PS,JPEG,QTIME,MPEG,MPEG2,AVI,WAVE,AIFF,PCM,X509,PGP"
 
 typedef struct _EVCard EVCard;
 typedef struct _EVCardClass EVCardClass;
@@ -236,92 +290,182 @@ struct _EVCardClass {
 	void (*_ebook_reserved4) (void);
 };
 
-GType   e_vcard_get_type                     (void);
+GType		e_vcard_get_type		(void);
+EVCard *	e_vcard_new			(void);
+EVCard *	e_vcard_new_from_string		(const gchar *str);
+void		e_vcard_construct		(EVCard *evc,
+						 const gchar *str);
+void		e_vcard_construct_with_uid	(EVCard *evc,
+						 const gchar *str,
+						 const gchar *uid);
+void		e_vcard_construct_full		(EVCard *evc,
+						 const gchar *str,
+						 gssize len,
+						 const gchar *uid);
+gboolean	e_vcard_is_parsed		(EVCard *evc);
 
-void    e_vcard_construct                    (EVCard *evc, const gchar *str);
-void    e_vcard_construct_with_uid           (EVCard *evc, const gchar *str, const gchar *uid);
-void    e_vcard_construct_full               (EVCard *evc, const gchar *str, gssize len, const gchar *uid);
-EVCard * e_vcard_new                          (void);
-EVCard * e_vcard_new_from_string              (const gchar *str);
+gchar *		e_vcard_to_string		(EVCard *self);
+EVCardVersion	e_vcard_get_version		(EVCard *self);
+EVCard *	e_vcard_convert			(EVCard *self,
+						 EVCardVersion to_version);
+gchar *		e_vcard_convert_to_string	(EVCard *self,
+						 EVCardVersion version);
 
-gboolean e_vcard_is_parsed (EVCard *evc);
-
-gchar *   e_vcard_to_string                    (EVCard *evc, EVCardFormat format);
-
-/* mostly for debugging */
-void    e_vcard_dump_structure               (EVCard *evc);
+typedef gboolean (* EVCardForeachFunc)		(EVCard *vcard,
+						 EVCardAttribute *attr,
+						 gpointer user_data);
+void		e_vcard_foreach			(EVCard *self,
+						 EVCardForeachFlags flags,
+						 EVCardForeachFunc func,
+						 gpointer user_data);
+guint		e_vcard_foreach_remove		(EVCard *self,
+						 EVCardForeachFunc func,
+						 gpointer user_data);
 
 /* attributes */
-GType            e_vcard_attribute_get_type          (void);
-EVCardAttribute *e_vcard_attribute_new               (const gchar *attr_group, const gchar *attr_name);
-void             e_vcard_attribute_free              (EVCardAttribute *attr);
-EVCardAttribute *e_vcard_attribute_copy              (EVCardAttribute *attr);
-void             e_vcard_remove_attributes           (EVCard *evc, const gchar *attr_group, const gchar *attr_name);
-void             e_vcard_remove_attribute            (EVCard *evc, EVCardAttribute *attr);
-void             e_vcard_append_attribute            (EVCard *evc, EVCardAttribute *attr);
-void             e_vcard_append_attribute_with_value (EVCard *evcard, EVCardAttribute *attr, const gchar *value);
-void             e_vcard_append_attribute_with_values (EVCard *evcard, EVCardAttribute *attr, ...);
-void             e_vcard_add_attribute               (EVCard *evc, EVCardAttribute *attr);
-void             e_vcard_add_attribute_with_value    (EVCard *evcard, EVCardAttribute *attr, const gchar *value);
-void             e_vcard_add_attribute_with_values   (EVCard *evcard, EVCardAttribute *attr, ...);
-void             e_vcard_attribute_add_value         (EVCardAttribute *attr, const gchar *value);
-void             e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const gchar *value, gint len);
-void             e_vcard_attribute_add_values        (EVCardAttribute *attr, ...);
-void             e_vcard_attribute_remove_value      (EVCardAttribute *attr, const gchar *s);
-void             e_vcard_attribute_remove_values     (EVCardAttribute *attr);
-void             e_vcard_attribute_remove_params     (EVCardAttribute *attr);
-void             e_vcard_attribute_remove_param      (EVCardAttribute *attr, const gchar *param_name);
-void             e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const gchar *param_name, const gchar *s);
+GType		e_vcard_attribute_get_type	(void);
+EVCardAttribute *
+		e_vcard_attribute_new		(const gchar *attr_group,
+						 const gchar *attr_name);
+void		e_vcard_attribute_free		(EVCardAttribute *attr);
+EVCardAttribute *
+		e_vcard_attribute_copy		(EVCardAttribute *attr);
+void		e_vcard_remove_attributes	(EVCard *evc,
+						 const gchar *attr_group,
+						 const gchar *attr_name);
+void		e_vcard_remove_attribute	(EVCard *evc,
+						 EVCardAttribute *attr);
+void		e_vcard_append_attribute	(EVCard *evc,
+						 EVCardAttribute *attr);
+void		e_vcard_append_attribute_with_value
+						(EVCard *evcard,
+						 EVCardAttribute *attr,
+						 const gchar *value);
+void		e_vcard_append_attribute_with_value_take
+						(EVCard *evcard,
+						 EVCardAttribute *attr,
+						 gchar *value);
+void		e_vcard_append_attribute_with_values
+						(EVCard *evcard,
+						 EVCardAttribute *attr,
+						 ...) G_GNUC_NULL_TERMINATED;
+void		e_vcard_append_attributes	(EVCard *self,
+						 const GList *attrs); /* EVCardAttribute * */
+void		e_vcard_append_attributes_take	(EVCard *self,
+						 GList *attrs); /* EVCardAttribute * */
+void		e_vcard_add_attribute		(EVCard *evc,
+						 EVCardAttribute *attr);
+void		e_vcard_add_attribute_with_value(EVCard *evcard,
+						 EVCardAttribute *attr,
+						 const gchar *value);
+void		e_vcard_add_attribute_with_value_take
+						(EVCard *evcard,
+						 EVCardAttribute *attr,
+						 gchar *value);
+void		e_vcard_add_attribute_with_values
+						(EVCard *evcard,
+						 EVCardAttribute *attr,
+						 ...) G_GNUC_NULL_TERMINATED;
+void		e_vcard_attribute_add_value	(EVCardAttribute *attr,
+						 const gchar *value);
+void		e_vcard_attribute_add_value_take(EVCardAttribute *attr,
+						 gchar *value);
+void		e_vcard_attribute_add_value_decoded
+						(EVCardAttribute *attr,
+						 const gchar *value,
+						 gint len);
+void		e_vcard_attribute_add_values	(EVCardAttribute *attr,
+						 ...) G_GNUC_NULL_TERMINATED;
+void		e_vcard_attribute_remove_value	(EVCardAttribute *attr,
+						 const gchar *s);
+void		e_vcard_attribute_remove_values	(EVCardAttribute *attr);
+void		e_vcard_attribute_remove_params	(EVCardAttribute *attr);
+void		e_vcard_attribute_remove_param	(EVCardAttribute *attr,
+						 const gchar *param_name);
+void		e_vcard_attribute_remove_param_value
+						(EVCardAttribute *attr,
+						 const gchar *param_name,
+						 const gchar *s);
 
 /* attribute parameters */
-GType                 e_vcard_attribute_param_get_type        (void);
-EVCardAttributeParam * e_vcard_attribute_param_new             (const gchar *name);
-void                  e_vcard_attribute_param_free            (EVCardAttributeParam *param);
-EVCardAttributeParam * e_vcard_attribute_param_copy            (EVCardAttributeParam *param);
-void                  e_vcard_attribute_add_param             (EVCardAttribute *attr, EVCardAttributeParam *param);
-void                  e_vcard_attribute_add_param_with_value  (EVCardAttribute *attr,
-							       EVCardAttributeParam *param, const gchar *value);
-void                  e_vcard_attribute_add_param_with_values (EVCardAttribute *attr,
-							       EVCardAttributeParam *param, ...);
-
-void                  e_vcard_attribute_param_add_value       (EVCardAttributeParam *param,
-							       const gchar *value);
-void                  e_vcard_attribute_param_add_values      (EVCardAttributeParam *param,
-							       ...);
-void                  e_vcard_attribute_param_remove_values   (EVCardAttributeParam *param);
+GType		e_vcard_attribute_param_get_type(void);
+EVCardAttributeParam *
+		e_vcard_attribute_param_new	(const gchar *name);
+void		e_vcard_attribute_param_free	(EVCardAttributeParam *param);
+EVCardAttributeParam *
+		e_vcard_attribute_param_copy	(EVCardAttributeParam *param);
+void		e_vcard_attribute_add_param	(EVCardAttribute *attr,
+						 EVCardAttributeParam *param);
+void		e_vcard_attribute_add_param_with_value
+						(EVCardAttribute *attr,
+						 EVCardAttributeParam *param,
+						 const gchar *value);
+void		e_vcard_attribute_add_param_with_values
+						(EVCardAttribute *attr,
+						 EVCardAttributeParam *param,
+						 ...) G_GNUC_NULL_TERMINATED;
+void		e_vcard_attribute_param_add_value
+						(EVCardAttributeParam *param,
+						 const gchar *value);
+void		e_vcard_attribute_param_add_values
+						(EVCardAttributeParam *param,
+						 ...) G_GNUC_NULL_TERMINATED;
+void		e_vcard_attribute_param_remove_values
+						(EVCardAttributeParam *param);
 
 /* EVCard* accessors.  nothing returned from these functions should be
  * freed by the caller. */
-EVCardAttribute *e_vcard_get_attribute        (EVCard *evc, const gchar *name);
-EVCardAttribute *e_vcard_get_attribute_if_parsed	(EVCard *evc, const gchar *name);
-GList *           e_vcard_get_attributes       (EVCard *evcard);
-const gchar *      e_vcard_attribute_get_group  (EVCardAttribute *attr);
-const gchar *      e_vcard_attribute_get_name   (EVCardAttribute *attr);
-GList *           e_vcard_attribute_get_values (EVCardAttribute *attr);  /* GList elements are of type gchar * */
-GList *           e_vcard_attribute_get_values_decoded (EVCardAttribute *attr); /* GList elements are of type GString * */
+EVCardAttribute *
+		e_vcard_get_attribute		(EVCard *evc,
+						 const gchar *name);
+GList *		e_vcard_get_attributes_by_name	(EVCard *self, /* EVCardAttribute * */
+						 const gchar *name);
+EVCardAttribute *
+		e_vcard_get_attribute_if_parsed	(EVCard *evc,
+						 const gchar *name);
+GList *		e_vcard_get_attributes		(EVCard *evcard);
+const gchar *	e_vcard_attribute_get_group	(EVCardAttribute *attr);
+const gchar *	e_vcard_attribute_get_name	(EVCardAttribute *attr);
+GList *		e_vcard_attribute_get_values	(EVCardAttribute *attr);  /* GList elements are of type gchar * */
+GList *		e_vcard_attribute_get_values_decoded
+						(EVCardAttribute *attr); /* GList elements are of type GString * */
 
 /* special accessors for single valued attributes */
-gboolean              e_vcard_attribute_is_single_valued      (EVCardAttribute *attr);
-gchar *                 e_vcard_attribute_get_value             (EVCardAttribute *attr);
-GString *              e_vcard_attribute_get_value_decoded     (EVCardAttribute *attr);
+gboolean	e_vcard_attribute_is_single_valued
+						(EVCardAttribute *attr);
+gchar *		e_vcard_attribute_get_value	(EVCardAttribute *attr);
+GString *	e_vcard_attribute_get_value_decoded
+						(EVCardAttribute *attr);
+guint		e_vcard_attribute_get_n_values	(EVCardAttribute *attr);
+const gchar *	e_vcard_attribute_get_nth_value	(EVCardAttribute *attr,
+						 guint index);
 
-GList *           e_vcard_attribute_get_params       (EVCardAttribute *attr);
-GList *           e_vcard_attribute_get_param        (EVCardAttribute *attr, const gchar *name);
-const gchar *      e_vcard_attribute_param_get_name   (EVCardAttributeParam *param);
-GList *           e_vcard_attribute_param_get_values (EVCardAttributeParam *param);
+GList *		e_vcard_attribute_get_params	(EVCardAttribute *attr);
+GList *		e_vcard_attribute_get_param	(EVCardAttribute *attr,
+						 const gchar *name);
+const gchar *	e_vcard_attribute_param_get_name(EVCardAttributeParam *param);
+GList *		e_vcard_attribute_param_get_values
+						(EVCardAttributeParam *param);
 
 /* special TYPE= parameter predicate (checks for TYPE=@typestr */
-gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, const gchar *typestr);
+gboolean	e_vcard_attribute_has_type	(EVCardAttribute *attr,
+						 const gchar *typestr);
 
 /* Utility functions. */
-gchar *            e_vcard_escape_string (const gchar *s);
-gchar *            e_vcard_unescape_string (const gchar *s);
+gchar *		e_vcard_escape_string		(const gchar *s);
+gchar *		e_vcard_unescape_string		(const gchar *s);
 
 void		e_vcard_util_set_x_attribute	(EVCard *vcard,
 						 const gchar *x_name,
 						 const gchar *value);
 gchar *		e_vcard_util_dup_x_attribute	(EVCard *vcard,
 						 const gchar *x_name);
+
+/* mostly for debugging */
+void		e_vcard_dump_structure		(EVCard *evc);
+
+EVCardVersion	e_vcard_version_from_string	(const gchar *str);
+const gchar *	e_vcard_version_to_string	(EVCardVersion version);
 
 G_END_DECLS
 

@@ -265,6 +265,15 @@ void		e_util_change_uri_port		(GUri **inout_uri,
 						 gint port);
 void		e_util_call_malloc_trim		(void);
 gboolean	e_util_guess_source_is_readonly	(struct _ESource *source);
+gboolean	e_util_split_data_uri		(const gchar *uri,
+						 gchar **out_mime_type,
+						 gchar **out_charset,
+						 gboolean *out_is_base64,
+						 const gchar **out_data_start);
+gchar *		e_util_construct_data_uri	(const gchar *mime_type,
+						 const gchar *charset,
+						 gboolean is_base64,
+						 const gchar *data);
 
 G_END_DECLS
 

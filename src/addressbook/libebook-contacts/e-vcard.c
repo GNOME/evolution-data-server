@@ -26,8 +26,9 @@
  * @include: libebook-contacts/libebook-contacts.h
  *
  * #EVCard is a low-level representation of a vCard, as specified in RFCs
- * 2425 and 2426 (for vCard version 3.0); this class only supports versions 2.1
- * and 3.0 of the vCard standard.
+ * 2425 and 2426 (for vCard version 3.0) and RFC 6350 (for vCard version 4.0)
+ * with some of its extensions; this class only supports versions 2.1,
+ * 3.0 and 4.0 of the vCard standard.
  *
  * A vCard is an unordered set of attributes (otherwise known as properties),
  * each with one or more values. The number of values an attribute has is
@@ -107,11 +108,69 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+
+#include "camel/camel.h"
+#include "libedataserver/libedataserver.h"
+
 #include "e-vcard.h"
 
 #define d(x)
 
 #define CRLF "\r\n"
+
+#define E_VCARD_21_VALID_PROPERTIES \
+	"ADR,ORG,N,AGENT,LOGO,PHOTO,LABEL,FN,TITLE,SOUND,VERSION,TEL," \
+	"EMAIL,TZ,GEO,NOTE,URL,BDAY,ROLE,REV,UID,KEY,MAILER"
+
+#define E_VCARD_21_VALID_PARAMETERS \
+	"TYPE,VALUE,ENCODING,CHARSET,LANGUAGE,DOM,INTL,POSTAL,PARCEL," \
+	"HOME,WORK,PREF,VOICE,FAX,MSG,CELL,PAGER,BBS,MODEM,CAR,ISDN,VIDEO," \
+	"AOL,APPLELINK,ATTMAIL,CIS,EWORLD,INTERNET,IBMMAIL,MCIMAIL," \
+	"POWERSHARE,PRODIGY,TLX,X400,GIF,CGM,WMF,BMP,MET,PMB,DIB,PICT,TIFF," \
+	"PDF,PS,JPEG,QTIME,MPEG,MPEG2,AVI,WAVE,AIFF,PCM,X509,PGP"
+
+/* RFC 2426 */
+
+#define E_VCARD_30_VALID_PROPERTIES \
+	"NAME,PROFILE,SOURCE,FN,N,NICKNAME,PHOTO,BDAY,ADR,LABEL,TEL,EMAIL,MAILER,TZ,GEO," \
+	"TITLE,ROLE,LOGO,AGENT,ORG,CATEGORIES,NOTE,PRODID,REV,SORT-STRING," \
+	"SOUND,UID,URL,VERSION,CLASS,KEY"
+
+#define E_VCARD_30_VALID_PARAMETERS \
+	"VALUE,CONTEXT,TYPE,PREF,ENCODING,LANGUAGE," \
+	"HOME,WORK,PREF,VOICE,FAX,MSG,CELL,PAGER,BBS,MODEM,CAR,ISDN,VIDEO,PCS," /* tel-type */ \
+	"INTERNET,X400," /* email-type */ \
+	"X509,PGP," /* keytype */ \
+	"DOM,INTL,POSTAL,PARCEL,HOME,WORK,PREF" /* addr-type */
+
+/* RFC 6350 */
+
+#define E_VCARD_40_VALID_PROPERTIES \
+	"SOURCE,KIND,XML,FN,N,NICKNAME,PHOTO,BDAY,ANNIVERSARY,GENDER,ADR,TEL,EMAIL,IMPP," \
+	"LANG,TZ,GEO,TITLE,ROLE,LOGO,ORG,MEMBER,RELATED,CATEGORIES,NOTE,PRODID,REV," \
+	"SOUND,UID,CLIENTPIDMAP,URL,VERSION,KEY,FBURL,CALADRURI,CALURI," \
+	/* RFC 6474 */ \
+	"BIRTHPLACE,DEATHPLACE,DEATHDATE," \
+	/* RFC 6715 */ \
+	"EXPERTISE,HOBBY,INTEREST,ORG-DIRECTORY," \
+	/* RFC 8605 */ \
+	"CONTACT-URI," \
+	/* RFC 9554 */ \
+	"CREATED,LANGUAGE,GRAMGENDER,PRONOUNS,SOCIALPROFILE," \
+	/* RFC 9555 */ \
+	"JSPROP"
+
+#define E_VCARD_40_VALID_PARAMETERS \
+	"LANGUAGE,VALUE,PREF,ALTID,PID,TYPE,MEDIATYPE,CALSCALE,SORT-AS,GEO,TZ," \
+	"WORK,HOME,TEXT,VOICE,FAX,CELL,VIDEO,PAGER,TEXTPHONE,GREGORIAN,CONTACT," \
+	"ACQUAINTANCE,FRIEND,MET,CO-WORKER,COLLEAGUE,CO-RESIDENT,NEIGHBOR,CHILD," \
+	"PARENT,SIBLING,SPOUSE,KIN,MUSE,CRUSH,DATE,SWEETHEART,ME,AGENT,EMERGENCY," \
+	/* RFC 6715 */ \
+	"INDEX,LEVEL,BEGINNER,AVERAGE,EXPERT,HIGH,MEDIUM,LOW," \
+	/* RFC 9554 */ \
+	"AUTHOR,AUTHOR-NAME,CREATED,DERIVED,LABEL,PHONETIC,PROP-ID,SCRIPT,SERVICE-TYPE,USERNAME," \
+	"ANIMATE,COMMON,FEMININE,INANIMATE,MASCULINE,NEUTER," \
+	"IPA,PINY,JYUT,SCRIPT,BILLING,DELIVERY"
 
 static EVCardAttribute *e_vcard_attribute_ref (EVCardAttribute *attr);
 static void e_vcard_attribute_unref (EVCardAttribute *attr);
@@ -130,6 +189,7 @@ typedef enum {
 struct _EVCardPrivate {
 	GList *attributes;
 	gchar *vcard;
+	EVCardVersion version;
 };
 
 struct _EVCardAttribute {
@@ -187,6 +247,7 @@ static void
 e_vcard_init (EVCard *evc)
 {
 	evc->priv = e_vcard_get_instance_private (evc);
+	evc->priv->version = E_VCARD_VERSION_UNKNOWN;
 }
 
 static EVCardAttribute *
@@ -219,42 +280,6 @@ e_vcard_attribute_is_singlevalue_type (EVCardAttribute *attr)
 		g_ascii_strcasecmp (attr->name, EVC_PHOTO) == 0 ||
 		g_ascii_strcasecmp (attr->name, "SOUND") == 0 ||
 		g_ascii_strcasecmp (attr->name, "TZ") == 0;
-}
-
-/* Case insensitive version of strstr */
-static gchar *
-strstr_nocase (const gchar *haystack,
-               const gchar *needle)
-{
-/* When _GNU_SOURCE is available, use the nonstandard extension of libc */
-#ifdef _GNU_SOURCE
-	g_return_val_if_fail (haystack, NULL);
-	g_return_Val_if_fail (needle, NULL);
-
-	return strcasestr (haystack, needle)
-#else
-/* Otherwise convert both, haystack and needle to lowercase and use good old strstr */
-	gchar *l_haystack;
-	gchar *l_needle;
-	gchar *pos;
-
-	g_return_val_if_fail (haystack, NULL);
-	g_return_val_if_fail (needle, NULL);
-
-	l_haystack = g_ascii_strdown (haystack, -1);
-	l_needle = g_ascii_strdown (needle, -1);
-	pos = strstr (l_haystack, l_needle);
-
-	/* Get actual position of the needle in the haystack instead of l_haystack or
-	 * leave it NULL */
-	if (pos)
-		pos = (gchar *)(haystack + (pos - l_haystack));
-
-	g_free (l_haystack);
-	g_free (l_needle);
-
-	return pos;
-#endif
 }
 
 /* Stolen from glib/glib/gconvert.c */
@@ -569,8 +594,37 @@ read_attribute_params (EVCardAttribute *attr,
 		} else  if (in_quote || *lp == '-' || *lp == '_' || g_ascii_isalnum (*lp)) {
 			WRITE_CHUNK ();
 
-			g_string_append_c (str, *lp);
-			lp++;
+			if (in_quote && *lp == '\\') {
+				lp = skip_newline (lp + 1, *quoted_printable);
+
+				switch (*lp) {
+				case 'n':
+				case 'N':
+					g_string_append_c (str, '\n');
+					break;
+				case 'r':
+				case 'R':
+					g_string_append_c (str, '\r');
+					break;
+				case ';':
+					g_string_append_c (str, ';');
+					break;
+				case ',':
+					g_string_append_c (str, ',');
+					break;
+				case '\\':
+					g_string_append_c (str, '\\');
+					break;
+				default:
+					g_string_append_c (str, '\\');
+					g_string_append_c (str, *lp);
+					break;
+				}
+			} else {
+				g_string_append_c (str, *lp);
+			}
+			if (*lp != '\0')
+				lp++;
 		}
 		/* accumulate until we hit the '=' or ';'.  If we hit
 		 * a '=' the string contains the parameter name.  if
@@ -850,6 +904,8 @@ parse (EVCard *evc,
 
 	d (printf ("vCard parse input:\n%s\n", str));
 
+	evc->priv->version = E_VCARD_VERSION_UNKNOWN;
+
 	p = str;
 
 	attr = read_attribute (&p);
@@ -932,27 +988,18 @@ e_vcard_escape_semicolons (const gchar *s)
 	return g_string_free (str, FALSE);
 }
 
-/**
- * e_vcard_escape_string:
- * @s: the string to escape
- *
- * Escapes a string according to RFC2426, section 5.
- *
- * Returns: (transfer full): A newly allocated, escaped string.
- **/
-gchar *
-e_vcard_escape_string (const gchar *s)
+static void
+e_vcard_escape_string_internal (const gchar *s,
+				GString *str,
+				gboolean skip_double_quotes)
 {
-	GString *str;
 	const gchar *p;
-
-	if (s)
-		str = g_string_sized_new (strlen (s));
-	else
-		str = g_string_new ("");
 
 	/* Escape a string as described in RFC2426, section 5 */
 	for (p = s; p && *p; p++) {
+		if (skip_double_quotes && *p == '\"')
+			continue;
+
 		switch (*p) {
 		case '\n':
 			g_string_append (str, "\\n");
@@ -976,6 +1023,27 @@ e_vcard_escape_string (const gchar *s)
 			break;
 		}
 	}
+}
+
+/**
+ * e_vcard_escape_string:
+ * @s: the string to escape
+ *
+ * Escapes a string according to RFC2426, section 5.
+ *
+ * Returns: (transfer full): A newly allocated, escaped string.
+ **/
+gchar *
+e_vcard_escape_string (const gchar *s)
+{
+	GString *str;
+
+	if (s)
+		str = g_string_sized_new (strlen (s));
+	else
+		str = g_string_new ("");
+
+	e_vcard_escape_string_internal (s, str, FALSE);
 
 	return g_string_free (str, FALSE);
 }
@@ -1086,6 +1154,8 @@ e_vcard_construct_full (EVCard *evc,
 	g_return_if_fail (str != NULL);
 	g_return_if_fail (evc->priv->vcard == NULL);
 	g_return_if_fail (evc->priv->attributes == NULL);
+
+	evc->priv->version = E_VCARD_VERSION_UNKNOWN;
 
 	/* Lazy construction */
 	if (*str) {
@@ -1225,9 +1295,15 @@ e_vcard_qp_decode (const gchar *txt)
 static GHashTable *
 generate_dict_validator (const gchar *words)
 {
-	GHashTable *dict = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	gchar **list = g_strsplit (words, ",", 0);
+	GHashTable *dict;
+	gchar **list;
 	gint i;
+
+	if (!words)
+		return NULL;
+
+	dict = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, NULL);
+	list = g_strsplit (words, ",", 0);
 
 	for (i = 0; list[i]; i++)
 		g_hash_table_insert (dict, list[i], NULL);
@@ -1253,19 +1329,14 @@ e_vcard_to_string_vcard_21 (EVCard *evc)
 		EVCardAttribute *attr = l->data;
 		GString *attr_str;
 		gboolean empty, encode;
-		gchar *upper_name;
 
 		if (g_ascii_strcasecmp (attr->name, "VERSION") == 0)
 			continue;
 
-		upper_name = g_ascii_strup (attr->name, -1);
 		/* Checking whether current property (attribute) is valid for vCard 2.1 */
-		if (!g_hash_table_lookup_extended (evc_prop, upper_name, NULL, NULL)) {
-			g_free (upper_name);
-
+		if (g_ascii_strncasecmp (attr->name, "X-", 2) != 0 &&
+		    !g_hash_table_contains (evc_prop, attr->name))
 			continue;
-		}
-		g_free (upper_name);
 
 		empty = TRUE; /* Empty fields should be omitted -- some headsets may choke on it */
 		encode = FALSE; /* Generally only new line MUST be encoded (Quoted Printable) */
@@ -1309,14 +1380,10 @@ e_vcard_to_string_vcard_21 (EVCard *evc)
 			 * param        = param-name "=" param-value
 			 */
 
-			upper_name = g_ascii_strup (param->name, -1);
 			/* Checking whether current parameter is valid for vCard 2.1 */
-			if (!g_hash_table_lookup_extended (evc_params, upper_name, NULL, NULL)) {
-				g_free (upper_name);
-
+			if (g_ascii_strncasecmp (param->name, "X-", 2) != 0 &&
+			    !g_hash_table_contains (evc_params, param->name))
 				continue;
-			}
-			g_free (upper_name);
 
 			g_string_append_c (attr_str, ';');
 			g_string_append (attr_str, param->name);
@@ -1373,20 +1440,48 @@ e_vcard_to_string_vcard_21 (EVCard *evc)
 	return g_string_free (str, FALSE);
 }
 
-static gchar *
-e_vcard_to_string_vcard_30 (EVCard *evc)
+static EVCardVersion
+vcard_version_from_string_with_fallback (const gchar *str,
+					 EVCardVersion fallback)
 {
+	EVCardVersion version;
+
+	version = e_vcard_version_from_string (str);
+	if (version == E_VCARD_VERSION_UNKNOWN)
+		version = fallback;
+
+	return version;
+}
+
+static const gchar *
+vcard_version_to_string_with_fallback (EVCardVersion version,
+				       const gchar *fallback)
+{
+	const gchar *value;
+
+	value = e_vcard_version_to_string (version);
+	if (!value)
+		value = fallback;
+
+	return value;
+}
+
+static gchar *
+e_vcard_to_string_vcard (EVCard *evc,
+			 EVCardVersion to_version,
+			 const gchar *valid_properties,
+			 const gchar *valid_parameters)
+{
+	GHashTable *evc_prop = generate_dict_validator (valid_properties);
+	GHashTable *evc_params = generate_dict_validator (valid_parameters);
 	GList *l;
 	GList *v;
-
 	GString *str = g_string_new ("");
 
 	g_string_append (str, "BEGIN:VCARD" CRLF);
-
-	/* we hardcode the version (since we're outputting to a
-	 * specific version) and ignore any version attributes the
-	 * vcard might contain */
-	g_string_append (str, "VERSION:3.0" CRLF);
+	g_string_append (str, "VERSION:");
+	g_string_append (str, vcard_version_to_string_with_fallback (to_version, "???"));
+	g_string_append (str, CRLF);
 
 	for (l = e_vcard_ensure_attributes (evc); l; l = l->next) {
 		GList *list;
@@ -1398,6 +1493,12 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 		if (!g_ascii_strcasecmp (attr->name, "VERSION"))
 			continue;
+
+		/* Checking whether current property (attribute) is valid */
+		if (evc_prop && g_ascii_strncasecmp (attr->name, "X-", 2) != 0 &&
+		    !g_hash_table_contains (evc_prop, attr->name)) {
+			continue;
+		}
 
 		attr_str = g_string_sized_new (strlen (attr->name) + (attr->group ? strlen (attr->group) + 1 : 0));
 
@@ -1427,6 +1528,12 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 				continue;
 			}
 
+			/* Checking whether current parameter is valid for vCard 3.0 */
+			if (evc_params && g_ascii_strncasecmp (param->name, "X-", 2) != 0 &&
+			    !g_hash_table_contains (evc_params, param->name)) {
+				continue;
+			}
+
 			/* 5.8.2:
 			 * param        = param-name "=" param-value *("," param-value)
 			 */
@@ -1448,21 +1555,12 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 					}
 
 					if (quotes) {
-						gint i;
-
 						g_string_append_c (attr_str, '"');
-
-						for (i = 0; value[i]; i++) {
-							/* skip quotes in quoted string; it is not allowed */
-							if (value[i] == '\"')
-								continue;
-
-							g_string_append_c (attr_str, value[i]);
-						}
-
+						e_vcard_escape_string_internal (value, attr_str, quotes);
 						g_string_append_c (attr_str, '"');
-					} else
+					} else {
 						g_string_append (attr_str, value);
+					}
 
 					if (v->next)
 						g_string_append_c (attr_str, ',');
@@ -1478,7 +1576,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			gchar *value = v->data;
 			gchar *escaped_value = NULL;
 
-			/* values are in quoted-printable encoding, but this cannot be used in vCard 3.0,
+			/* values are in quoted-printable encoding, but this cannot be used in vCard other than 2.1,
 			 * thus it needs to be converted first */
 			if (quoted_printable_param) {
 				gchar *qp_decoded;
@@ -1544,42 +1642,1063 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 	g_string_append (str, "END:VCARD");
 
+	g_clear_pointer (&evc_params, g_hash_table_unref);
+	g_clear_pointer (&evc_prop, g_hash_table_unref);
+
 	return g_string_free (str, FALSE);
+}
+
+static gchar *
+e_vcard_to_string_vcard_30 (EVCard *evc)
+{
+	EVCard *converted;
+	gchar *str;
+
+	converted = e_vcard_convert (evc, E_VCARD_VERSION_30);
+
+	str = e_vcard_to_string_vcard (converted ? converted : evc, E_VCARD_VERSION_30,
+		E_VCARD_30_VALID_PROPERTIES, E_VCARD_30_VALID_PARAMETERS);
+
+	g_clear_object (&converted);
+
+	return str;
+}
+
+static gchar *
+e_vcard_to_string_vcard_40 (EVCard *evc)
+{
+	EVCard *converted;
+	gchar *str;
+
+	converted = e_vcard_convert (evc, E_VCARD_VERSION_40);
+
+	str = e_vcard_to_string_vcard (converted ? converted : evc, E_VCARD_VERSION_40,
+		E_VCARD_40_VALID_PROPERTIES, E_VCARD_40_VALID_PARAMETERS);
+
+	g_clear_object (&converted);
+
+	return str;
 }
 
 /**
  * e_vcard_to_string:
- * @evc: the #EVCard to export
- * @format: the format to export to
+ * @self: an #EVCard to export
  *
- * Exports @evc to a string representation, specified
- * by the @format argument.
+ * Exports @self to a string representation. To use a specific vCard version
+ * use e_vcard_convert_to_string().
  *
- * Returns: (transfer full): A newly allocated string representing the vcard.
+ * Returns: (transfer full): A newly allocated string representing the vCard.
+ *
+ * Since: 3.60
  **/
 gchar *
-e_vcard_to_string (EVCard *evc,
-                   EVCardFormat format)
+e_vcard_to_string (EVCard *self)
 {
-	g_return_val_if_fail (E_IS_VCARD (evc), NULL);
+	EVCardVersion version;
 
-	switch (format) {
-	case EVC_FORMAT_VCARD_21:
-		if (evc->priv->vcard && evc->priv->attributes == NULL &&
-		    strstr_nocase (evc->priv->vcard, CRLF "VERSION:2.1" CRLF))
-			return g_strdup (evc->priv->vcard);
+	g_return_val_if_fail (E_IS_VCARD (self), NULL);
 
-		return e_vcard_to_string_vcard_21 (evc);
-	case EVC_FORMAT_VCARD_30:
-		if (evc->priv->vcard && evc->priv->attributes == NULL &&
-		    strstr_nocase (evc->priv->vcard, CRLF "VERSION:3.0" CRLF))
-			return g_strdup (evc->priv->vcard);
+	if (self->priv->vcard && self->priv->attributes == NULL)
+		return g_strdup (self->priv->vcard);
 
-		return e_vcard_to_string_vcard_30 (evc);
-	default:
-		g_warning ("invalid format specifier passed to e_vcard_to_string");
-		return g_strdup ("");
+	version = e_vcard_get_version (self);
+	if (version == E_VCARD_VERSION_UNKNOWN)
+		version = E_VCARD_VERSION_40;
+
+	return e_vcard_convert_to_string (self, version);
+}
+
+/**
+ * e_vcard_get_version:
+ * @self: an #EVCard
+ *
+ * Gets a vCard version of the @self. The %E_VCARD_VERSION_UNKNOWN
+ * is returned only if there is a VERSION attribute, but with an unknown
+ * value. Otherwise an %E_VCARD_VERSION_40 is used as a fallback version.
+ *
+ * Returns: a vCard version of the @self, as one of #EVCardVersion
+ *
+ * Since: 3.60
+ **/
+EVCardVersion
+e_vcard_get_version (EVCard *self)
+{
+	GList *link;
+
+	g_return_val_if_fail (E_IS_VCARD (self), E_VCARD_VERSION_UNKNOWN);
+
+	if (self->priv->version != E_VCARD_VERSION_UNKNOWN)
+		return self->priv->version;
+
+	if (self->priv->vcard) {
+		/* ordered from the newest */
+		if (camel_strstrcase (self->priv->vcard, CRLF "VERSION:4.0" CRLF)) {
+			self->priv->version = E_VCARD_VERSION_40;
+			return self->priv->version;
+		}
+		if (camel_strstrcase (self->priv->vcard, CRLF "VERSION:3.0" CRLF)) {
+			self->priv->version = E_VCARD_VERSION_30;
+			return self->priv->version;
+		}
+		if (camel_strstrcase (self->priv->vcard, CRLF "VERSION:2.1" CRLF)) {
+			self->priv->version = E_VCARD_VERSION_21;
+			return self->priv->version;
+		}
 	}
+
+	for (link = e_vcard_get_attributes (self); link; link = g_list_next (link)) {
+		EVCardAttribute *attr = link->data;
+
+		if (attr && attr->name && !attr->group && g_ascii_strcasecmp (attr->name, "VERSION") == 0) {
+			GList *values;
+
+			values = e_vcard_attribute_get_values (attr);
+			if (values && values->data) {
+				const gchar *value = values->data;
+
+				self->priv->version = vcard_version_from_string_with_fallback (value, self->priv->version);
+			}
+
+			return self->priv->version;
+		}
+	}
+
+	/* assume the newest version when none is set in the vCard data */
+	self->priv->version = E_VCARD_VERSION_40;
+
+	return self->priv->version;
+}
+
+static EVCard *
+e_vcard_convert_to_generic (EVCard *self,
+			    EVCardVersion to_version,
+			    const gchar *valid_properties,
+			    const gchar *valid_parameters,
+			    GHashTable *attr_renames,
+			    /* called with the original attr name, not with the renamed */
+			    gboolean (* attr_handler_cb) (EVCard *new_vcard, EVCardAttribute *new_attr, const gchar **inout_new_attr_name, gpointer user_data),
+			    gpointer user_data)
+{
+	EVCard *converted;
+	EVCardAttribute *attr;
+	GList *attr_link;
+	GHashTable *evc_prop;
+	GHashTable *evc_params;
+
+	switch (to_version) {
+	case E_VCARD_VERSION_21:
+	case E_VCARD_VERSION_30:
+	case E_VCARD_VERSION_40:
+		break;
+	default:
+		g_warn_if_reached ();
+		return NULL;
+	}
+
+	evc_prop = generate_dict_validator (valid_properties);
+	evc_params = generate_dict_validator (valid_parameters);
+
+	converted = e_vcard_new ();
+
+	attr = e_vcard_attribute_new (NULL, EVC_VERSION);
+	e_vcard_add_attribute_with_value (converted, attr, vcard_version_to_string_with_fallback (to_version, "???"));
+
+	for (attr_link = e_vcard_ensure_attributes (self); attr_link; attr_link = g_list_next (attr_link)) {
+		EVCardAttribute *new_attr;
+		GList *link, *next = NULL;
+		const gchar *attr_name;
+		gboolean empty;
+
+		attr = attr_link->data;
+		attr_name = attr->name;
+
+		if (g_ascii_strcasecmp (attr_name, EVC_VERSION) == 0)
+			continue;
+
+		if (attr_renames) {
+			const gchar *rename = g_hash_table_lookup (attr_renames, attr_name);
+
+			if (rename)
+				attr_name = rename;
+		}
+
+		/* Checking whether current property (attribute) is valid */
+		if (evc_prop && g_ascii_strncasecmp (attr_name, "X-", 2) != 0 &&
+		    !g_hash_table_contains (evc_prop, attr_name))
+			continue;
+
+		empty = TRUE; /* Empty fields should be omitted -- some headsets may choke on it */
+
+		for (link = attr->values; link; link = g_list_next (link)) {
+			const gchar *value = link->data;
+
+			if (value && *value) {
+				empty = FALSE;
+				break;
+			}
+		}
+
+		if (empty)
+			continue;
+
+		new_attr = e_vcard_attribute_copy (attr);
+
+		if (attr_handler_cb && !attr_handler_cb (converted, new_attr, &attr_name, user_data)) {
+			e_vcard_attribute_free (new_attr);
+			continue;
+		}
+
+		if (attr_name != attr->name) {
+			g_free (new_attr->name);
+			new_attr->name = g_strdup (attr_name);
+		}
+
+		/* handle the parameters */
+		if (evc_params) {
+			for (link = new_attr->params; link; link = next) {
+				EVCardAttributeParam *param = link->data;
+
+				next = g_list_next (link);
+
+				/* Checking whether current parameter is valid */
+				if (g_ascii_strncasecmp (param->name, "X-", 2) != 0 &&
+				    !g_hash_table_contains (evc_params, param->name)) {
+					new_attr->params = g_list_delete_link (new_attr->params, link);
+					e_vcard_attribute_param_free (param);
+				}
+			}
+		}
+
+		e_vcard_add_attribute (converted, new_attr);
+	}
+
+	g_clear_pointer (&evc_params, g_hash_table_destroy);
+	g_clear_pointer (&evc_prop, g_hash_table_destroy);
+
+	converted->priv->attributes = g_list_reverse (converted->priv->attributes);
+
+	return converted;
+}
+
+/* quoted-printable encoding was eliminated in 3.0,
+ * thus decode the value before saving and remove the param later */
+static gboolean
+e_vcard_convert_qp_encoding_cb (EVCard *new_vcard,
+				EVCardAttribute *new_attr,
+				const gchar **inout_new_attr_name,
+				gpointer user_data)
+{
+	GList *decoded_values = NULL, *link;
+
+	if (new_attr->encoding != EVC_ENCODING_QP)
+		return TRUE;
+
+	for (link = new_attr->values; link; link = g_list_next (link)) {
+		const gchar *value = link->data;
+
+		if (value && *value)
+			decoded_values = g_list_prepend (decoded_values, e_vcard_qp_decode (value));
+		else
+			decoded_values = g_list_prepend (decoded_values, g_strdup (value));
+	}
+
+	e_vcard_attribute_remove_param (new_attr, EVC_ENCODING);
+	e_vcard_attribute_remove_values (new_attr);
+
+	new_attr->values = g_list_reverse (decoded_values);
+	/* it should be set already due to removed ENCODING parameter, but just in case */
+	new_attr->encoding = EVC_ENCODING_RAW;
+
+	return TRUE;
+}
+
+static gboolean
+e_vcard_is_date_attr (EVCardAttribute *new_attr)
+{
+	return g_ascii_strcasecmp (new_attr->name, EVC_X_ANNIVERSARY) == 0 ||
+		g_ascii_strcasecmp (new_attr->name, EVC_ANNIVERSARY) == 0 ||
+		g_ascii_strcasecmp (new_attr->name, EVC_BDAY) == 0;
+}
+
+static void
+e_vcard_convert_date_value (EVCardAttribute *new_attr,
+			    EVCardVersion to_version)
+{
+	GList *values = e_vcard_attribute_get_values (new_attr);
+	const gchar *value = values ? values->data : NULL;
+
+	if (value && *value) {
+		if (to_version == E_VCARD_VERSION_40) {
+			if (strlen (value) == 10 && value[4] == '-' && value[7] == '-') {
+				gchar new_value[9];
+
+				new_value[0] = value[0];
+				new_value[1] = value[1];
+				new_value[2] = value[2];
+				new_value[3] = value[3];
+				new_value[4] = value[5];
+				new_value[5] = value[6];
+				new_value[6] = value[8];
+				new_value[7] = value[9];
+				new_value[8] = '\0';
+
+				e_vcard_attribute_remove_values (new_attr);
+				e_vcard_attribute_add_value (new_attr, new_value);
+			}
+		} else if (strlen (value) == 8) {
+			gchar new_value[11];
+
+			new_value[0] = value[0];
+			new_value[1] = value[1];
+			new_value[2] = value[2];
+			new_value[3] = value[3];
+			new_value[4] = '-';
+			new_value[5] = value[4];
+			new_value[6] = value[5];
+			new_value[7] = '-';
+			new_value[8] = value[6];
+			new_value[9] = value[7];
+			new_value[10] = '\0';
+
+			e_vcard_attribute_remove_values (new_attr);
+			e_vcard_attribute_add_value (new_attr, new_value);
+		}
+	}
+}
+
+static gboolean
+e_vcard_convert_to_21_attrs_cb (EVCard *new_vcard,
+				EVCardAttribute *new_attr,
+				const gchar **inout_new_attr_name,
+				gpointer user_data)
+{
+	if (e_vcard_is_date_attr (new_attr))
+		e_vcard_convert_date_value (new_attr, E_VCARD_VERSION_21);
+
+	return TRUE;
+}
+
+/* very easy, just drop everything unknown in 2.1 */
+static EVCard *
+e_vcard_convert_to_21 (EVCard *self)
+{
+	return e_vcard_convert_to_generic (self, E_VCARD_VERSION_21,
+		E_VCARD_21_VALID_PROPERTIES, E_VCARD_21_VALID_PARAMETERS,
+		NULL, e_vcard_convert_to_21_attrs_cb, NULL);
+}
+
+static EVCard *
+e_vcard_convert_21_to_30 (EVCard *self)
+{
+	return e_vcard_convert_to_generic (self, E_VCARD_VERSION_30,
+		E_VCARD_30_VALID_PROPERTIES, E_VCARD_30_VALID_PARAMETERS,
+		NULL, e_vcard_convert_qp_encoding_cb, NULL);
+}
+
+/* holds both property and parameter names */
+static GHashTable * /* const gchar * ~> const gchar * */
+e_vcard_convert_get_30_40_rename_hash (EVCardVersion to_version)
+{
+	struct _renames {
+		const gchar *in_30;
+		const gchar *in_40;
+	} renames[] = {
+		#define item(_nm40) { EVC_X_EVOLUTION_ ## _nm40, EVC_ ## _nm40 }
+		/* properties */
+		{ EVC_X_ANNIVERSARY, EVC_ANNIVERSARY },
+		{ EVC_X_SOCIALPROFILE, EVC_SOCIALPROFILE },
+		item (SOURCE),
+		item (KIND),
+		item (XML),
+		item (GENDER),
+		item (IMPP),
+		item (LANG),
+		item (MEMBER),
+		item (RELATED),
+		item (CLIENTPIDMAP),
+		item (CALADRURI),
+		item (BIRTHPLACE),
+		item (DEATHPLACE),
+		item (DEATHDATE),
+		item (EXPERTISE),
+		item (HOBBY),
+		item (INTEREST),
+		item (ORG_DIRECTORY),
+		item (CONTACT_URI),
+		item (CREATED),
+		item (GRAMGENDER),
+		item (PRONOUNS),
+		/* parameters */
+		item (LANGUAGE),
+		item (PREF),
+		item (ALTID),
+		item (PID),
+		item (MEDIATYPE),
+		item (CALSCALE),
+		item (SORT_AS)
+		#undef item
+	};
+	GHashTable *hash;
+	guint ii;
+
+	g_return_val_if_fail (to_version == E_VCARD_VERSION_30 || to_version == E_VCARD_VERSION_40, NULL);
+
+	hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+
+	for (ii = 0; ii < G_N_ELEMENTS (renames); ii++) {
+		const gchar *lookup, *rename;
+
+		if (to_version == E_VCARD_VERSION_30) {
+			lookup = renames[ii].in_40;
+			rename = renames[ii].in_30;
+		} else {
+			lookup = renames[ii].in_30;
+			rename = renames[ii].in_40;
+		}
+
+		g_hash_table_insert (hash, (gpointer) lookup, (gpointer) rename);
+	}
+
+	return hash;
+}
+
+static GHashTable * /* const gchar * ~> const gchar * */
+e_vcard_convert_get_30_40_impp_scheme_hash (EVCardVersion to_version)
+{
+	struct _schemes {
+		const gchar *in_30; /* attr name */
+		const gchar *in_40; /* scheme */
+	} schemes[] = {
+		{ EVC_X_AIM, "aim:" },
+		{ EVC_X_GADUGADU, "gadugadu:" },
+		{ EVC_X_GOOGLE_TALK, "googletalk:" },
+		{ EVC_X_GROUPWISE, "groupwise:" },
+		{ EVC_X_ICQ, "icq:" },
+		{ EVC_X_JABBER, "jabber:" },
+		{ EVC_X_MATRIX, "matrix:" },
+		{ EVC_X_MSN, "msn:" },
+		{ EVC_X_SKYPE, "skype:" },
+		{ EVC_X_TWITTER, "twitter:" },
+		{ EVC_X_YAHOO, "yahoo:" }
+	};
+	GHashTable *hash;
+	guint ii;
+
+	g_return_val_if_fail (to_version == E_VCARD_VERSION_30 || to_version == E_VCARD_VERSION_40, NULL);
+
+	hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+
+	for (ii = 0; ii < G_N_ELEMENTS (schemes); ii++) {
+		const gchar *lookup, *result;
+
+		if (to_version == E_VCARD_VERSION_30) {
+			lookup = schemes[ii].in_40;
+			result = schemes[ii].in_30;
+		} else {
+			lookup = schemes[ii].in_30;
+			result = schemes[ii].in_40;
+		}
+
+		g_hash_table_insert (hash, (gpointer) lookup, (gpointer) result);
+	}
+
+	return hash;
+}
+
+typedef struct _ConvertData30 {
+	EVCardVersion to_version;
+	GHashTable *renames; /* const gchar * ~> const gchar * */
+	GHashTable *impp_schemes; /* constgchar * ~> const gchar *; scheme to 3.0 attr name or vice versa */
+	GHashTable *attrs_by_name; /* const gchar *name ~> GPtrArray { EVCardAttribute * }*/
+} ConvertData30;
+
+static void
+convert_data_30_init (ConvertData30 *data,
+		      EVCard *self,
+		      EVCardVersion to_version)
+{
+	GList *link;
+
+	data->to_version = to_version;
+	data->renames = e_vcard_convert_get_30_40_rename_hash (to_version);
+	data->impp_schemes = e_vcard_convert_get_30_40_impp_scheme_hash (to_version);
+	data->attrs_by_name = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
+
+	for (link = e_vcard_ensure_attributes (self); link; link = g_list_next (link)) {
+		EVCardAttribute *attr = link->data;
+
+		if (attr && attr->name) {
+			GPtrArray *attrs;
+
+			attrs = g_hash_table_lookup (data->attrs_by_name, attr->name);
+			if (!attrs) {
+				attrs = g_ptr_array_new ();
+				g_hash_table_insert (data->attrs_by_name, (gpointer) attr->name, attrs);
+			}
+
+			g_ptr_array_add (attrs, attr);
+		}
+	}
+}
+
+static void
+convert_data_30_clear (ConvertData30 *data)
+{
+	g_clear_pointer (&data->renames, g_hash_table_unref);
+	g_clear_pointer (&data->impp_schemes, g_hash_table_unref);
+	g_clear_pointer (&data->attrs_by_name, g_hash_table_unref);
+}
+
+static gboolean
+e_vcard_convert_30_40_cb (EVCard *new_vcard,
+			  EVCardAttribute *new_attr,
+			  const gchar **inout_new_attr_name,
+			  gpointer user_data)
+{
+	ConvertData30 *data = user_data;
+	gboolean keep = TRUE;
+
+	if (g_ascii_strcasecmp (new_attr->name, EVC_ADR) == 0) {
+		/* LABEL of an ADR became a parameter in 4.0, while it was an attribute in 3.0 */
+		if (data->to_version == E_VCARD_VERSION_30) {
+			GList *values;
+
+			values = e_vcard_attribute_get_param (new_attr, EVC_LABEL);
+			if (values && !values->next && values->data) {
+				EVCardAttribute *attr;
+
+				attr = e_vcard_attribute_new (e_vcard_attribute_get_group (new_attr), EVC_LABEL);
+				e_vcard_add_attribute_with_value (new_vcard, attr, values->data);
+
+				values = e_vcard_attribute_get_param (new_attr, EVC_TYPE);
+				if (values) {
+					EVCardAttributeParam *param;
+					GList *link;
+					gboolean any_added = FALSE;
+
+					param = e_vcard_attribute_param_new (EVC_TYPE);
+
+					for (link = values; link; link = g_list_next (link)) {
+						const gchar *value = link->data;
+
+						if (value && *value) {
+							e_vcard_attribute_param_add_value (param, value);
+							any_added = TRUE;
+						}
+					}
+
+					if (any_added)
+						e_vcard_attribute_add_param (attr, param);
+					else
+						e_vcard_attribute_param_free (param);
+				}
+			}
+		} else { /* data->to_version == E_VCARD_VERSION_40 */
+			GPtrArray *labels;
+
+			labels = g_hash_table_lookup (data->attrs_by_name, EVC_LABEL);
+
+			if (labels && labels->len > 0) {
+				GList *values, *link;
+				GHashTable *expected_types;
+				guint ii, n_expected_types;
+
+				expected_types = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+				values = e_vcard_attribute_get_param (new_attr, EVC_TYPE);
+
+				for (link = values; link; link = g_list_next (link)) {
+					const gchar *value = link->data;
+
+					if (value && *value)
+						g_hash_table_add (expected_types, (gpointer) value);
+				}
+
+				n_expected_types = g_hash_table_size (expected_types);
+
+				for (ii = 0; ii < labels->len; ii++) {
+					EVCardAttribute *label_attr = g_ptr_array_index (labels, ii);
+					guint n_found = 0;
+
+					values = e_vcard_attribute_get_param (label_attr, EVC_TYPE);
+
+					for (link = values; link; link = g_list_next (link)) {
+						const gchar *value = link->data;
+
+						if (value && *value && g_hash_table_contains (expected_types, value)) {
+							n_found++;
+							if (n_found == n_expected_types)
+								break;
+						}
+					}
+
+					if (n_found == n_expected_types) {
+						GString *value;
+
+						value = e_vcard_attribute_get_value_decoded (label_attr);
+						if (value) {
+							if (value->len) {
+								EVCardAttributeParam *param;
+
+								/* this should not happen, but if a leftover exists... */
+								e_vcard_attribute_remove_param (new_attr, EVC_LABEL);
+
+								param = e_vcard_attribute_param_new (EVC_LABEL);
+								e_vcard_attribute_add_param_with_value (new_attr, param, value->str);
+							}
+
+							g_string_free (value, TRUE);
+						}
+
+						/* to not use it again */
+						g_ptr_array_remove_index_fast (labels, ii);
+						break;
+					}
+				}
+
+				g_hash_table_unref (expected_types);
+			}
+		}
+	} else if (data->to_version == E_VCARD_VERSION_40 && g_ascii_strcasecmp (*inout_new_attr_name, EVC_KIND) == 0) {
+		/* EVC_X_LIST has precedence, if it came first */
+		keep = !e_vcard_get_attribute (new_vcard, EVC_KIND);
+	} else if (data->to_version == E_VCARD_VERSION_40 && g_ascii_strcasecmp (*inout_new_attr_name, EVC_X_LIST) == 0) {
+		EVCardAttribute *existing_attr = e_vcard_get_attribute (new_vcard, EVC_KIND);
+		GList *values = e_vcard_attribute_get_values (new_attr);
+		const gchar *value = values ? values->data : NULL;
+
+		/* replace EVC_X_LIST with KIND:group if the kind is not set yet */
+		if (!existing_attr && value && g_ascii_strcasecmp (value, "TRUE") == 0)
+			e_vcard_add_attribute_with_value (new_vcard, e_vcard_attribute_new (NULL, EVC_KIND), "group");
+		keep = FALSE;
+	} else if (data->to_version == E_VCARD_VERSION_30 && g_ascii_strcasecmp (*inout_new_attr_name, EVC_X_EVOLUTION_KIND) == 0) {
+		GList *values = e_vcard_attribute_get_values (new_attr);
+		const gchar *value = values ? values->data : NULL;
+
+		if (value && g_ascii_strcasecmp (value, "group") == 0)
+			e_vcard_add_attribute_with_value (new_vcard, e_vcard_attribute_new (NULL, EVC_X_LIST), "TRUE");
+	} else if (data->to_version == E_VCARD_VERSION_30 && g_ascii_strcasecmp (new_attr->name, EVC_IMPP) == 0) {
+		keep = e_vcard_attribute_is_single_valued (new_attr);
+		if (keep) {
+			GString *value;
+
+			value = e_vcard_attribute_get_value_decoded (new_attr);
+			keep = value && value->len > 0;
+
+			if (keep) {
+				/* it's supposed to be a URI, aka 'xmpp:user@example.com' */
+				gchar *scheme_split, next_char;
+
+				scheme_split = strchr (value->str, ':');
+				keep = scheme_split != NULL;
+
+				if (keep) {
+					const gchar *in_30;
+
+					next_char = scheme_split[1];
+					scheme_split[1] = '\0';
+					/* value->str is cut after the scheme delimiter now */
+					in_30 = g_hash_table_lookup (data->impp_schemes, value->str);
+					scheme_split[1] = next_char;
+
+					if (in_30) {
+						*inout_new_attr_name = in_30;
+						e_vcard_attribute_remove_values (new_attr);
+						e_vcard_attribute_add_value (new_attr, scheme_split + 1);
+					} else {
+						*inout_new_attr_name = EVC_X_EVOLUTION_IMPP;
+					}
+				}
+			}
+
+			if (value)
+				g_string_free (value, TRUE);
+		}
+	} else if (g_ascii_strcasecmp (new_attr->name, EVC_PHOTO) == 0 ||
+		   g_ascii_strcasecmp (new_attr->name, EVC_LOGO) == 0) {
+		GList *values;
+		const gchar *value = NULL;
+
+		values = e_vcard_attribute_get_param (new_attr, EVC_VALUE);
+		if (values)
+			value = values->data;
+
+		if (data->to_version == E_VCARD_VERSION_40) {
+			/* inline photo/logo is converted into "data:" uri */
+			if (!value || g_ascii_strcasecmp (value, "uri") != 0) {
+				values = e_vcard_attribute_get_param (new_attr, EVC_ENCODING);
+				if (values && (g_ascii_strcasecmp (values->data, "b") == 0 ||
+					       /* second for photo vCard 2.1 support */
+					       g_ascii_strcasecmp (values->data, "base64") == 0)) {
+					values = e_vcard_attribute_get_values (new_attr);
+					if (values && values->data) {
+						const gchar *content = values->data;
+
+						if (content && *content) {
+							GString *data_uri = g_string_new ("data:");
+
+							values = e_vcard_attribute_get_param (new_attr, EVC_TYPE);
+							if (values && values->data) {
+								g_string_append_printf (data_uri, "image/%s", (const gchar *) values->data);
+								g_string_append_c (data_uri, ';');
+							}
+
+							g_string_append (data_uri, "base64,");
+							g_string_append (data_uri, content);
+
+							e_vcard_attribute_remove_params (new_attr);
+							e_vcard_attribute_remove_values (new_attr);
+							e_vcard_attribute_add_value (new_attr, data_uri->str);
+
+							g_string_free (data_uri, TRUE);
+						}
+					}
+				}
+			}
+		} else /* if (data->to_version == E_VCARD_VERSION_30) */ {
+			values = e_vcard_attribute_get_values (new_attr);
+			/* convert "data:" URI into inline photo */
+			if (values && values->data && g_ascii_strncasecmp (values->data, "data:", 5) == 0) {
+				const gchar *data_start = NULL;
+				gchar *base64_data = NULL;
+				gchar *mime_type = NULL;
+				gboolean is_base64 = FALSE;
+
+				if (e_util_split_data_uri (values->data, &mime_type, NULL, &is_base64, &data_start) && is_base64) {
+					base64_data = g_strdup (data_start);
+
+					e_vcard_attribute_remove_params (new_attr);
+					e_vcard_attribute_remove_values (new_attr);
+					e_vcard_attribute_add_value (new_attr, base64_data);
+					e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
+					if (mime_type) {
+						const gchar *dash = strchr (mime_type, '/');
+
+						if (dash && dash[1])
+							e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_TYPE), dash + 1);
+					}
+				}
+
+				g_free (base64_data);
+				g_free (mime_type);
+			} else if (values && values->data) {
+				values = e_vcard_attribute_get_param (new_attr, EVC_VALUE);
+				if (!values)
+					e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
+			}
+		}
+	/* convert date values between YYYY-MM-DD and YYYYMMDD */
+	} else if (e_vcard_is_date_attr (new_attr)) {
+		e_vcard_convert_date_value (new_attr, data->to_version);
+	} else if (data->to_version == E_VCARD_VERSION_40) {
+		const gchar *impp_scheme;
+
+		impp_scheme = g_hash_table_lookup (data->impp_schemes, new_attr->name);
+		if (impp_scheme) {
+			*inout_new_attr_name = EVC_IMPP;
+
+			keep = e_vcard_attribute_is_single_valued (new_attr);
+			if (keep) {
+				GString *value;
+
+				value = e_vcard_attribute_get_value_decoded (new_attr);
+				keep = value && value->len > 0;
+
+				if (keep) {
+					g_string_prepend (value, impp_scheme);
+					e_vcard_attribute_remove_values (new_attr);
+					e_vcard_attribute_add_value (new_attr, value->str);
+				}
+
+				if (value)
+					g_string_free (value, TRUE);
+			}
+		} else if (g_ascii_strcasecmp (new_attr->name, EVC_X_EVOLUTION_IMPP) == 0) {
+			*inout_new_attr_name = EVC_IMPP;
+		}
+	}
+
+	return keep;
+}
+
+static EVCard *
+e_vcard_convert_30_to_40 (EVCard *self)
+{
+	EVCard *converted;
+	ConvertData30 data;
+
+	convert_data_30_init (&data, self, E_VCARD_VERSION_40);
+
+	converted = e_vcard_convert_to_generic (self, E_VCARD_VERSION_40,
+		E_VCARD_40_VALID_PROPERTIES, E_VCARD_40_VALID_PARAMETERS,
+		data.renames, e_vcard_convert_30_40_cb, &data);
+
+	convert_data_30_clear (&data);
+
+	return converted;
+}
+
+static EVCard *
+e_vcard_convert_40_to_30 (EVCard *self)
+{
+	EVCard *converted;
+	ConvertData30 data;
+
+	convert_data_30_init (&data, self, E_VCARD_VERSION_30);
+
+	converted = e_vcard_convert_to_generic (self, E_VCARD_VERSION_30,
+		E_VCARD_30_VALID_PROPERTIES, E_VCARD_30_VALID_PARAMETERS,
+		data.renames, e_vcard_convert_30_40_cb, &data);
+
+	convert_data_30_clear (&data);
+
+	return converted;
+}
+
+/**
+ * e_vcard_convert:
+ * @self: an #EVCard
+ * @to_version: the requested vCard version, one of #EVCardVersion
+ *
+ * Converts the @self into the vCard version @to_version and returns a converted
+ * copy of the @self. When the @to_version matches the version of the @self,
+ * then does nothing and returns %NULL.
+ *
+ * Returns: (transfer full) (nullable): the @self converted to @to_version,
+ *    or %NULL, when it is in this version already
+ *
+ * Since: 3.60
+ **/
+EVCard *
+e_vcard_convert (EVCard *self,
+		 EVCardVersion to_version)
+{
+	EVCardVersion self_version;
+	EVCard *converted = NULL, *tmp;
+
+	g_return_val_if_fail (E_IS_VCARD (self), NULL);
+	g_return_val_if_fail (to_version != E_VCARD_VERSION_UNKNOWN, NULL);
+
+	self_version = e_vcard_get_version (self);
+
+	if (self_version == to_version)
+		return NULL;
+
+	switch (to_version) {
+	case E_VCARD_VERSION_21:
+		converted = e_vcard_convert_to_21 (self);
+		break;
+	case E_VCARD_VERSION_30:
+		switch (self_version) {
+		case E_VCARD_VERSION_40:
+			converted = e_vcard_convert_40_to_30 (self);
+			break;
+		case E_VCARD_VERSION_21:
+			converted = e_vcard_convert_21_to_30 (self);
+			break;
+		default:
+			break;
+		}
+		break;
+	case E_VCARD_VERSION_40:
+		switch (self_version) {
+		case E_VCARD_VERSION_30:
+			converted = e_vcard_convert_30_to_40 (self);
+			break;
+		case E_VCARD_VERSION_21:
+			tmp = e_vcard_convert_21_to_30 (self);
+			converted = e_vcard_convert_30_to_40 (tmp);
+			g_clear_object (&tmp);
+			break;
+		default:
+			break;
+		}
+		break;
+	case E_VCARD_VERSION_UNKNOWN:
+	default:
+		break;
+	}
+
+	if (!converted) {
+		GList *link;
+
+		g_warning ("%s: Do not know how to convert vCard %s (%d) to %s (%d)\n", G_STRFUNC,
+			vcard_version_to_string_with_fallback (self_version, "???"), self_version,
+			vcard_version_to_string_with_fallback (to_version, "???"), to_version);
+
+		converted = e_vcard_new ();
+
+		g_clear_pointer (&converted->priv->vcard, g_free);
+		g_list_free_full (converted->priv->attributes, (GDestroyNotify) e_vcard_attribute_free);
+		converted->priv->attributes = NULL;
+
+		for (link = e_vcard_get_attributes (self); link; link = g_list_next (link)) {
+			EVCardAttribute *copy = e_vcard_attribute_copy (link->data);
+			converted->priv->attributes = g_list_prepend (converted->priv->attributes, copy);
+		}
+
+		converted->priv->attributes = g_list_reverse (converted->priv->attributes);
+		converted->priv->version = E_VCARD_VERSION_UNKNOWN;
+	}
+
+	return converted;
+}
+
+/**
+ * e_vcard_convert_to_string:
+ * @self: an #EVCard to export
+ * @version: the vCard version to export to
+ *
+ * Exports @evc to a string representation conforming to vCard
+ * version @version.
+ *
+ * Returns: (transfer full): A newly allocated string representing the vCard
+ *    in version @version.
+ *
+ * Since: 3.60
+ **/
+gchar *
+e_vcard_convert_to_string (EVCard *self,
+			   EVCardVersion version)
+{
+	g_return_val_if_fail (E_IS_VCARD (self), NULL);
+	g_return_val_if_fail (version != E_VCARD_VERSION_UNKNOWN, NULL);
+
+	switch (version) {
+	case E_VCARD_VERSION_21:
+		if (self->priv->vcard && self->priv->attributes == NULL &&
+		    camel_strstrcase (self->priv->vcard, CRLF "VERSION:2.1" CRLF))
+			return g_strdup (self->priv->vcard);
+
+		return e_vcard_to_string_vcard_21 (self);
+	case E_VCARD_VERSION_30:
+		if (self->priv->vcard && self->priv->attributes == NULL &&
+		    camel_strstrcase (self->priv->vcard, CRLF "VERSION:3.0" CRLF))
+			return g_strdup (self->priv->vcard);
+
+		return e_vcard_to_string_vcard_30 (self);
+	case E_VCARD_VERSION_40:
+		if (self->priv->vcard && self->priv->attributes == NULL &&
+		    camel_strstrcase (self->priv->vcard, CRLF "VERSION:4.0" CRLF))
+			return g_strdup (self->priv->vcard);
+
+		return e_vcard_to_string_vcard_40 (self);
+	default:
+		g_warning ("invalid format specifier passed to e_vcard_convert_to_string: %d", version);
+		return NULL;
+	}
+}
+
+/**
+ * EVCardForeachFunc:
+ * @vcard: an #EVCard
+ * @attr: an #EVCardAttribute
+ * @user_data: callback user data
+ *
+ * A callback prototype for e_vcard_foreach() and e_vcard_foreach_remove().
+ *
+ * Returns: the value depends on the function it is used with; see its
+ *    documentation for more information
+ *
+ * Since: 3.60
+ **/
+
+/**
+ * e_vcard_foreach:
+ * @self: an #EVCard
+ * @flags: a bit-or of #EVCardForeachFlags
+ * @func: (scope call) (closure user_data): an #EVCardForeachFunc callback function
+ * @user_data: user data passed to the @func
+ *
+ * Calls @func for each attribute in the @self. The @func returns %TRUE to
+ * continue the walk-through, or %FALSE to stop.
+ *
+ * Since: 3.60
+ **/
+void
+e_vcard_foreach (EVCard *self,
+		 EVCardForeachFlags flags,
+		 EVCardForeachFunc func,
+		 gpointer user_data)
+{
+	GList *link;
+
+	g_return_if_fail (E_IS_VCARD (self));
+	g_return_if_fail (func != NULL);
+
+	if ((flags & E_VCARD_FOREACH_FLAG_WILL_MODIFY) != 0) {
+		GPtrArray *attrs;
+		guint ii;
+
+		attrs = g_ptr_array_new ();
+		for (link = e_vcard_get_attributes (self); link; link = g_list_next (link)) {
+			EVCardAttribute *attr = link->data;
+			g_ptr_array_add (attrs, attr);
+		}
+
+		for (ii = 0; ii < attrs->len; ii++) {
+			EVCardAttribute *attr = g_ptr_array_index (attrs, ii);
+
+			if (!func (self, attr, user_data))
+				break;
+		}
+
+		g_ptr_array_unref (attrs);
+	} else {
+		for (link = e_vcard_get_attributes (self); link; link = g_list_next (link)) {
+			EVCardAttribute *attr = link->data;
+
+			if (!func (self, attr, user_data))
+				break;
+		}
+	}
+}
+
+/**
+ * e_vcard_foreach_remove:
+ * @self: an #EVCard
+ * @func: (scope call) (closure user_data): an #EVCardForeachFunc callback function
+ * @user_data: user data passed to the @func
+ *
+ * Removes all attributes the @func returns %TRUE for.
+ *
+ * Returns: how many attributes had been removed
+ *
+ * Since: 3.60
+ **/
+guint
+e_vcard_foreach_remove (EVCard *self,
+			EVCardForeachFunc func,
+			gpointer user_data)
+{
+	GList *link;
+	guint n_removed = 0;
+
+	g_return_val_if_fail (E_IS_VCARD (self), 0);
+	g_return_val_if_fail (func != NULL, 0);
+
+	link = e_vcard_ensure_attributes (self);
+	while (link) {
+		GList *next;
+		EVCardAttribute *attr = link->data;
+
+		next = link->next;
+
+		if (func (self, attr, user_data)) {
+			if (self->priv->version != E_VCARD_VERSION_UNKNOWN &&
+			    g_ascii_strcasecmp (attr->name, EVC_VERSION) == 0)
+				self->priv->version = E_VCARD_VERSION_UNKNOWN;
+
+			self->priv->attributes = g_list_delete_link (self->priv->attributes, link);
+
+			e_vcard_attribute_free (attr);
+
+			n_removed++;
+		}
+
+		link = next;
+	}
+
+	return n_removed;
 }
 
 /**
@@ -1714,6 +2833,23 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 	return a;
 }
 
+typedef struct _RemoveAttrsData {
+	const gchar *group;
+	const gchar *name;
+} RemoveAttrsData;
+
+static gboolean
+vcard_remove_attributes_cb (EVCard *vcard,
+			    EVCardAttribute *attr,
+			    gpointer user_data)
+{
+	RemoveAttrsData *data = user_data;
+
+	return ((!data->group || *data->group == '\0') ||
+		(attr->group && !g_ascii_strcasecmp (data->group, attr->group))) &&
+		((!attr->name) || !g_ascii_strcasecmp (data->name, attr->name));
+}
+
 /**
  * e_vcard_remove_attributes:
  * @evc: vcard object
@@ -1730,30 +2866,18 @@ e_vcard_remove_attributes (EVCard *evc,
                            const gchar *attr_group,
                            const gchar *attr_name)
 {
-	GList *attr;
+	RemoveAttrsData data;
 
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (attr_name != NULL);
 
-	attr = e_vcard_ensure_attributes (evc);
-	while (attr) {
-		GList *next_attr;
-		EVCardAttribute *a = attr->data;
+	data.group = attr_group;
+	data.name = attr_name;
 
-		next_attr = attr->next;
+	if (g_ascii_strcasecmp (attr_name, EVC_VERSION) == 0)
+		evc->priv->version = E_VCARD_VERSION_UNKNOWN;
 
-		if (((!attr_group || *attr_group == '\0') ||
-		     (a->group && !g_ascii_strcasecmp (attr_group, a->group))) &&
-		    ((!a->name) || !g_ascii_strcasecmp (attr_name, a->name))) {
-
-			/* matches, remove/delete the attribute */
-			evc->priv->attributes = g_list_delete_link (evc->priv->attributes, attr);
-
-			e_vcard_attribute_free (a);
-		}
-
-		attr = next_attr;
-	}
+	e_vcard_foreach_remove (evc, vcard_remove_attributes_cb, &data);
 }
 
 /**
@@ -1770,11 +2894,26 @@ e_vcard_remove_attribute (EVCard *evc,
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (attr != NULL);
 
+	if (attr->name && g_ascii_strcasecmp (attr->name, EVC_VERSION) == 0)
+		evc->priv->version = E_VCARD_VERSION_UNKNOWN;
+
 	/* No need to call e_vcard_ensure_attributes() here. It has
 	 * already been called if this is a valid call and attr is among
 	 * our attributes. */
 	evc->priv->attributes = g_list_remove (evc->priv->attributes, attr);
 	e_vcard_attribute_free (attr);
+}
+
+static void
+cache_version_from_attr (EVCard *self,
+			 EVCardAttribute *attr)
+{
+	if (attr && attr->name && attr->values && !attr->values->next && attr->values->data &&
+	    g_ascii_strcasecmp (attr->name, EVC_VERSION) == 0) {
+		const gchar *value = attr->values->data;
+
+		self->priv->version = vcard_version_from_string_with_fallback (value, E_VCARD_VERSION_UNKNOWN);
+	}
 }
 
 /**
@@ -1801,6 +2940,7 @@ e_vcard_append_attribute (EVCard *evc,
 		evc->priv->attributes = g_list_append (evc->priv->attributes, attr);
 	} else {
 		evc->priv->attributes = g_list_append (e_vcard_ensure_attributes (evc), attr);
+		cache_version_from_attr (evc, attr);
 	}
 }
 
@@ -1816,6 +2956,8 @@ e_vcard_append_attribute (EVCard *evc,
  * This is a convenience wrapper around e_vcard_attribute_add_value() and
  * e_vcard_append_attribute().
  *
+ * See also e_vcard_append_attribute_with_value_take(), e_vcard_add_attribute_with_value()
+ *
  * Since: 2.32
  **/
 void
@@ -1828,6 +2970,34 @@ e_vcard_append_attribute_with_value (EVCard *evcard,
 
 	e_vcard_attribute_add_value (attr, value);
 
+	e_vcard_append_attribute (evcard, attr);
+}
+
+/**
+ * e_vcard_append_attribute_with_value_take:
+ * @evcard: an #EVCard
+ * @attr: (transfer full): an #EVCardAttribute to append
+ * @value: (transfer full): a value to assign to the attribute
+ *
+ * Appends @attr to @evcard, setting it to @value. This takes ownership of
+ * @attr and the @value.
+ *
+ * This is a convenience wrapper around e_vcard_attribute_add_value_take() and
+ * e_vcard_append_attribute().
+ *
+ * See also e_vcard_append_attribute_with_value(), e_vcard_add_attribute_with_value()
+ *
+ * Since: 3.60
+ **/
+void
+e_vcard_append_attribute_with_value_take (EVCard *evcard,
+					  EVCardAttribute *attr,
+					  gchar *value)
+{
+	g_return_if_fail (E_IS_VCARD (evcard));
+	g_return_if_fail (attr != NULL);
+
+	e_vcard_attribute_add_value_take (attr, value);
 	e_vcard_append_attribute (evcard, attr);
 }
 
@@ -1868,6 +3038,63 @@ e_vcard_append_attribute_with_values (EVCard *evcard,
 }
 
 /**
+ * e_vcard_append_attributes:
+ * @self: an #EVCard
+ * @attrs: (element-type EVCardAttribute) (transfer none): a #GList of #EVCardAttribute
+ *
+ * Appends #EVCardAttribute structures from @attrs to @self. The respective
+ * attributes are copied, thus the caller is responsible to take care
+ * of the @attrs and its content.
+ *
+ * Since: 3.60
+ **/
+void
+e_vcard_append_attributes (EVCard *self,
+			   const GList *attrs)
+{
+	GList *link;
+	GList *attrs_copy = NULL;
+
+	g_return_if_fail (E_IS_VCARD (self));
+
+	for (link = (GList *) attrs; link; link = g_list_next (link)) {
+		EVCardAttribute *attr = link->data;
+
+		attrs_copy = g_list_prepend (attrs_copy, e_vcard_attribute_copy (attr));
+	}
+
+	attrs_copy = g_list_reverse (attrs_copy);
+
+	e_vcard_append_attributes_take (self, attrs_copy);
+}
+
+/**
+ * e_vcard_append_attributes_take:
+ * @self: an #EVCard
+ * @attrs: (element-type EVCardAttribute) (transfer full): a #GList of #EVCardAttribute
+ *
+ * Appends #EVCardAttribute structures from @attrs to @self. The @self
+ * assumes ownership of both the @attrs and the respective attributes
+ * stored in it.
+ *
+ * Since: 3.60
+ **/
+void
+e_vcard_append_attributes_take (EVCard *self,
+				GList *attrs)
+{
+	GList *link;
+
+	g_return_if_fail (E_IS_VCARD (self));
+
+	if (!attrs)
+		return;
+
+	link = e_vcard_ensure_attributes (self);
+	self->priv->attributes = g_list_concat (link, attrs);
+}
+
+/**
  * e_vcard_add_attribute:
  * @evc: an #EVCard
  * @attr: (transfer full): an #EVCardAttribute to add
@@ -1888,6 +3115,7 @@ e_vcard_add_attribute (EVCard *evc,
 		evc->priv->attributes = g_list_prepend (evc->priv->attributes, attr);
 	} else {
 		evc->priv->attributes = g_list_prepend (e_vcard_ensure_attributes (evc), attr);
+		cache_version_from_attr (evc, attr);
 	}
 }
 
@@ -1902,6 +3130,8 @@ e_vcard_add_attribute (EVCard *evc,
  *
  * This is a convenience wrapper around e_vcard_attribute_add_value() and
  * e_vcard_add_attribute().
+ *
+ * See also e_vcard_add_attribute_with_value_take(), e_vcard_append_attribute_with_value()
  **/
 void
 e_vcard_add_attribute_with_value (EVCard *evcard,
@@ -1913,6 +3143,34 @@ e_vcard_add_attribute_with_value (EVCard *evcard,
 
 	e_vcard_attribute_add_value (attr, value);
 
+	e_vcard_add_attribute (evcard, attr);
+}
+
+/**
+ * e_vcard_add_attribute_with_value_take:
+ * @evcard: an #EVCard
+ * @attr: (transfer full): an #EVCardAttribute to add
+ * @value: (transfer full): a value to assign to the attribute
+ *
+ * Prepends @attr to @evcard, setting it to @value. This takes ownership of
+ * the @attr and the @value.
+ *
+ * This is a convenience wrapper around e_vcard_attribute_add_value_take() and
+ * e_vcard_add_attribute().
+ *
+ * See also e_vcard_add_attribute_with_value(), e_vcard_append_attribute_with_value()
+ *
+ * Since: 3.60
+ **/
+void
+e_vcard_add_attribute_with_value_take (EVCard *evcard,
+				       EVCardAttribute *attr,
+				       gchar *value)
+{
+	g_return_if_fail (E_IS_VCARD (evcard));
+	g_return_if_fail (attr != NULL);
+
+	e_vcard_attribute_add_value_take (attr, value);
 	e_vcard_add_attribute (evcard, attr);
 }
 
@@ -1956,6 +3214,8 @@ e_vcard_add_attribute_with_values (EVCard *evcard,
  * @value: a string value
  *
  * Appends @value to @attr's list of values.
+ *
+ * See also e_vcard_attribute_add_value_take().
  **/
 void
 e_vcard_attribute_add_value (EVCardAttribute *attr,
@@ -1964,6 +3224,27 @@ e_vcard_attribute_add_value (EVCardAttribute *attr,
 	g_return_if_fail (attr != NULL);
 
 	attr->values = g_list_append (attr->values, g_strdup (value));
+}
+
+/**
+ * e_vcard_attribute_add_value_take:
+ * @attr: an #EVCardAttribute
+ * @value: (transfer full): a value to add and take
+ *
+ * Appends @value to @attr's list of values, assuming ownership
+ * of the @value.
+ *
+ * See also e_vcard_attribute_add_value().
+ *
+ * Since: 3.60
+ **/
+void
+e_vcard_attribute_add_value_take (EVCardAttribute *attr,
+				  gchar *value)
+{
+	g_return_if_fail (attr != NULL);
+
+	attr->values = g_list_append (attr->values, value);
 }
 
 /**
@@ -2521,7 +3802,7 @@ e_vcard_get_attributes (EVCard *evcard)
  * @name: the name of the attribute to get
  *
  * Get the attribute @name from @evc.  The #EVCardAttribute is owned by
- * @evcard and should not be freed. If the attribute does not exist, %NULL is
+ * @evc and should not be freed. If the attribute does not exist, %NULL is
  * returned.
  *
  * <note><para>This will only return the <emphasis>first</emphasis> attribute
@@ -2563,6 +3844,61 @@ e_vcard_get_attribute (EVCard *evc,
 	}
 
 	return NULL;
+}
+
+typedef struct _AttrsByNameData {
+	const gchar *name;
+	GList *attrs;
+} AttrsByNameData;
+
+static gboolean
+get_attributes_by_name_cb (EVCard *vcard,
+			   EVCardAttribute *attr,
+			   gpointer user_data)
+{
+	AttrsByNameData *data = user_data;
+
+	if (g_ascii_strcasecmp (data->name, attr->name) == 0)
+		data->attrs = g_list_prepend (data->attrs, attr);
+
+	return TRUE;
+}
+
+/**
+ * e_vcard_get_attributes_by_name:
+ * @self: an #EVCard
+ * @name: (not nullable): an attribute name
+ *
+ * Returns all attributes of the name @name stored in the @self.
+ * See also e_vcard_get_attribute(), which returns the first
+ * found attribute only.
+ *
+ * The returned #EVCardAttribute -s are owned by the @self and
+ * they are valid until the @self changes. The returned #GList
+ * should be freed with g_list_free(), when no longer needed.
+ *
+ * Returns: (transfer container) (nullable) (element-type EVCardAttribute): a new #GList
+ *    of #EVCardAttribute objects, which are named @name and stored in the @self, or %NULL,
+ *    when the @self does not contain any such attribute. The attributes are in the list
+ *    in the order as they appear in the @self.
+ *
+ * Since: 3.60
+ **/
+GList *
+e_vcard_get_attributes_by_name (EVCard *self,
+				const gchar *name)
+{
+	AttrsByNameData data;
+
+	g_return_val_if_fail (E_IS_VCARD (self), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	data.name = name;
+	data.attrs = NULL;
+
+	e_vcard_foreach (self, E_VCARD_FOREACH_FLAG_NONE, get_attributes_by_name_cb, &data);
+
+	return g_list_reverse (data.attrs);
 }
 
 /**
@@ -2794,6 +4130,48 @@ e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
 		str = values->data;
 
 	return str ? g_string_new_len (str->str, str->len) : NULL;
+}
+
+/**
+ * e_vcard_attribute_get_n_values:
+ * @attr: an #EVCardAttribute
+ *
+ * Gets how many values the @attr holds.
+ *
+ * Returns: how many values the @attr holds
+ *
+ * Since: 3.60
+ **/
+guint
+e_vcard_attribute_get_n_values (EVCardAttribute *attr)
+{
+	g_return_val_if_fail (attr != NULL, 0);
+
+	return g_list_length (e_vcard_attribute_get_values (attr));
+}
+
+/**
+ * e_vcard_attribute_get_nth_value:
+ * @attr: an #EVCardAttribute
+ * @index: an index of the value to receive, counting from zero
+ *
+ * Gets the value at index @index (counting from zero), of the @attr.
+ * The value is owned by the @attr and is valid until the @attr changes
+ * or is freed. The @index can be out of bounds, then a %NULL is returned.
+ * Use @e_vcard_attribute_get_n_values() to check how many values
+ * the @attr has stored.
+ *
+ * Returns: (nullable): a value at index @index, or %NULL, when out of bounds.
+ *
+ * Since: 3.60
+ **/
+const gchar *
+e_vcard_attribute_get_nth_value (EVCardAttribute *attr,
+				  guint index)
+{
+	g_return_val_if_fail (attr != NULL, NULL);
+
+	return g_list_nth_data (e_vcard_attribute_get_values (attr), index);
 }
 
 /**
@@ -3032,4 +4410,59 @@ e_vcard_util_dup_x_attribute (EVCard *vcard,
 		v = e_vcard_attribute_get_values (attr);
 
 	return ((v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
+}
+
+/**
+ * e_vcard_version_from_string:
+ * @str: a version string, like "4.0"
+ *
+ * Converts the @str into one of the #EVCardVersion. If the string
+ * does not match any of the known values the %E_VCARD_VERSION_UNKNOWN
+ * is returned.
+ *
+ * Returns: an #EVCardVersion corresponding to @str, or %E_VCARD_VERSION_UNKNOWN
+ *
+ * Since: 3.60
+ **/
+EVCardVersion
+e_vcard_version_from_string (const gchar *str)
+{
+	if (g_strcmp0 (str, "2.1") == 0)
+		return E_VCARD_VERSION_21;
+	else if (g_strcmp0 (str, "3.0") == 0)
+		return E_VCARD_VERSION_30;
+	else if (g_strcmp0 (str, "4.0") == 0)
+		return E_VCARD_VERSION_40;
+
+	return E_VCARD_VERSION_UNKNOWN;
+}
+
+/**
+ * e_vcard_version_to_string:
+ * @version: an #EVCardVersion
+ *
+ * Converts the @version into its string representation.
+ * Returns %NULL, when the @version does not match any
+ * known value (the %E_VCARD_VERSION_UNKNOWN corresponds
+ * to the "unknown" string).
+ *
+ * Returns: a text representation of the @version,
+ *    or %NULL for unknown values.
+ *
+ * Since: 3.60
+ **/
+const gchar *
+e_vcard_version_to_string (EVCardVersion version)
+{
+	switch (version) {
+	case E_VCARD_VERSION_UNKNOWN:
+		return "unknown";
+	case E_VCARD_VERSION_21:
+		return "2.1";
+	case E_VCARD_VERSION_30:
+		return "3.0";
+	case E_VCARD_VERSION_40:
+		return "4.0";
+	}
+	return NULL;
 }

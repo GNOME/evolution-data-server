@@ -232,7 +232,7 @@ e_book_backend_file_upgrade_db (DB *db,
 
 					e_contact_set (contact, E_CONTACT_UID, id_dbt.data);
 
-					vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+					vcard = e_vcard_to_string (E_VCARD (contact));
 					string_to_dbt (vcard, &vcard_dbt);
 
 					db_error = db->put (db, NULL,

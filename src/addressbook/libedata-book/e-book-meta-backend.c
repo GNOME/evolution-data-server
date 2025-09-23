@@ -676,7 +676,7 @@ ebmb_start_view_thread_func (EBookBackend *book_backend,
 				if (!contact)
 					continue;
 
-				vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+				vcard = e_vcard_to_string (E_VCARD (contact));
 				e_data_book_view_notify_update_prefiltered_vcard (view,
 					e_contact_get_const (contact, E_CONTACT_UID),
 					vcard);

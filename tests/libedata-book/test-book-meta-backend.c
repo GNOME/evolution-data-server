@@ -989,7 +989,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	g_assert_cmpint (test_backend->load_count, ==, 2);
 	g_assert_cmpint (test_backend->save_count, ==, 2);
 
-	tmp = e_vcard_to_string (E_VCARD (new_contacts->data), EVC_FORMAT_VCARD_30);
+	tmp = e_vcard_to_string (E_VCARD (new_contacts->data));
 	g_assert_nonnull (tmp);
 	g_assert_nonnull (strstr (tmp, "X-TEST:*007*\r\n"));
 	g_assert_nonnull (strstr (tmp, e_contact_get_const (new_contacts->data, E_CONTACT_UID)));
@@ -1026,7 +1026,7 @@ ebmb_test_modify_case (const gchar *case_name)
 	e_contact_set (contact, E_CONTACT_REV, tmp);
 	g_free (tmp);
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard = e_vcard_to_string (E_VCARD (contact));
 	g_object_unref (contact);
 
 	return vcard;

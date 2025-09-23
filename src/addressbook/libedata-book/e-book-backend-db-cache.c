@@ -197,7 +197,7 @@ e_book_backend_db_cache_add_contact (DB *db,
 	}
 	string_to_dbt (uid, &uid_dbt);
 
-	vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard_str = e_vcard_to_string (E_VCARD (contact));
 	string_to_dbt (vcard_str, &vcard_dbt);
 
 	/* db_error = db->del (db, NULL, &uid_dbt, 0); */

@@ -620,6 +620,10 @@ book_backend_get_backend_property (EBookBackend *backend,
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
 		prop_value = e_book_backend_dup_cache_dir (backend);
+
+	} else if (g_str_equal (prop_name, E_BOOK_BACKEND_PROPERTY_PREFER_VCARD_VERSION)) {
+		/* use 3.0 for backward compatibility, to not force the backends to implement this property */
+		prop_value = g_strdup (e_vcard_version_to_string (E_VCARD_VERSION_30));
 	}
 
 	return prop_value;

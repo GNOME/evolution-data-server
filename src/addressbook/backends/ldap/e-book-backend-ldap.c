@@ -2273,7 +2273,7 @@ contact_list_handler (LDAPOp *op,
 				if (enable_debug) {
 					gchar *vcard;
 
-					vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+					vcard = e_vcard_to_string (E_VCARD (contact));
 					printf ("vcard = %s\n", vcard);
 					g_free (vcard);
 				}
@@ -2642,7 +2642,7 @@ member_ber (EBookBackendLDAP *self,
 	if (!(e_contact_get (contact, E_CONTACT_IS_LIST)))
 		return NULL;
 
-	members = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
+	members = e_vcard_get_attributes_by_name (E_VCARD (contact), EVC_EMAIL);
 	num = g_list_length (members);
 	if (num == 0) {
 		g_propagate_error (error, EC_ERROR_EX (E_CLIENT_ERROR_OTHER_ERROR, _("LDAP contact lists cannot be empty.")));
@@ -2677,7 +2677,7 @@ member_ber (EBookBackendLDAP *self,
 	}
 	result[i] = NULL;
 
-	g_list_free_full (members, (GDestroyNotify) e_vcard_attribute_free);
+	g_list_free (members);
 
 	if (missing) {
 		gchar *msg;
@@ -2726,13 +2726,13 @@ member_compare (EBookBackendLDAP *self,
 	if (!equal)
 		return equal;
 
-	members_new = e_contact_get_attributes (contact_new, E_CONTACT_EMAIL);
+	members_new = e_vcard_get_attributes_by_name (E_VCARD (contact_new), EVC_EMAIL);
 	len1 = g_list_length (members_new);
-	members_cur = e_contact_get_attributes (contact_current, E_CONTACT_EMAIL);
+	members_cur = e_vcard_get_attributes_by_name (E_VCARD (contact_current), EVC_EMAIL);
 	len2 = g_list_length (members_cur);
 	if (len1 != len2) {
-		g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
-		g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
+		g_list_free (members_new);
+		g_list_free (members_cur);
 
 		return FALSE;
 	}
@@ -2764,15 +2764,14 @@ member_compare (EBookBackendLDAP *self,
 								if (dn_cur) {
 									if (!g_ascii_strcasecmp (dn_new, dn_cur)) {
 										members_cur = g_list_remove (members_cur, attr_cur);
-										e_vcard_attribute_free (attr_cur);
 										goto next_member;
 									}
 								}
 							}
 						}
 					}
-					g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
-					g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
+					g_list_free (members_new);
+					g_list_free (members_cur);
 					return FALSE;
 				}
 			}
@@ -2781,8 +2780,8 @@ member_compare (EBookBackendLDAP *self,
 		continue;
 	}
 
-	g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
-	g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
+	g_list_free (members_new);
+	g_list_free (members_cur);
 
 	return TRUE;
 }
@@ -2971,7 +2970,7 @@ anniversary_ber (EBookBackendLDAP *self,
 	if (dt) {
 		gchar *anniversary;
 
-		anniversary = e_contact_date_to_string (dt);
+		anniversary = e_contact_date_to_string (dt, E_VCARD_VERSION_30);
 
 		result = g_new (struct berval *, 2);
 		result[0] = g_new (struct berval, 1);
@@ -3031,7 +3030,7 @@ birthday_ber (EBookBackendLDAP *self,
 	if (dt) {
 		gchar *birthday;
 
-		birthday = e_contact_date_to_string (dt);
+		birthday = e_contact_date_to_string (dt, E_VCARD_VERSION_30);
 
 		result = g_new (struct berval *, 2);
 		result[0] = g_new (struct berval, 1);
