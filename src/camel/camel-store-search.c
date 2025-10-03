@@ -2699,6 +2699,11 @@ camel_store_search_acquire_folder (CamelFolder *folder,
 		camel_folder_summary_lock (summary);
 		success = camel_folder_summary_save (summary, error);
 		success = success && camel_folder_summary_prepare_fetch_all (summary, error);
+
+		if (!success) {
+			camel_folder_summary_unlock (summary);
+			camel_folder_unlock (folder);
+		}
 	}
 
 	return success;
