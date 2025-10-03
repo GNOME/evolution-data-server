@@ -561,7 +561,7 @@ cdb_sql_exec (CamelDB *cdb,
 	gchar *errmsg = NULL;
 	gint   ret, retries = 0;
 
-	g_return_val_if_fail (stmt != NULL, -1);
+	g_return_val_if_fail (stmt != NULL, FALSE);
 
 	d (g_print ("Camel SQL Exec:\n%s\n", stmt));
 
@@ -576,7 +576,7 @@ cdb_sql_exec (CamelDB *cdb,
 		g_thread_yield ();
 		g_usleep (100 * 1000); /* Sleep for 100 ms */
 
-		ret = sqlite3_exec (db, stmt, NULL, NULL, &errmsg);
+		ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	}
 
 	if (out_sqlite_error_code)
