@@ -2212,7 +2212,7 @@ add_instance_cb (ICalComponent *icomp,
 	instances = g_hash_table_lookup (instances_by_uid, e_cal_component_get_uid (ci->comp));
 	if (!instances) {
 		instances = g_ptr_array_new_with_free_func (comp_instance_free);
-		g_hash_table_insert (instances_by_uid, (gpointer) e_cal_component_get_uid (ci->comp), instances);
+		g_hash_table_insert (instances_by_uid, g_strdup (e_cal_component_get_uid (ci->comp)), instances);
 	}
 
 	g_ptr_array_add (instances, ci);
@@ -2376,7 +2376,7 @@ process_detached_instances (GHashTable *instances_by_uid,
 		/* the used UID does not matter, just do not clash with other */
 		instances = g_hash_table_lookup (instances_by_uid, "\n");
 		g_warn_if_fail (instances == NULL);
-		g_hash_table_insert (instances_by_uid, (gpointer) "\n", g_steal_pointer (&unprocessed_instances));
+		g_hash_table_insert (instances_by_uid, g_strdup ("\n"), g_steal_pointer (&unprocessed_instances));
 		g_clear_pointer (&unprocessed_instances, g_ptr_array_unref);
 	}
 }
@@ -2402,7 +2402,7 @@ generate_instances (ECalClient *client,
 
 	priv = client->priv;
 
-	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
 
 	if (priv->default_zone)
 		default_zone = priv->default_zone;
@@ -2888,7 +2888,7 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
 
 	g_return_if_fail (goad != NULL);
 
-	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
 
 	/* generate all instances in the given time range */
 	generate_instances (
@@ -3047,7 +3047,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	uid = i_cal_component_get_uid (icalcomp);
 	rid = e_cal_util_component_get_recurid_as_string (icalcomp);
 
-	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
 
 	/* generate all instances in the given time range */
 	generate_instances (
@@ -3100,7 +3100,7 @@ e_cal_client_generate_instances_for_uid_sync (ECalClient *client,
 	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
 
-	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_ptr_array_unref);
+	instances_by_uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
 
 	/* generate all instances in the given time range */
 	generate_instances (

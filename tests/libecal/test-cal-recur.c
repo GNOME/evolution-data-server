@@ -227,7 +227,7 @@ test_recur_plain_run (ECalClient *client,
 	ICalTimezone *default_zone, *comp_zone;
 	ICalComponent *icomp;
 	ICalTime *start, *end;
-	RecurData rd;
+	RecurData rd = { NULL };
 	gboolean success;
 	GError *error = NULL;
 
@@ -270,7 +270,7 @@ test_recur_client_run (ECalClient *client,
 	ICalTimezone *default_zone, *comp_zone;
 	ICalTime *start, *end;
 	ICalComponent *icomp;
-	RecurData rd;
+	RecurData rd = { NULL };
 
 	default_zone = default_tz ? i_cal_timezone_get_builtin_timezone (default_tz) : NULL;
 	if (default_tz)
@@ -1008,7 +1008,7 @@ test_recur_detached (ETestServerFixture *fixture,
 	ICalProperty *prop;
 	ICalTime *start, *end;
 	GError *error = NULL;
-	RecurData rd = { 0, };
+	RecurData rd = { NULL };
 	gchar *uid;
 	gboolean success;
 
@@ -1464,7 +1464,7 @@ test_recur_remove_instance_case_check (ECalClient *client,
 {
 	ICalTimezone *utc_zone = i_cal_timezone_get_utc_timezone ();
 	GError *local_error = NULL;
-	RecurData rd = { 0, };
+	RecurData rd = { NULL };
 	guint n_expected_all, n_expected_shortened;
 	gboolean success;
 
@@ -2356,7 +2356,7 @@ test_recur_remove_instance_cal_case (ECalClient *client,
 	GSList *ecomps = NULL;
 	GError *local_error = NULL;
 	gchar *uid = NULL, *rid_str;
-	RecurData rd = { 0, };
+	RecurData rd = { NULL };
 	guint n_expected_all, n_expected_shortened;
 	gboolean success;
 
@@ -2446,7 +2446,7 @@ test_recur_remove_instance_like_all_cal_case (ECalClient *client,
 	GSList *ecomps = NULL;
 	GError *local_error = NULL;
 	gchar *uid = NULL, *rid_str;
-	RecurData rd = { 0, };
+	RecurData rd = { NULL };
 	guint n_expected_all;
 	gboolean success;
 
@@ -3424,6 +3424,200 @@ test_recur_remove_instance_last_cal (ETestServerFixture *fixture,
 	g_clear_object (&end);
 }
 
+static void
+test_recur_multiple_detached (ETestServerFixture *fixture,
+			      gconstpointer user_data)
+{
+	struct _zones {
+		const gchar *location;
+		const gchar *tzid_param;
+		const gchar *time_suffix;
+	} zones[] = {
+		{ "UTC",		"",			  "Z" },
+		{ "Europe/Berlin",	";TZID=Europe/Berlin",	  "" },
+		{ "America/New_York",	";TZID=America/New_York", "" }
+	};
+	const gchar *expected_all[] = {
+		"20250805T100000",
+		"20250806T100000",
+		"20250807T100000",
+		"20250808T100000",
+		"20250809T100000",
+		NULL };
+	const gchar *expected_shortened[] = {
+		"20250806T100000",
+		"20250807T100000",
+		"20250808T100000",
+		"20250809T100000",
+		NULL };
+	ECalClient *client;
+	ICalTime *start, *end;
+	guint ii;
+
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+	start = i_cal_time_new_from_string ("20250801T000000");
+	end = i_cal_time_new_from_string ("20250831T235959");
+
+	for (ii = 0; ii < G_N_ELEMENTS (zones); ii++) {
+		GError *local_error = NULL;
+		GSList *ecomps = NULL;
+		ICalComponent *icomp, *modified;
+		ICalProperty *prop;
+		ICalTime *rid, *itt;
+		ICalTimezone *zone;
+		RecurData rd = { NULL };
+		gchar *uid = NULL, *str;
+		gboolean success;
+
+		str = g_strdup_printf (
+			"BEGIN:VEVENT\r\n"
+			"UID:1\r\n"
+			"DTSTART%s:20250805T100000%s\r\n"
+			"DTEND%s:20250805T101500%s\r\n"
+			"RRULE:FREQ=DAILY;COUNT=5\r\n"
+			"SUMMARY:test\r\n"
+			"END:VEVENT\r\n",
+			zones[ii].tzid_param, zones[ii].time_suffix,
+			zones[ii].tzid_param, zones[ii].time_suffix);
+		icomp = i_cal_component_new_from_string (str);
+		g_assert_nonnull (icomp);
+		g_free (str);
+
+		zone = i_cal_timezone_get_builtin_timezone (zones[ii].location);
+		g_assert_nonnull (zone);
+
+		/* this can fail, it's only to prepare the calendar */
+		e_cal_client_remove_object_sync	(client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
+
+		success = e_cal_client_create_object_sync (client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+		g_assert_nonnull (uid);
+
+		rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+		e_cal_client_generate_instances_for_uid_sync (client, uid, i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+			NULL, recur_instance_cb, &rd);
+		g_assert_cmpuint (g_hash_table_size (rd.instances), ==, G_N_ELEMENTS (expected_all) - 1);
+		verify_received_instances (rd.instances, zone, expected_all);
+		g_clear_pointer (&rd.instances, g_hash_table_unref);
+
+		/* remove the first instance */
+		success = e_cal_client_remove_object_sync (client, uid, "20250805T100000", E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+
+		modified = i_cal_component_clone (icomp);
+
+		prop = i_cal_component_get_first_property (modified, I_CAL_RRULE_PROPERTY);
+		g_assert_nonnull (prop);
+		i_cal_component_remove_property (icomp, prop);
+		g_clear_object (&prop);
+
+		/* modify the second instance */
+		rid = i_cal_time_new_from_string ("20250806T100000");
+		i_cal_time_set_timezone (rid, zone);
+		i_cal_component_set_recurrenceid (modified, rid);
+		g_clear_object (&rid);
+
+		prop = i_cal_component_get_first_property (modified, I_CAL_RECURRENCEID_PROPERTY);
+		g_assert_nonnull (prop);
+		if (g_strcmp0 (zones[ii].location, "UTC") != 0) {
+			ICalParameter *param;
+			param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+			g_assert_null (param);
+			param = i_cal_parameter_new_tzid (zones[ii].location);
+			i_cal_property_add_parameter (prop, param);
+			g_clear_object (&param);
+		}
+		g_clear_object (&prop);
+
+		itt = i_cal_time_new_from_string ("20250806T100000");
+		i_cal_time_set_timezone (itt, zone);
+		i_cal_component_set_dtstart (modified, itt);
+		g_clear_object (&itt);
+
+		itt = i_cal_time_new_from_string ("20250806T150000");
+		i_cal_time_set_timezone (itt, zone);
+		i_cal_component_set_dtend (modified, itt);
+		g_clear_object (&itt);
+
+		i_cal_component_set_summary (modified, "2nd modified");
+
+		success = e_cal_client_modify_object_sync (client, modified, E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+
+		/* modify the third instance */
+		prop = i_cal_component_get_first_property (modified, I_CAL_RECURRENCEID_PROPERTY);
+		g_assert_nonnull (prop);
+		i_cal_component_remove_property (modified, prop);
+		g_clear_object (&prop);
+
+		rid = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (rid, zone);
+		i_cal_component_set_recurrenceid (modified, rid);
+		g_clear_object (&rid);
+
+		prop = i_cal_component_get_first_property (modified, I_CAL_RECURRENCEID_PROPERTY);
+		g_assert_nonnull (prop);
+		if (g_strcmp0 (zones[ii].location, "UTC") != 0) {
+			ICalParameter *param;
+			param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+			g_assert_null (param);
+			param = i_cal_parameter_new_tzid (zones[ii].location);
+			i_cal_property_add_parameter (prop, param);
+			g_clear_object (&param);
+		}
+		g_clear_object (&prop);
+
+		itt = i_cal_time_new_from_string ("20250807T100000");
+		i_cal_time_set_timezone (itt, zone);
+		i_cal_component_set_dtstart (modified, itt);
+		g_clear_object (&itt);
+
+		itt = i_cal_time_new_from_string ("20250807T150000");
+		i_cal_time_set_timezone (itt, zone);
+		i_cal_component_set_dtend (modified, itt);
+		g_clear_object (&itt);
+
+		i_cal_component_set_summary (modified, "3nd modified");
+
+		success = e_cal_client_modify_object_sync (client, modified, E_CAL_OBJ_MOD_THIS, E_CAL_OPERATION_FLAG_NONE, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+
+		g_clear_object (&modified);
+
+		/* verify instances */
+		success = e_cal_client_get_objects_for_uid_sync (client, uid, &ecomps, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+		g_assert_cmpuint (g_slist_length (ecomps), ==, 3);
+		g_slist_free_full (ecomps, g_object_unref);
+		ecomps = NULL;
+
+		rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+		e_cal_client_generate_instances_for_uid_sync (client, uid, i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+			NULL, recur_instance_cb, &rd);
+		g_assert_cmpuint (g_hash_table_size (rd.instances), ==, G_N_ELEMENTS (expected_shortened) - 1);
+		verify_received_instances (rd.instances, zone, expected_shortened);
+		g_clear_pointer (&rd.instances, g_hash_table_unref);
+
+		rd.instances = g_hash_table_new_full (instance_hash, instance_equal, instance_free, NULL);
+		e_cal_client_generate_instances_for_object_sync (client, icomp, i_cal_time_as_timet (start), i_cal_time_as_timet (end),
+			NULL, recur_instance_cb, &rd);
+		g_assert_cmpuint (g_hash_table_size (rd.instances), ==, G_N_ELEMENTS (expected_shortened) - 1);
+		verify_received_instances (rd.instances, zone, expected_shortened);
+		g_clear_pointer (&rd.instances, g_hash_table_unref);
+
+		g_clear_object (&icomp);
+		g_free (uid);
+	}
+
+	g_clear_object (&start);
+	g_clear_object (&end);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -3528,6 +3722,13 @@ main (gint argc,
 		&test_closure,
 		e_test_server_utils_setup,
 		test_recur_remove_instance_last_cal,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/MultipleDetached",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_multiple_detached,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
