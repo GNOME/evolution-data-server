@@ -54,6 +54,9 @@ struct _CamelMultipartSignedPrivate {
 	/* Offset pointers of start of boundary in content object. */
 	goffset start1, end1;
 	goffset start2, end2;
+
+	/* when it's broken (not having two subparts), behave like a plain CamelMultipart */
+	gboolean broken;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -551,7 +554,12 @@ static void
 multipart_signed_add_part (CamelMultipart *multipart,
                            CamelMimePart *part)
 {
-	g_warning ("Cannot add parts to a signed part using add_part");
+	CamelMultipartSigned *self = CAMEL_MULTIPART_SIGNED (multipart);
+
+	if (self->priv->broken)
+		CAMEL_MULTIPART_CLASS (camel_multipart_signed_parent_class)->add_part (multipart, part);
+	else
+		g_warning ("Cannot add parts to a signed part using add_part");
 }
 
 static CamelMimePart *
@@ -564,6 +572,9 @@ multipart_signed_get_part (CamelMultipart *multipart,
 	GByteArray *byte_array;
 
 	mps = CAMEL_MULTIPART_SIGNED (multipart);
+
+	if (mps->priv->broken)
+		return CAMEL_MULTIPART_CLASS (camel_multipart_signed_parent_class)->get_part (multipart, index);
 
 	data_wrapper = CAMEL_DATA_WRAPPER (multipart);
 	byte_array = camel_data_wrapper_get_byte_array (data_wrapper);
@@ -633,6 +644,9 @@ multipart_signed_get_number (CamelMultipart *multipart)
 	CamelDataWrapper *data_wrapper;
 	GByteArray *byte_array;
 
+	if (mps->priv->broken)
+		return CAMEL_MULTIPART_CLASS (camel_multipart_signed_parent_class)->get_number (multipart);
+
 	data_wrapper = CAMEL_DATA_WRAPPER (multipart);
 	byte_array = camel_data_wrapper_get_byte_array (data_wrapper);
 
@@ -655,6 +669,7 @@ static gint
 multipart_signed_construct_from_parser (CamelMultipart *multipart,
                                         CamelMimeParser *mp)
 {
+	CamelMultipartSigned *self = CAMEL_MULTIPART_SIGNED (multipart);
 	CamelMultipartSignedPrivate *priv;
 	gint err;
 	CamelContentType *content_type;
@@ -663,7 +678,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 	gchar *buf;
 	gsize len;
 
-	priv = CAMEL_MULTIPART_SIGNED (multipart)->priv;
+	priv = self->priv;
 
 	/* we *must not* be in multipart state, otherwise the mime parser will
 	 * parse the headers which is a no no @#$@# stupid multipart/signed spec */
@@ -691,8 +706,33 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 	if (err != 0) {
 		errno = err;
 		return -1;
-	} else
-		return 0;
+	}
+
+	self->priv->broken = multipart_signed_parse_content (self) == -1;
+
+	if (self->priv->broken) {
+		CamelMimeParser *parser;
+		CamelStream *stream;
+		gint rt;
+
+		stream = camel_stream_mem_new ();
+
+		/* Do not give the stream ownership of the byte array. */
+		camel_stream_mem_set_byte_array (CAMEL_STREAM_MEM (stream), byte_array);
+
+		parser = camel_mime_parser_new ();
+		camel_mime_parser_init_with_stream (parser, stream, NULL);
+		camel_mime_parser_push_state (parser, CAMEL_MIME_PARSER_STATE_MULTIPART, camel_content_type_param (content_type, "boundary"));
+
+		rt = CAMEL_MULTIPART_CLASS (camel_multipart_signed_parent_class)->construct_from_parser (multipart, parser);
+
+		g_object_unref (parser);
+		g_object_unref (stream);
+
+		return rt;
+	}
+
+	return 0;
 }
 
 static void
