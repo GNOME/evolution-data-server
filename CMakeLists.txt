@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 cmake_policy(VERSION 3.15)
 
 project(evolution-data-server
-	VERSION 3.58.1
+	VERSION 3.58.2
 	LANGUAGES C CXX)
 set(PROJECT_BUGREPORT "https://gitlab.gnome.org/GNOME/evolution-data-server/issues/")
 
