@@ -65,10 +65,69 @@ object_data_free (gpointer ptr)
 	ObjectData *od = ptr;
 
 	if (od) {
-		g_warn_if_fail (od->use_count == 0);
 		g_weak_ref_set (&od->weakref, NULL);
 		g_weak_ref_clear (&od->weakref);
 		g_slice_free (ObjectData, od);
+	}
+}
+
+static void
+camel_weak_ref_group_object_disposed_cb (gpointer user_data,
+					 GObject *object)
+{
+	G_LOCK (groups);
+	if (groups) {
+		g_hash_table_remove (groups, object);
+		if (!g_hash_table_size (groups)) {
+			g_clear_pointer (&groups, g_hash_table_unref);
+		}
+	}
+	G_UNLOCK (groups);
+}
+
+static void
+camel_weak_ref_group_set_locked (CamelWeakRefGroup *group,
+				 gpointer object)
+{
+	if (object != group->object) {
+		ObjectData *od;
+
+		if (group->object) {
+			od = groups ? g_hash_table_lookup (groups, group->object) : NULL;
+			/* it can be NULL when it's removed in the camel_weak_ref_group_object_disposed_cb() */
+			if (od) {
+				od->use_count--;
+				if (!od->use_count) {
+					GObject *stored_object = g_weak_ref_get (&od->weakref);
+					if (stored_object) {
+						g_object_weak_unref (group->object, camel_weak_ref_group_object_disposed_cb, NULL);
+						g_clear_object (&stored_object);
+					}
+
+					g_hash_table_remove (groups, group->object);
+				}
+			}
+		}
+
+		group->object = object;
+
+		if (group->object) {
+			if (!groups)
+				groups = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, object_data_free);
+
+			od = g_hash_table_lookup (groups, group->object);
+			if (od) {
+				od->use_count++;
+			} else {
+				g_object_weak_ref (group->object, camel_weak_ref_group_object_disposed_cb, NULL);
+				od = object_data_new (group->object);
+				g_hash_table_insert (groups, group->object, od);
+			}
+		}
+
+		if (groups && !g_hash_table_size (groups)) {
+			g_clear_pointer (&groups, g_hash_table_unref);
+		}
 	}
 }
 
@@ -135,12 +194,12 @@ camel_weak_ref_group_unref (CamelWeakRefGroup *group)
 
 	group->ref_count--;
 
-	G_UNLOCK (groups);
-
 	if (!group->ref_count) {
-		camel_weak_ref_group_set (group, NULL);
+		camel_weak_ref_group_set_locked (group, NULL);
 		g_slice_free (CamelWeakRefGroup, group);
 	}
+
+	G_UNLOCK (groups);
 }
 
 /**
@@ -161,42 +220,7 @@ camel_weak_ref_group_set (CamelWeakRefGroup *group,
 	g_return_if_fail (!object || G_IS_OBJECT (object));
 
 	G_LOCK (groups);
-
-	if (object != group->object) {
-		ObjectData *od;
-
-		if (group->object) {
-			od = g_hash_table_lookup (groups, group->object);
-
-			g_warn_if_fail (od != NULL);
-
-			if (od) {
-				od->use_count--;
-				if (!od->use_count)
-					g_hash_table_remove (groups, group->object);
-			}
-		} else if (!groups) {
-			groups = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, object_data_free);
-		}
-
-		group->object = object;
-
-		if (group->object) {
-			od = g_hash_table_lookup (groups, group->object);
-			if (od) {
-				od->use_count++;
-			} else {
-				od = object_data_new (group->object);
-				g_hash_table_insert (groups, group->object, od);
-			}
-		}
-
-		if (groups && !g_hash_table_size (groups)) {
-			g_hash_table_destroy (groups);
-			groups = NULL;
-		}
-	}
-
+	camel_weak_ref_group_set_locked (group, object);
 	G_UNLOCK (groups);
 }
 
@@ -219,12 +243,10 @@ camel_weak_ref_group_get (CamelWeakRefGroup *group)
 
 	G_LOCK (groups);
 
-	if (group->object) {
+	if (group->object && groups) {
 		ObjectData *od = g_hash_table_lookup (groups, group->object);
 
-		g_warn_if_fail (od != NULL);
-
-		object = g_weak_ref_get (&od->weakref);
+		object = od ? g_weak_ref_get (&od->weakref) : NULL;
 	}
 
 	G_UNLOCK (groups);
