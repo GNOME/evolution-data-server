@@ -154,45 +154,6 @@ static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
-/* Private function */
-void _camel_message_info_unset_summary (CamelMessageInfo *mi);
-
-static gboolean
-remove_each_item (gpointer uid,
-                  gpointer mi,
-                  gpointer user_data)
-{
-	GSList **to_remove_infos = user_data;
-
-	*to_remove_infos = g_slist_prepend (*to_remove_infos, mi);
-
-	return TRUE;
-}
-
-static void
-remove_all_loaded (CamelFolderSummary *summary)
-{
-	GSList *to_remove_infos = NULL, *link;
-
-	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
-
-	camel_folder_summary_lock (summary);
-
-	g_hash_table_foreach_remove (summary->priv->loaded_infos, remove_each_item, &to_remove_infos);
-
-	for (link = to_remove_infos; link; link = g_slist_next (link)) {
-		CamelMessageInfo *mi = link->data;
-
-		/* Dirty hack, to have CamelWeakRefGroup properly cleared,
-		   when the message info leaks due to ref/unref imbalance. */
-		_camel_message_info_unset_summary (mi);
-	}
-
-	g_slist_free_full (to_remove_infos, g_object_unref);
-
-	camel_folder_summary_unlock (summary);
-}
-
 /* only for testing purposes */
 void _camel_folder_summary_unload_uid (CamelFolderSummary *self, const gchar *uid);
 
@@ -200,16 +161,11 @@ void
 _camel_folder_summary_unload_uid (CamelFolderSummary *self,
 				  const gchar *uid)
 {
-	CamelMessageInfo *mi;
-
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (self));
 
 	camel_folder_summary_lock (self);
-	mi = g_hash_table_lookup (self->priv->loaded_infos, uid);
 	g_hash_table_remove (self->priv->loaded_infos, uid);
 	camel_folder_summary_unlock (self);
-
-	g_clear_object (&mi);
 }
 
 static void
@@ -303,7 +259,6 @@ folder_summary_finalize (GObject *object)
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (object);
 
 	g_hash_table_destroy (summary->priv->uids);
-	remove_all_loaded (summary);
 	g_hash_table_destroy (summary->priv->loaded_infos);
 
 	g_hash_table_foreach (summary->priv->filter_charset, free_o_name, NULL);
@@ -888,7 +843,7 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 
 	summary->priv->nextuid = 1;
 	summary->priv->uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
-	summary->priv->loaded_infos = g_hash_table_new (g_str_hash, g_str_equal);
+	summary->priv->loaded_infos = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_object_unref);
 
 	g_rec_mutex_init (&summary->priv->summary_lock);
 	g_rec_mutex_init (&summary->priv->filter_lock);
@@ -1430,11 +1385,20 @@ cfs_load_record_to_message_info (CamelFolderSummary *summary,
 	bdata_ptr = record->bdata;
 
 	if (camel_message_info_load (info, record, &bdata_ptr)) {
+		CamelMessageInfo *existing;
+
 		/* Just now we are reading from the DB, it can't be dirty. */
 		camel_message_info_set_dirty (info, FALSE);
 		camel_folder_summary_lock (summary);
-		/* Summary always holds a ref for the loaded infos; this consumes it */
-		g_hash_table_insert (summary->priv->loaded_infos, (gchar *) camel_message_info_get_uid (info), info);
+
+		existing = g_hash_table_lookup (summary->priv->loaded_infos, camel_message_info_get_uid (info));
+		if (existing && camel_message_info_get_dirty (existing)) {
+			g_clear_object (&info);
+		} else {
+			/* Summary always holds a ref for the loaded infos; this consumes it */
+			g_hash_table_insert (summary->priv->loaded_infos, (gchar *) camel_message_info_get_uid (info), info);
+		}
+
 		camel_folder_summary_unlock (summary);
 	} else {
 		g_clear_object (&info);
@@ -1655,14 +1619,11 @@ cfs_count_dirty (CamelFolderSummary *summary)
 static gboolean
 remove_item (gchar *uid,
              CamelMessageInfo *info,
-             GSList **to_remove_infos)
+             gpointer user_data)
 {
-	if (G_OBJECT (info)->ref_count == 1 && !camel_message_info_get_dirty (info) && (camel_message_info_get_flags (info) & CAMEL_MESSAGE_FOLDER_FLAGGED) == 0) {
-		*to_remove_infos = g_slist_prepend (*to_remove_infos, info);
-		return TRUE;
-	}
-
-	return FALSE;
+	return G_OBJECT (info)->ref_count == 1 &&
+		!camel_message_info_get_dirty (info) &&
+		(camel_message_info_get_flags (info) & CAMEL_MESSAGE_FOLDER_FLAGGED) == 0;
 }
 
 static void
@@ -1671,8 +1632,6 @@ remove_cache (CamelSession *session,
               CamelFolderSummary *summary,
               GError **error)
 {
-	GSList *to_remove_infos = NULL;
-
 	camel_db_release_cache_memory ();
 
 	if (time (NULL) - summary->priv->cache_load_time < SUMMARY_CACHE_DROP)
@@ -1680,9 +1639,7 @@ remove_cache (CamelSession *session,
 
 	camel_folder_summary_lock (summary);
 
-	g_hash_table_foreach_remove (summary->priv->loaded_infos, (GHRFunc) remove_item, &to_remove_infos);
-
-	g_slist_free_full (to_remove_infos, g_object_unref);
+	g_hash_table_foreach_remove (summary->priv->loaded_infos, (GHRFunc) remove_item, NULL);
 
 	camel_folder_summary_unlock (summary);
 
@@ -2333,8 +2290,6 @@ camel_folder_summary_add (CamelFolderSummary *summary,
                           CamelMessageInfo *info,
 			  gboolean force_keep_uid)
 {
-	CamelMessageInfo *loaded_info;
-
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	if (!info)
@@ -2370,15 +2325,6 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 
 	/* Summary always holds a ref for the loaded infos */
 	g_object_ref (info);
-
-	loaded_info = g_hash_table_lookup (summary->priv->loaded_infos, camel_message_info_get_uid (info));
-	if (loaded_info) {
-		/* Dirty hack, to have CamelWeakRefGroup properly cleared,
-		   when the message info leaks due to ref/unref imbalance. */
-		_camel_message_info_unset_summary (loaded_info);
-
-		g_clear_object (&loaded_info);
-	}
 
 	g_hash_table_insert (summary->priv->loaded_infos, (gpointer) camel_message_info_get_uid (info), info);
 
@@ -2611,7 +2557,6 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	   the messages are still left in the DB file. */
 
 	g_hash_table_remove_all (summary->priv->uids);
-	remove_all_loaded (summary);
 	g_hash_table_remove_all (summary->priv->loaded_infos);
 
 	summary->priv->saved_count = 0;
@@ -2685,7 +2630,6 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
                                  const gchar *uid)
 {
 	gpointer ptr_uid = NULL, ptr_flags = NULL;
-	CamelMessageInfo *mi;
 	CamelStore *parent_store;
 	const gchar *full_name;
 	const gchar *uid_copy;
@@ -2704,17 +2648,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 
 	uid_copy = camel_pstring_strdup (uid);
 	g_hash_table_remove (summary->priv->uids, uid_copy);
-
-	mi = g_hash_table_lookup (summary->priv->loaded_infos, uid_copy);
 	g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
-
-	if (mi) {
-		/* Dirty hack, to have CamelWeakRefGroup properly cleared,
-		   when the message info leaks due to ref/unref imbalance. */
-		_camel_message_info_unset_summary (mi);
-
-		g_clear_object (&mi);
-	}
 
 	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
@@ -2762,20 +2696,10 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 		gpointer ptr_uid = NULL, ptr_flags = NULL;
 		if (g_hash_table_lookup_extended (summary->priv->uids, in_uid, &ptr_uid, &ptr_flags)) {
 			const gchar *uid_copy = camel_pstring_strdup (in_uid);
-			CamelMessageInfo *mi;
 
 			folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), UPDATE_COUNTS_SUB);
 			g_hash_table_remove (summary->priv->uids, uid_copy);
-
-			mi = g_hash_table_lookup (summary->priv->loaded_infos, uid_copy);
 			g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
-
-			if (mi) {
-				/* Dirty hack, to have CamelWeakRefGroup properly cleared,
-				   when the message info leaks due to ref/unref imbalance. */
-				_camel_message_info_unset_summary (mi);
-				g_clear_object (&mi);
-			}
 
 			camel_pstring_free (uid_copy);
 		}

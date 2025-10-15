@@ -1028,17 +1028,6 @@ camel_message_info_init (CamelMessageInfo *mi)
 	g_rec_mutex_init (&mi->priv->property_lock);
 }
 
-/* Private function */
-void _camel_message_info_unset_summary (CamelMessageInfo *mi);
-
-void
-_camel_message_info_unset_summary (CamelMessageInfo *mi)
-{
-	g_return_if_fail (CAMEL_IS_MESSAGE_INFO (mi));
-
-	camel_weak_ref_group_set (mi->priv->summary_wrg, NULL);
-}
-
 /**
  * camel_message_info_new:
  * @summary: (nullable) (type CamelFolderSummary): parent #CamelFolderSummary object, or %NULL
