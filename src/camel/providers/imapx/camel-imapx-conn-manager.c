@@ -1720,7 +1720,6 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 			CAMEL_IMAPX_FOLDER (folder),
 			cancellable, error);
 		folder_deleted_count = camel_folder_summary_get_deleted_count (camel_folder_get_folder_summary (folder));
-		g_object_unref (folder);
 	}
 
 	/* Avoid duplicating messages in the Trash folder. */
@@ -1749,6 +1748,7 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 	g_ptr_array_unref (uids_to_copy);
 	g_free (real_trash_path);
 
+	g_clear_object (&folder);
 	g_clear_object (&imapx_store);
 	g_clear_object (&destination);
 	g_clear_object (&mailbox);

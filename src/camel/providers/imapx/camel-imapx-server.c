@@ -5966,6 +5966,43 @@ imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
 	}
 }
 
+static void
+camel_imapx_server_check_folder_path (CamelIMAPXServer *is,
+				      const gchar *path,
+				      CamelFolder *other_folder,
+				      gboolean *out_path_exists,
+				      gboolean *out_same_as_other_folder)
+{
+	CamelIMAPXStore *imapx_store;
+	CamelStoreInfo *si;
+
+	*out_path_exists = FALSE;
+	*out_same_as_other_folder = FALSE;
+
+	if (!path || !*path)
+		return;
+
+	imapx_store = camel_imapx_server_ref_store (is);
+	if (!imapx_store)
+		return;
+
+	path = camel_imapx_normalize_inbox_name (path);
+
+	si = camel_store_summary_path (imapx_store->summary, path);
+
+	*out_path_exists = si != NULL && !(si->flags & CAMEL_STORE_INFO_FOLDER_NOSELECT);
+
+	if (*out_path_exists) {
+		const gchar *folder_name = camel_folder_get_full_name (other_folder);
+
+		folder_name = camel_imapx_normalize_inbox_name (folder_name);
+
+		*out_same_as_other_folder = folder_name != NULL && g_ascii_strcasecmp (folder_name, path) == 0;
+	}
+
+	g_object_unref (imapx_store);
+}
+
 gboolean
 camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				      CamelIMAPXMailbox *mailbox,
@@ -6027,43 +6064,25 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 		use_real_junk_path = camel_imapx_settings_get_use_real_junk_path (settings);
 		if (use_real_junk_path) {
-			CamelFolder *junk_folder = NULL;
 			gchar *real_junk_path;
 
 			real_junk_path = camel_imapx_settings_dup_real_junk_path (settings);
-			if (real_junk_path) {
-				junk_folder = camel_store_get_folder_sync (
-					camel_folder_get_parent_store (folder),
-					real_junk_path, 0, cancellable, NULL);
-			}
+			camel_imapx_server_check_folder_path (is, real_junk_path, folder, &use_real_junk_path, &is_real_junk_folder);
 
-			is_real_junk_folder = junk_folder == folder;
-
-			use_real_junk_path = junk_folder != NULL;
-
-			g_clear_object (&junk_folder);
 			g_free (real_junk_path);
 		}
 
 		use_real_trash_path = camel_imapx_settings_get_use_real_trash_path (settings);
 		if (use_real_trash_path) {
-			CamelFolder *trash_folder = NULL;
 			gchar *real_trash_path;
 
 			real_trash_path = camel_imapx_settings_dup_real_trash_path (settings);
-			if (real_trash_path)
-				trash_folder = camel_store_get_folder_sync (
-					camel_folder_get_parent_store (folder),
-					real_trash_path, 0, cancellable, NULL);
 
-			is_real_trash_folder = trash_folder == folder;
+			camel_imapx_server_check_folder_path (is, real_trash_path, folder, &use_real_trash_path, &is_real_trash_folder);
 
 			/* Remove deleted flags in all but the trash folder itself */
-			remove_deleted_flags = !trash_folder || !is_real_trash_folder;
+			remove_deleted_flags = !use_real_trash_path || !is_real_trash_folder;
 
-			use_real_trash_path = trash_folder != NULL;
-
-			g_clear_object (&trash_folder);
 			g_free (real_trash_path);
 		}
 
