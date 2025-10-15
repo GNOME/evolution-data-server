@@ -1891,6 +1891,7 @@ reminders_widget_constructed (GObject *object)
 	g_object_set (G_OBJECT (flow_box),
 		"homogeneous", FALSE,
 		"selection-mode", GTK_SELECTION_NONE,
+		"max-children-per-line", 10000, /* to glue the buttons without extra space between them */
 		"column-spacing", 4,
 		"row-spacing", 4,
 		"margin-start", 6,
