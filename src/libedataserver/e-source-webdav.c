@@ -1812,7 +1812,7 @@ e_source_webdav_get_limit_download_days (ESourceWebdav *extension)
 /**
  * e_source_webdav_set_limit_download_days:
  * @extension: an #ESourceWebdav
- * @timeout: a timeout, in seconds
+ * @value: a value, in days
  *
  * Limit how many past days can be downloaded. Zero means unlimited.
  *
