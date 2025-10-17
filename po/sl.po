@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-10-03 09:42+0000\n"
-"PO-Revision-Date: 2025-10-03 12:11+0200\n"
+"POT-Creation-Date: 2025-10-17 10:49+0000\n"
+"PO-Revision-Date: 2025-10-17 15:04+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -25,34 +25,34 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
-#: src/addressbook/libebook-contacts/e-contact.c:311
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:908
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:399
+#: src/addressbook/libebook-contacts/e-contact.c:358
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:978
 msgid "Anniversary"
 msgstr "Obletnica"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:655
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:761
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Podan naslov URL »%s« se ne sklicuje na imenik CardDAV"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1569
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1682
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1491
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:999
 msgid "Server didn’t return object’s href"
 msgstr "Odziv strežnika ne vključuje vrednosti href predmeta"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1571
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1684
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1493
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1001
 msgid "Server didn’t return object’s ETag"
 msgstr "Strežnik ni vrnil podatka ETag predmeta"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1573
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1686
 msgid "Received object is not a valid vCard"
 msgstr "Prejet predmet ni veljavna kartica vCard."
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1695
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1808
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1663
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
@@ -65,7 +65,7 @@ msgstr ""
 "ali okvarjen. Lahko ga poskusite odstraniti in ponovno zagnati zaledne "
 "procese evolution-data-server. Datoteka predpomnilnika: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1701
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1814
 msgid "Object to save is not a valid vCard"
 msgstr "Predmet za shranjevanje ni veljavna kartica vCard"
 
@@ -85,7 +85,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Ustvarjanje trde povezave za vir »%s« je spodletelo: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:733
-#: src/addressbook/backends/file/e-book-backend-file.c:1500
+#: src/addressbook/backends/file/e-book-backend-file.c:1502
 msgid "No UID in the contact"
 msgstr "Ni vrednosti UID stika"
 
@@ -99,64 +99,64 @@ msgid "Loading..."
 msgstr "Nalaganje ..."
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1202
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4829
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4827
 msgid "Searching..."
 msgstr "Iskanje ..."
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1528
+#: src/addressbook/backends/file/e-book-backend-file.c:1530
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Poskus spreminjanja stika »%s« z neusklajeno različico"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1709
-#: src/addressbook/backends/file/e-book-backend-file.c:1795
+#: src/addressbook/backends/file/e-book-backend-file.c:1711
+#: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7462
-#: src/addressbook/libedata-book/e-book-sqlite.c:7531
+#: src/addressbook/libedata-book/e-book-sqlite.c:7461
+#: src/addressbook/libedata-book/e-book-sqlite.c:7530
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Stika »%s« ni mogoče najti"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1859
-#: src/addressbook/backends/file/e-book-backend-file.c:1942
+#: src/addressbook/backends/file/e-book-backend-file.c:1861
+#: src/addressbook/backends/file/e-book-backend-file.c:1944
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Poizvedba »%s« ni podprta!"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1868
-#: src/addressbook/backends/file/e-book-backend-file.c:1951
+#: src/addressbook/backends/file/e-book-backend-file.c:1870
+#: src/addressbook/backends/file/e-book-backend-file.c:1953
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Neveljavna poizvedba »%s«"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2258
+#: src/addressbook/backends/file/e-book-backend-file.c:2260
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2196
 msgid "Requested to delete an unrelated cursor"
 msgstr "Podana je zahteva za izbris nedoločene kazalke"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2385
+#: src/addressbook/backends/file/e-book-backend-file.c:2387
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:147
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1146
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4712
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4710
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: src/addressbook/libebook-contacts/e-phone-number.c:53
 #: src/addressbook/libebook/e-book.c:1073
-#: src/addressbook/libebook/e-book-client.c:2068
-#: src/addressbook/libebook/e-book-client.c:2236
-#: src/addressbook/libebook/e-book-client.c:2445
-#: src/addressbook/libebook/e-book-client.c:2570
-#: src/addressbook/libebook/e-book-client.c:2723
-#: src/addressbook/libebook/e-book-client.c:2852
-#: src/addressbook/libebook/e-book-client.c:2977
-#: src/addressbook/libebook/e-book-client.c:3127
-#: src/addressbook/libebook/e-book-client.c:3307
-#: src/addressbook/libebook/e-book-client.c:3513
-#: src/addressbook/libedata-book/e-book-backend-sexp.c:897
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:274
+#: src/addressbook/libebook/e-book-client.c:2122
+#: src/addressbook/libebook/e-book-client.c:2290
+#: src/addressbook/libebook/e-book-client.c:2499
+#: src/addressbook/libebook/e-book-client.c:2624
+#: src/addressbook/libebook/e-book-client.c:2777
+#: src/addressbook/libebook/e-book-client.c:2906
+#: src/addressbook/libebook/e-book-client.c:3031
+#: src/addressbook/libebook/e-book-client.c:3181
+#: src/addressbook/libebook/e-book-client.c:3361
+#: src/addressbook/libebook/e-book-client.c:3567
+#: src/addressbook/libedata-book/e-book-backend-sexp.c:908
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:287
 #: src/calendar/backends/http/e-cal-backend-http.c:312
 #: src/calendar/libecal/e-cal-client.c:247
 #: src/calendar/libecal/e-cal-client.c:3263
@@ -190,7 +190,7 @@ msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 #: src/libedataserver/e-soup-session.c:2144
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
-#: src/libedataserverui/e-reminders-widget.c:2288
+#: src/libedataserverui/e-reminders-widget.c:2289
 #: src/tools/list-sources/list-sources.c:428
 msgid "Unknown error"
 msgstr "Neznana napaka"
@@ -214,7 +214,7 @@ msgid "Invalid DN syntax"
 msgstr "Neveljavna razločna skladnja DN"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1143
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4711
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4709
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Prišlo je do napake LDAP 0x%x (%s)"
@@ -234,16 +234,16 @@ msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2354
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2490
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6285
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6283
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2648
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2647
 msgid "LDAP contact lists cannot be empty."
 msgstr "Seznam stikov LDAP ne sme biti prazen."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2686
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2685
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -264,46 +264,46 @@ msgstr[3] ""
 "Seznami stikov v imenikih LDAP zahtevajo prisotnost vsakega stika v istem "
 "imeniku LDAP, vendar %d stiki niso prepoznani."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4658
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4656
 msgid "Receiving LDAP search results..."
 msgstr "Sprejemanje rezultatov iskanja LDAP ..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4855
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4853
 msgid "Error performing search"
 msgstr "Napaka med iskanjem"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5002
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5000
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Prejemanje stikov (%d) ..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5107
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5105
 #: src/addressbook/libedata-book/e-book-meta-backend.c:887
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:772
 msgid "Refreshing…"
 msgstr "Poteka osveževanje …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5592
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5590
 msgid "The backend does not support bulk additions"
 msgstr "Ozadnji program ne podpira množičnega dodajanja"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5687
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5685
 msgid "Adding contact to LDAP server..."
 msgstr "Dodajanje stika na strežnik LDAP ..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5749
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5747
 msgid "The backend does not support bulk modifications"
 msgstr "Ozadnji program ne podpira množičnega spreminjanja"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5771
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5769
 msgid "Modifying contact from LDAP server..."
 msgstr "Spreminjam stik na strežniku LDAP ..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5843
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5841
 msgid "Removing contact from LDAP server..."
 msgstr "Odstranjujem stik iz strežnika LDAP ..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6482
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6480
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Pridobivanje razločnega imena (DN) za uporabnika »%s« je spodletelo."
@@ -329,7 +329,7 @@ msgid "No space"
 msgstr "Ni prostora"
 
 #. Dummy row as EContactField starts from 1
-#: src/addressbook/libebook-contacts/e-contact.c:148
+#: src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Unique ID"
 msgstr "Edinstven ID"
 
@@ -337,12 +337,12 @@ msgstr "Edinstven ID"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: src/addressbook/libebook-contacts/e-contact.c:153
+#: src/addressbook/libebook-contacts/e-contact.c:200
 msgid "File Under"
 msgstr "Uredi pod"
 
 #. URI of the book to which the contact belongs to
-#: src/addressbook/libebook-contacts/e-contact.c:155
+#: src/addressbook/libebook-contacts/e-contact.c:202
 msgid "Book UID"
 msgstr "UID knjige"
 
@@ -350,438 +350,438 @@ msgstr "UID knjige"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: src/addressbook/libebook-contacts/e-contact.c:161
+#: src/addressbook/libebook-contacts/e-contact.c:208
 msgid "Full Name"
 msgstr "Polno ime"
 
-#: src/addressbook/libebook-contacts/e-contact.c:162
+#: src/addressbook/libebook-contacts/e-contact.c:209
 msgid "Given Name"
 msgstr "Rojstno ime"
 
-#: src/addressbook/libebook-contacts/e-contact.c:163
+#: src/addressbook/libebook-contacts/e-contact.c:210
 msgid "Family Name"
 msgstr "Družinsko ime"
 
-#: src/addressbook/libebook-contacts/e-contact.c:164
+#: src/addressbook/libebook-contacts/e-contact.c:211
 #: src/libedataserverui/e-certificate-widget.c:420
 msgid "Nickname"
 msgstr "Vzdevek"
 
 #. Email fields
-#: src/addressbook/libebook-contacts/e-contact.c:167
+#: src/addressbook/libebook-contacts/e-contact.c:214
 msgid "Email 1"
 msgstr "Elektronski naslov 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:168
+#: src/addressbook/libebook-contacts/e-contact.c:215
 msgid "Email 2"
 msgstr "Elektronski naslov 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:169
+#: src/addressbook/libebook-contacts/e-contact.c:216
 msgid "Email 3"
 msgstr "Elektronski naslov 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:170
+#: src/addressbook/libebook-contacts/e-contact.c:217
 msgid "Email 4"
 msgstr "Elektronski naslov 4"
 
-#: src/addressbook/libebook-contacts/e-contact.c:172
+#: src/addressbook/libebook-contacts/e-contact.c:219
 msgid "Mailer"
 msgstr "Poštni odjemalec"
 
 #. Address Labels
-#: src/addressbook/libebook-contacts/e-contact.c:175
+#: src/addressbook/libebook-contacts/e-contact.c:222
 msgid "Home Address Label"
 msgstr "Vizitka domačega naslova"
 
-#: src/addressbook/libebook-contacts/e-contact.c:176
+#: src/addressbook/libebook-contacts/e-contact.c:223
 msgid "Work Address Label"
 msgstr "Vizitka službenega naslova"
 
-#: src/addressbook/libebook-contacts/e-contact.c:177
+#: src/addressbook/libebook-contacts/e-contact.c:224
 msgid "Other Address Label"
 msgstr "Vizitka drugega naslova"
 
 #. Phone fields
-#: src/addressbook/libebook-contacts/e-contact.c:180
+#: src/addressbook/libebook-contacts/e-contact.c:227
 msgid "Assistant Phone"
 msgstr "Pomožni telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:181
+#: src/addressbook/libebook-contacts/e-contact.c:228
 msgid "Business Phone"
 msgstr "Službeni telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:182
+#: src/addressbook/libebook-contacts/e-contact.c:229
 msgid "Business Phone 2"
 msgstr "Službeni telefon 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:183
+#: src/addressbook/libebook-contacts/e-contact.c:230
 msgid "Business Fax"
 msgstr "Službeni faks"
 
-#: src/addressbook/libebook-contacts/e-contact.c:184
+#: src/addressbook/libebook-contacts/e-contact.c:231
 msgid "Callback Phone"
 msgstr "Povratni telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:185
+#: src/addressbook/libebook-contacts/e-contact.c:232
 msgid "Car Phone"
 msgstr "Telefon v avtu"
 
-#: src/addressbook/libebook-contacts/e-contact.c:186
+#: src/addressbook/libebook-contacts/e-contact.c:233
 msgid "Company Phone"
 msgstr "Telefon podjetja"
 
-#: src/addressbook/libebook-contacts/e-contact.c:187
+#: src/addressbook/libebook-contacts/e-contact.c:234
 msgid "Home Phone"
 msgstr "Domači telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:188
+#: src/addressbook/libebook-contacts/e-contact.c:235
 msgid "Home Phone 2"
 msgstr "Domači telefon 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:189
+#: src/addressbook/libebook-contacts/e-contact.c:236
 msgid "Home Fax"
 msgstr "Domači faks"
 
-#: src/addressbook/libebook-contacts/e-contact.c:190
+#: src/addressbook/libebook-contacts/e-contact.c:237
 msgid "ISDN"
 msgstr "ISDN"
 
-#: src/addressbook/libebook-contacts/e-contact.c:191
+#: src/addressbook/libebook-contacts/e-contact.c:238
 msgid "Mobile Phone"
 msgstr "Prenosni telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:192
+#: src/addressbook/libebook-contacts/e-contact.c:239
 msgid "Other Phone"
 msgstr "Drug telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:193
+#: src/addressbook/libebook-contacts/e-contact.c:240
 msgid "Other Fax"
 msgstr "Drugi faks"
 
-#: src/addressbook/libebook-contacts/e-contact.c:194
+#: src/addressbook/libebook-contacts/e-contact.c:241
 msgid "Pager"
 msgstr "Pozivnik"
 
-#: src/addressbook/libebook-contacts/e-contact.c:195
+#: src/addressbook/libebook-contacts/e-contact.c:242
 msgid "Primary Phone"
 msgstr "Osnovni telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:196
+#: src/addressbook/libebook-contacts/e-contact.c:243
 msgid "Radio"
 msgstr "Radio"
 
-#: src/addressbook/libebook-contacts/e-contact.c:197
+#: src/addressbook/libebook-contacts/e-contact.c:244
 msgid "Telex"
 msgstr "Teleks"
 
 #. To translators: TTY is Teletypewriter
-#: src/addressbook/libebook-contacts/e-contact.c:199
+#: src/addressbook/libebook-contacts/e-contact.c:246
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: src/addressbook/libebook-contacts/e-contact.c:202
+#: src/addressbook/libebook-contacts/e-contact.c:249
 #: src/libedataserverui/e-certificate-widget.c:422
 #: src/libedataserverui/e-certificate-widget.c:431
 msgid "Organization"
 msgstr "Organizacija"
 
-#: src/addressbook/libebook-contacts/e-contact.c:203
+#: src/addressbook/libebook-contacts/e-contact.c:250
 msgid "Organizational Unit"
 msgstr "Organizacijska enota"
 
-#: src/addressbook/libebook-contacts/e-contact.c:204
+#: src/addressbook/libebook-contacts/e-contact.c:251
 msgid "Office"
 msgstr "Pisarna"
 
-#: src/addressbook/libebook-contacts/e-contact.c:205
+#: src/addressbook/libebook-contacts/e-contact.c:252
 msgid "Title"
 msgstr "Naziv"
 
-#: src/addressbook/libebook-contacts/e-contact.c:206
+#: src/addressbook/libebook-contacts/e-contact.c:253
 msgid "Role"
 msgstr "Vloga"
 
-#: src/addressbook/libebook-contacts/e-contact.c:207
+#: src/addressbook/libebook-contacts/e-contact.c:254
 msgid "Manager"
 msgstr "Upravljalnik"
 
-#: src/addressbook/libebook-contacts/e-contact.c:208
+#: src/addressbook/libebook-contacts/e-contact.c:255
 msgid "Assistant"
 msgstr "Pomočnik"
 
 #. Web fields
-#: src/addressbook/libebook-contacts/e-contact.c:211
+#: src/addressbook/libebook-contacts/e-contact.c:258
 msgid "Homepage URL"
 msgstr "Naslov URL domače strani"
 
-#: src/addressbook/libebook-contacts/e-contact.c:212
+#: src/addressbook/libebook-contacts/e-contact.c:259
 msgid "Weblog URL"
 msgstr "Naslov URL bloga"
 
 #. Contact categories
-#: src/addressbook/libebook-contacts/e-contact.c:215
+#: src/addressbook/libebook-contacts/e-contact.c:262
 msgid "Categories"
 msgstr "Kategorije"
 
 #. Collaboration fields
-#: src/addressbook/libebook-contacts/e-contact.c:218
+#: src/addressbook/libebook-contacts/e-contact.c:265
 msgid "Calendar URI"
 msgstr "Naslov URI koledarja"
 
-#: src/addressbook/libebook-contacts/e-contact.c:219
+#: src/addressbook/libebook-contacts/e-contact.c:266
 msgid "Free/Busy URL"
 msgstr "Naslov URL zaposlenosti"
 
-#: src/addressbook/libebook-contacts/e-contact.c:220
+#: src/addressbook/libebook-contacts/e-contact.c:267
 msgid "ICS Calendar"
 msgstr "Koledar ICS"
 
-#: src/addressbook/libebook-contacts/e-contact.c:221
+#: src/addressbook/libebook-contacts/e-contact.c:268
 msgid "Video Conferencing URL"
 msgstr "Naslov URL videokonference"
 
 #. Misc fields
-#: src/addressbook/libebook-contacts/e-contact.c:224
+#: src/addressbook/libebook-contacts/e-contact.c:271
 msgid "Spouse’s Name"
 msgstr "Ime soproga/soproge"
 
-#: src/addressbook/libebook-contacts/e-contact.c:225
+#: src/addressbook/libebook-contacts/e-contact.c:272
 msgid "Note"
 msgstr "Opomba"
 
 #. Instant messaging fields
-#: src/addressbook/libebook-contacts/e-contact.c:228
+#: src/addressbook/libebook-contacts/e-contact.c:275
 msgid "AIM Home Screen Name 1"
 msgstr "Domači ID za AIM 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:229
+#: src/addressbook/libebook-contacts/e-contact.c:276
 msgid "AIM Home Screen Name 2"
 msgstr "Domači ID za AIM 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:230
+#: src/addressbook/libebook-contacts/e-contact.c:277
 msgid "AIM Home Screen Name 3"
 msgstr "Domači ID za AIM 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:231
+#: src/addressbook/libebook-contacts/e-contact.c:278
 msgid "AIM Work Screen Name 1"
 msgstr "Službeni ID za AIM 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:232
+#: src/addressbook/libebook-contacts/e-contact.c:279
 msgid "AIM Work Screen Name 2"
 msgstr "Službeni ID za AIM 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:233
+#: src/addressbook/libebook-contacts/e-contact.c:280
 msgid "AIM Work Screen Name 3"
 msgstr "Službeni ID za AIM 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:234
+#: src/addressbook/libebook-contacts/e-contact.c:281
 msgid "GroupWise Home Screen Name 1"
 msgstr "Domači ID za GroupWise 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:235
+#: src/addressbook/libebook-contacts/e-contact.c:282
 msgid "GroupWise Home Screen Name 2"
 msgstr "Domači ID za GroupWise 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:236
+#: src/addressbook/libebook-contacts/e-contact.c:283
 msgid "GroupWise Home Screen Name 3"
 msgstr "Domači ID za GroupWise 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:237
+#: src/addressbook/libebook-contacts/e-contact.c:284
 msgid "GroupWise Work Screen Name 1"
 msgstr "Domači ID za GroupWise 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:238
+#: src/addressbook/libebook-contacts/e-contact.c:285
 msgid "GroupWise Work Screen Name 2"
 msgstr "Službeni ID za GroupWise 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:239
+#: src/addressbook/libebook-contacts/e-contact.c:286
 msgid "GroupWise Work Screen Name 3"
 msgstr "Službeni ID za GroupWise 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:240
+#: src/addressbook/libebook-contacts/e-contact.c:287
 msgid "Jabber Home ID 1"
 msgstr "Domači Jabber ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:241
+#: src/addressbook/libebook-contacts/e-contact.c:288
 msgid "Jabber Home ID 2"
 msgstr "Domači Jabber ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:242
+#: src/addressbook/libebook-contacts/e-contact.c:289
 msgid "Jabber Home ID 3"
 msgstr "Domači Jabber ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:243
+#: src/addressbook/libebook-contacts/e-contact.c:290
 msgid "Jabber Work ID 1"
 msgstr "Službeni Jabber ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:244
+#: src/addressbook/libebook-contacts/e-contact.c:291
 msgid "Jabber Work ID 2"
 msgstr "Službeni Jabber ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:245
+#: src/addressbook/libebook-contacts/e-contact.c:292
 msgid "Jabber Work ID 3"
 msgstr "Službeni Jabber ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:246
+#: src/addressbook/libebook-contacts/e-contact.c:293
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Domači ID za Yahoo! 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:247
+#: src/addressbook/libebook-contacts/e-contact.c:294
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Domači ID za Yahoo! 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:248
+#: src/addressbook/libebook-contacts/e-contact.c:295
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Domači ID za Yahoo! 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:249
+#: src/addressbook/libebook-contacts/e-contact.c:296
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Službeni ID za Yahoo! 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:250
+#: src/addressbook/libebook-contacts/e-contact.c:297
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Službeni ID za Yahoo! 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:251
+#: src/addressbook/libebook-contacts/e-contact.c:298
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Službeni ID za Yahoo! 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:252
+#: src/addressbook/libebook-contacts/e-contact.c:299
 msgid "MSN Home Screen Name 1"
 msgstr "Domači ID za MSN 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:253
+#: src/addressbook/libebook-contacts/e-contact.c:300
 msgid "MSN Home Screen Name 2"
 msgstr "Domači ID za MSN 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:254
+#: src/addressbook/libebook-contacts/e-contact.c:301
 msgid "MSN Home Screen Name 3"
 msgstr "Domači ID za MSN 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:255
+#: src/addressbook/libebook-contacts/e-contact.c:302
 msgid "MSN Work Screen Name 1"
 msgstr "Službeni ID za MSN 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:256
+#: src/addressbook/libebook-contacts/e-contact.c:303
 msgid "MSN Work Screen Name 2"
 msgstr "Službeni ID za MSN 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:257
+#: src/addressbook/libebook-contacts/e-contact.c:304
 msgid "MSN Work Screen Name 3"
 msgstr "Službeni ID za MSN 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:258
+#: src/addressbook/libebook-contacts/e-contact.c:305
 msgid "ICQ Home ID 1"
 msgstr "Domači ICQ ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:259
+#: src/addressbook/libebook-contacts/e-contact.c:306
 msgid "ICQ Home ID 2"
 msgstr "Domači ICQ ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:260
+#: src/addressbook/libebook-contacts/e-contact.c:307
 msgid "ICQ Home ID 3"
 msgstr "Domači ICQ ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:261
+#: src/addressbook/libebook-contacts/e-contact.c:308
 msgid "ICQ Work ID 1"
 msgstr "Službeni ICQ ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:262
+#: src/addressbook/libebook-contacts/e-contact.c:309
 msgid "ICQ Work ID 2"
 msgstr "Službeni ICQ ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:263
+#: src/addressbook/libebook-contacts/e-contact.c:310
 msgid "ICQ Work ID 3"
 msgstr "Službeni ICQ ID 3"
 
 #. Last modified time
-#: src/addressbook/libebook-contacts/e-contact.c:266
+#: src/addressbook/libebook-contacts/e-contact.c:313
 msgid "Last Revision"
 msgstr "Zadnji pregled"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: src/addressbook/libebook-contacts/e-contact.c:270
+#: src/addressbook/libebook-contacts/e-contact.c:317
 msgid "Name or Org"
 msgstr "Ime ali Ustanova"
 
 #. Address fields
-#: src/addressbook/libebook-contacts/e-contact.c:273
+#: src/addressbook/libebook-contacts/e-contact.c:320
 msgid "Address List"
 msgstr "Seznam naslovov"
 
-#: src/addressbook/libebook-contacts/e-contact.c:274
+#: src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Home Address"
 msgstr "Domači naslov"
 
-#: src/addressbook/libebook-contacts/e-contact.c:275
+#: src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Work Address"
 msgstr "Službeni naslov"
 
-#: src/addressbook/libebook-contacts/e-contact.c:276
+#: src/addressbook/libebook-contacts/e-contact.c:323
 msgid "Other Address"
 msgstr "Drug naslov"
 
 #. Contact categories
-#: src/addressbook/libebook-contacts/e-contact.c:279
+#: src/addressbook/libebook-contacts/e-contact.c:326
 msgid "Category List"
 msgstr "Seznam kategorij"
 
 #. Photo/Logo
-#: src/addressbook/libebook-contacts/e-contact.c:282
+#: src/addressbook/libebook-contacts/e-contact.c:329
 msgid "Photo"
 msgstr "Fotografija"
 
-#: src/addressbook/libebook-contacts/e-contact.c:283
+#: src/addressbook/libebook-contacts/e-contact.c:330
 msgid "Logo"
 msgstr "Logo"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: src/addressbook/libebook-contacts/e-contact.c:287
+#: src/addressbook/libebook-contacts/e-contact.c:334
 #: src/libedataserverui/e-webdav-discover-widget.c:195
 msgid "Name"
 msgstr "Ime"
 
-#: src/addressbook/libebook-contacts/e-contact.c:288
+#: src/addressbook/libebook-contacts/e-contact.c:335
 msgid "Email List"
 msgstr "Seznam elektronskih naslovov"
 
 #. Instant messaging fields
-#: src/addressbook/libebook-contacts/e-contact.c:291
+#: src/addressbook/libebook-contacts/e-contact.c:338
 msgid "AIM Screen Name List"
 msgstr "Seznam imen za AIM"
 
-#: src/addressbook/libebook-contacts/e-contact.c:292
+#: src/addressbook/libebook-contacts/e-contact.c:339
 msgid "GroupWise ID List"
 msgstr "Seznam GroupWise ID"
 
-#: src/addressbook/libebook-contacts/e-contact.c:293
+#: src/addressbook/libebook-contacts/e-contact.c:340
 msgid "Jabber ID List"
 msgstr "Seznam Jabber ID"
 
-#: src/addressbook/libebook-contacts/e-contact.c:294
+#: src/addressbook/libebook-contacts/e-contact.c:341
 msgid "Yahoo! Screen Name List"
 msgstr "Seznam imen za Yahoo!"
 
-#: src/addressbook/libebook-contacts/e-contact.c:295
+#: src/addressbook/libebook-contacts/e-contact.c:342
 msgid "MSN Screen Name List"
 msgstr "Seznam imen za MSN"
 
-#: src/addressbook/libebook-contacts/e-contact.c:296
+#: src/addressbook/libebook-contacts/e-contact.c:343
 msgid "ICQ ID List"
 msgstr "Seznam ICQ ID"
 
-#: src/addressbook/libebook-contacts/e-contact.c:298
+#: src/addressbook/libebook-contacts/e-contact.c:345
 msgid "Wants HTML Mail"
 msgstr "Želi pošto v obliki HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: src/addressbook/libebook-contacts/e-contact.c:303
+#: src/addressbook/libebook-contacts/e-contact.c:350
 msgid "List"
 msgstr "Seznam"
 
@@ -789,153 +789,234 @@ msgstr "Seznam"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: src/addressbook/libebook-contacts/e-contact.c:308
+#: src/addressbook/libebook-contacts/e-contact.c:355
 msgid "List Shows Addresses"
 msgstr "V seznamu so pokazani tudi naslovi"
 
-#: src/addressbook/libebook-contacts/e-contact.c:310
+#: src/addressbook/libebook-contacts/e-contact.c:357
 msgid "Birth Date"
 msgstr "Rojstni datum"
 
 #. Security fields
-#: src/addressbook/libebook-contacts/e-contact.c:314
+#: src/addressbook/libebook-contacts/e-contact.c:361
 msgid "X.509 Certificate"
 msgstr "Potrdilo X.509"
 
-#: src/addressbook/libebook-contacts/e-contact.c:315
+#: src/addressbook/libebook-contacts/e-contact.c:362
 msgid "PGP Certificate"
 msgstr "Potrdilo PGP"
 
-#: src/addressbook/libebook-contacts/e-contact.c:317
+#: src/addressbook/libebook-contacts/e-contact.c:364
 msgid "Gadu-Gadu Home ID 1"
 msgstr "Domači Gadu-Gadu ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:318
+#: src/addressbook/libebook-contacts/e-contact.c:365
 msgid "Gadu-Gadu Home ID 2"
 msgstr "Domači Gadu-Gadu ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:319
+#: src/addressbook/libebook-contacts/e-contact.c:366
 msgid "Gadu-Gadu Home ID 3"
 msgstr "Domači Gadu-Gadu ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:320
+#: src/addressbook/libebook-contacts/e-contact.c:367
 msgid "Gadu-Gadu Work ID 1"
 msgstr "Službeni Gadu-Gadu ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:321
+#: src/addressbook/libebook-contacts/e-contact.c:368
 msgid "Gadu-Gadu Work ID 2"
 msgstr "Službeni Gadu-Gadu ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:322
+#: src/addressbook/libebook-contacts/e-contact.c:369
 msgid "Gadu-Gadu Work ID 3"
 msgstr "Službeni Gadu-Gadu ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:323
+#: src/addressbook/libebook-contacts/e-contact.c:370
 msgid "Gadu-Gadu ID List"
 msgstr "Seznam Gadu-Gadu ID"
 
 #. Geo information
-#: src/addressbook/libebook-contacts/e-contact.c:326
+#: src/addressbook/libebook-contacts/e-contact.c:373
 msgid "Geographic Information"
 msgstr "Zemljepisne podrobnosti"
 
-#: src/addressbook/libebook-contacts/e-contact.c:328
+#: src/addressbook/libebook-contacts/e-contact.c:375
 msgid "Telephone"
 msgstr "Telefon"
 
-#: src/addressbook/libebook-contacts/e-contact.c:330
+#: src/addressbook/libebook-contacts/e-contact.c:377
 msgid "Skype Home Name 1"
 msgstr "Domači ID za Skype 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:331
+#: src/addressbook/libebook-contacts/e-contact.c:378
 msgid "Skype Home Name 2"
 msgstr "Domači ID za Skype 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:332
+#: src/addressbook/libebook-contacts/e-contact.c:379
 msgid "Skype Home Name 3"
 msgstr "Domači ID za Skype 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:333
+#: src/addressbook/libebook-contacts/e-contact.c:380
 msgid "Skype Work Name 1"
 msgstr "Službeni ID za Skype 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:334
+#: src/addressbook/libebook-contacts/e-contact.c:381
 msgid "Skype Work Name 2"
 msgstr "Službeni ID za Skype 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:335
+#: src/addressbook/libebook-contacts/e-contact.c:382
 msgid "Skype Work Name 3"
 msgstr "Službeni ID za Skype 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:336
+#: src/addressbook/libebook-contacts/e-contact.c:383
 msgid "Skype Name List"
 msgstr "Seznam imen za Skype"
 
-#: src/addressbook/libebook-contacts/e-contact.c:338
+#: src/addressbook/libebook-contacts/e-contact.c:385
 msgid "SIP address"
 msgstr "SIP naslov"
 
-#: src/addressbook/libebook-contacts/e-contact.c:340
+#: src/addressbook/libebook-contacts/e-contact.c:387
 msgid "Google Talk Home Name 1"
 msgstr "Domače ime 1 za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:341
+#: src/addressbook/libebook-contacts/e-contact.c:388
 msgid "Google Talk Home Name 2"
 msgstr "Domače ime 2 za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:342
+#: src/addressbook/libebook-contacts/e-contact.c:389
 msgid "Google Talk Home Name 3"
 msgstr "Domače ime 3 za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:343
+#: src/addressbook/libebook-contacts/e-contact.c:390
 msgid "Google Talk Work Name 1"
 msgstr "Službeno ime 1 za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:344
+#: src/addressbook/libebook-contacts/e-contact.c:391
 msgid "Google Talk Work Name 2"
 msgstr "Službeno ime 2 za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:345
+#: src/addressbook/libebook-contacts/e-contact.c:392
 msgid "Google Talk Work Name 3"
 msgstr "Službeno ime 3 za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:346
+#: src/addressbook/libebook-contacts/e-contact.c:393
 msgid "Google Talk Name List"
 msgstr "Seznam imen za Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:348
+#: src/addressbook/libebook-contacts/e-contact.c:395
 msgid "Twitter Name List"
 msgstr "Seznam stikov Twitter"
 
-#: src/addressbook/libebook-contacts/e-contact.c:350
+#: src/addressbook/libebook-contacts/e-contact.c:397
 msgid "Matrix Home ID 1"
 msgstr "Domači Matric ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:351
+#: src/addressbook/libebook-contacts/e-contact.c:398
 msgid "Matrix Home ID 2"
 msgstr "Domači Matric ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:352
+#: src/addressbook/libebook-contacts/e-contact.c:399
 msgid "Matrix Home ID 3"
 msgstr "Domači Matric ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:353
+#: src/addressbook/libebook-contacts/e-contact.c:400
 msgid "Matrix Work ID 1"
 msgstr "Službeni Matrix ID 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:354
+#: src/addressbook/libebook-contacts/e-contact.c:401
 msgid "Matrix Work ID 2"
 msgstr "Službeni Matrix ID 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:355
+#: src/addressbook/libebook-contacts/e-contact.c:402
 msgid "Matrix Work ID 3"
 msgstr "Službeni Matrix ID 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:356
+#: src/addressbook/libebook-contacts/e-contact.c:403
 msgid "Matrix ID List"
 msgstr "Seznam Matrix ID"
 
-#: src/addressbook/libebook-contacts/e-contact.c:1929
+#. vCard 4.0
+#: src/addressbook/libebook-contacts/e-contact.c:406
+msgid "Kind"
+msgstr "Vrsta"
+
+#: src/addressbook/libebook-contacts/e-contact.c:407
+#, fuzzy
+msgid "Source"
+msgstr "Vir"
+
+#: src/addressbook/libebook-contacts/e-contact.c:408
+msgid "XML"
+msgstr "XML"
+
+#: src/addressbook/libebook-contacts/e-contact.c:409
+msgid "Gender"
+msgstr "Spol"
+
+#: src/addressbook/libebook-contacts/e-contact.c:410
+msgid "Instant Messaging"
+msgstr "Hipno sporočanje"
+
+#: src/addressbook/libebook-contacts/e-contact.c:411
+msgid "Language"
+msgstr "Jezik"
+
+#: src/addressbook/libebook-contacts/e-contact.c:412
+msgid "Member"
+msgstr "Član"
+
+#: src/addressbook/libebook-contacts/e-contact.c:413
+#, fuzzy
+#| msgctxt "IMAPDefaults"
+#| msgid "Templates"
+msgid "Related"
+msgstr "Predloge"
+
+#: src/addressbook/libebook-contacts/e-contact.c:414
+msgid "Birth Place"
+msgstr "Rojstni kraj"
+
+#: src/addressbook/libebook-contacts/e-contact.c:415
+msgid "Death Place"
+msgstr "Kraj smrti"
+
+#: src/addressbook/libebook-contacts/e-contact.c:416
+msgid "Death Date"
+msgstr "Datum smrti"
+
+#: src/addressbook/libebook-contacts/e-contact.c:417
+#, fuzzy
+msgid "Expertise"
+msgstr "Strokovno znanje"
+
+#: src/addressbook/libebook-contacts/e-contact.c:418
+msgid "Hobby"
+msgstr "Hobi"
+
+#: src/addressbook/libebook-contacts/e-contact.c:419
+#, fuzzy
+msgid "Interest"
+msgstr "Interesi"
+
+#: src/addressbook/libebook-contacts/e-contact.c:420
+#, fuzzy
+#| msgid "Organizational Unit"
+msgid "Organizational Directory"
+msgstr "Organizacijska enota"
+
+#: src/addressbook/libebook-contacts/e-contact.c:421
+msgid "Contact URI"
+msgstr "URI stika"
+
+#: src/addressbook/libebook-contacts/e-contact.c:422
+msgid "Created"
+msgstr "Ustvarjeno"
+
+#: src/addressbook/libebook-contacts/e-contact.c:423
+msgid "Social Profile"
+msgstr "Profil družbenega omrežja"
+
+#: src/addressbook/libebook-contacts/e-contact.c:3051
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr "Neimenovan seznam"
@@ -969,19 +1050,19 @@ msgstr "Vnos je prekratek za telefonsko številko"
 msgid "Text is too long for a phone number"
 msgstr "Vnos je predolg za telefonsko številko"
 
-#: src/addressbook/libebook/e-book-client.c:929
+#: src/addressbook/libebook/e-book-client.c:948
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Neznana lastnost knjige »%s«"
 
-#: src/addressbook/libebook/e-book-client.c:944
+#: src/addressbook/libebook/e-book-client.c:963
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Ni mogoče spremeniti vrednosti lastnosti knjige »%s«"
 
-#: src/addressbook/libebook/e-book-client.c:1377
-#: src/addressbook/libebook/e-book-client.c:1577
-#: src/addressbook/libebook/e-book-client.c:1833
+#: src/addressbook/libebook/e-book-client.c:1395
+#: src/addressbook/libebook/e-book-client.c:1595
+#: src/addressbook/libebook/e-book-client.c:1851
 #: src/calendar/libecal/e-cal-client.c:1693
 #: src/calendar/libecal/e-cal-client.c:1910
 #, c-format
@@ -994,13 +1075,13 @@ msgstr "Ni mogoče vzpostaviti povezave z »%s«:"
 msgid "Client disappeared"
 msgstr "Odjemalec je izginil"
 
-#: src/addressbook/libedata-book/e-book-backend.c:3398
+#: src/addressbook/libedata-book/e-book-backend.c:3402
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "Ozadnji program imenika ne podpira kazalnikov"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:894
-#: src/addressbook/libedata-book/e-book-sqlite.c:2287
+#: src/addressbook/libedata-book/e-book-sqlite.c:2286
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Napaka pregleda neznanega polja povzetka »%s«"
@@ -1012,8 +1093,8 @@ msgid "Error parsing regular expression"
 msgstr "Napaka med razčlenjevanjem logičnega izraza"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4870
-#: src/addressbook/libedata-book/e-book-sqlite.c:1910 src/camel/camel-db.c:855
+#: src/addressbook/libedata-book/e-book-cache.c:4869
+#: src/addressbook/libedata-book/e-book-sqlite.c:1909 src/camel/camel-db.c:855
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nezadostna količina pomnilnika"
@@ -1045,8 +1126,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3568
-#: src/addressbook/libedata-book/e-book-sqlite.c:5938
+#: src/addressbook/libedata-book/e-book-cache.c:3567
+#: src/addressbook/libedata-book/e-book-sqlite.c:5937
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Poizvedba vključuje tudi nepodprte predmete"
@@ -1066,7 +1147,7 @@ msgstr ""
 "podprta le poizvedba po povzetku."
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
-#: src/addressbook/libedata-book/e-data-book.c:872
+#: src/addressbook/libedata-book/e-data-book.c:868
 #: src/calendar/libedata-cal/e-data-cal.c:1147
 #: src/libedataserver/e-client.c:173
 #, c-format
@@ -1108,8 +1189,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Ni mogoče razvrščati polja, ki ima več vrednsosti"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6201
-#: src/addressbook/libedata-book/e-book-sqlite.c:8236
+#: src/addressbook/libedata-book/e-book-cache.c:6200
+#: src/addressbook/libedata-book/e-book-sqlite.c:8235
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1119,8 +1200,8 @@ msgstr ""
 "stikov."
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6208
-#: src/addressbook/libedata-book/e-book-sqlite.c:8244
+#: src/addressbook/libedata-book/e-book-cache.c:6207
+#: src/addressbook/libedata-book/e-book-sqlite.c:8243
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1135,29 +1216,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "V povzetku je določeno nepodprto polje stika »%d«"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3563
-#: src/addressbook/libedata-book/e-book-sqlite.c:5931
+#: src/addressbook/libedata-book/e-book-cache.c:3562
+#: src/addressbook/libedata-book/e-book-sqlite.c:5930
 #: src/calendar/libedata-cal/e-cal-cache.c:1702
 #: src/calendar/libedata-cal/e-cal-cache.c:3549
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Neveljavna poizvedba: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3748
-#: src/addressbook/libedata-book/e-book-cache.c:6888
+#: src/addressbook/libedata-book/e-book-cache.c:3747
+#: src/addressbook/libedata-book/e-book-cache.c:6887
 msgid "Invalid query for a book cursor"
 msgstr "Neveljavna poizvedba za kazalko knjige"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4874
+#: src/addressbook/libedata-book/e-book-cache.c:4873
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Ni mogoče odpreti podatkovne zbirke %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5540
-#: src/addressbook/libedata-book/e-book-cache.c:5587
-#: src/addressbook/libedata-book/e-book-cache.c:5634
-#: src/addressbook/libedata-book/e-book-cache.c:5686
+#: src/addressbook/libedata-book/e-book-cache.c:5539
+#: src/addressbook/libedata-book/e-book-cache.c:5586
+#: src/addressbook/libedata-book/e-book-cache.c:5633
+#: src/addressbook/libedata-book/e-book-cache.c:5685
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1170,33 +1251,33 @@ msgstr "Ni mogoče odpreti podatkovne zbirke %s: %s"
 msgid "Object “%s” not found"
 msgstr "Predmeta »%s« ni mogoče najti"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5746
+#: src/addressbook/libedata-book/e-book-cache.c:5745
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Predmeta z %s ni mogoče najti."
 
-#: src/addressbook/libedata-book/e-book-cache.c:5922
+#: src/addressbook/libedata-book/e-book-cache.c:5921
 msgid "Search by email not supported"
 msgstr "Iskanje po elektronskem naslovu ni podprto"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5933
+#: src/addressbook/libedata-book/e-book-cache.c:5932
 msgid "No email address provided"
 msgstr "Ni podanega elektronskega naslova"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5988
+#: src/addressbook/libedata-book/e-book-cache.c:5987
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Za uporabo kazalke je treba določiti vsaj eno polje razvrščanja"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5997
-#: src/addressbook/libedata-book/e-book-sqlite.c:8076
+#: src/addressbook/libedata-book/e-book-cache.c:5996
+#: src/addressbook/libedata-book/e-book-sqlite.c:8075
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Ni mogoče razvrščati po polju, ki ni niz"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7079
-#: src/addressbook/libedata-book/e-book-cache.c:7238
-#: src/addressbook/libedata-book/e-book-sqlite.c:8963
-#: src/addressbook/libedata-book/e-book-sqlite.c:9124
+#: src/addressbook/libedata-book/e-book-cache.c:7078
+#: src/addressbook/libedata-book/e-book-cache.c:7237
+#: src/addressbook/libedata-book/e-book-sqlite.c:8962
+#: src/addressbook/libedata-book/e-book-sqlite.c:9123
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "Polje stika »%s« ni v povzetku"
@@ -1236,7 +1317,7 @@ msgstr ""
 msgid "Failed to create cache “%s”:"
 msgstr "Ustvarjanje predpomnilnika »%s« je spodletelo."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:1983
+#: src/addressbook/libedata-book/e-book-sqlite.c:1982
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
@@ -1244,62 +1325,62 @@ msgstr ""
 "Ni mogoče posodobiti podatkovne zbirke stikov in zastarele podatkovne zbirke "
 "z več kot enim imenikom. Izbrišite en vnos v razpredelnici »mape«"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6106
-#: src/addressbook/libedata-book/e-book-sqlite.c:8770
+#: src/addressbook/libedata-book/e-book-sqlite.c:6105
+#: src/addressbook/libedata-book/e-book-sqlite.c:8769
 msgid "Invalid query for EbSqlCursor"
 msgstr "Neveljavna poizvedba za predmet EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8058
+#: src/addressbook/libedata-book/e-book-sqlite.c:8057
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "Za uporabo EbSqlCursor je treba določiti vsaj eno razvrstilno polje"
 
-#: src/addressbook/libedata-book/e-data-book.c:897
+#: src/addressbook/libedata-book/e-data-book.c:893
 #: src/calendar/libedata-cal/e-data-cal.c:1172
 msgid "Invalid query: "
 msgstr "Neveljavna poizvedba:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1196
+#: src/addressbook/libedata-book/e-data-book.c:1192
 msgid "Cannot open book: "
 msgstr "Ni mogoče odpreti imenika:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1234
+#: src/addressbook/libedata-book/e-data-book.c:1230
 msgid "Cannot refresh address book: "
 msgstr "Ni mogoče osvežiti imenika:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1273
+#: src/addressbook/libedata-book/e-data-book.c:1269
 msgid "Cannot get contact: "
 msgstr "Ni mogoče pridobiti stika:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1322
+#: src/addressbook/libedata-book/e-data-book.c:1318
 msgid "Cannot get contact list: "
 msgstr "Ni mogoče pridobiti seznama stikov:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1381
+#: src/addressbook/libedata-book/e-data-book.c:1377
 msgid "Cannot get contact list uids: "
 msgstr "Ni mogoče pridobiti seznama naslovov UID stikov: %s"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1430
+#: src/addressbook/libedata-book/e-data-book.c:1426
 msgid "Cannot add contact: "
 msgstr "Ni mogoče dodati stika:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1479
+#: src/addressbook/libedata-book/e-data-book.c:1475
 msgid "Cannot modify contacts: "
 msgstr "Ni mogoče spremeniti stikov:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1529
+#: src/addressbook/libedata-book/e-data-book.c:1525
 msgid "Cannot remove contacts: "
 msgstr "Ni mogoče odstraniti stika:"
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1576
+#: src/addressbook/libedata-book/e-data-book.c:1572
 msgid "Cannot find email address: "
 msgstr "Elektronskega naslova ni mogoče najti: "
 
@@ -1339,19 +1420,31 @@ msgstr "Podan naslov URL »%s« se ne sklicuje na koledar CalDAV"
 msgid "Failed to parse response data"
 msgstr "Razčlenjevanje podatkov odziva je spodletelo"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:910
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:980
 msgid "Birthday"
 msgstr "Rojstni dan"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:946
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:982
+msgid "Deathday"
+msgstr "Dan smrti"
+
+#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Anniversary: %s" and "Death day: %s" strings
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1013
 #, c-format
 msgid "Birthday: %s"
 msgstr "Rojstni dan: %s"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:977
+#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Death day: %s" strings
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1038
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Obletnica: %s"
+
+#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Anniversary: %s" strings
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1063
+#, c-format
+msgid "Death day: %s"
+msgstr "Dan smrti: %s"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:43
 msgid "Cannot get URI"
@@ -2996,7 +3089,7 @@ msgstr "Osveževanje mape »%s : %s«"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1759
+#: src/camel/camel-folder-summary.c:1716
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Sprosti neuporabljen pomnilnik za mapo »%s : %s«"
@@ -3324,19 +3417,19 @@ msgstr "Napaka med pisanjem začasne poštne datoteke: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Napaka med kopiranjem začasne poštne datoteke: %s"
 
-#: src/camel/camel-multipart-signed.c:272
-#: src/camel/camel-multipart-signed.c:425
+#: src/camel/camel-multipart-signed.c:275
+#: src/camel/camel-multipart-signed.c:428
 #, c-format
 msgid "No content available"
 msgstr "Vsebina ni na voljo"
 
-#: src/camel/camel-multipart-signed.c:280
-#: src/camel/camel-multipart-signed.c:433
+#: src/camel/camel-multipart-signed.c:283
+#: src/camel/camel-multipart-signed.c:436
 #, c-format
 msgid "No signature available"
 msgstr "Podpis ni na voljo"
 
-#: src/camel/camel-multipart-signed.c:797
+#: src/camel/camel-multipart-signed.c:837
 #, c-format
 msgid "parse error"
 msgstr "napaka med razčlenjevanjem"
@@ -4983,7 +5076,7 @@ msgstr "Ni določene ciljne mape."
 msgid "Unable to move junk messages"
 msgstr "Ni mogoče premakniti vsiljenih sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1746
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1745
 msgid "Unable to move deleted messages"
 msgstr "Ni mogoče premakniti izbrisanih sporočil"
 
@@ -5357,61 +5450,61 @@ msgstr "Napaka med pridobivanjem podrobnosti sporočila"
 msgid "Error running STATUS"
 msgstr "Napaka zagona ukaza STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6331
-#: src/camel/providers/imapx/camel-imapx-server.c:6385
-#: src/camel/providers/imapx/camel-imapx-server.c:6467
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
+#: src/camel/providers/imapx/camel-imapx-server.c:6404
+#: src/camel/providers/imapx/camel-imapx-server.c:6486
 msgid "Error syncing changes"
 msgstr "Napaka med usklajevanjem sprememb"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6344
-#: src/camel/providers/imapx/camel-imapx-server.c:6395
-#: src/camel/providers/imapx/camel-imapx-server.c:6486
-#: src/camel/providers/imapx/camel-imapx-server.c:6623
+#: src/camel/providers/imapx/camel-imapx-server.c:6363
+#: src/camel/providers/imapx/camel-imapx-server.c:6414
+#: src/camel/providers/imapx/camel-imapx-server.c:6505
+#: src/camel/providers/imapx/camel-imapx-server.c:6642
 msgid "Error expunging message"
 msgstr "Napaka med uničevanjem sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6719
 msgid "Error fetching folders"
 msgstr "Napaka med pridobivanjem map"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6708
+#: src/camel/providers/imapx/camel-imapx-server.c:6727
 msgid "Error fetching subscribed folders"
 msgstr "Napaka pridobivanja naročenih map"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6765
+#: src/camel/providers/imapx/camel-imapx-server.c:6784
 msgid "Error creating folder"
 msgstr "Napaka med ustvarjanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6815
+#: src/camel/providers/imapx/camel-imapx-server.c:6834
 msgid "Error deleting folder"
 msgstr "Napaka med brisanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6861
+#: src/camel/providers/imapx/camel-imapx-server.c:6880
 msgid "Error renaming folder"
 msgstr "Napaka med preimenovanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6893
+#: src/camel/providers/imapx/camel-imapx-server.c:6912
 msgid "Error subscribing to folder"
 msgstr "Napaka naročanja na mapo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6929
+#: src/camel/providers/imapx/camel-imapx-server.c:6948
 msgid "Error unsubscribing from folder"
 msgstr "Napaka odjavljanja naročnine na mapo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6969
+#: src/camel/providers/imapx/camel-imapx-server.c:6988
 msgid "IMAP server does not support quotas"
 msgstr "Strežnik IMAP ne podpira količinskih omejitev"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6981
+#: src/camel/providers/imapx/camel-imapx-server.c:7000
 msgid "Error retrieving quota information"
 msgstr "Napaka pridobivanja podatkov količinske omejitve"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7046
+#: src/camel/providers/imapx/camel-imapx-server.c:7065
 msgid "Search failed"
 msgstr "Iskanje je spodletelo"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7172
+#: src/camel/providers/imapx/camel-imapx-server.c:7191
 msgid "Error running IDLE"
 msgstr "Napaka med zagonom IDLE"
 
@@ -8885,11 +8978,11 @@ msgstr "po začetku"
 msgid "_Add Snooze time"
 msgstr "Dodaj čas _dremeža"
 
-#: src/libedataserverui/e-reminders-widget.c:1903
+#: src/libedataserverui/e-reminders-widget.c:1904
 msgid "Dismiss _All"
 msgstr "Opusti _vse"
 
-#: src/libedataserverui/e-reminders-widget.c:1908
+#: src/libedataserverui/e-reminders-widget.c:1909
 #: src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Opusti"
