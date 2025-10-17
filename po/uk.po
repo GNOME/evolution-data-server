@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2025-10-03 12:23+0000\n"
-"PO-Revision-Date: 2025-10-03 16:10+0300\n"
+"POT-Creation-Date: 2025-10-17 08:09+0000\n"
+"PO-Revision-Date: 2025-10-17 13:48+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -26,34 +26,34 @@ msgstr ""
 "X-Generator: Lokalize 23.04.3\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:401
-#: src/addressbook/libebook-contacts/e-contact.c:311
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:908
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:399
+#: src/addressbook/libebook-contacts/e-contact.c:358
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:978
 msgid "Anniversary"
 msgstr "Річниця"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:655
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:761
 #, c-format
 msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Вказана адреса, «%s» не є адресою адресної книги CardDAV"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1569
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1682
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1491
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:999
 msgid "Server didn’t return object’s href"
 msgstr "Сервер не повернув посилання об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1571
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1684
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1493
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1001
 msgid "Server didn’t return object’s ETag"
 msgstr "Сервер не повернув ETag об'єкта"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1573
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1686
 msgid "Received object is not a valid vCard"
 msgstr "Отриманий об'єкт не є коректною vCard"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1695
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1808
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1663
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1283
 #, c-format
@@ -66,7 +66,7 @@ msgstr ""
 "пошкоджений. Ви можете спробувати вилучити його і перезапустити фонові "
 "процеси evolution-data-server. Файл кешу: %s"
 
-#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1701
+#: src/addressbook/backends/carddav/e-book-backend-carddav.c:1814
 msgid "Object to save is not a valid vCard"
 msgstr "Об'єкт для збереження не є коректною візитною карткою vCard"
 
@@ -86,7 +86,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Не вдалося створити жорстке посилання для ресурсу «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:733
-#: src/addressbook/backends/file/e-book-backend-file.c:1500
+#: src/addressbook/backends/file/e-book-backend-file.c:1502
 msgid "No UID in the contact"
 msgstr "Немає UID у контакті"
 
@@ -100,64 +100,64 @@ msgid "Loading..."
 msgstr "Завантаження…"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1202
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4829
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4827
 msgid "Searching..."
 msgstr "Пошук…"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1528
+#: src/addressbook/backends/file/e-book-backend-file.c:1530
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Спроба змінити контакт «%s» із несинхронізованою версією"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1709
-#: src/addressbook/backends/file/e-book-backend-file.c:1795
+#: src/addressbook/backends/file/e-book-backend-file.c:1711
+#: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7462
-#: src/addressbook/libedata-book/e-book-sqlite.c:7531
+#: src/addressbook/libedata-book/e-book-sqlite.c:7461
+#: src/addressbook/libedata-book/e-book-sqlite.c:7530
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Контакт «%s» не знайдено"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1859
-#: src/addressbook/backends/file/e-book-backend-file.c:1942
+#: src/addressbook/backends/file/e-book-backend-file.c:1861
+#: src/addressbook/backends/file/e-book-backend-file.c:1944
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Підтримки запитів «%s» не передбачено"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1868
-#: src/addressbook/backends/file/e-book-backend-file.c:1951
+#: src/addressbook/backends/file/e-book-backend-file.c:1870
+#: src/addressbook/backends/file/e-book-backend-file.c:1953
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Некоректний запит «%s»"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2258
+#: src/addressbook/backends/file/e-book-backend-file.c:2260
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2196
 msgid "Requested to delete an unrelated cursor"
 msgstr "Запитано видалення незв'язаного курсору"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2385
+#: src/addressbook/backends/file/e-book-backend-file.c:2387
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Не вдалося перейменувати стару базу даних «%s» на «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:147
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1146
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4712
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4710
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:51
 #: src/addressbook/libebook-contacts/e-phone-number.c:53
 #: src/addressbook/libebook/e-book.c:1073
-#: src/addressbook/libebook/e-book-client.c:2068
-#: src/addressbook/libebook/e-book-client.c:2236
-#: src/addressbook/libebook/e-book-client.c:2445
-#: src/addressbook/libebook/e-book-client.c:2570
-#: src/addressbook/libebook/e-book-client.c:2723
-#: src/addressbook/libebook/e-book-client.c:2852
-#: src/addressbook/libebook/e-book-client.c:2977
-#: src/addressbook/libebook/e-book-client.c:3127
-#: src/addressbook/libebook/e-book-client.c:3307
-#: src/addressbook/libebook/e-book-client.c:3513
-#: src/addressbook/libedata-book/e-book-backend-sexp.c:897
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:274
+#: src/addressbook/libebook/e-book-client.c:2122
+#: src/addressbook/libebook/e-book-client.c:2290
+#: src/addressbook/libebook/e-book-client.c:2499
+#: src/addressbook/libebook/e-book-client.c:2624
+#: src/addressbook/libebook/e-book-client.c:2777
+#: src/addressbook/libebook/e-book-client.c:2906
+#: src/addressbook/libebook/e-book-client.c:3031
+#: src/addressbook/libebook/e-book-client.c:3181
+#: src/addressbook/libebook/e-book-client.c:3361
+#: src/addressbook/libebook/e-book-client.c:3567
+#: src/addressbook/libedata-book/e-book-backend-sexp.c:908
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:287
 #: src/calendar/backends/http/e-cal-backend-http.c:312
 #: src/calendar/libecal/e-cal-client.c:247
 #: src/calendar/libecal/e-cal-client.c:3263
@@ -191,7 +191,7 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/libedataserver/e-soup-session.c:2144
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
-#: src/libedataserverui/e-reminders-widget.c:2288
+#: src/libedataserverui/e-reminders-widget.c:2289
 #: src/tools/list-sources/list-sources.c:428
 msgid "Unknown error"
 msgstr "Невідома помилка"
@@ -215,7 +215,7 @@ msgid "Invalid DN syntax"
 msgstr "Неправильний синтаксис DN"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1143
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4711
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4709
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Помилка в LDAP 0x%x (%s)"
@@ -235,16 +235,16 @@ msgstr "%s: повернуто необроблений тип результа�
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2354
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:2490
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6285
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6283
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: повернуто необроблений тип результату пошуку %d"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2648
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2647
 msgid "LDAP contact lists cannot be empty."
 msgstr "Список контактів LDAP не може бути порожнім."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2686
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2685
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -265,46 +265,46 @@ msgstr[3] ""
 "Списки контактів у адресних книгах LDAP вимагають, щоб кожен член був з тієї "
 "ж адресної книги LDAP, але одного учасника не вдалося розпізнати."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4658
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4656
 msgid "Receiving LDAP search results..."
 msgstr "Отримання результатів пошуку з сервера LDAP…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4855
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4853
 msgid "Error performing search"
 msgstr "Помилка виконання пошуку"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5002
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5000
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Завантаження контактів (%d)…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5107
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5105
 #: src/addressbook/libedata-book/e-book-meta-backend.c:887
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:772
 msgid "Refreshing…"
 msgstr "Оновлення…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5592
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5590
 msgid "The backend does not support bulk additions"
 msgstr "Драйвер не підтримує масові додавання"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5687
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5685
 msgid "Adding contact to LDAP server..."
 msgstr "Додавання контакту до сервера LDAP…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5749
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5747
 msgid "The backend does not support bulk modifications"
 msgstr "Драйвер не підтримує масові зміни"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5771
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5769
 msgid "Modifying contact from LDAP server..."
 msgstr "Зміна контакту на сервері LDAP…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5843
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5841
 msgid "Removing contact from LDAP server..."
 msgstr "Вилучення контакту із сервера LDAP…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6482
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6480
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Не вдалося отримати DN для користувача «%s»"
@@ -330,7 +330,7 @@ msgid "No space"
 msgstr "Недостатньо місця"
 
 #. Dummy row as EContactField starts from 1
-#: src/addressbook/libebook-contacts/e-contact.c:148
+#: src/addressbook/libebook-contacts/e-contact.c:195
 msgid "Unique ID"
 msgstr "Унікальний ідентифікатор"
 
@@ -338,12 +338,12 @@ msgstr "Унікальний ідентифікатор"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: src/addressbook/libebook-contacts/e-contact.c:153
+#: src/addressbook/libebook-contacts/e-contact.c:200
 msgid "File Under"
 msgstr "Зберегти у"
 
 #. URI of the book to which the contact belongs to
-#: src/addressbook/libebook-contacts/e-contact.c:155
+#: src/addressbook/libebook-contacts/e-contact.c:202
 msgid "Book UID"
 msgstr "UID книги"
 
@@ -351,438 +351,438 @@ msgstr "UID книги"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: src/addressbook/libebook-contacts/e-contact.c:161
+#: src/addressbook/libebook-contacts/e-contact.c:208
 msgid "Full Name"
 msgstr "Повне ім'я"
 
-#: src/addressbook/libebook-contacts/e-contact.c:162
+#: src/addressbook/libebook-contacts/e-contact.c:209
 msgid "Given Name"
 msgstr "Назва поля"
 
-#: src/addressbook/libebook-contacts/e-contact.c:163
+#: src/addressbook/libebook-contacts/e-contact.c:210
 msgid "Family Name"
 msgstr "Прізвище"
 
-#: src/addressbook/libebook-contacts/e-contact.c:164
+#: src/addressbook/libebook-contacts/e-contact.c:211
 #: src/libedataserverui/e-certificate-widget.c:420
 msgid "Nickname"
 msgstr "Прізвисько"
 
 #. Email fields
-#: src/addressbook/libebook-contacts/e-contact.c:167
+#: src/addressbook/libebook-contacts/e-contact.c:214
 msgid "Email 1"
 msgstr "Ел.пошта 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:168
+#: src/addressbook/libebook-contacts/e-contact.c:215
 msgid "Email 2"
 msgstr "Ел.пошта 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:169
+#: src/addressbook/libebook-contacts/e-contact.c:216
 msgid "Email 3"
 msgstr "Ел.пошта 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:170
+#: src/addressbook/libebook-contacts/e-contact.c:217
 msgid "Email 4"
 msgstr "Ел.пошта 4"
 
-#: src/addressbook/libebook-contacts/e-contact.c:172
+#: src/addressbook/libebook-contacts/e-contact.c:219
 msgid "Mailer"
 msgstr "Поштова програма"
 
 #. Address Labels
-#: src/addressbook/libebook-contacts/e-contact.c:175
+#: src/addressbook/libebook-contacts/e-contact.c:222
 msgid "Home Address Label"
 msgstr "Мітка домашньої адреси"
 
-#: src/addressbook/libebook-contacts/e-contact.c:176
+#: src/addressbook/libebook-contacts/e-contact.c:223
 msgid "Work Address Label"
 msgstr "Мітка робочої адреси"
 
-#: src/addressbook/libebook-contacts/e-contact.c:177
+#: src/addressbook/libebook-contacts/e-contact.c:224
 msgid "Other Address Label"
 msgstr "Мітка іншої адреси"
 
 #. Phone fields
-#: src/addressbook/libebook-contacts/e-contact.c:180
+#: src/addressbook/libebook-contacts/e-contact.c:227
 msgid "Assistant Phone"
 msgstr "Телефон помічника"
 
-#: src/addressbook/libebook-contacts/e-contact.c:181
+#: src/addressbook/libebook-contacts/e-contact.c:228
 msgid "Business Phone"
 msgstr "Робочий телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:182
+#: src/addressbook/libebook-contacts/e-contact.c:229
 msgid "Business Phone 2"
 msgstr "Робочий телефон 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:183
+#: src/addressbook/libebook-contacts/e-contact.c:230
 msgid "Business Fax"
 msgstr "Робочий факс"
 
-#: src/addressbook/libebook-contacts/e-contact.c:184
+#: src/addressbook/libebook-contacts/e-contact.c:231
 msgid "Callback Phone"
 msgstr "Телефон для зворотного дзвінка"
 
-#: src/addressbook/libebook-contacts/e-contact.c:185
+#: src/addressbook/libebook-contacts/e-contact.c:232
 msgid "Car Phone"
 msgstr "Автомобільний телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:186
+#: src/addressbook/libebook-contacts/e-contact.c:233
 msgid "Company Phone"
 msgstr "Телефон компанії"
 
-#: src/addressbook/libebook-contacts/e-contact.c:187
+#: src/addressbook/libebook-contacts/e-contact.c:234
 msgid "Home Phone"
 msgstr "Домашній телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:188
+#: src/addressbook/libebook-contacts/e-contact.c:235
 msgid "Home Phone 2"
 msgstr "Домашній телефон 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:189
+#: src/addressbook/libebook-contacts/e-contact.c:236
 msgid "Home Fax"
 msgstr "Домашній факс"
 
-#: src/addressbook/libebook-contacts/e-contact.c:190
+#: src/addressbook/libebook-contacts/e-contact.c:237
 msgid "ISDN"
 msgstr "ISDN"
 
-#: src/addressbook/libebook-contacts/e-contact.c:191
+#: src/addressbook/libebook-contacts/e-contact.c:238
 msgid "Mobile Phone"
 msgstr "Мобільний телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:192
+#: src/addressbook/libebook-contacts/e-contact.c:239
 msgid "Other Phone"
 msgstr "Інший телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:193
+#: src/addressbook/libebook-contacts/e-contact.c:240
 msgid "Other Fax"
 msgstr "Інший факс"
 
-#: src/addressbook/libebook-contacts/e-contact.c:194
+#: src/addressbook/libebook-contacts/e-contact.c:241
 msgid "Pager"
 msgstr "Пейджер"
 
-#: src/addressbook/libebook-contacts/e-contact.c:195
+#: src/addressbook/libebook-contacts/e-contact.c:242
 msgid "Primary Phone"
 msgstr "Основний телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:196
+#: src/addressbook/libebook-contacts/e-contact.c:243
 msgid "Radio"
 msgstr "Радіо"
 
-#: src/addressbook/libebook-contacts/e-contact.c:197
+#: src/addressbook/libebook-contacts/e-contact.c:244
 msgid "Telex"
 msgstr "Телекс"
 
 #. To translators: TTY is Teletypewriter
-#: src/addressbook/libebook-contacts/e-contact.c:199
+#: src/addressbook/libebook-contacts/e-contact.c:246
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: src/addressbook/libebook-contacts/e-contact.c:202
+#: src/addressbook/libebook-contacts/e-contact.c:249
 #: src/libedataserverui/e-certificate-widget.c:422
 #: src/libedataserverui/e-certificate-widget.c:431
 msgid "Organization"
 msgstr "Організація"
 
-#: src/addressbook/libebook-contacts/e-contact.c:203
+#: src/addressbook/libebook-contacts/e-contact.c:250
 msgid "Organizational Unit"
 msgstr "Відділ організації"
 
-#: src/addressbook/libebook-contacts/e-contact.c:204
+#: src/addressbook/libebook-contacts/e-contact.c:251
 msgid "Office"
 msgstr "Офіс"
 
-#: src/addressbook/libebook-contacts/e-contact.c:205
+#: src/addressbook/libebook-contacts/e-contact.c:252
 msgid "Title"
 msgstr "Титул"
 
-#: src/addressbook/libebook-contacts/e-contact.c:206
+#: src/addressbook/libebook-contacts/e-contact.c:253
 msgid "Role"
 msgstr "Роль"
 
-#: src/addressbook/libebook-contacts/e-contact.c:207
+#: src/addressbook/libebook-contacts/e-contact.c:254
 msgid "Manager"
 msgstr "Керівник"
 
-#: src/addressbook/libebook-contacts/e-contact.c:208
+#: src/addressbook/libebook-contacts/e-contact.c:255
 msgid "Assistant"
 msgstr "Помічник"
 
 #. Web fields
-#: src/addressbook/libebook-contacts/e-contact.c:211
+#: src/addressbook/libebook-contacts/e-contact.c:258
 msgid "Homepage URL"
 msgstr "URL домашньої сторінки"
 
-#: src/addressbook/libebook-contacts/e-contact.c:212
+#: src/addressbook/libebook-contacts/e-contact.c:259
 msgid "Weblog URL"
 msgstr "URL веблогу"
 
 #. Contact categories
-#: src/addressbook/libebook-contacts/e-contact.c:215
+#: src/addressbook/libebook-contacts/e-contact.c:262
 msgid "Categories"
 msgstr "Категорії"
 
 #. Collaboration fields
-#: src/addressbook/libebook-contacts/e-contact.c:218
+#: src/addressbook/libebook-contacts/e-contact.c:265
 msgid "Calendar URI"
 msgstr "URI календаря"
 
-#: src/addressbook/libebook-contacts/e-contact.c:219
+#: src/addressbook/libebook-contacts/e-contact.c:266
 msgid "Free/Busy URL"
 msgstr "Посилання (URL) \"вільний/зайнятий\""
 
-#: src/addressbook/libebook-contacts/e-contact.c:220
+#: src/addressbook/libebook-contacts/e-contact.c:267
 msgid "ICS Calendar"
 msgstr "Календар формату ICS"
 
-#: src/addressbook/libebook-contacts/e-contact.c:221
+#: src/addressbook/libebook-contacts/e-contact.c:268
 msgid "Video Conferencing URL"
 msgstr "URL відеоконференцій"
 
 #. Misc fields
-#: src/addressbook/libebook-contacts/e-contact.c:224
+#: src/addressbook/libebook-contacts/e-contact.c:271
 msgid "Spouse’s Name"
 msgstr "Ім'я чоловіка/дружини"
 
-#: src/addressbook/libebook-contacts/e-contact.c:225
+#: src/addressbook/libebook-contacts/e-contact.c:272
 msgid "Note"
 msgstr "Примітка"
 
 #. Instant messaging fields
-#: src/addressbook/libebook-contacts/e-contact.c:228
+#: src/addressbook/libebook-contacts/e-contact.c:275
 msgid "AIM Home Screen Name 1"
 msgstr "Домашня екранна назва AIM 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:229
+#: src/addressbook/libebook-contacts/e-contact.c:276
 msgid "AIM Home Screen Name 2"
 msgstr "Домашня екранна назва AIM 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:230
+#: src/addressbook/libebook-contacts/e-contact.c:277
 msgid "AIM Home Screen Name 3"
 msgstr "Домашня екранна назва AIM 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:231
+#: src/addressbook/libebook-contacts/e-contact.c:278
 msgid "AIM Work Screen Name 1"
 msgstr "Робоча екранна назва AIM 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:232
+#: src/addressbook/libebook-contacts/e-contact.c:279
 msgid "AIM Work Screen Name 2"
 msgstr "Робоча екранна назва AIM 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:233
+#: src/addressbook/libebook-contacts/e-contact.c:280
 msgid "AIM Work Screen Name 3"
 msgstr "Робоча екранна назва AIM 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:234
+#: src/addressbook/libebook-contacts/e-contact.c:281
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise домашня екранна назва 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:235
+#: src/addressbook/libebook-contacts/e-contact.c:282
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise домашня екранна назва 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:236
+#: src/addressbook/libebook-contacts/e-contact.c:283
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise домашня екранна назва 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:237
+#: src/addressbook/libebook-contacts/e-contact.c:284
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise робоча екранна назва 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:238
+#: src/addressbook/libebook-contacts/e-contact.c:285
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise робоча екранна назва 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:239
+#: src/addressbook/libebook-contacts/e-contact.c:286
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise робоча екранна назва 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:240
+#: src/addressbook/libebook-contacts/e-contact.c:287
 msgid "Jabber Home ID 1"
 msgstr "Домашній ідентифікатор Jabber 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:241
+#: src/addressbook/libebook-contacts/e-contact.c:288
 msgid "Jabber Home ID 2"
 msgstr "Домашній ідентифікатор Jabber 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:242
+#: src/addressbook/libebook-contacts/e-contact.c:289
 msgid "Jabber Home ID 3"
 msgstr "Домашній ідентифікатор Jabber 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:243
+#: src/addressbook/libebook-contacts/e-contact.c:290
 msgid "Jabber Work ID 1"
 msgstr "Робочий ідентифікатор Jabber 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:244
+#: src/addressbook/libebook-contacts/e-contact.c:291
 msgid "Jabber Work ID 2"
 msgstr "Робочий ідентифікатор Jabber 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:245
+#: src/addressbook/libebook-contacts/e-contact.c:292
 msgid "Jabber Work ID 3"
 msgstr "Робочий ідентифікатор Jabber 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:246
+#: src/addressbook/libebook-contacts/e-contact.c:293
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! Домашня екранна назва 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:247
+#: src/addressbook/libebook-contacts/e-contact.c:294
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! Домашня екранна назва 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:248
+#: src/addressbook/libebook-contacts/e-contact.c:295
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! Домашня екранна назва 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:249
+#: src/addressbook/libebook-contacts/e-contact.c:296
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! Робоча екранна назва 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:250
+#: src/addressbook/libebook-contacts/e-contact.c:297
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! Робоча екранна назва 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:251
+#: src/addressbook/libebook-contacts/e-contact.c:298
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! Робоча екранна назва 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:252
+#: src/addressbook/libebook-contacts/e-contact.c:299
 msgid "MSN Home Screen Name 1"
 msgstr "Домашня екранна назва MSN 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:253
+#: src/addressbook/libebook-contacts/e-contact.c:300
 msgid "MSN Home Screen Name 2"
 msgstr "Домашня екранна назва MSN 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:254
+#: src/addressbook/libebook-contacts/e-contact.c:301
 msgid "MSN Home Screen Name 3"
 msgstr "Домашня екранна назва MSN 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:255
+#: src/addressbook/libebook-contacts/e-contact.c:302
 msgid "MSN Work Screen Name 1"
 msgstr "Робоча екранна назва MSN 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:256
+#: src/addressbook/libebook-contacts/e-contact.c:303
 msgid "MSN Work Screen Name 2"
 msgstr "Робоча екранна назва MSN 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:257
+#: src/addressbook/libebook-contacts/e-contact.c:304
 msgid "MSN Work Screen Name 3"
 msgstr "Робоча екранна назва MSN 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:258
+#: src/addressbook/libebook-contacts/e-contact.c:305
 msgid "ICQ Home ID 1"
 msgstr "Домашній ідентифікатор ICQ 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:259
+#: src/addressbook/libebook-contacts/e-contact.c:306
 msgid "ICQ Home ID 2"
 msgstr "Домашній ідентифікатор ICQ 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:260
+#: src/addressbook/libebook-contacts/e-contact.c:307
 msgid "ICQ Home ID 3"
 msgstr "Домашній ідентифікатор ICQ 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:261
+#: src/addressbook/libebook-contacts/e-contact.c:308
 msgid "ICQ Work ID 1"
 msgstr "Робочий ідентифікатор ICQ 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:262
+#: src/addressbook/libebook-contacts/e-contact.c:309
 msgid "ICQ Work ID 2"
 msgstr "Робочий ідентифікатор ICQ 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:263
+#: src/addressbook/libebook-contacts/e-contact.c:310
 msgid "ICQ Work ID 3"
 msgstr "Робочий ідентифікатор ICQ 3"
 
 #. Last modified time
-#: src/addressbook/libebook-contacts/e-contact.c:266
+#: src/addressbook/libebook-contacts/e-contact.c:313
 msgid "Last Revision"
 msgstr "Остання версія"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: src/addressbook/libebook-contacts/e-contact.c:270
+#: src/addressbook/libebook-contacts/e-contact.c:317
 msgid "Name or Org"
 msgstr "Назва або організація"
 
 #. Address fields
-#: src/addressbook/libebook-contacts/e-contact.c:273
+#: src/addressbook/libebook-contacts/e-contact.c:320
 msgid "Address List"
 msgstr "Список Адреса"
 
-#: src/addressbook/libebook-contacts/e-contact.c:274
+#: src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Home Address"
 msgstr "Домашня адреса"
 
-#: src/addressbook/libebook-contacts/e-contact.c:275
+#: src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Work Address"
 msgstr "Робоча адреса"
 
-#: src/addressbook/libebook-contacts/e-contact.c:276
+#: src/addressbook/libebook-contacts/e-contact.c:323
 msgid "Other Address"
 msgstr "Інша адреса"
 
 #. Contact categories
-#: src/addressbook/libebook-contacts/e-contact.c:279
+#: src/addressbook/libebook-contacts/e-contact.c:326
 msgid "Category List"
 msgstr "Список категорій"
 
 #. Photo/Logo
-#: src/addressbook/libebook-contacts/e-contact.c:282
+#: src/addressbook/libebook-contacts/e-contact.c:329
 msgid "Photo"
 msgstr "Фотографія"
 
-#: src/addressbook/libebook-contacts/e-contact.c:283
+#: src/addressbook/libebook-contacts/e-contact.c:330
 msgid "Logo"
 msgstr "Емблема"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: src/addressbook/libebook-contacts/e-contact.c:287
+#: src/addressbook/libebook-contacts/e-contact.c:334
 #: src/libedataserverui/e-webdav-discover-widget.c:195
 msgid "Name"
 msgstr "Ім'я"
 
-#: src/addressbook/libebook-contacts/e-contact.c:288
+#: src/addressbook/libebook-contacts/e-contact.c:335
 msgid "Email List"
 msgstr "Список адрес ел.пошти"
 
 #. Instant messaging fields
-#: src/addressbook/libebook-contacts/e-contact.c:291
+#: src/addressbook/libebook-contacts/e-contact.c:338
 msgid "AIM Screen Name List"
 msgstr "Список екранних назв AIM"
 
-#: src/addressbook/libebook-contacts/e-contact.c:292
+#: src/addressbook/libebook-contacts/e-contact.c:339
 msgid "GroupWise ID List"
 msgstr "Список ідентифікаторів GroupWise"
 
-#: src/addressbook/libebook-contacts/e-contact.c:293
+#: src/addressbook/libebook-contacts/e-contact.c:340
 msgid "Jabber ID List"
 msgstr "Список ідентифікаторів Jabber"
 
-#: src/addressbook/libebook-contacts/e-contact.c:294
+#: src/addressbook/libebook-contacts/e-contact.c:341
 msgid "Yahoo! Screen Name List"
 msgstr "Список екранних назв Yahoo!"
 
-#: src/addressbook/libebook-contacts/e-contact.c:295
+#: src/addressbook/libebook-contacts/e-contact.c:342
 msgid "MSN Screen Name List"
 msgstr "Список екранних назв MSN"
 
-#: src/addressbook/libebook-contacts/e-contact.c:296
+#: src/addressbook/libebook-contacts/e-contact.c:343
 msgid "ICQ ID List"
 msgstr "Список ідентифікаторів ICQ"
 
-#: src/addressbook/libebook-contacts/e-contact.c:298
+#: src/addressbook/libebook-contacts/e-contact.c:345
 msgid "Wants HTML Mail"
 msgstr "Сприймає пошту у HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: src/addressbook/libebook-contacts/e-contact.c:303
+#: src/addressbook/libebook-contacts/e-contact.c:350
 msgid "List"
 msgstr "Список"
 
@@ -790,153 +790,234 @@ msgstr "Список"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: src/addressbook/libebook-contacts/e-contact.c:308
+#: src/addressbook/libebook-contacts/e-contact.c:355
 msgid "List Shows Addresses"
 msgstr "Список показує адреси"
 
-#: src/addressbook/libebook-contacts/e-contact.c:310
+#: src/addressbook/libebook-contacts/e-contact.c:357
 msgid "Birth Date"
 msgstr "Дата народження"
 
 #. Security fields
-#: src/addressbook/libebook-contacts/e-contact.c:314
+#: src/addressbook/libebook-contacts/e-contact.c:361
 msgid "X.509 Certificate"
 msgstr "Сертифікат X.509"
 
-#: src/addressbook/libebook-contacts/e-contact.c:315
+#: src/addressbook/libebook-contacts/e-contact.c:362
 msgid "PGP Certificate"
 msgstr "Сертифікат PGP"
 
-#: src/addressbook/libebook-contacts/e-contact.c:317
+#: src/addressbook/libebook-contacts/e-contact.c:364
 msgid "Gadu-Gadu Home ID 1"
 msgstr "Домашній ідентифікатор Gadu-Gadu 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:318
+#: src/addressbook/libebook-contacts/e-contact.c:365
 msgid "Gadu-Gadu Home ID 2"
 msgstr "Домашній ідентифікатор Gadu-Gadu 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:319
+#: src/addressbook/libebook-contacts/e-contact.c:366
 msgid "Gadu-Gadu Home ID 3"
 msgstr "Домашній ідентифікатор Gadu-Gadu 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:320
+#: src/addressbook/libebook-contacts/e-contact.c:367
 msgid "Gadu-Gadu Work ID 1"
 msgstr "Робочий ідентифікатор Gadu-Gadu 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:321
+#: src/addressbook/libebook-contacts/e-contact.c:368
 msgid "Gadu-Gadu Work ID 2"
 msgstr "Робочий ідентифікатор Gadu-Gadu 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:322
+#: src/addressbook/libebook-contacts/e-contact.c:369
 msgid "Gadu-Gadu Work ID 3"
 msgstr "Робочий ідентифікатор Gadu-Gadu 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:323
+#: src/addressbook/libebook-contacts/e-contact.c:370
 msgid "Gadu-Gadu ID List"
 msgstr "Список ідентифікаторів Gadu-Gadu"
 
 #. Geo information
-#: src/addressbook/libebook-contacts/e-contact.c:326
+#: src/addressbook/libebook-contacts/e-contact.c:373
 msgid "Geographic Information"
 msgstr "Географічна інформація"
 
-#: src/addressbook/libebook-contacts/e-contact.c:328
+#: src/addressbook/libebook-contacts/e-contact.c:375
 msgid "Telephone"
 msgstr "Телефон"
 
-#: src/addressbook/libebook-contacts/e-contact.c:330
+#: src/addressbook/libebook-contacts/e-contact.c:377
 msgid "Skype Home Name 1"
 msgstr "Домашній ідентифікатор Skype 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:331
+#: src/addressbook/libebook-contacts/e-contact.c:378
 msgid "Skype Home Name 2"
 msgstr "Домашній ідентифікатор Skype 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:332
+#: src/addressbook/libebook-contacts/e-contact.c:379
 msgid "Skype Home Name 3"
 msgstr "Домашній ідентифікатор Skype 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:333
+#: src/addressbook/libebook-contacts/e-contact.c:380
 msgid "Skype Work Name 1"
 msgstr "Робочий ідентифікатор Skype 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:334
+#: src/addressbook/libebook-contacts/e-contact.c:381
 msgid "Skype Work Name 2"
 msgstr "Робочий ідентифікатор Skype 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:335
+#: src/addressbook/libebook-contacts/e-contact.c:382
 msgid "Skype Work Name 3"
 msgstr "Робочий ідентифікатор Skype 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:336
+#: src/addressbook/libebook-contacts/e-contact.c:383
 msgid "Skype Name List"
 msgstr "Список ідентифікаторів Skype"
 
-#: src/addressbook/libebook-contacts/e-contact.c:338
+#: src/addressbook/libebook-contacts/e-contact.c:385
 msgid "SIP address"
 msgstr "Адреса SIP"
 
-#: src/addressbook/libebook-contacts/e-contact.c:340
+#: src/addressbook/libebook-contacts/e-contact.c:387
 msgid "Google Talk Home Name 1"
 msgstr "Домашній ідентифікатор Google Talk 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:341
+#: src/addressbook/libebook-contacts/e-contact.c:388
 msgid "Google Talk Home Name 2"
 msgstr "Домашній ідентифікатор Google Talk 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:342
+#: src/addressbook/libebook-contacts/e-contact.c:389
 msgid "Google Talk Home Name 3"
 msgstr "Домашній ідентифікатор Google Talk 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:343
+#: src/addressbook/libebook-contacts/e-contact.c:390
 msgid "Google Talk Work Name 1"
 msgstr "Робочий ідентифікатор Google Talk 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:344
+#: src/addressbook/libebook-contacts/e-contact.c:391
 msgid "Google Talk Work Name 2"
 msgstr "Робочий ідентифікатор Google Talk 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:345
+#: src/addressbook/libebook-contacts/e-contact.c:392
 msgid "Google Talk Work Name 3"
 msgstr "Робочий ідентифікатор Google Talk 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:346
+#: src/addressbook/libebook-contacts/e-contact.c:393
 msgid "Google Talk Name List"
 msgstr "Список ідентифікаторів Google Talk"
 
-#: src/addressbook/libebook-contacts/e-contact.c:348
+#: src/addressbook/libebook-contacts/e-contact.c:395
 msgid "Twitter Name List"
 msgstr "Список назв Twitter"
 
-#: src/addressbook/libebook-contacts/e-contact.c:350
+#: src/addressbook/libebook-contacts/e-contact.c:397
 msgid "Matrix Home ID 1"
 msgstr "Домашній ідентифікатор Matrix 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:351
+#: src/addressbook/libebook-contacts/e-contact.c:398
 msgid "Matrix Home ID 2"
 msgstr "Домашній ідентифікатор Matrix 2"
 
-#: src/addressbook/libebook-contacts/e-contact.c:352
+#: src/addressbook/libebook-contacts/e-contact.c:399
 msgid "Matrix Home ID 3"
 msgstr "Домашній ідентифікатор Matrix 3"
 
-#: src/addressbook/libebook-contacts/e-contact.c:353
+#: src/addressbook/libebook-contacts/e-contact.c:400
 msgid "Matrix Work ID 1"
 msgstr "Робочий ідентифікатор Matrix 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:354
+#: src/addressbook/libebook-contacts/e-contact.c:401
 msgid "Matrix Work ID 2"
 msgstr "Робочий ідентифікатор Matrix 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:355
+#: src/addressbook/libebook-contacts/e-contact.c:402
 msgid "Matrix Work ID 3"
 msgstr "Робочий ідентифікатор Matrix 1"
 
-#: src/addressbook/libebook-contacts/e-contact.c:356
+#: src/addressbook/libebook-contacts/e-contact.c:403
 msgid "Matrix ID List"
 msgstr "Список ідентифікаторів Matrix"
 
-#: src/addressbook/libebook-contacts/e-contact.c:1929
+#. vCard 4.0
+#: src/addressbook/libebook-contacts/e-contact.c:406
+msgid "Kind"
+msgstr "Тип"
+
+#: src/addressbook/libebook-contacts/e-contact.c:407
+#| msgid "POP Source UID"
+msgid "Source"
+msgstr "Джерело"
+
+#: src/addressbook/libebook-contacts/e-contact.c:408
+msgid "XML"
+msgstr "XML"
+
+#: src/addressbook/libebook-contacts/e-contact.c:409
+#| msgid "Reminders"
+msgid "Gender"
+msgstr "Стать"
+
+#: src/addressbook/libebook-contacts/e-contact.c:410
+msgid "Instant Messaging"
+msgstr "Миттєві повідомлення"
+
+#: src/addressbook/libebook-contacts/e-contact.c:411
+msgid "Language"
+msgstr "Мова"
+
+#: src/addressbook/libebook-contacts/e-contact.c:412
+msgid "Member"
+msgstr "Учасник"
+
+#: src/addressbook/libebook-contacts/e-contact.c:413
+#| msgctxt "IMAPDefaults"
+#| msgid "Templates"
+msgid "Related"
+msgstr "Пов'язане"
+
+#: src/addressbook/libebook-contacts/e-contact.c:414
+#| msgid "Birth Date"
+msgid "Birth Place"
+msgstr "Місце народження"
+
+#: src/addressbook/libebook-contacts/e-contact.c:415
+msgid "Death Place"
+msgstr "Місце смерті"
+
+#: src/addressbook/libebook-contacts/e-contact.c:416
+#| msgid "Birth Date"
+msgid "Death Date"
+msgstr "Дата смерті"
+
+#: src/addressbook/libebook-contacts/e-contact.c:417
+msgid "Expertise"
+msgstr "Компетентність"
+
+#: src/addressbook/libebook-contacts/e-contact.c:418
+msgid "Hobby"
+msgstr "Хобі"
+
+#: src/addressbook/libebook-contacts/e-contact.c:419
+msgid "Interest"
+msgstr "Зацікавлення"
+
+#: src/addressbook/libebook-contacts/e-contact.c:420
+#| msgid "Organizational Unit"
+msgid "Organizational Directory"
+msgstr "Каталог організації"
+
+#: src/addressbook/libebook-contacts/e-contact.c:421
+#| msgid "Contacts"
+msgid "Contact URI"
+msgstr "Адреса для зв'язку"
+
+#: src/addressbook/libebook-contacts/e-contact.c:422
+msgid "Created"
+msgstr "Створено"
+
+#: src/addressbook/libebook-contacts/e-contact.c:423
+msgid "Social Profile"
+msgstr "Профіль у соціальній мережі"
+
+#: src/addressbook/libebook-contacts/e-contact.c:3051
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr "Неназваний список"
@@ -970,19 +1051,19 @@ msgstr "Текст дуже короткий для телефонного но�
 msgid "Text is too long for a phone number"
 msgstr "Текст надто довгий для телефонного номера"
 
-#: src/addressbook/libebook/e-book-client.c:929
+#: src/addressbook/libebook/e-book-client.c:948
 #, c-format
 msgid "Unknown book property “%s”"
 msgstr "Невідома властивість книжки «%s»"
 
-#: src/addressbook/libebook/e-book-client.c:944
+#: src/addressbook/libebook/e-book-client.c:963
 #, c-format
 msgid "Cannot change value of book property “%s”"
 msgstr "Не вдалося змінити властивість книжки «%s»"
 
-#: src/addressbook/libebook/e-book-client.c:1377
-#: src/addressbook/libebook/e-book-client.c:1577
-#: src/addressbook/libebook/e-book-client.c:1833
+#: src/addressbook/libebook/e-book-client.c:1395
+#: src/addressbook/libebook/e-book-client.c:1595
+#: src/addressbook/libebook/e-book-client.c:1851
 #: src/calendar/libecal/e-cal-client.c:1693
 #: src/calendar/libecal/e-cal-client.c:1910
 #, c-format
@@ -995,13 +1076,13 @@ msgstr "Не вдалося з'єднатись з  «%s»"
 msgid "Client disappeared"
 msgstr "Клієнт зникнув"
 
-#: src/addressbook/libedata-book/e-book-backend.c:3398
+#: src/addressbook/libedata-book/e-book-backend.c:3402
 #, c-format
 msgid "Addressbook backend does not support cursors"
 msgstr "У модулі обробки адресних книг не передбачено підтримки курсорів"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:894
-#: src/addressbook/libedata-book/e-book-sqlite.c:2287
+#: src/addressbook/libedata-book/e-book-sqlite.c:2286
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
 msgstr "Помилка при самоаналізі невідомого поля зведення «%s»"
@@ -1013,8 +1094,8 @@ msgid "Error parsing regular expression"
 msgstr "Помилка аналізу регулярного виразу"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4870
-#: src/addressbook/libedata-book/e-book-sqlite.c:1910 src/camel/camel-db.c:855
+#: src/addressbook/libedata-book/e-book-cache.c:4869
+#: src/addressbook/libedata-book/e-book-sqlite.c:1909 src/camel/camel-db.c:855
 #, c-format
 msgid "Insufficient memory"
 msgstr "Недостатньо пам'яті"
@@ -1046,8 +1127,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3568
-#: src/addressbook/libedata-book/e-book-sqlite.c:5938
+#: src/addressbook/libedata-book/e-book-cache.c:3567
+#: src/addressbook/libedata-book/e-book-sqlite.c:5937
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Запит містить непідтримувані елементи"
@@ -1067,7 +1148,7 @@ msgstr ""
 "запит для зведення."
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4393
-#: src/addressbook/libedata-book/e-data-book.c:872
+#: src/addressbook/libedata-book/e-data-book.c:868
 #: src/calendar/libedata-cal/e-data-cal.c:1147
 #: src/libedataserver/e-client.c:173
 #, c-format
@@ -1111,8 +1192,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Неможливо відсортувати по полю, яке має декілька значень"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6201
-#: src/addressbook/libedata-book/e-book-sqlite.c:8236
+#: src/addressbook/libedata-book/e-book-cache.c:6200
+#: src/addressbook/libedata-book/e-book-sqlite.c:8235
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1122,8 +1203,8 @@ msgstr ""
 "списку контактів"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6208
-#: src/addressbook/libedata-book/e-book-sqlite.c:8244
+#: src/addressbook/libedata-book/e-book-cache.c:6207
+#: src/addressbook/libedata-book/e-book-sqlite.c:8243
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1138,29 +1219,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "У звіті зазначено непідтримуване поле контакту «%d»"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3563
-#: src/addressbook/libedata-book/e-book-sqlite.c:5931
+#: src/addressbook/libedata-book/e-book-cache.c:3562
+#: src/addressbook/libedata-book/e-book-sqlite.c:5930
 #: src/calendar/libedata-cal/e-cal-cache.c:1702
 #: src/calendar/libedata-cal/e-cal-cache.c:3549
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Некоректний запит: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3748
-#: src/addressbook/libedata-book/e-book-cache.c:6888
+#: src/addressbook/libedata-book/e-book-cache.c:3747
+#: src/addressbook/libedata-book/e-book-cache.c:6887
 msgid "Invalid query for a book cursor"
 msgstr "Некоректний запит щодо курсора книги"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4874
+#: src/addressbook/libedata-book/e-book-cache.c:4873
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Не вдалося відкрити базу даних %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5540
-#: src/addressbook/libedata-book/e-book-cache.c:5587
-#: src/addressbook/libedata-book/e-book-cache.c:5634
-#: src/addressbook/libedata-book/e-book-cache.c:5686
+#: src/addressbook/libedata-book/e-book-cache.c:5539
+#: src/addressbook/libedata-book/e-book-cache.c:5586
+#: src/addressbook/libedata-book/e-book-cache.c:5633
+#: src/addressbook/libedata-book/e-book-cache.c:5685
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1173,34 +1254,34 @@ msgstr "Не вдалося відкрити базу даних %s: %s"
 msgid "Object “%s” not found"
 msgstr "Об'єкта «%s» не існує"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5746
+#: src/addressbook/libedata-book/e-book-cache.c:5745
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Не знайдено об'єкта із додатковим «%s»"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5922
+#: src/addressbook/libedata-book/e-book-cache.c:5921
 msgid "Search by email not supported"
 msgstr "Підтримки пошуку за адресою електронної пошти не передбачено"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5933
+#: src/addressbook/libedata-book/e-book-cache.c:5932
 msgid "No email address provided"
 msgstr "Не надано поштової адреси"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5988
+#: src/addressbook/libedata-book/e-book-cache.c:5987
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Для використання курсора має бути вказано принаймні одне поле сортування"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5997
-#: src/addressbook/libedata-book/e-book-sqlite.c:8076
+#: src/addressbook/libedata-book/e-book-cache.c:5996
+#: src/addressbook/libedata-book/e-book-sqlite.c:8075
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Неможливо відсортувати по полю, яке має нерядковий тип"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7079
-#: src/addressbook/libedata-book/e-book-cache.c:7238
-#: src/addressbook/libedata-book/e-book-sqlite.c:8963
-#: src/addressbook/libedata-book/e-book-sqlite.c:9124
+#: src/addressbook/libedata-book/e-book-cache.c:7078
+#: src/addressbook/libedata-book/e-book-cache.c:7237
+#: src/addressbook/libedata-book/e-book-sqlite.c:8962
+#: src/addressbook/libedata-book/e-book-sqlite.c:9123
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "Поле контакту «%s» не перебуває у резюме"
@@ -1239,7 +1320,7 @@ msgstr ""
 msgid "Failed to create cache “%s”:"
 msgstr "Не вдалося створити кеш «%s»:"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:1983
+#: src/addressbook/libedata-book/e-book-sqlite.c:1982
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
@@ -1247,64 +1328,64 @@ msgstr ""
 "Неможливо оновити базу даних контактів з наявної бази, в якій більше однієї "
 "адресної книги. Спочатку видаліть один із записів у таблиці «теки»."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6106
-#: src/addressbook/libedata-book/e-book-sqlite.c:8770
+#: src/addressbook/libedata-book/e-book-sqlite.c:6105
+#: src/addressbook/libedata-book/e-book-sqlite.c:8769
 msgid "Invalid query for EbSqlCursor"
 msgstr "Некоректний запит за EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8058
+#: src/addressbook/libedata-book/e-book-sqlite.c:8057
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Для використання EbSqlCursor повинно бути вказано принаймні одне поле "
 "сортування"
 
-#: src/addressbook/libedata-book/e-data-book.c:897
+#: src/addressbook/libedata-book/e-data-book.c:893
 #: src/calendar/libedata-cal/e-data-cal.c:1172
 msgid "Invalid query: "
 msgstr "Некоректний запит: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1196
+#: src/addressbook/libedata-book/e-data-book.c:1192
 msgid "Cannot open book: "
 msgstr "Неможливо відкрити книгу: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1234
+#: src/addressbook/libedata-book/e-data-book.c:1230
 msgid "Cannot refresh address book: "
 msgstr "Не вдалося оновити адресну книгу: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1273
+#: src/addressbook/libedata-book/e-data-book.c:1269
 msgid "Cannot get contact: "
 msgstr "Не вдалося отримати контакт: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1322
+#: src/addressbook/libedata-book/e-data-book.c:1318
 msgid "Cannot get contact list: "
 msgstr "Не вдалося отримати список контактів: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1381
+#: src/addressbook/libedata-book/e-data-book.c:1377
 msgid "Cannot get contact list uids: "
 msgstr "Не вдалося отримати ідентифікатори списку контактів: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1430
+#: src/addressbook/libedata-book/e-data-book.c:1426
 msgid "Cannot add contact: "
 msgstr "Не вдалося додати контакт: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1479
+#: src/addressbook/libedata-book/e-data-book.c:1475
 msgid "Cannot modify contacts: "
 msgstr "Не вдалося змінити контакти: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1529
+#: src/addressbook/libedata-book/e-data-book.c:1525
 msgid "Cannot remove contacts: "
 msgstr "Не вдалося вилучити контакти: "
 
 #. Translators: This is prefix to a detailed error message
-#: src/addressbook/libedata-book/e-data-book.c:1576
+#: src/addressbook/libedata-book/e-data-book.c:1572
 msgid "Cannot find email address: "
 msgstr "Не вдалося знайти адресу ел. пошти: "
 
@@ -1344,19 +1425,33 @@ msgstr "Наданий URL «%s» не посилається на календ�
 msgid "Failed to parse response data"
 msgstr "Не вдалося проаналізувати дані відповіді"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:910
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:980
 msgid "Birthday"
 msgstr "День народження"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:946
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:982
+#| msgid "Birthday"
+msgid "Deathday"
+msgstr "День смерті"
+
+#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Anniversary: %s" and "Death day: %s" strings
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1013
 #, c-format
 msgid "Birthday: %s"
 msgstr "День народження: %s"
 
-#: src/calendar/backends/contacts/e-cal-backend-contacts.c:977
+#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Death day: %s" strings
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1038
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Річниця: %s"
+
+#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Anniversary: %s" strings
+#: src/calendar/backends/contacts/e-cal-backend-contacts.c:1063
+#, c-format
+#| msgid "Birthday: %s"
+msgid "Death day: %s"
+msgstr "Дата смерті: %s"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:43
 msgid "Cannot get URI"
@@ -3006,7 +3101,7 @@ msgstr "Оновлюємо теку «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1759
+#: src/camel/camel-folder-summary.c:1716
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Звільнення невикористаної пам'яті для теки «%s : %s»"
@@ -3106,9 +3201,6 @@ msgstr "Не вдалося зашифрувати: не визначені ко
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:1618
 #, c-format
-#| msgid ""
-#| "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
-#| "the %s doesn’t have imported public key for this recipient."
 msgid ""
 "Failed to encrypt: Invalid recipient “%s” specified. A common issue is that "
 "the “%s” doesn’t have imported public key for this recipient."
@@ -3120,7 +3212,6 @@ msgstr ""
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1625
 #, c-format
-#| msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgid "Failed to encrypt: The public key for recipient “%s” was not found."
 msgstr ""
 "Не вдалося зашифрувати: не знайдено відкритий ключ для отримувача «%s»."
@@ -3128,14 +3219,12 @@ msgstr ""
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1632
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgid "Failed to encrypt: The key for recipient “%s” is revoked."
 msgstr "Не вдалося зашифрувати: ключ для отримувача «%s» відкликано."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1639
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is expired."
 msgid "Failed to encrypt: The key for recipient “%s” is expired."
 msgstr ""
 "Не вдалося зашифрувати: строк дії ключа для отримувача «%s» вичерпано."
@@ -3143,14 +3232,12 @@ msgstr ""
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1646
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgid "Failed to encrypt: The key for recipient “%s” is not trusted."
 msgstr "Не вдалося зашифрувати: ключ для отримувача «%s» не є довіреним."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1653
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgid "Failed to encrypt: The key for recipient “%s” is disabled."
 msgstr "Не вдалося зашифрувати: ключ для отримувача «%s» вимкнено."
 
@@ -3158,9 +3245,6 @@ msgstr "Не вдалося зашифрувати: ключ для отриму
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:1661
 #, c-format
-#| msgid ""
-#| "Failed to encrypt: Invalid recipient %s specified (code %d). A common "
-#| "issue is that the %s doesn’t have imported public key for this recipient."
 msgid ""
 "Failed to encrypt: Invalid recipient “%s” specified (code %d). A common "
 "issue is that the “%s” doesn’t have imported public key for this recipient."
@@ -3347,19 +3431,19 @@ msgstr "Помилка при записуванні тимчасового по
 msgid "Error copying mail temp file: %s"
 msgstr "Помилка копіювання тимчасового поштового файлу: %s"
 
-#: src/camel/camel-multipart-signed.c:272
-#: src/camel/camel-multipart-signed.c:425
+#: src/camel/camel-multipart-signed.c:275
+#: src/camel/camel-multipart-signed.c:428
 #, c-format
 msgid "No content available"
 msgstr "Опис недоступний"
 
-#: src/camel/camel-multipart-signed.c:280
-#: src/camel/camel-multipart-signed.c:433
+#: src/camel/camel-multipart-signed.c:283
+#: src/camel/camel-multipart-signed.c:436
 #, c-format
 msgid "No signature available"
 msgstr "Підпис недоступний"
 
-#: src/camel/camel-multipart-signed.c:797
+#: src/camel/camel-multipart-signed.c:837
 #, c-format
 msgid "parse error"
 msgstr "помилка обробки"
@@ -5038,7 +5122,7 @@ msgstr "Не вказана цільова тека"
 msgid "Unable to move junk messages"
 msgstr "Не вдалося перемістити повідомлення спаму"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1746
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1745
 msgid "Unable to move deleted messages"
 msgstr "Не вдалося перемістити вилучені повідомлення"
 
@@ -5413,61 +5497,61 @@ msgstr "Помилка при отриманні інформації повід
 msgid "Error running STATUS"
 msgstr "Помилка виконання STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6331
-#: src/camel/providers/imapx/camel-imapx-server.c:6385
-#: src/camel/providers/imapx/camel-imapx-server.c:6467
+#: src/camel/providers/imapx/camel-imapx-server.c:6350
+#: src/camel/providers/imapx/camel-imapx-server.c:6404
+#: src/camel/providers/imapx/camel-imapx-server.c:6486
 msgid "Error syncing changes"
 msgstr "Помилка при синхронізації змін"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6344
-#: src/camel/providers/imapx/camel-imapx-server.c:6395
-#: src/camel/providers/imapx/camel-imapx-server.c:6486
-#: src/camel/providers/imapx/camel-imapx-server.c:6623
+#: src/camel/providers/imapx/camel-imapx-server.c:6363
+#: src/camel/providers/imapx/camel-imapx-server.c:6414
+#: src/camel/providers/imapx/camel-imapx-server.c:6505
+#: src/camel/providers/imapx/camel-imapx-server.c:6642
 msgid "Error expunging message"
 msgstr "Помилка очищення повідомлення"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6700
+#: src/camel/providers/imapx/camel-imapx-server.c:6719
 msgid "Error fetching folders"
 msgstr "Помилка отримання тек"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6708
+#: src/camel/providers/imapx/camel-imapx-server.c:6727
 msgid "Error fetching subscribed folders"
 msgstr "Помилка при отриманні підписних тек"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6765
+#: src/camel/providers/imapx/camel-imapx-server.c:6784
 msgid "Error creating folder"
 msgstr "Помилка створення теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6815
+#: src/camel/providers/imapx/camel-imapx-server.c:6834
 msgid "Error deleting folder"
 msgstr "Помилка при вилученні теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6861
+#: src/camel/providers/imapx/camel-imapx-server.c:6880
 msgid "Error renaming folder"
 msgstr "Помилка при перейменуванні теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6893
+#: src/camel/providers/imapx/camel-imapx-server.c:6912
 msgid "Error subscribing to folder"
 msgstr "Помилка підписування на теку"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6929
+#: src/camel/providers/imapx/camel-imapx-server.c:6948
 msgid "Error unsubscribing from folder"
 msgstr "Помилка відписування від теки"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6969
+#: src/camel/providers/imapx/camel-imapx-server.c:6988
 msgid "IMAP server does not support quotas"
 msgstr "Сервер IMAP %s не підтримує квоти"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6981
+#: src/camel/providers/imapx/camel-imapx-server.c:7000
 msgid "Error retrieving quota information"
 msgstr "Помилка при отриманні даних про квоту"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7046
+#: src/camel/providers/imapx/camel-imapx-server.c:7065
 msgid "Search failed"
 msgstr "Помилка пошуку"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7172
+#: src/camel/providers/imapx/camel-imapx-server.c:7191
 msgid "Error running IDLE"
 msgstr "Помилка виконання IDLE"
 
@@ -8960,11 +9044,11 @@ msgstr "після початку"
 msgid "_Add Snooze time"
 msgstr "Дод_ати час затримки"
 
-#: src/libedataserverui/e-reminders-widget.c:1903
+#: src/libedataserverui/e-reminders-widget.c:1904
 msgid "Dismiss _All"
 msgstr "Скасувати _все"
 
-#: src/libedataserverui/e-reminders-widget.c:1908
+#: src/libedataserverui/e-reminders-widget.c:1909
 #: src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
 msgstr "_Скасувати"
