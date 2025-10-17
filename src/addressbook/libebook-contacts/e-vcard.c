@@ -555,8 +555,7 @@ read_attribute_value (EVCardAttribute *attr,
 			}
 		}
 
-		e_vcard_attribute_add_value (attr, make_utf8_valid (&str)->str);
-		g_string_free (str, TRUE);
+		e_vcard_attribute_add_value_take (attr, g_string_free (make_utf8_valid (&str), FALSE));
 	}
 
 	skip_to_next_line ( &lp );
@@ -2347,9 +2346,7 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 
 							e_vcard_attribute_remove_params (new_attr);
 							e_vcard_attribute_remove_values (new_attr);
-							e_vcard_attribute_add_value (new_attr, data_uri->str);
-
-							g_string_free (data_uri, TRUE);
+							e_vcard_attribute_add_value_take (new_attr, g_string_free (data_uri, FALSE));
 						}
 					}
 				}
@@ -2359,16 +2356,13 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 			/* convert "data:" URI into inline photo */
 			if (values && values->data && g_ascii_strncasecmp (values->data, "data:", 5) == 0) {
 				const gchar *data_start = NULL;
-				gchar *base64_data = NULL;
 				gchar *mime_type = NULL;
 				gboolean is_base64 = FALSE;
 
 				if (e_util_split_data_uri (values->data, &mime_type, NULL, &is_base64, &data_start) && is_base64) {
-					base64_data = g_strdup (data_start);
-
 					e_vcard_attribute_remove_params (new_attr);
 					e_vcard_attribute_remove_values (new_attr);
-					e_vcard_attribute_add_value (new_attr, base64_data);
+					e_vcard_attribute_add_value (new_attr, data_start);
 					e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
 					if (mime_type) {
 						const gchar *dash = strchr (mime_type, '/');
@@ -2378,7 +2372,6 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 					}
 				}
 
-				g_free (base64_data);
 				g_free (mime_type);
 			} else if (values && values->data) {
 				values = e_vcard_attribute_get_param (new_attr, EVC_VALUE);
@@ -2406,7 +2399,7 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 				if (keep) {
 					g_string_prepend (value, impp_scheme);
 					e_vcard_attribute_remove_values (new_attr);
-					e_vcard_attribute_add_value (new_attr, value->str);
+					e_vcard_attribute_add_value_take (new_attr, g_string_free (g_steal_pointer (&value), FALSE));
 				}
 
 				if (value)

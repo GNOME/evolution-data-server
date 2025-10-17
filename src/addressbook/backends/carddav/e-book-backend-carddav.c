@@ -179,9 +179,7 @@ ebb_carddav_prepare_save_photologo (EBookBackendCardDAV *bbdav,
 
 				/* return back the original URI */
 				e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
-				e_vcard_attribute_add_value (attr, uri);
-
-				g_free (uri);
+				e_vcard_attribute_add_value_take (attr, g_steal_pointer (&uri));
 			}
 		}
 	}
@@ -358,9 +356,7 @@ ebb_carddav_prepare_save (EBookBackendCardDAV *bbdav,
 
 						value = g_strdup_printf ("%04u-%02u-%02u", dt->year, dt->month, dt->day);
 						e_vcard_attribute_remove_values (attr);
-						e_vcard_attribute_add_value (attr, value);
-
-						g_free (value);
+						e_vcard_attribute_add_value_take (attr, g_steal_pointer (&value));
 
 						break;
 					}
@@ -393,16 +389,15 @@ ebb_carddav_prepare_save (EBookBackendCardDAV *bbdav,
 				group = g_strdup_printf ("item%u", highest_item + 1);
 				value = g_strdup_printf ("%04u-%02u-%02u", dt->year, dt->month, dt->day);
 
-				e_vcard_append_attribute_with_value (
+				e_vcard_append_attribute_with_value_take (
 					vcard,
 					e_vcard_attribute_new (group, "X-ABDate"),
-					value);
+					g_steal_pointer (&value));
 				e_vcard_append_attribute_with_value (
 					vcard,
 					e_vcard_attribute_new (group, "X-ABLabel"),
 					_("Anniversary"));
 
-				g_free (value);
 				g_free (group);
 			}
 

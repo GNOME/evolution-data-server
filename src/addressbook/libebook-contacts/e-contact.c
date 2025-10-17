@@ -869,9 +869,8 @@ photo_setter (EContact *contact,
 			g_string_append (value, "base64,");
 			g_string_append (value, encoded);
 
-			e_vcard_attribute_add_value (attr, value->str);
+			e_vcard_attribute_add_value_take (attr, g_string_free (value, FALSE));
 
-			g_string_free (value, TRUE);
 			g_free (encoded);
 		}
 		break;
@@ -987,9 +986,7 @@ fileas_getter (EContact *contact,
 		/* Add the FILE_AS attribute to the vcard */
 		if (new_file_as) {
 			attr = e_vcard_attribute_new (NULL, EVC_X_FILE_AS);
-			e_vcard_add_attribute_with_value (E_VCARD (contact), attr, new_file_as);
-
-			g_free (new_file_as);
+			e_vcard_add_attribute_with_value_take (E_VCARD (contact), attr, g_steal_pointer (&new_file_as));
 		}
 	}
 
@@ -1037,8 +1034,7 @@ n_getter (EContact *contact,
 		new_attr = e_vcard_attribute_new (NULL, EVC_FN);
 		e_vcard_append_attribute (E_VCARD (contact), new_attr);
 		name_str = e_contact_name_to_string (name);
-		e_vcard_attribute_add_value (new_attr, name_str);
-		g_free (name_str);
+		e_vcard_attribute_add_value_take (new_attr, g_steal_pointer (&name_str));
 	}
 
 	return name;
@@ -1073,8 +1069,7 @@ n_setter (EContact *contact,
 		*stringptr = NULL;
 		string = g_strjoinv (", ", strings);
 
-		e_vcard_attribute_add_value (attr, string);
-		g_free (string);
+		e_vcard_attribute_add_value_take (attr, g_steal_pointer (&string));
 	}
 
 }
@@ -1151,8 +1146,7 @@ date_setter (EContact *contact,
 
 	str = e_contact_date_to_string (date, e_vcard_get_version (E_VCARD (contact)));
 
-	e_vcard_attribute_add_value (attr, str);
-	g_free (str);
+	e_vcard_attribute_add_value_take (attr, g_steal_pointer (&str));
 }
 
 
@@ -1229,9 +1223,7 @@ datetime_type_setter (EContact *contact,
 	const EContactDateTime *dt = data;
 	gchar *str = e_contact_date_time_to_string (dt, e_vcard_get_version (E_VCARD (contact)), flags);
 
-	e_vcard_attribute_add_value (attr, str);
-
-	g_free (str);
+	e_vcard_attribute_add_value_take (attr, g_steal_pointer (&str));
 }
 
 static gpointer

@@ -2617,8 +2617,7 @@ member_populate (EBookBackendLDAP *self,
 			else
 				value = g_strdup_printf ("\"%s\" <%s>", member_info[2], member_info[0]);
 
-			e_vcard_attribute_add_value (attr, value);
-			g_free (value);
+			e_vcard_attribute_add_value_take (attr, g_steal_pointer (&value));
 		} else {
 			e_vcard_attribute_add_value (attr, member_info[0]);
 		}

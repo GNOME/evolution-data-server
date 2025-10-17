@@ -3357,9 +3357,7 @@ e_book_meta_backend_store_inline_photos_sync (EBookMetaBackend *meta_backend,
 					url = g_filename_to_uri (local_filename, NULL, NULL);
 
 					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
-					e_vcard_attribute_add_value (attr, url);
-
-					g_free (url);
+					e_vcard_attribute_add_value_take (attr, g_steal_pointer (&url));
 				} else {
 					success = FALSE;
 				}

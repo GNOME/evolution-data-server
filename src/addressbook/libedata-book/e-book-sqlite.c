@@ -1650,13 +1650,12 @@ ebsql_encode_vcard_sort_key (const gchar *sort_key)
 
 	/* Encode this otherwise e-vcard messes it up */
 	base64 = g_base64_encode ((const guchar *) sort_key, strlen (sort_key));
-	e_vcard_append_attribute_with_value (
+	e_vcard_append_attribute_with_value_take (
 		vcard,
 		e_vcard_attribute_new (NULL, EBSQL_VCARD_SORT_KEY),
-		base64);
+		g_steal_pointer (&base64));
 	encoded = e_vcard_to_string (vcard);
 
-	g_free (base64);
 	g_object_unref (vcard);
 
 	return encoded;
