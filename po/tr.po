@@ -4955,7 +4955,7 @@ msgstr "İletiler Gereksiz klasörüne kopyalanamıyor"
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:984
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
-msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışıyor olmalısınız (%s)"
+msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışmalısınız (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:992
 #: src/camel/providers/imapx/camel-imapx-server.c:3485
@@ -4975,7 +4975,7 @@ msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışıyor olmalısın�
 #: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışıyor olmalısınız"
+msgstr "Bu işlemi tamamlayabilmek için çevrim içi çalışmalısınız"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1616
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:1712
@@ -5014,12 +5014,12 @@ msgstr "“%s : %s” klasöründeki eski önbellek dosyaları kaldırılıyor"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1029
 msgid "You must be working online to search in headers"
-msgstr "Başlıklarda arama yapmak için çevrim içi çalışıyor olmanız gerekir"
+msgstr "Başlıklarda aramak için çevrim içi çalışmalısınız"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1083
 msgid "You must be working online to search in message body"
 msgstr ""
-"İleti gövdesinde arama yapmak için çevrim içi çalışıyor olmanız gerekir"
+"İleti gövdesinde aramak için çevrim içi çalışmalısınız"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1171
 #: src/camel/providers/nntp/camel-nntp-folder.c:745
