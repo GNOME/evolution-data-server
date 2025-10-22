@@ -2612,7 +2612,7 @@ msgid ""
 "a boolean false (#f)"
 msgstr ""
 "“%s” tüm parametrelerin dizge olmasını ve yalnızca bir tane parametrenin "
-"bool değeri false (#f) olmasını istiyor"
+"bool değeri “false” (#f) olmasını istiyor"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1592
 #, c-format
@@ -7054,7 +7054,7 @@ msgid ""
 "snooze-from-start”"
 msgstr ""
 "Son kullanılan erteleme süresi, dakika türünden; negatif sayı her zaman "
-"başlangıçtan önce anlamına gelir, aksi takdirde gerçek değer “notify-last-"
+"başlangıçtan önce anlamına gelir, diğer türlü gerçek değer “notify-last-"
 "snooze-from-start” ile birlikte kullanılır"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:114
@@ -7063,7 +7063,7 @@ msgid ""
 "false to count relative to the current time"
 msgstr ""
 "Son erteleme zamanının olay/görev başlangıcına göre hesaplanma durumu; "
-"geçerli zamana göre saymak için false"
+"geçerli zamana göre saymak için “false”"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:118
 msgid ""
@@ -7074,8 +7074,8 @@ msgid ""
 msgstr ""
 "Kullanıcı tanımlı erteleme süreleri, dakika türünden, dizeye sayı olarak "
 "kodlanır, burada sıfır veya negatif “başlangıçtan önce” anlamına gelir. "
-"Sayının önüne yıldız eklendiğinde, başlangıçtan sonra anlamına gelir, aksi "
-"takdirde zaman geçerli saate göredir, diğer bir deyişle “N dakika ertele”"
+"Sayının önüne yıldız eklendiğinde, başlangıçtan sonra anlamına gelir, diğer "
+"türlü zaman geçerli saate göredir, başka deyişle “N dakika ertele”"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:122
 msgid "Delete meeting from calendar on Decline"
