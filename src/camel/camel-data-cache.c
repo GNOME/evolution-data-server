@@ -533,7 +533,7 @@ camel_data_cache_get (CamelDataCache *cdc,
 	if (g_stat (real, &st) == 0 && st.st_size == 0) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			"%s: %s", _("Empty cache file"), real);
+			_("Cache file “%s” is empty"), real);
 		camel_object_bag_abort (cdc->priv->busy_bag, real);
 		goto exit;
 	}
