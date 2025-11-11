@@ -2331,7 +2331,7 @@ camel_store_db_count_messages (CamelStoreDB *self,
 		case CAMEL_STORE_DB_COUNT_KIND_TOTAL:
 			break;
 		case CAMEL_STORE_DB_COUNT_KIND_UNREAD:
-			where_clause = g_strdup_printf ("(flags & 0x%x)=0", CAMEL_MESSAGE_SEEN);
+			where_clause = g_strdup_printf ("(flags & 0x%x)=0", CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED);
 			break;
 		case CAMEL_STORE_DB_COUNT_KIND_JUNK:
 			where_clause = g_strdup_printf ("(flags & 0x%x)!=0", CAMEL_MESSAGE_JUNK);

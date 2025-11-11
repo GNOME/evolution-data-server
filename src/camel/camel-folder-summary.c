@@ -101,6 +101,9 @@ struct _CamelFolderSummaryPrivate {
 	GMutex info_flags_changed_lock;
 	GHashTable *info_flags_changes; /* gchar *uid ~> guint32 new_flags */
 	guint info_flags_changed_id;
+
+	gboolean is_junk_folder;
+	gboolean is_trash_folder;
 };
 
 /* this should probably be conditional on it existing */
@@ -212,6 +215,20 @@ folder_summary_constructed (GObject *object)
 			g_warning ("Failed to initially save folder summary for '%s': %s", folder_name, local_error ? local_error->message : "Unknown error");
 			g_clear_error (&local_error);
 		}
+	}
+
+	if (CAMEL_IS_VTRASH_FOLDER (self->priv->folder)) {
+		CamelVTrashFolder *vtrash = CAMEL_VTRASH_FOLDER (self->priv->folder);
+
+		self->priv->is_junk_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_JUNK;
+		self->priv->is_trash_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_TRASH;
+	} else {
+		guint32 folder_flags;
+
+		folder_flags = camel_folder_get_flags (self->priv->folder);
+
+		self->priv->is_junk_folder = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
+		self->priv->is_trash_folder = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
 	}
 }
 
@@ -380,7 +397,6 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
                                        gint op_type)
 {
 	gint unread = 0, deleted = 0, junk = 0;
-	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
 	gboolean subtract = op_type == UPDATE_COUNTS_SUB || op_type == UPDATE_COUNTS_SUB_WITHOUT_TOTAL;
 	gboolean without_total = op_type == UPDATE_COUNTS_ADD_WITHOUT_TOTAL || op_type == UPDATE_COUNTS_SUB_WITHOUT_TOTAL;
 	gboolean changed = FALSE;
@@ -389,20 +405,6 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
 	summary_object = G_OBJECT (summary);
-
-	if (summary->priv->folder && CAMEL_IS_VTRASH_FOLDER (summary->priv->folder)) {
-		CamelVTrashFolder *vtrash = CAMEL_VTRASH_FOLDER (summary->priv->folder);
-
-		is_junk_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_JUNK;
-		is_trash_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_TRASH;
-	} else if (summary->priv->folder) {
-		guint32 folder_flags;
-
-		folder_flags = camel_folder_get_flags (summary->priv->folder);
-
-		is_junk_folder = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
-		is_trash_folder = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
-	}
 
 	if (!(flags & CAMEL_MESSAGE_SEEN))
 		unread = subtract ? -1 : 1;
@@ -441,9 +443,9 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 		changed = TRUE;
 	}
 
-	if (junk && !is_junk_folder)
+	if (junk && !summary->priv->is_junk_folder)
 		unread = 0;
-	if (deleted && !is_trash_folder)
+	if (deleted && !summary->priv->is_trash_folder)
 		unread = 0;
 
 	if (unread) {
@@ -539,8 +541,13 @@ summary_header_save (CamelFolderSummary *summary,
 			inout_record->junk_count = 0;
 		if (!camel_store_db_count_messages (sdb, table_name, CAMEL_STORE_DB_COUNT_KIND_DELETED, &(inout_record->deleted_count), NULL))
 			inout_record->deleted_count = 0;
-		if (!camel_store_db_count_messages (sdb, table_name, CAMEL_STORE_DB_COUNT_KIND_UNREAD, &(inout_record->unread_count), NULL))
-			inout_record->unread_count = 0;
+		if (summary->priv->is_junk_folder) {
+			if (!camel_store_db_count_messages (sdb, table_name, CAMEL_STORE_DB_COUNT_KIND_UNREAD, &(inout_record->unread_count), NULL))
+				inout_record->unread_count = 0;
+		} else {
+			if (!camel_store_db_count_messages (sdb, table_name, CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED_UNREAD, &(inout_record->unread_count), NULL))
+				inout_record->unread_count = 0;
+		}
 		if (!camel_store_db_count_messages (sdb, table_name, CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED, &(inout_record->visible_count), NULL))
 			inout_record->visible_count = 0;
 		if (!camel_store_db_count_messages (sdb, table_name, CAMEL_STORE_DB_COUNT_KIND_JUNK_NOT_DELETED, &(inout_record->jnd_count), NULL))
@@ -625,7 +632,6 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 				    guint32 new_flags)
 {
 	guint32 old_flags, added_flags, removed_flags;
-	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
 	GObject *summary_object;
 	gboolean changed = FALSE;
 
@@ -647,20 +653,6 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 		return FALSE;
 	}
 
-	if (summary->priv->folder && CAMEL_IS_VTRASH_FOLDER (summary->priv->folder)) {
-		CamelVTrashFolder *vtrash = CAMEL_VTRASH_FOLDER (summary->priv->folder);
-
-		is_junk_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_JUNK;
-		is_trash_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_TRASH;
-	} else if (summary->priv->folder) {
-		guint32 folder_flags;
-
-		folder_flags = camel_folder_get_flags (summary->priv->folder);
-
-		is_junk_folder = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
-		is_trash_folder = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
-	}
-
 	added_flags = new_flags & (~(old_flags & new_flags));
 	removed_flags = old_flags & (~(old_flags & new_flags));
 
@@ -671,15 +663,37 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 		 * on unread counts */
 		added_flags |= CAMEL_MESSAGE_SEEN;
 		removed_flags |= CAMEL_MESSAGE_SEEN;
-	} else if ((!is_junk_folder && (new_flags & CAMEL_MESSAGE_JUNK) != 0 &&
+	} else if ((!summary->priv->is_junk_folder && (new_flags & CAMEL_MESSAGE_JUNK) != 0 &&
 		   (old_flags & CAMEL_MESSAGE_JUNK) == (new_flags & CAMEL_MESSAGE_JUNK)) ||
-		   (!is_trash_folder && (new_flags & CAMEL_MESSAGE_DELETED) != 0 &&
+		   (!summary->priv->is_trash_folder && (new_flags & CAMEL_MESSAGE_DELETED) != 0 &&
 		   (old_flags & CAMEL_MESSAGE_DELETED) == (new_flags & CAMEL_MESSAGE_DELETED))) {
 		/* The message was set read or unread, but it is a junk or deleted message,
 		 * in a non-Junk/non-Trash folder, thus it doesn't influence an unread count
 		 * there, thus pretend unread didn't change */
 		added_flags |= CAMEL_MESSAGE_SEEN;
 		removed_flags |= CAMEL_MESSAGE_SEEN;
+	}
+
+	if (summary->priv->is_junk_folder) {
+		/* When the message is a deleted junk, then it does not influence the unread count */
+		if ((old_flags & CAMEL_MESSAGE_DELETED) != 0 && (new_flags & CAMEL_MESSAGE_DELETED) != 0) {
+			added_flags |= CAMEL_MESSAGE_SEEN;
+			removed_flags |= CAMEL_MESSAGE_SEEN;
+		} else if ((added_flags & CAMEL_MESSAGE_DELETED) != 0 && (old_flags & CAMEL_MESSAGE_SEEN) == 0 && (new_flags & CAMEL_MESSAGE_SEEN) == 0) {
+			removed_flags = removed_flags & (~CAMEL_MESSAGE_SEEN);
+		} else if ((removed_flags & CAMEL_MESSAGE_DELETED) != 0 && (new_flags & CAMEL_MESSAGE_SEEN) == 0) {
+			added_flags = added_flags & (~CAMEL_MESSAGE_SEEN);
+		}
+	} else if (summary->priv->is_trash_folder) {
+		/* When the message is a deleted junk, then it does not influence the unread count */
+		if ((old_flags & CAMEL_MESSAGE_JUNK) != 0 && (new_flags & CAMEL_MESSAGE_JUNK) != 0) {
+			added_flags |= CAMEL_MESSAGE_SEEN;
+			removed_flags |= CAMEL_MESSAGE_SEEN;
+		} else if ((added_flags & CAMEL_MESSAGE_JUNK) != 0 && (old_flags & CAMEL_MESSAGE_SEEN) == 0 && (new_flags & CAMEL_MESSAGE_SEEN) == 0) {
+			removed_flags = removed_flags & (~CAMEL_MESSAGE_SEEN);
+		} else if ((removed_flags & CAMEL_MESSAGE_JUNK) != 0 && (new_flags & CAMEL_MESSAGE_SEEN) == 0) {
+			added_flags = added_flags & (~CAMEL_MESSAGE_SEEN);
+		}
 	}
 
 	/* decrement counts with removed flags */

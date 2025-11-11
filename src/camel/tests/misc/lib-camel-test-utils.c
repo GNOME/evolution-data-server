@@ -713,12 +713,16 @@ test_add_messages (CamelFolder *folder,
 {
 	CamelStore *store;
 	CamelStoreDB *sdb;
+	CamelStoreDBFolderRecord folder_record = { 0, };
 	CamelStoreDBMessageRecord record = { 0, };
+	GError *local_error = NULL;
 	va_list ap;
 	guint32 folder_id;
+	guint32 n_added = 0;
 	const gchar *folder_name;
 	const gchar *tmp;
 	gboolean any_set = FALSE;
+	gboolean success;
 
 	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
@@ -726,19 +730,33 @@ test_add_messages (CamelFolder *folder,
 	folder_id = camel_store_db_get_folder_id (sdb, folder_name);
 	g_assert_cmpint (folder_id, !=, 0);
 
+	success = camel_store_db_read_folder (sdb, folder_name, &folder_record, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
 	va_start (ap, folder);
 
 	for (tmp = va_arg (ap, const gchar *); tmp; tmp = va_arg (ap, const gchar *)) {
 		if (!*tmp) {
 			if (any_set) {
-				gboolean success;
-				GError *local_error = NULL;
-
 				g_assert_cmpstr (record.uid, !=, NULL);
 				record.folder_id = 0;
 				success = camel_store_db_write_message (sdb, folder_name, &record, &local_error);
 				g_assert_no_error (local_error);
 				g_assert_true (success);
+
+				n_added++;
+
+				if (!(record.flags & CAMEL_MESSAGE_SEEN))
+					folder_record.unread_count++;
+				if ((record.flags & CAMEL_MESSAGE_DELETED) != 0)
+					folder_record.deleted_count++;
+				if ((record.flags & CAMEL_MESSAGE_JUNK) != 0)
+					folder_record.junk_count++;
+				if (!(record.flags & CAMEL_MESSAGE_JUNK) && !(record.flags & CAMEL_MESSAGE_DELETED))
+					folder_record.visible_count++;
+				if ((record.flags & CAMEL_MESSAGE_JUNK) != 0 && !(record.flags & CAMEL_MESSAGE_DELETED))
+					folder_record.jnd_count++;
 			}
 
 			memset (&record, 0, sizeof (record));
@@ -782,15 +800,35 @@ test_add_messages (CamelFolder *folder,
 
 	va_end (ap);
 
-	if (any_set) {
-		gboolean success;
-		GError *local_error = NULL;
+	if (any_set || n_added > 0) {
+		if (any_set) {
+			g_assert_cmpstr (record.uid, !=, NULL);
+			record.folder_id = 0;
+			success = camel_store_db_write_message (sdb, folder_name, &record, &local_error);
+			g_assert_no_error (local_error);
+			g_assert_true (success);
 
-		g_assert_cmpstr (record.uid, !=, NULL);
-		record.folder_id = 0;
-		success = camel_store_db_write_message (sdb, folder_name, &record, &local_error);
+			n_added++;
+
+			if (!(record.flags & CAMEL_MESSAGE_SEEN))
+				folder_record.unread_count++;
+			if ((record.flags & CAMEL_MESSAGE_DELETED) != 0)
+				folder_record.deleted_count++;
+			if ((record.flags & CAMEL_MESSAGE_JUNK) != 0)
+				folder_record.junk_count++;
+			if (!(record.flags & CAMEL_MESSAGE_JUNK) && !(record.flags & CAMEL_MESSAGE_DELETED))
+				folder_record.visible_count++;
+			if ((record.flags & CAMEL_MESSAGE_JUNK) != 0 && !(record.flags & CAMEL_MESSAGE_DELETED))
+				folder_record.jnd_count++;
+		}
+
+		folder_record.saved_count += n_added;
+
+		success = camel_store_db_write_folder (sdb, folder_name, &folder_record, &local_error);
 		g_assert_no_error (local_error);
 		g_assert_true (success);
+
+		camel_store_db_folder_record_clear (&folder_record);
 
 		success = camel_folder_summary_load (camel_folder_get_folder_summary (folder), &local_error);
 		g_assert_no_error (local_error);

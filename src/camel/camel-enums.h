@@ -620,7 +620,7 @@ typedef enum {
 /**
  * CamelStoreDBCountKind
  * @CAMEL_STORE_DB_COUNT_KIND_TOTAL: all messages
- * @CAMEL_STORE_DB_COUNT_KIND_UNREAD: only unread messages
+ * @CAMEL_STORE_DB_COUNT_KIND_UNREAD: only unread and not deleted messages
  * @CAMEL_STORE_DB_COUNT_KIND_JUNK: only junk messages
  * @CAMEL_STORE_DB_COUNT_KIND_DELETED: only deleted messages
  * @CAMEL_STORE_DB_COUNT_KIND_NOT_JUNK_NOT_DELETED: all except of junk and deleted messages

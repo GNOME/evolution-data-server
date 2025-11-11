@@ -1286,6 +1286,562 @@ test_vee_folder_same_uids (void)
 }
 
 static void
+test_update_info_flags (CamelFolder *folder,
+			const gchar *uid,
+			guint32 mask,
+			guint32 set)
+{
+	CamelMessageInfo *mi;
+
+	mi = camel_folder_get_message_info (folder, uid);
+	g_assert_nonnull (mi);
+	camel_message_info_set_flags (mi, mask, set);
+	g_clear_object (&mi);
+}
+
+static void
+test_vee_folder_junk_unread (void)
+{
+	struct _changes {
+		guint32 flags_mask;
+		guint32 flags_set;
+		guint32 expected_unread;
+	} changes[] = {
+		/* starts with unread count 2 */
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 2 },
+		{ CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_DELETED, 0, 2 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_DELETED, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 2 },
+		{ CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED, 0, 2 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_DELETED, 0, 1 }
+	};
+	CamelStore *store;
+	CamelFolder *f1, *f2, *f3;
+	CamelFolder *vtrash;
+	CamelFolderSummary *f1_s, *vtrash_s;
+	GError *local_error = NULL;
+	gchar vuid[11];
+	gboolean success;
+	guint ii;
+
+	test_vee_folder_create_folders (&store, &f1, &f2, &f3);
+	g_assert_nonnull (store);
+	g_assert_nonnull (f1);
+	g_assert_nonnull (f2);
+	g_assert_nonnull (f3);
+	g_clear_object (&f2);
+	g_clear_object (&f3);
+
+	f1_s = camel_folder_get_folder_summary (f1);
+	g_assert_nonnull (f1_s);
+
+	vtrash = camel_vtrash_folder_new (store, CAMEL_VTRASH_FOLDER_JUNK);
+	g_assert_nonnull (vtrash);
+	vtrash_s = camel_folder_get_folder_summary (vtrash);
+	g_assert_nonnull (vtrash_s);
+	success = camel_vee_folder_add_folder_sync (CAMEL_VEE_FOLDER (vtrash), f1, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_get_message_count (f1), ==, 3);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (f1_s), ==, 3);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 3);
+	test_vee_folder_check_uids (vtrash, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (vtrash), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (vtrash_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (vtrash_s), ==, 0);
+
+	test_update_info_flags (f1, "11", CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_JUNK);
+	test_update_info_flags (f1, "12", CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_JUNK);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (vtrash, "11", "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (vtrash), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (vtrash_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (vtrash_s), ==, 2);
+
+	test_vee_folder_fill_vuid (vuid, f1, "11");
+
+	for (ii = 0; ii < G_N_ELEMENTS (changes); ii++) {
+		test_update_info_flags (vtrash, vuid, changes[ii].flags_mask, changes[ii].flags_set);
+
+		test_session_wait_for_pending_jobs ();
+
+		g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+		test_vee_folder_check_uids (vtrash, "11", "12", NULL);
+		g_assert_cmpuint (camel_folder_get_message_count (vtrash), ==, 2);
+		g_assert_cmpuint (camel_folder_summary_get_saved_count (vtrash_s), ==, 2);
+		g_assert_cmpuint (camel_folder_summary_get_unread_count (vtrash_s), ==, changes[ii].expected_unread);
+	}
+
+	g_clear_object (&f1);
+	g_clear_object (&vtrash);
+	g_clear_object (&store);
+
+	test_session_check_finalized ();
+}
+
+static void
+test_vee_folder_trash_unread (void)
+{
+	struct _changes {
+		guint32 flags_mask;
+		guint32 flags_set;
+		guint32 expected_unread;
+	} changes[] = {
+		/* starts with unread count 2 */
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 2 },
+		{ CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_JUNK, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_JUNK, 0, 2 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_JUNK, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_JUNK, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 2 },
+		{ CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_JUNK, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_JUNK, 0, 2 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_JUNK, 1 },
+		{ CAMEL_MESSAGE_SEEN, 0, 1 },
+		{ CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN, 1 },
+		{ CAMEL_MESSAGE_JUNK, 0, 1 }
+	};
+	CamelStore *store;
+	CamelFolder *f1, *f2, *f3;
+	CamelFolder *vtrash;
+	CamelFolderSummary *f1_s, *vtrash_s;
+	GError *local_error = NULL;
+	gchar vuid[11];
+	gboolean success;
+	guint ii;
+
+	test_vee_folder_create_folders (&store, &f1, &f2, &f3);
+	g_assert_nonnull (store);
+	g_assert_nonnull (f1);
+	g_assert_nonnull (f2);
+	g_assert_nonnull (f3);
+	g_clear_object (&f2);
+	g_clear_object (&f3);
+
+	f1_s = camel_folder_get_folder_summary (f1);
+	g_assert_nonnull (f1_s);
+
+	vtrash = camel_vtrash_folder_new (store, CAMEL_VTRASH_FOLDER_TRASH);
+	g_assert_nonnull (vtrash);
+	vtrash_s = camel_folder_get_folder_summary (vtrash);
+	g_assert_nonnull (vtrash_s);
+	success = camel_vee_folder_add_folder_sync (CAMEL_VEE_FOLDER (vtrash), f1, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_get_message_count (f1), ==, 3);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (f1_s), ==, 3);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 3);
+	test_vee_folder_check_uids (vtrash, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (vtrash), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (vtrash_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (vtrash_s), ==, 0);
+
+	test_update_info_flags (f1, "11", CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+	test_update_info_flags (f1, "12", CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (vtrash, "11", "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (vtrash), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (vtrash_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (vtrash_s), ==, 2);
+
+	test_vee_folder_fill_vuid (vuid, f1, "11");
+
+	for (ii = 0; ii < G_N_ELEMENTS (changes); ii++) {
+		test_update_info_flags (vtrash, vuid, changes[ii].flags_mask, changes[ii].flags_set);
+
+		test_session_wait_for_pending_jobs ();
+
+		g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+		test_vee_folder_check_uids (vtrash, "11", "12", NULL);
+		g_assert_cmpuint (camel_folder_get_message_count (vtrash), ==, 2);
+		g_assert_cmpuint (camel_folder_summary_get_saved_count (vtrash_s), ==, 2);
+		g_assert_cmpuint (camel_folder_summary_get_unread_count (vtrash_s), ==, changes[ii].expected_unread);
+	}
+
+	g_clear_object (&f1);
+	g_clear_object (&vtrash);
+	g_clear_object (&store);
+
+	test_session_check_finalized ();
+}
+
+static void
+test_vee_folder_trash_junk_unread (void)
+{
+	CamelStore *store;
+	CamelFolder *f1, *f2, *f3;
+	CamelFolder *trash, *junk;
+	CamelFolderSummary *f1_s, *trash_s, *junk_s;
+	GError *local_error = NULL;
+	gchar vuid[11];
+	gboolean success;
+
+	test_vee_folder_create_folders (&store, &f1, &f2, &f3);
+	g_assert_nonnull (store);
+	g_assert_nonnull (f1);
+	g_assert_nonnull (f2);
+	g_assert_nonnull (f3);
+	g_clear_object (&f2);
+	g_clear_object (&f3);
+
+	f1_s = camel_folder_get_folder_summary (f1);
+	g_assert_nonnull (f1_s);
+
+	trash = camel_vtrash_folder_new (store, CAMEL_VTRASH_FOLDER_TRASH);
+	g_assert_nonnull (trash);
+	trash_s = camel_folder_get_folder_summary (trash);
+	g_assert_nonnull (trash_s);
+	success = camel_vee_folder_add_folder_sync (CAMEL_VEE_FOLDER (trash), f1, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	junk = camel_vtrash_folder_new (store, CAMEL_VTRASH_FOLDER_JUNK);
+	g_assert_nonnull (junk);
+	junk_s = camel_folder_get_folder_summary (junk);
+	g_assert_nonnull (junk_s);
+	success = camel_vee_folder_add_folder_sync (CAMEL_VEE_FOLDER (junk), f1, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_get_message_count (f1), ==, 3);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (f1_s), ==, 3);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 3);
+	test_vee_folder_check_uids (trash, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 0);
+	test_vee_folder_check_uids (junk, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 0);
+
+	test_update_info_flags (f1, "11", CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 2);
+	test_vee_folder_check_uids (trash, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 0);
+	test_vee_folder_check_uids (junk, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 0);
+
+	test_update_info_flags (f1, "11", CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_JUNK);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 2);
+	test_vee_folder_check_uids (trash, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 0);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 0);
+
+	test_vee_folder_fill_vuid (vuid, f1, "11");
+	test_update_info_flags (junk, vuid, CAMEL_MESSAGE_SEEN, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 2);
+	test_vee_folder_check_uids (trash, NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 0);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 0);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (f1, "12", CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_vee_folder_fill_vuid (vuid, f1, "11");
+	test_update_info_flags (junk, vuid, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 0);
+
+	test_vee_folder_fill_vuid (vuid, f1, "12");
+	test_update_info_flags (trash, vuid, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 0);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 0);
+
+	test_vee_folder_fill_vuid (vuid, f1, "12");
+	test_update_info_flags (trash, vuid, CAMEL_MESSAGE_SEEN, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 0);
+
+	test_vee_folder_fill_vuid (vuid, f1, "11");
+	test_update_info_flags (junk, vuid, CAMEL_MESSAGE_SEEN, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (f1, "13", CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (f1, "13", CAMEL_MESSAGE_SEEN, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (f1, "13", CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_DELETED);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_vee_folder_fill_vuid (vuid, f1, "13");
+	test_update_info_flags (trash, vuid, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (trash, vuid, CAMEL_MESSAGE_SEEN, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (trash, vuid, CAMEL_MESSAGE_DELETED, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	/* it's expected to stay in the Trash folder, because the folder was not rebuilt yet,
+	   due to the changed message being in the folder */
+	test_vee_folder_check_uids (trash, "12", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 2);
+
+	success = camel_folder_refresh_info_sync (trash, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	/* it's removed now */
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 2);
+
+	test_update_info_flags (junk, vuid, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (junk, vuid, CAMEL_MESSAGE_JUNK, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	/* it's expected to stay in the Junk folder, because the folder was not rebuilt yet,
+	   due to the changed message being in the folder */
+	test_vee_folder_check_uids (junk, "11", "13", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 2);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	success = camel_folder_refresh_info_sync (junk, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 0);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	/* it is removed now */
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	test_update_info_flags (f1, "13", CAMEL_MESSAGE_SEEN, 0);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (f1_s), ==, 1);
+	test_vee_folder_check_uids (trash, "12", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (trash), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (trash_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (trash_s), ==, 1);
+	test_vee_folder_check_uids (junk, "11", NULL);
+	g_assert_cmpuint (camel_folder_get_message_count (junk), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_saved_count (junk_s), ==, 1);
+	g_assert_cmpuint (camel_folder_summary_get_unread_count (junk_s), ==, 1);
+
+	g_clear_object (&f1);
+	g_clear_object (&trash);
+	g_clear_object (&junk);
+	g_clear_object (&store);
+
+	test_session_check_finalized ();
+}
+
+static void
 test_vee_folder_match_threads (gconstpointer user_data)
 {
 	CamelSession *session;
@@ -2246,6 +2802,9 @@ main (gint argc,
 	g_test_add_func ("/CamelVeeFolder/Duplicates", test_vee_folder_duplicates);
 	g_test_add_func ("/CamelVeeFolder/Changes", test_vee_folder_changes);
 	g_test_add_func ("/CamelVeeFolder/SameUIDs", test_vee_folder_same_uids);
+	g_test_add_func ("/CamelVeeFolder/JunkUnread", test_vee_folder_junk_unread);
+	g_test_add_func ("/CamelVeeFolder/TrashUnread", test_vee_folder_trash_unread);
+	g_test_add_func ("/CamelVeeFolder/TrashJunkUnread", test_vee_folder_trash_junk_unread);
 	g_test_add_data_func ("/CamelVeeFolder/MatchThreadsOneStore", GUINT_TO_POINTER (1), test_vee_folder_match_threads);
 	g_test_add_data_func ("/CamelVeeFolder/MatchThreadsMultipleStores", GUINT_TO_POINTER (2), test_vee_folder_match_threads);
 	g_test_add_data_func ("/CamelVeeFolder/MatchThreadsNestedOneStore", GUINT_TO_POINTER (1), test_vee_folder_match_threads_nested);
