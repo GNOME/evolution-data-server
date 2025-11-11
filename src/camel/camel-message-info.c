@@ -343,7 +343,6 @@ message_info_save (const CamelMessageInfo *mi,
 	const CamelNameValueArray *headers;
 	CamelSummaryMessageID message_id;
 	const GArray *references;
-	guint32 read_or_flags = CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_JUNK;
 
 	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), FALSE);
 	g_return_val_if_fail (record != NULL, FALSE);
@@ -351,27 +350,6 @@ message_info_save (const CamelMessageInfo *mi,
 
 	record->uid = camel_pstring_strdup (camel_message_info_get_uid (mi));
 	record->flags = camel_message_info_get_flags (mi);
-
-	if ((record->flags & CAMEL_MESSAGE_JUNK) != 0) {
-		CamelFolderSummary *folder_summary;
-
-		folder_summary = camel_message_info_ref_summary (mi);
-		if (folder_summary) {
-			CamelFolder *folder;
-
-			folder = camel_folder_summary_get_folder (folder_summary);
-			if (folder) {
-				guint32 folder_flags = camel_folder_get_flags (folder);
-
-				/* Do not consider Junk flag as message being read when it's a Junk folder */
-				if ((folder_flags & CAMEL_FOLDER_IS_JUNK) != 0)
-					read_or_flags = read_or_flags & (~CAMEL_MESSAGE_JUNK);
-			}
-
-			g_object_unref (folder_summary);
-		}
-	}
-
 	record->dirty = (record->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0 ? 1 : 0;
 
 	record->size = camel_message_info_get_size (mi);
