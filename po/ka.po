@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-10-17 06:35+0000\n"
-"PO-Revision-Date: 2025-10-17 10:08+0200\n"
+"POT-Creation-Date: 2025-11-10 12:50+0000\n"
+"PO-Revision-Date: 2025-11-11 04:07+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: \n"
 "Language: ka\n"
@@ -2754,8 +2754,9 @@ msgid "Unable to create cache path"
 msgstr "ქეშის ბილიკის შექმნის შეცდომა"
 
 #: src/camel/camel-data-cache.c:536
-msgid "Empty cache file"
-msgstr ""
+#, c-format
+msgid "Cache file “%s” is empty"
+msgstr "კეშის ფაილი \"%s\" ცარიელია"
 
 #: src/camel/camel-data-cache.c:613
 #, c-format
