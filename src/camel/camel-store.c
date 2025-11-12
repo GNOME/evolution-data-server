@@ -55,6 +55,9 @@ struct _CamelStorePrivate {
 	GMutex signal_emission_lock;
 	gboolean folder_info_stale_scheduled;
 	volatile gint maintenance_lock;
+
+	GMutex lock;
+	guint schedule_vfolder_rebuild_id;
 };
 
 struct _AsyncContext {
@@ -341,6 +344,9 @@ store_finalize (GObject *object)
 
 	g_clear_object (&store->priv->db);
 
+	g_mutex_clear (&store->priv->signal_emission_lock);
+	g_mutex_clear (&store->priv->lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_parent_class)->finalize (object);
 }
@@ -349,6 +355,11 @@ static void
 store_dispose (GObject *object)
 {
 	CamelStore *store = CAMEL_STORE (object);
+
+	if (store->priv->schedule_vfolder_rebuild_id) {
+		g_source_remove (store->priv->schedule_vfolder_rebuild_id);
+		store->priv->schedule_vfolder_rebuild_id = 0;
+	}
 
 	g_clear_pointer (&store->priv->folders, camel_object_bag_destroy);
 
@@ -699,6 +710,9 @@ static void
 camel_store_init (CamelStore *store)
 {
 	store->priv = camel_store_get_instance_private (store);
+
+	g_mutex_init (&store->priv->signal_emission_lock);
+	g_mutex_init (&store->priv->lock);
 
 	/* Default CamelStore capabilities:
 	 *
@@ -1362,6 +1376,65 @@ camel_store_can_refresh_folder (CamelStore *store,
 	return class->can_refresh_folder (store, info, error);
 }
 
+static void
+camel_store_vfolder_rebuild_done_cb (GObject *source_object,
+				     GAsyncResult *result,
+				     gpointer user_data)
+{
+	CamelFolder *folder;
+	CamelStore *parent_store;
+	GError *local_error = NULL;
+
+	folder = CAMEL_FOLDER (source_object);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	if (!camel_folder_refresh_info_finish (folder, result, &local_error) && camel_debug ("store")) {
+		printf ("Failed to refresh folder '%s : %s': %s\n",
+			parent_store ? camel_service_get_display_name (CAMEL_SERVICE (parent_store)) : "???",
+			camel_folder_get_full_name (folder),
+			local_error->message);
+	}
+
+	g_clear_error (&local_error);
+}
+
+static gboolean
+camel_store_schedule_vfolder_rebuild_cb (gpointer user_data)
+{
+	CamelStore *store = user_data;
+	CamelSession *session;
+
+	g_mutex_lock (&store->priv->lock);
+	store->priv->schedule_vfolder_rebuild_id = 0;
+
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (session) {
+		CamelFolder *vjunk = NULL, *vtrash = NULL;
+
+		if ((store->priv->flags & CAMEL_STORE_VJUNK) != 0 && store->priv->folders)
+			vjunk = camel_object_bag_get (store->priv->folders, CAMEL_VJUNK_NAME);
+
+		if ((store->priv->flags & CAMEL_STORE_VTRASH) != 0 && store->priv->folders)
+			vtrash = camel_object_bag_get (store->priv->folders, CAMEL_VTRASH_NAME);
+
+		if (vjunk) {
+			camel_folder_refresh_info (vjunk, G_PRIORITY_LOW, NULL, camel_store_vfolder_rebuild_done_cb, NULL);
+			g_object_unref (vjunk);
+		}
+
+		if (vtrash) {
+			camel_folder_refresh_info (vtrash, G_PRIORITY_LOW, NULL, camel_store_vfolder_rebuild_done_cb, NULL);
+			g_object_unref (vtrash);
+		}
+	}
+
+	g_clear_object (&session);
+
+	g_mutex_unlock (&store->priv->lock);
+
+	return G_SOURCE_REMOVE;
+}
+
 /**
  * camel_store_get_folder_sync:
  * @store: a #CamelStore
@@ -1507,11 +1580,19 @@ try_again:
 			camel_object_bag_abort (store->priv->folders, folder_name);
 	}
 
+	if (vjunk || vtrash) {
+		g_mutex_lock (&store->priv->lock);
+		if (store->priv->schedule_vfolder_rebuild_id)
+			g_source_remove (store->priv->schedule_vfolder_rebuild_id);
+		store->priv->schedule_vfolder_rebuild_id = g_timeout_add (500, camel_store_schedule_vfolder_rebuild_cb, store);
+		g_mutex_unlock (&store->priv->lock);
+	}
+
 	/* If this is a normal folder and the store uses a
 	 * virtual Junk folder, let the virtual Junk folder
 	 * track this folder. */
 	if (vjunk != NULL) {
-		camel_vee_folder_add_folder_sync (vjunk, folder, CAMEL_VEE_FOLDER_OP_FLAG_NONE, cancellable, NULL);
+		camel_vee_folder_add_folder_sync (vjunk, folder, CAMEL_VEE_FOLDER_OP_FLAG_SKIP_REBUILD, cancellable, NULL);
 		g_object_unref (vjunk);
 	}
 
@@ -1519,7 +1600,7 @@ try_again:
 	 * virtual Trash folder, let the virtual Trash folder
 	 * track this folder. */
 	if (vtrash != NULL) {
-		camel_vee_folder_add_folder_sync (vtrash, folder, CAMEL_VEE_FOLDER_OP_FLAG_NONE, cancellable, NULL);
+		camel_vee_folder_add_folder_sync (vtrash, folder, CAMEL_VEE_FOLDER_OP_FLAG_SKIP_REBUILD, cancellable, NULL);
 		g_object_unref (vtrash);
 	}
 
