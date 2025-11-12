@@ -3654,10 +3654,17 @@ camel_store_search_ensure_ongoing_search (CamelStoreSearch *self,
 
 			message = camel_folder_get_message_sync (self->priv->ongoing_search.folder, uid, self->priv->ongoing_search.cancellable, &local_error);
 
-			if (local_error && !g_error_matches (local_error, CAMEL_FOLDER_ERROR, CAMEL_FOLDER_ERROR_INVALID_UID)) {
-				self->priv->ongoing_search.success = FALSE;
-				g_propagate_error (self->priv->ongoing_search.error, local_error);
-			} else {
+			/* ignore errors, just log about them */
+			if (local_error) {
+				if (camel_debug ("search")) {
+					CamelStore *parent_store = camel_folder_get_parent_store (self->priv->ongoing_search.folder);
+
+					printf ("[camel-search] Failed to get message '%s' from '%s : %s': %s\n", uid,
+						parent_store ? camel_service_get_display_name (CAMEL_SERVICE (parent_store)) : "???",
+						camel_folder_get_full_name (self->priv->ongoing_search.folder),
+						local_error->message);
+				}
+
 				g_clear_error (&local_error);
 			}
 		}
