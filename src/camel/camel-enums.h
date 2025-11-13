@@ -680,6 +680,7 @@ typedef enum _CamelFolderThreadFlags { /*< flags >*/
  * @CAMEL_MATCH_THREADS_KIND_REPLIES: include replies of the message
  * @CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS: include replies and parents
  * @CAMEL_MATCH_THREADS_KIND_SINGLE: include messages not being in any thread
+ * @CAMEL_MATCH_THREADS_KIND_NOT_ALL: include messages not part of the %CAMEL_MATCH_THREADS_KIND_ALL (Since: 3.60)
  *
  * Kinds for "match-threads" search option.
  *
@@ -690,7 +691,8 @@ typedef enum _CamelMatchThreadsKind {
 	CAMEL_MATCH_THREADS_KIND_ALL,
 	CAMEL_MATCH_THREADS_KIND_REPLIES,
 	CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS,
-	CAMEL_MATCH_THREADS_KIND_SINGLE
+	CAMEL_MATCH_THREADS_KIND_SINGLE,
+	CAMEL_MATCH_THREADS_KIND_NOT_ALL
 } CamelMatchThreadsKind;
 
 /**

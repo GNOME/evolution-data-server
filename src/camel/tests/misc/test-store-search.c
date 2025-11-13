@@ -2262,6 +2262,18 @@ test_store_search_extras (void)
 	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
 
 	camel_store_search_set_expression (search,
+		"(match-all (match-threads \"not_all\" (or "
+		  "(header-exists \"to\")"
+		  "(header-starts-with \"subject\" \"s1\")"
+		  "(header-ends-with \"subject\" \"1\"))))");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search, 1, "11", 1, "12", 1, "13", 2, "21", 3, "31", 0, NULL);
+	g_assert_cmpint (camel_store_search_get_match_threads_kind (search, &thread_flags), ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+
+	camel_store_search_set_expression (search,
 		"(match-all (match-threads \"replies\" (or "
 		  "(header-exists \"to\")"
 		  "(header-starts-with \"subject\" \"s1\")"
@@ -2319,6 +2331,18 @@ test_store_search_extras (void)
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "11", 1, "12", 1, "13", 2, "21", 3, "31", 0, NULL);
 	g_assert_cmpint (camel_store_search_get_match_threads_kind (search, &thread_flags), ==, CAMEL_MATCH_THREADS_KIND_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_NONE);
+
+	camel_store_search_set_expression (search,
+		"(match-all (match-threads \"no-subject,not_all\" (or "
+		  "(header-exists \"to\")"
+		  "(header-starts-with \"subject\" \"s1\")"
+		  "(header-ends-with \"subject\" \"1\"))))");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search, 1, "11", 1, "12", 1, "13", 2, "21", 3, "31", 0, NULL);
+	g_assert_cmpint (camel_store_search_get_match_threads_kind (search, &thread_flags), ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
 	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_NONE);
 
 	camel_store_search_set_expression (search,
@@ -2760,7 +2784,7 @@ test_store_search_match_threads (void)
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "11", 2, "21", 3, "31", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_SINGLE);
@@ -2783,7 +2807,7 @@ test_store_search_match_threads (void)
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "11", 2, "21", 3, "31", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -2802,11 +2826,34 @@ test_store_search_match_threads (void)
 	g_clear_pointer (&index, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
+	camel_store_search_set_expression (search, "(match-threads \"not_all\" (header-contains \"subject\" \"root\"))");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search, 1, "11", 2, "21", 3, "31", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_add_match_threads_items_sync (search, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 12); /* all messages from all folders in the @search */
+	index = camel_store_search_ref_result_index (search);
+	g_assert_nonnull (index);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 3);
+	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search, index);
+	test_store_search_check_result (search, 2, "23", 2, "24", 3, "32", 3, "33", 0, NULL);
+	g_clear_pointer (&index, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
 	camel_store_search_set_expression (search, "(match-threads \"all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "12", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -2825,11 +2872,34 @@ test_store_search_match_threads (void)
 	g_clear_pointer (&index, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
+	camel_store_search_set_expression (search, "(match-threads \"not_all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search, 1, "12", 3, "33", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_add_match_threads_items_sync (search, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 12); /* all messages from all folders in the @search */
+	index = camel_store_search_ref_result_index (search);
+	g_assert_nonnull (index);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 2);
+	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search, index);
+	test_store_search_check_result (search, 1, "11", 3, "31", 0, NULL);
+	g_clear_pointer (&index, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
 	camel_store_search_set_expression (search, "(match-threads \"no-subject,all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "12", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -2848,11 +2918,34 @@ test_store_search_match_threads (void)
 	g_clear_pointer (&index, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
+	camel_store_search_set_expression (search, "(match-threads \"no-subject,not_all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search, 1, "12", 3, "33", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_NONE);
+	success = camel_store_search_add_match_threads_items_sync (search, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 12); /* all messages from all folders in the @search */
+	index = camel_store_search_ref_result_index (search);
+	g_assert_nonnull (index);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index), ==, 2);
+	camel_store_search_index_apply_match_threads (index, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search, index);
+	test_store_search_check_result (search, 1, "11", 2, "24", 3, "31", NULL);
+	g_clear_pointer (&index, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
 	camel_store_search_set_expression (search, "(match-threads \"replies\" (uid \"13\" \"33\"))");
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "13", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_REPLIES);
@@ -2875,7 +2968,7 @@ test_store_search_match_threads (void)
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "13", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_REPLIES);
@@ -2898,7 +2991,7 @@ test_store_search_match_threads (void)
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "13", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS);
@@ -2921,7 +3014,7 @@ test_store_search_match_threads (void)
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "13", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS);
@@ -3075,7 +3168,7 @@ test_store_search_match_threads_multiple_stores (void)
 	success = camel_store_search_rebuild_sync (search1, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search1, 1, "11", 3, "31", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search1, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_SINGLE);
@@ -3083,7 +3176,7 @@ test_store_search_match_threads_multiple_stores (void)
 	success = camel_store_search_rebuild_sync (search2, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search2, 2, "21", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search2, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_SINGLE);
@@ -3121,7 +3214,7 @@ test_store_search_match_threads_multiple_stores (void)
 	success = camel_store_search_rebuild_sync (search1, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search1, 1, "11", 3, "31", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search1, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -3129,7 +3222,7 @@ test_store_search_match_threads_multiple_stores (void)
 	success = camel_store_search_rebuild_sync (search2, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search2, 2, "21", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search2, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -3162,12 +3255,58 @@ test_store_search_match_threads_multiple_stores (void)
 	g_clear_pointer (&index1, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
+	camel_store_search_set_expression (search1, "(match-threads \"not_all\" (header-contains \"subject\" \"root\"))");
+	camel_store_search_set_expression (search2, "(match-threads \"not_all\" (header-contains \"subject\" \"root\"))");
+	success = camel_store_search_rebuild_sync (search1, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search1, 1, "11", 3, "31", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search1, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_rebuild_sync (search2, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search2, 2, "21", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search2, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_add_match_threads_items_sync (search1, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 8);
+	success = camel_store_search_add_match_threads_items_sync (search2, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 12);
+	index1 = camel_store_search_ref_result_index (search1);
+	g_assert_nonnull (index1);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index1), ==, 2);
+	index2 = camel_store_search_ref_result_index (search2);
+	g_assert_nonnull (index2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index2), ==, 1);
+	camel_store_search_index_move_from_existing (index1, index2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index1), ==, 3);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index2), ==, 0);
+	camel_store_search_index_unref (index2);
+	camel_store_search_index_apply_match_threads (index1, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search1, index1);
+	test_store_search_check_result (search1, 3, "32", 3, "33", 0, NULL);
+	camel_store_search_set_result_index (search2, index1);
+	test_store_search_check_result (search2, 2, "23", 2, "24", 0, NULL);
+	g_clear_pointer (&index1, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
 	camel_store_search_set_expression (search1, "(match-threads \"all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
 	camel_store_search_set_expression (search2, "(match-threads \"all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
 	success = camel_store_search_rebuild_sync (search1, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search1, 1, "12", 3, "33", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search1, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -3180,7 +3319,7 @@ test_store_search_match_threads_multiple_stores (void)
 	success = camel_store_search_rebuild_sync (search2, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search2, 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search2, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
@@ -3205,6 +3344,52 @@ test_store_search_match_threads_multiple_stores (void)
 	test_store_search_check_result (search1, 1, "12", 1, "14", 1, "13", 1, "15", 3, "32", 3, "33", 0, NULL);
 	camel_store_search_set_result_index (search2, index1);
 	test_store_search_check_result (search2, 2, "21", 2, "22", 2, "23", 2, "24", 0, NULL);
+	g_clear_pointer (&index1, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
+	camel_store_search_set_expression (search1, "(match-threads \"not_all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
+	camel_store_search_set_expression (search2, "(match-threads \"not_all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
+	success = camel_store_search_rebuild_sync (search1, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search1, 1, "12", 3, "33", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search1, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_add_match_threads_items_sync (search1, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 8);
+	success = camel_store_search_rebuild_sync (search2, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	test_store_search_check_result (search2, 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search2, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_SUBJECT);
+	success = camel_store_search_add_match_threads_items_sync (search2, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 12);
+	index1 = camel_store_search_ref_result_index (search1);
+	g_assert_nonnull (index1);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index1), ==, 2);
+	index2 = camel_store_search_ref_result_index (search2);
+	g_assert_nonnull (index2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index2), ==, 0);
+	camel_store_search_index_move_from_existing (index1, index2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index1), ==, 2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index2), ==, 0);
+	camel_store_search_index_unref (index2);
+	camel_store_search_index_apply_match_threads (index1, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search1, index1);
+	test_store_search_check_result (search1, 1, "11", 3, "31", 0, NULL);
+	camel_store_search_set_result_index (search2, index1);
+	test_store_search_check_result (search2, 0, NULL);
 	g_clear_pointer (&index1, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
@@ -3249,6 +3434,50 @@ test_store_search_match_threads_multiple_stores (void)
 	test_store_search_check_result (search1, 1, "12", 1, "14", 1, "13", 1, "15", 3, "32", 3, "33", 0, NULL);
 	camel_store_search_set_result_index (search2, index1);
 	test_store_search_check_result (search2, 2, "21", 2, "22", 2, "23", NULL);
+	g_clear_pointer (&index1, camel_store_search_index_unref);
+	g_clear_pointer (&items, g_ptr_array_unref);
+
+	camel_store_search_set_expression (search1, "(match-threads \"no-subject,not_all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
+	camel_store_search_set_expression (search2, "(match-threads \"no-subject,not_all\" (or (header-contains \"subject\" \"from 12\") (uid \"33\")))");
+	success = camel_store_search_rebuild_sync (search1, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search1, 1, "12", 3, "33", 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search1, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_NONE);
+	success = camel_store_search_rebuild_sync (search2, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_store_search_check_result (search2, 0, NULL);
+	match_threads_kind = camel_store_search_get_match_threads_kind (search2, &thread_flags);
+	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_NOT_ALL);
+	g_assert_cmpint (thread_flags, ==, CAMEL_FOLDER_THREAD_FLAG_NONE);
+	success = camel_store_search_add_match_threads_items_sync (search1, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 8);
+	success = camel_store_search_add_match_threads_items_sync (search2, &items, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_nonnull (items);
+	g_assert_cmpuint (items->len, ==, 12);
+	index1 = camel_store_search_ref_result_index (search1);
+	g_assert_nonnull (index1);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index1), ==, 2);
+	index2 = camel_store_search_ref_result_index (search2);
+	g_assert_nonnull (index2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index2), ==, 0);
+	camel_store_search_index_move_from_existing (index1, index2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index1), ==, 2);
+	g_assert_cmpuint (g_hash_table_size ((GHashTable *) index2), ==, 0);
+	camel_store_search_index_unref (index2);
+	camel_store_search_index_apply_match_threads (index1, items, match_threads_kind, thread_flags, NULL);
+	camel_store_search_set_result_index (search1, index1);
+	test_store_search_check_result (search1, 1, "11", 3, "31", 0, NULL);
+	camel_store_search_set_result_index (search2, index1);
+	test_store_search_check_result (search2, 2, "24", NULL);
 	g_clear_pointer (&index1, camel_store_search_index_unref);
 	g_clear_pointer (&items, g_ptr_array_unref);
 
@@ -3673,7 +3902,7 @@ test_store_search_match_threads_only_leaves (void)
 	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
 	g_assert_no_error (local_error);
 	g_assert_true (success);
-	/* it does know know what to do with the match-threads yet, it requires special (and manual) post-processing */
+	/* it does not know what to do with the match-threads yet, it requires special (and manual) post-processing */
 	test_store_search_check_result (search, 1, "12", 0, NULL);
 	match_threads_kind = camel_store_search_get_match_threads_kind (search, &thread_flags);
 	g_assert_cmpint (match_threads_kind, ==, CAMEL_MATCH_THREADS_KIND_ALL);
