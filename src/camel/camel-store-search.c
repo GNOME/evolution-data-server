@@ -635,7 +635,8 @@ camel_store_search_index_apply_match_threads (CamelStoreSearchIndex *self,
 					scan = parent;
 					g_hash_table_add (results_hash, camel_folder_thread_node_get_item (scan));
 				}
-			} else if (kind == CAMEL_MATCH_THREADS_KIND_ALL) {
+			} else if (kind == CAMEL_MATCH_THREADS_KIND_ALL ||
+				   kind == CAMEL_MATCH_THREADS_KIND_NOT_ALL) {
 				CamelFolderThreadNode *parent;
 
 				while (node && (parent = camel_folder_thread_node_get_parent (node)) != NULL) {
@@ -651,8 +652,29 @@ camel_store_search_index_apply_match_threads (CamelStoreSearchIndex *self,
 		}
 	}
 
-	g_hash_table_foreach_remove ((GHashTable *) self, store_search_index_remove_unmatch_threads_cb, results_hash);
-	g_hash_table_foreach (results_hash, store_search_index_add_match_threads_cb, self);
+	if (kind == CAMEL_MATCH_THREADS_KIND_NOT_ALL) {
+		guint ii;
+
+		g_hash_table_remove_all ((GHashTable *) self);
+
+		for (ii = 0; ii < items->len; ii++) {
+			CamelStoreSearchThreadItem *item = g_ptr_array_index (items, ii);
+
+			if (!g_hash_table_contains (results_hash, item)) {
+				SearchIndexData index_data_stack = { 0, };
+
+				index_data_stack.store = camel_store_search_thread_item_get_store (item);
+				index_data_stack.folder_id = camel_store_search_thread_item_get_folder_id (item);
+				index_data_stack.uid = camel_store_search_thread_item_get_uid (item);
+
+				if (!g_hash_table_contains ((GHashTable *) self, &index_data_stack))
+					camel_store_search_index_add (self, index_data_stack.store, index_data_stack.folder_id, index_data_stack.uid);
+			}
+		}
+	} else {
+		g_hash_table_foreach_remove ((GHashTable *) self, store_search_index_remove_unmatch_threads_cb, results_hash);
+		g_hash_table_foreach (results_hash, store_search_index_add_match_threads_cb, self);
+	}
 
 	g_hash_table_destroy (results_hash);
 	g_hash_table_destroy (threads_hash);
@@ -1516,6 +1538,8 @@ store_search_match_threads_cb (CamelSExp *sexp,
 				self->priv->match_threads_kind = CAMEL_MATCH_THREADS_KIND_REPLIES_AND_PARENTS;
 			else if (g_strcmp0 (str, "single") == 0)
 				self->priv->match_threads_kind = CAMEL_MATCH_THREADS_KIND_SINGLE;
+			else if (g_strcmp0 (str, "not_all") == 0)
+				self->priv->match_threads_kind = CAMEL_MATCH_THREADS_KIND_NOT_ALL;
 			else
 				self->priv->match_threads_kind = CAMEL_MATCH_THREADS_KIND_NONE;
 		}
