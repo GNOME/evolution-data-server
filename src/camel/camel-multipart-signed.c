@@ -713,6 +713,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 	if (self->priv->broken) {
 		CamelMimeParser *parser;
 		CamelStream *stream;
+		const gchar *boundary;
 		gint rt;
 
 		stream = camel_stream_mem_new ();
@@ -722,7 +723,9 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 
 		parser = camel_mime_parser_new ();
 		camel_mime_parser_init_with_stream (parser, stream, NULL);
-		camel_mime_parser_push_state (parser, CAMEL_MIME_PARSER_STATE_MULTIPART, camel_content_type_param (content_type, "boundary"));
+
+		boundary = camel_content_type_param (content_type, "boundary");
+		camel_mime_parser_push_state (parser, CAMEL_MIME_PARSER_STATE_MULTIPART, boundary ? boundary : "xxx-unknown-boundary-1234567890");
 
 		rt = CAMEL_MULTIPART_CLASS (camel_multipart_signed_parent_class)->construct_from_parser (multipart, parser);
 

@@ -911,8 +911,13 @@ camel_mime_parser_push_state (CamelMimeParser *mp,
                               const gchar *boundary)
 {
 	struct _header_scan_stack *h;
-	struct _header_scan_state *s = _PRIVATE (mp);
+	struct _header_scan_state *s;
 	gsize boundary_len;
+
+	g_return_if_fail (CAMEL_IS_MIME_PARSER (mp));
+	g_return_if_fail (boundary != NULL);
+
+	s = _PRIVATE (mp);
 
 	h = g_malloc0 (sizeof (*h));
 	h->boundarylen = strlen (boundary) + 2;
