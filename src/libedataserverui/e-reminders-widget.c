@@ -1601,7 +1601,7 @@ reminders_activate_snooze (GSimpleAction *action,
 
 			if (kind == SNOOZE_KIND_FROM_START) {
 				until = e_cal_component_alarm_instance_get_occur_start (e_reminder_data_get_instance (rd));
-				until = until - (minutes * 60);
+				until = until + (minutes * 60);
 			}
 
 			e_reminder_watcher_snooze (reminders->priv->watcher, rd, until);
