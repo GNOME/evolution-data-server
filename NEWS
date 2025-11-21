@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.58.2 2025-11-21
+---------------------------------------
+
+Bug Fixes:
+	I#613 - Camel: Message info changes do not propagate sometimes
+	I#614 - CamelSearchFolder: Add "not_all" "match-threads" kind
+	I#616 - Crash when reading broken multipart/signed
+	I#618 - Calendar: Free/busy not exported without set calendar mail
+	I#620 - alarm-notify: Snooze "until X minutes before start" wrongly reminds "X min after start"
+
+Miscellaneous:
+	Camel: Unread count for virtual Trash/Junk folder not updated properly
+	CamelStoreSearch: Ignore all errors when a message cannot be opened
+	CamelStore: Speed up open folders with virtual Trash or Junk folder
+
+Translations:
+	Aurimas Aurimas Černius (lt)
+	Sabri Ünal (tr)
+
 Evolution-Data-Server 3.58.1 2025-10-10
 ---------------------------------------
 
