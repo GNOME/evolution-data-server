@@ -138,6 +138,7 @@ static void
 webdav_collection_add_found_source (ECollectionBackend *collection,
 				    EWebDAVDiscoverSupports source_type,
 				    GUri *uri,
+				    const gchar *user_address,
 				    const gchar *display_name,
 				    const gchar *color,
 				    guint order,
@@ -293,6 +294,10 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 		e_source_webdav_set_uri (child_webdav, uri);
 		e_source_resource_set_identity (resource, identity);
 
+		if (user_address && *user_address && !e_source_webdav_get_email_address (child_webdav)) {
+			e_source_webdav_set_email_address (child_webdav, user_address);
+		}
+
 		if (is_new) {
 			/* inherit common settings */
 			e_source_webdav_set_ssl_trust (child_webdav, e_source_webdav_get_ssl_trust (collection_webdav));
@@ -363,12 +368,16 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 static void
 webdav_collection_process_discovered_sources (ECollectionBackend *collection,
 					      GSList *discovered_sources,
+					      GSList *user_addresses,
 					      GHashTable *known_sources,
 					      const EWebDAVDiscoverSupports *source_types,
 					      gint n_source_types)
 {
+	const gchar *user_address;
 	GSList *link;
 	gint ii;
+
+	user_address = user_addresses ? user_addresses->data : NULL;
 
 	for (link = discovered_sources; link; link = g_slist_next (link)) {
 		EWebDAVDiscoveredSource *discovered_source = link->data;
@@ -383,7 +392,7 @@ webdav_collection_process_discovered_sources (ECollectionBackend *collection,
 
 		for (ii = 0; ii < n_source_types; ii++) {
 			if ((discovered_source->supports & source_types[ii]) == source_types[ii])
-				webdav_collection_add_found_source (collection, source_types[ii], parsed_uri,
+				webdav_collection_add_found_source (collection, source_types[ii], parsed_uri, user_address,
 					discovered_source->display_name, discovered_source->color, discovered_source->order,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE) != 0,
 					(discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_SUBSCRIBED_ICALENDAR) != 0,
@@ -646,6 +655,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	GHashTable *known_sources; /* resource-id ~> source's UID */
 	GList *sources;
 	GSList *discovered_sources = NULL;
+	GSList *user_addresses = NULL;
 	ENamedParameters *credentials_copy = NULL;
 	gboolean credentials_empty;
 	gboolean any_success = FALSE;
@@ -693,7 +703,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 		E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS |
 		E_WEBDAV_DISCOVER_SUPPORTS_CALENDAR_AUTO_SCHEDULE | E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES,
 		credentials, (EWebDAVDiscoverRefSourceFunc) e_source_registry_server_ref_source, server,
-		out_certificate_pem, out_certificate_errors, &discovered_sources, NULL, cancellable, &local_error)) {
+		out_certificate_pem, out_certificate_errors, &discovered_sources, &user_addresses, cancellable, &local_error)) {
 		EWebDAVDiscoverSupports source_types[] = {
 			E_WEBDAV_DISCOVER_SUPPORTS_EVENTS,
 			E_WEBDAV_DISCOVER_SUPPORTS_MEMOS,
@@ -701,13 +711,17 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 			E_WEBDAV_DISCOVER_SUPPORTS_WEBDAV_NOTES
 		};
 
-		webdav_collection_process_discovered_sources (collection, discovered_sources, known_sources, source_types, G_N_ELEMENTS (source_types));
+		webdav_collection_process_discovered_sources (collection, discovered_sources, user_addresses, known_sources, source_types, G_N_ELEMENTS (source_types));
 
 		if (webdav_collection_debug_enabled ())
 			e_util_debug_print ("WEBDAV", "%p: Received %u calendars from '%s'\n", webdav_backend, g_slist_length (discovered_sources), calendar_url);
 
 		e_webdav_discover_free_discovered_sources (discovered_sources);
 		discovered_sources = NULL;
+
+		g_slist_free_full (user_addresses, g_free);
+		user_addresses = NULL;
+
 		any_success = TRUE;
 	/* Prevent lost of already known calendars when the discover failed */
 	} else if (local_error) {
@@ -739,7 +753,7 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 			E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS
 		};
 
-		webdav_collection_process_discovered_sources (collection, discovered_sources, known_sources, source_types, G_N_ELEMENTS (source_types));
+		webdav_collection_process_discovered_sources (collection, discovered_sources, NULL, known_sources, source_types, G_N_ELEMENTS (source_types));
 
 		if (webdav_collection_debug_enabled ())
 			e_util_debug_print ("WEBDAV", "%p: Received %u books from '%s'\n", webdav_backend, g_slist_length (discovered_sources), contacts_url);
