@@ -1596,11 +1596,9 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 
 	*out_freebusy = NULL;
 
-	if (!users)
-		return;
-
 	cal_email_address = e_cal_backend_get_backend_property (E_CAL_BACKEND (meta_backend), E_CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS);
-	if (!cal_email_address)
+
+	if (!cal_email_address && users)
 		return;
 
 	for (link = (GSList *) users; link; link = g_slist_next (link)) {
@@ -1610,7 +1608,7 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 			break;
 	}
 
-	if (!link) {
+	if (!link && users) {
 		g_free (cal_email_address);
 		return;
 	}
