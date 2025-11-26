@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-10-22 15:56+0000\n"
-"PO-Revision-Date: 2025-11-05 12:05-0300\n"
+"POT-Creation-Date: 2025-11-21 09:44+0000\n"
+"PO-Revision-Date: 2025-11-26 12:01-0300\n"
 "Last-Translator: Juliano de Souza Camargo <julianosc@pm.me>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao/>\n"
 "Language: pt_BR\n"
@@ -1326,7 +1326,7 @@ msgstr "Atualização ignorada pois está desabilitada em redes limitadas."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2066
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2565
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3457
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3455
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Falha ao criar o cache “%s”:"
@@ -1492,7 +1492,7 @@ msgstr "O arquivo “%s” não é um componente de VCALENDAR"
 #: src/calendar/backends/file/e-cal-backend-file.c:3768
 #: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2684
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2682
 msgid "Unsupported method"
 msgstr "Não há suporte ao método"
 
@@ -2702,7 +2702,7 @@ msgid "Received object for UID “%s” doesn’t contain any expected component
 msgstr ""
 "O objeto recebido para UID “%s” não contém qualquer componente esperado"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1974
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2710,7 +2710,7 @@ msgstr ""
 "Não pode modificar todas as instâncias de uma instância separada. Modifique "
 "uma série de instâncias ao invés."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4356
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4354
 msgid "attachment.dat"
 msgstr "anexo.dat"
 
@@ -2822,8 +2822,9 @@ msgid "Unable to create cache path"
 msgstr "Não foi possível criar caminho do cache"
 
 #: src/camel/camel-data-cache.c:536
-msgid "Empty cache file"
-msgstr "Arquivo de cache vazio"
+#, c-format
+msgid "Cache file “%s” is empty"
+msgstr "Arquivo de cache “%s” está vazio"
 
 #: src/camel/camel-data-cache.c:613
 #, c-format
@@ -3065,7 +3066,7 @@ msgstr "Atualizando pasta “%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1716
+#: src/camel/camel-folder-summary.c:1730
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Liberar memória inutilizada para a pasta “%s : %s”"
@@ -3410,7 +3411,7 @@ msgstr "Nenhuma conteúdo disponível"
 msgid "No signature available"
 msgstr "Nenhuma assinatura disponível"
 
-#: src/camel/camel-multipart-signed.c:837
+#: src/camel/camel-multipart-signed.c:840
 #, c-format
 msgid "parse error"
 msgstr "erro de análise"
@@ -4848,43 +4849,43 @@ msgstr "Falha ao adicionar dados ao codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descriptografia S/MIME: Não foi localizado conteúdo criptografado"
 
-#: src/camel/camel-store.c:1448
+#: src/camel/camel-store.c:1521
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Abrindo pasta “%s”"
 
-#: src/camel/camel-store.c:1745
+#: src/camel/camel-store.c:1826
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Verificando pastas em “%s”"
 
-#: src/camel/camel-store.c:1773 src/camel/camel-store.c:1818
+#: src/camel/camel-store.c:1854 src/camel/camel-store.c:1899
 #: src/camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Lixeira"
 
-#: src/camel/camel-store.c:1787 src/camel/camel-store.c:1835
+#: src/camel/camel-store.c:1868 src/camel/camel-store.c:1916
 #: src/camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Spam"
 
-#: src/camel/camel-store.c:2440
+#: src/camel/camel-store.c:2521
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Não foi possível criar pasta: %s: pasta existe"
 
-#: src/camel/camel-store.c:2447
+#: src/camel/camel-store.c:2528
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Criando pasta “%s”"
 
-#: src/camel/camel-store.c:2625
+#: src/camel/camel-store.c:2706
 #: src/camel/providers/local/camel-maildir-store.c:340
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Não foi possível excluir pasta: %s: Operação inválida"
 
-#: src/camel/camel-store.c:2816
+#: src/camel/camel-store.c:2897
 #: src/camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -9583,6 +9584,9 @@ msgstr "Na web"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:3
 msgid "WebDAV Notes"
 msgstr "Notas WebDAV"
+
+#~ msgid "Empty cache file"
+#~ msgstr "Arquivo de cache vazio"
 
 #~ msgid "Whether the migration of old setting was already done"
 #~ msgstr "Se a migração de configurações antigas foram, ou não, feitas"
