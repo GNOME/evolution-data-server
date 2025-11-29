@@ -17,9 +17,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-10-17 18:53+0000\n"
-"PO-Revision-Date: 2025-10-22 08:00+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2025-11-13 15:08+0000\n"
+"PO-Revision-Date: 2025-11-15 20:17+0300\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Türkçe <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -2775,8 +2775,9 @@ msgid "Unable to create cache path"
 msgstr "Önbellek yolu oluşturulamadı"
 
 #: src/camel/camel-data-cache.c:536
-msgid "Empty cache file"
-msgstr "Boş ön bellek"
+#, c-format
+msgid "Cache file “%s” is empty"
+msgstr "“%s” önbellek dosyası boş"
 
 #: src/camel/camel-data-cache.c:613
 #, c-format
@@ -3011,7 +3012,7 @@ msgstr "“%s : %s” klasörü tazeleniyor"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1716
+#: src/camel/camel-folder-summary.c:1730
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "“%s : %s” klasörü için kullanılmayan belleği serbest bırak"
@@ -4756,43 +4757,43 @@ msgstr "Kodlayıcıya veri eklenemedi"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Şifre çözümü: Şifrelenemiş içerik bulunamadı"
 
-#: src/camel/camel-store.c:1448
+#: src/camel/camel-store.c:1521
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "“%s” klasörü açılıyor"
 
-#: src/camel/camel-store.c:1745
+#: src/camel/camel-store.c:1826
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "“%s” içerisindeki klasörler taranıyor"
 
-#: src/camel/camel-store.c:1773 src/camel/camel-store.c:1818
+#: src/camel/camel-store.c:1854 src/camel/camel-store.c:1899
 #: src/camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Çöp"
 
-#: src/camel/camel-store.c:1787 src/camel/camel-store.c:1835
+#: src/camel/camel-store.c:1868 src/camel/camel-store.c:1916
 #: src/camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Gereksiz"
 
-#: src/camel/camel-store.c:2440
+#: src/camel/camel-store.c:2521
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Klasör oluşturulamadı: %s: klasör zaten var"
 
-#: src/camel/camel-store.c:2447
+#: src/camel/camel-store.c:2528
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "“%s” klasörü oluşturuluyor"
 
-#: src/camel/camel-store.c:2625
+#: src/camel/camel-store.c:2706
 #: src/camel/providers/local/camel-maildir-store.c:340
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Klasör silinemedi: %s: Geçersiz işlem"
 
-#: src/camel/camel-store.c:2816
+#: src/camel/camel-store.c:2897
 #: src/camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -5018,8 +5019,7 @@ msgstr "Başlıklarda aramak için çevrim içi çalışmalısınız"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1083
 msgid "You must be working online to search in message body"
-msgstr ""
-"İleti gövdesinde aramak için çevrim içi çalışmalısınız"
+msgstr "İleti gövdesinde aramak için çevrim içi çalışmalısınız"
 
 #: src/camel/providers/imapx/camel-imapx-folder.c:1171
 #: src/camel/providers/nntp/camel-nntp-folder.c:745
@@ -9437,6 +9437,9 @@ msgstr "Web Üzerinde"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:3
 msgid "WebDAV Notes"
 msgstr "WebDAV Notları"
+
+#~ msgid "Empty cache file"
+#~ msgstr "Boş ön bellek"
 
 #~ msgid "Whether the migration of old setting was already done"
 #~ msgstr "Eski ayarın aktarımının zaten yapılmış olması"
