@@ -1081,17 +1081,10 @@ adr_getter (EContact *contact,
             EVCardAttribute *attr)
 {
 	if (attr) {
-		GList *p = e_vcard_attribute_get_values (attr);
 		EContactAddress *addr = g_new0 (EContactAddress, 1);
 
 		addr->address_format = g_strdup ("");
-		addr->po = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->ext = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->street = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->locality = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->region = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->code = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->country = g_strdup (p && p->data ? p->data : ""); /* if (p) p = p->next; */
+		e_contact_address_read_attr (addr, attr);
 
 		return addr;
 	}
@@ -1106,13 +1099,7 @@ adr_setter (EContact *contact,
 {
 	EContactAddress *addr = data;
 
-	e_vcard_attribute_add_value (attr, addr->po);
-	e_vcard_attribute_add_value (attr, addr->ext);
-	e_vcard_attribute_add_value (attr, addr->street);
-	e_vcard_attribute_add_value (attr, addr->locality);
-	e_vcard_attribute_add_value (attr, addr->region);
-	e_vcard_attribute_add_value (attr, addr->code);
-	e_vcard_attribute_add_value (attr, addr->country);
+	e_contact_address_write_attr (addr, attr);
 }
 
 
@@ -4327,7 +4314,7 @@ e_contact_address_new (void)
 
 /**
  * e_contact_address_free:
- * @address: an #EContactAddress
+ * @address: (transfer full): an #EContactAddress
  *
  * Frees the @address struct and its contents.
  **/
@@ -4337,16 +4324,97 @@ e_contact_address_free (EContactAddress *address)
 	if (!address)
 		return;
 
-	g_free (address->address_format);
-	g_free (address->po);
-	g_free (address->ext);
-	g_free (address->street);
-	g_free (address->locality);
-	g_free (address->region);
-	g_free (address->code);
-	g_free (address->country);
-
+	e_contact_address_clear (address);
 	g_free (address);
+}
+
+/**
+ * e_contact_address_clear:
+ * @self: an #EContactAddress
+ *
+ * Frees all the members of the @self, but unlike e_contact_address_free(),
+ * it does not free the @self itself.
+ *
+ * Since: 3.60
+ **/
+void
+e_contact_address_clear (EContactAddress *self)
+{
+	if (!self)
+		return;
+
+	g_clear_pointer (&self->address_format, g_free);
+	g_clear_pointer (&self->po, g_free);
+	g_clear_pointer (&self->ext, g_free);
+	g_clear_pointer (&self->street, g_free);
+	g_clear_pointer (&self->locality, g_free);
+	g_clear_pointer (&self->region, g_free);
+	g_clear_pointer (&self->code, g_free);
+	g_clear_pointer (&self->country, g_free);
+}
+
+/**
+ * e_contact_address_read_attr:
+ * @self: an #EContactAddress
+ * @source: (not nullable): an ADR #EVCardAttribute
+ *
+ * Populates @self from the @source attribute.
+ *
+ * Since: 3.60
+ **/
+void
+e_contact_address_read_attr (EContactAddress *self,
+			     EVCardAttribute *source)
+{
+	GList *p;
+
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (source != NULL);
+
+	p = e_vcard_attribute_get_values (source);
+
+	g_clear_pointer (&self->po, g_free);
+	g_clear_pointer (&self->ext, g_free);
+	g_clear_pointer (&self->street, g_free);
+	g_clear_pointer (&self->locality, g_free);
+	g_clear_pointer (&self->region, g_free);
+	g_clear_pointer (&self->code, g_free);
+	g_clear_pointer (&self->country, g_free);
+
+	self->po = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+	self->ext = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+	self->street = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+	self->locality = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+	self->region = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+	self->code = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+	self->country = g_strdup (p && p->data ? p->data : ""); /* if (p) p = p->next; */
+}
+
+/**
+ * e_contact_address_write_attr:
+ * @self: an #EContactAddress
+ * @destination: (in-out) (not nullable): an #EVCardAttribute
+ *
+ * Populates ADR attribute @destination with the data from the @self.
+ *
+ * Since: 3.60
+ **/
+void
+e_contact_address_write_attr (EContactAddress *self,
+			      EVCardAttribute *destination)
+{
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (destination != NULL);
+
+	e_vcard_attribute_remove_values (destination);
+
+	e_vcard_attribute_add_value (destination, self->po);
+	e_vcard_attribute_add_value (destination, self->ext);
+	e_vcard_attribute_add_value (destination, self->street);
+	e_vcard_attribute_add_value (destination, self->locality);
+	e_vcard_attribute_add_value (destination, self->region);
+	e_vcard_attribute_add_value (destination, self->code);
+	e_vcard_attribute_add_value (destination, self->country);
 }
 
 /**
