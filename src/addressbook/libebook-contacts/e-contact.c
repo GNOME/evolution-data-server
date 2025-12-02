@@ -402,6 +402,8 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_FIELD_REPLACEABLE (E_CONTACT_IM_MATRIX_WORK_3, EVC_X_MATRIX, "im_matrix_work_3", N_("Matrix Work ID 3"), "WORK", 2, get_impp_one_full, set_impp_one_full),
 	MULTI_LIST_REPLACEABLE (E_CONTACT_IM_MATRIX, EVC_X_MATRIX, "im_matrix", N_("Matrix ID List"), get_impp_multi_full, set_impp_multi_full),
 
+	STRING_FIELD (E_CONTACT_TZ, EVC_TZ, "timezone", N_("Time zone"), FALSE),
+
 	/* vCard 4.0 */
 	STRING_FIELD_REPLACEABLE_40 (E_CONTACT_KIND, EVC_KIND, "kind", N_("Kind"), EVC_X_EVOLUTION_KIND, get_kind_full, set_kind_full),
 	STRING_FIELD_40 (E_CONTACT_SOURCE, EVC_SOURCE, "source", N_("Source"), FALSE, EVC_X_EVOLUTION_SOURCE),

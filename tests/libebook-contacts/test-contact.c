@@ -140,6 +140,7 @@ test_contact_gobject_props (EContact *contact)
 
 	for (ii = E_CONTACT_UID; ii < E_CONTACT_FIELD_LAST; ii++) {
 		if (ii <= E_CONTACT_LAST_SIMPLE_STRING ||
+		    ii == E_CONTACT_TZ ||
 		    ii == E_CONTACT_KIND ||
 		    ii == E_CONTACT_SOURCE ||
 		    ii == E_CONTACT_XML ||

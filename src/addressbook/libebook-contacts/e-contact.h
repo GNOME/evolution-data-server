@@ -258,6 +258,8 @@ typedef enum {
 	E_CONTACT_IM_MATRIX_WORK_3,	/* Synthetic string field */
 	E_CONTACT_IM_MATRIX,		/* Multi-valued */
 
+	E_CONTACT_TZ,			/* string */
+
 	/* vCard 4.0 properties */
 	E_CONTACT_KIND,			/* string */
 	E_CONTACT_SOURCE,		/* string (uri) */
