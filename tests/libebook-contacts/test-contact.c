@@ -2469,6 +2469,77 @@ test_contact_quirks_photo_logo (void)
 	}
 }
 
+static void
+test_contact_quirks_geo (void)
+{
+	EContactField field = E_CONTACT_GEO;
+	const gchar *evc_field = e_contact_field_name (E_CONTACT_GEO);
+	guint step;
+
+	g_assert_nonnull (evc_field);
+
+	for (step = 0; step < 2; step++) {
+		EContact *contact;
+		EVCard *vcard;
+		EContactGeo *geo, geo_stack;
+		EVCardAttribute *attr;
+		GList *values;
+
+		if (step == 0) {
+			/* vCard 3.0 */
+			contact = e_contact_new ();
+			vcard = E_VCARD (contact);
+			e_vcard_add_attribute_with_value (vcard, e_vcard_attribute_new (NULL, EVC_VERSION), "3.0");
+		} else {
+			/* vCard 4.0 */
+			contact = e_contact_new ();
+			vcard = E_VCARD (contact);
+			e_vcard_add_attribute_with_value (vcard, e_vcard_attribute_new (NULL, EVC_VERSION), "4.0");
+		}
+
+		g_assert_cmpuint (g_list_length (e_vcard_get_attributes (vcard)), ==, 1);
+		g_assert_nonnull (e_vcard_get_attribute (vcard, EVC_VERSION));
+
+		geo = e_contact_get (contact, field);
+		g_assert_null (geo);
+
+		memset (&geo_stack, 0, sizeof (EContactGeo));
+		geo_stack.latitude = 1.234567;
+		geo_stack.longitude = -9.876543;
+
+		e_contact_set (contact, field, &geo_stack);
+
+		geo = e_contact_get (contact, field);
+		g_assert_nonnull (geo);
+		g_assert_cmpfloat (geo->latitude, ==, geo_stack.latitude);
+		g_assert_cmpfloat (geo->longitude, ==, geo_stack.longitude);
+		e_contact_geo_free (geo);
+
+		attr = e_vcard_get_attribute (vcard, evc_field);
+		g_assert_nonnull (attr);
+
+		if (e_vcard_get_version (vcard) == E_VCARD_VERSION_30) {
+			values = e_vcard_attribute_get_values (attr);
+			g_assert_nonnull (values);
+			g_assert_cmpuint (g_list_length (values), ==, 2);
+			g_assert_cmpstr (values->data, ==, "1.234567");
+			g_assert_cmpstr (values->next->data, ==, "-9.876543");
+		} else {
+			values = e_vcard_attribute_get_values (attr);
+			g_assert_nonnull (values);
+			g_assert_cmpuint (g_list_length (values), ==, 1);
+			g_assert_cmpstr (values->data, ==, "geo:1.234567,-9.876543");
+		}
+
+		e_contact_set (contact, field, NULL);
+
+		geo = e_contact_get (contact, field);
+		g_assert_null (geo);
+
+		g_clear_object (&contact);
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2484,6 +2555,7 @@ main (gint argc,
 	g_test_add_func ("/EContact/QuirksKIND", test_contact_quirks_kind);
 	g_test_add_func ("/EContact/QuirksIMPP", test_contact_quirks_impp);
 	g_test_add_func ("/EContact/QuirksPHOTOLOGO", test_contact_quirks_photo_logo);
+	g_test_add_func ("/EContact/QuirksGEO", test_contact_quirks_geo);
 
 	return g_test_run ();
 }

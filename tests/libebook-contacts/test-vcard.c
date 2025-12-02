@@ -1788,6 +1788,69 @@ test_convert_quirks_photo_logo (void)
 	}
 }
 
+typedef struct _GeoCase {
+	const gchar *vcard;
+	const gchar *expected_lat;
+	const gchar *expected_lon;
+} GeoCase;
+
+static void
+convert_quirks_geo_test_attrs (EVCard *converted,
+			       gpointer user_data)
+{
+	GeoCase *case_data = user_data;
+	EVCardAttribute *attr;
+	GList *values;
+
+	attr = e_vcard_get_attribute (converted, EVC_GEO);
+	g_assert_nonnull (attr);
+	values = e_vcard_attribute_get_values (attr);
+
+	if (e_vcard_get_version (converted) == E_VCARD_VERSION_40) {
+		gchar *expected_uri;
+
+		expected_uri = g_strconcat ("geo:", case_data->expected_lat, ",", case_data->expected_lon, NULL);
+
+		g_assert_cmpuint (g_list_length (values), ==, 1);
+		g_assert_cmpstr (values->data, ==, expected_uri);
+
+		g_free (expected_uri);
+	} else {
+		g_assert_cmpuint (g_list_length (values), ==, 2);
+		g_assert_cmpstr (values->data, ==, case_data->expected_lat);
+		g_assert_cmpstr (values->next->data, ==, case_data->expected_lon);
+	}
+}
+
+static void
+test_convert_quirks_geo (void)
+{
+	#define VCARD_STR(_ver, _val) \
+		"BEGIN:VCARD\r\n" \
+		"VERSION:" _ver "\r\n" \
+		"GEO:" _val "\r\n" \
+		"END:VCARD\r\n"
+	GeoCase cases_30[] = {
+		{ VCARD_STR ("3.0", "9.876543;-1.234567"), "9.876543", "-1.234567" },
+		{ VCARD_STR ("3.0", "-1.2;9.87"), "-1.2", "9.87" }
+	}, cases_40[] = {
+		{ VCARD_STR ("4.0", "geo:9.876543,-1.234567"), "9.876543", "-1.234567" },
+		{ VCARD_STR ("4.0", "geO:-1.2,9.87"), "-1.2", "9.87" }
+	};
+	#undef VCARD_STR
+	guint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases_30); ii++) {
+		test_convert (cases_30[ii].vcard, E_VCARD_VERSION_30, E_VCARD_VERSION_40, 2,
+			convert_quirks_geo_test_attrs, &(cases_30[ii]));
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases_40); ii++) {
+		test_convert (cases_40[ii].vcard, E_VCARD_VERSION_40, E_VCARD_VERSION_30, 2,
+			convert_quirks_geo_test_attrs, &(cases_40[ii]));
+	}
+}
+
 static void
 test_misc_nth_value (void)
 {
@@ -2152,6 +2215,7 @@ main (gint argc,
 	g_test_add_func ("/Convert/QuirksIMPP", test_convert_quirks_impp);
 	g_test_add_func ("/Convert/QuirksKIND", test_convert_quirks_kind);
 	g_test_add_func ("/Convert/QuirksPHOTOLOGO", test_convert_quirks_photo_logo);
+	g_test_add_func ("/Convert/QuirksGEO", test_convert_quirks_geo);
 	g_test_add_func ("/Misc/NthValue", test_misc_nth_value);
 	g_test_add_func ("/Misc/Foreach", test_misc_foreach);
 	g_test_add_func ("/Misc/AppendAttributesList", test_misc_append_attributes_list);

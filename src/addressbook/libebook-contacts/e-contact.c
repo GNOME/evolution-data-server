@@ -725,18 +725,45 @@ geo_getter (EContact *contact,
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
-		gchar *lat, *lon;
 
-		lat = p ? p->data : NULL; if (p) p = g_list_next (p);
-		lon = p ? p->data : NULL;
+		if (p && p->next) {
+			gchar *lat, *lon;
 
-		if (!lat || !lon)
-			return NULL;
+			lat = p ? p->data : NULL; if (p) p = g_list_next (p);
+			lon = p ? p->data : NULL;
 
-		return e_contact_geo_from_string (lat, lon);
+			if (!lat || !lon)
+				return NULL;
+
+			return e_contact_geo_from_string (lat, lon);
+		}
+
+		if (p && !p->next) {
+			const gchar *uri;
+
+			uri = p->data;
+
+			if (uri && g_ascii_strncasecmp (uri, "geo:", 4) == 0) {
+				gchar **split;
+
+				split = g_strsplit (uri + 4, ",", 2);
+				if (split && split[0] && split[1] && !split[2]) {
+					EContactGeo *geo;
+
+					geo = e_contact_geo_from_string (split[0], split[1]);
+
+					g_strfreev (split);
+
+					return geo;
+				}
+
+				if (split)
+					g_strfreev (split);
+			}
+		}
 	}
-	else
-		return NULL;
+
+	return NULL;
 }
 
 static void
@@ -748,8 +775,19 @@ geo_setter (EContact *contact,
 	gchar *lat = NULL, *lon = NULL;
 
 	if (e_contact_geo_to_string (geo, &lat, &lon)) {
-		e_vcard_attribute_add_value_take (attr, lat);
-		e_vcard_attribute_add_value_take (attr, lon);
+		if (e_vcard_get_version (E_VCARD (contact)) <= E_VCARD_VERSION_30) {
+			e_vcard_attribute_add_value_take (attr, g_steal_pointer (&lat));
+			e_vcard_attribute_add_value_take (attr, g_steal_pointer (&lon));
+		} else {
+			gchar *uri;
+
+			uri = g_strconcat ("geo:", lat, ",", lon, NULL);
+
+			e_vcard_attribute_add_value_take (attr, g_steal_pointer (&uri));
+		}
+
+		g_free (lat);
+		g_free (lon);
 	}
 }
 

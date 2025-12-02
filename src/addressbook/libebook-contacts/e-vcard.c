@@ -2379,6 +2379,34 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 					e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
 			}
 		}
+	} else if (g_ascii_strcasecmp (new_attr->name, EVC_GEO) == 0) {
+		GList *values;
+
+		values = e_vcard_attribute_get_values (new_attr);
+
+		if (data->to_version == E_VCARD_VERSION_40) {
+			if (g_list_length (values) == 2) {
+				gchar *uri;
+
+				uri = g_strdup_printf ("geo:%s,%s", (const gchar *) values->data, (const gchar *) values->next->data);
+				e_vcard_attribute_remove_values (new_attr);
+				e_vcard_attribute_add_value_take (new_attr, g_steal_pointer (&uri));
+			}
+		} else if (g_list_length (values) == 1 && values->data && g_ascii_strncasecmp (values->data, "geo:", 4) == 0) {
+			const gchar *value = values->data;
+			gchar **split;
+
+			split = g_strsplit (value + 4, ",", 2);
+			if (split && split[0] && split[1] && !split[2]) {
+				e_vcard_attribute_remove_values (new_attr);
+				e_vcard_attribute_add_value_take (new_attr, split[0]);
+				e_vcard_attribute_add_value_take (new_attr, split[1]);
+
+				g_free (split);
+			} else if (split) {
+				g_strfreev (split);
+			}
+		}
 	/* convert date values between YYYY-MM-DD and YYYYMMDD */
 	} else if (e_vcard_is_date_attr (new_attr)) {
 		e_vcard_convert_date_value (new_attr, data->to_version);
