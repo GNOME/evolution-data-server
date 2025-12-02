@@ -2360,9 +2360,11 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 				gboolean is_base64 = FALSE;
 
 				if (e_util_split_data_uri (values->data, &mime_type, NULL, &is_base64, &data_start) && is_base64) {
+					gchar *data_copy = g_strdup (data_start);
+
 					e_vcard_attribute_remove_params (new_attr);
 					e_vcard_attribute_remove_values (new_attr);
-					e_vcard_attribute_add_value (new_attr, data_start);
+					e_vcard_attribute_add_value_take (new_attr, g_steal_pointer (&data_copy));
 					e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
 					if (mime_type) {
 						const gchar *dash = strchr (mime_type, '/');
