@@ -450,6 +450,11 @@ gboolean	e_contact_inline_local_photos	(EContact *contact,
 						 GError **error);
 
 EContactGeo *	e_contact_geo_new		(void);
+EContactGeo *	e_contact_geo_from_string	(const gchar *latitude,
+						 const gchar *longitude);
+gboolean	e_contact_geo_to_string		(const EContactGeo *self,
+						 gchar **out_latitude,
+						 gchar **out_longitude);
 GType		e_contact_geo_get_type		(void);
 void		e_contact_geo_free		(EContactGeo *geo);
 

@@ -725,12 +725,15 @@ geo_getter (EContact *contact,
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
-		EContactGeo *geo = g_new0 (EContactGeo, 1);
+		gchar *lat, *lon;
 
-		geo->latitude = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0); if (p) p = p->next;
-		geo->longitude = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0);
+		lat = p ? p->data : NULL; if (p) p = g_list_next (p);
+		lon = p ? p->data : NULL;
 
-		return geo;
+		if (!lat || !lon)
+			return NULL;
+
+		return e_contact_geo_from_string (lat, lon);
 	}
 	else
 		return NULL;
@@ -742,13 +745,12 @@ geo_setter (EContact *contact,
             gpointer data)
 {
 	EContactGeo *geo = data;
-	gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+	gchar *lat = NULL, *lon = NULL;
 
-	e_vcard_attribute_add_value
-		(attr, g_ascii_dtostr (buf, sizeof (buf), geo->latitude));
-
-	e_vcard_attribute_add_value
-		(attr, g_ascii_dtostr (buf, sizeof (buf), geo->longitude));
+	if (e_contact_geo_to_string (geo, &lat, &lon)) {
+		e_vcard_attribute_add_value_take (attr, lat);
+		e_vcard_attribute_add_value_take (attr, lon);
+	}
 }
 
 static gpointer
@@ -4261,6 +4263,89 @@ e_contact_geo_new (void)
 	geo->latitude = 0;
 	geo->longitude = 0;
 	return geo;
+}
+
+/**
+ * e_contact_geo_from_string:
+ * @latitude: a text representation of the latitude
+ * @longitude: a text representation of the longitude
+ *
+ * Creates a new #EContactGeo, which has set latitude
+ * and longitude from the provided strings.
+ *
+ * Returns: (transfer full) (nullable): a new #EContactGeo, or %NULL,
+ *    when cannot convert the @latitude or @longitude to a double.
+ *
+ * Since: 3.60
+ **/
+EContactGeo *
+e_contact_geo_from_string (const gchar *latitude,
+			   const gchar *longitude)
+{
+	EContactGeo *geo = NULL;
+	gchar *ptr;
+	gdouble lat, lon;
+
+	g_return_val_if_fail (latitude != NULL, NULL);
+	g_return_val_if_fail (longitude != NULL, NULL);
+
+	lat = g_ascii_strtod (latitude, &ptr);
+	if (ptr && *ptr != '\0')
+		return NULL;
+
+	lon = g_ascii_strtod (longitude, &ptr);
+	if (ptr && *ptr != '\0')
+		return NULL;
+
+	geo = e_contact_geo_new ();
+	geo->latitude = lat;
+	geo->longitude = lon;
+
+	return geo;
+}
+
+/**
+ * e_contact_geo_to_string:
+ * @self: an #EContactGeo
+ * @out_latitude: (out) (transfer full) (nullable): output location to store
+ *    converted latitude into string
+ * @out_longitude: (out) (transfer full) (nullable): output location to store
+ *    converted longitude into string
+ *
+ * Converts latitude and longitude of the @self into string.
+ * Free the returned strings with g_free(), when no longer needed.
+ *
+ * Note: the numbers are converted up to 6 digits after the decimal point.
+ *
+ * Returns: %TRUE, when the @self contained latitude and longitude
+ *    and the out arguments were populated, %FALSE otherwise, which
+ *    also means the out arguments were not modified.
+ *
+ * Since: 3.60
+ **/
+gboolean
+e_contact_geo_to_string (const EContactGeo *self,
+			 gchar **out_latitude,
+			 gchar **out_longitude)
+{
+	gchar *ptr;
+
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (out_latitude != NULL, FALSE);
+	g_return_val_if_fail (out_longitude != NULL, FALSE);
+
+	*out_latitude = g_strdup_printf ("%.6f", self->latitude);
+	*out_longitude = g_strdup_printf ("%.6f", self->longitude);
+
+	ptr = strchr (*out_latitude, ',');
+	if (ptr)
+		*ptr = '.';
+
+	ptr = strchr (*out_longitude, ',');
+	if (ptr)
+		*ptr = '.';
+
+	return TRUE;
 }
 
 /**
