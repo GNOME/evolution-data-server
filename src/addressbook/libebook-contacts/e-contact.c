@@ -1185,26 +1185,47 @@ cert_getter (EContact *contact,
              EVCardAttribute *attr)
 {
 	if (attr) {
-		/* the certificate is stored in this vcard.  just
-		 * return the data */
 		GList *values = e_vcard_attribute_get_values_decoded (attr);
 
 		if (values && values->data) {
 			GString *s = values->data;
-			EContactCert *cert = g_new0 (EContactCert, 1);
 
-			cert->length = s->len;
-			cert->data = g_malloc (cert->length);
-			memcpy (cert->data, s->str, cert->length);
+			if (g_ascii_strncasecmp (s->str, "data:", 5) == 0) {
+				const gchar *data_start = NULL;
+				gboolean is_base64 = FALSE;
 
-			return cert;
+				if (e_util_split_data_uri (s->str, NULL, NULL, &is_base64, &data_start)) {
+					EContactCert *cert = e_contact_cert_new ();
+
+					if (is_base64) {
+						gsize len = 0;
+
+						cert->data = (gchar *) g_base64_decode (data_start, &len);
+
+						if (cert->data) {
+							cert->length = len;
+						} else {
+							g_clear_pointer (&cert, e_contact_cert_free);
+						}
+					} else {
+						cert->length = s->len - (data_start - s->str);
+						cert->data = g_malloc (cert->length);
+						memcpy (cert->data, data_start, cert->length);
+					}
+
+					return cert;
+				}
+			} else {
+				EContactCert *cert = e_contact_cert_new ();
+
+				cert->length = s->len;
+				cert->data = g_malloc (cert->length);
+				memcpy (cert->data, s->str, cert->length);
+
+				return cert;
+			}
 		}
 	}
-
-	/* XXX if we stored a fingerprint in the cert we could look it
-	 * up via NSS, but that would require the additional NSS dep
-	 * here, and we'd have more than one process opening the
-	 * certdb, which is bad.  *sigh * */
 
 	return NULL;
 }
@@ -1216,12 +1237,27 @@ cert_setter (EContact *contact,
 {
 	EContactCert *cert = data;
 
-	e_vcard_attribute_add_param_with_value (
-		attr,
-		e_vcard_attribute_param_new (EVC_ENCODING),
-		"b");
+	if (e_vcard_get_version (E_VCARD (contact)) < E_VCARD_VERSION_40) {
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_ENCODING),
+			"b");
 
-	e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
+		e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
+	} else {
+		const gchar *mime_type = "application/x-x509-user-cert";
+		gchar *base64_data, *uri;
+
+		if (e_vcard_attribute_has_type (attr, "PGP"))
+			mime_type = "application/pgp-keys";
+
+		base64_data = g_base64_encode ((const guchar *) cert->data, cert->length);
+		uri = e_util_construct_data_uri (mime_type, NULL, TRUE, base64_data);
+
+		e_vcard_attribute_add_value_take (attr, g_steal_pointer (&uri));
+
+		g_free (base64_data);
+	}
 }
 
 static gpointer

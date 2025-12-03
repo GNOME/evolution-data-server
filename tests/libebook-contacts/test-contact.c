@@ -2365,7 +2365,7 @@ test_contact_quirks_photo_logo (void)
 
 		for (ii = 0; ii < G_N_ELEMENTS (fields); ii++) {
 			EContactField field = fields[ii];
-			const gchar *evc_field = e_contact_field_name (field);
+			const gchar *evc_field = e_contact_vcard_attribute (field);
 			EVCardAttribute *attr;
 			GList *values;
 
@@ -2474,7 +2474,7 @@ static void
 test_contact_quirks_geo (void)
 {
 	EContactField field = E_CONTACT_GEO;
-	const gchar *evc_field = e_contact_field_name (E_CONTACT_GEO);
+	const gchar *evc_field = e_contact_vcard_attribute (E_CONTACT_GEO);
 	guint step;
 
 	g_assert_nonnull (evc_field);
@@ -2541,6 +2541,101 @@ test_contact_quirks_geo (void)
 	}
 }
 
+static void
+test_contact_quirks_key (void)
+{
+	struct _Cases {
+		EContactField field;
+		const gchar *type;
+		const gchar *mime_type;
+	} cases[] = {
+		{ E_CONTACT_PGP_CERT, "PGP", "application/pgp-keys" },
+		{ E_CONTACT_X509_CERT, "X509", "application/x-x509-user-cert" }
+	};
+	guint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases); ii++) {
+		EContactField field = cases[ii].field;
+		const gchar *evc_field = e_contact_vcard_attribute (field);
+		guint step;
+
+		g_assert_nonnull (evc_field);
+
+		for (step = 0; step < 2; step++) {
+			EContact *contact;
+			EVCard *vcard;
+			EContactCert *cert, cert_stack;
+			EVCardAttribute *attr;
+			GList *values;
+
+			if (step == 0) {
+				/* vCard 3.0 */
+				contact = e_contact_new ();
+				vcard = E_VCARD (contact);
+				e_vcard_add_attribute_with_value (vcard, e_vcard_attribute_new (NULL, EVC_VERSION), "3.0");
+			} else {
+				/* vCard 4.0 */
+				contact = e_contact_new ();
+				vcard = E_VCARD (contact);
+				e_vcard_add_attribute_with_value (vcard, e_vcard_attribute_new (NULL, EVC_VERSION), "4.0");
+			}
+
+			g_assert_cmpuint (g_list_length (e_vcard_get_attributes (vcard)), ==, 1);
+			g_assert_nonnull (e_vcard_get_attribute (vcard, EVC_VERSION));
+
+			cert = e_contact_get (contact, field);
+			g_assert_null (cert);
+
+			memset (&cert_stack, 0, sizeof (EContactCert));
+			cert_stack.length = 5;
+			cert_stack.data = (gchar *) "hello";
+
+			e_contact_set (contact, field, &cert_stack);
+
+			cert = e_contact_get (contact, field);
+			g_assert_nonnull (cert);
+			g_assert_cmpuint (cert->length, ==, cert_stack.length);
+			g_assert_cmpmem (cert->data, cert->length, cert_stack.data, cert_stack.length);
+			e_contact_cert_free (cert);
+
+			attr = e_vcard_get_attribute (vcard, evc_field);
+			g_assert_nonnull (attr);
+
+			values = e_vcard_attribute_get_param (attr, EVC_TYPE);
+			g_assert_cmpuint (g_list_length (values), ==, 1);
+			g_assert_cmpstr (values->data, ==, cases[ii].type);
+
+			values = e_vcard_attribute_get_values (attr);
+			g_assert_nonnull (values);
+			g_assert_cmpuint (g_list_length (values), ==, 1);
+
+			if (e_vcard_get_version (vcard) == E_VCARD_VERSION_30) {
+				g_assert_cmpstr (values->data, ==, "aGVsbG8=");
+
+				values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
+				g_assert_cmpuint (g_list_length (values), ==, 1);
+				g_assert_cmpstr (values->data, ==, "b");
+			} else {
+				gchar *expected_uri;
+
+				expected_uri = g_strdup_printf ("data:%s;base64,aGVsbG8=", cases[ii].mime_type);
+				g_assert_cmpstr (values->data, ==, expected_uri);
+				g_free (expected_uri);
+
+				values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
+				g_assert_cmpuint (g_list_length (values), ==, 0);
+			}
+
+			e_contact_set (contact, field, NULL);
+
+			cert = e_contact_get (contact, field);
+			g_assert_null (cert);
+
+			g_clear_object (&contact);
+		}
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2557,6 +2652,7 @@ main (gint argc,
 	g_test_add_func ("/EContact/QuirksIMPP", test_contact_quirks_impp);
 	g_test_add_func ("/EContact/QuirksPHOTOLOGO", test_contact_quirks_photo_logo);
 	g_test_add_func ("/EContact/QuirksGEO", test_contact_quirks_geo);
+	g_test_add_func ("/EContact/QuirksKEY", test_contact_quirks_key);
 
 	return g_test_run ();
 }

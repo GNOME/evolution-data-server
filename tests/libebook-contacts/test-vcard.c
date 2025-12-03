@@ -1851,6 +1851,85 @@ test_convert_quirks_geo (void)
 	}
 }
 
+typedef struct _KeyCase {
+	const gchar *vcard;
+	const gchar *expected_type;
+	const gchar *expected_mime_type;
+	const gchar *expected_value;
+} KeyCase;
+
+static void
+convert_quirks_key_test_attrs (EVCard *converted,
+			       gpointer user_data)
+{
+	KeyCase *case_data = user_data;
+	EVCardAttribute *attr;
+	GList *values;
+
+	attr = e_vcard_get_attribute (converted, EVC_KEY);
+	g_assert_nonnull (attr);
+
+	values = e_vcard_attribute_get_param (attr, EVC_TYPE);
+	g_assert_cmpuint (g_list_length (values), ==, 1);
+	g_assert_cmpstr (values->data, ==, case_data->expected_type);
+
+	values = e_vcard_attribute_get_values (attr);
+
+	if (e_vcard_get_version (converted) == E_VCARD_VERSION_40) {
+		gchar *expected_uri;
+
+		expected_uri = g_strdup_printf ("data:%s;base64,%s", case_data->expected_mime_type, case_data->expected_value);
+
+		g_assert_cmpuint (g_list_length (values), ==, 1);
+		g_assert_cmpstr (values->data, ==, expected_uri);
+
+		g_free (expected_uri);
+
+		values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
+		g_assert_cmpuint (g_list_length (values), ==, 0);
+	} else {
+		g_assert_cmpuint (g_list_length (values), ==, 1);
+		g_assert_cmpstr (values->data, ==, case_data->expected_value);
+
+		values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
+		g_assert_cmpuint (g_list_length (values), ==, 1);
+		g_assert_cmpstr (values->data, ==, "b");
+	}
+}
+
+static void
+test_convert_quirks_key (void)
+{
+	#define VCARD_STR(_ver, _params, _val) \
+		"BEGIN:VCARD\r\n" \
+		"VERSION:" _ver "\r\n" \
+		"KEY;" _params ":" _val "\r\n" \
+		"END:VCARD\r\n"
+	KeyCase cases_30[] = {
+		#define item(_type, _mime_type, _value) { VCARD_STR ("3.0", "ENCODING=b;TYPE=" _type, _value), _type, _mime_type, _value }
+		item ("PGP", "application/pgp-keys", "LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0t"),
+		item ("X509", "application/x-x509-user-cert", "MIICfTCCAeagAwIBAgIJANfWidvZ")
+		#undef item
+	}, cases_40[] = {
+		#define item(_type, _mime_type, _value) { VCARD_STR ("4.0", "TYPE=" _type, "data:" _mime_type ";base64," _value), _type, _mime_type, _value }
+		item ("PGP", "application/pgp-keys", "LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0t"),
+		item ("X509", "application/x-x509-user-cert", "MIICfTCCAeagAwIBAgIJANfWidvZ")
+		#undef item
+	};
+	#undef VCARD_STR
+	guint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases_30); ii++) {
+		test_convert (cases_30[ii].vcard, E_VCARD_VERSION_30, E_VCARD_VERSION_40, 2,
+			convert_quirks_key_test_attrs, &(cases_30[ii]));
+	}
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases_40); ii++) {
+		test_convert (cases_40[ii].vcard, E_VCARD_VERSION_40, E_VCARD_VERSION_30, 2,
+			convert_quirks_key_test_attrs, &(cases_40[ii]));
+	}
+}
+
 static void
 test_misc_nth_value (void)
 {
@@ -2216,6 +2295,7 @@ main (gint argc,
 	g_test_add_func ("/Convert/QuirksKIND", test_convert_quirks_kind);
 	g_test_add_func ("/Convert/QuirksPHOTOLOGO", test_convert_quirks_photo_logo);
 	g_test_add_func ("/Convert/QuirksGEO", test_convert_quirks_geo);
+	g_test_add_func ("/Convert/QuirksKEY", test_convert_quirks_key);
 	g_test_add_func ("/Misc/NthValue", test_misc_nth_value);
 	g_test_add_func ("/Misc/Foreach", test_misc_foreach);
 	g_test_add_func ("/Misc/AppendAttributesList", test_misc_append_attributes_list);

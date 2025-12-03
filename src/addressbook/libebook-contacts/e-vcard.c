@@ -2409,6 +2409,74 @@ e_vcard_convert_30_40_cb (EVCard *new_vcard,
 				g_strfreev (split);
 			}
 		}
+	} else if (g_ascii_strcasecmp (new_attr->name, EVC_KEY) == 0) {
+		GList *values;
+		const gchar *value = NULL;
+
+		values = e_vcard_attribute_get_param (new_attr, EVC_VALUE);
+		if (values)
+			value = values->data;
+
+		if (data->to_version == E_VCARD_VERSION_40) {
+			gboolean is_x509 = e_vcard_attribute_has_type (new_attr, "X509");
+
+			/* inline cert is converted into "data:" uri */
+			if ((!value || g_ascii_strcasecmp (value, "uri") != 0) && (
+			     is_x509 || e_vcard_attribute_has_type (new_attr, "PGP"))) {
+				values = e_vcard_attribute_get_param (new_attr, EVC_ENCODING);
+				if (!values || (g_ascii_strcasecmp (values->data, "b") == 0 ||
+					        /* second for photo vCard 2.1 support */
+					        g_ascii_strcasecmp (values->data, "base64") == 0)) {
+					values = e_vcard_attribute_get_values (new_attr);
+					if (values && values->data) {
+						const gchar *content = values->data;
+
+						if (content && *content) {
+							GString *data_uri = g_string_new ("data:");
+
+							if (is_x509)
+								g_string_append (data_uri, "application/x-x509-user-cert;");
+							else
+								g_string_append (data_uri, "application/pgp-keys;");
+
+							g_string_append (data_uri, "base64,");
+							g_string_append (data_uri, content);
+
+							e_vcard_attribute_remove_params (new_attr);
+							e_vcard_attribute_remove_values (new_attr);
+							e_vcard_attribute_add_value_take (new_attr, g_string_free (data_uri, FALSE));
+							e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_TYPE), is_x509 ? "X509" : "PGP");
+						}
+					}
+				}
+			}
+		} else /* if (data->to_version == E_VCARD_VERSION_30) */ {
+			values = e_vcard_attribute_get_values (new_attr);
+			/* convert "data:" URI into inline photo */
+			if (values && values->data && g_ascii_strncasecmp (values->data, "data:", 5) == 0) {
+				const gchar *data_start = NULL;
+				gchar *mime_type = NULL;
+				gboolean is_base64 = FALSE;
+
+				if (e_util_split_data_uri (values->data, &mime_type, NULL, &is_base64, &data_start) && is_base64 && (!mime_type ||
+				    g_ascii_strcasecmp (mime_type, "application/pgp-keys") == 0 ||
+				    g_ascii_strcasecmp (mime_type, "application/x-x509-user-cert") == 0 ||
+				    g_ascii_strcasecmp (mime_type, "application/x-x509-ca-cert") == 0)) {
+					gchar *data_copy = g_strdup (data_start);
+
+					e_vcard_attribute_remove_params (new_attr);
+					e_vcard_attribute_remove_values (new_attr);
+					e_vcard_attribute_add_value_take (new_attr, g_steal_pointer (&data_copy));
+					e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
+					if (mime_type && g_ascii_strcasecmp (mime_type, "application/pgp-keys") == 0)
+						e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_TYPE), "PGP");
+					else
+						e_vcard_attribute_add_param_with_value (new_attr, e_vcard_attribute_param_new (EVC_TYPE), "X509");
+				}
+
+				g_free (mime_type);
+			}
+		}
 	/* convert date values between YYYY-MM-DD and YYYYMMDD */
 	} else if (e_vcard_is_date_attr (new_attr)) {
 		e_vcard_convert_date_value (new_attr, data->to_version);
