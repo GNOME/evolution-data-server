@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-11-10 12:42+0000\n"
-"PO-Revision-Date: 2025-11-10 13:49+0100\n"
+"POT-Creation-Date: 2025-12-03 11:05+0000\n"
+"PO-Revision-Date: 2025-12-04 09:59+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -935,80 +935,84 @@ msgstr "Službeni Matrix ID 3"
 msgid "Matrix ID List"
 msgstr "Seznam Matrix ID"
 
+#: src/addressbook/libebook-contacts/e-contact.c:405
+msgid "Time zone"
+msgstr "Časovni pas"
+
 #. vCard 4.0
-#: src/addressbook/libebook-contacts/e-contact.c:406
+#: src/addressbook/libebook-contacts/e-contact.c:408
 msgid "Kind"
 msgstr "Vrsta"
 
-#: src/addressbook/libebook-contacts/e-contact.c:407
+#: src/addressbook/libebook-contacts/e-contact.c:409
 msgid "Source"
 msgstr "Izvorna koda"
 
-#: src/addressbook/libebook-contacts/e-contact.c:408
+#: src/addressbook/libebook-contacts/e-contact.c:410
 msgid "XML"
 msgstr "XML"
 
-#: src/addressbook/libebook-contacts/e-contact.c:409
+#: src/addressbook/libebook-contacts/e-contact.c:411
 msgid "Gender"
 msgstr "Spol"
 
-#: src/addressbook/libebook-contacts/e-contact.c:410
+#: src/addressbook/libebook-contacts/e-contact.c:412
 msgid "Instant Messaging"
 msgstr "Hipno sporočanje"
 
-#: src/addressbook/libebook-contacts/e-contact.c:411
+#: src/addressbook/libebook-contacts/e-contact.c:413
 msgid "Language"
 msgstr "Jezik"
 
-#: src/addressbook/libebook-contacts/e-contact.c:412
+#: src/addressbook/libebook-contacts/e-contact.c:414
 msgid "Member"
 msgstr "Član"
 
-#: src/addressbook/libebook-contacts/e-contact.c:413
+#: src/addressbook/libebook-contacts/e-contact.c:415
 msgid "Related"
 msgstr "Sorodnik_ca"
 
-#: src/addressbook/libebook-contacts/e-contact.c:414
+#: src/addressbook/libebook-contacts/e-contact.c:416
 msgid "Birth Place"
 msgstr "Rojstni kraj"
 
-#: src/addressbook/libebook-contacts/e-contact.c:415
+#: src/addressbook/libebook-contacts/e-contact.c:417
 msgid "Death Place"
 msgstr "Kraj smrti"
 
-#: src/addressbook/libebook-contacts/e-contact.c:416
+#: src/addressbook/libebook-contacts/e-contact.c:418
 msgid "Death Date"
 msgstr "Datum smrti"
 
-#: src/addressbook/libebook-contacts/e-contact.c:417
+#: src/addressbook/libebook-contacts/e-contact.c:419
 msgid "Expertise"
 msgstr "Stroka"
 
-#: src/addressbook/libebook-contacts/e-contact.c:418
+#: src/addressbook/libebook-contacts/e-contact.c:420
 msgid "Hobby"
 msgstr "Hobi"
 
-#: src/addressbook/libebook-contacts/e-contact.c:419
+#: src/addressbook/libebook-contacts/e-contact.c:421
 msgid "Interest"
 msgstr "Interesi"
 
-#: src/addressbook/libebook-contacts/e-contact.c:420
+#: src/addressbook/libebook-contacts/e-contact.c:422
 msgid "Organizational Directory"
 msgstr "Imenik organizacije"
 
-#: src/addressbook/libebook-contacts/e-contact.c:421
+#: src/addressbook/libebook-contacts/e-contact.c:423
 msgid "Contact URI"
 msgstr "URI stika"
 
-#: src/addressbook/libebook-contacts/e-contact.c:422
+#: src/addressbook/libebook-contacts/e-contact.c:424
 msgid "Created"
 msgstr "Ustvarjeno"
 
-#: src/addressbook/libebook-contacts/e-contact.c:423
+#: src/addressbook/libebook-contacts/e-contact.c:425
 msgid "Social Profile"
 msgstr "Profil družbenega omrežja"
 
-#: src/addressbook/libebook-contacts/e-contact.c:3051
+#: src/addressbook/libebook-contacts/e-contact.c:3116
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr "Neimenovan seznam"
@@ -1304,7 +1308,7 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2066
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2565
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3457
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3455
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Ustvarjanje predpomnilnika »%s« je spodletelo."
@@ -1469,7 +1473,7 @@ msgstr "Datoteka »%s« ni predmet VCALENDAR"
 #: src/calendar/backends/file/e-cal-backend-file.c:3768
 #: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2684
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2682
 msgid "Unsupported method"
 msgstr "Nepodprta metoda"
 
@@ -2715,7 +2719,7 @@ msgstr "Ni mogoče dodati časovnega območja z neveljavno enoto"
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Prejet predmet za UID »%s« ne vsebuje pričakovanih sestavnih delov"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1974
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2723,7 +2727,7 @@ msgstr ""
 "Vseh pojavitev ni mogoče spremeniti iz odpete pojavitve. Namesto tega "
 "spremenite niz pojavitev."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4356
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4354
 msgid "attachment.dat"
 msgstr "priloga.dat"
 
@@ -3082,7 +3086,7 @@ msgstr "Osveževanje mape »%s : %s«"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1716
+#: src/camel/camel-folder-summary.c:1730
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Sprosti neuporabljen pomnilnik za mapo »%s : %s«"
@@ -3422,7 +3426,7 @@ msgstr "Vsebina ni na voljo"
 msgid "No signature available"
 msgstr "Podpis ni na voljo"
 
-#: src/camel/camel-multipart-signed.c:837
+#: src/camel/camel-multipart-signed.c:840
 #, c-format
 msgid "parse error"
 msgstr "napaka med razčlenjevanjem"
@@ -4836,43 +4840,43 @@ msgstr "Dodajanje podatkov v šifrirnik je spodletelo"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Odšifriranje S/MIME: Šifrirane vsebine ni mogoče najti"
 
-#: src/camel/camel-store.c:1448
+#: src/camel/camel-store.c:1521
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Odpiranje mape »%s«"
 
-#: src/camel/camel-store.c:1745
+#: src/camel/camel-store.c:1826
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Preiskovanje map v »%s«"
 
-#: src/camel/camel-store.c:1773 src/camel/camel-store.c:1818
+#: src/camel/camel-store.c:1854 src/camel/camel-store.c:1899
 #: src/camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "Smeti"
 
-#: src/camel/camel-store.c:1787 src/camel/camel-store.c:1835
+#: src/camel/camel-store.c:1868 src/camel/camel-store.c:1916
 #: src/camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "Vsiljena pošta"
 
-#: src/camel/camel-store.c:2440
+#: src/camel/camel-store.c:2521
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Ni mogoče ustvariti mape: %s: mapa že obstaja"
 
-#: src/camel/camel-store.c:2447
+#: src/camel/camel-store.c:2528
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Ustvarjanje mape »%s«"
 
-#: src/camel/camel-store.c:2625
+#: src/camel/camel-store.c:2706
 #: src/camel/providers/local/camel-maildir-store.c:340
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Ni mogoče izbrisati mape: %s: neveljavno dejanje"
 
-#: src/camel/camel-store.c:2816
+#: src/camel/camel-store.c:2897
 #: src/camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
