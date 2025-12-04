@@ -463,6 +463,10 @@ void		e_contact_geo_free		(EContactGeo *geo);
 EContactCert *	e_contact_cert_new		(void);
 GType		e_contact_cert_get_type		(void);
 void		e_contact_cert_free		(EContactCert *cert);
+EContactCert *	e_contact_cert_from_attr	(EVCardAttribute *source);
+void		e_contact_cert_write_attr	(EContactCert *self,
+						 EVCardVersion to_version,
+						 EVCardAttribute *destination);
 
 GType		e_contact_address_get_type	(void);
 EContactAddress *

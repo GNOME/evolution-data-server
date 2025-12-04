@@ -1184,48 +1184,8 @@ static gpointer
 cert_getter (EContact *contact,
              EVCardAttribute *attr)
 {
-	if (attr) {
-		GList *values = e_vcard_attribute_get_values_decoded (attr);
-
-		if (values && values->data) {
-			GString *s = values->data;
-
-			if (g_ascii_strncasecmp (s->str, "data:", 5) == 0) {
-				const gchar *data_start = NULL;
-				gboolean is_base64 = FALSE;
-
-				if (e_util_split_data_uri (s->str, NULL, NULL, &is_base64, &data_start)) {
-					EContactCert *cert = e_contact_cert_new ();
-
-					if (is_base64) {
-						gsize len = 0;
-
-						cert->data = (gchar *) g_base64_decode (data_start, &len);
-
-						if (cert->data) {
-							cert->length = len;
-						} else {
-							g_clear_pointer (&cert, e_contact_cert_free);
-						}
-					} else {
-						cert->length = s->len - (data_start - s->str);
-						cert->data = g_malloc (cert->length);
-						memcpy (cert->data, data_start, cert->length);
-					}
-
-					return cert;
-				}
-			} else {
-				EContactCert *cert = e_contact_cert_new ();
-
-				cert->length = s->len;
-				cert->data = g_malloc (cert->length);
-				memcpy (cert->data, s->str, cert->length);
-
-				return cert;
-			}
-		}
-	}
+	if (attr)
+		return e_contact_cert_from_attr (attr);
 
 	return NULL;
 }
@@ -1237,27 +1197,7 @@ cert_setter (EContact *contact,
 {
 	EContactCert *cert = data;
 
-	if (e_vcard_get_version (E_VCARD (contact)) < E_VCARD_VERSION_40) {
-		e_vcard_attribute_add_param_with_value (
-			attr,
-			e_vcard_attribute_param_new (EVC_ENCODING),
-			"b");
-
-		e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
-	} else {
-		const gchar *mime_type = "application/x-x509-user-cert";
-		gchar *base64_data, *uri;
-
-		if (e_vcard_attribute_has_type (attr, "PGP"))
-			mime_type = "application/pgp-keys";
-
-		base64_data = g_base64_encode ((const guchar *) cert->data, cert->length);
-		uri = e_util_construct_data_uri (mime_type, NULL, TRUE, base64_data);
-
-		e_vcard_attribute_add_value_take (attr, g_steal_pointer (&uri));
-
-		g_free (base64_data);
-	}
+	e_contact_cert_write_attr (cert, e_vcard_get_version (E_VCARD (contact)), attr);
 }
 
 static gpointer
@@ -4658,6 +4598,156 @@ e_contact_cert_copy (EContactCert *cert)
 }
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")
+
+/**
+ * e_contact_cert_from_attr:
+ * @source: a source #EVCardAttribute
+ *
+ * Creates a new #EContactCert structure with the information
+ * from the @source attribute. Returns %NULL, when
+ * the information in the @source could not be stored
+ * in the structure (for example when the KEY attribute
+ * is a URI to some server).
+ *
+ * Returns: (transfer full) (nullable): a new #EContactCert populated
+ *    with the data from the @source, or %NULL, when the source contains
+ *    unknown information.
+ *
+ * Since: 3.60
+ **/
+EContactCert *
+e_contact_cert_from_attr (EVCardAttribute *source)
+{
+	GList *values;
+
+	g_return_val_if_fail (source != NULL, NULL);
+
+	values = e_vcard_attribute_get_values_decoded (source);
+
+	if (values && values->data) {
+		GString *s = values->data;
+
+		if (g_ascii_strncasecmp (s->str, "data:", 5) == 0) {
+			const gchar *data_start = NULL;
+			gboolean is_base64 = FALSE;
+
+			if (e_util_split_data_uri (s->str, NULL, NULL, &is_base64, &data_start)) {
+				EContactCert *cert = e_contact_cert_new ();
+
+				if (is_base64) {
+					gsize len = 0;
+
+					cert->data = (gchar *) g_base64_decode (data_start, &len);
+
+					if (cert->data) {
+						cert->length = len;
+					} else {
+						g_clear_pointer (&cert, e_contact_cert_free);
+					}
+				} else {
+					cert->length = s->len - (data_start - s->str);
+					cert->data = g_malloc (cert->length);
+					memcpy (cert->data, data_start, cert->length);
+				}
+
+				return cert;
+			}
+		} else {
+			EContactCert *cert = e_contact_cert_new ();
+
+			cert->length = s->len;
+			cert->data = g_malloc (cert->length);
+			memcpy (cert->data, s->str, cert->length);
+
+			return cert;
+		}
+	}
+
+	return NULL;
+}
+
+static void
+ec_cert_maybe_add_type (EContactCert *self,
+			EVCardAttribute *destination,
+			gchar **out_mime_type)
+{
+	gchar *mime_type = NULL;
+	gchar *content_type;
+
+	content_type = g_content_type_guess (NULL, (const guchar *) self->data, self->length, NULL);
+	if (content_type) {
+		mime_type = g_content_type_get_mime_type (content_type);
+		g_free (content_type);
+	}
+
+	if (mime_type) {
+		if (g_ascii_strcasecmp (mime_type, "application/pgp-keys") == 0) {
+			e_vcard_attribute_add_param_with_value (destination, e_vcard_attribute_param_new (EVC_TYPE), "PGP");
+		} else if (camel_strstrcase (mime_type, "x509")) {
+			e_vcard_attribute_add_param_with_value (destination, e_vcard_attribute_param_new (EVC_TYPE), "X509");
+		} else if (g_ascii_strcasecmp (mime_type, "application/octet-stream") == 0) {
+			e_vcard_attribute_add_param_with_value (destination, e_vcard_attribute_param_new (EVC_TYPE), "X509");
+			if (out_mime_type) {
+				g_free (mime_type);
+				mime_type = g_strdup ("application/x-x509-user-cert");
+			}
+		}
+
+		if (out_mime_type)
+			*out_mime_type = g_steal_pointer (&mime_type);
+		else
+			g_free (mime_type);
+	}
+}
+
+/**
+ * e_contact_cert_write_attr:
+ * @self: an #EContactCert
+ * @to_version: one of #EVCardVersion
+ * @destination: a destination #EVCardAttribute
+ *
+ * Populates the @destination with the data from the @self,
+ * using format suitable to @to_version vCard version. The
+ * function does nothing when the @self is an empty structure.
+ * The @destination is supposed to be a KEY attribute.
+ *
+ * Since: 3.60
+ **/
+void
+e_contact_cert_write_attr (EContactCert *self,
+			   EVCardVersion to_version,
+			   EVCardAttribute *destination)
+{
+	if (to_version < E_VCARD_VERSION_40) {
+		e_vcard_attribute_add_param_with_value (destination, e_vcard_attribute_param_new (EVC_ENCODING), "b");
+		e_vcard_attribute_add_value_decoded (destination, self->data, self->length);
+
+		if (!e_vcard_attribute_get_param (destination, EVC_TYPE))
+			ec_cert_maybe_add_type (self, destination, NULL);
+	} else {
+		const gchar *mime_type = "application/x-x509-user-cert";
+		gchar *mime_type_alloc = NULL;
+		gchar *base64_data, *uri;
+
+		if (e_vcard_attribute_get_param (destination, EVC_TYPE)) {
+			if (e_vcard_attribute_has_type (destination, "PGP"))
+				mime_type = "application/pgp-keys";
+		} else {
+			ec_cert_maybe_add_type (self, destination, &mime_type_alloc);
+
+			if (mime_type_alloc)
+				mime_type = mime_type_alloc;
+		}
+
+		base64_data = g_base64_encode ((const guchar *) self->data, self->length);
+		uri = e_util_construct_data_uri (mime_type, NULL, TRUE, base64_data);
+
+		e_vcard_attribute_add_value_take (destination, g_steal_pointer (&uri));
+
+		g_free (base64_data);
+		g_free (mime_type_alloc);
+	}
+}
 
 /**
  * e_contact_attr_list_copy:
