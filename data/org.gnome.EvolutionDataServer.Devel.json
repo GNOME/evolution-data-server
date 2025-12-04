@@ -6,6 +6,9 @@
 	"branch": "master",
 	"command": "/usr/libexec/evolution-source-registry",
 	"tags": [ "devel" ],
+	"build-options" : {
+		"env": { "ACLOCAL_PATH": "/usr/share/gettext/m4/" }
+	},
 	"cleanup": [
 		"*.la",
 		"*.a"
