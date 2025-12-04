@@ -526,6 +526,7 @@ e_certificate_widget_init (ECertificateWidget *self)
 		"hexpand", TRUE,
 		"valign", GTK_ALIGN_FILL,
 		"vexpand", TRUE,
+		"visible", FALSE,
 		"column-spacing", 8,
 		"row-spacing", 4,
 		NULL);
@@ -552,6 +553,26 @@ GtkWidget *
 e_certificate_widget_new (void)
 {
 	return g_object_new (E_TYPE_CERTIFICATE_WIDGET, NULL);
+}
+
+/**
+ * e_certificate_widget_get_has_data:
+ * @self: an #ECertificateWidget
+ *
+ * Returns whether the @self shows any certificate data. The data
+ * is read either by e_certificate_widget_set_der() or by
+ * e_certificate_widget_set_pem().
+ *
+ * Returns: whether shows any data
+ *
+ * Since: 3.60
+ **/
+gboolean
+e_certificate_widget_get_has_data (ECertificateWidget *self)
+{
+	g_return_val_if_fail (E_IS_CERTIFICATE_WIDGET (self), FALSE);
+
+	return gtk_widget_get_visible (self->priv->grid);
 }
 
 /**
