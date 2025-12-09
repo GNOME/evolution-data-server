@@ -2150,6 +2150,8 @@ query_preflight_initialize (PreflightContext *context,
 				/* Just steal the array away from the ESexpResult */
 				context->constraints = result->value.ptrarray;
 				result->value.ptrarray = NULL;
+			} else if (result->type == ESEXP_RES_BOOL && result->value.boolean != 0) {
+				context->status = PREFLIGHT_LIST_ALL;
 			} else {
 				context->status = PREFLIGHT_INVALID;
 			}
