@@ -6912,7 +6912,7 @@ e_book_sqlite_lock (EBookSqlite *ebsql,
 	 * the toplevel transaction */
 	if (ebsql->priv->in_transaction != 0) {
 		g_warn_if_reached ();
-		EBSQL_LOCK_MUTEX (&ebsql->priv->lock);
+		EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 		EBSQL_UNLOCK_MUTEX (&ebsql->priv->updates_lock);
 		return FALSE;
 	}
