@@ -1,3 +1,63 @@
+Evolution-Data-Server 3.59.1 2026-01-02
+---------------------------------------
+
+Bug Fixes:
+	I#8 - Support vCard v4.0 (RFC 6350)
+	I#554 - CalDAV: Provide a date limit for information sync
+	I#609 - Camel: Encrypt Recipient Alias Configuration
+	I#612 - Calendar: Multiple detached instances cause duplicates
+	I#613 - Camel: Message info changes do not propagate sometimes
+	I#614 - CamelSearchFolder: Add "not_all" "match-threads" kind
+	I#616 - Crash when reading broken multipart/signed
+	I#618 - Calendar: Free/busy not exported without set calendar mail
+	I#620 - alarm-notify: Snooze "until X minutes before start" wrongly reminds "X min after start"
+	I#621 - addressbook-export: Fails with "Invalid query" error
+	M!201 - Camel: Remove camel_session_ref_service_by_url (Corentin Noël)
+	M!203 - Remove several migration functions from Evolution Source Registry (Corentin Noël)
+	evo-I#3157 - Broken multipart/signed shown as raw MIME data
+
+Miscellaneous:
+	org.gnome.EvolutionDataServer.Devel.json: Build also gweather-locations
+	Lower default connection timeout to 15 seconds
+	evolution-source-registry: Remove unused variable (reported by compiler)
+	CamelGpgContext: Improve error messages
+	WebDAV: Default to no download limit
+	CamelStoreDB: Keep 'sqlite_sequence' table during migration
+	CamelDB: Correct return value and repeated function call arguments
+	CamelStoreSearch: Unlock summary and folder when save or prepare_fetch_all fails
+	IMAPx: Avoid Junk/Trash folder open when saving changes
+	ERemindersWidget: Workaround too large gap between action buttons
+	CamelFolderSummary: Reload from DB could leak already loaded infos
+	Correct developer comment of e_source_webdav_set_limit_download_days()
+	addressbook: Prefer vCard "take" functions
+	CamelDataCache: Rephrase "Empty cache file" error message
+	Camel: Unread count for virtual Trash/Junk folder not updated properly
+	CamelStoreSearch: Ignore all errors when a message cannot be opened
+	CamelStore: Speed up open folders with virtual Trash or Junk folder
+	EContactAddress: Add helper functions to read, write and clear the structure
+	EContact: Add EContactGeo functions to convert to/from string
+	EVCard: Add conversion code for GEO attribute
+	EVCard: Correct PHOTO/LOGO data: URI conversion
+	EContact: Add 'timezone' field
+	EVCard: Add conversion code for KEY attribute
+	EContactCert: Add helper functions to work with attributes
+	ECertificateWidget: Add a function to check whether any certificate data is shown
+	flatpak: Add gettext ACLOCAL workaround
+	EBookSqlite: Correct mutex unlock in e_book_sqlite_lock()
+	EVCard: Add RFC 2739 properties into the list of known vCard 3.0 properties
+
+Translations:
+	Asier Saratsua Garmendia (eu)
+	Aurimas Černius (lt)
+	Daniel Rusek (cs)
+	Ekaterine Papava (ka)
+	Emin Tufan Çetin (tr)
+	Juliano de Souza Camargo (pt_BR)
+	Martin (sl)
+	Sabri Ünal (tr)
+	twlvnn kraftwerk (bg)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.58.0 2025-09-12
 ---------------------------------------
 
