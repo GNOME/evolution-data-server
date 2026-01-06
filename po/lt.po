@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-11-18 14:41+0000\n"
-"PO-Revision-Date: 2025-11-19 23:21+0200\n"
+"POT-Creation-Date: 2025-12-10 08:18+0000\n"
+"PO-Revision-Date: 2026-01-06 20:08+0200\n"
 "Last-Translator: Aurimas Černius <aurimas.cernius@mailo.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -112,8 +112,8 @@ msgstr "Mėginta pakeisti kontaktą „%s“ be sinchronizacijos versijos"
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7461
-#: src/addressbook/libedata-book/e-book-sqlite.c:7530
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Kontaktas „%s“ nerastas"
@@ -933,80 +933,84 @@ msgstr "Matrix namų ID 3"
 msgid "Matrix ID List"
 msgstr "Matrix ID sąrašas"
 
+#: src/addressbook/libebook-contacts/e-contact.c:405
+msgid "Time zone"
+msgstr "Laiko juosta"
+
 #. vCard 4.0
-#: src/addressbook/libebook-contacts/e-contact.c:406
+#: src/addressbook/libebook-contacts/e-contact.c:408
 msgid "Kind"
 msgstr "Tipas"
 
-#: src/addressbook/libebook-contacts/e-contact.c:407
+#: src/addressbook/libebook-contacts/e-contact.c:409
 msgid "Source"
 msgstr "Šaltinis"
 
-#: src/addressbook/libebook-contacts/e-contact.c:408
+#: src/addressbook/libebook-contacts/e-contact.c:410
 msgid "XML"
 msgstr "XML"
 
-#: src/addressbook/libebook-contacts/e-contact.c:409
+#: src/addressbook/libebook-contacts/e-contact.c:411
 msgid "Gender"
 msgstr "Giminė"
 
-#: src/addressbook/libebook-contacts/e-contact.c:410
+#: src/addressbook/libebook-contacts/e-contact.c:412
 msgid "Instant Messaging"
 msgstr "Realaus laiko pranešimai"
 
-#: src/addressbook/libebook-contacts/e-contact.c:411
+#: src/addressbook/libebook-contacts/e-contact.c:413
 msgid "Language"
 msgstr "Kalba"
 
-#: src/addressbook/libebook-contacts/e-contact.c:412
+#: src/addressbook/libebook-contacts/e-contact.c:414
 msgid "Member"
 msgstr "Narys"
 
-#: src/addressbook/libebook-contacts/e-contact.c:413
+#: src/addressbook/libebook-contacts/e-contact.c:415
 msgid "Related"
 msgstr "Susijęs"
 
-#: src/addressbook/libebook-contacts/e-contact.c:414
+#: src/addressbook/libebook-contacts/e-contact.c:416
 msgid "Birth Place"
 msgstr "Gimimo vieta"
 
-#: src/addressbook/libebook-contacts/e-contact.c:415
+#: src/addressbook/libebook-contacts/e-contact.c:417
 msgid "Death Place"
 msgstr "Mirties vieta"
 
-#: src/addressbook/libebook-contacts/e-contact.c:416
+#: src/addressbook/libebook-contacts/e-contact.c:418
 msgid "Death Date"
 msgstr "Mirties data"
 
-#: src/addressbook/libebook-contacts/e-contact.c:417
+#: src/addressbook/libebook-contacts/e-contact.c:419
 msgid "Expertise"
 msgstr "Patirtis"
 
-#: src/addressbook/libebook-contacts/e-contact.c:418
+#: src/addressbook/libebook-contacts/e-contact.c:420
 msgid "Hobby"
 msgstr "Hobis"
 
-#: src/addressbook/libebook-contacts/e-contact.c:419
+#: src/addressbook/libebook-contacts/e-contact.c:421
 msgid "Interest"
 msgstr "Pomėgis"
 
-#: src/addressbook/libebook-contacts/e-contact.c:420
+#: src/addressbook/libebook-contacts/e-contact.c:422
 msgid "Organizational Directory"
 msgstr "Organizacinis katalogas"
 
-#: src/addressbook/libebook-contacts/e-contact.c:421
+#: src/addressbook/libebook-contacts/e-contact.c:423
 msgid "Contact URI"
 msgstr "Kontakto URI"
 
-#: src/addressbook/libebook-contacts/e-contact.c:422
+#: src/addressbook/libebook-contacts/e-contact.c:424
 msgid "Created"
 msgstr "Sukurtas"
 
-#: src/addressbook/libebook-contacts/e-contact.c:423
+#: src/addressbook/libebook-contacts/e-contact.c:425
 msgid "Social Profile"
 msgstr "Socialinis profilis"
 
-#: src/addressbook/libebook-contacts/e-contact.c:3051
+#: src/addressbook/libebook-contacts/e-contact.c:3056
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr "Neįvardytas sąrašas"
@@ -1083,7 +1087,7 @@ msgid "Error parsing regular expression"
 msgstr "Klaida vykdant paieškos išraišką"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4869
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/addressbook/libedata-book/e-book-sqlite.c:1909 src/camel/camel-db.c:855
 #, c-format
 msgid "Insufficient memory"
@@ -1115,8 +1119,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3567
-#: src/addressbook/libedata-book/e-book-sqlite.c:5937
+#: src/addressbook/libedata-book/e-book-cache.c:3569
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Užklausa turėto nepalaikomų elementų"
@@ -1177,8 +1181,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Negalima rikiuoti pagal lauką, kuris gali turėti kelias vertes"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6200
-#: src/addressbook/libedata-book/e-book-sqlite.c:8235
+#: src/addressbook/libedata-book/e-book-cache.c:6202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1187,8 +1191,8 @@ msgstr ""
 "Bandyta grįžti žymikliu atgal, bet žymiklis jau yra kontaktų sąrašo pradžioje"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6207
-#: src/addressbook/libedata-book/e-book-sqlite.c:8243
+#: src/addressbook/libedata-book/e-book-cache.c:6209
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1203,29 +1207,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Santraukoje nurodytas nepalaikomas kontakto laukas „%d“"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3562
-#: src/addressbook/libedata-book/e-book-sqlite.c:5930
+#: src/addressbook/libedata-book/e-book-cache.c:3564
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1702
 #: src/calendar/libedata-cal/e-cal-cache.c:3549
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Netinkama užklausa: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3747
-#: src/addressbook/libedata-book/e-book-cache.c:6887
+#: src/addressbook/libedata-book/e-book-cache.c:3749
+#: src/addressbook/libedata-book/e-book-cache.c:6889
 msgid "Invalid query for a book cursor"
 msgstr "Netinkama knygos žymiklio užklausa"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4873
+#: src/addressbook/libedata-book/e-book-cache.c:4875
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Nepavyko atverti duomenų bazės %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5539
-#: src/addressbook/libedata-book/e-book-cache.c:5586
-#: src/addressbook/libedata-book/e-book-cache.c:5633
-#: src/addressbook/libedata-book/e-book-cache.c:5685
+#: src/addressbook/libedata-book/e-book-cache.c:5541
+#: src/addressbook/libedata-book/e-book-cache.c:5588
+#: src/addressbook/libedata-book/e-book-cache.c:5635
+#: src/addressbook/libedata-book/e-book-cache.c:5687
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1238,33 +1242,33 @@ msgstr "Nepavyko atverti duomenų bazės %s: %s"
 msgid "Object “%s” not found"
 msgstr "Objektas „%s“ nerastas"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5745
+#: src/addressbook/libedata-book/e-book-cache.c:5747
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Objektas be papildomo „%s“ nerastas"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5921
+#: src/addressbook/libedata-book/e-book-cache.c:5923
 msgid "Search by email not supported"
 msgstr "Paieška pagal el. paštą nepalaikoma"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5932
+#: src/addressbook/libedata-book/e-book-cache.c:5934
 msgid "No email address provided"
 msgstr "Nepateiktas el. pašto adresas"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5987
+#: src/addressbook/libedata-book/e-book-cache.c:5989
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Žymikliui naudoti turi būti nurodytas bent vienas rikiavimo laukas"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5996
-#: src/addressbook/libedata-book/e-book-sqlite.c:8075
+#: src/addressbook/libedata-book/e-book-cache.c:5998
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Negalima rikiuoti pagal lauką, kurus nėra simbolių eilutės tipo"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7078
-#: src/addressbook/libedata-book/e-book-cache.c:7237
-#: src/addressbook/libedata-book/e-book-sqlite.c:8962
-#: src/addressbook/libedata-book/e-book-sqlite.c:9123
+#: src/addressbook/libedata-book/e-book-cache.c:7080
+#: src/addressbook/libedata-book/e-book-cache.c:7239
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "Santraukoje nėra kontakto lauko „%s“"
@@ -1297,7 +1301,7 @@ msgstr "Atnaujinimas praleistas, nes naudojamas matuojamas tinklas."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2066
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2565
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3457
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3455
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nepavyko sukurti podėlio „%s“:"
@@ -1310,12 +1314,12 @@ msgstr ""
 "Negalima atnaujinti kontaktų duomenų bazės su daugiau nei viena adresų "
 "knyga. Pirmiausia ištrinkite viena iš „folders“ įrašų."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6105
-#: src/addressbook/libedata-book/e-book-sqlite.c:8769
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "Netinkama EbSqlCursor užklausa"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8057
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "EbSdbCursor turi būti nurodytas bent vienas rikiavimo laukas"
 
@@ -1461,7 +1465,7 @@ msgstr "Failas „%s“ nėra VCALENDAR komponentas"
 #: src/calendar/backends/file/e-cal-backend-file.c:3768
 #: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2684
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2682
 msgid "Unsupported method"
 msgstr "Nepalaikomas metodas"
 
@@ -2688,14 +2692,14 @@ msgstr "Negalima pridėti laiko juostos su netinkama komponente"
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Pagal UID „%s“ gautas objektas neturi jokios lauktos komponentės"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1974
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
 msgstr ""
 "Negalima pakeisti visų vienetų iš atskirto vieneto. Keiskite serijos vienetą."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4356
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4354
 msgid "attachment.dat"
 msgstr "priedas.dat"
 
