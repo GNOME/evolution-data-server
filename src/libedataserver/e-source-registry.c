@@ -1514,11 +1514,6 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 *
 	 * The default address book #ESource.
 	 **/
-	/**
-	 * ESourceRegistry:default-address-book
-	 *
-	 * The default address book ESource
-	 **/
 	properties[PROP_DEFAULT_ADDRESS_BOOK] =
 		g_param_spec_object (
 			"default-address-book",
@@ -1532,11 +1527,6 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 * ESourceRegistry:default-calendar:
 	 *
 	 * The default calendar #ESource.
-	 **/
-	/**
-	 * ESourceRegistry:default-calendar
-	 *
-	 * The default calendar ESource
 	 **/
 	properties[PROP_DEFAULT_CALENDAR] =
 		g_param_spec_object (
@@ -1552,11 +1542,6 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 *
 	 * The default mail account #ESource.
 	 **/
-	/**
-	 * ESourceRegistry:default-mail-account
-	 *
-	 * The default mail account ESource
-	 **/
 	properties[PROP_DEFAULT_MAIL_ACCOUNT] =
 		g_param_spec_object (
 			"default-mail-account",
@@ -1570,11 +1555,6 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 * ESourceRegistry:default-mail-identity:
 	 *
 	 * The default mail identity #ESource.
-	 **/
-	/**
-	 * ESourceRegistry:default-mail-identity
-	 *
-	 * The default mail identity ESource
 	 **/
 	properties[PROP_DEFAULT_MAIL_IDENTITY] =
 		g_param_spec_object (
@@ -1590,11 +1570,6 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 *
 	 * The default memo list #ESource.
 	 **/
-	/**
-	 * ESourceRegistry:default-memo-list
-	 *
-	 * The default memo list ESource
-	 **/
 	properties[PROP_DEFAULT_MEMO_LIST] =
 		g_param_spec_object (
 			"default-memo-list",
@@ -1608,11 +1583,6 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 * ESourceRegistry:default-task-list:
 	 *
 	 * The default task list #ESource.
-	 **/
-	/**
-	 * ESourceRegistry:default-task-list
-	 *
-	 * The default task list ESource
 	 **/
 	properties[PROP_DEFAULT_TASK_LIST] =
 		g_param_spec_object (

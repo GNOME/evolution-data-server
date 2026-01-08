@@ -4494,7 +4494,7 @@ e_contact_address_read_attr (EContactAddress *self,
 /**
  * e_contact_address_write_attr:
  * @self: an #EContactAddress
- * @destination: (in-out) (not nullable): an #EVCardAttribute
+ * @destination: (inout) (not nullable): an #EVCardAttribute
  *
  * Populates ADR attribute @destination with the data from the @self.
  *

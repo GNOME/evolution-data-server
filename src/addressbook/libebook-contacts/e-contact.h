@@ -472,7 +472,7 @@ GType		e_contact_address_get_type	(void);
 EContactAddress *
 		e_contact_address_new		(void);
 void		e_contact_address_free		(EContactAddress *address);
-void		e_contact_address_clear		(EContactAddress *address);
+void		e_contact_address_clear		(EContactAddress *self);
 void		e_contact_address_read_attr	(EContactAddress *self,
 						 EVCardAttribute *source);
 void		e_contact_address_write_attr	(EContactAddress *self,
