@@ -25,6 +25,11 @@ search_index = true
   description = "Utility library for Evolution Data Server"
   docs_url = "https://gnome.pages.gitlab.gnome.org/evolution-data-server/libedataserver"
 
+  [dependencies."ICalGLib-3.0"]
+  name = "ICalGLib"
+  description = "iCalendar protocols and protocol data units implementation"
+  docs_url = "https://libical.github.io/libical/v3/libical-glib/"
+
 [theme]
 name = "basic"
 show_index_summary = true
