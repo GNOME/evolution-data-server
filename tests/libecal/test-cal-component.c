@@ -20,6 +20,11 @@
 #include <glib.h>
 #include <libecal/libecal.h>
 
+#if !ICAL_CHECK_VERSION(3, 99, 99)
+#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
+#endif
+
 static void
 verify_ical_attach_equal (ICalAttach *expected,
 			  ICalAttach *received)
@@ -78,7 +83,7 @@ verify_ical_durationtype_equal (ICalDuration *expected,
 
 	g_assert_nonnull (received);
 
-	g_assert_cmpint (i_cal_duration_as_int (expected), ==, i_cal_duration_as_int (received));
+	g_assert_cmpint (i_cal_duration_as_seconds (expected), ==, i_cal_duration_as_seconds (received));
 }
 
 static void
@@ -366,11 +371,11 @@ verify_struct_alarm_repeat_equal (const ECalComponentAlarmRepeat *expected,
 					e_cal_component_alarm_repeat_get_interval (received));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==, e_cal_component_alarm_repeat_get_interval_seconds (received));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==,
-			 i_cal_duration_as_int (e_cal_component_alarm_repeat_get_interval (expected)));
+			 i_cal_duration_as_seconds (e_cal_component_alarm_repeat_get_interval (expected)));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (received), ==,
-			 i_cal_duration_as_int (e_cal_component_alarm_repeat_get_interval (received)));
+			 i_cal_duration_as_seconds (e_cal_component_alarm_repeat_get_interval (received)));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==,
-			 i_cal_duration_as_int (e_cal_component_alarm_repeat_get_interval (received)));
+			 i_cal_duration_as_seconds (e_cal_component_alarm_repeat_get_interval (received)));
 }
 
 static void
@@ -963,7 +968,7 @@ test_component_struct_alarm_repeat (void)
 		ICalDuration *dur;
 
 		if ((ii % 4) == 0) {
-			dur = i_cal_duration_new_from_int (values[ii].interval);
+			dur = i_cal_duration_new_from_seconds (values[ii].interval);
 			expected = e_cal_component_alarm_repeat_new (values[ii].repetitions, dur);
 			g_object_unref (dur);
 		} else if ((ii % 4) == 1) {
@@ -973,7 +978,7 @@ test_component_struct_alarm_repeat (void)
 			e_cal_component_alarm_repeat_set_repetitions (expected, values[ii].repetitions);
 			e_cal_component_alarm_repeat_set_interval_seconds (expected, values[ii].interval);
 		} else {
-			dur = i_cal_duration_new_from_int (values[ii].interval);
+			dur = i_cal_duration_new_from_seconds (values[ii].interval);
 
 			expected = e_cal_component_alarm_repeat_new_seconds (1000, 2000);
 			e_cal_component_alarm_repeat_set_repetitions (expected, values[ii].repetitions);
@@ -984,7 +989,7 @@ test_component_struct_alarm_repeat (void)
 
 		g_assert_nonnull (expected);
 
-		dur = i_cal_duration_new_from_int (values[ii].interval);
+		dur = i_cal_duration_new_from_seconds (values[ii].interval);
 		g_assert_nonnull (dur);
 		g_assert_cmpint (e_cal_component_alarm_repeat_get_repetitions (expected), ==, values[ii].repetitions);
 		g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==, values[ii].interval);
@@ -1026,7 +1031,7 @@ test_component_struct_alarm_trigger (void)
 			if (set_kind == 0) {
 				/* nothing, create it as it should be */
 			} else if (set_kind == 1) {
-				dur = i_cal_duration_new_from_int (33);
+				dur = i_cal_duration_new_from_seconds (33);
 				expected = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END, dur);
 				g_object_unref (dur);
 
@@ -1048,7 +1053,7 @@ test_component_struct_alarm_trigger (void)
 						e_cal_component_alarm_trigger_set_absolute_time (expected, tt);
 						g_object_unref (tt);
 					} else {
-						dur = i_cal_duration_new_from_int (values[ii].duration);
+						dur = i_cal_duration_new_from_seconds (values[ii].duration);
 						e_cal_component_alarm_trigger_set_kind (expected, values[ii].kind);
 						e_cal_component_alarm_trigger_set_duration (expected, dur);
 						g_object_unref (dur);
@@ -1058,7 +1063,7 @@ test_component_struct_alarm_trigger (void)
 					e_cal_component_alarm_trigger_set_absolute (expected, tt);
 					g_object_unref (tt);
 				} else {
-					dur = i_cal_duration_new_from_int (values[ii].duration);
+					dur = i_cal_duration_new_from_seconds (values[ii].duration);
 					e_cal_component_alarm_trigger_set_relative (expected, values[ii].kind, dur);
 					g_object_unref (dur);
 				}
@@ -1071,7 +1076,7 @@ test_component_struct_alarm_trigger (void)
 					verify_ical_timetype_equal (tt, e_cal_component_alarm_trigger_get_absolute_time (expected));
 					g_object_unref (tt);
 				} else {
-					dur = i_cal_duration_new_from_int (values[ii].duration);
+					dur = i_cal_duration_new_from_seconds (values[ii].duration);
 					expected = e_cal_component_alarm_trigger_new_relative (values[ii].kind, dur);
 					g_assert_nonnull (expected);
 					g_object_unref (dur);
@@ -1090,7 +1095,7 @@ test_component_struct_alarm_trigger (void)
 				verify_ical_timetype_equal (tt, e_cal_component_alarm_trigger_get_absolute_time (expected));
 				g_object_unref (tt);
 			} else {
-				dur = i_cal_duration_new_from_int (values[ii].duration);
+				dur = i_cal_duration_new_from_seconds (values[ii].duration);
 				g_assert_nonnull (dur);
 				verify_ical_durationtype_equal (dur, e_cal_component_alarm_trigger_get_duration (expected));
 				g_object_unref (dur);
@@ -1107,7 +1112,7 @@ test_component_struct_alarm_trigger (void)
 			verify_struct_alarm_trigger_equal (expected, received);
 			e_cal_component_alarm_trigger_free (received);
 
-			dur = i_cal_duration_new_from_int (33);
+			dur = i_cal_duration_new_from_seconds (33);
 			received = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END, dur);
 			g_object_unref (dur);
 			e_cal_component_alarm_trigger_set_from_property (received, prop);
@@ -1729,7 +1734,7 @@ test_component_struct_period (void)
 					g_assert_nonnull (end);
 				}
 			} else {
-				duration = i_cal_duration_new_from_int (values[ii].duration);
+				duration = i_cal_duration_new_from_seconds (values[ii].duration);
 				g_assert_nonnull (duration);
 			}
 
@@ -1750,7 +1755,7 @@ test_component_struct_period (void)
 				ICalDuration *ttduration;
 
 				ttstart = i_cal_time_new_from_string ("19981019");
-				ttduration = i_cal_duration_new_from_int (123456);
+				ttduration = i_cal_duration_new_from_seconds (123456);
 				g_assert_nonnull (ttstart);
 				g_assert_nonnull (ttduration);
 
@@ -3509,7 +3514,7 @@ test_component_rdates (void)
 				}
 				period = e_cal_component_period_new_datetime (start, end);
 			} else {
-				duration = i_cal_duration_new_from_int (values[ii].duration);
+				duration = i_cal_duration_new_from_seconds (values[ii].duration);
 				g_assert_nonnull (duration);
 				period = e_cal_component_period_new_duration (start, duration);
 			}
@@ -4237,7 +4242,7 @@ test_component_alarms (void)
 			ECalComponentAlarmTriggerKind kind;
 			ICalDuration *duration;
 
-			duration = i_cal_duration_new_from_int (values[ii].trigger * 60);
+			duration = i_cal_duration_new_from_seconds (values[ii].trigger * 60);
 			if (values[ii].trigger < 0)
 				kind = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
 			else

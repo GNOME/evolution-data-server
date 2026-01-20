@@ -86,8 +86,13 @@ ecb_gtasks_store_data_version (ECalCache *cal_cache)
 static void
 ecb_gtasks_update_ical_time_property (ICalComponent *icomp,
 				      ICalPropertyKind kind,
+				#if ICAL_CHECK_VERSION(3, 99, 99)
+				      ICalProperty * (* prop_new_func) (const ICalTime *v),
+				      void (* prop_set_func) (ICalProperty *prop, const ICalTime *v),
+				#else
 				      ICalProperty * (* prop_new_func) (ICalTime *v),
 				      void (* prop_set_func) (ICalProperty *prop, ICalTime *v),
+				#endif
 				      ICalTime *tt)
 {
 	ICalProperty *prop;

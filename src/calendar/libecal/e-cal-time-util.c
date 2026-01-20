@@ -1010,7 +1010,7 @@ e_cal_util_time_to_zone (const ICalTime *itt,
 	ICalTimezone *from_zone = NULL;
 	time_t res = (time_t) -1;
 
-	g_return_val_if_fail (I_CAL_IS_TIME (itt), res);
+	g_return_val_if_fail (I_CAL_IS_TIME ((ICalTime *) itt), res);
 
 	if (i_cal_time_is_null_time (itt) || !i_cal_time_is_valid_time (itt))
 		return res;

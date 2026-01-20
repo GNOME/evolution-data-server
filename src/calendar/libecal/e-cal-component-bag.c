@@ -342,7 +342,11 @@ e_cal_component_bag_item_read_times (ECalComponentBagItem *self,
 
 			dur = i_cal_property_get_duration (prop);
 			if (dur) {
+				#if ICAL_CHECK_VERSION(3, 99, 99)
+				self->duration_minutes = i_cal_duration_as_seconds (dur) / 60;
+				#else
 				self->duration_minutes = i_cal_duration_as_int (dur) / 60;
+				#endif
 				g_clear_object (&dur);
 			}
 

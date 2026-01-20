@@ -36,6 +36,11 @@
 #define _TIME_MIN	((time_t) 0)		/* Min valid time_t	*/
 #define _TIME_MAX	((time_t) INT_MAX)
 
+#if !ICAL_CHECK_VERSION(3, 99, 99)
+#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
+#endif
+
 /**
  * e_cal_util_new_top_level:
  *
@@ -354,7 +359,7 @@ compute_alarm_range (ECalComponent *comp,
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
 			dur = e_cal_component_alarm_trigger_get_duration (trigger);
-			dur_time = i_cal_duration_as_int (dur);
+			dur_time = i_cal_duration_as_seconds (dur);
 
 			if (repeat && e_cal_component_alarm_repeat_get_repetitions (repeat) != 0) {
 				gint rdur;
@@ -463,7 +468,7 @@ e_cal_util_add_alarm_before_start (ECalComponent *comp,
 		if (!duration || !i_cal_duration_is_neg (duration))
 			continue;
 
-		if (i_cal_duration_as_int (duration) == (-1) * before_start_seconds)
+		if (i_cal_duration_as_seconds (duration) == (-1) * before_start_seconds)
 			break;
 	}
 
@@ -479,7 +484,7 @@ e_cal_util_add_alarm_before_start (ECalComponent *comp,
 	e_cal_component_alarm_take_description (alarm, summary);
 	e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
 
-	duration = i_cal_duration_new_from_int (before_start_seconds);
+	duration = i_cal_duration_new_from_seconds (before_start_seconds);
 	i_cal_duration_set_is_neg (duration, TRUE);
 
 	trigger = e_cal_component_alarm_trigger_new_relative (E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START, duration);
@@ -569,7 +574,7 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 		}
 
 		dur = e_cal_component_alarm_trigger_get_duration (trigger);
-		dur_time = i_cal_duration_as_int (dur);
+		dur_time = i_cal_duration_as_seconds (dur);
 
 		if (e_cal_component_alarm_trigger_get_kind (trigger) == E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
 			occur_time = start;
@@ -1665,6 +1670,10 @@ e_cal_util_normalize_rrule_until_value (ICalComponent *icalcomp,
 	}
 }
 
+#if !ICAL_CHECK_VERSION(3, 99, 99)
+#define i_cal_duration_extend i_cal_time_add
+#endif
+
 static void
 e_cal_util_remove_instances_impl (ICalComponent *icalcomp,
 				  const ICalTime *rid,
@@ -1755,6 +1764,17 @@ e_cal_util_remove_instances_impl (ICalComponent *icalcomp,
 			g_object_unref (rule);
 			g_object_unref (iter);
 			continue;
+		#if ICAL_CHECK_VERSION(3, 99, 99)
+		} else {
+			ICalRecurrence *clone;
+
+			/* the internal data points to the @prop, causing
+			   any changes to it propagated there as well, thus
+			   create a copy, to set/change only the exrule */
+			clone = i_cal_recurrence_clone (rule);
+			g_object_unref (rule);
+			rule = clone;
+		#endif
 		}
 
 		if (mod & E_CAL_OBJ_MOD_THIS_AND_FUTURE) {
@@ -1798,7 +1818,7 @@ e_cal_util_remove_instances_impl (ICalComponent *icalcomp,
 						ICalDuration *dur;
 
 						dur = i_cal_component_get_duration (icalcomp);
-						ttuntil = i_cal_time_add ((ICalTime *) rid, dur);
+						ttuntil = i_cal_duration_extend ((ICalTime *) rid, dur);
 						g_clear_object (&dur);
 					} else {
 						ttuntil = i_cal_time_clone (rid);
@@ -1841,9 +1861,9 @@ e_cal_util_remove_instances_impl (ICalComponent *icalcomp,
 					 */
 					if (keep_rid && i_cal_time_compare (recur, (ICalTime *) rid) == 0) {
 						i_cal_duration_set_is_neg (dur, !i_cal_duration_is_neg (dur));
-						ttuntil = i_cal_time_add ((ICalTime *) rid, dur);
+						ttuntil = i_cal_duration_extend ((ICalTime *) rid, dur);
 					} else {
-						ttuntil = i_cal_time_add ((ICalTime *) rid, dur);
+						ttuntil = i_cal_duration_extend ((ICalTime *) rid, dur);
 					}
 
 					e_cal_util_normalize_rrule_until_value (icalcomp, ttuntil, tz_cb, tz_cb_data);
@@ -2724,7 +2744,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 
 				if (e_cal_component_period_get_kind (period) != E_CAL_COMPONENT_PERIOD_DATETIME) {
 					ICalTime *tt;
-					tt = i_cal_time_add (e_cal_component_period_get_start (period), e_cal_component_period_get_duration (period));
+					tt = i_cal_duration_extend (e_cal_component_period_get_start (period), e_cal_component_period_get_duration (period));
 					rdate_end = i_cal_time_as_timet (tt);
 					g_object_unref (tt);
 				} else if (e_cal_component_period_get_end (period)) {

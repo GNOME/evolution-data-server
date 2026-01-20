@@ -19,6 +19,10 @@
 
 #include "e-test-server-utils.h"
 
+#if !ICAL_CHECK_VERSION(3, 99, 99)
+#define i_cal_duration_as_seconds i_cal_duration_as_int
+#endif
+
 static ETestServerClosure test_closure = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
 
 static ICalComponent *
@@ -652,7 +656,7 @@ duration_got_instance_cb (ICalComponent *icomp,
 
 	dur = i_cal_component_get_duration (icomp);
 	g_assert_nonnull (dur);
-	g_assert_cmpint (i_cal_duration_as_int (dur), ==, dd->expected_duration);
+	g_assert_cmpint (i_cal_duration_as_seconds (dur), ==, dd->expected_duration);
 	g_assert_cmpint (i_cal_time_as_timet (instance_end) - i_cal_time_as_timet (instance_start), ==, dd->expected_duration);
 
 	g_object_unref (dur);
@@ -694,7 +698,7 @@ test_recur_duration (ETestServerFixture *fixture,
 	dur = i_cal_component_get_duration (comp);
 	g_assert_nonnull (dur);
 
-	dd.expected_duration = i_cal_duration_as_int (dur);
+	dd.expected_duration = i_cal_duration_as_seconds (dur);
 	g_object_unref (dur);
 
 	g_assert_cmpint (dd.expected_duration, ==, 30 * 60);
@@ -3510,7 +3514,7 @@ test_recur_multiple_detached (ETestServerFixture *fixture,
 
 		prop = i_cal_component_get_first_property (modified, I_CAL_RRULE_PROPERTY);
 		g_assert_nonnull (prop);
-		i_cal_component_remove_property (icomp, prop);
+		i_cal_component_remove_property (modified, prop);
 		g_clear_object (&prop);
 
 		/* modify the second instance */
@@ -3524,7 +3528,12 @@ test_recur_multiple_detached (ETestServerFixture *fixture,
 		if (g_strcmp0 (zones[ii].location, "UTC") != 0) {
 			ICalParameter *param;
 			param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+			#if ICAL_CHECK_VERSION(3, 99, 99)
+			g_assert_nonnull (param);
+			g_clear_object (&param);
+			#else
 			g_assert_null (param);
+			#endif
 			param = i_cal_parameter_new_tzid (zones[ii].location);
 			i_cal_property_add_parameter (prop, param);
 			g_clear_object (&param);
@@ -3563,7 +3572,12 @@ test_recur_multiple_detached (ETestServerFixture *fixture,
 		if (g_strcmp0 (zones[ii].location, "UTC") != 0) {
 			ICalParameter *param;
 			param = i_cal_property_get_first_parameter (prop, I_CAL_TZID_PARAMETER);
+			#if ICAL_CHECK_VERSION(3, 99, 99)
+			g_assert_nonnull (param);
+			g_clear_object (&param);
+			#else
 			g_assert_null (param);
+			#endif
 			param = i_cal_parameter_new_tzid (zones[ii].location);
 			i_cal_property_add_parameter (prop, param);
 			g_clear_object (&param);

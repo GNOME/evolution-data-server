@@ -40,6 +40,11 @@ struct _ECalComponentPeriod {
 	ICalDuration *duration;
 };
 
+#if !ICAL_CHECK_VERSION(3, 99, 99)
+#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
+#endif
+
 /**
  * e_cal_component_period_new_datetime:
  * @start: (not nullable): an #ICalTime, the start of the period
@@ -364,6 +369,6 @@ e_cal_component_period_set_duration (ECalComponentPeriod *period,
 
 	if (period->duration != duration) {
 		g_clear_object (&period->duration);
-		period->duration = i_cal_duration_new_from_int (i_cal_duration_as_int ((ICalDuration *) duration));
+		period->duration = i_cal_duration_new_from_seconds (i_cal_duration_as_seconds ((ICalDuration *) duration));
 	}
 }

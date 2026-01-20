@@ -42,6 +42,12 @@ struct _ECalComponentAlarmTrigger {
 	ECalComponentParameterBag *parameter_bag;
 };
 
+#if !ICAL_CHECK_VERSION(3, 99, 99)
+#define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
+#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_trigger_new_from_seconds i_cal_trigger_new_from_int
+#endif
+
 /**
  * e_cal_component_alarm_trigger_new_relative:
  * @kind: an #ECalComponentAlarmTriggerKind, any but the %E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE
@@ -341,7 +347,7 @@ e_cal_component_alarm_trigger_fill_property (const ECalComponentAlarmTrigger *tr
 	g_return_if_fail (i_cal_property_isa (property) == I_CAL_TRIGGER_PROPERTY);
 
 	related = I_CAL_RELATED_START;
-	trg = i_cal_trigger_new_from_int (0);
+	trg = i_cal_trigger_new_from_seconds (0);
 
 	switch (trigger->kind) {
 	case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
@@ -420,8 +426,8 @@ e_cal_component_alarm_trigger_set_relative (ECalComponentAlarmTrigger *trigger,
 	g_clear_object (&trigger->abs_time);
 
 	trigger->kind = kind;
-	trigger->rel_duration = i_cal_duration_new_from_int (
-		i_cal_duration_as_int ((ICalDuration *) duration));
+	trigger->rel_duration = i_cal_duration_new_from_seconds (
+		i_cal_duration_as_seconds ((ICalDuration *) duration));
 }
 
 /**
@@ -537,10 +543,10 @@ e_cal_component_alarm_trigger_set_duration (ECalComponentAlarmTrigger *trigger,
 		return;
 
 	if (trigger->rel_duration != duration &&
-	    i_cal_duration_as_int (trigger->rel_duration) != i_cal_duration_as_int ((ICalDuration *) duration)) {
+	    i_cal_duration_as_seconds (trigger->rel_duration) != i_cal_duration_as_seconds ((ICalDuration *) duration)) {
 		g_clear_object (&trigger->rel_duration);
-		trigger->rel_duration = i_cal_duration_new_from_int (
-			i_cal_duration_as_int ((ICalDuration *) duration));
+		trigger->rel_duration = i_cal_duration_new_from_seconds (
+			i_cal_duration_as_seconds ((ICalDuration *) duration));
 	}
 }
 

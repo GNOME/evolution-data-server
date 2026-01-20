@@ -623,7 +623,11 @@ e_alarm_notify_process (EAlarmNotify *an,
 		if (duration && !i_cal_duration_is_neg (duration)) {
 			gint offset;
 
+			#if ICAL_CHECK_VERSION(3, 99, 99)
+			offset = i_cal_duration_as_seconds (duration);
+			#else
 			offset = i_cal_duration_as_int (duration);
+			#endif
 
 			event_relative += offset;
 		}

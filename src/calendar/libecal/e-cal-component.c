@@ -179,10 +179,30 @@ remove_all_properties_of_kind (ICalComponent *icalcomp,
 	g_slist_free_full (to_remove, g_object_unref);
 }
 
+#if ICAL_CHECK_VERSION(3, 99, 99)
+typedef const gchar *(* StrGetPropFuncType) (const ICalProperty *prop);
+typedef ICalTime * (* TimeGetPropFuncType) (const ICalProperty *prop);
+typedef ICalProperty *(* TimeNewPropFuncType) (const ICalTime *tt);
+typedef void (* TimeSetPropFuncType) (ICalProperty *prop, const ICalTime *tt);
+typedef ICalDatetimeperiod * (* PeriodGetPropFuncType) (const ICalProperty *prop);
+typedef ICalProperty *(* PeriodNewPropFuncType) (const ICalDatetimeperiod *period);
+typedef ICalRecurrence * (* RecurrenceGetPropFuncType) (const ICalProperty *prop);
+typedef ICalProperty * (* RecurrenceNewPropFuncType) (const ICalRecurrence *recur);
+#else
+typedef const gchar *(* StrGetPropFuncType) (ICalProperty *prop);
+typedef ICalTime * (* TimeGetPropFuncType) (ICalProperty *prop);
+typedef ICalProperty *(* TimeNewPropFuncType) (ICalTime *tt);
+typedef void (* TimeSetPropFuncType) (ICalProperty *prop, ICalTime *tt);
+typedef ICalDatetimeperiod * (* PeriodGetPropFuncType) (ICalProperty *prop);
+typedef ICalProperty *(* PeriodNewPropFuncType) (ICalDatetimeperiod *period);
+typedef ICalRecurrence * (* RecurrenceGetPropFuncType) (ICalProperty *prop);
+typedef ICalProperty * (* RecurrenceNewPropFuncType) (ICalRecurrence *recur);
+#endif
+
 /* returns NULL when value is NULL or empty string */
 static ECalComponentText *
 get_text_from_prop (ICalProperty *prop,
-		    const gchar *(* get_prop_func) (ICalProperty *prop))
+		    StrGetPropFuncType get_prop_func)
 {
 	const gchar *value;
 
@@ -1161,7 +1181,11 @@ void
 e_cal_component_set_classification (ECalComponent *comp,
                                     ECalComponentClassification classif)
 {
+#if ICAL_CHECK_VERSION(3, 99, 99)
+	ICalPropertyClassenum prop_class;
+#else
 	ICalProperty_Class prop_class;
+#endif
 	ICalProperty *prop;
 
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
@@ -1211,7 +1235,7 @@ e_cal_component_set_classification (ECalComponent *comp,
 static GSList *
 get_text_list (ICalComponent *icalcomp,
 	       ICalPropertyKind prop_kind,
-               const gchar *(* get_prop_func) (ICalProperty *prop))
+               StrGetPropFuncType get_prop_func)
 {
 	GSList *link, *props, *tl = NULL;
 
@@ -1391,7 +1415,7 @@ e_cal_component_set_contacts (ECalComponent *comp,
 static ICalTime *
 get_icaltimetype (ICalComponent *icalcomp,
 		  ICalPropertyKind prop_kind,
-                  ICalTime * (* get_prop_func) (ICalProperty *prop))
+                  TimeGetPropFuncType get_prop_func)
 {
 	ICalProperty *prop;
 	ICalTime *tt;
@@ -1411,9 +1435,8 @@ get_icaltimetype (ICalComponent *icalcomp,
 static void
 set_icaltimetype (ICalComponent *icalcomp,
                   ICalPropertyKind prop_kind,
-                  ICalProperty *(* prop_new_func) (ICalTime *tt),
-                  void (* prop_set_func) (ICalProperty *prop,
-                                          ICalTime *tt),
+                  TimeNewPropFuncType prop_new_func,
+                  TimeSetPropFuncType prop_set_func,
                   const ICalTime *tt)
 {
 	ICalProperty *prop;
@@ -1620,7 +1643,7 @@ e_cal_component_dup_description_for_locale (ECalComponent *comp,
 static ECalComponentDateTime *
 get_datetime (ICalComponent *icalcomp,
 	      ICalPropertyKind prop_kind,
-              ICalTime * (* get_prop_func) (ICalProperty *prop),
+              TimeGetPropFuncType get_prop_func,
 	      ICalProperty **out_prop)
 {
 	ICalProperty *prop;
@@ -1664,9 +1687,8 @@ get_datetime (ICalComponent *icalcomp,
 static void
 set_datetime (ICalComponent *icalcomp,
 	      ICalPropertyKind prop_kind,
-	      ICalProperty *(* prop_new_func) (ICalTime *tt),
-              void (* prop_set_func) (ICalProperty *prop,
-				      ICalTime *tt),
+	      TimeNewPropFuncType prop_new_func,
+	      TimeSetPropFuncType prop_set_func,
 	      const ECalComponentDateTime *dt,
 	      ICalProperty **out_prop)
 {
@@ -2050,7 +2072,7 @@ e_cal_component_set_due (ECalComponent *comp,
 static GSList * /* ECalComponentPeriod * */
 get_period_list (ICalComponent *icalcomp,
 		 ICalPropertyKind prop_kind,
-		 ICalDatetimeperiod * (* get_prop_func) (ICalProperty *prop))
+		 PeriodGetPropFuncType get_prop_func)
 {
 	GSList *props, *link, *periods = NULL;
 
@@ -2145,7 +2167,7 @@ get_period_list (ICalComponent *icalcomp,
 static void
 set_period_list (ICalComponent *icalcomp,
 		 ICalPropertyKind prop_kind,
-		 ICalProperty *(* new_prop_func) (ICalDatetimeperiod *period),
+		 PeriodNewPropFuncType new_prop_func,
 		 const GSList *periods_list)
 {
 	GSList *link;
@@ -2344,7 +2366,7 @@ e_cal_component_has_exdates (ECalComponent *comp)
 static GSList *
 get_recur_list (ICalComponent *icalcomp,
 		ICalPropertyKind prop_kind,
-                ICalRecurrence * (* get_prop_func) (ICalProperty *prop))
+                RecurrenceGetPropFuncType get_prop_func)
 {
 	GSList *props, *link, *recurs = NULL;
 
@@ -2355,8 +2377,14 @@ get_recur_list (ICalComponent *icalcomp,
 		ICalRecurrence *rt;
 
 		rt = get_prop_func (prop);
-		if (rt)
+		if (rt) {
+			#if ICAL_CHECK_VERSION(3, 99, 99)
+			recurs = g_slist_prepend (recurs, i_cal_recurrence_clone (rt));
+			g_object_unref (rt);
+			#else
 			recurs = g_slist_prepend (recurs, rt);
+			#endif
+		}
 	}
 
 	g_slist_free_full (props, g_object_unref);
@@ -2371,7 +2399,7 @@ get_recur_list (ICalComponent *icalcomp,
 static void
 set_recur_list (ICalComponent *icalcomp,
 		ICalPropertyKind prop_kind,
-		ICalProperty * (* new_prop_func) (ICalRecurrence *recur),
+		RecurrenceNewPropFuncType new_prop_func,
 		const GSList *rl) /* ICalRecurrence * */
 {
 	GSList *link;

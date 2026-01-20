@@ -242,6 +242,66 @@ e_cal_component_attendee_filter_params_cb (ICalParameter *param,
 	       kind != I_CAL_LANGUAGE_PARAMETER;
 }
 
+#if ICAL_CHECK_VERSION(3, 99, 99)
+static void
+e_cal_component_attendee_set_from_str_array_param (ECalComponentAttendee *attendee,
+						   ICalParameter *param,
+						   void (* ecal_set_func) (ECalComponentAttendee *attendee, const gchar *str),
+						   gsize (* ical_get_size_func) (const ICalParameter *param),
+						   const gchar *( *ical_get_index_func) (const ICalParameter *param, gsize index))
+{
+	GString *str;
+	gsize n_items, ii;
+
+	if (!param) {
+		ecal_set_func (attendee, NULL);
+		return;
+	}
+
+	str = g_string_new ("");
+
+	n_items = ical_get_size_func (param);
+	for (ii = 0; ii < n_items; ii++) {
+		const gchar *nth = ical_get_index_func (param, ii);
+
+		if (nth && *nth) {
+			if (str->len)
+				g_string_append_c (str, ',');
+			g_string_append (str, nth);
+		}
+	}
+
+	ecal_set_func (attendee, str->str);
+
+	g_string_free (str, TRUE);
+}
+
+static void
+e_cal_component_attendee_fill_str_array_param (ICalParameter *param,
+					       const gchar *value,
+					       gsize (* get_size_func) (const ICalParameter *self),
+					       const gchar * (* get_nth_func) (const ICalParameter *self, gsize position),
+					       void (* add_func) (ICalParameter *self, const gchar *value),
+					       void (* remove_func) (ICalParameter *self, const gchar *value))
+{
+	gchar **vals;
+	guint ii;
+
+	while (get_size_func (param) > 0) {
+		remove_func (param, get_nth_func (param, 0));
+	}
+
+	vals = g_strsplit (value ? value : "", ",", -1);
+
+	for (ii = 0; vals && vals[ii]; ii++) {
+		add_func (param, vals[ii]);
+	}
+
+	g_strfreev (vals);
+}
+
+#endif
+
 /**
  * e_cal_component_attendee_set_from_property:
  * @attendee: an #ECalComponentAttendee
@@ -266,7 +326,14 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
 	e_cal_component_attendee_set_value (attendee, i_cal_property_get_attendee (prop));
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_MEMBER_PARAMETER);
+	#if ICAL_CHECK_VERSION(3, 99, 99)
+	e_cal_component_attendee_set_from_str_array_param (attendee, param,
+		e_cal_component_attendee_set_member,
+		i_cal_parameter_get_member_size,
+		i_cal_parameter_get_member_nth);
+	#else
 	e_cal_component_attendee_set_member (attendee, param ? i_cal_parameter_get_member (param) : NULL);
+	#endif
 	g_clear_object (&param);
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_CUTYPE_PARAMETER);
@@ -286,11 +353,25 @@ e_cal_component_attendee_set_from_property (ECalComponentAttendee *attendee,
 	g_clear_object (&param);
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_DELEGATEDFROM_PARAMETER);
+	#if ICAL_CHECK_VERSION(3, 99, 99)
+	e_cal_component_attendee_set_from_str_array_param (attendee, param,
+		e_cal_component_attendee_set_delegatedfrom,
+		i_cal_parameter_get_delegatedfrom_size,
+		i_cal_parameter_get_delegatedfrom_nth);
+	#else
 	e_cal_component_attendee_set_delegatedfrom (attendee, param ? i_cal_parameter_get_delegatedfrom (param) : NULL);
+	#endif
 	g_clear_object (&param);
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_DELEGATEDTO_PARAMETER);
+	#if ICAL_CHECK_VERSION(3, 99, 99)
+	e_cal_component_attendee_set_from_str_array_param (attendee, param,
+		e_cal_component_attendee_set_delegatedto,
+		i_cal_parameter_get_delegatedto_size,
+		i_cal_parameter_get_delegatedto_nth);
+	#else
 	e_cal_component_attendee_set_delegatedto (attendee, param ? i_cal_parameter_get_delegatedto (param) : NULL);
+	#endif
 	g_clear_object (&param);
 
 	param = i_cal_property_get_first_parameter (prop, I_CAL_SENTBY_PARAMETER);
@@ -371,8 +452,29 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
 			i_cal_property_remove_parameter_by_kind (property, _param); \
 			g_clear_object (&param); \
 		}
+	#if ICAL_CHECK_VERSION(3, 99, 99)
+	#define fill_str_array_param(_param, _val, _filled) \
+		param = i_cal_property_get_first_parameter (property, _param); \
+		if (_filled) { \
+			if (!param) { \
+				param = i_cal_parameter_new (_param); \
+				i_cal_property_add_parameter (property, param); \
+			} \
+			e_cal_component_attendee_fill_str_array_param (param, attendee-> _val, \
+				i_cal_parameter_get_ ## _val ## _size, \
+				i_cal_parameter_get_ ## _val ## _nth, \
+				i_cal_parameter_add_ ## _val, \
+				i_cal_parameter_remove_ ## _val); \
+			g_clear_object (&param); \
+		} else if (param) { \
+			i_cal_property_remove_parameter_by_kind (property, _param); \
+			g_clear_object (&param); \
+		}
+	#else
+	#define fill_str_array_param(_param, _val, _filled) fill_param(_param, _val, _filled)
+	#endif
 
-	fill_param (I_CAL_MEMBER_PARAMETER, member, attendee->member && *attendee->member);
+	fill_str_array_param (I_CAL_MEMBER_PARAMETER, member, attendee->member && *attendee->member);
 	fill_param (I_CAL_CUTYPE_PARAMETER, cutype, attendee->cutype != I_CAL_CUTYPE_NONE);
 	fill_param (I_CAL_ROLE_PARAMETER, role, attendee->role != I_CAL_ROLE_NONE);
 	fill_param (I_CAL_PARTSTAT_PARAMETER, partstat, attendee->partstat != I_CAL_PARTSTAT_NONE);
@@ -387,8 +489,8 @@ e_cal_component_attendee_fill_property (const ECalComponentAttendee *attendee,
 		i_cal_property_take_parameter (property, param);
 	}
 
-	fill_param (I_CAL_DELEGATEDFROM_PARAMETER, delegatedfrom, attendee->delegatedfrom && *attendee->delegatedfrom);
-	fill_param (I_CAL_DELEGATEDTO_PARAMETER, delegatedto, attendee->delegatedto && *attendee->delegatedto);
+	fill_str_array_param (I_CAL_DELEGATEDFROM_PARAMETER, delegatedfrom, attendee->delegatedfrom && *attendee->delegatedfrom);
+	fill_str_array_param (I_CAL_DELEGATEDTO_PARAMETER, delegatedto, attendee->delegatedto && *attendee->delegatedto);
 	fill_param (I_CAL_SENTBY_PARAMETER, sentby, attendee->sentby && *attendee->sentby);
 	fill_param (I_CAL_CN_PARAMETER, cn, attendee->cn && *attendee->cn);
 	fill_param (I_CAL_LANGUAGE_PARAMETER, language, attendee->language && *attendee->language);
