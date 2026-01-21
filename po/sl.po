@@ -11,18 +11,18 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-12-03 11:05+0000\n"
-"PO-Revision-Date: 2025-12-04 09:59+0100\n"
+"POT-Creation-Date: 2026-01-21 08:37+0000\n"
+"PO-Revision-Date: 2026-01-21 22:05+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
-"%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
+"n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.8\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:258
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:399
@@ -111,8 +111,8 @@ msgstr "Poskus spreminjanja stika »%s« z neusklajeno različico"
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7461
-#: src/addressbook/libedata-book/e-book-sqlite.c:7530
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Stika »%s« ni mogoče najti"
@@ -1012,7 +1012,7 @@ msgstr "Ustvarjeno"
 msgid "Social Profile"
 msgstr "Profil družbenega omrežja"
 
-#: src/addressbook/libebook-contacts/e-contact.c:3116
+#: src/addressbook/libebook-contacts/e-contact.c:3056
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr "Neimenovan seznam"
@@ -1089,7 +1089,7 @@ msgid "Error parsing regular expression"
 msgstr "Napaka med razčlenjevanjem logičnega izraza"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4869
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/addressbook/libedata-book/e-book-sqlite.c:1909 src/camel/camel-db.c:855
 #, c-format
 msgid "Insufficient memory"
@@ -1122,8 +1122,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3567
-#: src/addressbook/libedata-book/e-book-sqlite.c:5937
+#: src/addressbook/libedata-book/e-book-cache.c:3569
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Poizvedba vključuje tudi nepodprte predmete"
@@ -1185,8 +1185,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Ni mogoče razvrščati polja, ki ima več vrednsosti"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6200
-#: src/addressbook/libedata-book/e-book-sqlite.c:8235
+#: src/addressbook/libedata-book/e-book-cache.c:6202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1196,8 +1196,8 @@ msgstr ""
 "stikov."
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6207
-#: src/addressbook/libedata-book/e-book-sqlite.c:8243
+#: src/addressbook/libedata-book/e-book-cache.c:6209
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1212,29 +1212,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "V povzetku je določeno nepodprto polje stika »%d«"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3562
-#: src/addressbook/libedata-book/e-book-sqlite.c:5930
+#: src/addressbook/libedata-book/e-book-cache.c:3564
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1702
 #: src/calendar/libedata-cal/e-cal-cache.c:3549
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Neveljavna poizvedba: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3747
-#: src/addressbook/libedata-book/e-book-cache.c:6887
+#: src/addressbook/libedata-book/e-book-cache.c:3749
+#: src/addressbook/libedata-book/e-book-cache.c:6889
 msgid "Invalid query for a book cursor"
 msgstr "Neveljavna poizvedba za kazalko knjige"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4873
+#: src/addressbook/libedata-book/e-book-cache.c:4875
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Ni mogoče odpreti podatkovne zbirke %s: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5539
-#: src/addressbook/libedata-book/e-book-cache.c:5586
-#: src/addressbook/libedata-book/e-book-cache.c:5633
-#: src/addressbook/libedata-book/e-book-cache.c:5685
+#: src/addressbook/libedata-book/e-book-cache.c:5541
+#: src/addressbook/libedata-book/e-book-cache.c:5588
+#: src/addressbook/libedata-book/e-book-cache.c:5635
+#: src/addressbook/libedata-book/e-book-cache.c:5687
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1247,33 +1247,33 @@ msgstr "Ni mogoče odpreti podatkovne zbirke %s: %s"
 msgid "Object “%s” not found"
 msgstr "Predmeta »%s« ni mogoče najti"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5745
+#: src/addressbook/libedata-book/e-book-cache.c:5747
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Predmeta z %s ni mogoče najti."
 
-#: src/addressbook/libedata-book/e-book-cache.c:5921
+#: src/addressbook/libedata-book/e-book-cache.c:5923
 msgid "Search by email not supported"
 msgstr "Iskanje po elektronskem naslovu ni podprto"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5932
+#: src/addressbook/libedata-book/e-book-cache.c:5934
 msgid "No email address provided"
 msgstr "Ni podanega elektronskega naslova"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5987
+#: src/addressbook/libedata-book/e-book-cache.c:5989
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Za uporabo kazalke je treba določiti vsaj eno polje razvrščanja"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5996
-#: src/addressbook/libedata-book/e-book-sqlite.c:8075
+#: src/addressbook/libedata-book/e-book-cache.c:5998
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Ni mogoče razvrščati po polju, ki ni niz"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7078
-#: src/addressbook/libedata-book/e-book-cache.c:7237
-#: src/addressbook/libedata-book/e-book-sqlite.c:8962
-#: src/addressbook/libedata-book/e-book-sqlite.c:9123
+#: src/addressbook/libedata-book/e-book-cache.c:7080
+#: src/addressbook/libedata-book/e-book-cache.c:7239
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "Polje stika »%s« ni v povzetku"
@@ -1321,12 +1321,12 @@ msgstr ""
 "Ni mogoče posodobiti podatkovne zbirke stikov in zastarele podatkovne zbirke "
 "z več kot enim imenikom. Izbrišite en vnos v razpredelnici »mape«"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6105
-#: src/addressbook/libedata-book/e-book-sqlite.c:8769
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "Neveljavna poizvedba za predmet EbSqlCursor"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8057
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "Za uporabo EbSqlCursor je treba določiti vsaj eno razvrstilno polje"
 
@@ -1459,8 +1459,8 @@ msgstr "Ni mogoče shraniti podatkov koledarja"
 #: src/calendar/backends/file/e-cal-backend-file.c:1189
 #: src/calendar/backends/file/e-cal-backend-file.c:1318
 #, c-format
-msgid "Cannot parse ISC file “%s”"
-msgstr "Ni mogoče razčleniti datoteke ISC »%s«."
+msgid "Cannot parse ICS file “%s”"
+msgstr "Ni mogoče razčleniti datoteke ICS »%s«."
 
 #: src/calendar/backends/file/e-cal-backend-file.c:1200
 #: src/calendar/backends/file/e-cal-backend-file.c:1329
@@ -1611,7 +1611,7 @@ msgstr "Neznana lastnost koledarja »%s«"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Ni mogoče ustvariti predmeta lastnosti koledarja »%s«"
 
-#: src/calendar/libecal/e-cal-component.c:702
+#: src/calendar/libecal/e-cal-component.c:722
 msgid "Untitled appointment"
 msgstr "Neimenovan sestanek"
 
@@ -2469,31 +2469,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1107
-#: src/calendar/libecal/e-cal-util.c:1134
+#: src/calendar/libecal/e-cal-util.c:1112
+#: src/calendar/libecal/e-cal-util.c:1139
 msgctxt "Priority"
 msgid "High"
 msgstr "visoka"
 
-#: src/calendar/libecal/e-cal-util.c:1109
-#: src/calendar/libecal/e-cal-util.c:1136
+#: src/calendar/libecal/e-cal-util.c:1114
+#: src/calendar/libecal/e-cal-util.c:1141
 msgctxt "Priority"
 msgid "Normal"
 msgstr "običajna"
 
-#: src/calendar/libecal/e-cal-util.c:1111
-#: src/calendar/libecal/e-cal-util.c:1138
+#: src/calendar/libecal/e-cal-util.c:1116
+#: src/calendar/libecal/e-cal-util.c:1143
 msgctxt "Priority"
 msgid "Low"
 msgstr "nizka"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1137
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Nedoločeno"
 
-#: src/calendar/libecal/e-cal-util.c:1174
+#: src/calendar/libecal/e-cal-util.c:1179
 #: src/libedataserverui/e-reminders-widget.c:434
 #, c-format
 msgid "%d week"
@@ -2503,7 +2503,7 @@ msgstr[1] "%d teden"
 msgstr[2] "%d tedna"
 msgstr[3] "%d tedni"
 
-#: src/calendar/libecal/e-cal-util.c:1183
+#: src/calendar/libecal/e-cal-util.c:1188
 #: src/libedataserverui/e-reminders-widget.c:430
 #, c-format
 msgid "%d day"
@@ -2513,7 +2513,7 @@ msgstr[1] "%d dan"
 msgstr[2] "%d dneva"
 msgstr[3] "%d dnevi"
 
-#: src/calendar/libecal/e-cal-util.c:1192
+#: src/calendar/libecal/e-cal-util.c:1197
 #: src/libedataserverui/e-reminders-widget.c:426
 #, c-format
 msgid "%d hour"
@@ -2523,7 +2523,7 @@ msgstr[1] "%d ura"
 msgstr[2] "%d uri"
 msgstr[3] "%d ure"
 
-#: src/calendar/libecal/e-cal-util.c:1201
+#: src/calendar/libecal/e-cal-util.c:1206
 #: src/libedataserverui/e-reminders-widget.c:422
 #, c-format
 msgid "%d minute"
@@ -2534,7 +2534,7 @@ msgstr[2] "%d minuti"
 msgstr[3] "%d minute"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1206
+#: src/calendar/libecal/e-cal-util.c:1211
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -7291,11 +7291,11 @@ msgstr ""
 "velikosti črk. Vsaka vrstica lahko vključuje več vrednosti, ločenih z "
 "vejico, mogoče pa je navesti storitve OAuth2 tudi v več vrsticah. Vendar pa "
 "naslova URL, kjer je žeton zahtevan in osnežen, ni mogoče vnesti na tem "
-"mestu, saj gostitelj omogoča le storitve OAuth2. Primer: Podjetje:email."
-"podjetje.si omogoči overitev OAuth2 za naslov »mail.company.com« za "
-"»Podjetje«, gostitelj Podjetje-CalDAV:caldav.podjetje.si pa omogoči overitev "
-"OAuth2 za »Podjetje« s podporo za »CalDAV«, ki pridobiva podatke od "
-"gostitelja »caldav.podjetje.si ..."
+"mestu, saj gostitelj omogoča le storitve OAuth2. Primer: "
+"Podjetje:email.podjetje.si omogoči overitev OAuth2 za naslov "
+"»mail.company.com« za »Podjetje«, gostitelj Podjetje-"
+"CalDAV:caldav.podjetje.si pa omogoči overitev OAuth2 za »Podjetje« s podporo "
+"za »CalDAV«, ki pridobiva podatke od gostitelja »caldav.podjetje.si ..."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:57
 msgid ""
@@ -9204,8 +9204,8 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:334
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:345
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:887
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:1135
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:891
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1139
 msgid "Reminders"
 msgstr "Opomniki"
 
@@ -9242,35 +9242,35 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Za ta program ne zahtevaj več potrditve"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
 msgid "Display Reminders window with _notifications"
 msgstr "Pokaži okno opomnikov v obvestilnem p_odročju"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
 msgid "Keep reminder notification window always on _top"
 msgstr "Pusti _okno obvestila opomnikov vedno na vrhu"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:792
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Enable _desktop notifications"
 msgstr "Omogoči _namizna obvestila"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:793
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Enable _audio notifications"
 msgstr "Omogoči _zvočna obvestila"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:798
 msgid "Display reminders for _completed tasks"
 msgstr "Pokaži opomnike _opravljenih nalog"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:799
 msgid "Display reminders for _past events"
 msgstr "Pokaži opomnike _preteklih dogodkov"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:809
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:813
 msgid "Reminders Options:"
 msgstr "Možnosti opomnikov:"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:903
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:907
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
