@@ -1186,7 +1186,7 @@ open_cal (ECalBackendFile *cbfile,
 
 	icomp = e_cal_util_parse_ics_file (uristr);
 	if (!icomp) {
-		g_propagate_error (perror, e_client_error_create_fmt (E_CLIENT_ERROR_OTHER_ERROR, _("Cannot parse ISC file “%s”"), uristr));
+		g_propagate_error (perror, e_client_error_create_fmt (E_CLIENT_ERROR_OTHER_ERROR, _("Cannot parse ICS file “%s”"), uristr));
 		return;
 	}
 
@@ -1315,7 +1315,7 @@ reload_cal (ECalBackendFile *cbfile,
 
 	icomp = e_cal_util_parse_ics_file (uristr);
 	if (!icomp) {
-		g_propagate_error (perror, e_client_error_create_fmt (E_CLIENT_ERROR_OTHER_ERROR, _("Cannot parse ISC file “%s”"), uristr));
+		g_propagate_error (perror, e_client_error_create_fmt (E_CLIENT_ERROR_OTHER_ERROR, _("Cannot parse ICS file “%s”"), uristr));
 		return;
 	}
 
