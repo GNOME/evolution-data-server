@@ -1,15 +1,15 @@
 # Georgian translation for evolution-data-server.
 # Copyright (C) 2023 evolution-data-server's authors.
 # This file is distributed under the same license as the evolution-data-server package.
-# Ekaterine Papava <papava.e@gtu.ge>, 2023-2025.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-11-10 12:50+0000\n"
-"PO-Revision-Date: 2025-11-11 04:07+0100\n"
+"POT-Creation-Date: 2026-01-22 16:19+0000\n"
+"PO-Revision-Date: 2026-01-23 08:02+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: \n"
 "Language: ka\n"
@@ -103,8 +103,8 @@ msgstr ""
 #: src/addressbook/backends/file/e-book-backend-file.c:1711
 #: src/addressbook/backends/file/e-book-backend-file.c:1797
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7461
-#: src/addressbook/libedata-book/e-book-sqlite.c:7530
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr ""
@@ -368,7 +368,7 @@ msgstr "ელფოსტა 4"
 
 #: src/addressbook/libebook-contacts/e-contact.c:219
 msgid "Mailer"
-msgstr ""
+msgstr "ელფოსტის პროგრამა"
 
 #. Address Labels
 #: src/addressbook/libebook-contacts/e-contact.c:222
@@ -917,80 +917,84 @@ msgstr ""
 msgid "Matrix ID List"
 msgstr ""
 
+#: src/addressbook/libebook-contacts/e-contact.c:405
+msgid "Time zone"
+msgstr "დროის სარტყელი"
+
 #. vCard 4.0
-#: src/addressbook/libebook-contacts/e-contact.c:406
+#: src/addressbook/libebook-contacts/e-contact.c:408
 msgid "Kind"
 msgstr "ტიპი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:407
+#: src/addressbook/libebook-contacts/e-contact.c:409
 msgid "Source"
 msgstr "წყარო"
 
-#: src/addressbook/libebook-contacts/e-contact.c:408
+#: src/addressbook/libebook-contacts/e-contact.c:410
 msgid "XML"
 msgstr "XML"
 
-#: src/addressbook/libebook-contacts/e-contact.c:409
+#: src/addressbook/libebook-contacts/e-contact.c:411
 msgid "Gender"
 msgstr "სქესი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:410
+#: src/addressbook/libebook-contacts/e-contact.c:412
 msgid "Instant Messaging"
 msgstr "მოკლე-შეტყობინება"
 
-#: src/addressbook/libebook-contacts/e-contact.c:411
+#: src/addressbook/libebook-contacts/e-contact.c:413
 msgid "Language"
 msgstr "ენა"
 
-#: src/addressbook/libebook-contacts/e-contact.c:412
+#: src/addressbook/libebook-contacts/e-contact.c:414
 msgid "Member"
 msgstr "წევრი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:413
+#: src/addressbook/libebook-contacts/e-contact.c:415
 msgid "Related"
 msgstr "მსგავსი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:414
+#: src/addressbook/libebook-contacts/e-contact.c:416
 msgid "Birth Place"
 msgstr "დაბადების ადგილი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:415
+#: src/addressbook/libebook-contacts/e-contact.c:417
 msgid "Death Place"
 msgstr ""
 
-#: src/addressbook/libebook-contacts/e-contact.c:416
+#: src/addressbook/libebook-contacts/e-contact.c:418
 msgid "Death Date"
 msgstr ""
 
-#: src/addressbook/libebook-contacts/e-contact.c:417
+#: src/addressbook/libebook-contacts/e-contact.c:419
 msgid "Expertise"
 msgstr ""
 
-#: src/addressbook/libebook-contacts/e-contact.c:418
+#: src/addressbook/libebook-contacts/e-contact.c:420
 msgid "Hobby"
 msgstr ""
 
-#: src/addressbook/libebook-contacts/e-contact.c:419
+#: src/addressbook/libebook-contacts/e-contact.c:421
 msgid "Interest"
 msgstr "ინტერესი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:420
+#: src/addressbook/libebook-contacts/e-contact.c:422
 msgid "Organizational Directory"
 msgstr "ორგანიზაციული კატალოგი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:421
+#: src/addressbook/libebook-contacts/e-contact.c:423
 msgid "Contact URI"
 msgstr "კონტაქტის URI"
 
-#: src/addressbook/libebook-contacts/e-contact.c:422
+#: src/addressbook/libebook-contacts/e-contact.c:424
 msgid "Created"
 msgstr "შექმნის თარიღი"
 
-#: src/addressbook/libebook-contacts/e-contact.c:423
+#: src/addressbook/libebook-contacts/e-contact.c:425
 msgid "Social Profile"
 msgstr ""
 
-#: src/addressbook/libebook-contacts/e-contact.c:3051
+#: src/addressbook/libebook-contacts/e-contact.c:3056
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr ""
@@ -1067,7 +1071,7 @@ msgid "Error parsing regular expression"
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4869
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/addressbook/libedata-book/e-book-sqlite.c:1909 src/camel/camel-db.c:855
 #, c-format
 msgid "Insufficient memory"
@@ -1096,8 +1100,8 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3567
-#: src/addressbook/libedata-book/e-book-sqlite.c:5937
+#: src/addressbook/libedata-book/e-book-cache.c:3569
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr ""
@@ -1155,8 +1159,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6200
-#: src/addressbook/libedata-book/e-book-sqlite.c:8235
+#: src/addressbook/libedata-book/e-book-cache.c:6202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1164,8 +1168,8 @@ msgid ""
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6207
-#: src/addressbook/libedata-book/e-book-sqlite.c:8243
+#: src/addressbook/libedata-book/e-book-cache.c:6209
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1178,29 +1182,29 @@ msgstr ""
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:3562
-#: src/addressbook/libedata-book/e-book-sqlite.c:5930
+#: src/addressbook/libedata-book/e-book-cache.c:3564
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1702
 #: src/calendar/libedata-cal/e-cal-cache.c:3549
 #, c-format
 msgid "Invalid query: %s"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:3747
-#: src/addressbook/libedata-book/e-book-cache.c:6887
+#: src/addressbook/libedata-book/e-book-cache.c:3749
+#: src/addressbook/libedata-book/e-book-cache.c:6889
 msgid "Invalid query for a book cursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:4873
+#: src/addressbook/libedata-book/e-book-cache.c:4875
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5539
-#: src/addressbook/libedata-book/e-book-cache.c:5586
-#: src/addressbook/libedata-book/e-book-cache.c:5633
-#: src/addressbook/libedata-book/e-book-cache.c:5685
+#: src/addressbook/libedata-book/e-book-cache.c:5541
+#: src/addressbook/libedata-book/e-book-cache.c:5588
+#: src/addressbook/libedata-book/e-book-cache.c:5635
+#: src/addressbook/libedata-book/e-book-cache.c:5687
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
@@ -1213,33 +1217,33 @@ msgstr ""
 msgid "Object “%s” not found"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5745
+#: src/addressbook/libedata-book/e-book-cache.c:5747
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5921
+#: src/addressbook/libedata-book/e-book-cache.c:5923
 msgid "Search by email not supported"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5932
+#: src/addressbook/libedata-book/e-book-cache.c:5934
 msgid "No email address provided"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5987
+#: src/addressbook/libedata-book/e-book-cache.c:5989
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:5996
-#: src/addressbook/libedata-book/e-book-sqlite.c:8075
+#: src/addressbook/libedata-book/e-book-cache.c:5998
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-cache.c:7078
-#: src/addressbook/libedata-book/e-book-cache.c:7237
-#: src/addressbook/libedata-book/e-book-sqlite.c:8962
-#: src/addressbook/libedata-book/e-book-sqlite.c:9123
+#: src/addressbook/libedata-book/e-book-cache.c:7080
+#: src/addressbook/libedata-book/e-book-cache.c:7239
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr ""
@@ -1270,7 +1274,7 @@ msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2066
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2565
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3457
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3455
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr ""
@@ -1281,12 +1285,12 @@ msgid ""
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6105
-#: src/addressbook/libedata-book/e-book-sqlite.c:8769
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr ""
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8057
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 
@@ -1418,8 +1422,8 @@ msgstr ""
 #: src/calendar/backends/file/e-cal-backend-file.c:1189
 #: src/calendar/backends/file/e-cal-backend-file.c:1318
 #, c-format
-msgid "Cannot parse ISC file “%s”"
-msgstr ""
+msgid "Cannot parse ICS file “%s”"
+msgstr "ICS ფაილის \"%s\" დამუშავება შეუძლებელია"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:1200
 #: src/calendar/backends/file/e-cal-backend-file.c:1329
@@ -1432,7 +1436,7 @@ msgstr ""
 #: src/calendar/backends/file/e-cal-backend-file.c:3768
 #: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2684
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2682
 msgid "Unsupported method"
 msgstr ""
 
@@ -1570,7 +1574,7 @@ msgstr ""
 msgid "Cannot change value of calendar property “%s”"
 msgstr ""
 
-#: src/calendar/libecal/e-cal-component.c:702
+#: src/calendar/libecal/e-cal-component.c:722
 msgid "Untitled appointment"
 msgstr ""
 
@@ -2400,31 +2404,31 @@ msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1107
-#: src/calendar/libecal/e-cal-util.c:1134
+#: src/calendar/libecal/e-cal-util.c:1112
+#: src/calendar/libecal/e-cal-util.c:1139
 msgctxt "Priority"
 msgid "High"
 msgstr "მაღალი"
 
-#: src/calendar/libecal/e-cal-util.c:1109
-#: src/calendar/libecal/e-cal-util.c:1136
+#: src/calendar/libecal/e-cal-util.c:1114
+#: src/calendar/libecal/e-cal-util.c:1141
 msgctxt "Priority"
 msgid "Normal"
 msgstr "ჩვეულებრივი"
 
-#: src/calendar/libecal/e-cal-util.c:1111
-#: src/calendar/libecal/e-cal-util.c:1138
+#: src/calendar/libecal/e-cal-util.c:1116
+#: src/calendar/libecal/e-cal-util.c:1143
 msgctxt "Priority"
 msgid "Low"
 msgstr "დაბალი"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1137
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "გაურკვეველი"
 
-#: src/calendar/libecal/e-cal-util.c:1174
+#: src/calendar/libecal/e-cal-util.c:1179
 #: src/libedataserverui/e-reminders-widget.c:434
 #, c-format
 msgid "%d week"
@@ -2432,7 +2436,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d კვირა"
 msgstr[1] "%d კვირა"
 
-#: src/calendar/libecal/e-cal-util.c:1183
+#: src/calendar/libecal/e-cal-util.c:1188
 #: src/libedataserverui/e-reminders-widget.c:430
 #, c-format
 msgid "%d day"
@@ -2440,7 +2444,7 @@ msgid_plural "%d days"
 msgstr[0] "%d დღე"
 msgstr[1] "%d დღე"
 
-#: src/calendar/libecal/e-cal-util.c:1192
+#: src/calendar/libecal/e-cal-util.c:1197
 #: src/libedataserverui/e-reminders-widget.c:426
 #, c-format
 msgid "%d hour"
@@ -2448,7 +2452,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d საათი"
 msgstr[1] "%d საათი"
 
-#: src/calendar/libecal/e-cal-util.c:1201
+#: src/calendar/libecal/e-cal-util.c:1206
 #: src/libedataserverui/e-reminders-widget.c:422
 #, c-format
 msgid "%d minute"
@@ -2457,7 +2461,7 @@ msgstr[0] "%d წუთი"
 msgstr[1] "%d წუთი"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1206
+#: src/calendar/libecal/e-cal-util.c:1211
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2636,13 +2640,13 @@ msgstr ""
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1974
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4356
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4354
 msgid "attachment.dat"
 msgstr ""
 
@@ -2994,7 +2998,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1716
+#: src/camel/camel-folder-summary.c:1730
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr ""
@@ -3316,7 +3320,7 @@ msgstr ""
 msgid "No signature available"
 msgstr "ხელმოწერები ხელმიუწვდომელია"
 
-#: src/camel/camel-multipart-signed.c:837
+#: src/camel/camel-multipart-signed.c:840
 #, c-format
 msgid "parse error"
 msgstr "დამუშავების შეცდომა"
@@ -4654,43 +4658,43 @@ msgstr ""
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr ""
 
-#: src/camel/camel-store.c:1448
+#: src/camel/camel-store.c:1521
 #, c-format
 msgid "Opening folder “%s”"
 msgstr ""
 
-#: src/camel/camel-store.c:1745
+#: src/camel/camel-store.c:1826
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr ""
 
-#: src/camel/camel-store.c:1773 src/camel/camel-store.c:1818
+#: src/camel/camel-store.c:1854 src/camel/camel-store.c:1899
 #: src/camel/camel-vtrash-folder.c:47
 msgid "Trash"
 msgstr "ნაგავი"
 
-#: src/camel/camel-store.c:1787 src/camel/camel-store.c:1835
+#: src/camel/camel-store.c:1868 src/camel/camel-store.c:1916
 #: src/camel/camel-vtrash-folder.c:49
 msgid "Junk"
 msgstr "ნაგავი"
 
-#: src/camel/camel-store.c:2440
+#: src/camel/camel-store.c:2521
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr ""
 
-#: src/camel/camel-store.c:2447
+#: src/camel/camel-store.c:2528
 #, c-format
 msgid "Creating folder “%s”"
 msgstr ""
 
-#: src/camel/camel-store.c:2625
+#: src/camel/camel-store.c:2706
 #: src/camel/providers/local/camel-maildir-store.c:340
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr ""
 
-#: src/camel/camel-store.c:2816
+#: src/camel/camel-store.c:2897
 #: src/camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -6433,7 +6437,7 @@ msgstr ""
 #: src/camel/providers/sendmail/camel-sendmail-transport.c:136
 #, c-format
 msgid "Failed to read From address"
-msgstr ""
+msgstr "მისამართიდან წაკითხვის შეცდომა"
 
 #: src/camel/providers/sendmail/camel-sendmail-transport.c:153
 #, c-format
@@ -8804,8 +8808,8 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:334
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:345
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:887
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:1135
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:891
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1139
 msgid "Reminders"
 msgstr "შეხსენებები"
 
@@ -8836,35 +8840,35 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
 msgid "Display Reminders window with _notifications"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
 msgid "Keep reminder notification window always on _top"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:792
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Enable _desktop notifications"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:793
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Enable _audio notifications"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:798
 msgid "Display reminders for _completed tasks"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:799
 msgid "Display reminders for _past events"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:809
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:813
 msgid "Reminders Options:"
 msgstr ""
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:903
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:907
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
