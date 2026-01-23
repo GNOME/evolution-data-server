@@ -132,33 +132,32 @@ book_utils_get_recipient_certificates_thread (gpointer data,
 
 								if ((field_id == E_CONTACT_X509_CERT && e_vcard_attribute_has_type (cattr, "X509")) ||
 								    (field_id == E_CONTACT_PGP_CERT && e_vcard_attribute_has_type (cattr, "PGP"))) {
-									GString *decoded;
+									EContactCert *cert;
 
-									decoded = e_vcard_attribute_get_value_decoded (cattr);
-									if (decoded && decoded->len) {
+									cert = e_contact_cert_from_attr (cattr);
+									if (cert && cert->length > 0) {
 										#ifdef ENABLE_SMIME
 										if (field_id == E_CONTACT_X509_CERT) {
 											CERTCertificate *nss_cert;
 											gboolean usable;
 
-											nss_cert = CERT_DecodeCertFromPackage (decoded->str, decoded->len);
+											nss_cert = CERT_DecodeCertFromPackage (cert->data, cert->length);
 											usable = nss_cert && (nss_cert->keyUsage & (KU_KEY_ENCIPHERMENT | KU_DATA_ENCIPHERMENT)) != 0;
 											if (nss_cert)
 												CERT_DestroyCertificate (nss_cert);
 
 											if (!usable) {
-												g_string_free (decoded, TRUE);
+												e_contact_cert_free (cert);
 												continue;
 											}
 										}
 										#endif
-										base64_data = g_base64_encode ((const guchar *) decoded->str, decoded->len);
-										g_string_free (decoded, TRUE);
+										base64_data = g_base64_encode ((const guchar *) cert->data, cert->length);
+										g_clear_pointer (&cert, e_contact_cert_free);
 										break;
 									}
 
-									if (decoded)
-										g_string_free (decoded, TRUE);
+									g_clear_pointer (&cert, e_contact_cert_free);
 								}
 							}
 
