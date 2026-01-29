@@ -90,6 +90,7 @@
       <xi:include href="xml/e-source-calendar.xml"/>
       <xi:include href="xml/e-source-camel.xml"/>
       <xi:include href="xml/e-source-collection.xml"/>
+      <xi:include href="xml/e-source-conflict-search.xml"/>
       <xi:include href="xml/e-source-contacts.xml"/>
       <xi:include href="xml/e-source-goa.xml"/>
       <xi:include href="xml/e-source-ldap.xml"/>

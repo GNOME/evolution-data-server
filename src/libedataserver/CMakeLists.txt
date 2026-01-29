@@ -91,6 +91,7 @@ set(SOURCES
 	e-source-calendar.c
 	e-source-camel.c
 	e-source-collection.c
+	e-source-conflict-search.c
 	e-source-contacts.c
 	e-source-credentials-provider.c
 	e-source-credentials-provider-impl.c
@@ -184,6 +185,7 @@ set(HEADERS
 	e-source-calendar.h
 	e-source-camel.h
 	e-source-collection.h
+	e-source-conflict-search.h
 	e-source-contacts.h
 	e-source-credentials-provider.h
 	e-source-credentials-provider-impl.h

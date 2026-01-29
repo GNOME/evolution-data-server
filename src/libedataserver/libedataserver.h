@@ -63,6 +63,7 @@
 #include <libedataserver/e-source-calendar.h>
 #include <libedataserver/e-source-camel.h>
 #include <libedataserver/e-source-collection.h>
+#include <libedataserver/e-source-conflict-search.h>
 #include <libedataserver/e-source-contacts.h>
 #include <libedataserver/e-source-credentials-provider.h>
 #include <libedataserver/e-source-credentials-provider-impl.h>

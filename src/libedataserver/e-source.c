@@ -90,6 +90,7 @@
 #include "e-source-calendar.h"
 #include "e-source-camel.h"
 #include "e-source-collection.h"
+#include "e-source-conflict-search.h"
 #include "e-source-contacts.h"
 #include "e-source-goa.h"
 #include "e-source-ldap.h"
@@ -2374,6 +2375,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_AUTOCONFIG);
 	g_type_ensure (E_TYPE_SOURCE_CALENDAR);
 	g_type_ensure (E_TYPE_SOURCE_COLLECTION);
+	g_type_ensure (E_TYPE_SOURCE_CONFLICT_SEARCH);
 	g_type_ensure (E_TYPE_SOURCE_CONTACTS);
 	g_type_ensure (E_TYPE_SOURCE_GOA);
 	g_type_ensure (E_TYPE_SOURCE_LDAP);
