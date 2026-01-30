@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.59.2 2026-01-30
+---------------------------------------
+
+Bug Fixes:
+	I#617 - Calendar: Prepare to support build with libical 4.x
+	M!206 - docs: Document libical-glib as dependency (Juan Luis Cano Rodríguez)
+
+Miscellaneous:
+	Correct few developer comments
+	Calendar: Correct typo in error message
+	Fix a compiler warning in camel-network-service.c
+	e-book-utils: Correct read of a certificate from a vCard attribute
+	Add ESourceConflictSearch from Evolution
+
+Translations:
+	Aurimas Aurimas Černius (lt)
+	Ekaterine Papava (ka)
+	Juliano de Souza Camargo (pt_BR)
+	Martin (sl)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.59.1 2026-01-02
 ---------------------------------------
 
