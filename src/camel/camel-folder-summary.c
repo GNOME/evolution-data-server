@@ -1410,7 +1410,8 @@ cfs_load_record_to_message_info (CamelFolderSummary *summary,
 			g_clear_object (&info);
 		} else {
 			/* Summary always holds a ref for the loaded infos; this consumes it */
-			g_hash_table_insert (summary->priv->loaded_infos, (gchar *) camel_message_info_get_uid (info), info);
+			/* as the UID comes from the "info", do replace it in the hash table too */
+			g_hash_table_replace (summary->priv->loaded_infos, (gchar *) camel_message_info_get_uid (info), info);
 		}
 
 		camel_folder_summary_unlock (summary);
@@ -2340,7 +2341,8 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 	/* Summary always holds a ref for the loaded infos */
 	g_object_ref (info);
 
-	g_hash_table_insert (summary->priv->loaded_infos, (gpointer) camel_message_info_get_uid (info), info);
+	/* as the UID comes from the "info", do replace it in the hash table too */
+	g_hash_table_replace (summary->priv->loaded_infos, (gpointer) camel_message_info_get_uid (info), info);
 
 	camel_folder_summary_touch (summary);
 

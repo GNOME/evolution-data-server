@@ -109,7 +109,8 @@ sasl_build_class_table_rec (GType type,
 		}
 
 		key = (gpointer) sasl_class->auth_type->authproto;
-		g_hash_table_insert (class_table, key, sasl_class);
+		/* just in case the same authproto is already in the class_table, replace also the key */
+		g_hash_table_replace (class_table, key, sasl_class);
 	}
 
 	g_free (children);

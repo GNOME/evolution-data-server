@@ -70,7 +70,7 @@ cmd_uidl (CamelPOP3Engine *pe,
 				if (fi) {
 					camel_operation_progress (cancellable, (fi->index + 1) * 100 / folder->uids->len);
 					fi->uid = g_strdup (uid);
-					g_hash_table_insert (folder->uids_fi, fi->uid, fi);
+					g_hash_table_replace (folder->uids_fi, fi->uid, fi);
 				} else {
 					g_warning ("ID %u (uid: %s) not in previous LIST output", id, uid);
 				}
@@ -743,7 +743,7 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 				fi->cmd = NULL;
 			}
 			if (fi->uid) {
-				g_hash_table_insert (pop3_folder->uids_fi, fi->uid, fi);
+				g_hash_table_replace (pop3_folder->uids_fi, fi->uid, fi);
 			}
 		}
 	}

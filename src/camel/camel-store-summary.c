@@ -564,7 +564,7 @@ camel_store_summary_add (CamelStoreSummary *summary,
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 
 	g_ptr_array_add (summary->priv->folders, info);
-	g_hash_table_insert (summary->priv->folders_path, (gchar *) camel_store_info_get_path (info), info);
+	g_hash_table_replace (summary->priv->folders_path, (gchar *) camel_store_info_get_path (info), info);
 	summary->priv->dirty = TRUE;
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);

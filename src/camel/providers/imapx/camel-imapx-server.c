@@ -1638,7 +1638,7 @@ imapx_untagged_list (CamelIMAPXServer *is,
 
 	if (is->priv->list_responses_hash) {
 		is->priv->list_responses = g_slist_prepend (is->priv->list_responses, response);
-		g_hash_table_insert (is->priv->list_responses_hash, (gpointer) camel_imapx_list_response_get_mailbox_name (response), response);
+		g_hash_table_replace (is->priv->list_responses_hash, (gpointer) camel_imapx_list_response_get_mailbox_name (response), response);
 	} else {
 		CamelIMAPXStore *imapx_store;
 

@@ -236,7 +236,7 @@ text_index_add_name_to_word (CamelIndex *idx,
 		w->data = data;
 
 		w->names[0] = nameid;
-		g_hash_table_insert (p->words, w->word, w);
+		g_hash_table_replace (p->words, w->word, w);
 		g_queue_push_head (&p->word_cache, w);
 
 		length = p->word_cache.length;

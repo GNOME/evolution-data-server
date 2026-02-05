@@ -207,7 +207,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 			info->flags =
 				CAMEL_FOLDER_NOCHILDREN |
 				CAMEL_FOLDER_VIRTUAL;
-			g_hash_table_insert (infos_hash, info->full_name, info);
+			g_hash_table_replace (infos_hash, info->full_name, info);
 
 			if (res == NULL)
 				res = info;
