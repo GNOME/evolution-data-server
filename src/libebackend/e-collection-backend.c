@@ -337,6 +337,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 				resource_id, g_object_ref (source));
 		} else {
 			remove_redundant = g_slist_prepend (remove_redundant, g_strdup (name));
+			g_free (resource_id);
 		}
 
 		g_object_unref (source);
