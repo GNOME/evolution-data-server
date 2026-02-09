@@ -18,6 +18,7 @@ set(extra_ldflags
 
 # Should be kept ordered approximately from least to most difficult/complex
 set(TESTS
+	test-name-western
 	test-contact
 	test-contact-types
 	test-indices-updater

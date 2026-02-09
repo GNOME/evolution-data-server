@@ -354,6 +354,10 @@ e_name_western_extract_middle (ENameWestern *name,
 			return;
 
 		middle = name->full + idxs->nick_idx + strlen (name->nick);
+
+		if (*middle == '\0')
+			return;
+
 		middle = g_utf8_next_char (middle);
 
 		while (g_unichar_isspace (g_utf8_get_char (middle)) &&
