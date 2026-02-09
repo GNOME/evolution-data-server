@@ -75,7 +75,7 @@ network_service_generate_fingerprint (GTlsCertificate *certificate)
 	GByteArray *der;
 	guint8 *digest;
 	gsize length, ii;
-	const gchar *tohex = "0123456789abcdef";
+	static const gchar tohex[] = "0123456789abcdef";
 
 	/* XXX No accessor function for this property. */
 	g_object_get (certificate, "certificate", &der, NULL);
