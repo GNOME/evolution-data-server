@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues\n"
 "POT-Creation-Date: 2023-04-25 14:50+0000\n"
-"PO-Revision-Date: 2025-08-14 21:32+0100\n"
+"PO-Revision-Date: 2026-02-15 21:32+0100\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
 "Language: ca\n"
@@ -251,11 +251,11 @@ msgid_plural ""
 "Contact lists in LDAP address books require each member to be from the same "
 "LDAP address book, but %d members could not be recognized."
 msgstr[0] ""
-"La llistes de contactes en llibretes d'adreces LDAP requereixen que tots els"
+"Les llistes de contactes en llibretes d'adreces LDAP requereixen que tots els"
 " membres estiguin a la mateixa llibreta d'adreces LDAP, però un membre no ha"
 " pogut ser reconegut."
 msgstr[1] ""
-"La llistes de contactes en llibretes d'adreces LDAP requereixen que tots els"
+"Les llistes de contactes en llibretes d'adreces LDAP requereixen que tots els"
 " membres estiguin a la mateixa llibreta d'adreces LDAP, però %d membres no "
 "han pogut ser reconeguts."
 
@@ -301,7 +301,7 @@ msgstr "S'està suprimint un contacte del servidor LDAP..."
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:6486
 #, c-format
 msgid "Failed to get the DN for user “%s”"
-msgstr "No s'ha pogut obtenir el nom distingit (DN) per l'usuari «%s»"
+msgstr "No s'ha pogut obtenir el nom distingit (DN) per a l'usuari «%s»"
 
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:40
 msgid "No such book"
@@ -4557,7 +4557,7 @@ msgstr "No s'ha pogut emetre NAMESPACE"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3524
 msgid "Failed to enable QResync"
-msgstr "Ha fallat la connexió QResync"
+msgstr "No s'ha pogut habilitar QResync"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3561
 msgid "Failed to issue NOTIFY"
@@ -5441,7 +5441,7 @@ msgstr ""
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr ""
-"S'ha produït un error intern. El format de l'identificador d'usuari no és "
+"S'ha produït un error intern. El format de l'identificador únic no és "
 "vàlid: %s"
 
 #: src/camel/providers/nntp/camel-nntp-folder.c:280
@@ -6381,8 +6381,8 @@ msgid ""
 "When set to “true”, tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
 msgstr ""
-"Quan s'estableix com «true» (cert) , intenteu carregar alguna fotografia de "
-"la signatura/xifrat, si és disponible a la clau/certificat."
+"Quan s'estableix com «true» (cert), s'intenta carregar també la fotografia dels "
+"signataris o xifradors, si està disponible a la clau o certificat.»"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:19
 msgid "Override SMTP HELO/EHLO argument"
@@ -7457,7 +7457,7 @@ msgstr "S'esperava una resposta application/xml, però no se n'ha rebut cap"
 #: src/libedataserver/e-webdav-session.c:2934
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr "Resposta prevista aplicació/XML, però va tornar %s"
+msgstr "Resposta prevista aplicació/XML, però ha retornat %s"
 
 #: src/libedataserver/e-webdav-session.c:2759
 #: src/libedataserver/e-webdav-session.c:2947
@@ -7475,7 +7475,7 @@ msgstr "No s'ha pogut desbloquejar"
 #: src/libedataserver/e-webdav-session.c:2919
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr "Esperant una resposta de diversos estats, però %d va tornar (%s)"
+msgstr "S'esperava una resposta de diversos estats, però %d ha retornat (%s)"
 
 #: src/libedataserver/e-webdav-session.c:2956
 msgid "XML data does not have root node"
@@ -8488,7 +8488,7 @@ msgstr "Calendari habilitat: %s"
 #: src/tools/list-sources/list-sources.c:239
 #, c-format
 msgid "Contacts enabled: %s"
-msgstr "Contacte habilitat; %s"
+msgstr "Contactes habilitats: %s"
 
 #: src/tools/list-sources/list-sources.c:240
 #, c-format
@@ -8598,165 +8598,3 @@ msgstr "A Internet"
 msgid "WebDAV Notes"
 msgstr "Notes WebDAV"
 
-#~ msgid ""
-#~ "Missing information about vCard URL, local cache is possibly incomplete or "
-#~ "broken. Remove it, please."
-#~ msgstr ""
-#~ "Falta informació sobre l'URL de la vCard, la memòria cau local està "
-#~ "possiblement malmesa o incompleta. Suprimiu-la."
-
-#~ msgid "appointment-soon"
-#~ msgstr "appointment-soon"
-
-#~ msgid "Connection to Server"
-#~ msgstr "Connexió al servidor"
-
-#~ msgid "Operation was cancelled"
-#~ msgstr "S'ha cancel·lat l'operació"
-
-#~ msgid "Cannot rewind input stream: Not supported"
-#~ msgstr "No es pot rebobinar el flux d'entrada: no s'admet"
-
-#~ msgid "Failed to create contact from returned server data"
-#~ msgstr ""
-#~ "No s'ha pogut crear un contacte a partir de dades que ha retornat el "
-#~ "servidor"
-
-#~ msgid "Server returned contact without UID"
-#~ msgstr "El servidor ha retornat el contacte sense l'UID"
-
-#~ msgid "Friends"
-#~ msgstr "Amics"
-
-#~ msgid "Family"
-#~ msgstr "Família"
-
-#~ msgid "Coworkers"
-#~ msgstr "Companys de feina"
-
-#~ msgid ""
-#~ "Paned position in the reminder notification dialog, the split size between "
-#~ "list of the events and the description"
-#~ msgstr ""
-#~ "Posició de les subfinestres al diàleg de notificacions de recordatoris, la "
-#~ "mida dividida entre la llista d'esdeveniments i la descripció"
-
-#~ msgid "Success"
-#~ msgstr "Correcte"
-
-#~ msgid "Authentication Failed"
-#~ msgstr "No s'ha pogut autenticar"
-
-#~ msgid "Authentication Required"
-#~ msgstr "Cal autenticació"
-
-#~ msgid "Unsupported field"
-#~ msgstr "Aquest camp no està implementat"
-
-#~ msgid "Address book does not exist"
-#~ msgstr "La llibreta d'adreces no existeix"
-
-#~ msgid "Book removed"
-#~ msgstr "S'ha suprimit la llibreta d'adreces"
-
-#~ msgid "Not available in offline mode"
-#~ msgstr "No està disponible en mode fora de línia"
-
-#~ msgid "Invalid server version"
-#~ msgstr "La versió del servidor no és vàlida"
-
-#~ msgid "Repository is offline"
-#~ msgstr "El dipòsit està fora de línia"
-
-#~ msgid "URI not loaded"
-#~ msgstr "No s'ha carregat l'URI"
-
-#~ msgid "URI already loaded"
-#~ msgstr "Ja s'ha carregat l'URI"
-
-#~ msgid "Unknown User"
-#~ msgstr "Usuari desconegut"
-
-#~ msgid "Operation has been cancelled"
-#~ msgstr "S'ha cancel·lat l'operació"
-
-#~ msgid "Could not cancel operation"
-#~ msgstr "No s'ha pogut cancel·lar l'operació"
-
-#~ msgid "A D-Bus exception has occurred"
-#~ msgstr "S'ha produït una excepció del D-Bus"
-
-#~ msgid "No error"
-#~ msgstr "Cap error"
-
-#~ msgid "Calendar does not exist"
-#~ msgstr "No existeix el calendari"
-
-#~ msgid ""
-#~ "Invalid trace information:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "La informació de la traça no és vàlida:\n"
-#~ "%s"
-
-#~ msgid "User name not filled"
-#~ msgstr "Nom d'usuari no emplenat"
-
-#~ msgid "Integrate your calendars"
-#~ msgstr "Integreu els vostres calendaris"
-
-#~ msgid "Integrate your contacts"
-#~ msgstr "Integreu els vostres contactes"
-
-#~ msgid "Evolution Data Server"
-#~ msgstr "Servidor de dades de l'Evolution"
-
-#~ msgid "Required to have EDS appear in UOA"
-#~ msgstr "Necessari perquè l'EDS es mostri a l'UOA"
-
-#~ msgid "Google Calendar"
-#~ msgstr "Calendari del Google"
-
-#~ msgid "Google Contacts"
-#~ msgstr "Contactes del Google"
-
-#~ msgid "GMail"
-#~ msgstr "GMail"
-
-#~ msgid "Mail"
-#~ msgstr "Correu electrònic"
-
-#~ msgid "Integrate your mailboxes"
-#~ msgstr "Integreu les vostres bústies de correu"
-
-#~ msgid ""
-#~ "Cannot find a corresponding account service in the accounts database from "
-#~ "which to obtain an access token for “%s”"
-#~ msgstr ""
-#~ "No s'ha pogut trobar cap compte relacionat en la base de dades de comptes "
-#~ "del qual obtenir-ne un testimoni d'accés per a «%s»"
-
-#~ msgid ""
-#~ "Expected status 200 when requesting your identity, instead got status %d "
-#~ "(%s)"
-#~ msgstr ""
-#~ "S'esperava l'estat 200 en sol·licitar la vostra identitat, però s'ha rebut "
-#~ "l'estat %d (%s)"
-
-#~ msgid "Error parsing response as JSON: "
-#~ msgstr "S'ha produït un error en analitzar la resposta com a JSON: "
-
-#~ msgid "Didn’t find “email” in JSON data"
-#~ msgstr "No s'ha trobat «email» a les dades JSON"
-
-#~ msgid "Didn’t find “id” in JSON data"
-#~ msgstr "No s'ha trobat «id» a les dades JSON"
-
-#~ msgid "Didn’t find “emails.account” in JSON data"
-#~ msgstr "No s'ha trobat «emails.account» a les dades JSON"
-
-#~ msgid "Windows Live Mail"
-#~ msgstr "Correu Windows Live"
-
-#~ msgid "Yahoo! Calendar"
-#~ msgstr "Calendari del Yahoo!"
