@@ -586,7 +586,7 @@ ebmb_gather_photos_local_filenames (EBookMetaBackend *meta_backend,
 				gchar *filename;
 
 				filename = g_filename_from_uri (url, NULL, NULL);
-				if (filename && g_str_has_prefix (filename, cache_path))
+				if (filename && e_util_filename_is_in_path (filename, cache_path))
 					filenames = g_slist_prepend (filenames, filename);
 				else
 					g_free (filename);

@@ -392,7 +392,7 @@ maybe_delete_uri (EBookBackendFile *bf,
 	/* If the file is in our path it belongs to us and we need to delete it.
 	 */
 	if (bf->priv->photo_dirname &&
-	    !strncmp (bf->priv->photo_dirname, filename, strlen (bf->priv->photo_dirname))) {
+	    e_util_filename_is_in_path (filename, bf->priv->photo_dirname)) {
 
 		d (g_print ("Deleting uri file: %s\n", filename));
 

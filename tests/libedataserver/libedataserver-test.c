@@ -119,6 +119,43 @@ test_parse_date (ETestServerFixture *fixture,
 	}
 }
 
+static void
+test_filename_is_in_path (ETestServerFixture *fixture,
+			  gconstpointer user_data)
+{
+	struct _tests {
+		const gchar *filename;
+		const gchar *path;
+		gboolean expected;
+	} tests[] = {
+		{ "/home/user/.cache/dir/", "/home/user/.cache/dir", FALSE },
+		{ "/home/user/.cache/dir", "/home/user/.cache/dir", FALSE },
+		{ "/home/user/.cache/dir", "/home/user/.cache/dir/", FALSE },
+		{ "/home/user/.cache/dir/", "/home/user/.cache/dir/", FALSE },
+		{ "/home/user/.cache/dir/file.txt", "/home/user/.cache/dir/", TRUE },
+		{ "/home/user/.cache/dir/file.txt", "/home/user/.cache/dir", TRUE },
+		{ "/home/user/.cache/dir/subdir/file.txt", "/home/user/.cache/dir/", TRUE },
+		{ "/home/user/.cache/dir/subdir/file.txt", "/home/user/.cache/dir", TRUE },
+		{ "/home/user/.cache/dir/./file.txt", "/home/user/.cache/dir/", TRUE },
+		{ "/home/user/.cache/dir/./file.txt", "/home/user/.cache/dir", TRUE },
+		{ "/home/user/.cache/dir/../file.txt", "/home/user/.cache/dir/", FALSE },
+		{ "/home/user/.cache/dir/../file.txt", "/home/user/.cache/dir", FALSE },
+		{ "/home/user/.cache/dir/.././dir/../../.cache/./dir/file.txt", "/home/user/.cache/dir/", TRUE },
+		{ "/home/user/.cache/dir/.././dir/../../.cache/./dir/file.txt", "/home/user/.cache/dir", TRUE },
+		{ "/home/user/.cache/dir/../../../../var/lib/file.txt", "/home/user/.cache/dir/", FALSE },
+		{ "/home/user/.cache/dir/../../../../var/lib/file.txt", "/home/user/.cache/dir", FALSE },
+		{ "./file.txt", "/home/user/.cache/dir", FALSE },
+		{ "../file.txt", "/home/user/.cache/dir", FALSE }
+	};
+	gint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (tests); ii++) {
+		gboolean result = e_util_filename_is_in_path (tests[ii].filename, tests[ii].path);
+
+		g_assert_cmpint ((result ? 1 : 0), ==, (tests[ii].expected ? 1 : 0));
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -137,6 +174,12 @@ main (gint argc,
 		ETestServerFixture, &test_closure,
 		e_test_server_utils_setup,
 		test_parse_date,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/libedataserver-test/FilenameIsInPath",
+		ETestServerFixture, &test_closure,
+		e_test_server_utils_setup,
+		test_filename_is_in_path,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);

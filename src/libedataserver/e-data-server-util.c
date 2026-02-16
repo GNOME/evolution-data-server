@@ -3293,3 +3293,45 @@ e_util_construct_data_uri (const gchar *mime_type,
 
 	return g_string_free (uri, FALSE);
 }
+
+/**
+ * e_util_filename_is_in_path:
+ * @filename: a filename
+ * @path: an expected path
+ *
+ * Checks whether the @filename is stored under @path.
+ * It use canonicalized form of the paths before comparing them.
+ * Both the @filename and @path are expected to be absolute paths,
+ * is not, %FALSE is returned.
+ *
+ * Returns: whether the @filename is stored under @path
+ *
+ * Since: 3.60
+ **/
+gboolean
+e_util_filename_is_in_path (const gchar *filename,
+			    const gchar *path)
+{
+	gchar *canon_filename, *canon_path;
+	gsize path_len;
+	gboolean res;
+
+	g_return_val_if_fail (filename != NULL, FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+
+	if (!g_path_is_absolute (filename) ||
+	    !g_path_is_absolute (path))
+		return FALSE;
+
+	canon_filename = g_canonicalize_filename (filename, NULL);
+	canon_path = g_canonicalize_filename (path, NULL);
+	path_len = strlen (canon_path);
+
+	res = path_len > 0 && g_str_has_prefix (canon_filename, canon_path) &&
+		canon_filename[path_len] == G_DIR_SEPARATOR;
+
+	g_free (canon_filename);
+	g_free (canon_path);
+
+	return res;
+}

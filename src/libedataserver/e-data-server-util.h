@@ -274,6 +274,8 @@ gchar *		e_util_construct_data_uri	(const gchar *mime_type,
 						 const gchar *charset,
 						 gboolean is_base64,
 						 const gchar *data);
+gboolean	e_util_filename_is_in_path	(const gchar *filename,
+						 const gchar *path);
 
 G_END_DECLS
 

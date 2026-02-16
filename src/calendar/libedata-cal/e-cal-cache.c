@@ -3707,7 +3707,7 @@ e_cal_cache_delete_attachments (ECalCache *cal_cache,
 						if (!cache_dirname)
 							cache_dirname = g_path_get_dirname (e_cache_get_filename (E_CACHE (cal_cache)));
 
-						if (g_str_has_prefix (filename, cache_dirname) &&
+						if (e_util_filename_is_in_path (filename, cache_dirname) &&
 						    g_unlink (filename) == -1) {
 							/* Ignore these errors */
 						}
