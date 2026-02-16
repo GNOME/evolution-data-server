@@ -736,8 +736,8 @@ pop3_store_authenticate_sync (CamelService *service,
 			goto exit;
 		}
 	} else if (strcmp (mechanism, "+APOP") == 0 && pop3_engine->apop) {
-		gchar *secret, *md5asc, *d;
-		gsize secret_len;
+		GChecksum *checksum;
+		gchar *d;
 
 		if (password == NULL) {
 			g_set_error_literal (
@@ -768,20 +768,15 @@ pop3_store_authenticate_sync (CamelService *service,
 			d++;
 		}
 
-		secret_len =
-			strlen (pop3_engine->apop) +
-			strlen (password) + 1;
-		secret = g_alloca (secret_len);
-		g_snprintf (
-			secret, secret_len, "%s%s",
-			pop3_engine->apop, password);
-		md5asc = g_compute_checksum_for_string (
-			G_CHECKSUM_MD5, secret, -1);
+		checksum = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (checksum, (const guchar *) pop3_engine->apop, strlen (pop3_engine->apop));
+		g_checksum_update (checksum, (const guchar *) (password ? password : ""), strlen (password ? password : ""));
+
 		pcp = camel_pop3_engine_command_new (
 			pop3_engine, 0, NULL, NULL, cancellable, error,
-			"APOP %s %s\r\n", user, md5asc);
-		g_free (md5asc);
+			"APOP %s %s\r\n", user, g_checksum_get_string (checksum));
 
+		g_checksum_free (checksum);
 	} else {
 		GList *link;
 		const gchar *test_mechanism = mechanism;
