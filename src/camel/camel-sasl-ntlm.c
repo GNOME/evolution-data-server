@@ -79,12 +79,15 @@ ntlm_get_string (GByteArray *ba,
 	gchar *buf_string;
 	guint16 buf_length;
 	guint32 buf_offset;
+	guint32 buf_end;
 
 	secbuf = (SecurityBuffer *) &ba->data[offset];
 	buf_length = GUINT16_FROM_LE (secbuf->length);
 	buf_offset = GUINT32_FROM_LE (secbuf->offset);
+	buf_end = buf_offset + buf_length;
 
-	if (ba->len < buf_offset + buf_length)
+	/* the last is to check for overflow */
+	if (ba->len < buf_offset || ba->len < buf_end || buf_end < buf_offset)
 		return NULL;
 
 	buf_string = (gchar *) &ba->data[buf_offset];
