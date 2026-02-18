@@ -36,8 +36,20 @@ struct _ECredentialsPrompterImplPasswordPrivate {
 	gchar *error_text;
 	ENamedParameters *credentials;
 
-	GtkDialog *dialog;
-	gulong show_dialog_idle_id;
+	struct _ongoing {
+		gulong show_dialog_idle_id;
+		gint response;
+
+		GtkDialog *dialog;
+		GtkEntry *username_entry;
+		GtkEntry *password_entry;
+#if GTK_CHECK_VERSION(4, 0, 0)
+		GtkCheckButton *remember_check;
+#else
+		GtkToggleButton *remember_toggle;
+#endif
+		ESourceAuthentication *auth_extension;
+	} ongoing;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (ECredentialsPrompterImplPassword, e_credentials_prompter_impl_password, E_TYPE_CREDENTIALS_PROMPTER_IMPL)
@@ -53,6 +65,98 @@ password_dialog_map_event_cb (GtkWidget *dialog,
 	return FALSE;
 }
 #endif
+
+static void
+e_credentials_prompter_impl_password_free_prompt_data (ECredentialsPrompterImplPassword *prompter_password)
+{
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_password));
+
+	prompter_password->priv->prompt_id = NULL;
+
+	g_clear_object (&prompter_password->priv->auth_source);
+	g_clear_object (&prompter_password->priv->cred_source);
+
+	g_free (prompter_password->priv->error_text);
+	prompter_password->priv->error_text = NULL;
+
+	e_named_parameters_free (prompter_password->priv->credentials);
+	prompter_password->priv->credentials = NULL;
+}
+
+static void
+password_dialog_finish_prompt (ECredentialsPrompterImplPassword *self)
+{
+	gboolean success;
+
+	g_return_if_fail (self->priv->ongoing.dialog != NULL);
+
+	success = self->priv->ongoing.response == GTK_RESPONSE_OK;
+
+	if (success) {
+		if (self->priv->ongoing.username_entry)
+			e_named_parameters_set (self->priv->credentials,
+				E_SOURCE_CREDENTIAL_USERNAME, _libedataserverui_entry_get_text (self->priv->ongoing.username_entry));
+		e_named_parameters_set (self->priv->credentials,
+			E_SOURCE_CREDENTIAL_PASSWORD, _libedataserverui_entry_get_text (self->priv->ongoing.password_entry));
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+		if (self->priv->ongoing.auth_extension && self->priv->ongoing.remember_check) {
+			e_source_authentication_set_remember_password (self->priv->ongoing.auth_extension,
+				gtk_check_button_get_active (self->priv->ongoing.remember_check));
+		}
+#else
+		if (self->priv->ongoing.auth_extension && self->priv->ongoing.remember_toggle) {
+			e_source_authentication_set_remember_password (self->priv->ongoing.auth_extension,
+				gtk_toggle_button_get_active (self->priv->ongoing.remember_toggle));
+		}
+#endif
+	}
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_window_destroy (GTK_WINDOW (self->priv->ongoing.dialog));
+#else
+	gtk_widget_destroy (GTK_WIDGET (self->priv->ongoing.dialog));
+#endif
+
+	self->priv->ongoing.response = GTK_RESPONSE_NONE;
+	self->priv->ongoing.dialog = NULL;
+	self->priv->ongoing.username_entry = NULL;
+	self->priv->ongoing.password_entry = NULL;
+#if GTK_CHECK_VERSION(4, 0, 0)
+	self->priv->ongoing.remember_check = NULL;
+#else
+	self->priv->ongoing.remember_toggle = NULL;
+#endif
+	self->priv->ongoing.auth_extension = NULL;
+
+	e_credentials_prompter_impl_prompt_finish (
+		E_CREDENTIALS_PROMPTER_IMPL (self),
+		self->priv->prompt_id,
+		success ? self->priv->credentials : NULL);
+
+	e_credentials_prompter_impl_password_free_prompt_data (self);
+}
+
+static void
+password_dialog_close_cb (GtkDialog *dialog,
+			  gpointer user_data)
+{
+	ECredentialsPrompterImplPassword *self = user_data;
+
+	password_dialog_finish_prompt (self);
+}
+
+static void
+password_dialog_response_cb (GtkDialog *dialog,
+			     gint response_id,
+			     gpointer user_data)
+{
+	ECredentialsPrompterImplPassword *self = user_data;
+
+	self->priv->ongoing.response = response_id;
+
+	password_dialog_finish_prompt (self);
+}
 
 static void
 credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry,
@@ -200,7 +304,7 @@ credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry
 	g_free (host_name);
 }
 
-static gboolean
+static void
 e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPassword *prompter_password)
 {
 	GtkWidget *dialog, *content_area, *widget;
@@ -218,14 +322,14 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	GString *info_markup;
 	gint row = 0;
 	ESourceAuthentication *auth_extension = NULL;
-	gboolean success, is_scratch_source = TRUE;
+	gboolean is_scratch_source = TRUE;
 
-	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_password), FALSE);
-	g_return_val_if_fail (prompter_password->priv->prompt_id != NULL, FALSE);
-	g_return_val_if_fail (prompter_password->priv->dialog == NULL, FALSE);
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_password));
+	g_return_if_fail (prompter_password->priv->prompt_id != NULL);
+	g_return_if_fail (prompter_password->priv->ongoing.dialog == NULL);
 
 	prompter = e_credentials_prompter_impl_get_credentials_prompter (E_CREDENTIALS_PROMPTER_IMPL (prompter_password));
-	g_return_val_if_fail (prompter != NULL, FALSE);
+	g_return_if_fail (prompter != NULL);
 
 	dialog_parent = e_credentials_prompter_get_dialog_parent_full (prompter, prompter_password->priv->auth_source);
 
@@ -239,18 +343,21 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		g_free (escaped);
 	}
 
-	dialog = gtk_dialog_new_with_buttons (title, dialog_parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+	dialog = gtk_dialog_new_with_buttons (title, dialog_parent, GTK_DIALOG_DESTROY_WITH_PARENT,
 		_("_Cancel"), GTK_RESPONSE_CANCEL,
 		_("_OK"), GTK_RESPONSE_OK,
 		NULL);
 
-	prompter_password->priv->dialog = GTK_DIALOG (dialog);
-	gtk_dialog_set_default_response (prompter_password->priv->dialog, GTK_RESPONSE_OK);
+	if (dialog_parent)
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (dialog_parent));
+
+	prompter_password->priv->ongoing.dialog = GTK_DIALOG (dialog);
+	gtk_dialog_set_default_response (prompter_password->priv->ongoing.dialog, GTK_RESPONSE_OK);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	if (dialog_parent)
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
 
-	content_area = gtk_dialog_get_content_area (prompter_password->priv->dialog);
+	content_area = gtk_dialog_get_content_area (prompter_password->priv->ongoing.dialog);
 	g_object_set (G_OBJECT (content_area),
 		"margin-start", 12,
 		"margin-end", 12,
@@ -428,56 +535,25 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	gtk_widget_show_all (GTK_WIDGET (grid));
 #endif
 
-	success = _libedataserverui_dialog_run (prompter_password->priv->dialog) == GTK_RESPONSE_OK;
+	g_signal_connect_object (prompter_password->priv->ongoing.dialog, "close",
+		G_CALLBACK (password_dialog_close_cb), prompter_password, 0);
+	g_signal_connect_object (prompter_password->priv->ongoing.dialog, "response",
+		G_CALLBACK (password_dialog_response_cb), prompter_password, 0);
 
-	if (success) {
-		if (username_entry)
-			e_named_parameters_set (prompter_password->priv->credentials,
-				E_SOURCE_CREDENTIAL_USERNAME, _libedataserverui_entry_get_text (username_entry));
-		e_named_parameters_set (prompter_password->priv->credentials,
-			E_SOURCE_CREDENTIAL_PASSWORD, _libedataserverui_entry_get_text (password_entry));
-
+	prompter_password->priv->ongoing.response = GTK_RESPONSE_NONE;
+	prompter_password->priv->ongoing.username_entry = username_entry;
+	prompter_password->priv->ongoing.password_entry = password_entry;
+	prompter_password->priv->ongoing.auth_extension = auth_extension;
 #if GTK_CHECK_VERSION(4, 0, 0)
-		if (auth_extension && remember_check) {
-			e_source_authentication_set_remember_password (auth_extension,
-				gtk_check_button_get_active (remember_check));
-		}
+	prompter_password->priv->ongoing.remember_check = remember_check;
 #else
-		if (auth_extension && remember_toggle) {
-			e_source_authentication_set_remember_password (auth_extension,
-				gtk_toggle_button_get_active (remember_toggle));
-		}
+	prompter_password->priv->ongoing.remember_toggle = remember_toggle;
 #endif
-	}
 
-#if GTK_CHECK_VERSION(4, 0, 0)
-	gtk_window_destroy (GTK_WINDOW (dialog));
-#else
-	gtk_widget_destroy (dialog);
-#endif
-	prompter_password->priv->dialog = NULL;
+	gtk_window_present (GTK_WINDOW (dialog));
 
 	g_string_free (info_markup, TRUE);
 	g_free (title);
-
-	return success;
-}
-
-static void
-e_credentials_prompter_impl_password_free_prompt_data (ECredentialsPrompterImplPassword *prompter_password)
-{
-	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_password));
-
-	prompter_password->priv->prompt_id = NULL;
-
-	g_clear_object (&prompter_password->priv->auth_source);
-	g_clear_object (&prompter_password->priv->cred_source);
-
-	g_free (prompter_password->priv->error_text);
-	prompter_password->priv->error_text = NULL;
-
-	e_named_parameters_free (prompter_password->priv->credentials);
-	prompter_password->priv->credentials = NULL;
 }
 
 static gboolean
@@ -490,21 +566,12 @@ e_credentials_prompter_impl_password_show_dialog_idle_cb (gpointer user_data)
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_password), FALSE);
 
-	if (g_source_get_id (g_main_current_source ()) == prompter_password->priv->show_dialog_idle_id) {
-		gboolean success;
+	if (g_source_get_id (g_main_current_source ()) == prompter_password->priv->ongoing.show_dialog_idle_id) {
+		prompter_password->priv->ongoing.show_dialog_idle_id = 0;
 
-		prompter_password->priv->show_dialog_idle_id = 0;
+		g_warn_if_fail (prompter_password->priv->ongoing.dialog == NULL);
 
-		g_warn_if_fail (prompter_password->priv->dialog == NULL);
-
-		success = e_credentials_prompter_impl_password_show_dialog (prompter_password);
-
-		e_credentials_prompter_impl_prompt_finish (
-			E_CREDENTIALS_PROMPTER_IMPL (prompter_password),
-			prompter_password->priv->prompt_id,
-			success ? prompter_password->priv->credentials : NULL);
-
-		e_credentials_prompter_impl_password_free_prompt_data (prompter_password);
+		e_credentials_prompter_impl_password_show_dialog (prompter_password);
 	}
 
 	return FALSE;
@@ -524,14 +591,14 @@ e_credentials_prompter_impl_password_process_prompt (ECredentialsPrompterImpl *p
 
 	prompter_password = E_CREDENTIALS_PROMPTER_IMPL_PASSWORD (prompter_impl);
 	g_return_if_fail (prompter_password->priv->prompt_id == NULL);
-	g_return_if_fail (prompter_password->priv->show_dialog_idle_id == 0);
+	g_return_if_fail (prompter_password->priv->ongoing.show_dialog_idle_id == 0);
 
 	prompter_password->priv->prompt_id = prompt_id;
 	prompter_password->priv->auth_source = g_object_ref (auth_source);
 	prompter_password->priv->cred_source = g_object_ref (cred_source);
 	prompter_password->priv->error_text = g_strdup (error_text);
 	prompter_password->priv->credentials = e_named_parameters_new_clone (credentials);
-	prompter_password->priv->show_dialog_idle_id = g_idle_add (
+	prompter_password->priv->ongoing.show_dialog_idle_id = g_idle_add (
 		e_credentials_prompter_impl_password_show_dialog_idle_cb,
 		prompter_password);
 }
@@ -548,7 +615,7 @@ e_credentials_prompter_impl_password_cancel_prompt (ECredentialsPrompterImpl *pr
 	g_return_if_fail (prompter_password->priv->prompt_id == prompt_id);
 
 	/* This also closes the dialog. */
-	gtk_dialog_response (prompter_password->priv->dialog, GTK_RESPONSE_CANCEL);
+	gtk_dialog_response (prompter_password->priv->ongoing.dialog, GTK_RESPONSE_CANCEL);
 }
 
 static void
@@ -556,13 +623,13 @@ e_credentials_prompter_impl_password_dispose (GObject *object)
 {
 	ECredentialsPrompterImplPassword *prompter_password = E_CREDENTIALS_PROMPTER_IMPL_PASSWORD (object);
 
-	if (prompter_password->priv->show_dialog_idle_id) {
-		g_source_remove (prompter_password->priv->show_dialog_idle_id);
-		prompter_password->priv->show_dialog_idle_id = 0;
+	if (prompter_password->priv->ongoing.show_dialog_idle_id) {
+		g_source_remove (prompter_password->priv->ongoing.show_dialog_idle_id);
+		prompter_password->priv->ongoing.show_dialog_idle_id = 0;
 	}
 
 	g_warn_if_fail (prompter_password->priv->prompt_id == NULL);
-	g_warn_if_fail (prompter_password->priv->dialog == NULL);
+	g_warn_if_fail (prompter_password->priv->ongoing.dialog == NULL);
 
 	e_credentials_prompter_impl_password_free_prompt_data (prompter_password);
 

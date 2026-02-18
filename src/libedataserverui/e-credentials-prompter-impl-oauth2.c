@@ -63,7 +63,7 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	ENamedParameters *credentials;
 	gboolean refresh_failed_with_transport_error;
 
-	GtkDialog *dialog;
+	gpointer dialog; /* GtkDialog * */
 	GtkEntry *url_entry;
 #ifdef WITH_WEBKITGTK
 	GBinding *url_entry_text_binding;
@@ -74,6 +74,7 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	GtkEntry *auth_code_entry;
 	GtkLabel *error_text_label;
 	gulong show_dialog_idle_id;
+	gint response;
 
 	GCancellable *cancellable;
 };
@@ -89,6 +90,86 @@ cpi_oauth2_get_debug (void)
 		oauth2_debug = g_strcmp0 (g_getenv ("OAUTH2_DEBUG"), "1") == 0 ? 1 : 0;
 
 	return oauth2_debug == 1;
+}
+
+static void
+e_credentials_prompter_impl_oauth2_free_prompt_data (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+{
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
+
+	prompter_oauth2->priv->prompt_id = NULL;
+
+	g_clear_object (&prompter_oauth2->priv->auth_source);
+	g_clear_object (&prompter_oauth2->priv->cred_source);
+	g_clear_object (&prompter_oauth2->priv->service);
+	g_clear_object (&prompter_oauth2->priv->oauth2_response_skeleton);
+	g_clear_object (&prompter_oauth2->priv->cancellable);
+
+	g_free (prompter_oauth2->priv->error_text);
+	prompter_oauth2->priv->error_text = NULL;
+
+	e_named_parameters_free (prompter_oauth2->priv->credentials);
+	prompter_oauth2->priv->credentials = NULL;
+
+	if (prompter_oauth2->priv->bus_owner_id) {
+		g_bus_unown_name (prompter_oauth2->priv->bus_owner_id);
+		prompter_oauth2->priv->bus_owner_id = 0;
+	}
+}
+
+static void
+cpi_oauth2_dialog_finish_prompt (ECredentialsPrompterImplOAuth2 *self)
+{
+	gboolean success;
+
+	success = self->priv->response == GTK_RESPONSE_OK;
+
+	if (self->priv->cancellable)
+		g_cancellable_cancel (self->priv->cancellable);
+
+#ifdef WITH_WEBKITGTK
+	self->priv->web_view = NULL;
+#endif /* WITH_WEBKITGTK */
+
+	if (self->priv->dialog) {
+		g_object_remove_weak_pointer (G_OBJECT (self->priv->dialog), &self->priv->dialog);
+#if GTK_CHECK_VERSION(4, 0, 0)
+		gtk_window_destroy (GTK_WINDOW (self->priv->dialog));
+#else
+		gtk_widget_destroy (self->priv->dialog);
+#endif
+	}
+
+	self->priv->dialog = NULL;
+	self->priv->response = GTK_RESPONSE_NONE;
+
+	e_credentials_prompter_impl_prompt_finish (
+		E_CREDENTIALS_PROMPTER_IMPL (self),
+		self->priv->prompt_id,
+		success ? self->priv->credentials : NULL);
+
+	e_credentials_prompter_impl_oauth2_free_prompt_data (self);
+}
+
+static void
+cpi_oauth2_dialog_close_cb (GtkDialog *dialog,
+			    gpointer user_data)
+{
+	ECredentialsPrompterImplOAuth2 *self = user_data;
+
+	cpi_oauth2_dialog_finish_prompt (self);
+}
+
+static void
+cpi_oauth2_dialog_response_cb (GtkDialog *dialog,
+			       gint response_id,
+			       gpointer user_data)
+{
+	ECredentialsPrompterImplOAuth2 *self = user_data;
+
+	self->priv->response = response_id;
+
+	cpi_oauth2_dialog_finish_prompt (self);
 }
 
 static gchar *
@@ -1241,7 +1322,7 @@ cpi_oauth2_auth_code_entry_changed_cb (GtkEntry *entry,
 	gtk_widget_set_sensitive (button, text && *text);
 }
 
-static gboolean
+static void
 e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 {
 	const GActionEntry action_entries[] = {
@@ -1270,19 +1351,18 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	gchar *title, *uri;
 	GString *info_markup;
 	gint row = 0;
-	gboolean success;
 #if !GTK_CHECK_VERSION(4, 0, 0)
 	GtkCssProvider *css_provider;
 	GError *error = NULL;
 #endif
 
-	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2), FALSE);
-	g_return_val_if_fail (prompter_oauth2->priv->prompt_id != NULL, FALSE);
-	g_return_val_if_fail (prompter_oauth2->priv->dialog == NULL, FALSE);
-	g_return_val_if_fail (prompter_oauth2->priv->service != NULL, FALSE);
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
+	g_return_if_fail (prompter_oauth2->priv->prompt_id != NULL);
+	g_return_if_fail (prompter_oauth2->priv->dialog == NULL);
+	g_return_if_fail (prompter_oauth2->priv->service != NULL);
 
 	prompter = e_credentials_prompter_impl_get_credentials_prompter (E_CREDENTIALS_PROMPTER_IMPL (prompter_oauth2));
-	g_return_val_if_fail (prompter != NULL, FALSE);
+	g_return_if_fail (prompter != NULL);
 
 	dialog_parent = e_credentials_prompter_get_dialog_parent_full (prompter, prompter_oauth2->priv->auth_source);
 
@@ -1299,9 +1379,12 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	action_map = G_ACTION_MAP (g_simple_action_group_new ());
 
-	dialog = gtk_dialog_new_with_buttons (title, dialog_parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+	dialog = gtk_dialog_new_with_buttons (title, dialog_parent, GTK_DIALOG_DESTROY_WITH_PARENT,
 		_("_Cancel"), GTK_RESPONSE_CANCEL,
 		NULL);
+
+	if (dialog_parent)
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (dialog_parent));
 
 	g_action_map_add_action_entries (action_map, action_entries, G_N_ELEMENTS (action_entries), prompter_oauth2);
 	gtk_widget_insert_action_group (dialog, "cpi-oauth2", G_ACTION_GROUP (action_map));
@@ -1680,11 +1763,13 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	gtk_widget_grab_focus (GTK_WIDGET (prompter_oauth2->priv->auth_code_entry));
 #endif /* WITH_WEBKITGTK */
 
-	g_object_add_weak_pointer (G_OBJECT (dialog), &dialog);
+	g_object_add_weak_pointer (G_OBJECT (prompter_oauth2->priv->dialog), &prompter_oauth2->priv->dialog);
+
+	prompter_oauth2->priv->response = GTK_RESPONSE_NONE;
 
 	uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
 	if (!uri) {
-		success = FALSE;
+		cpi_oauth2_dialog_finish_prompt (prompter_oauth2);
 	} else {
 #ifdef WITH_WEBKITGTK
 		WebKitWebView *web_view = prompter_oauth2->priv->web_view;
@@ -1731,58 +1816,19 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		cpi_oauth2_maybe_prepare_oauth2_service (prompter_oauth2);
 #endif /* WITH_WEBKITGTK */
 
-		success = _libedataserverui_dialog_run (prompter_oauth2->priv->dialog) == GTK_RESPONSE_OK;
+		g_signal_connect_object (prompter_oauth2->priv->dialog, "close",
+			G_CALLBACK (cpi_oauth2_dialog_close_cb), prompter_oauth2, 0);
+		g_signal_connect_object (prompter_oauth2->priv->dialog, "response",
+			G_CALLBACK (cpi_oauth2_dialog_response_cb), prompter_oauth2, 0);
+
+		gtk_window_present (GTK_WINDOW (prompter_oauth2->priv->dialog));
 	}
 
 	g_free (uri);
 
-	if (prompter_oauth2->priv->cancellable)
-		g_cancellable_cancel (prompter_oauth2->priv->cancellable);
-
-#ifdef WITH_WEBKITGTK
-	prompter_oauth2->priv->web_view = NULL;
-#endif /* WITH_WEBKITGTK */
-	prompter_oauth2->priv->dialog = NULL;
-
-	if (dialog) {
-		g_object_remove_weak_pointer (G_OBJECT (dialog), &dialog);
-#if GTK_CHECK_VERSION(4, 0, 0)
-		gtk_window_destroy (GTK_WINDOW (dialog));
-#else
-		gtk_widget_destroy (dialog);
-#endif
-	}
-
 	g_object_unref (action_map);
 	g_string_free (info_markup, TRUE);
 	g_free (title);
-
-	return success;
-}
-
-static void
-e_credentials_prompter_impl_oauth2_free_prompt_data (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
-{
-	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
-
-	prompter_oauth2->priv->prompt_id = NULL;
-
-	g_clear_object (&prompter_oauth2->priv->auth_source);
-	g_clear_object (&prompter_oauth2->priv->cred_source);
-	g_clear_object (&prompter_oauth2->priv->service);
-	g_clear_object (&prompter_oauth2->priv->oauth2_response_skeleton);
-	g_clear_object (&prompter_oauth2->priv->cancellable);
-
-	g_free (prompter_oauth2->priv->error_text);
-	prompter_oauth2->priv->error_text = NULL;
-
-	e_named_parameters_free (prompter_oauth2->priv->credentials);
-	prompter_oauth2->priv->credentials = NULL;
-
-	if (prompter_oauth2->priv->bus_owner_id) {
-		g_bus_unown_name (prompter_oauth2->priv->bus_owner_id);
-		prompter_oauth2->priv->bus_owner_id = 0;
-	}
 }
 
 static gboolean
@@ -1797,7 +1843,7 @@ e_credentials_prompter_impl_oauth2_manage_dialog_idle_cb (gpointer user_data)
 
 	g_mutex_lock (&prompter_oauth2->priv->property_lock);
 	if (g_source_get_id (g_main_current_source ()) == prompter_oauth2->priv->show_dialog_idle_id) {
-		gboolean success, has_service;
+		gboolean has_service;
 
 		prompter_oauth2->priv->show_dialog_idle_id = 0;
 		has_service = prompter_oauth2->priv->service != NULL;
@@ -1806,17 +1852,15 @@ e_credentials_prompter_impl_oauth2_manage_dialog_idle_cb (gpointer user_data)
 
 		g_warn_if_fail (prompter_oauth2->priv->dialog == NULL);
 
-		if (has_service)
-			success = e_credentials_prompter_impl_oauth2_show_dialog (prompter_oauth2);
-		else
-			success = FALSE;
+		if (has_service) {
+			e_credentials_prompter_impl_oauth2_show_dialog (prompter_oauth2);
+		} else {
+			e_credentials_prompter_impl_prompt_finish (
+				E_CREDENTIALS_PROMPTER_IMPL (prompter_oauth2),
+				prompter_oauth2->priv->prompt_id, NULL);
 
-		e_credentials_prompter_impl_prompt_finish (
-			E_CREDENTIALS_PROMPTER_IMPL (prompter_oauth2),
-			prompter_oauth2->priv->prompt_id,
-			success ? prompter_oauth2->priv->credentials : NULL);
-
-		e_credentials_prompter_impl_oauth2_free_prompt_data (prompter_oauth2);
+			e_credentials_prompter_impl_oauth2_free_prompt_data (prompter_oauth2);
+		}
 	} else {
 		gpointer prompt_id = prompter_oauth2->priv->prompt_id;
 
