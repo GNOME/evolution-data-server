@@ -1425,13 +1425,23 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	/* Override GtkDialog defaults */
 	gtk_box_set_spacing (GTK_BOX (content_area), 12);
-#if !GTK_CHECK_VERSION(4, 0, 0)
+#if GTK_CHECK_VERSION(4, 0, 0)
+	g_object_set (G_OBJECT (gtk_widget_get_parent (content_area)),
+		"margin-start", 6,
+		"margin-end", 6,
+		"margin-top", 6,
+		"margin-bottom", 6,
+		NULL);
+#else
 	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 #endif
 
 	grid = GTK_GRID (gtk_grid_new ());
 	gtk_grid_set_column_spacing (grid, 12);
 	gtk_grid_set_row_spacing (grid, 6);
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_widget_set_margin_bottom (GTK_WIDGET (grid), 6);
+#endif
 
 	_libedataserverui_box_pack_start (GTK_BOX (content_area), GTK_WIDGET (grid), FALSE, TRUE, 0);
 

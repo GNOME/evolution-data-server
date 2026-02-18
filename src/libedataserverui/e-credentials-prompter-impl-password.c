@@ -358,6 +358,15 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
 
 	content_area = gtk_dialog_get_content_area (prompter_password->priv->ongoing.dialog);
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+	g_object_set (G_OBJECT (gtk_widget_get_parent (content_area)),
+		"margin-start", 12,
+		"margin-end", 12,
+		"margin-top", 12,
+		"margin-bottom", 12,
+		NULL);
+#else
 	g_object_set (G_OBJECT (content_area),
 		"margin-start", 12,
 		"margin-end", 12,
@@ -365,7 +374,6 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		"margin-bottom", 12,
 		NULL);
 
-#if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 #endif
