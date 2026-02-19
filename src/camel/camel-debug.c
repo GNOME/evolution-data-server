@@ -1349,6 +1349,9 @@ camel_debug_ref_unref_push_backtrace_for_object (gpointer _object)
 
 	backtrace = camel_debug_get_backtrace ();
 	if (backtrace) {
+		gchar buff[128];
+		g_snprintf (buff, sizeof (buff), "(%p) ", _object);
+		g_string_append (backtrace, buff);
 		camel_debug_ref_unref_push_backtrace (backtrace, object->ref_count);
 		g_string_free (backtrace, TRUE);
 	}
