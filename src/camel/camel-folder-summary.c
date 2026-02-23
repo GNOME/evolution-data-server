@@ -2329,7 +2329,9 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 		}
 	}
 
-	folder_summary_update_counts_by_flags (summary, camel_message_info_get_flags (info), UPDATE_COUNTS_ADD);
+	if (!g_hash_table_contains (summary->priv->uids, camel_message_info_get_uid (info)))
+		folder_summary_update_counts_by_flags (summary, camel_message_info_get_flags (info), UPDATE_COUNTS_ADD);
+
 	camel_message_info_set_folder_flagged (info, TRUE);
 	camel_message_info_set_dirty (info, TRUE);
 

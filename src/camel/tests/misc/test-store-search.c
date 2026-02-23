@@ -827,10 +827,11 @@ test_store_search_fill_folder (CamelStore *store,
 			       ...) /* message uid-s */
 {
 	CamelFolder *folder;
-	CamelStoreDB *sdb;
-	GString *bdata;
+	CamelFolderSummary *summary;
 	GError *local_error = NULL;
 	const gchar *uid;
+	gint n_messages = 0;
+	gboolean success;
 	va_list ap;
 
 	g_assert_nonnull (store);
@@ -840,17 +841,14 @@ test_store_search_fill_folder (CamelStore *store,
 	g_assert_no_error (local_error);
 	g_assert_nonnull (folder);
 
-	bdata = g_string_new ("");
-
-	sdb = camel_store_get_db (store);
+	summary = camel_folder_get_folder_summary (folder);
+	g_assert_nonnull (summary);
 
 	va_start (ap, folder_name);
 
 	for (uid = va_arg (ap, const gchar *); uid; uid = va_arg (ap, const gchar *)) {
 		CamelMessageInfo *nfo;
 		CamelMimeMessage *msg = NULL;
-		CamelStoreDBMessageRecord record = { 0, };
-		gboolean success;
 
 		test_store_search_read_message_data (uid, NULL, &msg);
 		g_assert_nonnull (msg);
@@ -859,24 +857,24 @@ test_store_search_fill_folder (CamelStore *store,
 		g_assert_nonnull (nfo);
 
 		camel_message_info_set_uid (nfo, uid);
-		success = camel_message_info_save (nfo, &record, bdata);
-		g_assert_true (success);
 
-		g_assert_cmpint (camel_store_db_get_folder_id (sdb, folder_name), !=, 0);
+		camel_folder_summary_add (summary, nfo, TRUE);
 
-		record.folder_id = 0;
-		success = camel_store_db_write_message (sdb, folder_name, &record, &local_error);
-		g_assert_no_error (local_error);
-		g_assert_true (success);
+		camel_message_info_set_folder_flagged (nfo, FALSE);
 
-		camel_store_db_message_record_clear (&record);
 		g_clear_object (&nfo);
 		g_clear_object (&msg);
+
+		n_messages++;
 	}
 
 	va_end (ap);
 
-	g_string_free (bdata, TRUE);
+	success = camel_folder_summary_save (summary, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	g_assert_cmpuint (n_messages, ==, camel_folder_summary_get_saved_count (summary));
 
 	return folder;
 }
@@ -1103,11 +1101,11 @@ test_store_search_headers (void)
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1120,15 +1118,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 3, "31", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1139,15 +1137,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "13", 3, "31", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1158,15 +1156,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1177,15 +1175,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 3, "31", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1196,15 +1194,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 3, "31", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1215,15 +1213,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 2);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1235,15 +1233,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 2);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1254,15 +1252,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 2);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 2);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1274,15 +1272,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "23", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 2);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 2);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1293,15 +1291,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "11", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 0);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1312,15 +1310,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "13", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1331,15 +1329,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "13", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1350,15 +1348,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "11", 1, "13", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1369,15 +1367,15 @@ test_store_search_headers (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "11", 1, "13", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -1993,11 +1991,11 @@ test_store_search_body (void)
 	g_assert_cmpint (tf1->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 1);
@@ -2009,15 +2007,15 @@ test_store_search_body (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "12", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 2);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 1);
@@ -2028,15 +2026,15 @@ test_store_search_body (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 1);
@@ -2047,15 +2045,15 @@ test_store_search_body (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 3, "31", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -2066,15 +2064,15 @@ test_store_search_body (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 1, "12", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 2);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 1);
@@ -2085,15 +2083,15 @@ test_store_search_body (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "22", 2, "23", 3, "31", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 1);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 1);
@@ -2104,15 +2102,15 @@ test_store_search_body (void)
 	g_assert_no_error (local_error);
 	g_assert_true (success);
 	test_store_search_check_result (search, 2, "22", 2, "23", 0, NULL);
-	g_assert_cmpint (tf1->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf1->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf1->n_called_get_message, ==, 3);
 	g_assert_cmpint (tf1->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf1->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf2->n_called_get_message_info, ==, 3);
+	g_assert_cmpint (tf2->n_called_get_message_info, ==, 6);
 	g_assert_cmpint (tf2->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf2->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf2->n_called_search_body, ==, 0);
-	g_assert_cmpint (tf3->n_called_get_message_info, ==, 1);
+	g_assert_cmpint (tf3->n_called_get_message_info, ==, 2);
 	g_assert_cmpint (tf3->n_called_get_message, ==, 1);
 	g_assert_cmpint (tf3->n_called_search_header, ==, 0);
 	g_assert_cmpint (tf3->n_called_search_body, ==, 0);
@@ -2165,6 +2163,22 @@ test_store_search_has_folders (CamelStoreSearch *search,
 
 	g_assert_cmpint (expected_bit_hits, ==, bit_hits);
 	g_ptr_array_unref (folders);
+}
+
+static gint
+cmp_ptr_to_string (gconstpointer aa,
+		   gconstpointer bb)
+{
+	const CamelStoreSearchItem * const *pitema = aa;
+	const CamelStoreSearchItem * const *pitemb = bb;
+
+	return g_strcmp0 ((* pitema)->uid, (* pitemb)->uid);
+}
+
+static void
+test_sort_search_items_by_uid (GPtrArray *array)
+{
+	g_ptr_array_sort (array, cmp_ptr_to_string);
 }
 
 static void
@@ -2407,6 +2421,7 @@ test_store_search_extras (void)
 	g_assert_true (success);
 	g_assert_nonnull (array);
 	g_assert_cmpint (array->len, ==, 5);
+	test_sort_search_items_by_uid (array);
 	g_assert_cmpint (get_item_folder_id (0), ==, 1);
 	g_assert_cmpstr (get_item_uid (0), ==, "11");
 	g_assert_cmpint (get_item_n_added_values (0), ==, 0);
@@ -2464,6 +2479,7 @@ test_store_search_extras (void)
 	g_assert_true (success);
 	g_assert_nonnull (array);
 	g_assert_cmpint (array->len, ==, 5);
+	test_sort_search_items_by_uid (array);
 	g_assert_cmpint (get_item_folder_id (0), ==, 1);
 	g_assert_cmpstr (get_item_uid (0), ==, "11");
 	g_assert_cmpint (get_item_n_added_values (0), ==, 1);
@@ -2537,38 +2553,39 @@ test_store_search_extras (void)
 	g_assert_true (success);
 	g_assert_nonnull (array);
 	g_assert_cmpint (array->len, ==, 5);
+	test_sort_search_items_by_uid (array);
 	g_assert_cmpint (get_item_folder_id (0), ==, 1);
 	g_assert_cmpstr (get_item_uid (0), ==, "11");
 	g_assert_cmpint (get_item_n_added_values (0), ==, 3);
-	g_assert_cmpstr (get_item_added_value (0, 0), ==, "16");
+	g_assert_cmpstr (get_item_added_value (0, 0), ==, "65552");
 	g_assert_cmpstr (get_item_added_value (0, 1), ==, NULL);
 	g_assert_cmpstr (get_item_added_value (0, 2), ==, "s11");
 	g_assert_cmpstr (get_item_added_value (0, 3), ==, NULL);
 	g_assert_cmpint (get_item_folder_id (1), ==, 1);
 	g_assert_cmpstr (get_item_uid (1), ==, "12");
 	g_assert_cmpint (get_item_n_added_values (1), ==, 3);
-	g_assert_cmpstr (get_item_added_value (1, 0), ==, "0");
+	g_assert_cmpstr (get_item_added_value (1, 0), ==, "65536");
 	g_assert_cmpstr (get_item_added_value (1, 1), ==, NULL);
 	g_assert_cmpstr (get_item_added_value (1, 2), ==, "s12");
 	g_assert_cmpstr (get_item_added_value (1, 3), ==, NULL);
 	g_assert_cmpint (get_item_folder_id (2), ==, 1);
 	g_assert_cmpstr (get_item_uid (2), ==, "13");
 	g_assert_cmpint (get_item_n_added_values (2), ==, 3);
-	g_assert_cmpstr (get_item_added_value (2, 0), ==, "0");
+	g_assert_cmpstr (get_item_added_value (2, 0), ==, "65536");
 	g_assert_cmpstr (get_item_added_value (2, 1), ==, "list@no.where");
 	g_assert_cmpstr (get_item_added_value (2, 2), ==, "s13");
 	g_assert_cmpstr (get_item_added_value (2, 3), ==, NULL);
 	g_assert_cmpint (get_item_folder_id (3), ==, 2);
 	g_assert_cmpstr (get_item_uid (3), ==, "21");
 	g_assert_cmpint (get_item_n_added_values (3), ==, 3);
-	g_assert_cmpstr (get_item_added_value (3, 0), ==, "2");
+	g_assert_cmpstr (get_item_added_value (3, 0), ==, "65538");
 	g_assert_cmpstr (get_item_added_value (3, 1), ==, "to@no.where");
 	g_assert_cmpstr (get_item_added_value (3, 2), ==, "s21");
 	g_assert_cmpstr (get_item_added_value (3, 3), ==, NULL);
 	g_assert_cmpint (get_item_folder_id (4), ==, 3);
 	g_assert_cmpstr (get_item_uid (4), ==, "31");
 	g_assert_cmpint (get_item_n_added_values (4), ==, 3);
-	g_assert_cmpstr (get_item_added_value (4, 0), ==, "4");
+	g_assert_cmpstr (get_item_added_value (4, 0), ==, "65540");
 	g_assert_cmpstr (get_item_added_value (4, 1), ==, "Bob <bob@no.where>");
 	g_assert_cmpstr (get_item_added_value (4, 2), ==, "s31");
 	g_assert_cmpstr (get_item_added_value (4, 3), ==, NULL);

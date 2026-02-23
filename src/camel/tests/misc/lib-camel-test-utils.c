@@ -409,9 +409,10 @@ test_folder_get_message_info (CamelFolder *folder,
 			camel_folder_summary_add (summary, nfo, TRUE);
 	}
 
-	if (self->message_info_with_headers) {
+	if (self->message_info_with_headers)
 		test_store_search_read_message_data (uid, nfo, NULL);
-	}
+	else
+		camel_message_info_take_headers (nfo, NULL);
 
 	self->n_called_get_message_info++;
 

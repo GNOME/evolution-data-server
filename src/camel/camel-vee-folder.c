@@ -305,13 +305,25 @@ vee_folder_subfolder_vee_setup_changed_cb (CamelVeeFolder *subfolder,
 		vee_folder_emit_setup_changed (self);
 }
 
+/* The SubfolderData has connected signal handlers on the objects, where
+   the subfolder_data_unref() can be called in one thread, while another
+   thread (like the main thread) is either about to call the handler
+   callback or it's in the middle of it, thus ensure the race won't cause
+   any trouble by using a global lock, which is supposed to be held
+   only for a fraction of second. */
+G_LOCK_DEFINE_STATIC (glob_subfolder_data);
+
 typedef struct _SubfolderData {
+	gint ref_count;
 	CamelVeeFolder *self;
 	CamelFolder *folder;
 	gchar *subfolder_id;
 	gulong changed_handler_id;
 	gulong summary_info_flags_changed_id;
 } SubfolderData;
+
+static SubfolderData *subfolder_data_ref (SubfolderData *sd);
+static void subfolder_data_unref (SubfolderData *sd);
 
 static void
 vee_folder_subfolder_changed_cb (CamelFolder *subfolder,
@@ -329,8 +341,20 @@ vee_folder_subfolder_changed_cb (CamelFolder *subfolder,
 	g_return_if_fail (sd != NULL);
 	g_return_if_fail (sub_changes != NULL);
 
+	G_LOCK (glob_subfolder_data);
+
+	if (!g_signal_handler_find (subfolder, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, vee_folder_subfolder_changed_cb, sd)) {
+		G_UNLOCK (glob_subfolder_data);
+		return;
+	}
+
+	subfolder_data_ref (sd);
+
+	G_UNLOCK (glob_subfolder_data);
+
 	if (sd->self->priv->auto_update && sub_changes->uid_added && sub_changes->uid_added->len) {
 		vee_folder_schedule_rebuild (sd->self, FALSE);
+		subfolder_data_unref (sd);
 		return;
 	}
 
@@ -384,13 +408,20 @@ vee_folder_subfolder_changed_cb (CamelFolder *subfolder,
 
 	vee_uid_builder_clear (&vuid_builder);
 
-	if (camel_folder_change_info_changed (changes))
-		camel_folder_changed (CAMEL_FOLDER (sd->self), changes);
+	G_LOCK (glob_subfolder_data);
 
-	if (sd->self->priv->auto_update && schedule_rebuild)
-		vee_folder_schedule_rebuild (sd->self, FALSE);
+	if (g_signal_handler_find (subfolder, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, vee_folder_subfolder_changed_cb, sd)) {
+		if (camel_folder_change_info_changed (changes))
+			camel_folder_changed (CAMEL_FOLDER (sd->self), changes);
+
+		if (sd->self->priv->auto_update && schedule_rebuild)
+			vee_folder_schedule_rebuild (sd->self, FALSE);
+	}
+
+	G_UNLOCK (glob_subfolder_data);
 
 	camel_folder_change_info_free (changes);
+	subfolder_data_unref (sd);
 }
 
 static void
@@ -406,6 +437,17 @@ vee_folder_subfolder_summary_info_flags_changed_cb (CamelFolderSummary *summary,
 	g_return_if_fail (sd != NULL);
 	g_return_if_fail (uid != NULL);
 
+	G_LOCK (glob_subfolder_data);
+
+	if (!g_signal_handler_find (summary, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, vee_folder_subfolder_summary_info_flags_changed_cb, sd)) {
+		G_UNLOCK (glob_subfolder_data);
+		return;
+	}
+
+	subfolder_data_ref (sd);
+
+	G_UNLOCK (glob_subfolder_data);
+
 	my_summary = camel_folder_get_folder_summary (CAMEL_FOLDER (sd->self));
 
 	vuid = g_strconcat (sd->subfolder_id, uid, NULL);
@@ -414,6 +456,8 @@ vee_folder_subfolder_summary_info_flags_changed_cb (CamelFolderSummary *summary,
 	camel_folder_summary_replace_flags (my_summary, vuid, new_flags);
 
 	g_free (vuid);
+
+	subfolder_data_unref (sd);
 }
 
 static SubfolderData *
@@ -427,6 +471,7 @@ subfolder_data_new (CamelVeeFolder *self,
 	summary = camel_folder_get_folder_summary (folder);
 
 	sd = g_new0 (SubfolderData, 1);
+	sd->ref_count = 1;
 	sd->self = self;
 	sd->folder = g_object_ref (folder);
 	sd->subfolder_id = g_strdup (subfolder_id);
@@ -441,19 +486,51 @@ subfolder_data_new (CamelVeeFolder *self,
 }
 
 static void
-subfolder_data_free (gpointer ptr)
+subfolder_data_disconnect (SubfolderData *sd)
 {
-	SubfolderData *sd = ptr;
-
 	if (sd) {
-		if (sd->changed_handler_id)
+		G_LOCK (glob_subfolder_data);
+
+		if (sd->changed_handler_id) {
 			g_signal_handler_disconnect (sd->folder, sd->changed_handler_id);
-		if (sd->summary_info_flags_changed_id)
+			sd->changed_handler_id = 0;
+		}
+		if (sd->summary_info_flags_changed_id) {
 			g_signal_handler_disconnect (camel_folder_get_folder_summary (sd->folder), sd->summary_info_flags_changed_id);
+			sd->summary_info_flags_changed_id = 0;
+		}
+
+		G_UNLOCK (glob_subfolder_data);
+	}
+}
+
+static SubfolderData *
+subfolder_data_ref (SubfolderData *sd)
+{
+	if (sd)
+		g_atomic_int_inc (&sd->ref_count);
+
+	return sd;
+}
+
+static void
+subfolder_data_unref (SubfolderData *sd)
+{
+	if (sd && g_atomic_int_dec_and_test (&sd->ref_count)) {
+		subfolder_data_disconnect (sd);
 		g_clear_object (&sd->folder);
 		g_free (sd->subfolder_id);
 		g_free (sd);
 	}
+}
+
+static void
+subfolder_data_disconnect_and_unref (gpointer ptr)
+{
+	SubfolderData *sd = ptr;
+
+	subfolder_data_disconnect (sd);
+	subfolder_data_unref (sd);
 }
 
 static gboolean
@@ -1394,7 +1471,7 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 
 	vee_folder->priv->auto_update = TRUE;
 	vee_folder->priv->subfolders = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
-	vee_folder->priv->real_subfolders = g_hash_table_new_full (vee_folder_vee_uid_hash, vee_folder_vee_uid_equal, NULL, subfolder_data_free);
+	vee_folder->priv->real_subfolders = g_hash_table_new_full (vee_folder_vee_uid_hash, vee_folder_vee_uid_equal, NULL, subfolder_data_disconnect_and_unref);
 }
 
 /**

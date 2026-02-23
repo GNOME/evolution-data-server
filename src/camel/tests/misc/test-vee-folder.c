@@ -2789,6 +2789,167 @@ test_vee_folder_skip_notification (gconstpointer user_data)
 }
 #endif /* ENABLE_MAINTAINER_MODE */
 
+typedef struct _ParallelData {
+	gboolean use_auto_update;
+	gint n_running;
+
+	GMainLoop *main_loop;
+	CamelStore *store;
+	CamelFolder *f1, *f2, *f3;
+	CamelVeeStore *vee_store;
+} ParallelData;
+
+#define N_THREADS 5
+#define N_TIMES 123
+
+static gpointer
+test_vee_folder_parallel_search (gpointer user_data)
+{
+	ParallelData *pd = user_data;
+	CamelVeeFolder *vf;
+	GError *local_error = NULL;
+	gboolean success;
+
+	vf = CAMEL_VEE_FOLDER (camel_vee_folder_new (CAMEL_STORE (pd->vee_store), "vf", 0));
+	g_assert_nonnull (vf);
+	camel_vee_folder_set_auto_update (vf, pd->use_auto_update);
+	success = camel_vee_folder_add_folder_sync (vf, pd->f1, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	success = camel_vee_folder_add_folder_sync (vf, pd->f2, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	success = camel_vee_folder_add_folder_sync (vf, pd->f3, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	success = camel_vee_folder_set_expression_sync (vf, "(or (header-contains \"subject\" \"2\") (system-flag \"seen\"))", CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	success = camel_folder_refresh_info_sync (CAMEL_FOLDER (vf), NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	g_atomic_int_inc (&pd->n_running);
+
+	while (g_atomic_int_get (&pd->n_running) < N_THREADS + 1) {
+		g_usleep (10000);
+	}
+
+	while (g_atomic_int_get (&pd->n_running) == N_THREADS + 1) {
+		g_usleep (50000);
+	}
+
+	g_clear_object (&vf);
+	g_atomic_int_add (&pd->n_running, -1);
+
+	return NULL;
+}
+
+static gpointer
+test_vee_folder_parallel_changes (gpointer user_data)
+{
+	ParallelData *pd = user_data;
+	guint ii;
+
+	while (!g_atomic_int_get (&pd->n_running)) {
+		g_usleep (10000);
+	}
+
+	g_atomic_int_inc (&pd->n_running);
+
+	for (ii = 0; ii < N_TIMES; ii++) {
+		CamelMessageInfo *mi;
+
+		mi = camel_folder_get_message_info (pd->f1, "12");
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_SEEN, (camel_message_info_get_flags (mi) & CAMEL_MESSAGE_SEEN) ? 0 : CAMEL_MESSAGE_SEEN);
+		g_clear_object (&mi);
+
+		mi = camel_folder_get_message_info (pd->f2, "21");
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_SEEN, (camel_message_info_get_flags (mi) & CAMEL_MESSAGE_SEEN) ? 0 : CAMEL_MESSAGE_SEEN);
+		g_clear_object (&mi);
+
+		mi = camel_folder_get_message_info (pd->f3, "31");
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_SEEN, (camel_message_info_get_flags (mi) & CAMEL_MESSAGE_SEEN) ? 0 : CAMEL_MESSAGE_SEEN);
+		g_clear_object (&mi);
+
+		g_usleep (20000);
+	}
+
+	g_atomic_int_add (&pd->n_running, -1);
+
+	return NULL;
+}
+
+static gboolean
+test_vee_folder_parallel_check_end_cb (gpointer user_data)
+{
+	ParallelData *pd = user_data;
+
+	if (g_atomic_int_get (&pd->n_running) > 0)
+		return G_SOURCE_CONTINUE;
+
+	g_main_loop_quit (pd->main_loop);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_vee_folder_parallel (gconstpointer user_data)
+{
+	ParallelData pd;
+	GThread *threads[N_THREADS + 1];
+	guint ii, tag;
+
+	pd.use_auto_update = GPOINTER_TO_INT (user_data) != 0;
+	pd.n_running = 0;
+	pd.main_loop = g_main_loop_new (NULL, FALSE);
+
+	test_vee_folder_create_folders (&pd.store, &pd.f1, &pd.f2, &pd.f3);
+	g_assert_nonnull (pd.store);
+	g_assert_nonnull (pd.f1);
+	g_assert_nonnull (pd.f2);
+	g_assert_nonnull (pd.f3);
+
+	pd.vee_store = test_vee_folder_create_vee_store ();
+	g_assert_nonnull (pd.vee_store);
+
+	threads[N_THREADS] = g_thread_new (G_STRFUNC, test_vee_folder_parallel_changes, &pd);
+
+	for (ii = 0; ii < N_THREADS; ii++) {
+		threads[ii] = g_thread_new (G_STRFUNC, test_vee_folder_parallel_search, &pd);
+	}
+
+	g_timeout_add (100, test_vee_folder_parallel_check_end_cb, &pd);
+	tag = g_timeout_add_seconds (3 * DELAY_TIMEOUT_SECONDS, test_util_abort_on_timeout_cb, NULL);
+
+	g_main_loop_run (pd.main_loop);
+
+	g_source_remove (tag);
+
+	for (ii = 0; ii < N_THREADS; ii++) {
+		g_thread_join (threads[ii]);
+	}
+
+	g_thread_join (threads[N_THREADS]);
+
+	if (pd.use_auto_update)
+		test_session_wait_for_pending_jobs ();
+
+	g_clear_object (&pd.f1);
+	g_clear_object (&pd.f2);
+	g_clear_object (&pd.f3);
+	g_clear_object (&pd.vee_store);
+	g_clear_object (&pd.store);
+	g_main_loop_unref (pd.main_loop);
+
+	test_session_check_finalized ();
+}
+
+#undef N_THREADS
+#undef N_TIMES
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2812,6 +2973,8 @@ main (gint argc,
 	#ifdef ENABLE_MAINTAINER_MODE
 	g_test_add_data_func ("/CamelVeeFolder/SkipNotificationAutoUpdate", GUINT_TO_POINTER (1), test_vee_folder_skip_notification);
 	g_test_add_data_func ("/CamelVeeFolder/SkipNotificationWithoutAutoUpdate", GUINT_TO_POINTER (0), test_vee_folder_skip_notification);
+	g_test_add_data_func ("/CamelVeeFolder/ParallelAutoUpdate", GUINT_TO_POINTER (1), test_vee_folder_parallel);
+	g_test_add_data_func ("/CamelVeeFolder/ParallelWithoutAutoUpdate", GUINT_TO_POINTER (0), test_vee_folder_parallel);
 	#endif
 
 	return g_test_run ();
