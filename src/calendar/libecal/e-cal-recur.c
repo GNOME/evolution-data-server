@@ -306,9 +306,6 @@ apply_duration (ICalTime *tt,
 	days += seconds / (24 * 60 * 60);
 	seconds = seconds % (24 * 60 * 60);
 
-	if (seconds != 0)
-		i_cal_time_set_is_date (tt, FALSE);
-
 	i_cal_time_adjust (tt,
 		(i_cal_duration_is_neg (duration) ? -1 : 1) * ((gint) days),
 		0, 0,
@@ -332,13 +329,12 @@ intersects_interval (const ICalTime *tt,
 	ttstart = i_cal_time_clone (tt);
 	ttend = i_cal_time_clone (ttstart);
 
+	i_cal_time_set_is_date (ttstart, FALSE);
+	i_cal_time_set_is_date (ttend, FALSE);
+
 	if (duration && !i_cal_duration_is_null_duration ((ICalDuration *) duration)) {
 		apply_duration (ttend, (ICalDuration *) duration);
 	} else if (default_duration_days || default_duration_seconds) {
-		if (default_duration_seconds != 0) {
-			i_cal_time_set_is_date (ttend, FALSE);
-		}
-
 		i_cal_time_adjust (ttend, default_duration_days, 0, 0, default_duration_seconds);
 	}
 
@@ -539,7 +535,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 				ICalTime *prev = NULL;
 
 				for (next = i_cal_recur_iterator_next (riter);
-				     next && !i_cal_time_is_null_time (next) && i_cal_time_compare (next, interval_end) <= 0;
+				     next && !i_cal_time_is_null_time (next) && i_cal_time_compare (next, interval_end) < 0;
 				     g_object_unref (next), next = i_cal_recur_iterator_next (riter)) {
 					if (prev && !i_cal_time_is_null_time (prev) &&
 					    i_cal_time_compare (next, prev) == 0)
@@ -681,7 +677,7 @@ e_cal_recur_generate_instances_sync (ICalComponent *icalcomp,
 				ICalTime *prev = NULL;
 
 				for (next = i_cal_recur_iterator_next (riter);
-				     next && !i_cal_time_is_null_time (next) && i_cal_time_compare (next, interval_end) <= 0;
+				     next && !i_cal_time_is_null_time (next) && i_cal_time_compare (next, interval_end) < 0;
 				     g_object_unref (next), next = i_cal_recur_iterator_next (riter)) {
 					if (prev && !i_cal_time_is_null_time (prev) &&
 					    i_cal_time_compare (next, prev) == 0)

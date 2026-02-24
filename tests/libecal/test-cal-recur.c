@@ -2373,7 +2373,7 @@ test_recur_remove_instance_cal_case (ECalClient *client,
 	}
 
 	/* this can fail, it's only to prepare the calendar */
-	e_cal_client_remove_object_sync	(client, i_cal_component_get_uid (new_icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
+	e_cal_client_remove_object_sync (client, i_cal_component_get_uid (new_icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
 
 	success = e_cal_client_create_object_sync (client, new_icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &local_error);
 	g_assert_no_error (local_error);
@@ -2459,7 +2459,7 @@ test_recur_remove_instance_like_all_cal_case (ECalClient *client,
 	}
 
 	/* this can fail, it's only to prepare the calendar */
-	e_cal_client_remove_object_sync	(client, i_cal_component_get_uid (new_icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
+	e_cal_client_remove_object_sync (client, i_cal_component_get_uid (new_icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
 
 	success = e_cal_client_create_object_sync (client, new_icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &local_error);
 	g_assert_no_error (local_error);
@@ -3491,7 +3491,7 @@ test_recur_multiple_detached (ETestServerFixture *fixture,
 		g_assert_nonnull (zone);
 
 		/* this can fail, it's only to prepare the calendar */
-		e_cal_client_remove_object_sync	(client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
+		e_cal_client_remove_object_sync (client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
 
 		success = e_cal_client_create_object_sync (client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &local_error);
 		g_assert_no_error (local_error);
@@ -3632,6 +3632,93 @@ test_recur_multiple_detached (ETestServerFixture *fixture,
 	g_clear_object (&end);
 }
 
+static void
+test_recur_date_value_type (ETestServerFixture *fixture,
+			    gconstpointer user_data)
+{
+	const gchar *str_comps[] = {
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DTSTART:20260224T000000Z\r\n"
+		"DTEND:20260225T000000Z\r\n"
+		"SUMMARY:test\r\n"
+		"END:VEVENT\r\n",
+
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"DTSTART;VALUE=DATE:20260224\r\n"
+		"DTEND;VALUE=DATE:20260225\r\n"
+		"SUMMARY:test\r\n"
+		"END:VEVENT\r\n"
+	};
+	struct _lookup_times {
+		const gchar *start;
+		const gchar *end;
+		guint n_expected;
+	} lookup_times[] = {
+		{ "20260223T112233", "20260223T234550", 0 },
+		{ "20260223T112233", "20260223T235959", 0 },
+		{ "20260223T112233", "20260224T000000", 0 },
+		{ "20260223T112233", "20260224T000001", 1 },
+		{ "20260223T112233", "20260224T112233", 1 },
+		{ "20260224T112233", "20260224T234550", 1 },
+		{ "20260224T112233", "20260224T235959", 1 },
+		{ "20260224T112233", "20260225T000000", 1 },
+		{ "20260224T112233", "20260225T112233", 1 },
+		{ "20260224T234550", "20260225T112233", 1 },
+		{ "20260224T235959", "20260225T112233", 1 },
+		{ "20260225T000000", "20260225T112233", 0 },
+		{ "20260225T000001", "20260225T112233", 0 },
+		{ "20260225T112233", "20260225T234550", 0 }
+	};
+
+	ECalClient *client;
+	guint ii, jj;
+
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	for (jj = 0; jj < G_N_ELEMENTS (str_comps); jj++) {
+		ICalComponent *icomp;
+		GError *local_error = NULL;
+		gchar *uid = NULL;
+		gboolean success;
+
+		icomp = i_cal_component_new_from_string (str_comps[jj]);
+		g_assert_nonnull (icomp);
+
+		/* this can fail, it's only to prepare the calendar */
+		e_cal_client_remove_object_sync (client, i_cal_component_get_uid (icomp), NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, NULL);
+
+		success = e_cal_client_create_object_sync (client, icomp, E_CAL_OPERATION_FLAG_NONE, &uid, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+		g_assert_nonnull (uid);
+
+		for (ii = 0; ii < G_N_ELEMENTS (lookup_times); ii++) {
+			GSList *icalcomps = NULL;
+			gchar *sexp;
+
+			sexp = g_strdup_printf ("(occur-in-time-range? (make-time \"%sZ\") (make-time \"%sZ\"))",
+				lookup_times[ii].start, lookup_times[ii].end);
+
+			success = e_cal_client_get_object_list_sync (client, sexp, &icalcomps, NULL, &local_error);
+			g_assert_no_error (local_error);
+			g_assert_true (success);
+			g_assert_cmpuint (g_slist_length (icalcomps), ==, lookup_times[ii].n_expected);
+
+			g_slist_free_full (icalcomps, g_object_unref);
+			g_free (sexp);
+		}
+
+		success = e_cal_client_remove_object_sync (client, uid, NULL, E_CAL_OBJ_MOD_ALL, E_CAL_OPERATION_FLAG_NONE, NULL, &local_error);
+		g_assert_no_error (local_error);
+		g_assert_true (success);
+
+		g_clear_object (&icomp);
+		g_free (uid);
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -3743,6 +3830,13 @@ main (gint argc,
 		&test_closure,
 		e_test_server_utils_setup,
 		test_recur_multiple_detached,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalRecur/DateValueType",
+		ETestServerFixture,
+		&test_closure,
+		e_test_server_utils_setup,
+		test_recur_date_value_type,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);
