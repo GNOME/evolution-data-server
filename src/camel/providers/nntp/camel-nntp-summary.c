@@ -167,6 +167,7 @@ add_range_xover (CamelNNTPSummary *cns,
 	guint len;
 	gint ret;
 	guint n, count, total, size;
+	guint old_timeout;
 	gboolean folder_filter_recent;
 	struct _xover_header *xover;
 
@@ -214,6 +215,10 @@ add_range_xover (CamelNNTPSummary *cns,
 
 	count = 0;
 	total = high - low + 1;
+
+	old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
+	camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, MIN (3 * NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS, total)));
+
 	headers = camel_name_value_array_new ();
 	while ((ret = camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error)) > 0) {
 		camel_operation_progress (cancellable, (count * 100) / total);
@@ -280,6 +285,7 @@ add_range_xover (CamelNNTPSummary *cns,
 	}
 
 	camel_name_value_array_free (headers);
+	camel_nntp_stream_set_timeout (nntp_stream, old_timeout);
 	g_clear_object (&nntp_stream);
 
 	camel_operation_pop_message (cancellable);
@@ -309,6 +315,7 @@ add_range_head (CamelNNTPSummary *cns,
 	CamelMimeParser *mp;
 	gchar *host;
 	gboolean folder_filter_recent;
+	guint old_timeout;
 
 	s = (CamelFolderSummary *) cns;
 	folder_filter_recent = camel_folder_summary_get_folder (s) &&
@@ -334,6 +341,10 @@ add_range_head (CamelNNTPSummary *cns,
 
 	count = 0;
 	total = high - low + 1;
+
+	old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
+	camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, MIN (3 * NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS, total)));
+
 	for (i = low; i < high + 1; i++) {
 		camel_operation_progress (cancellable, (count * 100) / total);
 		count++;
@@ -401,6 +412,7 @@ ioerror:
 	g_clear_pointer (&cns->priv->uid, g_free);
 	g_object_unref (mp);
 
+	camel_nntp_stream_set_timeout (nntp_stream, old_timeout);
 	g_clear_object (&nntp_stream);
 
 	camel_operation_pop_message (cancellable);
@@ -427,6 +439,7 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 	gchar *line = NULL;
 	gchar *host;
 	guint len, count;
+	guint old_timeout;
 
 	service = CAMEL_SERVICE (nntp_store);
 
@@ -442,6 +455,9 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 	g_free (host);
 
 	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
+
+	old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
+	camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS));
 
 	if (limit_from)
 		ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s %u-", full_name, limit_from);
@@ -478,6 +494,7 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 
  ioerror:
 
+	camel_nntp_stream_set_timeout (nntp_stream, old_timeout);
 	g_clear_object (&nntp_stream);
 
 	camel_operation_pop_message (cancellable);

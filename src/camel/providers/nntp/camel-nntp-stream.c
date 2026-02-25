@@ -271,6 +271,9 @@ camel_nntp_stream_new (CamelStream *source)
 	nntp_stream = g_object_new (CAMEL_TYPE_NNTP_STREAM, NULL);
 	nntp_stream->source = g_object_ref (source);
 
+	/* camel sets 15 seconds, let it be 30 for NNTP */
+	camel_nntp_stream_set_timeout (nntp_stream, 30);
+
 	return nntp_stream;
 }
 
@@ -546,4 +549,63 @@ camel_nntp_stream_unlock (CamelNNTPStream *nntp_stream)
 	g_return_if_fail (CAMEL_IS_NNTP_STREAM (nntp_stream));
 
 	g_rec_mutex_unlock (&nntp_stream->lock);
+}
+
+static GSocket *
+nntp_get_stream_socket (CamelStream *stream)
+{
+	GIOStream *base_strm;
+	GSocket *socket = NULL;
+
+	if (!stream)
+		return NULL;
+
+	base_strm = camel_stream_ref_base_stream (stream);
+
+	if (G_IS_TLS_CONNECTION (base_strm)) {
+		GIOStream *base_io_stream = NULL;
+
+		g_object_get (G_OBJECT (base_strm), "base-io-stream", &base_io_stream, NULL);
+
+		g_object_unref (base_strm);
+		base_strm = base_io_stream;
+	}
+
+	if (G_IS_SOCKET_CONNECTION (base_strm)) {
+		socket = g_socket_connection_get_socket (G_SOCKET_CONNECTION (base_strm));
+		if (socket)
+			g_object_ref (socket);
+	}
+
+	g_clear_object (&base_strm);
+
+	return socket;
+}
+
+void
+camel_nntp_stream_set_timeout (CamelNNTPStream *nntp_stream,
+			       guint timeout_seconds)
+{
+	GSocket *socket;
+
+	if (!nntp_stream)
+		return;
+
+	socket = nntp_get_stream_socket (nntp_stream->source);
+
+	if (socket)
+		g_socket_set_timeout (socket, timeout_seconds);
+}
+
+guint
+camel_nntp_stream_get_timeout (CamelNNTPStream *nntp_stream)
+{
+	GSocket *socket;
+
+	if (!nntp_stream)
+		return 0;
+
+	socket = nntp_get_stream_socket (nntp_stream->source);
+
+	return socket ? g_socket_get_timeout (socket) : 0;
 }

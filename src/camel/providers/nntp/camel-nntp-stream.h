@@ -40,6 +40,8 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_NNTP_STREAM, CamelNNTPStreamClass))
 
+#define NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS 45
+
 G_BEGIN_DECLS
 
 typedef struct _CamelNNTPStream CamelNNTPStream;
@@ -94,6 +96,9 @@ gint		camel_nntp_stream_getd		(CamelNNTPStream *is,
 						 GError **error);
 void		camel_nntp_stream_lock		(CamelNNTPStream *nntp_stream);
 void		camel_nntp_stream_unlock	(CamelNNTPStream *nntp_stream);
+void		camel_nntp_stream_set_timeout	(CamelNNTPStream *nntp_stream,
+						 guint timeout_seconds);
+guint		camel_nntp_stream_get_timeout	(CamelNNTPStream *nntp_stream);
 
 G_END_DECLS
 

@@ -1200,7 +1200,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 
 	if (top == NULL || top[0] == 0) {
 		/* we may need to update */
-		if (nntp_store_summary->last_newslist[0] != 0) {
+		if (nntp_store_summary->last_newslist[0] != 0 && !is_folder_list) {
 			gchar date[14];
 			memcpy (date, nntp_store_summary->last_newslist + 2, 6); /* YYMMDDD */
 			date[6] = ' ';
@@ -1228,6 +1228,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			GPtrArray *array;
 			GHashTable *all;
 			guint ii;
+			guint old_timeout;
 
 		do_complete_list:
 			/* seems we do need a complete list */
@@ -1257,10 +1258,15 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 
 			g_ptr_array_unref (array);
 
+			old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
+			camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS));
+
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0) {
 				si = nntp_store_info_update (nntp_store, (gchar *) line, is_folder_list);
 				g_hash_table_remove (all, si->path);
 			}
+
+			camel_nntp_stream_set_timeout (nntp_stream, old_timeout);
 
 			g_hash_table_foreach (
 				all, store_info_remove, nntp_store_summary);
