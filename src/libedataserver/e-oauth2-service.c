@@ -983,7 +983,7 @@ eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 	session = soup_session_new ();
 	g_object_set (
 		session,
-		"timeout", 15,
+		"timeout", 30,
 		"accept-language-auto", TRUE,
 		NULL);
 

@@ -271,9 +271,6 @@ camel_nntp_stream_new (CamelStream *source)
 	nntp_stream = g_object_new (CAMEL_TYPE_NNTP_STREAM, NULL);
 	nntp_stream->source = g_object_ref (source);
 
-	/* camel sets 15 seconds, let it be 30 for NNTP */
-	camel_nntp_stream_set_timeout (nntp_stream, 30);
-
 	return nntp_stream;
 }
 

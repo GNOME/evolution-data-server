@@ -483,7 +483,7 @@ goa_ews_autodiscover (GoaObject *goa_object,
 
 	data = g_new0 (AutodiscoverData, 1);
 	data->session = soup_session_new_with_options (
-		"timeout", 15,
+		"timeout", 30,
 		"accept-language-auto", TRUE,
 		NULL);
 	data->requests_in_flight = AUTODISCOVER_MESSAGES;

@@ -709,7 +709,7 @@ e_soup_session_init (ESoupSession *session)
 
 	g_object_set (
 		G_OBJECT (session),
-		"timeout", 15,
+		"timeout", 30,
 		"accept-language-auto", TRUE,
 		NULL);
 

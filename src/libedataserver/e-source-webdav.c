@@ -717,7 +717,7 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 		g_param_spec_uint (
 			"timeout",
 			NULL, NULL,
-			0, G_MAXUINT, 15,
+			0, G_MAXUINT, 30,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1757,14 +1757,14 @@ e_source_webdav_set_order (ESourceWebdav *extension,
  * @extension: an #ESourceWebdav
  *
  * Returns: the connection timeout, in seconds. The default
- *    is 15 seconds.
+ *    is 30 seconds.
  *
  * Since: 3.54
  **/
 guint
 e_source_webdav_get_timeout (ESourceWebdav *extension)
 {
-	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), 15);
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), 30);
 
 	return extension->priv->timeout;
 }
