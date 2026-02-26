@@ -53,6 +53,9 @@ struct _EBookBackendCardDAVPrivate {
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
 
+	/* RFC 6578 is supported */
+	gboolean supports_sync_collection;
+
 	/* Whether talking to the Google server */
 	gboolean is_google;
 };
@@ -445,20 +448,21 @@ ebb_carddav_ref_session (EBookBackendCardDAV *bbdav)
 	return webdav;
 }
 
-typedef struct _CtagVersionData {
+typedef struct _CollectionPropsData {
 	gchar **out_ctag;
 	EVCardVersion *out_vcard_version;
-} CtagVersionData;
+	gboolean *out_supports_sync_collection;
+} CollectionPropsData;
 
 static gboolean
-ebb_carddav_getctag_and_version_cb (EWebDAVSession *webdav,
-				    xmlNodePtr prop_node,
-				    const GUri *request_uri,
-				    const gchar *href,
-				    guint status_code,
-				    gpointer user_data)
+ebb_carddav_get_collection_props_cb (EWebDAVSession *webdav,
+				     xmlNodePtr prop_node,
+				     const GUri *request_uri,
+				     const gchar *href,
+				     guint status_code,
+				     gpointer user_data)
 {
-	CtagVersionData *data = user_data;
+	CollectionPropsData *data = user_data;
 
 	if (status_code == SOUP_STATUS_OK) {
 		xmlNodePtr child;
@@ -507,28 +511,33 @@ ebb_carddav_getctag_and_version_cb (EWebDAVSession *webdav,
 
 			*data->out_vcard_version = version;
 		}
+
+		*data->out_supports_sync_collection = e_webdav_session_util_contains_supported_report (prop_node, E_WEBDAV_NS_DAV, "sync-collection");
 	}
 
 	return FALSE;
 }
 
 static gboolean
-ebb_carddav_getctag_and_vcard_version_sync (EWebDAVSession *webdav,
-					    gchar **out_ctag,
-					    EVCardVersion *out_vcard_version,
-					    GCancellable *cancellable,
-					    GError **error)
+ebb_carddav_get_collection_props_sync (EWebDAVSession *webdav,
+				       gchar **out_ctag,
+				       EVCardVersion *out_vcard_version,
+				       gboolean *out_supports_sync_collection,
+				       GCancellable *cancellable,
+				       GError **error)
 {
 	EXmlDocument *xml;
-	CtagVersionData data = { 0, };
+	CollectionPropsData data = { 0, };
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (out_ctag != NULL, FALSE);
 	g_return_val_if_fail (out_vcard_version != NULL, FALSE);
+	g_return_val_if_fail (out_supports_sync_collection != NULL, FALSE);
 
 	*out_ctag = NULL;
 	*out_vcard_version = E_VCARD_VERSION_30;
+	*out_supports_sync_collection = FALSE;
 
 	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
 	g_return_val_if_fail (xml != NULL, FALSE);
@@ -541,13 +550,15 @@ ebb_carddav_getctag_and_vcard_version_sync (EWebDAVSession *webdav,
 	e_xml_document_start_element (xml, NULL, "prop");
 	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
 	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "supported-address-data");
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "supported-report-set");
 	e_xml_document_end_element (xml); /* prop */
 
 	data.out_ctag = out_ctag;
 	data.out_vcard_version = out_vcard_version;
+	data.out_supports_sync_collection = out_supports_sync_collection;
 
 	success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
-		ebb_carddav_getctag_and_version_cb, &data, cancellable, error);
+		ebb_carddav_get_collection_props_cb, &data, cancellable, error);
 
 	g_object_unref (xml);
 
@@ -778,7 +789,7 @@ ebb_carddav_connect_sync (EBookMetaBackend *meta_backend,
 
 		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
-		if (!ebb_carddav_getctag_and_vcard_version_sync (webdav, &ctag, &bbdav->priv->vcard_version, cancellable, &local_error) &&
+		if (!ebb_carddav_get_collection_props_sync (webdav, &ctag, &bbdav->priv->vcard_version, &bbdav->priv->supports_sync_collection, cancellable, &local_error) &&
 		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
@@ -1168,6 +1179,8 @@ typedef struct _CardDAVChangesData {
 	GSList **out_modified_objects;
 	GSList **out_removed_objects;
 	GHashTable *known_items; /* gchar *href ~> EBookMetaBackendInfo * */
+	GHashTable *removed_hrefs; /* gchar *href ~> href */
+	gboolean consider_removed;
 } CardDAVChangesData;
 
 static gboolean
@@ -1204,7 +1217,7 @@ ebb_carddav_search_changes_cb (EBookCache *book_cache,
 
 				g_hash_table_remove (ccd->known_items, extra);
 			}
-		} else {
+		} else if (ccd->consider_removed || (ccd->removed_hrefs && g_hash_table_contains (ccd->removed_hrefs, extra))) {
 			*(ccd->out_removed_objects) = g_slist_prepend (*(ccd->out_removed_objects),
 				e_book_meta_backend_info_new (uid, revision, object, extra));
 		}
@@ -1259,6 +1272,61 @@ ebb_carddav_check_credentials_error (EBookBackendCardDAV *bbdav,
 }
 
 static gboolean
+ebb_carddav_resource_modified_cb (EWebDAVSession *webdav,
+				  const gchar *href,
+				  const gchar *etag,
+				  xmlNodePtr prop_node,
+				  gpointer user_data,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	CardDAVChangesData *ccd = user_data;
+
+	if (href && *href && etag && *etag) {
+		EBookMetaBackendInfo *nfo;
+
+		nfo = e_book_meta_backend_info_new ("", etag, NULL, href);
+
+		g_hash_table_insert (ccd->known_items, g_strdup (href), nfo);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+ebb_carddav_resource_removed_cb (EWebDAVSession *webdav,
+				 const gchar *href,
+				 gpointer user_data,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	CardDAVChangesData *ccd = user_data;
+
+	if (href && *href) {
+		if (!ccd->removed_hrefs)
+			ccd->removed_hrefs = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+		g_hash_table_add (ccd->removed_hrefs, g_strdup (href));
+	}
+
+	return TRUE;
+}
+
+static gboolean
+ebb_carddav_move_values_to_slist_cb (gpointer key,
+				     gpointer value,
+				     gpointer user_data)
+{
+	GSList **pslist = user_data;
+
+	*pslist = g_slist_prepend (*pslist, value);
+
+	g_free (key);
+
+	return TRUE;
+}
+
+static gboolean
 ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 			      const gchar *last_sync_tag,
 			      gboolean is_repeat,
@@ -1272,10 +1340,8 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 {
 	EBookBackendCardDAV *bbdav;
 	EWebDAVSession *webdav;
-	EXmlDocument *xml;
-	GHashTable *known_items; /* gchar *href ~> EBookMetaBackendInfo * */
-	GHashTableIter iter;
-	gpointer key = NULL, value = NULL;
+	gboolean can_run_getctag = TRUE;
+	gboolean can_run_list = TRUE;
 	gboolean success;
 	GError *local_error = NULL;
 
@@ -1293,7 +1359,65 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 	bbdav = E_BOOK_BACKEND_CARDDAV (meta_backend);
 	webdav = ebb_carddav_ref_session (bbdav);
 
-	if (bbdav->priv->ctag_supported) {
+	if (bbdav->priv->supports_sync_collection) {
+		CardDAVChangesData ccd;
+		gchar *new_sync_tag = NULL;
+		const gchar *last_sync_token = last_sync_tag;
+
+		/* the sync-token is supposed to be a URI; if it's not, the stored value can be from the getctag,
+		   then ignore it. Do not really parse the URI, just check the string contains ':'.
+		   Neither Google nor iCloud use URI, only something like path, err... */
+		if (last_sync_token && !strchr (last_sync_token, ':') && !strchr (last_sync_token, '/'))
+			last_sync_token = NULL;
+
+		ccd.consider_removed = !last_sync_token;
+		ccd.out_modified_objects = out_modified_objects;
+		ccd.out_removed_objects = out_removed_objects;
+		ccd.known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_book_meta_backend_info_free);
+		ccd.removed_hrefs = NULL;
+
+		success = e_webdav_session_sync_collection_sync (webdav, NULL, last_sync_token, NULL,
+			ebb_carddav_resource_modified_cb, ebb_carddav_resource_removed_cb, &ccd,
+			&new_sync_tag, cancellable, &local_error);
+
+		if (!success && last_sync_token && (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED) || (
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) &&
+		    strstr (local_error->message, "valid-sync-token")))) {
+			g_clear_error (&local_error);
+			g_clear_pointer (&new_sync_tag, g_free);
+
+			ccd.consider_removed = TRUE;
+
+			success = e_webdav_session_sync_collection_sync (webdav, NULL, NULL, NULL,
+				ebb_carddav_resource_modified_cb, ebb_carddav_resource_removed_cb, &ccd,
+				&new_sync_tag, cancellable, &local_error);
+		}
+
+		if (success) {
+			EBookCache *book_cache;
+
+			can_run_getctag = FALSE;
+			can_run_list = FALSE;
+			*out_new_sync_tag = g_steal_pointer (&new_sync_tag);
+
+			book_cache = e_book_meta_backend_ref_cache (meta_backend);
+
+			success = e_book_cache_search_with_callback (book_cache, NULL, ebb_carddav_search_changes_cb, &ccd, cancellable, &local_error);
+
+			g_clear_object (&book_cache);
+
+			g_hash_table_foreach_steal (ccd.known_items, ebb_carddav_move_values_to_slist_cb, out_created_objects);
+		} else {
+			/* if it fails then do the full sync */
+			g_clear_error (&local_error);
+		}
+
+		g_clear_pointer (&ccd.known_items, g_hash_table_unref);
+		g_clear_pointer (&ccd.removed_hrefs, g_hash_table_unref);
+		g_clear_pointer (&new_sync_tag, g_free);
+	}
+
+	if (can_run_getctag && bbdav->priv->ctag_supported) {
 		gchar *new_sync_tag = NULL;
 
 		success = e_webdav_session_getctag_sync (webdav, NULL, &new_sync_tag, cancellable, NULL);
@@ -1312,43 +1436,46 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 		*out_new_sync_tag = new_sync_tag;
 	}
 
-	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
-	g_return_val_if_fail (xml != NULL, FALSE);
+	if (can_run_list) {
+		EXmlDocument *xml;
+		GHashTable *known_items; /* gchar *href ~> EBookMetaBackendInfo * */
 
-	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_add_empty_element (xml, NULL, "getetag");
-	e_xml_document_end_element (xml); /* prop */
+		xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+		g_return_val_if_fail (xml != NULL, FALSE);
 
-	known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_book_meta_backend_info_free);
+		e_xml_document_start_element (xml, NULL, "prop");
+		e_xml_document_add_empty_element (xml, NULL, "getetag");
+		e_xml_document_end_element (xml); /* prop */
 
-	success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
-		ebb_carddav_get_contact_items_cb, known_items, cancellable, &local_error);
+		known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_book_meta_backend_info_free);
 
-	g_object_unref (xml);
+		success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
+			ebb_carddav_get_contact_items_cb, known_items, cancellable, &local_error);
 
-	if (success) {
-		EBookCache *book_cache;
-		CardDAVChangesData ccd;
+		g_object_unref (xml);
 
-		ccd.out_modified_objects = out_modified_objects;
-		ccd.out_removed_objects = out_removed_objects;
-		ccd.known_items = known_items;
+		if (success) {
+			EBookCache *book_cache;
+			CardDAVChangesData ccd;
 
-		book_cache = e_book_meta_backend_ref_cache (meta_backend);
+			ccd.out_modified_objects = out_modified_objects;
+			ccd.out_removed_objects = out_removed_objects;
+			ccd.known_items = known_items;
+			ccd.removed_hrefs = NULL;
+			ccd.consider_removed = TRUE;
 
-		success = e_book_cache_search_with_callback (book_cache, NULL, ebb_carddav_search_changes_cb, &ccd, cancellable, &local_error);
+			book_cache = e_book_meta_backend_ref_cache (meta_backend);
 
-		g_clear_object (&book_cache);
-	}
+			success = e_book_cache_search_with_callback (book_cache, NULL, ebb_carddav_search_changes_cb, &ccd, cancellable, &local_error);
 
-	if (success) {
-		g_hash_table_iter_init (&iter, known_items);
-		while (g_hash_table_iter_next (&iter, &key, &value)) {
-			*out_created_objects = g_slist_prepend (*out_created_objects, e_book_meta_backend_info_copy (value));
+			g_clear_object (&book_cache);
 		}
-	}
 
-	g_hash_table_destroy (known_items);
+		if (success)
+			g_hash_table_foreach_steal (known_items, ebb_carddav_move_values_to_slist_cb, out_created_objects);
+
+		g_hash_table_destroy (known_items);
+	}
 
 	if (success && (*out_created_objects || *out_modified_objects)) {
 		GSList *link, *set2 = *out_modified_objects;

@@ -1550,48 +1550,29 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 	return success;
 }
 
-/**
- * e_webdav_session_report_sync:
- * @webdav: an #EWebDAVSession
- * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
- * @depth: (nullable): requested depth, can be %NULL, then no Depth header is sent
- * @xml: the request itself, as an #EXmlDocument
- * @func: (nullable) (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
- * @func_user_data: user data passed to @func
- * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
- * @out_content: (nullable) (transfer full): return location for response content, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Issues REPORT request on the provided @uri, or, in case it's %NULL, on the URI
- * defined in associated #ESource. On success, calls @func for each returned
- * DAV:propstat.
- *
- * The report can result in a multistatus response, but also to raw data. In case
- * the @func is provided and the result is a multistatus response, then it is traversed
- * using this @func.
- *
- * The optional @out_content_type can be used to get content type of the response.
- * Free it with g_free(), when no longer needed.
- *
- * The optional @out_content can be used to get actual result content. Free it
- * with g_byte_array_free(), when no longer needed.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_webdav_session_report_sync (EWebDAVSession *webdav,
-			      const gchar *uri,
-			      const gchar *depth,
-			      const EXmlDocument *xml,
-			      EWebDAVPropstatTraverseFunc func,
-			      gpointer func_user_data,
-			      gchar **out_content_type,
-			      GByteArray **out_content,
-			      GCancellable *cancellable,
-			      GError **error)
+static gboolean
+e_webdav_session_traverse_multistatus_response_internal (EWebDAVSession *webdav,
+							 SoupMessage *message,
+							 const GByteArray *xml_data,
+							 EWebDAVPropstatTraverseFunc func,
+							 gpointer func_user_data,
+							 gboolean allow_href_only_responses,
+							 xmlDocPtr *out_doc,
+							 GError **error);
+
+static gboolean
+e_webdav_session_report_internal_sync (EWebDAVSession *webdav,
+				       const gchar *uri,
+				       const gchar *depth,
+				       const EXmlDocument *xml,
+				       EWebDAVPropstatTraverseFunc func,
+				       gpointer func_user_data,
+				       gboolean allow_href_only_responses,
+				       gchar **out_content_type,
+				       GByteArray **out_content,
+				       xmlDocPtr *out_doc,
+				       GCancellable *cancellable,
+				       GError **error)
 {
 	SoupMessage *message;
 	GByteArray *bytes;
@@ -1635,7 +1616,7 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 		bytes != NULL;
 
 	if (success && func && soup_message_get_status (message) == SOUP_STATUS_MULTI_STATUS)
-		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes, func, func_user_data, error);
+		success = e_webdav_session_traverse_multistatus_response_internal (webdav, message, bytes, func, func_user_data, allow_href_only_responses, out_doc, error);
 
 	if (success) {
 		if (out_content_type) {
@@ -1653,6 +1634,56 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 	g_object_unref (message);
 
 	return success;
+}
+
+/**
+ * e_webdav_session_report_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @depth: (nullable): requested depth, can be %NULL, then no Depth header is sent
+ * @xml: the request itself, as an #EXmlDocument
+ * @func: (nullable) (scope call) (closure func_user_data): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
+ * @func_user_data: user data passed to @func
+ * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
+ * @out_content: (nullable) (transfer full): return location for response content, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues REPORT request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource. On success, calls @func for each returned
+ * DAV:propstat.
+ *
+ * The report can result in a multistatus response, but also to raw data. In case
+ * the @func is provided and the result is a multistatus response, then it is traversed
+ * using this @func.
+ *
+ * The optional @out_content_type can be used to get content type of the response.
+ * Free it with g_free(), when no longer needed.
+ *
+ * The optional @out_content can be used to get actual result content. Free it
+ * with g_byte_array_free(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_report_sync (EWebDAVSession *webdav,
+			      const gchar *uri,
+			      const gchar *depth,
+			      const EXmlDocument *xml,
+			      EWebDAVPropstatTraverseFunc func,
+			      gpointer func_user_data,
+			      gchar **out_content_type,
+			      GByteArray **out_content,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
+
+	return e_webdav_session_report_internal_sync (webdav, uri, depth, xml, func, func_user_data, FALSE,
+		out_content_type, out_content, NULL, cancellable, error);
 }
 
 /**
@@ -2972,6 +3003,8 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 					     const gchar *top_path_name2,
 					     EWebDAVPropstatTraverseFunc func,
 					     gpointer func_user_data,
+					     gboolean allow_href_only_responses,
+					     xmlDocPtr *out_doc, /* nullable, set only on success */
 					     GError **error)
 {
 	GUri *request_uri = NULL;
@@ -3068,33 +3101,33 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 		guint status_code;
 		gchar *full_uri;
 
-		e_xml_find_children_nodes (node, 2,
+		e_xml_find_children_nodes (node, 3,
 			E_WEBDAV_NS_DAV, "href", &href_node,
-			E_WEBDAV_NS_DAV, "propstat", &propstat_node);
+			E_WEBDAV_NS_DAV, "propstat", &propstat_node,
+			E_WEBDAV_NS_DAV, "status", &status_node);
 
-		if (!href_node || !propstat_node) {
-			if (href_node) {
-				e_xml_find_children_nodes (node, 1,
-					E_WEBDAV_NS_DAV, "status", &status_node);
+		if (status_node) {
+			status_content = e_xml_get_node_text (status_node);
+			if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
+				status_code = 0;
+		} else {
+			status_code = 0;
+		}
 
-				if (status_node) {
-					href_content = e_xml_get_node_text (href_node);
-					g_warn_if_fail (href_content != NULL);
+		if (!href_node || !propstat_node || (status_node && status_code != 0 && !SOUP_STATUS_IS_SUCCESSFUL (status_code))) {
+			if (href_node && status_node) {
+				href_content = e_xml_get_node_text (href_node);
+				g_warn_if_fail (href_content != NULL);
 
-					if (!href_content)
-						continue;
+				if (!href_content)
+					continue;
 
-					full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_content);
-					status_content = e_xml_get_node_text (status_node);
+				full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, (const gchar *) href_content);
 
-					if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
-						status_code = 0;
+				/* The 'status_node' is not the right node, but let it be something non-NULL */
+				do_stop = !func (webdav, status_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
 
-					/* The 'status_node' is not the right node, but let it be something non-NULL */
-					do_stop = !func (webdav, status_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
-
-					g_free (full_uri);
-				}
+				g_free (full_uri);
 			}
 			continue;
 		}
@@ -3117,7 +3150,7 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 			if (!status_content || !soup_headers_parse_status_line ((const gchar *) status_content, NULL, &status_code, NULL))
 				status_code = 0;
 
-			if (prop_node && prop_node->children)
+			if ((prop_node && prop_node->children) || allow_href_only_responses)
 				do_stop = !func (webdav, prop_node, request_uri, full_uri ? full_uri : (const gchar *) href_content, status_code, func_user_data);
 
 			propstat_node = e_xml_find_next_sibling (propstat_node, E_WEBDAV_NS_DAV, "propstat");
@@ -3126,9 +3159,32 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 		g_free (full_uri);
 	}
 
-	xmlFreeDoc (doc);
+	if (out_doc)
+		*out_doc = doc;
+	else
+		xmlFreeDoc (doc);
 
 	return TRUE;
+}
+
+static gboolean
+e_webdav_session_traverse_multistatus_response_internal (EWebDAVSession *webdav,
+							 SoupMessage *message,
+							 const GByteArray *xml_data,
+							 EWebDAVPropstatTraverseFunc func,
+							 gpointer func_user_data,
+							 gboolean allow_href_only_responses,
+							 xmlDocPtr *out_doc,
+							 GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (xml_data != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, TRUE,
+		E_WEBDAV_NS_DAV, "multistatus",
+		E_WEBDAV_NS_DAV, "response",
+		func, func_user_data, allow_href_only_responses, out_doc, error);
 }
 
 /**
@@ -3161,10 +3217,7 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml_data != NULL, FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 
-	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, TRUE,
-		E_WEBDAV_NS_DAV, "multistatus",
-		E_WEBDAV_NS_DAV, "response",
-		func, func_user_data, error);
+	return e_webdav_session_traverse_multistatus_response_internal (webdav, message, xml_data, func, func_user_data, FALSE, NULL, error);
 }
 
 /**
@@ -3200,7 +3253,7 @@ e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
 	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, FALSE,
 		E_WEBDAV_NS_DAV, "mkcol-response",
 		NULL, NULL,
-		func, func_user_data, error);
+		func, func_user_data, FALSE, NULL, error);
 }
 
 /**
@@ -3236,7 +3289,7 @@ e_webdav_session_traverse_mkcalendar_response (EWebDAVSession *webdav,
 	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, FALSE,
 		E_WEBDAV_NS_CALDAV, "mkcalendar-response",
 		NULL, NULL,
-		func, func_user_data, error);
+		func, func_user_data, FALSE, NULL, error);
 }
 
 static gboolean
@@ -3977,11 +4030,21 @@ e_webdav_session_traverse_privilege_level (xmlNodePtr parent_node,
 		privilege_node = e_xml_find_child (node, E_WEBDAV_NS_DAV, "privilege");
 
 		if (privilege_node) {
+			xmlNodePtr privilege_child;
 			GNode *child;
 			const xmlChar *description;
 			EWebDAVPrivilegeKind kind = E_WEBDAV_PRIVILEGE_KIND_COMMON;
 			EWebDAVPrivilegeHint hint = E_WEBDAV_PRIVILEGE_HINT_UNKNOWN;
 			EWebDAVPrivilege *privilege;
+
+			for (privilege_child = privilege_node->children;
+			     privilege_child && privilege_child->type != XML_ELEMENT_NODE;
+			     privilege_child = xmlNextElementSibling (privilege_child)) {
+				/* just find the first element */
+			}
+
+			if (!privilege_child)
+				continue;
 
 			if (e_xml_find_child (privilege_node, E_WEBDAV_NS_DAV, "abstract"))
 				kind = E_WEBDAV_PRIVILEGE_KIND_ABSTRACT;
@@ -3989,18 +4052,18 @@ e_webdav_session_traverse_privilege_level (xmlNodePtr parent_node,
 				kind = E_WEBDAV_PRIVILEGE_KIND_AGGREGATE;
 
 			description = e_xml_find_child_and_get_text (privilege_node, E_WEBDAV_NS_DAV, "description");
-			privilege = e_webdav_privilege_new ((const gchar *) ((privilege_node->ns && privilege_node->ns->href) ? privilege_node->ns->href : NULL),
-				(const gchar *) privilege_node->name,
+			privilege = e_webdav_privilege_new ((const gchar *) ((privilege_child->ns && privilege_child->ns->href) ? privilege_child->ns->href : NULL),
+				(const gchar *) privilege_child->name,
 				(const gchar *) description,
 				kind,
 				hint);
 			child = g_node_new (privilege);
 			g_node_append (parent, child);
 
-			privilege_node = e_xml_find_child (privilege_node, E_WEBDAV_NS_DAV, "supported-privilege");
+			privilege_node = e_xml_find_child (node, E_WEBDAV_NS_DAV, "supported-privilege");
 
 			if (privilege_node)
-				e_webdav_session_traverse_privilege_level (privilege_node, child);
+				e_webdav_session_traverse_privilege_level (privilege_node->parent, child);
 		}
 	}
 }
@@ -4014,16 +4077,17 @@ e_webdav_session_supported_privilege_set_cb (EWebDAVSession *webdav,
 					     gpointer user_data)
 {
 	GNode **out_privileges = user_data;
+	xmlNodePtr node;
 
 	g_return_val_if_fail (out_privileges != NULL, FALSE);
 
 	if (status_code == SOUP_STATUS_OK &&
-	    e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "supported-privilege-set", E_WEBDAV_NS_DAV, "supported-privilege", NULL, NULL)) {
+	    (node = e_xml_find_in_hierarchy (prop_node, E_WEBDAV_NS_DAV, "supported-privilege-set", E_WEBDAV_NS_DAV, "supported-privilege", NULL, NULL)) != NULL) {
 		GNode *root;
 
 		root = g_node_new (NULL);
 
-		e_webdav_session_traverse_privilege_level (prop_node, root);
+		e_webdav_session_traverse_privilege_level (node->parent, root);
 
 		*out_privileges = root;
 	}
@@ -5054,6 +5118,222 @@ e_webdav_session_principal_property_search_sync (EWebDAVSession *webdav,
 	return success;
 }
 
+typedef struct _SyncCollectionData {
+	EWebDAVSessionResourceModifiedFunc resource_modified;
+	EWebDAVSessionResourceRemovedFunc resource_removed;
+	gpointer user_data;
+	gchar *new_sync_token;
+	gchar *request_uri_path;
+	gboolean repeat;
+
+	GCancellable *cancellable;
+	GError **error;
+} SyncCollectionData;
+
+
+static gboolean
+e_webdav_traverse_sync_collection_report_cb (EWebDAVSession *webdav,
+					     xmlNodePtr prop_node,
+					     const GUri *request_uri,
+					     const gchar *href,
+					     guint status_code,
+					     gpointer user_data)
+{
+	SyncCollectionData *scd = user_data;
+
+	g_return_val_if_fail (user_data != NULL, FALSE);
+
+	if (status_code == SOUP_STATUS_INSUFFICIENT_STORAGE) {
+		scd->repeat = TRUE;
+		return TRUE;
+	}
+
+	if (!scd->request_uri_path) {
+		scd->request_uri_path = g_strdup (g_uri_get_path ((GUri *) request_uri));
+		if (scd->request_uri_path) {
+			guint len = strlen (scd->request_uri_path);
+
+			if (len > 2 && scd->request_uri_path[len - 1] == '/')
+				scd->request_uri_path[len - 1] = '\0';
+		}
+	}
+
+	/* the server can sometimes return properties also for the collection itself,
+	   but this checks only the resources inside the collection, thus ignore it */
+	if (href && scd->request_uri_path && g_str_has_suffix (href, scd->request_uri_path))
+		return TRUE;
+
+	if (status_code == SOUP_STATUS_OK && href) {
+		gchar *etag;
+		gboolean ret = TRUE;
+
+		etag = e_webdav_session_extract_nonempty (prop_node, E_WEBDAV_NS_DAV, "getetag", NULL, NULL);
+
+		if (etag) {
+			e_webdav_session_util_maybe_dequote (etag);
+
+			ret = scd->resource_modified (webdav, href, etag, prop_node, scd->user_data, scd->cancellable, scd->error);
+			g_free (etag);
+		}
+
+		return ret;
+	}
+
+	/* properties can be also "not found", thus check the not-found belongs to the 'response' node, which is a removed resource */
+	if (status_code == SOUP_STATUS_NOT_FOUND && href && (!prop_node ||
+	    (g_strcmp0 ((const gchar *) prop_node->name, "status") == 0 && prop_node->parent && g_strcmp0 ((const gchar *) prop_node->parent->name, "response") == 0)))
+		return scd->resource_removed (webdav, href, scd->user_data, scd->cancellable, scd->error);
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_sync_collection_sync: (skip)
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @sync_token: (nullable): the last synchronization token, or %NULL
+ * @modify_report_request: (nullable) (scope call) (closure user_data): an #EWebDAVSessionModifyReportRequestFunc, or %NULL
+ * @resource_modified: (scope call) (closure user_data): an #EWebDAVSessionResourceModifiedFunc
+ * @resource_removed: (scope call) (closure user_data): an #EWebDAVSessionResourceRemovedFunc
+ * @user_data: user data for the callbacks
+ * @out_new_sync_token: (out) (transfer full): return location for a new sync token
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues a DAV:sync-collection report on the collection for which
+ * the @webdav is opened, or the one identified by @uri. It checks
+ * only resources directly in that collection, not in the sub-collections.
+ * It traverses the complete response even when the server splits it into
+ * several chunks.
+ *
+ * The @sync_token is the last returned synchronization token returned
+ * by the previous call of this function, or %NULL, when no last state is known.
+ *
+ * The optional @modify_report_request can be used to add more properties
+ * to be fetched from the server. The 'etag' is always fetched.
+ *
+ * The @resource_modified is calls for each resource which had been added
+ * or which had been modified since the last call. Similarly, the @resource_removed
+ * is called for each resource which had been removed since the last call.
+ *
+ * On success, the @out_new_sync_token is filled with a synchronization
+ * token, which can be used as @sync_token the next time.
+ *
+ * The function does not check whether the DAV:sync-collection is supported
+ * on the collection, it's up to the caller to ensure it can be called, or
+ * to deal with an error when it cannot be used.
+ *
+ * Note: The call can return failure and error, but still populate
+ *    the @out_new_sync_token, it's when the response is split into
+ *    multiple chunks and the first or more works, but at some point
+ *    the following call to fetch the next chunk fails.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.62
+ **/
+gboolean
+e_webdav_session_sync_collection_sync (EWebDAVSession *webdav,
+				       const gchar *uri,
+				       const gchar *sync_token,
+				       EWebDAVSessionModifyReportRequestFunc modify_report_request,
+				       EWebDAVSessionResourceModifiedFunc resource_modified,
+				       EWebDAVSessionResourceRemovedFunc resource_removed,
+				       gpointer user_data,
+				       gchar **out_new_sync_token,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	EXmlDocument *xml;
+	SyncCollectionData scd = { 0, };
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (resource_modified != NULL, FALSE);
+	g_return_val_if_fail (resource_removed != NULL, FALSE);
+	g_return_val_if_fail (out_new_sync_token != NULL, FALSE);
+
+	*out_new_sync_token = NULL;
+
+	scd.resource_modified = resource_modified;
+	scd.resource_removed = resource_removed;
+	scd.user_data = user_data;
+	scd.new_sync_token = NULL;
+	scd.request_uri_path = NULL;
+	scd.repeat = TRUE;
+	scd.cancellable = cancellable;
+	scd.error = error;
+
+	while (scd.repeat && success) {
+		xmlDocPtr doc = NULL;
+		const gchar *use_sync_token = scd.new_sync_token ? scd.new_sync_token : sync_token;
+
+		scd.repeat = FALSE;
+
+		xml = e_xml_document_new (E_WEBDAV_NS_DAV, "sync-collection");
+		g_return_val_if_fail (xml != NULL, FALSE);
+
+		e_xml_document_start_text_element (xml, NULL, "sync-token");
+		if (use_sync_token)
+			e_xml_document_write_string (xml, use_sync_token);
+		e_xml_document_end_element (xml);
+
+		e_xml_document_start_text_element (xml, NULL, "sync-level");
+		e_xml_document_write_string (xml, "1");
+		e_xml_document_end_element (xml);
+
+		e_xml_document_start_element (xml, NULL, "prop");
+		e_xml_document_add_empty_element (xml, NULL, "getetag");
+		if (modify_report_request)
+			modify_report_request (webdav, xml, user_data);
+		e_xml_document_end_element (xml); /* prop */
+
+		success = e_webdav_session_report_internal_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+			e_webdav_traverse_sync_collection_report_cb, &scd, TRUE, NULL, NULL, &doc, cancellable, error);
+
+		g_object_unref (xml);
+
+		if (success && doc) {
+			xmlNodePtr node;
+
+			node = xmlDocGetRootElement (doc);
+
+			if (node) {
+				node = e_xml_find_sibling (node, E_WEBDAV_NS_DAV, "multistatus");
+				if (node) {
+					gchar *new_sync_token;
+
+					new_sync_token = e_webdav_session_extract_nonempty (node, E_WEBDAV_NS_DAV, "sync-token", NULL, NULL);
+
+					if (new_sync_token) {
+						g_free (scd.new_sync_token);
+						scd.new_sync_token = new_sync_token;
+					} else {
+						g_free (scd.new_sync_token);
+						scd.new_sync_token = NULL;
+						success = FALSE;
+					}
+				} else {
+					success = FALSE;
+				}
+			} else {
+				success = FALSE;
+			}
+
+			if (!success)
+				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Server did not return sync-token"));
+		}
+
+		g_clear_pointer (&doc, xmlFreeDoc);
+	}
+
+	*out_new_sync_token = scd.new_sync_token;
+
+	g_free (scd.request_uri_path);
+
+	return success;
+}
+
 /**
  * e_webdav_session_util_maybe_dequote:
  * @text: (inout) (nullable): text to dequote
@@ -5263,4 +5543,59 @@ e_webdav_session_util_item_href_equal (const gchar *href1,
 	}
 
 	return !from1 && !from2;
+}
+
+/**
+ * e_webdav_session_util_contains_supported_report: (skip)
+ * @prop_node: an @xmlNodePtr
+ * @report_ns: (nullable): name space of the searched report name, or %NULL
+ * @report_name: the report name
+ *
+ * Checks whether the @prop_node contains a child element for
+ * DAV:supported-report-set/DAV:supported-report/DAV:report
+ * from namespace @report_ns and named @report_name.
+ *
+ * The @report_ns can be %NULL, then DAV namespace is used.
+ *
+ * Returns: whether the @report_name from @report_ns exists
+ *    in a response from supported reports query
+ *
+ * Since: 3.62
+ **/
+gboolean
+e_webdav_session_util_contains_supported_report (xmlNodePtr prop_node,
+						 const gchar *report_ns,
+						 const gchar *report_name)
+{
+	xmlNodePtr child;
+
+	if (!prop_node)
+		return FALSE;
+
+	if (!report_ns)
+		report_ns = E_WEBDAV_NS_DAV;
+
+	child = e_xml_find_child (prop_node, E_WEBDAV_NS_DAV, "supported-report-set");
+	if (child && child->children) {
+		xmlNodePtr parent = child;
+
+		for (child = e_xml_find_sibling (parent->children, E_WEBDAV_NS_DAV, "supported-report");
+		     child;
+		     child = e_xml_find_next_sibling (child, E_WEBDAV_NS_DAV, "supported-report")) {
+			xmlNodePtr supported_report = child;
+
+			if (supported_report->children) {
+				xmlNodePtr report;
+
+				for (report = e_xml_find_sibling (supported_report->children, E_WEBDAV_NS_DAV, "report");
+				     report;
+				     report = e_xml_find_next_sibling (report, E_WEBDAV_NS_DAV, "report")) {
+					if (report->children && e_xml_find_sibling (report->children, report_ns, report_name))
+						return TRUE;
+				}
+			}
+		}
+	}
+
+	return FALSE;
 }

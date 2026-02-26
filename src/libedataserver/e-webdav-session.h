@@ -609,10 +609,83 @@ gboolean	e_webdav_session_principal_property_search_sync
 							 GSList **out_principals, /* EWebDAVResource * */
 							 GCancellable *cancellable,
 							 GError **error);
+/**
+ * EWebDAVSessionModifyReportRequestFunc: (skip)
+ * @webdav: an #EWebDAVSession
+ * @xml: an @EXmlDocument
+ * @user_data: user data
+ *
+ * A callback called from e_webdav_session_sync_collection_sync(), where
+ * the @xml is in a state with an opened `prop` element, where the callback
+ * can add additional properties to be fetched. The `etag` is always fetched.
+ *
+ * Since: 3.62
+ **/
+typedef void (* EWebDAVSessionModifyReportRequestFunc)	(EWebDAVSession *webdav,
+							 EXmlDocument *xml,
+							 gpointer user_data);
+/**
+ * EWebDAVSessionResourceModifiedFunc: (skip)
+ * @webdav: an #EWebDAVSession
+ * @href: a full href of the resource
+ * @etag: an etag of the resource
+ * @prop_node: a `prop` node of the response
+ * @user_data: user data
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * A callback called for each resource which had been modified or added.
+ *
+ * Returns: %TRUE to continue, %FALSE to stop processing
+ *
+ * Since: 3.62
+ **/
+typedef gboolean (* EWebDAVSessionResourceModifiedFunc)	(EWebDAVSession *webdav,
+							 const gchar *href,
+							 const gchar *etag,
+							 xmlNodePtr prop_node,
+							 gpointer user_data,
+							 GCancellable *cancellable,
+							 GError **error);
+/**
+ * EWebDAVSessionResourceRemovedFunc: (skip)
+ * @webdav: an #EWebDAVSession
+ * @href: a full href of the resource
+ * @user_data: user data
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * A callback called for each resource which had been removed.
+ *
+ * Returns: %TRUE to continue, %FALSE to stop processing
+ *
+ * Since: 3.62
+ **/
+typedef gboolean (* EWebDAVSessionResourceRemovedFunc)	(EWebDAVSession *webdav,
+							 const gchar *href,
+							 gpointer user_data,
+							 GCancellable *cancellable,
+							 GError **error);
+
+gboolean	e_webdav_session_sync_collection_sync	(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *sync_token,
+							 EWebDAVSessionModifyReportRequestFunc modify_report_request,
+							 EWebDAVSessionResourceModifiedFunc resource_modified,
+							 EWebDAVSessionResourceRemovedFunc resource_removed,
+							 gpointer user_data,
+							 gchar **out_new_sync_token,
+							 GCancellable *cancellable,
+							 GError **error);
+
 gchar *		e_webdav_session_util_maybe_dequote	(gchar *text);
 void		e_webdav_session_util_free_privileges	(GNode *privileges); /* EWebDAVPrivilege * */
 gboolean	e_webdav_session_util_item_href_equal	(const gchar *href1,
 							 const gchar *href2);
+gboolean	e_webdav_session_util_contains_supported_report
+							(xmlNodePtr prop_node,
+							 const gchar *report_ns,
+							 const gchar *report_name);
 
 G_END_DECLS
 

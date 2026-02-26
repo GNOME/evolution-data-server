@@ -50,6 +50,9 @@ struct _ECalBackendCalDAVPrivate {
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
 
+	/* RFC 6578 is supported */
+	gboolean supports_sync_collection;
+
 	/* TRUE when 'calendar-schedule' supported on the server */
 	gboolean calendar_schedule;
 	/* TRUE when 'calendar-auto-schedule' supported on the server */
@@ -119,6 +122,78 @@ ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
 		e_util_host_is_in_domain (g_uri_get_host (parsed_uri), "icloud.com");
 
 	g_uri_unref (parsed_uri);
+}
+
+typedef struct _ColletionPropsData {
+	gchar **out_ctag;
+	gboolean *out_supports_sync_collection;
+} ColletionPropsData;
+
+static gboolean
+ecb_caldav_get_collection_props_cb (EWebDAVSession *webdav,
+				    xmlNodePtr prop_node,
+				    const GUri *request_uri,
+				    const gchar *href,
+				    guint status_code,
+				    gpointer user_data)
+{
+	ColletionPropsData *data = user_data;
+
+	if (status_code == SOUP_STATUS_OK) {
+		const xmlChar *content;
+
+		content = e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_CALENDARSERVER, "getctag");
+
+		if (content && *content) {
+			g_free (*data->out_ctag);
+			*data->out_ctag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) content));
+		}
+
+		*data->out_supports_sync_collection = e_webdav_session_util_contains_supported_report (prop_node, E_WEBDAV_NS_DAV, "sync-collection");
+	}
+
+	return FALSE;
+}
+
+static gboolean
+ecb_caldav_get_collection_props_sync (EWebDAVSession *webdav,
+				      gchar **out_ctag,
+				      gboolean *out_supports_sync_collection,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	EXmlDocument *xml;
+	ColletionPropsData data = { 0, };
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_ctag != NULL, FALSE);
+	g_return_val_if_fail (out_supports_sync_collection != NULL, FALSE);
+
+	*out_ctag = NULL;
+	*out_supports_sync_collection = FALSE;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_add_namespaces (xml,
+		"CS", E_WEBDAV_NS_CALENDARSERVER,
+		NULL);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "supported-report-set");
+	e_xml_document_end_element (xml); /* prop */
+
+	data.out_ctag = out_ctag;
+	data.out_supports_sync_collection = out_supports_sync_collection;
+
+	success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
+		ecb_caldav_get_collection_props_cb, &data, cancellable, error);
+
+	g_object_unref (xml);
+
+	return success;
 }
 
 static gboolean
@@ -300,7 +375,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 		   The 'getctag' extension is not required, thus check
 		   for unauthorized error only. */
-		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
+		if (!ecb_caldav_get_collection_props_sync (webdav, &ctag, &cbdav->priv->supports_sync_collection, cancellable, &local_error) &&
 		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
@@ -393,16 +468,18 @@ ecb_caldav_get_vcalendar_uid (ICalComponent *vcalendar)
 	return uid;
 }
 
-static void
-ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
+static gboolean
+ecb_caldav_update_nfo_with_vcalendar (ICalComponentKind backend_kind,
+				      ECalMetaBackendInfo *nfo,
 				      ICalComponent *vcalendar,
 				      const gchar *etag)
 {
 	ICalComponent *subcomp;
 	const gchar *uid;
+	gboolean any_found = FALSE;
 
-	g_return_if_fail (nfo != NULL);
-	g_return_if_fail (vcalendar != NULL);
+	g_return_val_if_fail (nfo != NULL, FALSE);
+	g_return_val_if_fail (vcalendar != NULL, FALSE);
 
 	uid = ecb_caldav_get_vcalendar_uid (vcalendar);
 
@@ -414,12 +491,14 @@ ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
 	     g_object_unref (subcomp), subcomp = i_cal_component_get_next_component (vcalendar, I_CAL_ANY_COMPONENT)) {
 		ICalComponentKind kind = i_cal_component_isa (subcomp);
 
-		if (kind == I_CAL_VEVENT_COMPONENT ||
-		    kind == I_CAL_VJOURNAL_COMPONENT ||
-		    kind == I_CAL_VTODO_COMPONENT) {
+		if (kind == backend_kind) {
+			any_found = TRUE;
 			e_cal_util_component_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
 		}
 	}
+
+	if (!any_found)
+		return FALSE;
 
 	g_warn_if_fail (nfo->object == NULL);
 	nfo->object = i_cal_component_as_ical_string (vcalendar);
@@ -435,9 +514,12 @@ ecb_caldav_update_nfo_with_vcalendar (ECalMetaBackendInfo *nfo,
 		g_free (nfo->revision);
 		nfo->revision = copy;
 	}
+
+	return TRUE;
 }
 
 typedef struct _MultigetData {
+	ICalComponentKind backend_kind;
 	GSList *from_link;
 	GSList **out_removed_objects;
 } MultigetData;
@@ -494,7 +576,10 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 							if (link == md->from_link)
 								md->from_link = g_slist_next (md->from_link);
 
-							ecb_caldav_update_nfo_with_vcalendar (nfo, vcalendar, dequoted_etag);
+							if (!ecb_caldav_update_nfo_with_vcalendar (md->backend_kind, nfo, vcalendar, dequoted_etag)) {
+								e_cal_meta_backend_info_free (nfo);
+								link->data = NULL;
+							}
 
 							break;
 						}
@@ -551,6 +636,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 				    GError **error)
 {
 	EXmlDocument *xml;
+	ICalComponentKind backend_kind;
 	gint left_to_go = E_CALDAV_MAX_MULTIGET_AMOUNT;
 	GSList *link;
 	gboolean success = TRUE;
@@ -568,6 +654,8 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "getetag");
 	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "calendar-data");
 	e_xml_document_end_element (xml); /* prop */
+
+	backend_kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav));
 
 	link = *in_link;
 
@@ -663,7 +751,11 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 
 				vcalendar = i_cal_component_new_from_string (calendar_data);
 				if (vcalendar) {
-					ecb_caldav_update_nfo_with_vcalendar (nfo, vcalendar, etag);
+					if (!ecb_caldav_update_nfo_with_vcalendar (backend_kind, nfo, vcalendar, etag)) {
+						e_cal_meta_backend_info_free (nfo);
+						nfo_link->data = NULL;
+					}
+
 					g_object_unref (vcalendar);
 				}
 			}
@@ -706,6 +798,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 	    !cbdav->priv->is_icloud && success) {
 		MultigetData md;
 
+		md.backend_kind = backend_kind;
 		md.from_link = *in_link;
 		md.out_removed_objects = out_removed_objects;
 
@@ -765,6 +858,7 @@ typedef struct _CalDAVChangesData {
 	GSList **out_modified_objects;
 	GSList **out_removed_objects;
 	GHashTable *known_items; /* gchar *href ~> ECalMetaBackendInfo * */
+	GHashTable *removed_hrefs; /* gchar *href ~> href */
 } CalDAVChangesData;
 
 static gboolean
@@ -802,7 +896,7 @@ ecb_caldav_search_changes_cb (ECalCache *cal_cache,
 
 				g_hash_table_remove (ccd->known_items, extra);
 			}
-		} else if (ccd->is_repeat) {
+		} else if (ccd->is_repeat || (ccd->removed_hrefs && g_hash_table_contains (ccd->removed_hrefs, extra))) {
 			*(ccd->out_removed_objects) = g_slist_prepend (*(ccd->out_removed_objects),
 				e_cal_meta_backend_info_new (uid, revision, object, extra));
 		}
@@ -887,6 +981,61 @@ cbdav_add_limit_days_filter (EXmlDocument *xml,
 }
 
 static gboolean
+ecb_caldav_resource_modified_cb (EWebDAVSession *webdav,
+				 const gchar *href,
+				 const gchar *etag,
+				 xmlNodePtr prop_node,
+				 gpointer user_data,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	CalDAVChangesData *ccd = user_data;
+
+	if (href && *href && etag && *etag) {
+		ECalMetaBackendInfo *nfo;
+
+		nfo = e_cal_meta_backend_info_new ("", etag, NULL, href);
+
+		g_hash_table_insert (ccd->known_items, g_strdup (href), nfo);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+ecb_caldav_resource_removed_cb (EWebDAVSession *webdav,
+				const gchar *href,
+				gpointer user_data,
+				GCancellable *cancellable,
+				GError **error)
+{
+	CalDAVChangesData *ccd = user_data;
+
+	if (href && *href) {
+		if (!ccd->removed_hrefs)
+			ccd->removed_hrefs = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+		g_hash_table_add (ccd->removed_hrefs, g_strdup (href));
+	}
+
+	return TRUE;
+}
+
+static gboolean
+ecb_caldav_move_values_to_slist_cb (gpointer key,
+				    gpointer value,
+				    gpointer user_data)
+{
+	GSList **pslist = user_data;
+
+	*pslist = g_slist_prepend (*pslist, value);
+
+	g_free (key);
+
+	return TRUE;
+}
+
+static gboolean
 ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 			     const gchar *last_sync_tag,
 			     gboolean is_repeat,
@@ -900,12 +1049,8 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 {
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
-	EXmlDocument *xml;
-	ESource *source;
-	GHashTable *known_items; /* gchar *href ~> ECalMetaBackendInfo * */
-	GHashTableIter iter;
-	guint limit_days_before = 0, limit_days_after = 0, limit_days = 0;
-	gpointer key = NULL, value = NULL;
+	gboolean can_run_getctag = TRUE;
+	gboolean can_run_list = TRUE;
 	gboolean success;
 	GError *local_error = NULL;
 
@@ -924,7 +1069,65 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 	webdav = ecb_caldav_ref_session (cbdav);
 
-	if (cbdav->priv->ctag_supported) {
+	if (cbdav->priv->supports_sync_collection && !cbdav->priv->limit_download_days) {
+		CalDAVChangesData ccd;
+		gchar *new_sync_tag = NULL;
+		const gchar *last_sync_token = cbdav->priv->force_refresh ? NULL : last_sync_tag;
+
+		/* the sync-token is supposed to be a URI; if it's not, the stored value can be from the getctag,
+		   then ignore it. Do not really parse the URI, just check the string contains ':'.
+		   Neither Google nor iCloud use URI, only something like path, err... */
+		if (last_sync_token && !strchr (last_sync_token, ':') && !strchr (last_sync_token, '/'))
+			last_sync_token = NULL;
+
+		ccd.is_repeat = !last_sync_token;
+		ccd.out_modified_objects = out_modified_objects;
+		ccd.out_removed_objects = out_removed_objects;
+		ccd.known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_cal_meta_backend_info_free);
+		ccd.removed_hrefs = NULL;
+
+		success = e_webdav_session_sync_collection_sync (webdav, NULL, last_sync_token, NULL,
+			ecb_caldav_resource_modified_cb, ecb_caldav_resource_removed_cb, &ccd,
+			&new_sync_tag, cancellable, &local_error);
+
+		if (!success && last_sync_token && (g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_PRECONDITION_FAILED) || (
+		    g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_FORBIDDEN) &&
+		    strstr (local_error->message, "valid-sync-token")))) {
+			g_clear_error (&local_error);
+			g_clear_pointer (&new_sync_tag, g_free);
+
+			ccd.is_repeat = TRUE;
+
+			success = e_webdav_session_sync_collection_sync (webdav, NULL, NULL, NULL,
+				ecb_caldav_resource_modified_cb, ecb_caldav_resource_removed_cb, &ccd,
+				&new_sync_tag, cancellable, &local_error);
+		}
+
+		if (success) {
+			ECalCache *cal_cache;
+
+			can_run_getctag = FALSE;
+			can_run_list = FALSE;
+			*out_new_sync_tag = g_steal_pointer (&new_sync_tag);
+
+			cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+
+			success = e_cal_cache_search_with_callback (cal_cache, NULL, ecb_caldav_search_changes_cb, &ccd, cancellable, NULL);
+
+			g_clear_object (&cal_cache);
+
+			g_hash_table_foreach_steal (ccd.known_items, ecb_caldav_move_values_to_slist_cb, out_created_objects);
+		} else {
+			/* if it fails then do the full sync */
+			g_clear_error (&local_error);
+		}
+
+		g_clear_pointer (&ccd.known_items, g_hash_table_unref);
+		g_clear_pointer (&ccd.removed_hrefs, g_hash_table_unref);
+		g_clear_pointer (&new_sync_tag, g_free);
+	}
+
+	if (can_run_getctag && cbdav->priv->ctag_supported) {
 		gchar *new_sync_tag = NULL;
 
 		success = e_webdav_session_getctag_sync (webdav, NULL, &new_sync_tag, cancellable, NULL);
@@ -950,91 +1153,95 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	cbdav->priv->force_refresh = FALSE;
 
-	source = e_backend_get_source (E_BACKEND (cbdav));
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
-		ESourceWebdav *webdav_extension;
+	if (can_run_list) {
+		EXmlDocument *xml;
+		ESource *source;
+		GHashTable *known_items; /* gchar *href ~> ECalMetaBackendInfo * */
+		guint limit_days_before = 0, limit_days_after = 0, limit_days = 0;
 
-		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		limit_days = e_source_webdav_get_limit_download_days (webdav_extension);
-	}
+		source = e_backend_get_source (E_BACKEND (cbdav));
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+			ESourceWebdav *webdav_extension;
 
-	xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "calendar-query");
-	g_return_val_if_fail (xml != NULL, FALSE);
-
-	e_xml_document_add_namespaces (xml, "D", E_WEBDAV_NS_DAV, NULL);
-
-	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "prop");
-	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "getetag");
-	e_xml_document_end_element (xml); /* prop */
-
-	e_xml_document_start_element (xml, NULL, "filter");
-	e_xml_document_start_element (xml, NULL, "comp-filter");
-	e_xml_document_add_attribute (xml, NULL, "name", "VCALENDAR");
-	e_xml_document_start_element (xml, NULL, "comp-filter");
-
-	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
-	default:
-	case I_CAL_VEVENT_COMPONENT:
-		e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
-		limit_days_before = limit_days;
-		break;
-	case I_CAL_VJOURNAL_COMPONENT:
-		e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
-		limit_days_before = limit_days;
-		break;
-	case I_CAL_VTODO_COMPONENT:
-		e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
-		break;
-	}
-
-	if (!is_repeat) {
-		/* Check for events in the month before/after today first,
-		   to show user actual data as soon as possible. */
-		if (!limit_days_before || limit_days_before > E_CALDAV_DEFAULT_LIMIT_DAYS)
-			limit_days_before = E_CALDAV_DEFAULT_LIMIT_DAYS;
-		if (!limit_days_after || limit_days_after > E_CALDAV_DEFAULT_LIMIT_DAYS)
-			limit_days_after = E_CALDAV_DEFAULT_LIMIT_DAYS;
-
-		*out_repeat = TRUE;
-	}
-
-	cbdav_add_limit_days_filter (xml, limit_days_before, limit_days_after);
-
-	e_xml_document_end_element (xml); /* comp-filter / VEVENT|VJOURNAL|VTODO */
-	e_xml_document_end_element (xml); /* comp-filter / VCALENDAR*/
-	e_xml_document_end_element (xml); /* filter */
-
-	known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_cal_meta_backend_info_free);
-
-	success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
-		ecb_caldav_get_calendar_items_cb, known_items, NULL, NULL, cancellable, &local_error);
-
-	g_object_unref (xml);
-
-	if (success) {
-		ECalCache *cal_cache;
-		CalDAVChangesData ccd;
-
-		ccd.is_repeat = is_repeat;
-		ccd.out_modified_objects = out_modified_objects;
-		ccd.out_removed_objects = out_removed_objects;
-		ccd.known_items = known_items;
-
-		cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-
-		success = e_cal_cache_search_with_callback (cal_cache, NULL, ecb_caldav_search_changes_cb, &ccd, cancellable, &local_error);
-
-		g_clear_object (&cal_cache);
-	}
-
-	if (success) {
-		g_hash_table_iter_init (&iter, known_items);
-		while (g_hash_table_iter_next (&iter, &key, &value)) {
-			*out_created_objects = g_slist_prepend (*out_created_objects, e_cal_meta_backend_info_copy (value));
+			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			limit_days = e_source_webdav_get_limit_download_days (webdav_extension);
 		}
-	}
 
-	g_hash_table_destroy (known_items);
+		xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "calendar-query");
+		g_return_val_if_fail (xml != NULL, FALSE);
+
+		e_xml_document_add_namespaces (xml, "D", E_WEBDAV_NS_DAV, NULL);
+
+		e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "prop");
+		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "getetag");
+		e_xml_document_end_element (xml); /* prop */
+
+		e_xml_document_start_element (xml, NULL, "filter");
+		e_xml_document_start_element (xml, NULL, "comp-filter");
+		e_xml_document_add_attribute (xml, NULL, "name", "VCALENDAR");
+		e_xml_document_start_element (xml, NULL, "comp-filter");
+
+		switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
+		default:
+		case I_CAL_VEVENT_COMPONENT:
+			e_xml_document_add_attribute (xml, NULL, "name", "VEVENT");
+			limit_days_before = limit_days;
+			break;
+		case I_CAL_VJOURNAL_COMPONENT:
+			e_xml_document_add_attribute (xml, NULL, "name", "VJOURNAL");
+			limit_days_before = limit_days;
+			break;
+		case I_CAL_VTODO_COMPONENT:
+			e_xml_document_add_attribute (xml, NULL, "name", "VTODO");
+			break;
+		}
+
+		if (!is_repeat) {
+			/* Check for events in the month before/after today first,
+			   to show user actual data as soon as possible. */
+			if (!limit_days_before || limit_days_before > E_CALDAV_DEFAULT_LIMIT_DAYS)
+				limit_days_before = E_CALDAV_DEFAULT_LIMIT_DAYS;
+			if (!limit_days_after || limit_days_after > E_CALDAV_DEFAULT_LIMIT_DAYS)
+				limit_days_after = E_CALDAV_DEFAULT_LIMIT_DAYS;
+
+			*out_repeat = TRUE;
+		}
+
+		cbdav_add_limit_days_filter (xml, limit_days_before, limit_days_after);
+
+		e_xml_document_end_element (xml); /* comp-filter / VEVENT|VJOURNAL|VTODO */
+		e_xml_document_end_element (xml); /* comp-filter / VCALENDAR*/
+		e_xml_document_end_element (xml); /* filter */
+
+		known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_cal_meta_backend_info_free);
+
+		success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
+			ecb_caldav_get_calendar_items_cb, known_items, NULL, NULL, cancellable, &local_error);
+
+		g_object_unref (xml);
+
+		if (success) {
+			ECalCache *cal_cache;
+			CalDAVChangesData ccd;
+
+			ccd.is_repeat = is_repeat;
+			ccd.out_modified_objects = out_modified_objects;
+			ccd.out_removed_objects = out_removed_objects;
+			ccd.known_items = known_items;
+			ccd.removed_hrefs = NULL;
+
+			cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+
+			success = e_cal_cache_search_with_callback (cal_cache, NULL, ecb_caldav_search_changes_cb, &ccd, cancellable, &local_error);
+
+			g_clear_object (&cal_cache);
+		}
+
+		if (success)
+			g_hash_table_foreach_steal (known_items, ecb_caldav_move_values_to_slist_cb, out_created_objects);
+
+		g_hash_table_destroy (known_items);
+	}
 
 	if (success && (*out_created_objects || *out_modified_objects)) {
 		ECalCache *cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
