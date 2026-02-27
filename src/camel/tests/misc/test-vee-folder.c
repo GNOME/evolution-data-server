@@ -2787,7 +2787,6 @@ test_vee_folder_skip_notification (gconstpointer user_data)
 
 	test_session_check_finalized ();
 }
-#endif /* ENABLE_MAINTAINER_MODE */
 
 typedef struct _ParallelData {
 	gboolean use_auto_update;
@@ -2949,6 +2948,8 @@ test_vee_folder_parallel (gconstpointer user_data)
 
 #undef N_THREADS
 #undef N_TIMES
+
+#endif /* ENABLE_MAINTAINER_MODE */
 
 gint
 main (gint argc,

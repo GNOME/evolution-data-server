@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.59.3 2026-02-27
+---------------------------------------
+
+Bug Fixes:
+	I#444 - Make credential prompt dialog non-modal
+	I#625 - camel-sasl-ntlm: Check for integer overflow in ntlm_get_string()
+	I#626 - camel-pop3-store: Compute APOP response without string allocation
+	I#627 - Canonicalize path before local cache file removal
+	I#628 - e-cal-recur: Check interval intersect always as date-time value
+	evo-I#3257 - NNTP: Subscription dialog does not show all groups
+
+Miscellaneous:
+	e-collection-backend: Fix possible memory leak
+	Use GHashTable's `replace()` instead of `insert()` on some places
+	e-name-western: Crash due to double quotes in the name
+	camel-network-service: Move static variable to read-only area
+	credential-prompters: Add some spacing around widgets in the dialog (gtk4)
+	camel-store-search: Minimize hold of the folder and folder summary locks
+	camel-debug: Include object address in ref/unref backtraces
+	Increase default connection timeout to 30 seconds
+
+Translations:
+	Alan Mortensen (da)
+	Anders Jonsson (sv)
+	Christian Kirbach (de)
+	Jean-Marc TISSIERES (fr)
+	Jordi Mas (ca)
+	Miloš Popović (sr)
+	Miloš Popović (sr@latin)
+	Sabri Ünal (tr)
+	twlvnn kraftwerk (bg)
+
 Evolution-Data-Server 3.59.2 2026-01-30
 ---------------------------------------
 
