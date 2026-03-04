@@ -1,6 +1,12 @@
 add_subdirectory(reference)
 
 if (ENABLE_GI_DOCGEN)
+	if("${LIBICAL_GLIB_API_VERSION}" STREQUAL "4.0")
+		set(LIBICAL_GLIB_DOC_VERSION "v4")
+	else()
+		set(LIBICAL_GLIB_DOC_VERSION "v3")
+	endif()
+
 	set(CAMEL_GIR_PATH "${CMAKE_BINARY_DIR}/src/camel")
 	configure_file(camel.toml.in camel.toml @ONLY)
 	generate_gi_documentation(

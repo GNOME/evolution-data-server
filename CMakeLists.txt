@@ -984,6 +984,13 @@ unset(CMAKE_REQUIRED_DEFINITIONS)
 unset(CMAKE_REQUIRED_INCLUDES)
 unset(CMAKE_REQUIRED_LIBRARIES)
 
+pkg_check_at_least_version(HAVE_LIBICAL_GLIB_4X libical-glib 3.99)
+if(HAVE_LIBICAL_GLIB_4X)
+	set(LIBICAL_GLIB_API_VERSION "4.0")
+else(HAVE_LIBICAL_GLIB_4X)
+	set(LIBICAL_GLIB_API_VERSION "3.0")
+endif(HAVE_LIBICAL_GLIB_4X)
+
 # ******************************
 # Vala binding
 # ******************************
