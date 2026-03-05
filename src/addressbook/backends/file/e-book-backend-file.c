@@ -1088,7 +1088,6 @@ do_create (EBookBackendFile *bf,
 
 typedef struct {
 	EBookBackendFile *bf;
-	GThread *thread;
 	EFlag *running;
 } FileBackendSearchClosure;
 
@@ -1097,8 +1096,6 @@ closure_destroy (FileBackendSearchClosure *closure)
 {
 	d (printf ("destroying search closure\n"));
 	e_flag_free (closure->running);
-	if (closure->thread)
-		g_thread_unref (closure->thread);
 	g_free (closure);
 }
 
@@ -1106,10 +1103,9 @@ static FileBackendSearchClosure *
 init_closure (EDataBookView *book_view,
               EBookBackendFile *bf)
 {
-	FileBackendSearchClosure *closure = g_new (FileBackendSearchClosure, 1);
+	FileBackendSearchClosure *closure = g_new0 (FileBackendSearchClosure, 1);
 
 	closure->bf = bf;
-	closure->thread = NULL;
 	closure->running = e_flag_new ();
 
 	g_object_set_data_full (
@@ -1162,11 +1158,10 @@ uid_rev_fields (GHashTable *fields_of_interest)
 	return TRUE;
 }
 
-static gpointer
-book_view_thread (gpointer user_data)
+static void
+file_book_view_start_impl (EDataBookView *book_view,
+			   FileBackendSearchClosure *closure)
 {
-	EDataBookView *book_view = user_data;
-	FileBackendSearchClosure *closure;
 	EBookBackendFile *bf;
 	EBookBackendSExp *sexp;
 	const gchar *query;
@@ -1175,13 +1170,9 @@ book_view_thread (gpointer user_data)
 	GError *local_error = NULL;
 	gboolean meta_contact, success;
 
-	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+	g_return_if_fail (closure != NULL);
 
-	closure = get_closure (book_view);
-	if (!closure) {
-		g_warning (G_STRLOC ": NULL closure in book view thread");
-		return NULL;
-	}
 	bf = closure->bf;
 
 	d (printf ("starting initial population of book view\n"));
@@ -1224,7 +1215,7 @@ book_view_thread (gpointer user_data)
 
 		g_object_unref (book_view);
 
-		return NULL;
+		return;
 	}
 
 	g_rw_lock_reader_lock (&(bf->priv->lock));
@@ -1248,7 +1239,7 @@ book_view_thread (gpointer user_data)
 				e_client_error_to_string (
 				E_CLIENT_ERROR_NOT_OPENED)));
 		g_object_unref (book_view);
-		return NULL;
+		return;
 	}
 
 	for (l = summary_list; l; l = l->next) {
@@ -1271,8 +1262,6 @@ book_view_thread (gpointer user_data)
 	g_object_unref (book_view);
 
 	d (printf ("finished population of book view\n"));
-
-	return NULL;
 }
 
 static void
@@ -2028,10 +2017,7 @@ book_backend_file_start_view (EBookBackend *backend,
 
 	closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
 
-	d (printf ("starting book view thread\n"));
-	closure->thread = g_thread_new (NULL, book_view_thread, book_view);
-
-	e_flag_wait (closure->running);
+	file_book_view_start_impl (book_view, closure);
 
 	/* at this point we know the book view thread is actually running */
 	d (printf ("returning from start_view\n"));
@@ -2042,7 +2028,6 @@ book_backend_file_stop_view (EBookBackend *backend,
                              EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = get_closure (book_view);
-	gboolean need_join;
 
 	e_book_backend_take_view_user_data (backend, e_data_book_view_get_id (book_view), NULL);
 
@@ -2050,13 +2035,7 @@ book_backend_file_stop_view (EBookBackend *backend,
 		return;
 
 	d (printf ("stopping query\n"));
-	need_join = e_flag_is_set (closure->running);
 	e_flag_clear (closure->running);
-
-	if (need_join) {
-		g_thread_join (closure->thread);
-		closure->thread = NULL;
-	}
 }
 
 static EDataBookDirect *

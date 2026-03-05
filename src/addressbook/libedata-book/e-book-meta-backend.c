@@ -601,98 +601,6 @@ ebmb_gather_photos_local_filenames (EBookMetaBackend *meta_backend,
 	return filenames;
 }
 
-static void
-ebmb_start_view_thread_func (EBookBackend *book_backend,
-			     gpointer user_data,
-			     GCancellable *cancellable,
-			     GError **error)
-{
-	EDataBookView *view = user_data;
-	EBookBackendSExp *sexp;
-	GSList *contacts = NULL;
-	const gchar *expr = NULL;
-	gboolean meta_contact = FALSE;
-	GHashTable *fields_of_interest;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
-	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
-
-	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		return;
-
-	if ((e_data_book_view_get_flags (view) & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
-		EBookMetaBackend *ebmb = E_BOOK_META_BACKEND (book_backend);
-		EBookClientViewSortFields *sort_fields;
-		GObject *view_watcher;
-		gsize view_id;
-
-		view_id = e_data_book_view_get_id (view);
-		sort_fields = e_book_backend_dup_view_sort_fields (book_backend, view_id);
-
-		view_watcher = e_data_book_view_watcher_cache_new (book_backend, ebmb->priv->cache, view);
-		e_data_book_view_watcher_cache_take_sort_fields (E_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher), sort_fields);
-
-		e_book_backend_take_view_user_data (book_backend, view_id, view_watcher);
-
-		e_data_book_view_notify_complete (view, NULL);
-
-		return;
-	}
-
-	/* Fill the view with known (locally stored) contacts satisfying the expression */
-	sexp = e_data_book_view_get_sexp (view);
-	if (sexp)
-		expr = e_book_backend_sexp_text (sexp);
-
-	fields_of_interest = e_data_book_view_get_fields_of_interest (view);
-	if (fields_of_interest && g_hash_table_size (fields_of_interest) == 2) {
-		GHashTableIter iter;
-		gpointer key, value;
-
-		meta_contact = TRUE;
-
-		g_hash_table_iter_init (&iter, fields_of_interest);
-		while (g_hash_table_iter_next (&iter, &key, &value)) {
-			const gchar *field_name = key;
-			EContactField field = e_contact_field_id (field_name);
-
-			if (field != E_CONTACT_UID &&
-			    field != E_CONTACT_REV) {
-				meta_contact = FALSE;
-				break;
-			}
-		}
-	}
-
-	if (e_book_meta_backend_search_sync (E_BOOK_META_BACKEND (book_backend), expr, meta_contact, &contacts, cancellable, &local_error) && contacts) {
-		if (!g_cancellable_is_cancelled (cancellable)) {
-			GSList *link;
-
-			for (link = contacts; link; link = g_slist_next (link)) {
-				EContact *contact = link->data;
-				gchar *vcard;
-
-				if (!contact)
-					continue;
-
-				vcard = e_vcard_to_string (E_VCARD (contact));
-				e_data_book_view_notify_update_prefiltered_vcard (view,
-					e_contact_get_const (contact, E_CONTACT_UID),
-					vcard);
-
-				g_free (vcard);
-			}
-		}
-
-		g_slist_free_full (contacts, g_object_unref);
-	}
-
-	e_data_book_view_notify_complete (view, local_error);
-
-	g_clear_error (&local_error);
-}
-
 static gboolean
 ebmb_upload_local_changes_sync (EBookMetaBackend *meta_backend,
 				EBookCache *book_cache,
@@ -1952,15 +1860,94 @@ static void
 ebmb_start_view (EBookBackend *book_backend,
 		 EDataBookView *view)
 {
+	EBookBackendSExp *sexp;
+	GSList *contacts = NULL;
+	const gchar *expr = NULL;
+	gboolean meta_contact = FALSE;
+	GHashTable *fields_of_interest;
+	GError *local_error = NULL;
 	GCancellable *cancellable;
 
 	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
 
 	cancellable = ebmb_create_view_cancellable (E_BOOK_META_BACKEND (book_backend), view);
 
-	e_book_backend_schedule_custom_operation (book_backend, cancellable,
-		ebmb_start_view_thread_func, g_object_ref (view), g_object_unref);
+	if (g_cancellable_is_cancelled (cancellable)) {
+		g_object_unref (cancellable);
+		return;
+	}
 
+	if ((e_data_book_view_get_flags (view) & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
+		EBookMetaBackend *ebmb = E_BOOK_META_BACKEND (book_backend);
+		EBookClientViewSortFields *sort_fields;
+		GObject *view_watcher;
+		gsize view_id;
+
+		view_id = e_data_book_view_get_id (view);
+		sort_fields = e_book_backend_dup_view_sort_fields (book_backend, view_id);
+
+		view_watcher = e_data_book_view_watcher_cache_new (book_backend, ebmb->priv->cache, view);
+		e_data_book_view_watcher_cache_take_sort_fields (E_DATA_BOOK_VIEW_WATCHER_CACHE (view_watcher), sort_fields);
+
+		e_book_backend_take_view_user_data (book_backend, view_id, view_watcher);
+
+		e_data_book_view_notify_complete (view, NULL);
+		g_object_unref (cancellable);
+
+		return;
+	}
+
+	/* Fill the view with known (locally stored) contacts satisfying the expression */
+	sexp = e_data_book_view_get_sexp (view);
+	if (sexp)
+		expr = e_book_backend_sexp_text (sexp);
+
+	fields_of_interest = e_data_book_view_get_fields_of_interest (view);
+	if (fields_of_interest && g_hash_table_size (fields_of_interest) == 2) {
+		GHashTableIter iter;
+		gpointer key, value;
+
+		meta_contact = TRUE;
+
+		g_hash_table_iter_init (&iter, fields_of_interest);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			const gchar *field_name = key;
+			EContactField field = e_contact_field_id (field_name);
+
+			if (field != E_CONTACT_UID &&
+			    field != E_CONTACT_REV) {
+				meta_contact = FALSE;
+				break;
+			}
+		}
+	}
+
+	if (e_book_meta_backend_search_sync (E_BOOK_META_BACKEND (book_backend), expr, meta_contact, &contacts, cancellable, &local_error) && contacts) {
+		if (!g_cancellable_is_cancelled (cancellable)) {
+			GSList *link;
+
+			for (link = contacts; link; link = g_slist_next (link)) {
+				EContact *contact = link->data;
+				gchar *vcard;
+
+				if (!contact)
+					continue;
+
+				vcard = e_vcard_to_string (E_VCARD (contact));
+				e_data_book_view_notify_update_prefiltered_vcard (view,
+					e_contact_get_const (contact, E_CONTACT_UID),
+					vcard);
+
+				g_free (vcard);
+			}
+		}
+
+		g_slist_free_full (contacts, g_object_unref);
+	}
+
+	e_data_book_view_notify_complete (view, local_error);
+
+	g_clear_error (&local_error);
 	g_object_unref (cancellable);
 }
 

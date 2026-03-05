@@ -1877,6 +1877,17 @@ client_wait_for_connected_notify_cb (ESource *source,
 		e_flag_set (flag);
 }
 
+static void
+client_wait_for_connected_notify_online_cb (EClient *client,
+					    GParamSpec *param,
+					    EFlag *flag)
+{
+	g_return_if_fail (flag != NULL);
+
+	if (!e_client_is_online (client))
+		e_flag_set (flag);
+}
+
 /**
  * e_client_wait_for_connected_sync:
  * @client: an #EClient
@@ -1903,7 +1914,9 @@ e_client_wait_for_connected_sync (EClient *client,
 {
 	ESource *source;
 	EFlag *flag;
-	gulong cancellable_handler_id = 0, notify_handler_id;
+	gulong cancellable_handler_id = 0;
+	gulong notify_connection_status_handler_id;
+	gulong notify_online_handler_id;
 	gint64 end_time;
 	gboolean success;
 
@@ -1912,16 +1925,20 @@ e_client_wait_for_connected_sync (EClient *client,
 	end_time = g_get_monotonic_time () + timeout_seconds * G_TIME_SPAN_SECOND;
 	flag = e_flag_new ();
 
-	if (cancellable)
+	if (cancellable) {
 		cancellable_handler_id = g_cancellable_connect (cancellable,
 			G_CALLBACK (client_wait_for_connected_cancelled_cb), flag, NULL);
+	}
 
 	source = e_client_get_source (client);
 
-	notify_handler_id = g_signal_connect (source, "notify::connection-status",
+	notify_connection_status_handler_id = g_signal_connect (source, "notify::connection-status",
 		G_CALLBACK (client_wait_for_connected_notify_cb), flag);
+	notify_online_handler_id = g_signal_connect (client, "notify::online",
+		G_CALLBACK (client_wait_for_connected_notify_online_cb), flag);
 
-	while (success = e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED,
+	while (success = e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED ||
+			!e_client_is_online (client),
 	       !success && !g_cancellable_is_cancelled (cancellable)) {
 		e_flag_clear (flag);
 
@@ -1935,7 +1952,8 @@ e_client_wait_for_connected_sync (EClient *client,
 		}
 	}
 
-	g_signal_handler_disconnect (source, notify_handler_id);
+	g_signal_handler_disconnect (source, notify_connection_status_handler_id);
+	g_signal_handler_disconnect (client, notify_online_handler_id);
 
 	if (cancellable_handler_id > 0 && cancellable)
 		g_cancellable_disconnect (cancellable, cancellable_handler_id);
@@ -1944,10 +1962,15 @@ e_client_wait_for_connected_sync (EClient *client,
 
 	success = e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED;
 
-	if (!success && !g_cancellable_set_error_if_cancelled (cancellable, error))
+	if (!success && !g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT, _("Timeout was reached"));
-	else if (success)
+
+		/* preload properties also when in the offline mode */
+		if (!e_client_is_online (client))
+			e_client_retrieve_properties_sync (client, cancellable, NULL);
+	} else if (success) {
 		success = e_client_retrieve_properties_sync (client, cancellable, error);
+	}
 
 	return success;
 }

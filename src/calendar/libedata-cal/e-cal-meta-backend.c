@@ -557,41 +557,6 @@ ecmb_get_ssl_error_details (ECalMetaBackend *meta_backend,
 	return FALSE;
 }
 
-static void
-ecmb_start_view_thread_func (ECalBackend *cal_backend,
-			     gpointer user_data,
-			     GCancellable *cancellable,
-			     GError **error)
-{
-	EDataCalView *view = user_data;
-	ECalBackendSExp *sexp;
-	GSList *components = NULL;
-	const gchar *expr = NULL;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
-	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
-
-	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		return;
-
-	/* Fill the view with known (locally stored) components satisfying the expression */
-	sexp = e_data_cal_view_get_sexp (view);
-	if (sexp)
-		expr = e_cal_backend_sexp_text (sexp);
-
-	if (e_cal_meta_backend_search_components_sync (E_CAL_META_BACKEND (cal_backend), expr, &components, cancellable, &local_error) && components) {
-		if (!g_cancellable_is_cancelled (cancellable))
-			e_data_cal_view_notify_components_added (view, components);
-
-		g_slist_free_full (components, g_object_unref);
-	}
-
-	e_data_cal_view_notify_complete (view, local_error);
-
-	g_clear_error (&local_error);
-}
-
 static gboolean
 ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 				ECalCache *cal_cache,
@@ -3056,14 +3021,35 @@ ecmb_start_view (ECalBackend *cal_backend,
 		 EDataCalView *view)
 {
 	GCancellable *cancellable;
+	ECalBackendSExp *sexp;
+	GSList *components = NULL;
+	const gchar *expr = NULL;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 
 	cancellable = ecmb_create_view_cancellable (E_CAL_META_BACKEND (cal_backend), view);
 
-	e_cal_backend_schedule_custom_operation (cal_backend, cancellable,
-		ecmb_start_view_thread_func, g_object_ref (view), g_object_unref);
+	if (g_cancellable_is_cancelled (cancellable)) {
+		g_object_unref (cancellable);
+		return;
+	}
 
+	/* Fill the view with known (locally stored) components satisfying the expression */
+	sexp = e_data_cal_view_get_sexp (view);
+	if (sexp)
+		expr = e_cal_backend_sexp_text (sexp);
+
+	if (e_cal_meta_backend_search_components_sync (E_CAL_META_BACKEND (cal_backend), expr, &components, cancellable, &local_error) && components) {
+		if (!g_cancellable_is_cancelled (cancellable))
+			e_data_cal_view_notify_components_added (view, components);
+
+		g_slist_free_full (components, g_object_unref);
+	}
+
+	e_data_cal_view_notify_complete (view, local_error);
+
+	g_clear_error (&local_error);
 	g_object_unref (cancellable);
 }
 
