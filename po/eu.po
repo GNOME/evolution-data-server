@@ -5,11 +5,12 @@
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2005, 2006,2007,2008, 2009, 2010.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2011, 2012, 2013, 2014, 2015, 2016, 2017.
 # Asier Saratsua Garmendia <asiersarasua@ni.eus>, 2019, 2020, 2021, 2022, 2023, 2024, 2025.
+# Asier Saratsua Garmendia <asiersarasua@ni.eus>, 2026.
 msgid ""
 msgstr "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues/\n"
-"POT-Creation-Date: 2025-12-01 17:03+0000\n"
-"PO-Revision-Date: 2025-12-02 06:00+0100\n"
+"POT-Creation-Date: 2026-03-05 10:05+0000\n"
+"PO-Revision-Date: 2026-03-06 06:00+0100\n"
 "Last-Translator: Asier Saratsua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -76,7 +77,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Huts egin du “%s” baliabidearen esteka gogorra sortzean: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:733
-#: src/addressbook/backends/file/e-book-backend-file.c:1502
+#: src/addressbook/backends/file/e-book-backend-file.c:1491
 msgid "No UID in the contact"
 msgstr "Ez dago UIDrik kontaktuan"
 
@@ -85,47 +86,47 @@ msgstr "Ez dago UIDrik kontaktuan"
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Gatazkan dauden UIDak aurkitu dira gehitutako kontaktuetan"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1200
+#: src/addressbook/backends/file/e-book-backend-file.c:1191
 msgid "Loading..."
 msgstr "Kargatzen…"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1202
+#: src/addressbook/backends/file/e-book-backend-file.c:1193
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4827
 msgid "Searching..."
 msgstr "Bilatzen…"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1530
+#: src/addressbook/backends/file/e-book-backend-file.c:1519
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "“%s” kontaktua sinkronizatu gabeko gainbegiraketarekin aldatzen saiatu da"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1711
-#: src/addressbook/backends/file/e-book-backend-file.c:1797
+#: src/addressbook/backends/file/e-book-backend-file.c:1700
+#: src/addressbook/backends/file/e-book-backend-file.c:1786
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: src/addressbook/libedata-book/e-book-sqlite.c:7461
-#: src/addressbook/libedata-book/e-book-sqlite.c:7530
+#: src/addressbook/libedata-book/e-book-sqlite.c:7463
+#: src/addressbook/libedata-book/e-book-sqlite.c:7532
 #, c-format
 msgid "Contact “%s” not found"
 msgstr "Ez da “%s” kontaktua aurkitu"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1861
-#: src/addressbook/backends/file/e-book-backend-file.c:1944
+#: src/addressbook/backends/file/e-book-backend-file.c:1850
+#: src/addressbook/backends/file/e-book-backend-file.c:1933
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "“%s” kontsulta ez da onartzen"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1870
-#: src/addressbook/backends/file/e-book-backend-file.c:1953
+#: src/addressbook/backends/file/e-book-backend-file.c:1859
+#: src/addressbook/backends/file/e-book-backend-file.c:1942
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Baliogabeko “%s” kontsulta"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2196
+#: src/addressbook/backends/file/e-book-backend-file.c:2239
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2183
 msgid "Requested to delete an unrelated cursor"
 msgstr "Zerikusirik ez duen kurtsorea ezabatzea eskatu da"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2387
+#: src/addressbook/backends/file/e-book-backend-file.c:2366
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Huts egin du “%s” datu-base zaharra “%s” gisa aldatzean: %s"
@@ -179,8 +180,8 @@ msgstr "Huts egin du “%s” datu-base zaharra “%s” gisa aldatzean: %s"
 #: src/libebackend/e-server-side-source.c:501 src/libedataserver/e-client.c:186
 #: src/libedataserver/e-soup-session.c:1117
 #: src/libedataserver/e-soup-session.c:2144
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:361
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1180
 #: src/libedataserverui/e-reminders-widget.c:2289
 #: src/tools/list-sources/list-sources.c:428
 msgid "Unknown error"
@@ -259,8 +260,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Kontaktuak deskargatzen (%d)…"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5105
-#: src/addressbook/libedata-book/e-book-meta-backend.c:887
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:772
+#: src/addressbook/libedata-book/e-book-meta-backend.c:795
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:737
 msgid "Refreshing…"
 msgstr "Freskatzen…"
 
@@ -916,88 +917,84 @@ msgstr "Matrixeko laneko 3. IDa"
 msgid "Matrix ID List"
 msgstr "Matrixeko IDen zerrenda"
 
+#: src/addressbook/libebook-contacts/e-contact.c:405
+msgid "Time zone"
+msgstr "Ordu-zona"
+
 #. vCard 4.0
-#: src/addressbook/libebook-contacts/e-contact.c:406
+#: src/addressbook/libebook-contacts/e-contact.c:408
 msgid "Kind"
 msgstr "Mota"
 
-#: src/addressbook/libebook-contacts/e-contact.c:407
-#| msgid "POP Source UID"
+#: src/addressbook/libebook-contacts/e-contact.c:409
 msgid "Source"
 msgstr "Iturburua"
 
-#: src/addressbook/libebook-contacts/e-contact.c:408
+#: src/addressbook/libebook-contacts/e-contact.c:410
 msgid "XML"
 msgstr "XML"
 
-#: src/addressbook/libebook-contacts/e-contact.c:409
-#| msgid "Reminders"
+#: src/addressbook/libebook-contacts/e-contact.c:411
 msgid "Gender"
 msgstr "Generoa"
 
-#: src/addressbook/libebook-contacts/e-contact.c:410
+#: src/addressbook/libebook-contacts/e-contact.c:412
 msgid "Instant Messaging"
 msgstr "Berehalako mezularitza"
 
-#: src/addressbook/libebook-contacts/e-contact.c:411
+#: src/addressbook/libebook-contacts/e-contact.c:413
 msgid "Language"
 msgstr "Hizkuntza"
 
-#: src/addressbook/libebook-contacts/e-contact.c:412
+#: src/addressbook/libebook-contacts/e-contact.c:414
 msgid "Member"
 msgstr "Kidea"
 
-#: src/addressbook/libebook-contacts/e-contact.c:413
-#| msgctxt "IMAPDefaults"
-#| msgid "Templates"
+#: src/addressbook/libebook-contacts/e-contact.c:415
 msgid "Related"
 msgstr "Erlazionatua"
 
-#: src/addressbook/libebook-contacts/e-contact.c:414
-#| msgid "Birth Date"
+#: src/addressbook/libebook-contacts/e-contact.c:416
 msgid "Birth Place"
 msgstr "Jaiotze-lekua"
 
-#: src/addressbook/libebook-contacts/e-contact.c:415
+#: src/addressbook/libebook-contacts/e-contact.c:417
 msgid "Death Place"
 msgstr "Heriotza-lekua"
 
-#: src/addressbook/libebook-contacts/e-contact.c:416
-#| msgid "Birth Date"
+#: src/addressbook/libebook-contacts/e-contact.c:418
 msgid "Death Date"
 msgstr "Heriotza-data"
 
-#: src/addressbook/libebook-contacts/e-contact.c:417
+#: src/addressbook/libebook-contacts/e-contact.c:419
 msgid "Expertise"
 msgstr "Ezagutza"
 
-#: src/addressbook/libebook-contacts/e-contact.c:418
+#: src/addressbook/libebook-contacts/e-contact.c:420
 msgid "Hobby"
 msgstr "Hobbya"
 
-#: src/addressbook/libebook-contacts/e-contact.c:419
+#: src/addressbook/libebook-contacts/e-contact.c:421
 msgid "Interest"
 msgstr "Interesa"
 
-#: src/addressbook/libebook-contacts/e-contact.c:420
-#| msgid "Organizational Unit"
+#: src/addressbook/libebook-contacts/e-contact.c:422
 msgid "Organizational Directory"
 msgstr "Erakunde-direktorioa"
 
-#: src/addressbook/libebook-contacts/e-contact.c:421
-#| msgid "Contacts"
+#: src/addressbook/libebook-contacts/e-contact.c:423
 msgid "Contact URI"
 msgstr "Kontaktuko URIa"
 
-#: src/addressbook/libebook-contacts/e-contact.c:422
+#: src/addressbook/libebook-contacts/e-contact.c:424
 msgid "Created"
 msgstr "Sortuta"
 
-#: src/addressbook/libebook-contacts/e-contact.c:423
+#: src/addressbook/libebook-contacts/e-contact.c:425
 msgid "Social Profile"
 msgstr "Profil soziala"
 
-#: src/addressbook/libebook-contacts/e-contact.c:3038
+#: src/addressbook/libebook-contacts/e-contact.c:3056
 #: src/addressbook/libebook/e-destination.c:913
 msgid "Unnamed List"
 msgstr "Zerrenda izengabea"
@@ -1074,7 +1071,7 @@ msgid "Error parsing regular expression"
 msgstr "Errorea adierazpen erregularra analizatzea"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: src/addressbook/libedata-book/e-book-cache.c:4869
+#: src/addressbook/libedata-book/e-book-cache.c:4871
 #: src/addressbook/libedata-book/e-book-sqlite.c:1909 src/camel/camel-db.c:855
 #, c-format
 msgid "Insufficient memory"
@@ -1103,8 +1100,8 @@ msgstr "'search_contacts' osoak ez daude cachean gordeta. Ezin dira vcard-ak itz
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: src/addressbook/libedata-book/e-book-cache.c:3567
-#: src/addressbook/libedata-book/e-book-sqlite.c:5937
+#: src/addressbook/libedata-book/e-book-cache.c:3569
+#: src/addressbook/libedata-book/e-book-sqlite.c:5939
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Kontsultak onartu gabeko elementuak ditu"
@@ -1162,8 +1159,8 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Ezin da hainbat balio eduki ditzakeen eremu baten arabera ordenatu"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6209
-#: src/addressbook/libedata-book/e-book-cache.c:6200
-#: src/addressbook/libedata-book/e-book-sqlite.c:8235
+#: src/addressbook/libedata-book/e-book-cache.c:6202
+#: src/addressbook/libedata-book/e-book-sqlite.c:8237
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1171,8 +1168,8 @@ msgid ""
 msgstr "Kurtsore bat atzera eramatea saiatu da, baina kurtsorea jadanik kontaktuen zerrendaren hasieran dago"
 
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
-#: src/addressbook/libedata-book/e-book-cache.c:6207
-#: src/addressbook/libedata-book/e-book-sqlite.c:8243
+#: src/addressbook/libedata-book/e-book-cache.c:6209
+#: src/addressbook/libedata-book/e-book-sqlite.c:8245
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1185,99 +1182,99 @@ msgstr "Kurtsore bat aurrera eramatea saiatu da, baina kurtsorea jadanik kontakt
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Onartu gabeko “%d” kontaktu-eremua zehaztu da laburpenean"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3562
-#: src/addressbook/libedata-book/e-book-sqlite.c:5930
+#: src/addressbook/libedata-book/e-book-cache.c:3564
+#: src/addressbook/libedata-book/e-book-sqlite.c:5932
 #: src/calendar/libedata-cal/e-cal-cache.c:1702
 #: src/calendar/libedata-cal/e-cal-cache.c:3549
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Kontsulta baliogabea: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:3747
-#: src/addressbook/libedata-book/e-book-cache.c:6887
+#: src/addressbook/libedata-book/e-book-cache.c:3749
+#: src/addressbook/libedata-book/e-book-cache.c:6889
 msgid "Invalid query for a book cursor"
 msgstr "Liburuaren kurtsorearen kontsulta baliogabea"
 
-#: src/addressbook/libedata-book/e-book-cache.c:4873
+#: src/addressbook/libedata-book/e-book-cache.c:4875
 #: src/libebackend/e-cache.c:754
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Ezin da “%s” datu-basea ireki: %s"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5539
-#: src/addressbook/libedata-book/e-book-cache.c:5586
-#: src/addressbook/libedata-book/e-book-cache.c:5633
-#: src/addressbook/libedata-book/e-book-cache.c:5685
+#: src/addressbook/libedata-book/e-book-cache.c:5541
+#: src/addressbook/libedata-book/e-book-cache.c:5588
+#: src/addressbook/libedata-book/e-book-cache.c:5635
+#: src/addressbook/libedata-book/e-book-cache.c:5687
 #: src/calendar/libedata-cal/e-cal-cache.c:2831
 #: src/calendar/libedata-cal/e-cal-cache.c:2889
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
 #: src/calendar/libedata-cal/e-cal-cache.c:3011
 #: src/calendar/libedata-cal/e-cal-cache.c:3182
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1467
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1432
 #: src/libebackend/e-cache.c:1369 src/libebackend/e-cache.c:2345
 #: src/libebackend/e-cache.c:2385
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Ez da “%s” objektua aurkitu"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5745
+#: src/addressbook/libedata-book/e-book-cache.c:5747
 #: src/calendar/libedata-cal/e-cal-cache.c:3073
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "Ez da “%s” gehigarria duen objekturik aurkitu"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5921
+#: src/addressbook/libedata-book/e-book-cache.c:5923
 msgid "Search by email not supported"
 msgstr "Helbide elektronikoaren bidez bilatzea ez dago onartuta"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5932
+#: src/addressbook/libedata-book/e-book-cache.c:5934
 msgid "No email address provided"
 msgstr "Ez da helbide elektronikorik eman"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5987
+#: src/addressbook/libedata-book/e-book-cache.c:5989
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Gutxienez ordenaren eremu bat zehaztu behar da kurtsore bat erabiltzeko"
 
-#: src/addressbook/libedata-book/e-book-cache.c:5996
-#: src/addressbook/libedata-book/e-book-sqlite.c:8075
+#: src/addressbook/libedata-book/e-book-cache.c:5998
+#: src/addressbook/libedata-book/e-book-sqlite.c:8077
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Ezin da katea motakoa ez den eremu baten arabera ordenatu"
 
-#: src/addressbook/libedata-book/e-book-cache.c:7078
-#: src/addressbook/libedata-book/e-book-cache.c:7237
-#: src/addressbook/libedata-book/e-book-sqlite.c:8962
-#: src/addressbook/libedata-book/e-book-sqlite.c:9123
+#: src/addressbook/libedata-book/e-book-cache.c:7080
+#: src/addressbook/libedata-book/e-book-cache.c:7239
+#: src/addressbook/libedata-book/e-book-sqlite.c:8964
+#: src/addressbook/libedata-book/e-book-sqlite.c:9125
 #, c-format
 msgid "Contact field “%s” not in summary"
 msgstr "“%s” kontaktu-eremua ez dago laburpenean"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1178
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1091
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1143
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Aurre-kargatutako “%s” UIDaren objektua baliogabea da"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1191
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1186
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1099
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1151
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Jasotako “%s” UIDaren objektua baliogabea da"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1422
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1415
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1330
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1380
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
 msgstr "Freskatzea saltatu da energia aurrezteko modua gaituta dagoelako. Desgaitu energia aurrezteko modua eta errepikatu ekintza."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1428
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1421
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1336
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1386
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr "Freskatzea saltatu da, sare mugatuetan desgaituta baitago."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2066
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2565
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3455
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2053
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2552
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3441
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Huts egin du “%s” cachea sortzean:"
@@ -1288,12 +1285,12 @@ msgid ""
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr "Ezin da bost helbide-liburu baino gehiago dituen datu-base zahar batetik kontaktuen datu-basea eguneratu. Ezabatu aurrenik “folders” karpetako sarreratariko bat."
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:6105
-#: src/addressbook/libedata-book/e-book-sqlite.c:8769
+#: src/addressbook/libedata-book/e-book-sqlite.c:6107
+#: src/addressbook/libedata-book/e-book-sqlite.c:8771
 msgid "Invalid query for EbSqlCursor"
 msgstr "EbSqlCursor-ren kontsulta baliogabea"
 
-#: src/addressbook/libedata-book/e-book-sqlite.c:8057
+#: src/addressbook/libedata-book/e-book-sqlite.c:8059
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "Gutxienez ordenatzeko eremu bat zehaztu behar da EbSqlCursor bat erabiltzeko"
 
@@ -1388,7 +1385,6 @@ msgid "Birthday"
 msgstr "Urtebetetzea"
 
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:982
-#| msgid "Birthday"
 msgid "Deathday"
 msgstr "Heriotza-eguna"
 
@@ -1407,7 +1403,6 @@ msgstr "Urteurrena: %s"
 #. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Anniversary: %s" strings
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:1063
 #, c-format
-#| msgid "Birthday: %s"
 msgid "Death day: %s"
 msgstr "Heriotza.-eguna: %s"
 
@@ -1427,8 +1422,8 @@ msgstr "Ezin dira egutegiko datuak gorde"
 #: src/calendar/backends/file/e-cal-backend-file.c:1189
 #: src/calendar/backends/file/e-cal-backend-file.c:1318
 #, c-format
-msgid "Cannot parse ISC file “%s”"
-msgstr "Ezin izan da “%s” ISC fitxategia analizatu"
+msgid "Cannot parse ICS file “%s”"
+msgstr "Ezin izan da “%s” ICS fitxategia analizatu"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:1200
 #: src/calendar/backends/file/e-cal-backend-file.c:1329
@@ -1441,7 +1436,7 @@ msgstr "“%s” fitxategia ez da VCALENDAR osagaia"
 #: src/calendar/backends/file/e-cal-backend-file.c:3768
 #: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2682
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2647
 msgid "Unsupported method"
 msgstr "Onartzen ez den metodoa"
 
@@ -1579,170 +1574,170 @@ msgstr "Egutegiaren “%s” propietate ezezaguna"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Ezin izan da egutegiaren “%s” propietatearen balioa aldatu"
 
-#: src/calendar/libecal/e-cal-component.c:702
+#: src/calendar/libecal/e-cal-component.c:722
 msgid "Untitled appointment"
 msgstr "Hitzordu izengabea"
 
-#: src/calendar/libecal/e-cal-recur.c:4908
+#: src/calendar/libecal/e-cal-recur.c:4904
 msgid "1st"
 msgstr "1."
 
-#: src/calendar/libecal/e-cal-recur.c:4909
+#: src/calendar/libecal/e-cal-recur.c:4905
 msgid "2nd"
 msgstr "2."
 
-#: src/calendar/libecal/e-cal-recur.c:4910
+#: src/calendar/libecal/e-cal-recur.c:4906
 msgid "3rd"
 msgstr "3."
 
-#: src/calendar/libecal/e-cal-recur.c:4911
+#: src/calendar/libecal/e-cal-recur.c:4907
 msgid "4th"
 msgstr "4."
 
-#: src/calendar/libecal/e-cal-recur.c:4912
+#: src/calendar/libecal/e-cal-recur.c:4908
 msgid "5th"
 msgstr "5."
 
-#: src/calendar/libecal/e-cal-recur.c:4913
+#: src/calendar/libecal/e-cal-recur.c:4909
 msgid "6th"
 msgstr "6."
 
-#: src/calendar/libecal/e-cal-recur.c:4914
+#: src/calendar/libecal/e-cal-recur.c:4910
 msgid "7th"
 msgstr "7."
 
-#: src/calendar/libecal/e-cal-recur.c:4915
+#: src/calendar/libecal/e-cal-recur.c:4911
 msgid "8th"
 msgstr "8."
 
-#: src/calendar/libecal/e-cal-recur.c:4916
+#: src/calendar/libecal/e-cal-recur.c:4912
 msgid "9th"
 msgstr "9."
 
-#: src/calendar/libecal/e-cal-recur.c:4917
+#: src/calendar/libecal/e-cal-recur.c:4913
 msgid "10th"
 msgstr "10."
 
-#: src/calendar/libecal/e-cal-recur.c:4918
+#: src/calendar/libecal/e-cal-recur.c:4914
 msgid "11th"
 msgstr "11."
 
-#: src/calendar/libecal/e-cal-recur.c:4919
+#: src/calendar/libecal/e-cal-recur.c:4915
 msgid "12th"
 msgstr "12."
 
-#: src/calendar/libecal/e-cal-recur.c:4920
+#: src/calendar/libecal/e-cal-recur.c:4916
 msgid "13th"
 msgstr "13."
 
-#: src/calendar/libecal/e-cal-recur.c:4921
+#: src/calendar/libecal/e-cal-recur.c:4917
 msgid "14th"
 msgstr "14."
 
-#: src/calendar/libecal/e-cal-recur.c:4922
+#: src/calendar/libecal/e-cal-recur.c:4918
 msgid "15th"
 msgstr "15."
 
-#: src/calendar/libecal/e-cal-recur.c:4923
+#: src/calendar/libecal/e-cal-recur.c:4919
 msgid "16th"
 msgstr "16."
 
-#: src/calendar/libecal/e-cal-recur.c:4924
+#: src/calendar/libecal/e-cal-recur.c:4920
 msgid "17th"
 msgstr "17."
 
-#: src/calendar/libecal/e-cal-recur.c:4925
+#: src/calendar/libecal/e-cal-recur.c:4921
 msgid "18th"
 msgstr "18."
 
-#: src/calendar/libecal/e-cal-recur.c:4926
+#: src/calendar/libecal/e-cal-recur.c:4922
 msgid "19th"
 msgstr "19."
 
-#: src/calendar/libecal/e-cal-recur.c:4927
+#: src/calendar/libecal/e-cal-recur.c:4923
 msgid "20th"
 msgstr "20."
 
-#: src/calendar/libecal/e-cal-recur.c:4928
+#: src/calendar/libecal/e-cal-recur.c:4924
 msgid "21st"
 msgstr "21."
 
-#: src/calendar/libecal/e-cal-recur.c:4929
+#: src/calendar/libecal/e-cal-recur.c:4925
 msgid "22nd"
 msgstr "22."
 
-#: src/calendar/libecal/e-cal-recur.c:4930
+#: src/calendar/libecal/e-cal-recur.c:4926
 msgid "23rd"
 msgstr "23."
 
-#: src/calendar/libecal/e-cal-recur.c:4931
+#: src/calendar/libecal/e-cal-recur.c:4927
 msgid "24th"
 msgstr "24."
 
-#: src/calendar/libecal/e-cal-recur.c:4932
+#: src/calendar/libecal/e-cal-recur.c:4928
 msgid "25th"
 msgstr "25."
 
-#: src/calendar/libecal/e-cal-recur.c:4933
+#: src/calendar/libecal/e-cal-recur.c:4929
 msgid "26th"
 msgstr "26."
 
-#: src/calendar/libecal/e-cal-recur.c:4934
+#: src/calendar/libecal/e-cal-recur.c:4930
 msgid "27th"
 msgstr "27."
 
-#: src/calendar/libecal/e-cal-recur.c:4935
+#: src/calendar/libecal/e-cal-recur.c:4931
 msgid "28th"
 msgstr "28."
 
-#: src/calendar/libecal/e-cal-recur.c:4936
+#: src/calendar/libecal/e-cal-recur.c:4932
 msgid "29th"
 msgstr "29."
 
-#: src/calendar/libecal/e-cal-recur.c:4937
+#: src/calendar/libecal/e-cal-recur.c:4933
 msgid "30th"
 msgstr "30."
 
-#: src/calendar/libecal/e-cal-recur.c:4938
+#: src/calendar/libecal/e-cal-recur.c:4934
 msgid "31st"
 msgstr "31."
 
-#: src/calendar/libecal/e-cal-recur.c:5102
+#: src/calendar/libecal/e-cal-recur.c:5098
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
 msgstr[0] "egunero betiko"
 msgstr[1] "%d egunetik behin betiko"
 
-#: src/calendar/libecal/e-cal-recur.c:5108
+#: src/calendar/libecal/e-cal-recur.c:5104
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
 msgstr[0] "Egunero betiko"
 msgstr[1] "%d egunetik behin betiko"
 
-#: src/calendar/libecal/e-cal-recur.c:5116
+#: src/calendar/libecal/e-cal-recur.c:5112
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
 msgstr[0] "egunero"
 msgstr[1] "%d egunetik behin"
 
-#: src/calendar/libecal/e-cal-recur.c:5122
+#: src/calendar/libecal/e-cal-recur.c:5118
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Egunero"
 msgstr[1] "%d egunetik behin"
 
-#: src/calendar/libecal/e-cal-recur.c:5215
+#: src/calendar/libecal/e-cal-recur.c:5211
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "astero"
 msgstr[1] "%d astetik behin"
 
-#: src/calendar/libecal/e-cal-recur.c:5221
+#: src/calendar/libecal/e-cal-recur.c:5217
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1754,556 +1749,556 @@ msgstr[1] "%d astetik behin"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: src/calendar/libecal/e-cal-recur.c:5235
+#: src/calendar/libecal/e-cal-recur.c:5231
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: src/calendar/libecal/e-cal-recur.c:5252
+#: src/calendar/libecal/e-cal-recur.c:5248
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5253
+#: src/calendar/libecal/e-cal-recur.c:5249
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", igandea"
 
-#: src/calendar/libecal/e-cal-recur.c:5254
+#: src/calendar/libecal/e-cal-recur.c:5250
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " eta igandea"
 
-#: src/calendar/libecal/e-cal-recur.c:5257
+#: src/calendar/libecal/e-cal-recur.c:5253
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5258
+#: src/calendar/libecal/e-cal-recur.c:5254
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", astelehena"
 
-#: src/calendar/libecal/e-cal-recur.c:5259
+#: src/calendar/libecal/e-cal-recur.c:5255
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " eta astelehena"
 
-#: src/calendar/libecal/e-cal-recur.c:5262
+#: src/calendar/libecal/e-cal-recur.c:5258
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5263
+#: src/calendar/libecal/e-cal-recur.c:5259
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", asteartea"
 
-#: src/calendar/libecal/e-cal-recur.c:5264
+#: src/calendar/libecal/e-cal-recur.c:5260
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " eta asteartea"
 
-#: src/calendar/libecal/e-cal-recur.c:5267
+#: src/calendar/libecal/e-cal-recur.c:5263
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5268
+#: src/calendar/libecal/e-cal-recur.c:5264
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", asteazkena"
 
-#: src/calendar/libecal/e-cal-recur.c:5269
+#: src/calendar/libecal/e-cal-recur.c:5265
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " eta asteazkena"
 
-#: src/calendar/libecal/e-cal-recur.c:5272
+#: src/calendar/libecal/e-cal-recur.c:5268
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5273
+#: src/calendar/libecal/e-cal-recur.c:5269
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", osteguna"
 
-#: src/calendar/libecal/e-cal-recur.c:5274
+#: src/calendar/libecal/e-cal-recur.c:5270
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " eta ostegun"
 
-#: src/calendar/libecal/e-cal-recur.c:5277
+#: src/calendar/libecal/e-cal-recur.c:5273
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5278
+#: src/calendar/libecal/e-cal-recur.c:5274
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", ostirala"
 
-#: src/calendar/libecal/e-cal-recur.c:5279
+#: src/calendar/libecal/e-cal-recur.c:5275
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " eta ostirala"
 
-#: src/calendar/libecal/e-cal-recur.c:5282
+#: src/calendar/libecal/e-cal-recur.c:5278
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "larunbatean"
 
-#: src/calendar/libecal/e-cal-recur.c:5283
+#: src/calendar/libecal/e-cal-recur.c:5279
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", larunbata"
 
-#: src/calendar/libecal/e-cal-recur.c:5284
+#: src/calendar/libecal/e-cal-recur.c:5280
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " eta larunbata"
 
-#: src/calendar/libecal/e-cal-recur.c:5428
+#: src/calendar/libecal/e-cal-recur.c:5424
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
 msgstr[0] "hilero"
 msgstr[1] "%d hiletik behin"
 
-#: src/calendar/libecal/e-cal-recur.c:5434
+#: src/calendar/libecal/e-cal-recur.c:5430
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
 msgstr[0] "Hilero"
 msgstr[1] "%d hiletik behin"
 
-#: src/calendar/libecal/e-cal-recur.c:5444
-#: src/calendar/libecal/e-cal-recur.c:5765
+#: src/calendar/libecal/e-cal-recur.c:5440
+#: src/calendar/libecal/e-cal-recur.c:5761
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "azken igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5447
-#: src/calendar/libecal/e-cal-recur.c:5615
+#: src/calendar/libecal/e-cal-recur.c:5443
+#: src/calendar/libecal/e-cal-recur.c:5611
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "azken astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5450
-#: src/calendar/libecal/e-cal-recur.c:5640
+#: src/calendar/libecal/e-cal-recur.c:5446
+#: src/calendar/libecal/e-cal-recur.c:5636
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "azken asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5453
-#: src/calendar/libecal/e-cal-recur.c:5665
+#: src/calendar/libecal/e-cal-recur.c:5449
+#: src/calendar/libecal/e-cal-recur.c:5661
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "azken asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5456
-#: src/calendar/libecal/e-cal-recur.c:5690
+#: src/calendar/libecal/e-cal-recur.c:5452
+#: src/calendar/libecal/e-cal-recur.c:5686
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "azken ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5459
-#: src/calendar/libecal/e-cal-recur.c:5715
+#: src/calendar/libecal/e-cal-recur.c:5455
+#: src/calendar/libecal/e-cal-recur.c:5711
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "azken ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5462
-#: src/calendar/libecal/e-cal-recur.c:5740
+#: src/calendar/libecal/e-cal-recur.c:5458
+#: src/calendar/libecal/e-cal-recur.c:5736
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "azken larunbatean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5472
+#: src/calendar/libecal/e-cal-recur.c:5468
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "1. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5476
+#: src/calendar/libecal/e-cal-recur.c:5472
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "2. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5480
+#: src/calendar/libecal/e-cal-recur.c:5476
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "3. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5484
+#: src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "4. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5488
+#: src/calendar/libecal/e-cal-recur.c:5484
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "5. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5492
+#: src/calendar/libecal/e-cal-recur.c:5488
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "6. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5496
+#: src/calendar/libecal/e-cal-recur.c:5492
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "7. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5500
+#: src/calendar/libecal/e-cal-recur.c:5496
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "8. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5504
+#: src/calendar/libecal/e-cal-recur.c:5500
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "9. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5508
+#: src/calendar/libecal/e-cal-recur.c:5504
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "10. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5512
+#: src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "11. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5516
+#: src/calendar/libecal/e-cal-recur.c:5512
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "12. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5520
+#: src/calendar/libecal/e-cal-recur.c:5516
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "13. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5524
+#: src/calendar/libecal/e-cal-recur.c:5520
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "14. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5528
+#: src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "15. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5532
+#: src/calendar/libecal/e-cal-recur.c:5528
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "16. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5536
+#: src/calendar/libecal/e-cal-recur.c:5532
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "17. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5540
+#: src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "18. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5544
+#: src/calendar/libecal/e-cal-recur.c:5540
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "19. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5548
+#: src/calendar/libecal/e-cal-recur.c:5544
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "20. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5552
+#: src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "21. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5556
+#: src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "22. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5560
+#: src/calendar/libecal/e-cal-recur.c:5556
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "23. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5564
+#: src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "24. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5568
+#: src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "25. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5572
+#: src/calendar/libecal/e-cal-recur.c:5568
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "26. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5576
+#: src/calendar/libecal/e-cal-recur.c:5572
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "27. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5580
+#: src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "28. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5584
+#: src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "29. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5588
+#: src/calendar/libecal/e-cal-recur.c:5584
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "30. egunean"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5592
+#: src/calendar/libecal/e-cal-recur.c:5588
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "31. egunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5600
+#: src/calendar/libecal/e-cal-recur.c:5596
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "1. astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5603
+#: src/calendar/libecal/e-cal-recur.c:5599
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "2. astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5606
+#: src/calendar/libecal/e-cal-recur.c:5602
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "3. astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5609
+#: src/calendar/libecal/e-cal-recur.c:5605
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "4. astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5612
+#: src/calendar/libecal/e-cal-recur.c:5608
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "5. astelehenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5625
+#: src/calendar/libecal/e-cal-recur.c:5621
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "1. asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5628
+#: src/calendar/libecal/e-cal-recur.c:5624
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "2. asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5631
+#: src/calendar/libecal/e-cal-recur.c:5627
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "3. asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5634
+#: src/calendar/libecal/e-cal-recur.c:5630
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "4. asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5637
+#: src/calendar/libecal/e-cal-recur.c:5633
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "5. asteartean"
 
-#: src/calendar/libecal/e-cal-recur.c:5650
+#: src/calendar/libecal/e-cal-recur.c:5646
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "1. asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5653
+#: src/calendar/libecal/e-cal-recur.c:5649
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "2. asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5656
+#: src/calendar/libecal/e-cal-recur.c:5652
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "3. asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5659
+#: src/calendar/libecal/e-cal-recur.c:5655
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "4. asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5662
+#: src/calendar/libecal/e-cal-recur.c:5658
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "5. asteazkenean"
 
-#: src/calendar/libecal/e-cal-recur.c:5675
+#: src/calendar/libecal/e-cal-recur.c:5671
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "1. ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5678
+#: src/calendar/libecal/e-cal-recur.c:5674
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "2. ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5681
+#: src/calendar/libecal/e-cal-recur.c:5677
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "3. ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5684
+#: src/calendar/libecal/e-cal-recur.c:5680
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "4. ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5687
+#: src/calendar/libecal/e-cal-recur.c:5683
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "5. ostegunean"
 
-#: src/calendar/libecal/e-cal-recur.c:5700
+#: src/calendar/libecal/e-cal-recur.c:5696
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "1. ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5703
+#: src/calendar/libecal/e-cal-recur.c:5699
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "2. ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5706
+#: src/calendar/libecal/e-cal-recur.c:5702
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "3. ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5709
+#: src/calendar/libecal/e-cal-recur.c:5705
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "4. ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5712
+#: src/calendar/libecal/e-cal-recur.c:5708
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "5. ostiralean"
 
-#: src/calendar/libecal/e-cal-recur.c:5725
+#: src/calendar/libecal/e-cal-recur.c:5721
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "1. larunbatean"
 
-#: src/calendar/libecal/e-cal-recur.c:5728
+#: src/calendar/libecal/e-cal-recur.c:5724
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "2. larunbatean"
 
-#: src/calendar/libecal/e-cal-recur.c:5731
+#: src/calendar/libecal/e-cal-recur.c:5727
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "3. larunbatean"
 
-#: src/calendar/libecal/e-cal-recur.c:5734
+#: src/calendar/libecal/e-cal-recur.c:5730
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "4. larunbatean"
 
-#: src/calendar/libecal/e-cal-recur.c:5737
+#: src/calendar/libecal/e-cal-recur.c:5733
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "5. larunbatean"
 
-#: src/calendar/libecal/e-cal-recur.c:5750
+#: src/calendar/libecal/e-cal-recur.c:5746
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "1. igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5753
+#: src/calendar/libecal/e-cal-recur.c:5749
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "2. igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5756
+#: src/calendar/libecal/e-cal-recur.c:5752
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "3. igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5759
+#: src/calendar/libecal/e-cal-recur.c:5755
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "4. igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5762
+#: src/calendar/libecal/e-cal-recur.c:5758
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "5. igandean"
 
-#: src/calendar/libecal/e-cal-recur.c:5791
+#: src/calendar/libecal/e-cal-recur.c:5787
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
 msgstr[0] "urtero betiko"
 msgstr[1] "%d urtetik behin, betiko"
 
-#: src/calendar/libecal/e-cal-recur.c:5797
+#: src/calendar/libecal/e-cal-recur.c:5793
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
 msgstr[0] "Urtero betiko"
 msgstr[1] "%d urtetik behin, betiko"
 
-#: src/calendar/libecal/e-cal-recur.c:5805
+#: src/calendar/libecal/e-cal-recur.c:5801
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
 msgstr[0] "urtero"
 msgstr[1] "%d urtetik behin"
 
-#: src/calendar/libecal/e-cal-recur.c:5811
+#: src/calendar/libecal/e-cal-recur.c:5807
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2313,7 +2308,7 @@ msgstr[1] "%d urtetik behin"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: src/calendar/libecal/e-cal-recur.c:5830
+#: src/calendar/libecal/e-cal-recur.c:5826
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2324,7 +2319,7 @@ msgstr[1] "%d agerralditarako"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: src/calendar/libecal/e-cal-recur.c:5866
+#: src/calendar/libecal/e-cal-recur.c:5862
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2333,7 +2328,7 @@ msgstr "%s arte"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: src/calendar/libecal/e-cal-recur.c:5872
+#: src/calendar/libecal/e-cal-recur.c:5868
 msgctxt "recur-description"
 msgid "forever"
 msgstr "betiko"
@@ -2341,7 +2336,7 @@ msgstr "betiko"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: src/calendar/libecal/e-cal-recur.c:5882
+#: src/calendar/libecal/e-cal-recur.c:5878
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2350,7 +2345,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: src/calendar/libecal/e-cal-recur.c:5887
+#: src/calendar/libecal/e-cal-recur.c:5883
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2358,7 +2353,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: src/calendar/libecal/e-cal-recur.c:5903
+#: src/calendar/libecal/e-cal-recur.c:5899
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2368,33 +2363,33 @@ msgstr[1] ", %d salbuespenekin"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: src/calendar/libecal/e-cal-recur.c:5910
+#: src/calendar/libecal/e-cal-recur.c:5906
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: src/calendar/libecal/e-cal-recur.c:5923
-#: src/calendar/libecal/e-cal-recur.c:5946
+#: src/calendar/libecal/e-cal-recur.c:5919
+#: src/calendar/libecal/e-cal-recur.c:5942
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Bilera errepikatu egiten da"
 
-#: src/calendar/libecal/e-cal-recur.c:5925
-#: src/calendar/libecal/e-cal-recur.c:5948
+#: src/calendar/libecal/e-cal-recur.c:5921
+#: src/calendar/libecal/e-cal-recur.c:5944
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Hitzordua errepikatu egiten da"
 
-#: src/calendar/libecal/e-cal-recur.c:5928
-#: src/calendar/libecal/e-cal-recur.c:5951
+#: src/calendar/libecal/e-cal-recur.c:5924
+#: src/calendar/libecal/e-cal-recur.c:5947
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "Zeregina errepikatu egiten da"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: src/calendar/libecal/e-cal-recur.c:5930
-#: src/calendar/libecal/e-cal-recur.c:5953
+#: src/calendar/libecal/e-cal-recur.c:5926
+#: src/calendar/libecal/e-cal-recur.c:5949
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "ZIrkularra errepikatu egiten da"
@@ -2403,37 +2398,37 @@ msgstr "ZIrkularra errepikatu egiten da"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: src/calendar/libecal/e-cal-recur.c:5937
+#: src/calendar/libecal/e-cal-recur.c:5933
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1107
-#: src/calendar/libecal/e-cal-util.c:1134
+#: src/calendar/libecal/e-cal-util.c:1112
+#: src/calendar/libecal/e-cal-util.c:1139
 msgctxt "Priority"
 msgid "High"
 msgstr "Altua"
 
-#: src/calendar/libecal/e-cal-util.c:1109
-#: src/calendar/libecal/e-cal-util.c:1136
+#: src/calendar/libecal/e-cal-util.c:1114
+#: src/calendar/libecal/e-cal-util.c:1141
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Arrunta"
 
-#: src/calendar/libecal/e-cal-util.c:1111
-#: src/calendar/libecal/e-cal-util.c:1138
+#: src/calendar/libecal/e-cal-util.c:1116
+#: src/calendar/libecal/e-cal-util.c:1143
 msgctxt "Priority"
 msgid "Low"
 msgstr "Baxua"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1137
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Definitu gabe"
 
-#: src/calendar/libecal/e-cal-util.c:1174
+#: src/calendar/libecal/e-cal-util.c:1179
 #: src/libedataserverui/e-reminders-widget.c:434
 #, c-format
 msgid "%d week"
@@ -2441,7 +2436,7 @@ msgid_plural "%d weeks"
 msgstr[0] "aste %d"
 msgstr[1] "%d aste"
 
-#: src/calendar/libecal/e-cal-util.c:1183
+#: src/calendar/libecal/e-cal-util.c:1188
 #: src/libedataserverui/e-reminders-widget.c:430
 #, c-format
 msgid "%d day"
@@ -2449,7 +2444,7 @@ msgid_plural "%d days"
 msgstr[0] "Egun %d"
 msgstr[1] "%d egun"
 
-#: src/calendar/libecal/e-cal-util.c:1192
+#: src/calendar/libecal/e-cal-util.c:1197
 #: src/libedataserverui/e-reminders-widget.c:426
 #, c-format
 msgid "%d hour"
@@ -2457,7 +2452,7 @@ msgid_plural "%d hours"
 msgstr[0] "ordu %d"
 msgstr[1] "%d ordu"
 
-#: src/calendar/libecal/e-cal-util.c:1201
+#: src/calendar/libecal/e-cal-util.c:1206
 #: src/libedataserverui/e-reminders-widget.c:422
 #, c-format
 msgid "%d minute"
@@ -2466,7 +2461,7 @@ msgstr[0] "minutu %d"
 msgstr[1] "%d minutu"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1206
+#: src/calendar/libecal/e-cal-util.c:1211
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2640,18 +2635,18 @@ msgstr "Ezin da osagairik gabeko ordu-zona gehitu"
 msgid "Cannot add timezone with invalid component"
 msgstr "Ezin da osagai baliogabea duen ordu-zona gehitu"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1233
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1198
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Jasotako “%s” UIDaren objektuak ez dauzka espero ziren osagairik"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1937
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
 msgstr "Ezin dira instantzia aske baten instantzia guztiak aldatu. Horren ordez, aldatu serie-instantzia bat."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4354
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4340
 msgid "attachment.dat"
 msgstr "eranskina.dat"
 
@@ -2764,7 +2759,6 @@ msgstr "Ezin da cache-bidea sortu"
 
 #: src/camel/camel-data-cache.c:536
 #, c-format
-#| msgid "Contact field “%s” not in summary"
 msgid "Cache file “%s” is empty"
 msgstr "“%s” cache-fitxategia hutsik dago"
 
@@ -3004,7 +2998,7 @@ msgstr "“%s : %s” karpeta freskatzen"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1730
+#: src/camel/camel-folder-summary.c:1731
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Askatu “%s : %s” karpetaren erabili gabeko memoria"
@@ -3074,7 +3068,7 @@ msgid ""
 msgstr "Oharra: zifratutako edukiak ez daukanez hartzaileari buruzko inolako informaziorik, gordetako gako pribatu bakoitzeko pasahitz bat eskatuko da."
 
 #: src/camel/camel-gpg-context.c:1438 src/camel/camel-net-utils.c:522
-#: src/camel/providers/nntp/camel-nntp-summary.c:391
+#: src/camel/providers/nntp/camel-nntp-summary.c:402
 #: src/libedataserver/e-client.c:159
 #, c-format
 msgid "Cancelled"
@@ -3099,9 +3093,6 @@ msgstr "Ezin da mezua zifratu: ez da hartzailerik zehaztu."
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:1618
 #, c-format
-#| msgid ""
-#| "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
-#| "the %s doesn’t have imported public key for this recipient."
 msgid ""
 "Failed to encrypt: Invalid recipient “%s” specified. A common issue is that "
 "the “%s” doesn’t have imported public key for this recipient."
@@ -3110,35 +3101,30 @@ msgstr "Huts egin du zifratzeak: baliogabeko “%s” hartzailea zehaztu da. Ara
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1625
 #, c-format
-#| msgid "Failed to encrypt: The public key for recipient %s was not found."
 msgid "Failed to encrypt: The public key for recipient “%s” was not found."
 msgstr "Huts egin du zifratzeak: “%s” hartzailearen gako publikoa ez da aurkitu."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1632
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is revoked."
 msgid "Failed to encrypt: The key for recipient “%s” is revoked."
 msgstr "Huts egin du zifratzeak: “%s” hartzailearen gakoa errebokatu egin da."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1639
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is expired."
 msgid "Failed to encrypt: The key for recipient “%s” is expired."
 msgstr "Huts egin du zifratzeak: “%s” hartzailearen gakoa iraungi da."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1646
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is not trusted."
 msgid "Failed to encrypt: The key for recipient “%s” is not trusted."
 msgstr "Huts egin du zifratzeak: “%s” hartzailearen gakoa ez da fidagarria."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1653
 #, c-format
-#| msgid "Failed to encrypt: The key for recipient %s is disabled."
 msgid "Failed to encrypt: The key for recipient “%s” is disabled."
 msgstr "Huts egin du zifratzeak: “%s” hartzailearen gakoa desgaituta dago."
 
@@ -3146,9 +3132,6 @@ msgstr "Huts egin du zifratzeak: “%s” hartzailearen gakoa desgaituta dago."
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:1661
 #, c-format
-#| msgid ""
-#| "Failed to encrypt: Invalid recipient %s specified (code %d). A common "
-#| "issue is that the %s doesn’t have imported public key for this recipient."
 msgid ""
 "Failed to encrypt: Invalid recipient “%s” specified (code %d). A common "
 "issue is that the “%s” doesn’t have imported public key for this recipient."
@@ -3726,7 +3709,7 @@ msgstr "Baliogabeko GType erregistratuta “%s” protokoloarentzako"
 #: src/camel/camel-session.c:510
 #: src/camel/providers/imapx/camel-imapx-server.c:3313
 #: src/camel/providers/pop3/camel-pop3-store.c:304
-#: src/camel/providers/pop3/camel-pop3-store.c:808
+#: src/camel/providers/pop3/camel-pop3-store.c:803
 #: src/camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "No support for %s authentication"
@@ -4833,7 +4816,7 @@ msgstr "Ezin izan da “%s” URLa analizatu"
 msgid "Updating search folder “%s”"
 msgstr "“%s” bilaketa-karpeta eguneratzen"
 
-#: src/camel/camel-vee-folder.c:1133 src/camel/camel-vee-folder.c:1259
+#: src/camel/camel-vee-folder.c:1210 src/camel/camel-vee-folder.c:1336
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Ezin dira mezuak Karpeta Birtual batera kopiatu edo eraman"
@@ -4842,17 +4825,17 @@ msgstr "Ezin dira mezuak Karpeta Birtual batera kopiatu edo eraman"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1170
+#: src/camel/camel-vee-folder.c:1247
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Ez dago “%s” bezalako mezurik “%s : %s”(e)n"
 
-#: src/camel/camel-vee-folder.c:1235
+#: src/camel/camel-vee-folder.c:1312
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Errorea “%s” gordetzean: "
 
-#: src/camel/camel-vee-folder.c:1343
+#: src/camel/camel-vee-folder.c:1420
 msgid "Automatically _update on change in source folders"
 msgstr "Eguneratu _automatikoki iturburuko karpetak aldatzean"
 
@@ -4882,9 +4865,9 @@ msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko (%s)"
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:992
 #: src/camel/providers/imapx/camel-imapx-server.c:3485
 #: src/camel/providers/nntp/camel-nntp-store.c:347
-#: src/camel/providers/nntp/camel-nntp-store.c:1341
-#: src/camel/providers/nntp/camel-nntp-store.c:2154
-#: src/camel/providers/nntp/camel-nntp-store.c:2307
+#: src/camel/providers/nntp/camel-nntp-store.c:1347
+#: src/camel/providers/nntp/camel-nntp-store.c:2160
+#: src/camel/providers/nntp/camel-nntp-store.c:2313
 #: src/camel/providers/pop3/camel-pop3-folder.c:446
 #: src/camel/providers/pop3/camel-pop3-folder.c:629
 #: src/camel/providers/pop3/camel-pop3-folder.c:914
@@ -4893,7 +4876,7 @@ msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko (%s)"
 #: src/camel/providers/pop3/camel-pop3-store.c:527
 #: src/camel/providers/pop3/camel-pop3-store.c:575
 #: src/camel/providers/pop3/camel-pop3-store.c:672
-#: src/camel/providers/pop3/camel-pop3-store.c:1123
+#: src/camel/providers/pop3/camel-pop3-store.c:1118
 #: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
@@ -6164,7 +6147,7 @@ msgstr "Huts egin du %s NNTP zerbitzariarekin modu seguruan konektatzean: "
 msgid "USENET News via %s"
 msgstr "USENET berriak %s bidez"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1244
+#: src/camel/providers/nntp/camel-nntp-store.c:1245
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -6174,22 +6157,22 @@ msgstr "Errorea berri-taldeak berreskuratzean:\n"
 "\n"
 " %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1358
+#: src/camel/providers/nntp/camel-nntp-store.c:1364
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Ezin duzu Berria biltegian karpeta sortu: harpidetu zaitez."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1374
+#: src/camel/providers/nntp/camel-nntp-store.c:1380
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Ezin duzu Berria biltegiko karpeta baten izena aldatu."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1397
+#: src/camel/providers/nntp/camel-nntp-store.c:1403
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Ezin duzu Berria biltegiko karpeta bat lekuz aldatu: kendu harpidetza."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1614
+#: src/camel/providers/nntp/camel-nntp-store.c:1620
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -6199,7 +6182,7 @@ msgstr "Ezin duzu berri-talde honetan harpidetu:\n"
 "\n"
 "Ez dago halako berri-talderik. Hautatutako elementua karpeta gurasoa izan daiteke."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1681
+#: src/camel/providers/nntp/camel-nntp-store.c:1687
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -6209,48 +6192,48 @@ msgstr "Ezin duzu berri-talde honetan harpidetu:\n"
 "\n"
 "Berri-taldea ez dago"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2105
+#: src/camel/providers/nntp/camel-nntp-store.c:2111
 msgid "NNTP Command failed: "
 msgstr "NNTP komandoak huts egin du: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2211
-#: src/camel/providers/nntp/camel-nntp-store.c:2244
+#: src/camel/providers/nntp/camel-nntp-store.c:2217
+#: src/camel/providers/nntp/camel-nntp-store.c:2250
 #, c-format
 msgid "Not connected."
 msgstr "Ez dago konektatuta"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2321
+#: src/camel/providers/nntp/camel-nntp-store.c:2327
 #, c-format
 msgid "No such folder: %s"
 msgstr "Karpeta ez dago: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:187
-#: src/camel/providers/nntp/camel-nntp-summary.c:329
+#: src/camel/providers/nntp/camel-nntp-summary.c:188
+#: src/camel/providers/nntp/camel-nntp-summary.c:336
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Mezu berrien bila eskaneatzen"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:209
+#: src/camel/providers/nntp/camel-nntp-summary.c:210
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Ustekabeko zerbitzari-erantzuna xover-etik: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:350
+#: src/camel/providers/nntp/camel-nntp-summary.c:361
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Ustekabeko zerbitzari-erantzuna goiburutik: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:396
+#: src/camel/providers/nntp/camel-nntp-summary.c:407
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Eragiketak huts egin du: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:440
+#: src/camel/providers/nntp/camel-nntp-summary.c:453
 #, c-format
 msgid "%s: Scanning existing messages"
 msgstr "%s: dauden mezuen bila eskaneatzen"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:453
+#: src/camel/providers/nntp/camel-nntp-summary.c:469
 #, c-format
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Ustekabeko zerbitzari-erantzuna talde-zerrenda batetik: %s"
@@ -6411,7 +6394,7 @@ msgstr "Ezin izan da %s POP zerbitzariarekin konektatu.\n"
 
 #: src/camel/providers/pop3/camel-pop3-store.c:720
 #: src/camel/providers/pop3/camel-pop3-store.c:733
-#: src/camel/providers/pop3/camel-pop3-store.c:819
+#: src/camel/providers/pop3/camel-pop3-store.c:814
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -6429,7 +6412,7 @@ msgstr "Ezin da %s POP zerbitzariarekin konektatu:\tAPOP ID baliogabea jaso da. 
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: src/camel/providers/pop3/camel-pop3-store.c:834
+#: src/camel/providers/pop3/camel-pop3-store.c:829
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -6437,12 +6420,12 @@ msgid ""
 msgstr "Ezin izan da %s POP zerbitzariarekin konektatu.\n"
 "Errorea %s erabiltzaile-izena bidaltzean"
 
-#: src/camel/providers/pop3/camel-pop3-store.c:918
+#: src/camel/providers/pop3/camel-pop3-store.c:913
 #, c-format
 msgid "No such folder “%s”."
 msgstr "“%s” karpeta ez dago."
 
-#: src/camel/providers/pop3/camel-pop3-store.c:935
+#: src/camel/providers/pop3/camel-pop3-store.c:930
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3 biltegiek ez daukate karpeten hierarkiarik"
@@ -7215,12 +7198,12 @@ msgstr "Memoriarik ez"
 msgid "Can not make parent directory: %s"
 msgstr "Ezin da direktorio gurasoa sortu: %s"
 
-#: src/libebackend/e-collection-backend.c:1113
+#: src/libebackend/e-collection-backend.c:1114
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s(e)k ez du urruneko baliabideak sortzerik onartzen"
 
-#: src/libebackend/e-collection-backend.c:1169
+#: src/libebackend/e-collection-backend.c:1170
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s(e)k ez du urruneko baliabideak ezabatzerik onartzen"
@@ -7246,7 +7229,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Huts egin du kredentzialak bilatzean: "
 
 #: src/libebackend/e-server-side-source.c:1376
-#: src/libedataserver/e-source.c:1585
+#: src/libedataserver/e-source.c:1586
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "“%s” datu iturburuak ez du urruneko baliabideak sortzerik onartzen"
@@ -7258,7 +7241,7 @@ msgid ""
 msgstr "“%s” datu iturburuak ez dauka motor bildumarik urruneko baliabideak sortzeko"
 
 #: src/libebackend/e-server-side-source.c:1418
-#: src/libedataserver/e-source.c:1681
+#: src/libedataserver/e-source.c:1682
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "“%s” datu iturburuak ez du urruneko baliabideak ezabatzerik onartzen"
@@ -7271,7 +7254,7 @@ msgstr "“%s” datu iturburuak ez dauka motor bildumarik urruneko baliabideak 
 
 #: src/libebackend/e-server-side-source.c:1471
 #: src/libebackend/e-source-registry-server.c:1038
-#: src/libedataserver/e-source.c:1802
+#: src/libedataserver/e-source.c:1803
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "“%s” datu iturburuak ez du OAuth 2.0 autentifikazioa onartzen"
@@ -7503,7 +7486,7 @@ msgstr "Motorra ez da oraindik ireki"
 msgid "Object is out of sync"
 msgstr "Objektua sinkronizaziotik kanpo dago"
 
-#: src/libedataserver/e-client.c:1948
+#: src/libedataserver/e-client.c:1966
 msgid "Timeout was reached"
 msgstr "Denbora-mugara iritsi da"
 
@@ -7673,22 +7656,22 @@ msgstr[1] "Zerbitzaria lanpetuta dago, berriro saiatzeko esperoan (%d segundo)"
 msgid "Too many redirects"
 msgstr "Berbideratze gehiegi"
 
-#: src/libedataserver/e-source.c:772
+#: src/libedataserver/e-source.c:773
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Iturburuaren fitxategiari [%s] talde bat falta zaio"
 
-#: src/libedataserver/e-source.c:1381
+#: src/libedataserver/e-source.c:1382
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "“%s” datuen iturburua ez da aldagarria"
 
-#: src/libedataserver/e-source.c:1496
+#: src/libedataserver/e-source.c:1497
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "“%s” datuen iturburua ezin da idazgarria"
 
-#: src/libedataserver/e-source.c:2177
+#: src/libedataserver/e-source.c:2178
 msgid "Unnamed"
 msgstr "Izengabea"
 
@@ -8227,50 +8210,50 @@ msgstr "Kredentzialen eskaera bertan behera utzi da"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "“%s” iturburuak ez du kredentzialen eskaerarik onartzen"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:278
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:359
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Huts egin du atzipen-tokena eskuratzeak “%s” helbidetik: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:390
 msgid "Checking returned code"
 msgstr "Itzulitako kodea egiaztatzen"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:390
 msgid "Requesting access token, please wait…"
 msgstr "Atzipen-tokena eskatzen, itxaron…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:583
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:664
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s helbide-liburuaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:588
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:669
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s egutegiaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:593
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:674
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s zirkular-zerrendaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:598
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s zeregin-zerrendaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:604
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s postaren autentifikazio-eskaera"
@@ -8278,7 +8261,7 @@ msgstr "%s postaren autentifikazio-eskaera"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s kontuaren autentifikazio-eskaera"
@@ -8286,7 +8269,7 @@ msgstr "%s kontuaren autentifikazio-eskaera"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:704
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8296,7 +8279,7 @@ msgstr "Zure “%s” helbide-liburua atzitu ahal izateko, hasi saioa zure %s ko
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8306,7 +8289,7 @@ msgstr "Zure “%s” egutegia atzitu ahal izateko, hasi saioa zure %s kontuan e
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:718
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8316,7 +8299,7 @@ msgstr "Zure “%s” posta-kontua atzitu ahal izateko, hasi saioa zure %s kontu
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8326,7 +8309,7 @@ msgstr "Zure “%s” posta-garraioa atzitu ahal izateko, hasi saioa zure %s kon
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8336,7 +8319,7 @@ msgstr "Zure “%s” zirkular-zerrenda atzitu ahal izateko, hasi saioa zure %s 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:658
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8346,117 +8329,117 @@ msgstr "Zure “%s” zeregin-zerrenda atzitu ahal izateko, hasi saioa zure %s k
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:665
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr "Zure “%s” kontua atzitu ahal izateko, hasi saioa zure %s kontuan eta onartu baldintzak."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1180
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Huts egin du nabigatzailea irekitzeak: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1174
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1255
 msgid "_Copy URL"
 msgstr "_Kopiatu URLa"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1176
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1207
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1257
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1288
 msgid "Open in _Browser"
 msgstr "Ireki _nabigatzailean"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1193
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1274
 #, c-format
 msgid "Open with “%s”"
 msgstr "Ireki honekin: “%s”"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1303
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:243
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1383
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:347
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1150
 msgid "_Cancel"
 msgstr "_Utzi"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1388
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1481
 msgid "URL:"
 msgstr "URLa:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1463
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1556
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr "Ireki goiko URLa nabigatzaile batean eta jarraitu hango OAuth2 morroiari. Kopiatu hemen azpian sortutako baimen-kodea, edo OAuth2 morroiak eman duen URLa, autentifikazio-prozesuarekin jarraitzeko."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1500
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1593
 msgid "_Authorization code:"
 msgstr "_Baimen-kodea:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1513
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1606
 msgid "C_ontinue"
 msgstr "_Jarraitu"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1710
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1711
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1805
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1806
 msgid "Preparing request, please wait…"
 msgstr "Eskaria prestatzen, itxaron…"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:136
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:240
 msgid "Address book authentication request"
 msgstr "Helbide-liburuaren autentifikazioa behar da"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:141
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:245
 msgid "Calendar authentication request"
 msgstr "Egutegiaren autentifikazioa behar da"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:145
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:249
 msgid "Mail authentication request"
 msgstr "Postaren autentifikazioa behar da"
 
 #. generic account prompt
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:148
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:252
 msgid "Authentication request"
 msgstr "Autentifikazioa behar da"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:157
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:261
 #, c-format
 msgid "Please enter the password for address book “%s”."
 msgstr "Idatzi “%s” helbide-liburuaren pasahitza."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:161
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:265
 #, c-format
 msgid "Please enter the password for calendar “%s”."
 msgstr "Idatzi “%s” egutegiaren pasahitza."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:165
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:269
 #, c-format
 msgid "Please enter the password for mail account “%s”."
 msgstr "Idatzi “%s” posta-kontuaren pasahitza."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:169
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:273
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
 msgstr "Idatzi “%s” posta-garraioaren pasahitza."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:173
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:277
 #, c-format
 msgid "Please enter the password for memo list “%s”."
 msgstr "Idatzi “%s” zirkularren zerrendaren pasahitza."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:177
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:281
 #, c-format
 msgid "Please enter the password for task list “%s”."
 msgstr "Idatzi “%s” zereginen zerrendaren pasahitza."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:181
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:285
 #, c-format
 msgid "Please enter the password for account “%s”."
 msgstr "Idatzi “%s” kontuaren pasahitza."
 
 #. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:187
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:291
 #, c-format
 msgid ""
 "\n"
@@ -8464,21 +8447,21 @@ msgid ""
 msgstr "\n"
 "(ostalaria: %s)"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:244
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:348
 #: src/libedataserverui/e-webdav-discover-widget.c:1151
 msgid "_OK"
 msgstr "_Ados"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:380
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:495
 msgid "_User Name:"
 msgstr "Erabiltzaile-_izena:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:392
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:507
 msgid "_Password:"
 msgstr "_Pasahitza:"
 
 #. Remember password check
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:408
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:523
 msgid "_Add this password to your keyring"
 msgstr "_Gehitu pasahitz hau zure gako sortari"
 
@@ -8841,8 +8824,8 @@ msgstr "Konpilazio-garaiko motorra gainidazten du prozesu-aukeraren arabera: era
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:334
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:345
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:887
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:1135
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:891
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1139
 msgid "Reminders"
 msgstr "Oroigarriak"
 
@@ -8877,35 +8860,35 @@ msgstr "Egutegi-oroigarri bat abian jartzera doa. Oroigarri hori honako programa
 msgid "Do not ask me about this program again"
 msgstr "Ez galdetu programa honi buruz berriro"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
 msgid "Display Reminders window with _notifications"
 msgstr "Bistaratu oroigarrien leihoa _jakinarazpenekin"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
 msgid "Keep reminder notification window always on _top"
 msgstr "Mantendu oroigarrien jakinarazpen-_leihoa beti gainean"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:792
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Enable _desktop notifications"
 msgstr "Gaitu mahaigaineko _jakinarazpenak"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:793
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Enable _audio notifications"
 msgstr "Gaitu _audio bidezko jakinarazpenak"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:798
 msgid "Display reminders for _completed tasks"
 msgstr "Bistaratu _osatutako zereginen oroigarriak"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:799
 msgid "Display reminders for _past events"
 msgstr "Bistaratu igarotako _gertaeren oroigarriak"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:809
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:813
 msgid "Reminders Options:"
 msgstr "Oroigarrien aukerak:"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:903
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:907
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
