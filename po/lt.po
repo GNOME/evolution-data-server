@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2025-12-10 08:18+0000\n"
-"PO-Revision-Date: 2026-01-06 20:08+0200\n"
+"POT-Creation-Date: 2026-03-05 10:05+0000\n"
+"PO-Revision-Date: 2026-03-11 17:02+0200\n"
 "Last-Translator: Aurimas Černius <aurimas.cernius@mailo.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -86,7 +86,7 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Nepavyko sukurti nuorodos ištekliui „%s“: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:733
-#: src/addressbook/backends/file/e-book-backend-file.c:1502
+#: src/addressbook/backends/file/e-book-backend-file.c:1491
 msgid "No UID in the contact"
 msgstr "Nėra kontakto UID"
 
@@ -95,22 +95,22 @@ msgstr "Nėra kontakto UID"
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Pridėtuose kontaktuose rasti konfliktuojantys UID"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1200
+#: src/addressbook/backends/file/e-book-backend-file.c:1191
 msgid "Loading..."
 msgstr "Įkeliama..."
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1202
+#: src/addressbook/backends/file/e-book-backend-file.c:1193
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:4827
 msgid "Searching..."
 msgstr "Ieškoma..."
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1530
+#: src/addressbook/backends/file/e-book-backend-file.c:1519
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Mėginta pakeisti kontaktą „%s“ be sinchronizacijos versijos"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1711
-#: src/addressbook/backends/file/e-book-backend-file.c:1797
+#: src/addressbook/backends/file/e-book-backend-file.c:1700
+#: src/addressbook/backends/file/e-book-backend-file.c:1786
 #: src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
 #: src/addressbook/libedata-book/e-book-sqlite.c:7463
 #: src/addressbook/libedata-book/e-book-sqlite.c:7532
@@ -118,24 +118,24 @@ msgstr "Mėginta pakeisti kontaktą „%s“ be sinchronizacijos versijos"
 msgid "Contact “%s” not found"
 msgstr "Kontaktas „%s“ nerastas"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1861
-#: src/addressbook/backends/file/e-book-backend-file.c:1944
+#: src/addressbook/backends/file/e-book-backend-file.c:1850
+#: src/addressbook/backends/file/e-book-backend-file.c:1933
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Užklausa „%s“ nepalaikoma"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:1870
-#: src/addressbook/backends/file/e-book-backend-file.c:1953
+#: src/addressbook/backends/file/e-book-backend-file.c:1859
+#: src/addressbook/backends/file/e-book-backend-file.c:1942
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Netinkama užklausa „%s“"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2260
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2196
+#: src/addressbook/backends/file/e-book-backend-file.c:2239
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2183
 msgid "Requested to delete an unrelated cursor"
 msgstr "Prašoma ištrinti nesusijusį žymiklį"
 
-#: src/addressbook/backends/file/e-book-backend-file.c:2387
+#: src/addressbook/backends/file/e-book-backend-file.c:2366
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
@@ -189,8 +189,8 @@ msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
 #: src/libebackend/e-server-side-source.c:501 src/libedataserver/e-client.c:186
 #: src/libedataserver/e-soup-session.c:1117
 #: src/libedataserver/e-soup-session.c:2144
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:280
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:361
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1180
 #: src/libedataserverui/e-reminders-widget.c:2289
 #: src/tools/list-sources/list-sources.c:428
 msgid "Unknown error"
@@ -276,8 +276,8 @@ msgid "Downloading contacts (%d)..."
 msgstr "Parsiunčiami kontaktai (%d)..."
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:5105
-#: src/addressbook/libedata-book/e-book-meta-backend.c:887
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:772
+#: src/addressbook/libedata-book/e-book-meta-backend.c:795
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:737
 msgid "Refreshing…"
 msgstr "Atnaujinama…"
 
@@ -1235,7 +1235,7 @@ msgstr "Nepavyko atverti duomenų bazės %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2948
 #: src/calendar/libedata-cal/e-cal-cache.c:3011
 #: src/calendar/libedata-cal/e-cal-cache.c:3182
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1467
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1432
 #: src/libebackend/e-cache.c:1369 src/libebackend/e-cache.c:2345
 #: src/libebackend/e-cache.c:2385
 #, c-format
@@ -1273,20 +1273,20 @@ msgstr "Negalima rikiuoti pagal lauką, kurus nėra simbolių eilutės tipo"
 msgid "Contact field “%s” not in summary"
 msgstr "Santraukoje nėra kontakto lauko „%s“"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1183
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1178
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1091
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1143
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Įkelto objekto UID „%s“ yra netinkama"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1191
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1186
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1099
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1151
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Pagal UID „%s“ gautas objektas yra netinkamas"
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1422
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1415
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1330
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1380
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1294,14 +1294,14 @@ msgstr ""
 "Atnaujinimas praleistas dėl energijos taupymo veiksenos. Išjunkite energijos "
 "taupymo veikseną šiam veiksmui pakartoti."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:1428
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1421
+#: src/addressbook/libedata-book/e-book-meta-backend.c:1336
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1386
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr "Atnaujinimas praleistas, nes naudojamas matuojamas tinklas."
 
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2066
-#: src/addressbook/libedata-book/e-book-meta-backend.c:2565
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3455
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2053
+#: src/addressbook/libedata-book/e-book-meta-backend.c:2552
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3441
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nepavyko sukurti podėlio „%s“:"
@@ -1451,8 +1451,8 @@ msgstr "Nepavyko išsaugoti kalendoriaus duomenų"
 #: src/calendar/backends/file/e-cal-backend-file.c:1189
 #: src/calendar/backends/file/e-cal-backend-file.c:1318
 #, c-format
-msgid "Cannot parse ISC file “%s”"
-msgstr "Nepavyko gauti ISC failo „%s“"
+msgid "Cannot parse ICS file “%s”"
+msgstr "Nepavyko išanalizuoti ISC failo „%s“"
 
 #: src/calendar/backends/file/e-cal-backend-file.c:1200
 #: src/calendar/backends/file/e-cal-backend-file.c:1329
@@ -1465,7 +1465,7 @@ msgstr "Failas „%s“ nėra VCALENDAR komponentas"
 #: src/calendar/backends/file/e-cal-backend-file.c:3768
 #: src/calendar/backends/file/e-cal-backend-file.c:3774
 #: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2682
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2647
 msgid "Unsupported method"
 msgstr "Nepalaikomas metodas"
 
@@ -1603,135 +1603,135 @@ msgstr "Nežinoma kalendoriaus savybė „%s“"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Nepavyko pakeisti kalendoriaus savybės „%s“ reikšmės"
 
-#: src/calendar/libecal/e-cal-component.c:702
+#: src/calendar/libecal/e-cal-component.c:722
 msgid "Untitled appointment"
 msgstr "Neįvardintas paskyrimas"
 
-#: src/calendar/libecal/e-cal-recur.c:4908
+#: src/calendar/libecal/e-cal-recur.c:4904
 msgid "1st"
 msgstr "1-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4909
+#: src/calendar/libecal/e-cal-recur.c:4905
 msgid "2nd"
 msgstr "2-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4910
+#: src/calendar/libecal/e-cal-recur.c:4906
 msgid "3rd"
 msgstr "3-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4911
+#: src/calendar/libecal/e-cal-recur.c:4907
 msgid "4th"
 msgstr "4-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4912
+#: src/calendar/libecal/e-cal-recur.c:4908
 msgid "5th"
 msgstr "5-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4913
+#: src/calendar/libecal/e-cal-recur.c:4909
 msgid "6th"
 msgstr "6-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4914
+#: src/calendar/libecal/e-cal-recur.c:4910
 msgid "7th"
 msgstr "7-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4915
+#: src/calendar/libecal/e-cal-recur.c:4911
 msgid "8th"
 msgstr "8-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4916
+#: src/calendar/libecal/e-cal-recur.c:4912
 msgid "9th"
 msgstr "9-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4917
+#: src/calendar/libecal/e-cal-recur.c:4913
 msgid "10th"
 msgstr "10-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4918
+#: src/calendar/libecal/e-cal-recur.c:4914
 msgid "11th"
 msgstr "11-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4919
+#: src/calendar/libecal/e-cal-recur.c:4915
 msgid "12th"
 msgstr "12-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4920
+#: src/calendar/libecal/e-cal-recur.c:4916
 msgid "13th"
 msgstr "13-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4921
+#: src/calendar/libecal/e-cal-recur.c:4917
 msgid "14th"
 msgstr "14-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4922
+#: src/calendar/libecal/e-cal-recur.c:4918
 msgid "15th"
 msgstr "15-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4923
+#: src/calendar/libecal/e-cal-recur.c:4919
 msgid "16th"
 msgstr "16-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4924
+#: src/calendar/libecal/e-cal-recur.c:4920
 msgid "17th"
 msgstr "17-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4925
+#: src/calendar/libecal/e-cal-recur.c:4921
 msgid "18th"
 msgstr "18-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4926
+#: src/calendar/libecal/e-cal-recur.c:4922
 msgid "19th"
 msgstr "19-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4927
+#: src/calendar/libecal/e-cal-recur.c:4923
 msgid "20th"
 msgstr "20-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4928
+#: src/calendar/libecal/e-cal-recur.c:4924
 msgid "21st"
 msgstr "21-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4929
+#: src/calendar/libecal/e-cal-recur.c:4925
 msgid "22nd"
 msgstr "22-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4930
+#: src/calendar/libecal/e-cal-recur.c:4926
 msgid "23rd"
 msgstr "23-a"
 
-#: src/calendar/libecal/e-cal-recur.c:4931
+#: src/calendar/libecal/e-cal-recur.c:4927
 msgid "24th"
 msgstr "24-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4932
+#: src/calendar/libecal/e-cal-recur.c:4928
 msgid "25th"
 msgstr "25-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4933
+#: src/calendar/libecal/e-cal-recur.c:4929
 msgid "26th"
 msgstr "26-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4934
+#: src/calendar/libecal/e-cal-recur.c:4930
 msgid "27th"
 msgstr "27-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4935
+#: src/calendar/libecal/e-cal-recur.c:4931
 msgid "28th"
 msgstr "28-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4936
+#: src/calendar/libecal/e-cal-recur.c:4932
 msgid "29th"
 msgstr "29-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4937
+#: src/calendar/libecal/e-cal-recur.c:4933
 msgid "30th"
 msgstr "30-ta"
 
-#: src/calendar/libecal/e-cal-recur.c:4938
+#: src/calendar/libecal/e-cal-recur.c:4934
 msgid "31st"
 msgstr "31-a"
 
-#: src/calendar/libecal/e-cal-recur.c:5102
+#: src/calendar/libecal/e-cal-recur.c:5098
 #, c-format
 msgid "every day forever"
 msgid_plural "every %d days forever"
@@ -1739,7 +1739,7 @@ msgstr[0] "kas %d dieną be pabaigos"
 msgstr[1] "kas %d dienas be pabaigos"
 msgstr[2] "kas %d dienų be pabaigos"
 
-#: src/calendar/libecal/e-cal-recur.c:5108
+#: src/calendar/libecal/e-cal-recur.c:5104
 #, c-format
 msgid "Every day forever"
 msgid_plural "Every %d days forever"
@@ -1747,7 +1747,7 @@ msgstr[0] "Kas %d dieną be pabaigos"
 msgstr[1] "Kas %d dienas be pabaigos"
 msgstr[2] "Kas %d dienų be pabaigos"
 
-#: src/calendar/libecal/e-cal-recur.c:5116
+#: src/calendar/libecal/e-cal-recur.c:5112
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
@@ -1755,7 +1755,7 @@ msgstr[0] "kas %d dieną"
 msgstr[1] "kas %d dienas"
 msgstr[2] "kas %d dienų"
 
-#: src/calendar/libecal/e-cal-recur.c:5122
+#: src/calendar/libecal/e-cal-recur.c:5118
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
@@ -1763,7 +1763,7 @@ msgstr[0] "Kas %d dieną"
 msgstr[1] "Kas %d dienas"
 msgstr[2] "Kas %d dienų"
 
-#: src/calendar/libecal/e-cal-recur.c:5215
+#: src/calendar/libecal/e-cal-recur.c:5211
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
@@ -1771,7 +1771,7 @@ msgstr[0] "kas %d savaitę"
 msgstr[1] "kas %d savaites"
 msgstr[2] "kas %d savaičių"
 
-#: src/calendar/libecal/e-cal-recur.c:5221
+#: src/calendar/libecal/e-cal-recur.c:5217
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
@@ -1784,118 +1784,118 @@ msgstr[2] "Kas %d savaičių"
 #. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
 #. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
 #. the previously gathered text, while the '%2$s' is replaced with the text to append.
-#: src/calendar/libecal/e-cal-recur.c:5235
+#: src/calendar/libecal/e-cal-recur.c:5231
 #, c-format
 msgctxt "recur-description-dayname"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: src/calendar/libecal/e-cal-recur.c:5252
+#: src/calendar/libecal/e-cal-recur.c:5248
 msgctxt "recur-description"
 msgid "on Sunday"
 msgstr "sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5253
+#: src/calendar/libecal/e-cal-recur.c:5249
 msgctxt "recur-description"
 msgid ", Sunday"
 msgstr ", sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5254
+#: src/calendar/libecal/e-cal-recur.c:5250
 msgctxt "recur-description"
 msgid " and Sunday"
 msgstr " ir sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5257
+#: src/calendar/libecal/e-cal-recur.c:5253
 msgctxt "recur-description"
 msgid "on Monday"
 msgstr "pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5258
+#: src/calendar/libecal/e-cal-recur.c:5254
 msgctxt "recur-description"
 msgid ", Monday"
 msgstr ", pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5259
+#: src/calendar/libecal/e-cal-recur.c:5255
 msgctxt "recur-description"
 msgid " and Monday"
 msgstr " ir pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5262
+#: src/calendar/libecal/e-cal-recur.c:5258
 msgctxt "recur-description"
 msgid "on Tuesday"
 msgstr "antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5263
+#: src/calendar/libecal/e-cal-recur.c:5259
 msgctxt "recur-description"
 msgid ", Tuesday"
 msgstr ", antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5264
+#: src/calendar/libecal/e-cal-recur.c:5260
 msgctxt "recur-description"
 msgid " and Tuesday"
 msgstr " ir antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5267
+#: src/calendar/libecal/e-cal-recur.c:5263
 msgctxt "recur-description"
 msgid "on Wednesday"
 msgstr "trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5268
+#: src/calendar/libecal/e-cal-recur.c:5264
 msgctxt "recur-description"
 msgid ", Wednesday"
 msgstr ", trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5269
+#: src/calendar/libecal/e-cal-recur.c:5265
 msgctxt "recur-description"
 msgid " and Wednesday"
 msgstr " ir trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5272
+#: src/calendar/libecal/e-cal-recur.c:5268
 msgctxt "recur-description"
 msgid "on Thursday"
 msgstr "ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5273
+#: src/calendar/libecal/e-cal-recur.c:5269
 msgctxt "recur-description"
 msgid ", Thursday"
 msgstr ", ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5274
+#: src/calendar/libecal/e-cal-recur.c:5270
 msgctxt "recur-description"
 msgid " and Thursday"
 msgstr " ir ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5277
+#: src/calendar/libecal/e-cal-recur.c:5273
 msgctxt "recur-description"
 msgid "on Friday"
 msgstr "penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5278
+#: src/calendar/libecal/e-cal-recur.c:5274
 msgctxt "recur-description"
 msgid ", Friday"
 msgstr ", penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5279
+#: src/calendar/libecal/e-cal-recur.c:5275
 msgctxt "recur-description"
 msgid " and Friday"
 msgstr " ir penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5282
+#: src/calendar/libecal/e-cal-recur.c:5278
 msgctxt "recur-description"
 msgid "on Saturday"
 msgstr "šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5283
+#: src/calendar/libecal/e-cal-recur.c:5279
 msgctxt "recur-description"
 msgid ", Saturday"
 msgstr ", šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5284
+#: src/calendar/libecal/e-cal-recur.c:5280
 msgctxt "recur-description"
 msgid " and Saturday"
 msgstr " ir šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5428
+#: src/calendar/libecal/e-cal-recur.c:5424
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
@@ -1903,7 +1903,7 @@ msgstr[0] "kas %d mėnesį"
 msgstr[1] "kas %d mėnesius"
 msgstr[2] "kas %d mėnesių"
 
-#: src/calendar/libecal/e-cal-recur.c:5434
+#: src/calendar/libecal/e-cal-recur.c:5430
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
@@ -1911,410 +1911,410 @@ msgstr[0] "Kas %d mėnesį"
 msgstr[1] "Kas %d mėnesius"
 msgstr[2] "Kas %d mėnesių"
 
-#: src/calendar/libecal/e-cal-recur.c:5444
-#: src/calendar/libecal/e-cal-recur.c:5765
+#: src/calendar/libecal/e-cal-recur.c:5440
+#: src/calendar/libecal/e-cal-recur.c:5761
 msgctxt "recur-description"
 msgid "on the last Sunday"
 msgstr "paskutinį sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5447
-#: src/calendar/libecal/e-cal-recur.c:5615
+#: src/calendar/libecal/e-cal-recur.c:5443
+#: src/calendar/libecal/e-cal-recur.c:5611
 msgctxt "recur-description"
 msgid "on the last Monday"
 msgstr "paskutinį pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5450
-#: src/calendar/libecal/e-cal-recur.c:5640
+#: src/calendar/libecal/e-cal-recur.c:5446
+#: src/calendar/libecal/e-cal-recur.c:5636
 msgctxt "recur-description"
 msgid "on the last Tuesday"
 msgstr "paskutinį antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5453
-#: src/calendar/libecal/e-cal-recur.c:5665
+#: src/calendar/libecal/e-cal-recur.c:5449
+#: src/calendar/libecal/e-cal-recur.c:5661
 msgctxt "recur-description"
 msgid "on the last Wednesday"
 msgstr "paskutinį trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5456
-#: src/calendar/libecal/e-cal-recur.c:5690
+#: src/calendar/libecal/e-cal-recur.c:5452
+#: src/calendar/libecal/e-cal-recur.c:5686
 msgctxt "recur-description"
 msgid "on the last Thursday"
 msgstr "paskutinį ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5459
-#: src/calendar/libecal/e-cal-recur.c:5715
+#: src/calendar/libecal/e-cal-recur.c:5455
+#: src/calendar/libecal/e-cal-recur.c:5711
 msgctxt "recur-description"
 msgid "on the last Friday"
 msgstr "paskutinį penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5462
-#: src/calendar/libecal/e-cal-recur.c:5740
+#: src/calendar/libecal/e-cal-recur.c:5458
+#: src/calendar/libecal/e-cal-recur.c:5736
 msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "paskutinį šeštadienį"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5472
+#: src/calendar/libecal/e-cal-recur.c:5468
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "pirmąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5476
+#: src/calendar/libecal/e-cal-recur.c:5472
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "antrąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5480
+#: src/calendar/libecal/e-cal-recur.c:5476
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "trečiąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5484
+#: src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "ketvirtąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5488
+#: src/calendar/libecal/e-cal-recur.c:5484
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "penktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5492
+#: src/calendar/libecal/e-cal-recur.c:5488
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "šeštąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5496
+#: src/calendar/libecal/e-cal-recur.c:5492
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "septintąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5500
+#: src/calendar/libecal/e-cal-recur.c:5496
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "aštuntąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5504
+#: src/calendar/libecal/e-cal-recur.c:5500
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "devintąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5508
+#: src/calendar/libecal/e-cal-recur.c:5504
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "dešimtąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5512
+#: src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "vienuoliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5516
+#: src/calendar/libecal/e-cal-recur.c:5512
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "dvyliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5520
+#: src/calendar/libecal/e-cal-recur.c:5516
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "tryliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5524
+#: src/calendar/libecal/e-cal-recur.c:5520
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "keturioliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5528
+#: src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "penkioliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5532
+#: src/calendar/libecal/e-cal-recur.c:5528
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "šešioliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5536
+#: src/calendar/libecal/e-cal-recur.c:5532
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "septynioliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5540
+#: src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "aštuonioliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5544
+#: src/calendar/libecal/e-cal-recur.c:5540
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "devynioliktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5548
+#: src/calendar/libecal/e-cal-recur.c:5544
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "dvidešimtąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5552
+#: src/calendar/libecal/e-cal-recur.c:5548
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "dvidešimt pirmąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5556
+#: src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "dvidešimt antrąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5560
+#: src/calendar/libecal/e-cal-recur.c:5556
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "dvidešimt trečiąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5564
+#: src/calendar/libecal/e-cal-recur.c:5560
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "dvidešimt ketvirtąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5568
+#: src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "dvidešimt penktąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5572
+#: src/calendar/libecal/e-cal-recur.c:5568
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "dvidešimt šeštąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5576
+#: src/calendar/libecal/e-cal-recur.c:5572
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "dvidešimt septintąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5580
+#: src/calendar/libecal/e-cal-recur.c:5576
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "dvidešimt aštuntąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5584
+#: src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "dvidešimt devintąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5588
+#: src/calendar/libecal/e-cal-recur.c:5584
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "trisdešimtąją dieną"
 
 #. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
-#: src/calendar/libecal/e-cal-recur.c:5592
+#: src/calendar/libecal/e-cal-recur.c:5588
 msgctxt "recur-description"
 msgid "on the 31st day"
 msgstr "trisdešimt pirmąją dieną"
 
-#: src/calendar/libecal/e-cal-recur.c:5600
+#: src/calendar/libecal/e-cal-recur.c:5596
 msgctxt "recur-description"
 msgid "on the first Monday"
 msgstr "pirmąjį pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5603
+#: src/calendar/libecal/e-cal-recur.c:5599
 msgctxt "recur-description"
 msgid "on the second Monday"
 msgstr "antrąjį pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5606
+#: src/calendar/libecal/e-cal-recur.c:5602
 msgctxt "recur-description"
 msgid "on the third Monday"
 msgstr "trečiąjį pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5609
+#: src/calendar/libecal/e-cal-recur.c:5605
 msgctxt "recur-description"
 msgid "on the fourth Monday"
 msgstr "ketvirtąjį pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5612
+#: src/calendar/libecal/e-cal-recur.c:5608
 msgctxt "recur-description"
 msgid "on the fifth Monday"
 msgstr "penktąjį pirmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5625
+#: src/calendar/libecal/e-cal-recur.c:5621
 msgctxt "recur-description"
 msgid "on the first Tuesday"
 msgstr "pirmąjį antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5628
+#: src/calendar/libecal/e-cal-recur.c:5624
 msgctxt "recur-description"
 msgid "on the second Tuesday"
 msgstr "antrąjį antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5631
+#: src/calendar/libecal/e-cal-recur.c:5627
 msgctxt "recur-description"
 msgid "on the third Tuesday"
 msgstr "trečiąjį antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5634
+#: src/calendar/libecal/e-cal-recur.c:5630
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
 msgstr "ketvirtąjį antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5637
+#: src/calendar/libecal/e-cal-recur.c:5633
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
 msgstr "penktąjį antradienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5650
+#: src/calendar/libecal/e-cal-recur.c:5646
 msgctxt "recur-description"
 msgid "on the first Wednesday"
 msgstr "pirmąjį trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5653
+#: src/calendar/libecal/e-cal-recur.c:5649
 msgctxt "recur-description"
 msgid "on the second Wednesday"
 msgstr "antrąjį trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5656
+#: src/calendar/libecal/e-cal-recur.c:5652
 msgctxt "recur-description"
 msgid "on the third Wednesday"
 msgstr "trečiąjį trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5659
+#: src/calendar/libecal/e-cal-recur.c:5655
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
 msgstr "ketvirtąjį trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5662
+#: src/calendar/libecal/e-cal-recur.c:5658
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
 msgstr "penktąjį trečiadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5675
+#: src/calendar/libecal/e-cal-recur.c:5671
 msgctxt "recur-description"
 msgid "on the first Thursday"
 msgstr "pirmąjį ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5678
+#: src/calendar/libecal/e-cal-recur.c:5674
 msgctxt "recur-description"
 msgid "on the second Thursday"
 msgstr "antrąjį ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5681
+#: src/calendar/libecal/e-cal-recur.c:5677
 msgctxt "recur-description"
 msgid "on the third Thursday"
 msgstr "trečiąjį ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5684
+#: src/calendar/libecal/e-cal-recur.c:5680
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
 msgstr "ketvirtąjį ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5687
+#: src/calendar/libecal/e-cal-recur.c:5683
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
 msgstr "penktąjį ketvirtadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5700
+#: src/calendar/libecal/e-cal-recur.c:5696
 msgctxt "recur-description"
 msgid "on the first Friday"
 msgstr "pirmąjį penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5703
+#: src/calendar/libecal/e-cal-recur.c:5699
 msgctxt "recur-description"
 msgid "on the second Friday"
 msgstr "antrąjį penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5706
+#: src/calendar/libecal/e-cal-recur.c:5702
 msgctxt "recur-description"
 msgid "on the third Friday"
 msgstr "trečiąjį penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5709
+#: src/calendar/libecal/e-cal-recur.c:5705
 msgctxt "recur-description"
 msgid "on the fourth Friday"
 msgstr "ketvirtąjį penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5712
+#: src/calendar/libecal/e-cal-recur.c:5708
 msgctxt "recur-description"
 msgid "on the fifth Friday"
 msgstr "penktąjį penktadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5725
+#: src/calendar/libecal/e-cal-recur.c:5721
 msgctxt "recur-description"
 msgid "on the first Saturday"
 msgstr "pirmąjį šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5728
+#: src/calendar/libecal/e-cal-recur.c:5724
 msgctxt "recur-description"
 msgid "on the second Saturday"
 msgstr "antrąjį šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5731
+#: src/calendar/libecal/e-cal-recur.c:5727
 msgctxt "recur-description"
 msgid "on the third Saturday"
 msgstr "trečiąjį šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5734
+#: src/calendar/libecal/e-cal-recur.c:5730
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
 msgstr "ketvirtąjį šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5737
+#: src/calendar/libecal/e-cal-recur.c:5733
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
 msgstr "penktąjį šeštadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5750
+#: src/calendar/libecal/e-cal-recur.c:5746
 msgctxt "recur-description"
 msgid "on the first Sunday"
 msgstr "pirmąjį sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5753
+#: src/calendar/libecal/e-cal-recur.c:5749
 msgctxt "recur-description"
 msgid "on the second Sunday"
 msgstr "antrąjį  sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5756
+#: src/calendar/libecal/e-cal-recur.c:5752
 msgctxt "recur-description"
 msgid "on the third Sunday"
 msgstr "trečiąjį sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5759
+#: src/calendar/libecal/e-cal-recur.c:5755
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
 msgstr "ketvirtąjį sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5762
+#: src/calendar/libecal/e-cal-recur.c:5758
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
 msgstr "penktąjį sekmadienį"
 
-#: src/calendar/libecal/e-cal-recur.c:5791
+#: src/calendar/libecal/e-cal-recur.c:5787
 #, c-format
 msgid "every year forever"
 msgid_plural "every %d years forever"
@@ -2322,7 +2322,7 @@ msgstr[0] "kas %d metus be pabaigos"
 msgstr[1] "kas %d metus be pabaigos"
 msgstr[2] "kas %d metų be pabaigos"
 
-#: src/calendar/libecal/e-cal-recur.c:5797
+#: src/calendar/libecal/e-cal-recur.c:5793
 #, c-format
 msgid "Every year forever"
 msgid_plural "Every %d years forever"
@@ -2330,7 +2330,7 @@ msgstr[0] "Kas %d metus be pabaigos"
 msgstr[1] "Kas %d metus be pabaigos"
 msgstr[2] "Kas %d metų be pabaigos"
 
-#: src/calendar/libecal/e-cal-recur.c:5805
+#: src/calendar/libecal/e-cal-recur.c:5801
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
@@ -2338,7 +2338,7 @@ msgstr[0] "kas %d metus"
 msgstr[1] "kas %d metus"
 msgstr[2] "kas %d metų"
 
-#: src/calendar/libecal/e-cal-recur.c:5811
+#: src/calendar/libecal/e-cal-recur.c:5807
 #, c-format
 msgid "Every year"
 msgid_plural "Every %d years"
@@ -2349,7 +2349,7 @@ msgstr[2] "Kas %d metų"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 3 days for 10 occurrences"
-#: src/calendar/libecal/e-cal-recur.c:5830
+#: src/calendar/libecal/e-cal-recur.c:5826
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
@@ -2361,7 +2361,7 @@ msgstr[2] "%d pasikartojimų"
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
 #. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
-#: src/calendar/libecal/e-cal-recur.c:5866
+#: src/calendar/libecal/e-cal-recur.c:5862
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
@@ -2370,7 +2370,7 @@ msgstr "iki %s"
 #. Translators: This is one of the last possible parts of a recurrence description.
 #. The text is appended at the end of the complete recurrence description, making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
-#: src/calendar/libecal/e-cal-recur.c:5872
+#: src/calendar/libecal/e-cal-recur.c:5868
 msgctxt "recur-description"
 msgid "forever"
 msgstr "be pabaigos"
@@ -2378,7 +2378,7 @@ msgstr "be pabaigos"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
 #. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
 #. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
-#: src/calendar/libecal/e-cal-recur.c:5882
+#: src/calendar/libecal/e-cal-recur.c:5878
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
@@ -2387,7 +2387,7 @@ msgstr "%1$s %2$s %3$s"
 #. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
 #. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
 #. "Every 2 days for 10 occurrences".
-#: src/calendar/libecal/e-cal-recur.c:5887
+#: src/calendar/libecal/e-cal-recur.c:5883
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s"
@@ -2395,7 +2395,7 @@ msgstr "%1$s %2$s"
 
 #. Translators: This text is appended at the end of complete recur description using "%s%s" in
 #. context "recur-description"
-#: src/calendar/libecal/e-cal-recur.c:5903
+#: src/calendar/libecal/e-cal-recur.c:5899
 #, c-format
 msgid ", with one exception"
 msgid_plural ", with %d exceptions"
@@ -2406,33 +2406,33 @@ msgstr[2] ", su %d išimčių"
 #. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
 #. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
 #. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
-#: src/calendar/libecal/e-cal-recur.c:5910
+#: src/calendar/libecal/e-cal-recur.c:5906
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
-#: src/calendar/libecal/e-cal-recur.c:5923
-#: src/calendar/libecal/e-cal-recur.c:5946
+#: src/calendar/libecal/e-cal-recur.c:5919
+#: src/calendar/libecal/e-cal-recur.c:5942
 msgctxt "recur-description"
 msgid "The meeting recurs"
 msgstr "Susitikimas pasikartoja"
 
-#: src/calendar/libecal/e-cal-recur.c:5925
-#: src/calendar/libecal/e-cal-recur.c:5948
+#: src/calendar/libecal/e-cal-recur.c:5921
+#: src/calendar/libecal/e-cal-recur.c:5944
 msgctxt "recur-description"
 msgid "The appointment recurs"
 msgstr "Paskyrimas pasikartoja"
 
-#: src/calendar/libecal/e-cal-recur.c:5928
-#: src/calendar/libecal/e-cal-recur.c:5951
+#: src/calendar/libecal/e-cal-recur.c:5924
+#: src/calendar/libecal/e-cal-recur.c:5947
 msgctxt "recur-description"
 msgid "The task recurs"
 msgstr "Užduotis pasikartoja"
 
 #. if (i_cal_component_isa (comp) == I_CAL_VJOURNAL_COMPONENT)
-#: src/calendar/libecal/e-cal-recur.c:5930
-#: src/calendar/libecal/e-cal-recur.c:5953
+#: src/calendar/libecal/e-cal-recur.c:5926
+#: src/calendar/libecal/e-cal-recur.c:5949
 msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "Raštelis pasikartoja"
@@ -2441,37 +2441,37 @@ msgstr "Raštelis pasikartoja"
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
-#: src/calendar/libecal/e-cal-recur.c:5937
+#: src/calendar/libecal/e-cal-recur.c:5933
 #, c-format
 msgctxt "recur-description-prefix"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: src/calendar/libecal/e-cal-util.c:1107
-#: src/calendar/libecal/e-cal-util.c:1134
+#: src/calendar/libecal/e-cal-util.c:1112
+#: src/calendar/libecal/e-cal-util.c:1139
 msgctxt "Priority"
 msgid "High"
 msgstr "Aukštas"
 
-#: src/calendar/libecal/e-cal-util.c:1109
-#: src/calendar/libecal/e-cal-util.c:1136
+#: src/calendar/libecal/e-cal-util.c:1114
+#: src/calendar/libecal/e-cal-util.c:1141
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normalus"
 
-#: src/calendar/libecal/e-cal-util.c:1111
-#: src/calendar/libecal/e-cal-util.c:1138
+#: src/calendar/libecal/e-cal-util.c:1116
+#: src/calendar/libecal/e-cal-util.c:1143
 msgctxt "Priority"
 msgid "Low"
 msgstr "Žemas"
 
 #. An empty string is the same as 'None'.
-#: src/calendar/libecal/e-cal-util.c:1132
+#: src/calendar/libecal/e-cal-util.c:1137
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "Neapibrėžtas"
 
-#: src/calendar/libecal/e-cal-util.c:1174
+#: src/calendar/libecal/e-cal-util.c:1179
 #: src/libedataserverui/e-reminders-widget.c:434
 #, c-format
 msgid "%d week"
@@ -2480,7 +2480,7 @@ msgstr[0] "%d savaitę"
 msgstr[1] "%d savaites"
 msgstr[2] "%d savaičių"
 
-#: src/calendar/libecal/e-cal-util.c:1183
+#: src/calendar/libecal/e-cal-util.c:1188
 #: src/libedataserverui/e-reminders-widget.c:430
 #, c-format
 msgid "%d day"
@@ -2489,7 +2489,7 @@ msgstr[0] "%d dieną"
 msgstr[1] "%d dienas"
 msgstr[2] "%d dienų"
 
-#: src/calendar/libecal/e-cal-util.c:1192
+#: src/calendar/libecal/e-cal-util.c:1197
 #: src/libedataserverui/e-reminders-widget.c:426
 #, c-format
 msgid "%d hour"
@@ -2498,7 +2498,7 @@ msgstr[0] "%d valandą"
 msgstr[1] "%d valandas"
 msgstr[2] "%d valandų"
 
-#: src/calendar/libecal/e-cal-util.c:1201
+#: src/calendar/libecal/e-cal-util.c:1206
 #: src/libedataserverui/e-reminders-widget.c:422
 #, c-format
 msgid "%d minute"
@@ -2508,7 +2508,7 @@ msgstr[1] "%d minutes"
 msgstr[2] "%d minučių"
 
 #. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
-#: src/calendar/libecal/e-cal-util.c:1206
+#: src/calendar/libecal/e-cal-util.c:1211
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2687,19 +2687,19 @@ msgstr "Negalima pridėti laiko juostos be komponentės"
 msgid "Cannot add timezone with invalid component"
 msgstr "Negalima pridėti laiko juostos su netinkama komponente"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1233
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1198
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Pagal UID „%s“ gautas objektas neturi jokios lauktos komponentės"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1972
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1937
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
 msgstr ""
 "Negalima pakeisti visų vienetų iš atskirto vieneto. Keiskite serijos vienetą."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4354
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4340
 msgid "attachment.dat"
 msgstr "priedas.dat"
 
@@ -3054,7 +3054,7 @@ msgstr "Atnaujinamas aplankas „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1730
+#: src/camel/camel-folder-summary.c:1731
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Atlaisvinti nenaudojamą atmintį aplankui „%s : %s“"
@@ -3129,7 +3129,7 @@ msgstr ""
 "klausiama slaptažodžio kiekvienam įrašytam privačiam raktui."
 
 #: src/camel/camel-gpg-context.c:1438 src/camel/camel-net-utils.c:522
-#: src/camel/providers/nntp/camel-nntp-summary.c:391
+#: src/camel/providers/nntp/camel-nntp-summary.c:402
 #: src/libedataserver/e-client.c:159
 #, c-format
 msgid "Cancelled"
@@ -3814,7 +3814,7 @@ msgstr "Protokolui „%s“ užregistruotas netinkamas GType"
 #: src/camel/camel-session.c:510
 #: src/camel/providers/imapx/camel-imapx-server.c:3313
 #: src/camel/providers/pop3/camel-pop3-store.c:304
-#: src/camel/providers/pop3/camel-pop3-store.c:808
+#: src/camel/providers/pop3/camel-pop3-store.c:803
 #: src/camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "No support for %s authentication"
@@ -4967,7 +4967,7 @@ msgstr "Nepavyko perskaityti URL „%s“"
 msgid "Updating search folder “%s”"
 msgstr "Atnaujinamas paieškos aplankas „%s“"
 
-#: src/camel/camel-vee-folder.c:1133 src/camel/camel-vee-folder.c:1259
+#: src/camel/camel-vee-folder.c:1210 src/camel/camel-vee-folder.c:1336
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nepavyko nukopijuoti arba perkelti laiškų į virtualų aplanką"
@@ -4976,17 +4976,17 @@ msgstr "Nepavyko nukopijuoti arba perkelti laiškų į virtualų aplanką"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: src/camel/camel-vee-folder.c:1170
+#: src/camel/camel-vee-folder.c:1247
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Nėra tokio laiško %s aplanke „%s : %s“"
 
-#: src/camel/camel-vee-folder.c:1235
+#: src/camel/camel-vee-folder.c:1312
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Klaida įrašant „%s“: "
 
-#: src/camel/camel-vee-folder.c:1343
+#: src/camel/camel-vee-folder.c:1420
 msgid "Automatically _update on change in source folders"
 msgstr "Automatiškai atna_ujinti podėlyje šaltinio aplankuose"
 
@@ -5016,9 +5016,9 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:992
 #: src/camel/providers/imapx/camel-imapx-server.c:3485
 #: src/camel/providers/nntp/camel-nntp-store.c:347
-#: src/camel/providers/nntp/camel-nntp-store.c:1341
-#: src/camel/providers/nntp/camel-nntp-store.c:2154
-#: src/camel/providers/nntp/camel-nntp-store.c:2307
+#: src/camel/providers/nntp/camel-nntp-store.c:1347
+#: src/camel/providers/nntp/camel-nntp-store.c:2160
+#: src/camel/providers/nntp/camel-nntp-store.c:2313
 #: src/camel/providers/pop3/camel-pop3-folder.c:446
 #: src/camel/providers/pop3/camel-pop3-folder.c:629
 #: src/camel/providers/pop3/camel-pop3-folder.c:914
@@ -5027,7 +5027,7 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 #: src/camel/providers/pop3/camel-pop3-store.c:527
 #: src/camel/providers/pop3/camel-pop3-store.c:575
 #: src/camel/providers/pop3/camel-pop3-store.c:672
-#: src/camel/providers/pop3/camel-pop3-store.c:1123
+#: src/camel/providers/pop3/camel-pop3-store.c:1118
 #: src/camel/providers/smtp/camel-smtp-transport.c:551
 #, c-format
 msgid "You must be working online to complete this operation"
@@ -6321,7 +6321,7 @@ msgstr "Nepavyko prisijungti prie NNTP serverio %s saugia veiksena: "
 msgid "USENET News via %s"
 msgstr "USENET naujienos per %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1244
+#: src/camel/providers/nntp/camel-nntp-store.c:1245
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -6332,24 +6332,24 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1358
+#: src/camel/providers/nntp/camel-nntp-store.c:1364
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Jūs negalite sukurti aplanko naujienų saugykloje - vietoj to užsisakykit."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1374
+#: src/camel/providers/nntp/camel-nntp-store.c:1380
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Negalima pervadinti aplanko naujienų saugykloje."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1397
+#: src/camel/providers/nntp/camel-nntp-store.c:1403
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Negalima pašalinti aplanko naujienų saugykloje, vietoj to atsisakykite."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1614
+#: src/camel/providers/nntp/camel-nntp-store.c:1620
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -6361,7 +6361,7 @@ msgstr ""
 "Nėra tokios naujienų grupės. Pasirinktas elementas greičiausiai yra "
 "aukštesnysis aplankas."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1681
+#: src/camel/providers/nntp/camel-nntp-store.c:1687
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -6372,48 +6372,48 @@ msgstr ""
 "\n"
 "naujienų grupė neegzistuoja!"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2105
+#: src/camel/providers/nntp/camel-nntp-store.c:2111
 msgid "NNTP Command failed: "
 msgstr "NNTP komandos klaida: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2211
-#: src/camel/providers/nntp/camel-nntp-store.c:2244
+#: src/camel/providers/nntp/camel-nntp-store.c:2217
+#: src/camel/providers/nntp/camel-nntp-store.c:2250
 #, c-format
 msgid "Not connected."
 msgstr "Neprisijungta."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2321
+#: src/camel/providers/nntp/camel-nntp-store.c:2327
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nėra tokio aplanko: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:187
-#: src/camel/providers/nntp/camel-nntp-summary.c:329
+#: src/camel/providers/nntp/camel-nntp-summary.c:188
+#: src/camel/providers/nntp/camel-nntp-summary.c:336
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Ieškoma naujų laiškų"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:209
+#: src/camel/providers/nntp/camel-nntp-summary.c:210
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Netikėtas serverio atsakymas iš xover: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:350
+#: src/camel/providers/nntp/camel-nntp-summary.c:361
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Netikėtas serverio atsakymas iš head: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:396
+#: src/camel/providers/nntp/camel-nntp-summary.c:407
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Operacijos klaida: %s"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:440
+#: src/camel/providers/nntp/camel-nntp-summary.c:453
 #, c-format
 msgid "%s: Scanning existing messages"
 msgstr "%s: skaitomi esami laiškai"
 
-#: src/camel/providers/nntp/camel-nntp-summary.c:453
+#: src/camel/providers/nntp/camel-nntp-summary.c:469
 #, c-format
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Netikėtas serverio atsakymas iš listgroup: %s"
@@ -6581,7 +6581,7 @@ msgstr ""
 
 #: src/camel/providers/pop3/camel-pop3-store.c:720
 #: src/camel/providers/pop3/camel-pop3-store.c:733
-#: src/camel/providers/pop3/camel-pop3-store.c:819
+#: src/camel/providers/pop3/camel-pop3-store.c:814
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -6602,7 +6602,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: src/camel/providers/pop3/camel-pop3-store.c:834
+#: src/camel/providers/pop3/camel-pop3-store.c:829
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -6611,12 +6611,12 @@ msgstr ""
 "Nepavyko prisijungti prie POP serverio %s.\n"
 "Klaida siunčiant naudotojo vardą%s"
 
-#: src/camel/providers/pop3/camel-pop3-store.c:918
+#: src/camel/providers/pop3/camel-pop3-store.c:913
 #, c-format
 msgid "No such folder “%s”."
 msgstr "Nėra tokio aplanko „%s“."
 
-#: src/camel/providers/pop3/camel-pop3-store.c:935
+#: src/camel/providers/pop3/camel-pop3-store.c:930
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3 saugyklose nėra aplankų hierarchijos"
@@ -7489,12 +7489,12 @@ msgstr "Pritrūko atminties"
 msgid "Can not make parent directory: %s"
 msgstr "Nepavyko sukurti tėvinio aplanko: %s"
 
-#: src/libebackend/e-collection-backend.c:1113
+#: src/libebackend/e-collection-backend.c:1114
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s nepalaiko nutolusių resursų sukūrimo"
 
-#: src/libebackend/e-collection-backend.c:1169
+#: src/libebackend/e-collection-backend.c:1170
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepalaiko nutolusių resursų trynimo"
@@ -7520,7 +7520,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Nepavyko ieškoti įgaliojimų: "
 
 #: src/libebackend/e-server-side-source.c:1376
-#: src/libedataserver/e-source.c:1585
+#: src/libedataserver/e-source.c:1586
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių išteklių kūrimo"
@@ -7534,7 +7534,7 @@ msgstr ""
 "sukurti"
 
 #: src/libebackend/e-server-side-source.c:1418
-#: src/libedataserver/e-source.c:1681
+#: src/libedataserver/e-source.c:1682
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių išteklių trynimo"
@@ -7549,7 +7549,7 @@ msgstr ""
 
 #: src/libebackend/e-server-side-source.c:1471
 #: src/libebackend/e-source-registry-server.c:1038
-#: src/libedataserver/e-source.c:1802
+#: src/libedataserver/e-source.c:1803
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Duomenų šaltinis „%s“ nepalaiko OAuth 2.0 tapatybės nustatymo"
@@ -7781,7 +7781,7 @@ msgstr "Posistemė dar neatverta"
 msgid "Object is out of sync"
 msgstr "Objektas yra nesinchronizuotas"
 
-#: src/libedataserver/e-client.c:1948
+#: src/libedataserver/e-client.c:1966
 msgid "Timeout was reached"
 msgstr "Baigėsi laikas"
 
@@ -7960,22 +7960,22 @@ msgstr[2] "Serveris užsiėmęs, laukiama pakartojimo (%d sekundžių)"
 msgid "Too many redirects"
 msgstr "Per daug nukreipimų"
 
-#: src/libedataserver/e-source.c:772
+#: src/libedataserver/e-source.c:773
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Šaltinio failui trūksta [%s] grupės"
 
-#: src/libedataserver/e-source.c:1381
+#: src/libedataserver/e-source.c:1382
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Duomenų šaltinis „%s“ nėra pašalinamas"
 
-#: src/libedataserver/e-source.c:1496
+#: src/libedataserver/e-source.c:1497
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Duomenų šaltinis „%s“ nėra rašomas"
 
-#: src/libedataserver/e-source.c:2177
+#: src/libedataserver/e-source.c:2178
 msgid "Unnamed"
 msgstr "Neįvardytas"
 
@@ -8520,50 +8520,50 @@ msgstr "Įgaliojimų užklausa atšaukta"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Šaltinis „%s“ nepalaiko įgaliojimų užklausimo"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:278
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:359
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Nepavyko gauti prieigos leksemos iš adreso „%s“: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:390
 msgid "Checking returned code"
 msgstr "Tikrinamas grąžintas kodas"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:309
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:390
 msgid "Requesting access token, please wait…"
 msgstr "Prašoma prieigos leksemos, palaukite…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:583
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:664
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s adresų knygos tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:588
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:669
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s kalendoriaus tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:593
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:674
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s raštelių sąrašo tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:598
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:679
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s užduočių sąrašo tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:604
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s el. pašto tapatybės patvirtinimo užklausa"
@@ -8571,7 +8571,7 @@ msgstr "%s el. pašto tapatybės patvirtinimo užklausa"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:609
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s paskyros tapatybės patvirtinimo užklausa"
@@ -8579,7 +8579,7 @@ msgstr "%s paskyros tapatybės patvirtinimo užklausa"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:623
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:704
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8591,7 +8591,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:630
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8603,7 +8603,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:637
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:718
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8615,7 +8615,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:644
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8627,7 +8627,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:651
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8639,7 +8639,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:658
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8651,7 +8651,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:665
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8660,37 +8660,37 @@ msgstr ""
 "Prisijunkite prie savo %s paskyros ir sutikite su sąlygomis savo paskyrai "
 "„%s“ pasiekti."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1099
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1180
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Nepavyko atverti naršyklės: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1174
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1255
 msgid "_Copy URL"
 msgstr "_Kopijuoti URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1176
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1207
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1257
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1288
 msgid "Open in _Browser"
 msgstr "Atverti _naršyklėje"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1193
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1274
 #, c-format
 msgid "Open with “%s”"
 msgstr "Atveriamas naudojant „%s“"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1303
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:243
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1383
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:347
 #: src/libedataserverui/e-trust-prompt.c:117
 #: src/libedataserverui/e-webdav-discover-widget.c:1150
 msgid "_Cancel"
 msgstr "_Atsisakyti"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1388
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1481
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1463
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1556
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8700,73 +8700,73 @@ msgstr ""
 "autorizacijos kodą arba URL, kuriame OAuth2 vedlys baigėsi, žemiau ir "
 "tęskite tapatybės patvirtinimo procesą."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1500
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1593
 msgid "_Authorization code:"
 msgstr "_Autorizacijos kodas:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1513
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1606
 msgid "C_ontinue"
 msgstr "_Tęsti"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1710
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1711
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1805
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1806
 msgid "Preparing request, please wait…"
 msgstr "Ruošiama užklausa, palaukite…"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:136
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:240
 msgid "Address book authentication request"
 msgstr "Adresų knygos tapatybės patvirtinimo užklausa"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:141
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:245
 msgid "Calendar authentication request"
 msgstr "Kalendoriaus tapatybės patvirtinimo užklausa"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:145
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:249
 msgid "Mail authentication request"
 msgstr "El. pašto tapatybės patvirtinimo užklausa"
 
 #. generic account prompt
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:148
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:252
 msgid "Authentication request"
 msgstr "Tapatybės patvirtinimo užklausa"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:157
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:261
 #, c-format
 msgid "Please enter the password for address book “%s”."
 msgstr "Įveskite slaptažodį adresų knygai „%s“."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:161
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:265
 #, c-format
 msgid "Please enter the password for calendar “%s”."
 msgstr "Įveskite slaptažodį kalendoriui „%s“."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:165
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:269
 #, c-format
 msgid "Please enter the password for mail account “%s”."
 msgstr "Įveskite slaptažodį el. pašto paskyrai „%s“."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:169
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:273
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
 msgstr "Įveskite slaptažodį el. pašto transportui „%s“."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:173
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:277
 #, c-format
 msgid "Please enter the password for memo list “%s”."
 msgstr "Įveskite slaptažodį raštelių sąrašui „%s“."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:177
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:281
 #, c-format
 msgid "Please enter the password for task list “%s”."
 msgstr "Įveskite slaptažodį užduočių sąrašui „%s“."
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:181
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:285
 #, c-format
 msgid "Please enter the password for account “%s”."
 msgstr "Įveskite slaptažodį paskyrai „%s“."
 
 #. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:187
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:291
 #, c-format
 msgid ""
 "\n"
@@ -8775,21 +8775,21 @@ msgstr ""
 "\n"
 "(serveris: %s)"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:244
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:348
 #: src/libedataserverui/e-webdav-discover-widget.c:1151
 msgid "_OK"
 msgstr "_Gerai"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:380
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:495
 msgid "_User Name:"
 msgstr "Na_udotojo vardas:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:392
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:507
 msgid "_Password:"
 msgstr "Sla_ptažodis:"
 
 #. Remember password check
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:408
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:523
 msgid "_Add this password to your keyring"
 msgstr "Pridėti slaptažodį į raktinę"
 
@@ -9161,8 +9161,8 @@ msgstr ""
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:334
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:345
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:887
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:1135
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:891
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1139
 msgid "Reminders"
 msgstr "Priminimai"
 
@@ -9199,35 +9199,35 @@ msgstr ""
 msgid "Do not ask me about this program again"
 msgstr "Daugiau nebeklausti apie šią programą"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:790
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
 msgid "Display Reminders window with _notifications"
 msgstr "Rodyti priminimų langą su _pranešimais"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:791
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
 msgid "Keep reminder notification window always on _top"
 msgstr "Rodyti priminimų langą _virš kitų langų"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:792
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:796
 msgid "Enable _desktop notifications"
 msgstr "Įjungti _darbalaukio priminimus"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:793
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:797
 msgid "Enable _audio notifications"
 msgstr "Įjungti g_arsinius priminimus"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:794
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:798
 msgid "Display reminders for _completed tasks"
 msgstr "Rodyti priminimus užbaigtoms užduotims"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:795
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:799
 msgid "Display reminders for _past events"
 msgstr "Rodyti priminimus _praeities įvykiams"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:809
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:813
 msgid "Reminders Options:"
 msgstr "Priminimų parametrai:"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:903
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:907
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
