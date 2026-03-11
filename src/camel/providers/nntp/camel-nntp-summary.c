@@ -49,6 +49,12 @@ struct _CamelNNTPSummaryPrivate {
 	gint xover_setup;
 };
 
+#define NNTP_OVER_CHUNK_SIZE    5000
+#define NNTP_OVER_CHUNK_MIN     1
+#define NNTP_OVER_MAX_RETRIES   3
+#define NNTP_IDLE_TIMEOUT_SECS  30
+#define NNTP_SAVE_INTERVAL_USEC (15 * G_USEC_PER_SEC)
+
 static CamelMessageInfo * message_info_new_from_headers (CamelFolderSummary *, const CamelNameValueArray *);
 static gboolean summary_header_load (CamelFolderSummary *s, CamelStoreDBFolderRecord *record);
 static gboolean summary_header_save (CamelFolderSummary *s, CamelStoreDBFolderRecord *record, GError **error);
@@ -152,6 +158,8 @@ add_range_xover (CamelNNTPSummary *cns,
                  guint high,
                  guint low,
                  CamelFolderChangeInfo *changes,
+                 guint *inout_progress_count,
+                 guint progress_total,
                  GCancellable *cancellable,
                  GError **error)
 {
@@ -166,7 +174,7 @@ add_range_xover (CamelNNTPSummary *cns,
 	gchar *host;
 	guint len;
 	gint ret;
-	guint n, count, total, size;
+	guint n, size;
 	guint old_timeout;
 	gboolean folder_filter_recent;
 	struct _xover_header *xover;
@@ -213,16 +221,20 @@ add_range_xover (CamelNNTPSummary *cns,
 
 	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
-	count = 0;
-	total = high - low + 1;
-
 	old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
-	camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, MIN (3 * NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS, total)));
+
+	/* The server already responded 224, so it is alive.  Use a
+	 * reduced idle timeout to detect mid-transfer connection
+	 * kills by DPI middleboxes faster than the default 180s,
+	 * but not so aggressively that normal network latency
+	 * causes false timeouts. */
+	camel_nntp_stream_set_timeout (nntp_stream, NNTP_IDLE_TIMEOUT_SECS);
 
 	headers = camel_name_value_array_new ();
 	while ((ret = camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error)) > 0) {
-		camel_operation_progress (cancellable, (count * 100) / total);
-		count++;
+		if (progress_total > 0)
+			camel_operation_progress (cancellable, ((*inout_progress_count) * 100) / progress_total);
+		(*inout_progress_count)++;
 		n = strtoul (line, &tab, 10);
 		if (*tab != '\t')
 			continue;
@@ -300,6 +312,8 @@ add_range_head (CamelNNTPSummary *cns,
                 guint high,
                 guint low,
                 CamelFolderChangeInfo *changes,
+                guint *inout_progress_count,
+                guint progress_total,
                 GCancellable *cancellable,
                 GError **error)
 {
@@ -310,7 +324,7 @@ add_range_head (CamelNNTPSummary *cns,
 	CamelFolderSummary *s;
 	gint ret = -1;
 	gchar *line, *msgid;
-	guint i, n, count, total;
+	guint i, n;
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
 	gchar *host;
@@ -339,15 +353,15 @@ add_range_head (CamelNNTPSummary *cns,
 
 	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
-	count = 0;
-	total = high - low + 1;
-
 	old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
-	camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, MIN (3 * NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS, total)));
+
+	/* Use reduced idle timeout — see comment in add_range_xover. */
+	camel_nntp_stream_set_timeout (nntp_stream, NNTP_IDLE_TIMEOUT_SECS);
 
 	for (i = low; i < high + 1; i++) {
-		camel_operation_progress (cancellable, (count * 100) / total);
-		count++;
+		if (progress_total > 0)
+			camel_operation_progress (cancellable, ((*inout_progress_count) * 100) / progress_total);
+		(*inout_progress_count)++;
 		ret = camel_nntp_raw_command_auth (
 			nntp_store, cancellable, error, &line, "head %u", i);
 		/* unknown article, ignore */
@@ -420,97 +434,152 @@ ioerror:
 	return ret;
 }
 
-/* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
-static GHashTable *
-nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
-				   CamelNNTPStore *nntp_store,
-				   const gchar *full_name,
-				   guint limit_from,
-				   guint total,
-				   GCancellable *cancellable,
-				   GError **error)
+static gint
+fetch_articles_chunked (CamelNNTPSummary *cns,
+                        CamelNNTPStore *store,
+                        const gchar *full_name,
+                        guint target_high,
+                        CamelFolderChangeInfo *changes,
+                        CamelFolderSummary *s,
+                        GCancellable *cancellable,
+                        GError **error)
 {
-	CamelNNTPStream *nntp_stream;
-	CamelNetworkSettings *network_settings;
-	CamelSettings *settings;
-	CamelService *service;
-	GHashTable *existing_articles = NULL;
-	gint ret = -1;
-	gchar *line = NULL;
-	gchar *host;
-	guint len, count;
-	guint old_timeout;
+	GError *local_error = NULL;
+	gchar *grp_line = NULL;
+	guint scan_from;
+	guint chunk_size = NNTP_OVER_CHUNK_SIZE;
+	guint retries = 0;
+	guint progress_count = 0;
+	guint total_to_fetch;
+	gint64 last_save_time = 0;
+	gint ret = 0;
 
-	service = CAMEL_SERVICE (nntp_store);
+	scan_from = cns->high + 1;
+	total_to_fetch = target_high - cns->high;
 
-	settings = camel_service_ref_settings (service);
+	while (scan_from <= target_high) {
+		guint chunk_low, chunk_high, old_high;
 
-	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_dup_host (network_settings);
+		chunk_low = scan_from;
+		chunk_high = chunk_low + chunk_size - 1;
+		if (chunk_high > target_high)
+			chunk_high = target_high;
+		old_high = cns->high;
 
-	g_object_unref (settings);
+		if (store->xover)
+			ret = add_range_xover (cns, store, chunk_high, chunk_low,
+				changes, &progress_count, total_to_fetch,
+				cancellable, &local_error);
+		else
+			ret = add_range_head (cns, store, chunk_high, chunk_low,
+				changes, &progress_count, total_to_fetch,
+				cancellable, &local_error);
 
-	camel_operation_push_message (cancellable, _("%s: Scanning existing messages"), host);
+		if (ret == -1 &&
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT)) {
+			g_clear_error (&local_error);
 
-	g_free (host);
+			if (cns->high > old_high) {
+				/* Partial timeout: got some articles
+				 * then connection was killed (DPI).
+				 * Advance past received data.  Keep
+				 * chunk_size large -- the per-connection
+				 * byte budget resets on reconnect. */
+				scan_from = cns->high + 1;
+				retries = 0;
+			} else {
+				/* Zero-progress timeout: server did
+				 * not send anything.  Try smaller
+				 * chunk, and after too many failures
+				 * skip forward to the next range. */
+				retries++;
 
-	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
+				if (retries > NNTP_OVER_MAX_RETRIES) {
+					/* Stuck at this range.  Skip
+					 * forward — this range is
+					 * unreachable (DPI or dead spot).
+					 * Jump by one chunk_size and
+					 * reset for a fresh attempt. */
+					scan_from = chunk_high + 1;
+					if (cns->high < chunk_high)
+						cns->high = chunk_high;
+					chunk_size = NNTP_OVER_CHUNK_SIZE;
+					retries = 0;
+				} else if (chunk_size > NNTP_OVER_CHUNK_MIN) {
+					chunk_size /= 2;
+					if (chunk_size < NNTP_OVER_CHUNK_MIN)
+						chunk_size = NNTP_OVER_CHUNK_MIN;
+				}
+			}
 
-	old_timeout = camel_nntp_stream_get_timeout (nntp_stream);
-	camel_nntp_stream_set_timeout (nntp_stream, MAX (old_timeout, NNTP_STREAM_DOWNLOAD_TIMEOUT_SECS));
+			/* Save progress and reconnect.  A new TCP
+			 * connection gets a fresh byte budget from
+			 * middleboxes.  Always save here (not throttled)
+			 * because a reconnect or crash may follow. */
+			camel_folder_summary_touch (s);
+			camel_folder_summary_save (s, NULL);
+			last_save_time = g_get_monotonic_time ();
 
-	if (limit_from)
-		ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s %u-", full_name, limit_from);
-	else
-		ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s", full_name);
-	if (ret != 211) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Unexpected server response from listgroup: %s"),
-			line);
-		goto ioerror;
-	}
+			if (g_cancellable_is_cancelled (cancellable)) {
+				ret = -1;
+				break;
+			}
 
-	count = 0;
+			camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, cancellable, NULL);
+			if (!camel_service_connect_sync (CAMEL_SERVICE (store), cancellable, error)) {
+				ret = -1;
+				break;
+			}
+			if (camel_nntp_raw_command_auth (store, cancellable, error, &grp_line, "group %s", full_name) == 211) {
+				camel_nntp_store_set_current_group (store, full_name);
+			} else {
+				camel_nntp_store_set_current_group (store, NULL);
+				ret = -1;
+				break;
+			}
+			ret = 0;
+			continue;
 
-	while (camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error) > 0) {
-		guint nn;
-
-		if (len == 1 && g_ascii_strncasecmp (line, ".", len) == 0)
+		} else if (ret == -1) {
+			g_propagate_error (error, local_error);
 			break;
-
-		if (total > 0)
-			camel_operation_progress (cancellable, (count * 100) / total);
-		count++;
-
-		nn = strtoul (line, NULL, 10);
-		if (nn) {
-			if (!existing_articles)
-				existing_articles = g_hash_table_new (g_direct_hash, g_direct_equal);
-
-			g_hash_table_insert (existing_articles, GUINT_TO_POINTER (nn), NULL);
 		}
+
+		/* Success: full chunk completed. */
+		retries = 0;
+		if (chunk_size < NNTP_OVER_CHUNK_SIZE) {
+			chunk_size *= 2;
+			if (chunk_size > NNTP_OVER_CHUNK_SIZE)
+				chunk_size = NNTP_OVER_CHUNK_SIZE;
+		}
+
+		/* OVER chunk_low–chunk_high has been fully processed;
+		 * all articles in this range are fetched.  Advance
+		 * past the entire scanned range, not just the last
+		 * article number found (the range may be sparse). */
+		if (cns->high < chunk_high)
+			cns->high = chunk_high;
+		scan_from = chunk_high + 1;
+
+		camel_folder_summary_touch (s);
+
+		/* Avoid hammering the disk on fast connections;
+		 * save at most once per NNTP_SAVE_INTERVAL_USEC.
+		 * The timeout path above always saves immediately
+		 * because a reconnect (or crash) may follow. */
+		if (g_get_monotonic_time () - last_save_time >= NNTP_SAVE_INTERVAL_USEC) {
+			camel_folder_summary_save (s, NULL);
+			last_save_time = g_get_monotonic_time ();
+		}
+
+		if (g_cancellable_is_cancelled (cancellable))
+			break;
 	}
 
- ioerror:
+	/* Final save to flush any unsaved progress. */
+	camel_folder_summary_save (s, NULL);
 
-	camel_nntp_stream_set_timeout (nntp_stream, old_timeout);
-	g_clear_object (&nntp_stream);
-
-	camel_operation_pop_message (cancellable);
-
-	return existing_articles;
-}
-
-static guint
-nntp_summary_get_current_date_mark (void)
-{
-	GDate date;
-
-	g_date_clear (&date, 1);
-	g_date_set_time_t (&date, time (NULL));
-
-	return g_date_get_year (&date) * 10000 + g_date_get_month (&date) * 100 + g_date_get_day (&date);
+	return ret;
 }
 
 /* Assumes we have the stream */
@@ -587,39 +656,20 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	if (known_uids) {
 		GPtrArray *removed = NULL;
 
-		n = nntp_summary_get_current_date_mark ();
-
-		if (n != cns->priv->last_full_resync) {
-			GHashTable *existing_articles;
-			guint first = f;
-
-			/* Do full resync only once per day, not on every folder change */
-			cns->priv->last_full_resync = n;
-
-			if (limit_latest > 0 && l - first > limit_latest)
-				first = l - limit_latest;
-
-			/* Ignore errors, the worse is that some already deleted aricles will be still
-			   in the local summary, which is not a big deal as no articles shown at all. */
-			existing_articles = nntp_get_existing_article_numbers (cns, store, full_name, first == f ? 0 : first, l - first + 1, cancellable, NULL);
-			if (existing_articles) {
-				for (i = 0; i < known_uids->len; i++) {
-					const gchar *uid;
-
-					uid = g_ptr_array_index (known_uids, i);
-					n = strtoul (uid, NULL, 10);
-
-					if (!g_hash_table_contains (existing_articles, GUINT_TO_POINTER (n))) {
-						camel_folder_change_info_remove_uid (changes, uid);
-						if (!removed)
-							removed = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
-						g_ptr_array_add (removed, (gpointer) camel_pstring_strdup (uid));
-					}
-				}
-
-				g_hash_table_destroy (existing_articles);
-			}
-		} else if (cns->low != f) {
+		/* Only remove articles whose numbers fall outside the
+		 * server's current [f, l] range (from the GROUP response).
+		 * This is safe because GROUP returns a single line that
+		 * cannot be truncated by middleboxes.
+		 *
+		 * The original code also did a daily LISTGROUP-based
+		 * full resync, but that streams hundreds of thousands of
+		 * article numbers and is vulnerable to truncation by DPI
+		 * middleboxes.  A truncated response causes Evolution to
+		 * incorrectly delete valid locally-cached articles.
+		 * Since NNTP articles are only expired by server retention
+		 * policy (not by user action), stale local entries are
+		 * harmless — opening one just shows "article not found". */
+		if (cns->low != f) {
 			for (i = 0; i < known_uids->len; i++) {
 				const gchar *uid;
 
@@ -651,14 +701,9 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 		if (cns->high < f || limit_latest != cns->priv->last_limit_latest)
 			cns->high = f - 1;
 
-		if (store->xover)
-			ret = add_range_xover (
-				cns, store, l, cns->high + 1,
-				changes, cancellable, error);
-		else
-			ret = add_range_head (
-				cns, store, l, cns->high + 1,
-				changes, cancellable, error);
+		ret = fetch_articles_chunked (
+			cns, store, full_name, l,
+			changes, s, cancellable, error);
 	}
 
 	cns->priv->last_limit_latest = limit_latest;
