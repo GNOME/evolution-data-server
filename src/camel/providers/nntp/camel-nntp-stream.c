@@ -592,17 +592,24 @@ camel_nntp_stream_set_timeout (CamelNNTPStream *nntp_stream,
 
 	if (socket)
 		g_socket_set_timeout (socket, timeout_seconds);
+
+	g_clear_object (&socket);
 }
 
 guint
 camel_nntp_stream_get_timeout (CamelNNTPStream *nntp_stream)
 {
 	GSocket *socket;
+	guint timeout;
 
 	if (!nntp_stream)
 		return 0;
 
 	socket = nntp_get_stream_socket (nntp_stream->source);
 
-	return socket ? g_socket_get_timeout (socket) : 0;
+	timeout = socket ? g_socket_get_timeout (socket) : 0;
+
+	g_clear_object (&socket);
+
+	return timeout;
 }
