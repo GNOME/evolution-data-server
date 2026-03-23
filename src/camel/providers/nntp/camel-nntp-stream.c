@@ -549,7 +549,7 @@ camel_nntp_stream_unlock (CamelNNTPStream *nntp_stream)
 }
 
 static GSocket *
-nntp_get_stream_socket (CamelStream *stream)
+nntp_ref_stream_socket (CamelStream *stream)
 {
 	GIOStream *base_strm;
 	GSocket *socket = NULL;
@@ -588,7 +588,7 @@ camel_nntp_stream_set_timeout (CamelNNTPStream *nntp_stream,
 	if (!nntp_stream)
 		return;
 
-	socket = nntp_get_stream_socket (nntp_stream->source);
+	socket = nntp_ref_stream_socket (nntp_stream->source);
 
 	if (socket)
 		g_socket_set_timeout (socket, timeout_seconds);
@@ -605,7 +605,7 @@ camel_nntp_stream_get_timeout (CamelNNTPStream *nntp_stream)
 	if (!nntp_stream)
 		return 0;
 
-	socket = nntp_get_stream_socket (nntp_stream->source);
+	socket = nntp_ref_stream_socket (nntp_stream->source);
 
 	timeout = socket ? g_socket_get_timeout (socket) : 0;
 
