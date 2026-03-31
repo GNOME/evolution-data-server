@@ -169,8 +169,14 @@ maildir_store_create_folder_sync (CamelStore *store,
 	else
 		name = g_strdup_printf ("%s", folder_name);
 
-	folder = maildir_store_get_folder_sync (
-		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
+	if (camel_store_db_get_folder_id (camel_store_get_db (store), name) > 0) {
+		g_set_error (
+			error, G_IO_ERROR, G_IO_ERROR_EXISTS,
+			_("Folder %s already exists"), name);
+		goto exit;
+	}
+
+	folder = maildir_store_get_folder_sync (store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
 	if (folder) {
 		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info_sync (
