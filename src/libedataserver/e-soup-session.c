@@ -1013,9 +1013,29 @@ e_soup_session_get_handle_backoff_responses (ESoupSession *session)
 gboolean
 e_soup_session_get_authentication_requires_credentials (ESoupSession *session)
 {
+	gboolean res = TRUE;
+
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
 
-	return !session->priv->using_bearer_auth;
+	if (session->priv->using_bearer_auth)
+		return FALSE;
+
+	if (session->priv->source && e_source_has_extension (session->priv->source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *extension;
+		gchar *auth_method;
+
+		extension = e_source_get_extension (session->priv->source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		auth_method = e_source_authentication_dup_method (extension);
+
+		if (auth_method && (g_strcmp0 (auth_method, "OAuth2") == 0 ||
+		    e_oauth2_services_is_oauth2_alias_static (auth_method))) {
+			res = FALSE;
+		}
+
+		g_free (auth_method);
+	}
+
+	return res;
 }
 
 /**
