@@ -105,7 +105,6 @@ GDBusConnection *
 						(EBookClientView *client_view);
 const gchar *	e_book_client_view_get_object_path
 						(EBookClientView *client_view);
-gboolean	e_book_client_view_is_running	(EBookClientView *client_view);
 void		e_book_client_view_set_fields_of_interest
 						(EBookClientView *client_view,
 						 const GSList *fields_of_interest,

@@ -76,9 +76,6 @@ gboolean	camel_search_header_match	(const gchar *value,
 						 camel_search_match_t how,
 						 camel_search_t type,
 						 const gchar *default_charset);
-gboolean	camel_search_camel_header_soundex
-						(const gchar *header,
-						 const gchar *match);
 
 /* TODO: replace with a real search function */
 const gchar *	camel_ustrstrcase		(const gchar *haystack,

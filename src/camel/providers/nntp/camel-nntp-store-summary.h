@@ -95,10 +95,6 @@ gchar *		camel_nntp_store_summary_path_to_full
 						(CamelNNTPStoreSummary *s,
 						 const gchar *path,
 						 gchar dir_sep);
-gchar *		camel_nntp_store_summary_dotted_to_full
-						(CamelNNTPStoreSummary *s,
-						 const gchar *dotted,
-						 gchar dir_sep);
 
 CamelNNTPStoreInfo *
 		camel_nntp_store_summary_full_name
@@ -109,11 +105,6 @@ CamelNNTPStoreInfo *
 						(CamelNNTPStoreSummary *s,
 						 const gchar *full_name,
 						 gchar dir_sep);
-
-/* a convenience lookup function. always use this if path known */
-gchar *		camel_nntp_store_summary_full_from_path
-						(CamelNNTPStoreSummary *s,
-						 const gchar *path);
 
 G_END_DECLS
 

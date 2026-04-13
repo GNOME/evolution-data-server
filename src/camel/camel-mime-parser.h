@@ -112,9 +112,6 @@ void camel_mime_parser_scan_from (CamelMimeParser *parser, gboolean scan_from);
 /* Do we want to know about the pre-from data? */
 void camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre_from);
 
-/* what headers to save, MUST include ^Content-Type: */
-gint camel_mime_parser_set_header_regex (CamelMimeParser *parser, gchar *matchstr);
-
 /* normal interface */
 CamelMimeParserState camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *datalength);
 void camel_mime_parser_unstep (CamelMimeParser *parser);
