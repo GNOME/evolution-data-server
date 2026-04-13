@@ -1,4 +1,5 @@
 add_subdirectory(imapx)
+add_subdirectory(jmap)
 add_subdirectory(local)
 add_subdirectory(nntp)
 add_subdirectory(pop3)

@@ -2,6 +2,7 @@ set(SOURCEDIRS
 	${CMAKE_SOURCE_DIR}/src/camel
 	${CMAKE_SOURCE_DIR}/src/camel/providers/local
 	${CMAKE_SOURCE_DIR}/src/camel/providers/imapx
+	${CMAKE_SOURCE_DIR}/src/camel/providers/jmap
 	${CMAKE_SOURCE_DIR}/src/camel/providers/nntp
 	${CMAKE_SOURCE_DIR}/src/camel/providers/pop3
 	${CMAKE_SOURCE_DIR}/src/camel/providers/sendmail
@@ -12,6 +13,7 @@ set(DEPENDENCIES
 	camel
 	camellocal
 	camelimapx
+	cameljmap
 	camelnntp
 	camelpop3
 	camelsendmail

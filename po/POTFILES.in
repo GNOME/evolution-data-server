@@ -146,6 +146,10 @@ src/camel/providers/imapx/camel-imapx-input-stream.c
 src/camel/providers/imapx/camel-imapx-provider.c
 src/camel/providers/imapx/camel-imapx-server.c
 src/camel/providers/imapx/camel-imapx-store.c
+src/camel/providers/jmap/camel-jmap-folder.c
+src/camel/providers/jmap/camel-jmap-provider.c
+src/camel/providers/jmap/camel-jmap-store.c
+src/camel/providers/jmap/camel-jmap-transport.c
 src/camel/providers/local/camel-local-folder.c
 src/camel/providers/local/camel-local-provider.c
 src/camel/providers/local/camel-local-store.c
