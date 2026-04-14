@@ -314,6 +314,8 @@ e_gdata_session_send_request_sync (EGDataSession *self,
 		if (need_retry) {
 			success = FALSE;
 			g_clear_error (error);
+
+			g_signal_emit_by_name (message, "restarted");
 		}
 	}
 
