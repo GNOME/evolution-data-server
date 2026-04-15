@@ -17,6 +17,29 @@
  * Authors: Dan Winship <danw@ximian.com>
  */
 
+/**
+ * SECTION: camel-transport
+ * @short_description: Base class for mail sending backends
+ * @include: camel/camel.h
+ *
+ * #CamelTransport is the base class for backends that support sending mail
+ * messages. It is a #CamelService subclass and adds a single core virtual
+ * method: camel_transport_send_to().
+ *
+ * The recipient address list passed to camel_transport_send_to() is the
+ * envelope recipient list, which need not match the To/Cc headers in the
+ * message itself — this is how Bcc recipients are handled. Similarly, the
+ * from address is the envelope sender.
+ *
+ * Implementations are free to modify certain headers (e.g. remove headers
+ * they do not wish to transmit, adjust Content-Transfer-Encoding) before
+ * sending, but must restore them afterwards. The actual message content is
+ * not changed.
+ *
+ * Available implementations include SMTP (camel-smtp-provider) and sendmail
+ * (camel-sendmail-provider).
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include "camel-address.h"

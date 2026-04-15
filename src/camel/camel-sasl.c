@@ -16,6 +16,31 @@
  * Authors: Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-sasl
+ * @short_description: SASL (Secure Authentication and Security Layer) support
+ * @include: camel/camel.h
+ *
+ * #CamelSasl is an abstract base class for pluggable authentication
+ * mechanisms used by connection-based mail services. It implements the
+ * Secure Authentication part of SASL, providing a challenge-response
+ * interface that can be invoked multiple times until authentication
+ * completes.
+ *
+ * Non-SASL authentication mechanisms that fit the same challenge-response
+ * design (such as LOGIN and NTLM) are also wrapped in #CamelSasl subclasses
+ * to simplify their use.
+ *
+ * Instances are created via the camel_sasl_new() factory function, which
+ * looks up the named mechanism. The main API is camel_sasl_challenge(), which
+ * takes a server challenge token and returns the client's response token.
+ * A base64 convenience wrapper, camel_sasl_challenge_base64(), is provided
+ * for protocols that exchange base64-encoded tokens.
+ *
+ * Available built-in mechanisms include: ANONYMOUS, CRAM-MD5, DIGEST-MD5,
+ * GSSAPI (Kerberos), LOGIN, NTLM, PLAIN, POPB4SMTP, and XOAUTH2 variants.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <string.h>

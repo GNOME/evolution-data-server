@@ -16,6 +16,25 @@
  * Authors: Jeffrey Stedfast <fejj@novell.com>
  */
 
+/**
+ * SECTION: camel-offline-folder
+ * @short_description: A folder that supports offline message caching
+ * @include: camel/camel.h
+ *
+ * #CamelOfflineFolder is a #CamelFolder subclass that should be used by any
+ * folder in an offline-capable (#CamelOfflineStore) backend.
+ *
+ * It adds two capabilities:
+ *
+ * - A `sync-offline` persistent property that, when %TRUE, causes the backend
+ *   to automatically keep the folder's messages synchronised for offline
+ *   access.
+ *
+ * - camel_offline_folder_downsync() — a method that synchronises messages
+ *   matching a given search expression to local storage so they are available
+ *   when the network is not.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>

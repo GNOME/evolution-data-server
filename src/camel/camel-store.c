@@ -18,6 +18,34 @@
  *          Dan Winship <danw@ximian.com>
  */
 
+/**
+ * SECTION: camel-store
+ * @short_description: Base class for mail storage backends
+ * @include: camel/camel.h
+ *
+ * #CamelStore is the base class for backends that support storage and
+ * retrieval of mail messages. It is a #CamelService subclass that manages
+ * a connection and a collection of #CamelFolder objects.
+ *
+ * #CamelStore provides:
+ * - **Folder retrieval** — camel_store_get_folder() opens a named folder;
+ *   camel_store_get_inbox_folder() and camel_store_get_trash_folder() are
+ *   convenience wrappers for common system folders.
+ * - **Folder management** — creating, renaming, and deleting folders.
+ * - **Folder listing** — camel_store_get_folder_info() returns a tree of
+ *   #CamelFolderInfo describing the available folders.
+ * - **Subscriptions** — optional folder subscription management for backends
+ *   like IMAP that support it (via %CAMEL_STORE_SUBSCRIPTIONS flag and
+ *   the #CamelSubscribable interface).
+ *
+ * By default, stores set the %CAMEL_STORE_VTRASH and %CAMEL_STORE_VJUNK
+ * flags, which cause the base class to implement the trash and junk folders
+ * as virtual (#CamelVeeFolder) folders.
+ *
+ * The store emits signals when folders are opened, created, deleted, renamed,
+ * subscribed, or unsubscribed.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

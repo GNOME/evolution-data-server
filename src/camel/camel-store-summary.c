@@ -16,6 +16,26 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-store-summary
+ * @short_description: Cached folder listing for a mail store
+ * @include: camel/camel.h
+ *
+ * #CamelStoreSummary is a helper class used by #CamelStore implementations
+ * to cache the list of known folders and their metadata (name, flags, unread
+ * count, etc.). Like #CamelFolderSummary for messages, it avoids the need to
+ * query the remote server for the folder list on every session start.
+ *
+ * The summary is stored on disk in a versioned binary format that supports
+ * subclassing, so backend-specific implementations can add their own
+ * per-folder fields.
+ *
+ * Backends subclass #CamelStoreSummary to store additional information
+ * relevant to their storage format, and typically call
+ * camel_store_summary_load() at startup and camel_store_summary_save()
+ * when the folder list changes.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

@@ -16,6 +16,23 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-internet-address
+ * @short_description: RFC 822 internet address handling
+ * @include: camel/camel.h
+ *
+ * #CamelInternetAddress is a #CamelAddress subclass for handling RFC 822
+ * internet mail addresses. Each address consists of an optional human-readable
+ * name part and a required addr-spec part.
+ *
+ * Addresses are stored in a decoded, split format internally, and can be
+ * converted to and from their encoded (RFC 2047) wire representation via
+ * camel_address_encode() and camel_address_decode() respectively.
+ *
+ * Address groups as defined by RFC 822 are not supported; they are flattened
+ * into the base address list during decoding.
+ **/
+
 #include <stdio.h>
 #include <string.h>
 

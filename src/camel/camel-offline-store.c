@@ -16,6 +16,25 @@
  * Authors: Jeffrey Stedfast <fejj@novell.com>
  */
 
+/**
+ * SECTION: camel-offline-store
+ * @short_description: Base class for offline-capable mail stores
+ * @include: camel/camel.h
+ *
+ * #CamelOfflineStore is a #CamelStore subclass that any remote backend
+ * supporting offline operation should extend instead of #CamelStore directly.
+ *
+ * It adds a network availability state (online / offline) that client code
+ * can query and change via camel_offline_store_get_online() and
+ * camel_offline_store_set_online(). When going offline, the base class
+ * implementation synchronises all #CamelOfflineFolder instances that are
+ * currently active.
+ *
+ * Backends using #CamelOfflineStore should also provide
+ * #CamelOfflineFolder-based folders for any folders representing remote data,
+ * so that the per-folder offline sync behaviour can be controlled.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>

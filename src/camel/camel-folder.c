@@ -17,6 +17,32 @@
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
+/**
+ * SECTION: camel-folder
+ * @short_description: Abstract interface for a mail message store
+ * @include: camel/camel.h
+ *
+ * #CamelFolder is the object used to abstract a mail folder that stores
+ * messages. Folders are obtained from #CamelStore instances and provide
+ * the primary interface for working with mail:
+ *
+ * - Retrieving information about messages in the folder (via
+ *   #CamelFolderSummary and #CamelMessageInfo).
+ * - Searching for messages with camel_folder_search_sync().
+ * - Retrieving message content with camel_folder_get_message().
+ * - Copying, moving, and appending messages.
+ * - Modifying message flags and user-defined tags.
+ * - Expunging deleted messages.
+ *
+ * The abstraction maps closely to IMAP folders, Berkeley mbox, and Maildir:
+ * messages are ordered by arrival time, identified by a persistent UID
+ * string, and deleted by first flagging them then expunging the folder.
+ *
+ * #CamelFolder itself handles the client-facing interface. Implementations
+ * use #CamelFolderSummary to manage the message list and cached metadata,
+ * and may use #CamelFolderSearch to drive the search interface.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <string.h>

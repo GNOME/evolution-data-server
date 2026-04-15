@@ -17,6 +17,37 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-mime-utils
+ * @short_description: MIME and mail utility functions
+ * @include: camel/camel.h
+ *
+ * This module provides a wide collection of MIME and RFC 822 related utility
+ * functions used extensively throughout Camel. It is not an object, but a
+ * library of functions covering:
+ *
+ * - **Character class detection** — a fast, table-driven set of macros for
+ *   classifying individual characters according to RFC character classes
+ *   (atoms, LWSP, tspecials, etc.).
+ *
+ * - **Content-Transfer-Encoding** — highly optimised base64, quoted-printable,
+ *   and UUencoding encoders and decoders.
+ *
+ * - **Raw header parsing** — low-level tokenisers for MIME headers.
+ *
+ * - **Structured header handling** — parsers and formatters for Date, Address,
+ *   Content-Type, Content-Disposition, Content-ID, References, and Newsgroups
+ *   headers with full RFC 2047 support.
+ *
+ * - **Header folding** — utilities for folding and unfolding long header
+ *   values according to RFC 2822.
+ *
+ * Many of these functions represent years of production mail-client testing
+ * and are highly optimised. For most purposes, the higher-level interfaces
+ * on #CamelMimePart, #CamelMimeMessage, and #CamelInternetAddress should be
+ * preferred.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <stdio.h>

@@ -19,6 +19,25 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-mime-message
+ * @short_description: A complete RFC 822 MIME message
+ * @include: camel/camel.h
+ *
+ * #CamelMimeMessage is a #CamelMimePart subclass that represents a complete
+ * RFC 822 mail message. It adds structured accessors for message-level headers
+ * such as From, Reply-To, To, Cc, Bcc, Subject, Message-ID, and the message
+ * date.
+ *
+ * Recipient lists (To, Cc, Bcc) are exposed as #CamelInternetAddress objects
+ * accessed via camel_mime_message_get_recipients(). The From and Reply-To
+ * headers are similarly accessible as #CamelInternetAddress objects.
+ *
+ * Because #CamelMimeMessage is a full #CamelMimePart, it can also hold a
+ * multipart body, making it suitable for creating and reading both simple
+ * single-part and complex multipart messages.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

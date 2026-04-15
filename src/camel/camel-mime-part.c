@@ -19,6 +19,33 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-mime-part
+ * @short_description: A single part in a MIME message
+ * @include: camel/camel.h
+ *
+ * #CamelMimePart is a #CamelMedium subclass that represents one part of a
+ * MIME message. It can be a top-level message body or one part in a
+ * multipart container.
+ *
+ * It adds structured, UTF-8 accessors for the standard Content-* MIME headers:
+ *
+ * - Content-Disposition (including the filename parameter)
+ * - Content-Description
+ * - Content-ID
+ * - Content-MD5
+ * - Content-Location
+ * - Content-Languages
+ * - Content-Transfer-Encoding
+ *
+ * All string accessors transparently perform RFC 2047 decoding/encoding as
+ * needed. The filename is also mirrored on the Content-Type name parameter for
+ * interoperability.
+ *
+ * A #CamelMimePart can be constructed directly from a #CamelMimeParser via
+ * camel_mime_part_construct_from_parser().
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

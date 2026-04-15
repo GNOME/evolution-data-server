@@ -17,6 +17,21 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-multipart-signed
+ * @short_description: A multipart/signed MIME container
+ * @include: camel/camel.h
+ *
+ * #CamelMultipartSigned is a #CamelMultipart subclass for handling
+ * multipart/signed MIME parts as defined in RFC 1847. It holds the signed
+ * content part and the signature part together, and integrates with
+ * #CamelCipherContext to verify or create signatures.
+ *
+ * The signed content is accessible via the standard #CamelMultipart part
+ * accessors, and the signature validity result (a #CamelCipherValidity) can
+ * be retrieved after verification.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

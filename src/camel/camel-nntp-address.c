@@ -16,6 +16,16 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-nntp-address
+ * @short_description: NNTP newsgroup address handling
+ * @include: camel/camel.h
+ *
+ * #CamelNNTPAddress is a #CamelAddress subclass for handling lists of NNTP
+ * newsgroup names. Newsgroup names are ASCII-based, so no character encoding
+ * is required.
+ **/
+
 #include <stdio.h>
 #include <string.h>
 

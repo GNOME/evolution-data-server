@@ -16,6 +16,23 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-vee-store
+ * @short_description: A store that manages a collection of virtual folders
+ * @include: camel/camel.h
+ *
+ * #CamelVeeStore is a #CamelStore subclass that manages a list of virtual
+ * (#CamelVeeFolder) folders. It handles the store-level operations such as
+ * folder creation, renaming, and deletion for virtual folders.
+ *
+ * #CamelVeeStore manages the virtual folder list entirely at run-time; the
+ * driving application is responsible for creating and initialising the virtual
+ * folders within the store on each session start.
+ *
+ * #CamelVeeStore also automatically maintains an UNMATCHED virtual folder
+ * in the folder listings.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <string.h>

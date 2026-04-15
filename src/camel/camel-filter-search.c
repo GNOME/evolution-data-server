@@ -17,6 +17,33 @@
  *	    Michael Zucchi <NotZed@Ximian.com>
  */
 
+/**
+ * SECTION: camel-filter-search
+ * @short_description: S-expression matching functions for message filtering
+ * @include: camel/camel.h
+ *
+ * This module implements the s-expression matching functions used by
+ * #CamelFilterDriver to evaluate filter rules against messages.
+ *
+ * Match expressions operate on a single message and return a boolean.
+ * Available matching functions include:
+ *
+ * - `(body-contains string …)` — matches if the message body contains any
+ *   of the given strings (searches text/* parts with tag-stripping for HTML).
+ * - `(header-contains header string …)` / `(header-matches …)` /
+ *   `(header-starts-with …)` / `(header-ends-with …)` — header matching.
+ * - `(header-exists header)` — tests whether a header is present.
+ * - `(match-all expression)` — evaluates a boolean against all messages.
+ * - `(user-flag flag)` / `(user-tag tag value)` — user metadata matching.
+ * - `(system-flag flag)` — system flag matching (seen, deleted, flagged, etc.).
+ * - `(pipe-message cmd)` — runs the message through an external program whose
+ *   exit code determines the match result.
+ * - `(size op n)` — matches on message size.
+ * - `(date-sent op date)` / `(date-received op date)` — date matching.
+ *
+ * These are evaluated by #CamelSExp.
+ **/
+
 #include "evolution-data-server-config.h"
 
 /* POSIX requires <sys/types.h> be included before <regex.h> */

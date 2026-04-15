@@ -16,6 +16,25 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-index
+ * @short_description: Abstract interface for content indexing
+ * @include: camel/camel.h
+ *
+ * #CamelIndex is an abstract base class that provides a content-indexing
+ * interface for Camel. It is used to build and query full-text indexes of
+ * message content, enabling fast body-text searches without re-scanning
+ * message files.
+ *
+ * The concrete implementation is #CamelTextIndex, which stores the index
+ * on disk using a partition-table and block-file based format.
+ *
+ * When a #CamelIndex is attached to a #CamelFolderSummary (via
+ * camel_folder_summary_set_index()), summary generation will automatically
+ * add index entries for each message's text/* content. The index can then
+ * be queried by #CamelFolderSearch to accelerate `body-contains` searches.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

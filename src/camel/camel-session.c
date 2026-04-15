@@ -19,6 +19,41 @@
  *          Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
+/**
+ * SECTION: camel-session
+ * @short_description: Application context for a Camel mail session
+ * @include: camel/camel.h
+ *
+ * #CamelSession is a partially abstract class that provides the application
+ * context for a Camel mail session. Client applications must subclass it and
+ * override various virtual methods before any #CamelProvider backends can
+ * function.
+ *
+ * A session provides:
+ *
+ * - **Service resolution** — camel_session_ref_service() looks up an
+ *   already-registered #CamelService by UID, while camel_session_add_service()
+ *   registers a new service (instantiating the correct #CamelStore or
+ *   #CamelTransport subclass based on the #CamelProvider).
+ *
+ * - **Online/offline state** — camel_session_get_online() and
+ *   camel_session_set_online() control whether backends should access remote
+ *   resources. Backends observe this and go offline accordingly.
+ *
+ * - **User interaction** — virtual methods for password prompts
+ *   (camel_session_get_password()) and alerts, which the client application
+ *   must implement to interact with the user.
+ *
+ * - **Filter driver access** — camel_session_get_filter_driver() returns a
+ *   configured #CamelFilterDriver for automatic message filtering.
+ *
+ * - **Thread management** — helpers for submitting jobs to a thread pool and
+ *   for running async operations.
+ *
+ * An application typically creates a single session instance and reuses it
+ * for the lifetime of the application.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

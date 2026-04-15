@@ -16,6 +16,17 @@
  * Authors: Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-multipart-encrypted
+ * @short_description: A multipart/encrypted MIME container
+ * @include: camel/camel.h
+ *
+ * #CamelMultipartEncrypted is a #CamelMultipart subclass for handling
+ * multipart/encrypted MIME parts as defined in RFC 1847. It holds the
+ * encryption protocol part and the encrypted body together, and integrates
+ * with #CamelCipherContext to decrypt or encrypt message content.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>

@@ -16,6 +16,22 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-stream-filter
+ * @short_description: A stream that pipelines data through MIME filters
+ * @include: camel/camel.h
+ *
+ * #CamelStreamFilter wraps another #CamelStream and passes all data read
+ * from or written to it through an ordered chain of #CamelMimeFilter
+ * instances. This enables efficient, multi-stage, pipelined processing of
+ * stream data in a single pass.
+ *
+ * Filters are added with camel_stream_filter_add() and removed with
+ * camel_stream_filter_remove(). Each filter is applied in the order it was
+ * added. Data flows through all filters before being returned to the caller
+ * (for read) or written to the underlying stream (for write).
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

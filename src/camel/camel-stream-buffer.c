@@ -17,6 +17,20 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-stream-buffer
+ * @short_description: A buffering wrapper around a Camel stream
+ * @include: camel/camel.h
+ *
+ * #CamelStreamBuffer wraps another #CamelStream and provides buffering.
+ * All read and write operations are automatically buffered through virtual
+ * method overrides.
+ *
+ * The additional camel_stream_buffer_read_line() method returns a complete
+ * line (up to the next newline) as a newly-allocated string, automatically
+ * converting \\r\\n sequences to \\n and stripping them.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

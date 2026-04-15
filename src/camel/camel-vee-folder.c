@@ -17,6 +17,30 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-vee-folder
+ * @short_description: A virtual folder representing a saved search
+ * @include: camel/camel.h
+ *
+ * #CamelVeeFolder is a #CamelFolder subclass that implements virtual folders.
+ * A virtual folder is like a persistent search over one or more real folders:
+ * it automatically stays up to date as messages arrive or change, and
+ * otherwise behaves like a normal folder to client code.
+ *
+ * The set of source folders is managed with camel_vee_folder_add_folder_sync(),
+ * camel_vee_folder_remove_folder_sync(), and camel_vee_folder_set_folders_sync().
+ * The search expression (a #CamelFolderSearch s-expression) is set with
+ * camel_vee_folder_set_expression_sync().
+ *
+ * Virtual folder UIDs are composed of an 8-character hash of the physical
+ * folder plus the original UID, making them stable across renames and
+ * allowing efficient reverse-lookup via camel_vee_folder_get_location().
+ *
+ * Virtual folders are normally parented to a #CamelVeeStore. The special
+ * UNMATCHED folder represents all messages in the tracked folders that are
+ * not matched by any other virtual folder.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <string.h>

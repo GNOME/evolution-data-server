@@ -16,6 +16,40 @@
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
+/**
+ * SECTION: camel-data-wrapper
+ * @short_description: Base class for structured MIME data access
+ * @include: camel/camel.h
+ *
+ * #CamelDataWrapper is the base class used to implement structured MIME data
+ * access. It serves as the programmatic interface for creating and reading
+ * MIME-encoded data, primarily RFC 822 messages.
+ *
+ * The class hierarchy rooted at #CamelDataWrapper closely parallels the
+ * structure of a MIME message:
+ *
+ * - #CamelDataWrapper itself holds unstructured leaf data (e.g. an attachment
+ *   body) together with its content-type and transfer encoding.
+ *
+ * - #CamelMedium extends it with named headers and a separate content object.
+ *
+ * - #CamelMimePart adds structured accessors for all standard Content-*
+ *   headers (Content-Type, Content-Disposition, Content-Transfer-Encoding,
+ *   etc.) and can be constructed from a #CamelMimeParser.
+ *
+ * - #CamelMimeMessage is a fully-fledged RFC 822 message with From/To/Subject
+ *   and other message-level headers, built on top of #CamelMimePart.
+ *
+ * - #CamelMultipart and its subclasses (#CamelMultipartSigned,
+ *   #CamelMultipartEncrypted) handle multipart MIME containers.
+ *
+ * The i/o interface is stream-based: camel_data_wrapper_write_to_stream()
+ * serialises the object into encoded MIME form, while
+ * camel_data_wrapper_decode_to_stream() writes the decoded content (stripping
+ * the content-transfer-encoding). camel_data_wrapper_construct_from_stream()
+ * is the main entry point for parsing raw MIME data into an object hierarchy.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

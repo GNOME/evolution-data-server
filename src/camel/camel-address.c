@@ -16,6 +16,31 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-address
+ * @short_description: Base class for RFC-defined address types
+ * @include: camel/camel.h
+ *
+ * #CamelAddress is a base abstract class for address types used in mail
+ * headers. It provides structured access to an indexed list of addresses.
+ *
+ * Addresses can be represented in two ways:
+ *
+ * - The **formatted** form is a UTF-8 string representation suitable for
+ *   display to the user. The formatting is not guaranteed to be reversible,
+ *   but camel_address_unformat() will try to reconstruct the address list
+ *   from such a string.
+ *
+ * - The **encoded** form is the raw transmission version of the address
+ *   (e.g. RFC 2047-encoded for internet addresses). The encoding process
+ *   is fully bi-directional via camel_address_encode() and
+ *   camel_address_decode().
+ *
+ * An existing address can be cloned with camel_address_new_clone(), and
+ * addresses can be concatenated or copied between instances with
+ * camel_address_cat() and camel_address_copy().
+ **/
+
 #include "camel-address.h"
 
 struct _CamelAddressPrivate {

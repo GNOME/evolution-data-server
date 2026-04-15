@@ -19,6 +19,37 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-provider
+ * @short_description: Plugin interface for mail storage and transport backends
+ * @include: camel/camel.h
+ *
+ * #CamelProvider is the plugin descriptor structure that describes a mail
+ * storage or transport backend (or both). It is the first piece of information
+ * loaded from an external backend shared library and serves as the entry point
+ * for the plugin mechanism.
+ *
+ * From the client's perspective, a provider descriptor gives enough
+ * information to present the user with the configuration questions required
+ * to set up the service, including the list of supported authentication
+ * mechanisms.
+ *
+ * Key fields in the #CamelProvider structure:
+ * - `protocol`: The unique, lower-case URI scheme (e.g. `"imap"`).
+ * - `name`: A short human-readable name (e.g. `"IMAP"`).
+ * - `description`: A longer description of what the backend does.
+ * - `object_types`: The #CamelStore and/or #CamelTransport GTypes to
+ *   instantiate for this backend.
+ * - `authtypes`: The list of supported authentication mechanisms.
+ * - `url_flags`: Flags describing which URI fields are required or optional.
+ *
+ * Providers are loaded from shared libraries via camel_provider_load() and
+ * registered with the session using camel_session_add_service(). Once
+ * registered, #CamelSession uses the provider's `object_types` to instantiate
+ * the appropriate #CamelService subclass when camel_session_get_service() is
+ * called with a matching URI.
+ **/
+
 /* FIXME: Shouldn't we add a version number to providers ? */
 
 #include "evolution-data-server-config.h"

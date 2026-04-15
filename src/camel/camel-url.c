@@ -18,6 +18,33 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-url
+ * @short_description: URI parsing, encoding, and manipulation
+ * @include: camel/camel.h
+ *
+ * #CamelURL provides a URI parser, encoder, and logic for merging relative
+ * URIs with base URIs. When a URI string is parsed, it is split into its
+ * constituent parts and stored in a decoded form:
+ * protocol, user, authentication mechanism, password, host, port, path,
+ * query parameters, query string, and fragment.
+ *
+ * Field values are read directly from the struct members, but should only
+ * be written via the camel_url_set_*() accessor functions, which manage
+ * memory correctly.
+ *
+ * camel_url_to_string() serialises a #CamelURL back to a string,
+ * with optional flags to hide sensitive fields such as URI parameters
+ * (e.g. %CAMEL_URL_HIDE_PARAMS) or authentication details
+ * (e.g. %CAMEL_URL_HIDE_AUTH).
+ *
+ * camel_url_new_with_base() creates a new URI by resolving a relative URI
+ * string against a base #CamelURL, following all relevant RFC rules.
+ *
+ * camel_url_encode() and camel_url_decode() handle percent-encoding
+ * (%%XX escaping) of URI components.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

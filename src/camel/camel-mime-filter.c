@@ -16,6 +16,36 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-mime-filter
+ * @short_description: Stream-processing filter modules for MIME data
+ * @include: camel/camel.h
+ *
+ * #CamelMimeFilter is an abstract base class for stream-processing modules
+ * that transform blocks of data. Filters can be used in three ways:
+ *
+ * - **Individually** — call camel_mime_filter_filter() and
+ *   camel_mime_filter_complete() directly to process data buffers.
+ *
+ * - **Attached to a stream** — add to a #CamelStreamFilter so that data
+ *   read from or written to the stream is automatically transformed.
+ *
+ * - **Attached to a parser** — register with #CamelMimeParser for pipelined
+ *   decoding while a message is being parsed.
+ *
+ * Each concrete filter subclass implements three virtual methods:
+ * filter(), complete(), and reset(). The base class handles all memory
+ * management for the pre-space / look-back buffer mechanism, which allows
+ * efficient multi-stage pipelined processing.
+ *
+ * Available filter implementations include character-set conversion
+ * (#CamelMimeFilterCharset), base64 and quoted-printable encoding
+ * (#CamelMimeFilterBasic), line-ending canonicalisation
+ * (#CamelMimeFilterCRLF), gzip compression (#CamelMimeFilterGZip), HTML
+ * conversion (#CamelMimeFilterToHtml), From-line escaping
+ * (#CamelMimeFilterFrom), and many others.
+ **/
+
 #include <string.h>
 
 #include "camel-mime-filter.h"

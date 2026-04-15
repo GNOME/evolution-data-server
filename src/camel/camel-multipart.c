@@ -17,6 +17,25 @@
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
+/**
+ * SECTION: camel-multipart
+ * @short_description: A container for multiple MIME parts
+ * @include: camel/camel.h
+ *
+ * #CamelMultipart is a #CamelDataWrapper subclass that represents a
+ * multipart/* MIME container. It holds an ordered list of #CamelMimePart
+ * children separated by a boundary string.
+ *
+ * Subclasses include #CamelMultipartSigned for multipart/signed (signed
+ * messages) and #CamelMultipartEncrypted for multipart/encrypted (encrypted
+ * messages).
+ *
+ * Parts can be added with camel_multipart_add_part() and accessed by index
+ * with camel_multipart_get_part(). The boundary string used to delimit parts
+ * in the encoded representation is managed via camel_multipart_set_boundary()
+ * and camel_multipart_get_boundary().
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

@@ -18,6 +18,25 @@
  *	    Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-medium
+ * @short_description: Abstract class for data with headers and content
+ * @include: camel/camel.h
+ *
+ * #CamelMedium extends #CamelDataWrapper with support for named message
+ * headers and a separate content object. It is the common ancestor of
+ * #CamelMimePart and ultimately #CamelMimeMessage.
+ *
+ * The header interface operates on raw (wire-format) header values; any
+ * RFC 2047 or other encoding must be applied by the caller. Multiple
+ * headers with the same name are supported; camel_medium_remove_header()
+ * removes all occurrences.
+ *
+ * The content object is a #CamelDataWrapper instance accessible via
+ * camel_medium_get_content() and camel_medium_set_content(). For MIME
+ * messages this is the parsed body of the part.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

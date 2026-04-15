@@ -15,6 +15,33 @@
  *
  */
 
+/**
+ * SECTION: camel-operation
+ * @short_description: Progress reporting and cancellation for long-running tasks
+ * @include: camel/camel.h
+ *
+ * #CamelOperation is a bi-directional rendezvous mechanism used to communicate
+ * status information from long-running Camel tasks back to the calling
+ * application, and to allow the application to cancel those tasks.
+ *
+ * The typical usage pattern is:
+ *
+ * 1. Create a #CamelOperation with a status callback.
+ * 2. Push it onto the current thread with camel_operation_push_message() /
+ *    or use it as a #GCancellable passed to async operations.
+ * 3. Long-running Camel functions report progress via
+ *    camel_operation_progress() and check for cancellation via the
+ *    #GCancellable interface.
+ * 4. The client can cancel the operation by calling g_cancellable_cancel()
+ *    on the #CamelOperation (which is a #GCancellable subclass).
+ *
+ * Status messages follow a push/pop model: camel_operation_push_message()
+ * starts a new operation description (emitting the "status" signal), and
+ * camel_operation_pop_message() ends it, restoring the previous description.
+ * camel_operation_progress() reports percentage-based progress within the
+ * current message.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <stdio.h>

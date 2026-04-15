@@ -17,6 +17,34 @@
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
+/**
+ * SECTION: camel-service
+ * @short_description: Base class for mail access and sending services
+ * @include: camel/camel.h
+ *
+ * #CamelService is an abstract base class that is the common parent of
+ * #CamelStore (mail storage and retrieval) and #CamelTransport (mail
+ * sending). It defines the common operations associated with a configured
+ * mail service.
+ *
+ * Service instances are always created and managed by #CamelSession via
+ * camel_session_get_service(). The session uses the GType stored in the
+ * #CamelProvider descriptor to instantiate the correct subclass.
+ *
+ * #CamelService manages the connection lifecycle:
+ * - camel_service_connect() establishes a connection to the remote resource.
+ * - camel_service_disconnect() tears it down.
+ * - Connection and authentication settings are conveyed via a #CamelURL
+ *   (the URI passed when the service was first requested).
+ *
+ * Authentication is handled asynchronously through the session's
+ * camel_session_authenticate() mechanism, which can prompt the user for
+ * credentials as needed.
+ *
+ * The connection state is exposed as a #CamelServiceConnectionStatus and
+ * signals are emitted when it changes.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

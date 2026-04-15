@@ -16,6 +16,33 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-mime-parser
+ * @short_description: Core MIME message parser
+ * @include: camel/camel.h
+ *
+ * #CamelMimeParser is the core mail parsing object in Camel. It parses
+ * either a raw RFC 822 message or a Berkeley mbox file from a stream or a
+ * Unix file descriptor. It is a robust, fast, stack-based state machine that
+ * handles all failure cases gracefully — truncated parts, missing multipart
+ * boundaries, I/O errors — always producing a valid state sequence.
+ *
+ * The parser exposes a simple state machine via camel_mime_parser_step().
+ * States follow a well-defined sequence for each message structure element:
+ * every "start" state has a matching "end" state, and you can efficiently
+ * skip sections you are not interested in.
+ *
+ * In addition to parsing, the parser can be used to:
+ * - Automatically reformat data as it is parsed.
+ * - Efficiently skip sections without reading their content.
+ * - Drive #CamelMimeFilter instances in a pipelined fashion for zero-copy
+ *   decoding.
+ *
+ * Because #CamelMimeParser does its own I/O buffering, initialising it from
+ * a file descriptor (camel_mime_parser_init_with_fd()) is more efficient than
+ * from a stream.
+ **/
+
 /* What should hopefully be a fast mail parser */
 
 /* Do not change this code without asking me (Michael Zucchi) first

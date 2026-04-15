@@ -17,6 +17,32 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-filter-driver
+ * @short_description: Rule-based message filtering engine
+ * @include: camel/camel.h
+ *
+ * #CamelFilterDriver manages the filtering process. Given a set of filter
+ * rules — each consisting of a matching s-expression and an action
+ * s-expression — and a set of messages, it evaluates each rule against each
+ * message in turn.
+ *
+ * Filter rules use two s-expressions evaluated by #CamelSExp:
+ *
+ * - The **match expression** returns a boolean indicating whether the message
+ *   matches. See #CamelFolderSearch for the supported matching functions.
+ *
+ * - The **action expression** is typically a `(begin ...)` block listing the
+ *   actions to perform. Available actions include:
+ *   - `(delete)` — mark for deletion
+ *   - `(copy-to uri …)` / `(move-to uri …)` — copy or move to a folder
+ *   - `(set-system-flag flag)` / `(unset-system-flag flag)` — set/clear flags
+ *   - `(stop)` — halt further rule processing
+ *   - `(pipe-message cmd)` — pipe the message through an external command
+ *   - `(shell cmd …)` — run a shell command
+ *   - `(beep)` / `(play-sound file)` — notify the user
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>

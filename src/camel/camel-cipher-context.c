@@ -16,6 +16,28 @@
  * Authors: Jeffrey Stedfast <fejj@ximian.com>
  */
 
+/**
+ * SECTION: camel-cipher-context
+ * @short_description: Encryption and digital signature interface
+ * @include: camel/camel.h
+ *
+ * #CamelCipherContext is an abstract base class that provides a unified
+ * interface for encrypting, signing, decrypting, and verifying #CamelMimePart
+ * message parts.
+ *
+ * Concrete implementations include #CamelGpgContext for OpenPGP/GnuPG and
+ * #CamelSMIMEContext for S/MIME.
+ *
+ * Each implementation sets protocol strings (sign_protocol,
+ * encrypt_protocol, key_protocol) that are used to populate the appropriate
+ * MIME header fields in signed and encrypted parts.
+ *
+ * Because a single message part may have multiple layers of signing or
+ * encryption using different algorithms, the validity result is represented
+ * as a tree of #CamelCipherValidity structures, each describing the
+ * signature or encryption status of one layer.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <string.h>

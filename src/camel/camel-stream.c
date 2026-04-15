@@ -17,6 +17,37 @@
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
+/**
+ * SECTION: camel-stream
+ * @short_description: Abstract base class for I/O streams
+ * @include: camel/camel.h
+ *
+ * #CamelStream is an abstract base class that implements a simple read/write
+ * stream interface. It is used throughout Camel for I/O abstraction, allowing
+ * the same message handling code to work with files, sockets, memory buffers,
+ * and more.
+ *
+ * The stream hierarchy includes:
+ *
+ * - **#CamelStreamBuffer** — provides line-buffering on top of another stream,
+ *   including a convenient camel_stream_buffer_read_line() function.
+ *
+ * - **#CamelStreamFilter** — a sophisticated stream that runs data through a
+ *   chain of #CamelMimeFilter instances for efficient pipelined processing.
+ *
+ * - **#CamelStreamFs** — a file-descriptor-backed stream.
+ *
+ * - **#CamelStreamMem** — a memory-backed stream backed by a #GByteArray.
+ *
+ * - **#CamelStreamNull** — a null stream that discards all output; useful for
+ *   measuring encoded output size.
+ *
+ * - **#CamelStreamProcess** — a stream backed by a child process.
+ *
+ * Utility functions such as camel_stream_write_string() and
+ * camel_stream_write_to_stream() are provided for common operations.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>

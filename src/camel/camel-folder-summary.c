@@ -16,6 +16,30 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-folder-summary
+ * @short_description: Manages cached message metadata for a folder
+ * @include: camel/camel.h
+ *
+ * #CamelFolderSummary manages lists of lightweight #CamelMessageInfo
+ * structures that cache metadata about each message in a folder (flags, UID,
+ * subject, from, date, size, etc.). This avoids the need to re-parse messages
+ * from storage every time a folder is opened or displayed.
+ *
+ * The summary is designed to be persisted to disk so that expensive metadata
+ * computation only needs to happen once. It uses a versioned binary file
+ * format that supports subclassing: backend-specific implementations can add
+ * their own fields to each record.
+ *
+ * The base class provides almost all required functionality. Backends
+ * typically only need to subclass it to store additional per-message
+ * information specific to their storage format.
+ *
+ * If a #CamelIndex is set via camel_folder_summary_set_index(), the
+ * summariser will also generate full-text index entries (for text/* parts)
+ * when building the summary from message content.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>

@@ -16,6 +16,29 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * SECTION: camel-folder-thread
+ * @short_description: Message threading / conversation grouping
+ * @include: camel/camel.h
+ *
+ * #CamelFolderThread computes conversation threads from a list of messages
+ * in a folder, based on the In-Reply-To and References headers as described
+ * by Jamie Zawinski's threading algorithm (used by Netscape 3 Mail).
+ *
+ * Because threading operates on pre-computed hashes from #CamelMessageInfo
+ * rather than parsing raw message content, it is very fast.
+ *
+ * The result is a tree of #CamelFolderThreadNode structures accessible via
+ * the `tree` field of the #CamelFolderThread object. Each node carries a
+ * pointer to its #CamelMessageInfo and links to its parent, next sibling,
+ * and first child, making it straightforward to build a tree-view model.
+ *
+ * An optional subject-based fallback algorithm can be enabled (by passing
+ * `thread_subject = TRUE` to camel_folder_thread_new()) to find conversation
+ * parts when In-Reply-To / References headers are absent, by matching
+ * "Re: " prefixes on subject lines.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <ctype.h>
