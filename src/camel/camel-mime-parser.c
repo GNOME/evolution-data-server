@@ -78,6 +78,9 @@
  * Prevents stack exhaustion from deeply nested crafted messages. */
 #define CAMEL_MIME_PARSER_MAX_DEPTH 100
 
+/* Maximum size for accumulated headers (1 MB) */
+#define CAMEL_MIME_PARSER_MAX_HEADER_SIZE (1024 * 1024)
+
 #ifdef PURIFY
 gint inend_id = -1,
   inbuffer_id = -1;
@@ -1299,7 +1302,12 @@ header_append_mempool (struct _header_scan_state *s,
 	register gintptr headerlen = inptr - start; \
  \
 	if (headerlen > 0) { \
-		if (headerlen >= (s->outend - s->outptr)) { \
+		if ((s->outptr - s->outbuf) + headerlen > CAMEL_MIME_PARSER_MAX_HEADER_SIZE) { \
+			g_warning ("MIME header block exceeds maximum size (%d bytes)", \
+				   CAMEL_MIME_PARSER_MAX_HEADER_SIZE); \
+			headerlen = 0; \
+		} \
+		if (headerlen > 0 && headerlen >= (s->outend - s->outptr)) { \
 			register gchar *outnew; \
 			register gintptr olen = ((s->outend - s->outbuf) + headerlen) * 2 + 1; \
 			outnew = g_realloc (s->outbuf, olen); \
@@ -1307,10 +1315,12 @@ header_append_mempool (struct _header_scan_state *s,
 			s->outbuf = outnew; \
 			s->outend = outnew + olen; \
 		} \
-		if (start[headerlen - 1] == '\r') \
+		if (headerlen > 0 && start[headerlen - 1] == '\r') \
 			headerlen--; \
-		memcpy (s->outptr, start, headerlen); \
-		s->outptr += headerlen; \
+		if (headerlen > 0) { \
+			memcpy (s->outptr, start, headerlen); \
+			s->outptr += headerlen; \
+		} \
 	} \
 	if (s->header_start == -1) \
 		s->header_start = (start - s->inbuf) + s->seek; \

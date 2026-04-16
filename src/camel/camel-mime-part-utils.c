@@ -46,6 +46,9 @@
 
 #define d(x) /* (printf("%s(%d): ", __FILE__, __LINE__),(x)) */
 
+/* Maximum body part size: 4 GB */
+#define CAMEL_MIME_PART_MAX_SIZE (((guint64) 4U) * 1024 * 1024 * 1024)
+
 /* simple data wrapper */
 static gboolean
 simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
@@ -65,6 +68,11 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 	buffer = g_byte_array_new ();
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END) {
 		d (printf ("appending o/p data: %d: %.*s\n", len, len, buf));
+		if (((guint64) buffer->len + len) > CAMEL_MIME_PART_MAX_SIZE) {
+			g_warning ("MIME body part exceeds maximum size (%" G_GUINT64_FORMAT " bytes), truncating",
+				   CAMEL_MIME_PART_MAX_SIZE);
+			break;
+		}
 		g_byte_array_append (buffer, (guint8 *) buf, len);
 	}
 
