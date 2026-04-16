@@ -3827,13 +3827,9 @@ camel_store_search_search_body_run_sync (CamelStoreSearch *self,
 	camel_store_search_ensure_ongoing_search (self, uid, ENSURE_FLAG_MESSAGE);
 
 	if (self->priv->ongoing_search.message) {
-		camel_search_flags_t type = CAMEL_SEARCH_MATCH_ICASE;
 		regex_t pattern;
 
 		matches = FALSE;
-
-		if (is_regex)
-			type |= CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_NEWLINE;
 
 		if (camel_search_build_match_regex_strv (&pattern, CAMEL_SEARCH_MATCH_ICASE,
 		    (gint) op->words->len, (const gchar **) op->words->pdata, self->priv->ongoing_search.error)) {
