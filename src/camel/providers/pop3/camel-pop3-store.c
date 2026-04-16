@@ -710,6 +710,18 @@ pop3_store_authenticate_sync (CamelService *service,
 			goto exit;
 		}
 
+		/* Sanitize user and password to prevent CRLF injection
+		 * into POP3 protocol commands */
+		if (strchr (user, '\r') || strchr (user, '\n') ||
+		    strchr (password, '\r') || strchr (password, '\n')) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Username or password contains invalid characters"));
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
+		}
+
 		/* pop engine will take care of pipelining ability */
 		pcu = camel_pop3_engine_command_new (
 			pop3_engine, 0, NULL, NULL, cancellable, error,
