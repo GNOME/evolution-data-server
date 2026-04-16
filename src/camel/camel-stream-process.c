@@ -247,7 +247,8 @@ camel_stream_process_connect (CamelStreamProcess *stream,
                               const gchar **env,
                               GError **error)
 {
-	gint sockfds[2];
+	gint sockfds[2] = { -1, -1};
+	gint err_no;
 
 	g_return_val_if_fail (CAMEL_IS_STREAM_PROCESS (stream), -1);
 	g_return_val_if_fail (command != NULL, -1);
@@ -262,9 +263,6 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 	if (!stream->priv->childpid) {
 		do_exec_command (sockfds[1], command, (gchar **) env);
 	} else if (stream->priv->childpid == -1) {
-		close (sockfds[0]);
-		close (sockfds[1]);
-		stream->priv->sockfd = -1;
 		goto fail;
 	}
 
@@ -274,7 +272,8 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 	return 0;
 
 fail:
-	if (errno == EINTR)
+	err_no = errno;
+	if (err_no == EINTR)
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_CANCELLED,
@@ -282,9 +281,14 @@ fail:
 	else
 		g_set_error (
 			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
+			g_io_error_from_errno (err_no),
 			_("Could not connect with command “%s”: %s"),
-			command, g_strerror (errno));
+			command, g_strerror (err_no));
+	stream->priv->sockfd = -1;
+	if (sockfds[0] >= 0)
+		close (sockfds[0]);
+	if (sockfds[1] >= 0)
+		close (sockfds[1]);
 
 	return -1;
 }
