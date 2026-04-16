@@ -105,48 +105,73 @@ ebb_carddav_finish_load_photologo (EBookBackendCardDAV *bbdav,
 		if (uri && (
 		    g_ascii_strncasecmp (uri, "http://", 7) == 0 ||
 		    g_ascii_strncasecmp (uri, "https://", 8) == 0)) {
-			gchar *bytes = NULL;
-			gsize length = 0;
-			GError *local_error = NULL;
+			ESource *source;
+			GUri *photo_uri, *source_uri;
+			gboolean same_origin = FALSE;
 
-			if (e_webdav_session_get_data_sync (webdav, uri, NULL, NULL, NULL, &bytes, &length, cancellable, &local_error) && bytes) {
-				if (length > 0) {
-					gchar *mime_type = NULL, *content_type;
-					const gchar *image_type, *pp;
+			/* Validate that the photo URI is on the same server
+			 * to prevent SSRF via crafted vCard PHOTO/LOGO fields */
+			source = e_backend_get_source (E_BACKEND (bbdav));
+			if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+				ESourceWebdav *webdav_ext = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+				source_uri = e_source_webdav_dup_uri (webdav_ext);
+				photo_uri = g_uri_parse (uri, G_URI_FLAGS_PARSE_RELAXED, NULL);
 
-					content_type = g_content_type_guess (uri, (const guchar *) bytes, length, NULL);
-
-					if (content_type)
-						mime_type = g_content_type_get_mime_type (content_type);
-
-					g_free (content_type);
-
-					if (mime_type && (pp = strchr (mime_type, '/'))) {
-						image_type = pp + 1;
-					} else {
-						image_type = "X-EVOLUTION-UNKNOWN";
-					}
-
-					e_vcard_attribute_remove_param (attr, EVC_TYPE);
-					e_vcard_attribute_remove_param (attr, EVC_ENCODING);
-					e_vcard_attribute_remove_param (attr, EVC_VALUE);
-					e_vcard_attribute_remove_param (attr, E_WEBDAV_X_IMG_URL);
-					e_vcard_attribute_remove_values (attr);
-
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), image_type);
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (E_WEBDAV_X_IMG_URL), uri);
-					e_vcard_attribute_add_value_decoded (attr, bytes, length);
-
-					g_free (mime_type);
+				if (source_uri && photo_uri &&
+				    g_strcmp0 (g_uri_get_host (source_uri), g_uri_get_host (photo_uri)) == 0) {
+					same_origin = TRUE;
 				}
-			} else {
-				ebb_carddav_debug_print ("Failed to download '%s': %s\n", uri, local_error ? local_error->message : "Unknown error");
-				can_continue = !g_cancellable_is_cancelled (cancellable);
+
+				g_clear_pointer (&source_uri, g_uri_unref);
+				g_clear_pointer (&photo_uri, g_uri_unref);
 			}
 
-			g_clear_error (&local_error);
-			g_free (bytes);
+			if (same_origin) {
+				gchar *bytes = NULL;
+				gsize length = 0;
+				GError *local_error = NULL;
+
+				if (e_webdav_session_get_data_sync (webdav, uri, NULL, NULL, NULL, &bytes, &length, cancellable, &local_error) && bytes) {
+					if (length > 0) {
+						gchar *mime_type = NULL, *content_type;
+						const gchar *image_type, *pp;
+
+						content_type = g_content_type_guess (uri, (const guchar *) bytes, length, NULL);
+
+						if (content_type)
+							mime_type = g_content_type_get_mime_type (content_type);
+
+						g_free (content_type);
+
+						if (mime_type && (pp = strchr (mime_type, '/'))) {
+							image_type = pp + 1;
+						} else {
+							image_type = "X-EVOLUTION-UNKNOWN";
+						}
+
+						e_vcard_attribute_remove_param (attr, EVC_TYPE);
+						e_vcard_attribute_remove_param (attr, EVC_ENCODING);
+						e_vcard_attribute_remove_param (attr, EVC_VALUE);
+						e_vcard_attribute_remove_param (attr, E_WEBDAV_X_IMG_URL);
+						e_vcard_attribute_remove_values (attr);
+
+						e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), image_type);
+						e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
+						e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (E_WEBDAV_X_IMG_URL), uri);
+						e_vcard_attribute_add_value_decoded (attr, bytes, length);
+
+						g_free (mime_type);
+					}
+				} else {
+					ebb_carddav_debug_print ("Failed to download '%s': %s\n", uri, local_error ? local_error->message : "Unknown error");
+					can_continue = !g_cancellable_is_cancelled (cancellable);
+				}
+
+				g_clear_error (&local_error);
+				g_free (bytes);
+			} else {
+				ebb_carddav_debug_print ("Rejecting cross-origin photo URI '%s'\n", uri);
+			}
 		}
 
 		g_free (uri);
