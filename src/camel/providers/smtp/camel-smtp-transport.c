@@ -1647,8 +1647,14 @@ smtp_mail (CamelSmtpTransport *transport,
 
 		g_string_append_printf (cmd, " RET=%s", dsn_ret_full ? "FULL" : "HDRS");
 
-		if (dsn_envid && *dsn_envid)
-			g_string_append_printf (cmd, " ENVID=%s", dsn_envid);
+		if (dsn_envid && *dsn_envid) {
+			/* Sanitize ENVID to prevent SMTP command injection
+			 * via CRLF sequences in the Message-ID */
+			gchar *safe_envid = g_strdup (dsn_envid);
+			g_strdelimit (safe_envid, "\r\n", '_');
+			g_string_append_printf (cmd, " ENVID=%s", safe_envid);
+			g_free (safe_envid);
+		}
 	}
 
 	g_string_append (cmd, "\r\n");
