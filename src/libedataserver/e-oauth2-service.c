@@ -1243,7 +1243,7 @@ eos_decode_from_secret (const gchar *secret,
 	if (!json_parser_load_from_data (parser, secret, length, &error)) {
 		g_object_unref (parser);
 
-		g_debug ("%s: Failed to parse secret '%s': %s", G_STRFUNC, secret, error ? error->message : "Unknown error");
+		g_debug ("%s: Failed to parse secret of length %" G_GINT64_FORMAT ": %s", G_STRFUNC, (gint64) length, error ? error->message : "Unknown error");
 		g_clear_error (&error);
 
 		return FALSE;
