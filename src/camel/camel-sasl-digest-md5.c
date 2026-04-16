@@ -931,7 +931,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response does not match"));
-			camel_sasl_set_authenticated (sasl, TRUE);
+			camel_sasl_set_authenticated (sasl, FALSE);
 			goto exit;
 		}
 
