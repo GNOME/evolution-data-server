@@ -789,8 +789,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		if (challenge == NULL)
 			goto break_and_lose;
 
-		g_free (respbuf);
-		respbuf = NULL;
+		g_clear_pointer (&respbuf, g_free);
 
 		/* send our challenge */
 		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
@@ -846,7 +845,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 					g_clear_object (&ostream);
 					g_object_unref (sasl);
 					g_free (password_latin1);
-					g_free (respbuf);
+					g_clear_pointer (&respbuf, g_free);
 
 					goto try_again;
 				} else {
