@@ -1974,18 +1974,35 @@ e_soup_session_send_message_sync (ESoupSession *session,
 					new_location = soup_message_headers_get_list (soup_message_get_response_headers (message), "Location");
 					if (new_location) {
 						GUri *new_uri;
+						GUri *old_uri;
 
-						new_uri = g_uri_parse_relative (soup_message_get_uri (message), new_location, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
+						old_uri = soup_message_get_uri (message);
+						new_uri = g_uri_parse_relative (old_uri, new_location, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL);
 
-						soup_message_set_uri (message, new_uri);
+						if (new_uri) {
+							const gchar *old_scheme = g_uri_get_scheme (old_uri);
+							const gchar *new_scheme = g_uri_get_scheme (new_uri);
 
-						g_clear_object (&input_stream);
-						g_uri_unref (new_uri);
+							/* Reject HTTPS-to-HTTP downgrade redirects to prevent credential leakage */
+							if (g_strcmp0 (old_scheme, "https") == 0 &&
+							    g_strcmp0 (new_scheme, "https") != 0) {
+								g_set_error_literal (&local_error, SOUP_SESSION_ERROR,
+									SOUP_SESSION_ERROR_REDIRECT_NO_LOCATION,
+									_("Redirect from HTTPS to HTTP is not allowed"));
+								g_clear_object (&input_stream);
+								g_uri_unref (new_uri);
+							} else {
+								soup_message_set_uri (message, new_uri);
 
-						g_signal_emit_by_name (message, "restarted");
+								g_clear_object (&input_stream);
+								g_uri_unref (new_uri);
 
-						resend_count++;
-						redirected = TRUE;
+								g_signal_emit_by_name (message, "restarted");
+
+								resend_count++;
+								redirected = TRUE;
+							}
+						}
 					}
 				}
 			}
