@@ -710,16 +710,28 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 
 	cp = strchr (user, '\\');
 	if (cp != NULL) {
+		gchar *quoted_user, *domain, *quoted_domain;
+
+		quoted_user = g_shell_quote (cp + 1);
+		domain = g_strndup (user, cp - user);
+		quoted_domain = g_shell_quote (domain);
 		command = g_strdup_printf (
 			"%s --helper-protocol ntlmssp-client-1 "
-			"--use-cached-creds --username '%s' "
-			"--domain '%.*s'", NTLM_AUTH_HELPER,
-			cp + 1, (gint)(cp - user), user);
+			"--use-cached-creds --username %s "
+			"--domain %s", NTLM_AUTH_HELPER,
+			quoted_user, quoted_domain);
+		g_free (quoted_user);
+		g_free (domain);
+		g_free (quoted_domain);
 	} else {
+		gchar *quoted_user;
+
+		quoted_user = g_shell_quote (user);
 		command = g_strdup_printf (
 			"%s --helper-protocol ntlmssp-client-1 "
-			"--use-cached-creds --username '%s'",
-			NTLM_AUTH_HELPER, user);
+			"--use-cached-creds --username %s",
+			NTLM_AUTH_HELPER, quoted_user);
+		g_free (quoted_user);
 	}
 
 	stream = camel_stream_process_new ();
