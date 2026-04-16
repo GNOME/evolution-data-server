@@ -347,9 +347,13 @@ camel_pop3_stream_line (CamelPOP3Stream *is,
 			}
 		}
 
-		/* limit this for bad server data? */
+		/* limit this for bad server data */
 		oldlen = o - is->linebuf;
 		newlen = (is->lineend - is->linebuf) * 3 / 2;
+		if (newlen > 10 * 1024 * 1024) {
+			g_warning ("POP3 server sent line exceeding 10 MB, aborting");
+			return -1;
+		}
 		is->lineptr = is->linebuf = g_realloc (is->linebuf, newlen);
 		is->lineend = is->linebuf + newlen;
 		oe = is->lineend - 1;
