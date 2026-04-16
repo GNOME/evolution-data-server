@@ -1313,7 +1313,7 @@ smtp_decode_status_code (const gchar *in,
 	inend = inptr + len;
 	while (inptr < inend) {
 		if (*inptr == '+') {
-			if (isxdigit (inptr[1]) && isxdigit (inptr[2])) {
+			if (inptr + 2 < inend && isxdigit (inptr[1]) && isxdigit (inptr[2])) {
 				*outptr++ = HEXVAL (inptr[1]) * 16 + HEXVAL (inptr[2]);
 				inptr += 3;
 			} else
