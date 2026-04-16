@@ -74,6 +74,10 @@
 
 #define MEMPOOL
 
+/* Maximum nesting depth for multipart/message MIME structures.
+ * Prevents stack exhaustion from deeply nested crafted messages. */
+#define CAMEL_MIME_PARSER_MAX_DEPTH 100
+
 #ifdef PURIFY
 gint inend_id = -1,
   inbuffer_id = -1;
@@ -128,6 +132,8 @@ struct _header_scan_state {
 	guint scan_from:1;	/* do we care about From lines? */
 	guint scan_pre_from:1;	/* do we return pre-from data? */
 	guint eof:1;		/* reached eof? */
+
+	gint depth;		/* current nesting depth */
 
 	goffset start_of_from;	/* where from started */
 	goffset start_of_boundary; /* where the last boundary started */
@@ -1116,6 +1122,7 @@ folder_push_part (struct _header_scan_state *s,
 
 	h->parent = s->parts;
 	s->parts = h;
+	s->depth++;
 }
 
 static void
@@ -1147,6 +1154,7 @@ folder_pull_part (struct _header_scan_state *s)
 	h = s->parts;
 	if (h) {
 		s->parts = h->parent;
+		s->depth--;
 
 		folder_scan_stack_free (h);
 	} else {
@@ -1611,7 +1619,7 @@ folder_scan_init (void)
 {
 	struct _header_scan_state *s;
 
-	s = g_malloc (sizeof (*s));
+	s = g_malloc0 (sizeof (*s));
 
 	s->fd = -1;
 	s->stream = NULL;
@@ -1649,6 +1657,8 @@ folder_scan_init (void)
 	s->parts = NULL;
 
 	s->state = CAMEL_MIME_PARSER_STATE_INITIAL;
+	s->depth = 0;
+
 	return s;
 }
 
@@ -1677,6 +1687,7 @@ folder_scan_reset (struct _header_scan_state *s)
 	g_clear_object (&s->input_stream);
 	s->ioerrno = 0;
 	s->eof = FALSE;
+	s->depth = 0;
 }
 
 static gint
@@ -1821,7 +1832,13 @@ tail_recurse:
 		/* FIXME: should this check for MIME-Version: 1.0 as well? */
 
 		type = CAMEL_MIME_PARSER_STATE_HEADER;
-		if ((content = header_raw_find (&h->headers, "Content-Type", NULL))
+		if (s->depth >= CAMEL_MIME_PARSER_MAX_DEPTH) {
+			/* Treat excessively nested parts as opaque data
+			 * to prevent stack exhaustion */
+			d (printf ("MIME nesting depth %d exceeds limit %d, treating as body\n",
+				s->depth, CAMEL_MIME_PARSER_MAX_DEPTH));
+			ct = camel_content_type_decode ("application/octet-stream");
+		} else if ((content = header_raw_find (&h->headers, "Content-Type", NULL))
 		     && (ct = camel_content_type_decode (content))) {
 			if (!g_ascii_strcasecmp (ct->type, "multipart")) {
 				if (!camel_content_type_is (ct, "multipart", "signed")
