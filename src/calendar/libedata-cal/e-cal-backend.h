@@ -54,9 +54,6 @@ typedef struct _ECalBackendPrivate ECalBackendPrivate;
 
 /**
  * ECalBackend:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  */
 struct _ECalBackend {
 	/*< private >*/

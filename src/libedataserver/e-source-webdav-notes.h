@@ -59,10 +59,6 @@ typedef struct _ESourceWebDAVNotesPrivate ESourceWebDAVNotesPrivate;
 
 /**
  * ESourceWebDAVNotes:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.44
  **/
 struct _ESourceWebDAVNotes {

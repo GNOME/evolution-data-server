@@ -99,10 +99,6 @@ typedef struct _EOAuth2ServiceInterface EOAuth2ServiceInterface;
 
 /**
  * EOAuth2Service:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.28
  **/
 struct _EOAuth2ServiceInterface {

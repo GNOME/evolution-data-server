@@ -49,10 +49,6 @@ typedef struct _ESourceConflictSearchPrivate ESourceConflictSearchPrivate;
 
 /**
  * ESourceConflictSearch:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.60
  **/
 struct _ESourceConflictSearch {

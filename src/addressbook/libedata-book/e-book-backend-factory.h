@@ -53,9 +53,6 @@ typedef struct _EBookBackendFactoryPrivate EBookBackendFactoryPrivate;
 
 /**
  * EBookBackendFactory:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  */
 struct _EBookBackendFactory {
 	/*< private >*/

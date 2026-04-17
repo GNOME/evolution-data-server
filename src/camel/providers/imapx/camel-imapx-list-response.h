@@ -71,10 +71,6 @@ typedef struct _CamelIMAPXListResponsePrivate CamelIMAPXListResponsePrivate;
 
 /**
  * CamelIMAPXListResponse:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.10
  **/
 struct _CamelIMAPXListResponse {

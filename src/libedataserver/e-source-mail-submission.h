@@ -62,8 +62,6 @@ typedef struct _ESourceMailSubmissionPrivate ESourceMailSubmissionPrivate;
 /**
  * ESourceMailSubmission:
  *
- * Contains only private data that should be read and manipulated using the
- * function below.
  *
  * Since: 3.6
  **/

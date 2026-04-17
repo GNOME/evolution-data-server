@@ -233,10 +233,6 @@ typedef struct {
 
 /**
  * EBookSqlite:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.12
  **/
 struct _EBookSqlite {

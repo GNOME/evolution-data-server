@@ -58,10 +58,6 @@ typedef struct _ESourceCredentialsProviderPrivate ESourceCredentialsProviderPriv
 
 /**
  * ESourceCredentialsProvider:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.16
  **/
 struct _ESourceCredentialsProvider {

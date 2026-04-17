@@ -52,9 +52,6 @@ typedef struct _ECalBackendSExpPrivate ECalBackendSExpPrivate;
 
 /**
  * ECalBackendSexp:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  */
 struct _ECalBackendSExp {
 	/*< private >*/

@@ -54,9 +54,6 @@ typedef struct _ECalBackendFactoryPrivate ECalBackendFactoryPrivate;
 
 /**
  * ECalBackendFactory:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  */
 struct _ECalBackendFactory {
 	/*< private >*/

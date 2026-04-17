@@ -58,10 +58,6 @@ typedef struct _EBookClientPrivate EBookClientPrivate;
 
 /**
  * EBookClient:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.2
  **/
 struct _EBookClient {

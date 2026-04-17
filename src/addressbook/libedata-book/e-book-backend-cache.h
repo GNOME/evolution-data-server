@@ -57,10 +57,6 @@ typedef struct _EBookBackendCachePrivate EBookBackendCachePrivate;
 
 /**
  * EBookBackendCache:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Deprecated: 3.12: Use #EBookSqlite instead
  */
 struct _EBookBackendCache {

@@ -61,9 +61,6 @@ typedef struct _EBookBackendSyncPrivate EBookBackendSyncPrivate;
 
 /**
  * EBookBackendSync:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  */
 struct _EBookBackendSync {
 	/*< private >*/

@@ -58,9 +58,6 @@ typedef struct _EIteratorClass EIteratorClass;
 
 /**
  * EIterator:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  **/
 struct _EIterator {
 	/*< private >*/

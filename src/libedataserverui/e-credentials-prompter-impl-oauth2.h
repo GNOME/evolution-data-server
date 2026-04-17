@@ -64,10 +64,6 @@ typedef struct _ECredentialsPrompterImplOAuth2Private ECredentialsPrompterImplOA
 
 /**
  * ECredentialsPrompterImplOAuth2:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.28
  **/
 struct _ECredentialsPrompterImplOAuth2 {

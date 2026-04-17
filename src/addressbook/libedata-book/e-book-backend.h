@@ -62,9 +62,6 @@ typedef struct _EBookBackendPrivate EBookBackendPrivate;
 
 /**
  * EBookBackend:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  */
 struct _EBookBackend {
 	/*< private >*/

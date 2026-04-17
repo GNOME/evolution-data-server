@@ -65,10 +65,6 @@ typedef struct _ESourceBackendSummarySetupPrivate ESourceBackendSummarySetupPriv
 
 /**
  * ESourceBackendSummarySetup:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.8
  **/
 struct _ESourceBackendSummarySetup {

@@ -52,10 +52,6 @@ typedef struct _EOAuth2ServicesPrivate EOAuth2ServicesPrivate;
 
 /**
  * EOAuth2Services:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.28
  **/
 struct _EOAuth2Services {

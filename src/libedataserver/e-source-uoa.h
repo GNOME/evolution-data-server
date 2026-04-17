@@ -61,10 +61,6 @@ typedef struct _ESourceUoaPrivate ESourceUoaPrivate;
 
 /**
  * ESourceUoa:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.8
  **/
 struct _ESourceUoa {

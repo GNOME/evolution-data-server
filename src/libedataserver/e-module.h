@@ -52,10 +52,6 @@ typedef struct _EModulePrivate EModulePrivate;
 
 /**
  * EModule:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.4
  **/
 struct _EModule {

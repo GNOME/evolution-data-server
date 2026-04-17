@@ -74,8 +74,6 @@ typedef struct _EBookMetaBackendPrivate EBookMetaBackendPrivate;
 /**
  * EBookMetaBackend:
  *
- * Contains only private data that should be read and manipulated using
- * the functions below.
  *
  * Since: 3.26
  **/

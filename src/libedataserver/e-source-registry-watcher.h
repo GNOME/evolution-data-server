@@ -51,9 +51,6 @@ typedef struct _ESourceRegistryWatcherPrivate ESourceRegistryWatcherPrivate;
 
 /**
  * ESourceRegistryWatcher:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  **/
 struct _ESourceRegistryWatcher {
 	/*< private >*/

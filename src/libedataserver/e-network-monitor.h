@@ -62,7 +62,6 @@ typedef struct _ENetworkMonitorPrivate ENetworkMonitorPrivate;
 /**
  * ENetworkMonitor:
  *
- * Contains only private data that should be read and manipulated using
  * the functions below. Implements #GNetworkMonitorInterface.
  *
  * Since: 3.22
