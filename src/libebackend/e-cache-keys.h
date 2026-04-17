@@ -73,10 +73,6 @@ typedef gboolean (* ECacheKeysForeachFunc)	(ECacheKeys *self,
 
 /**
  * ECacheKeys:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.48
  **/
 struct _ECacheKeys {

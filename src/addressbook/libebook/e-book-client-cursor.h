@@ -56,7 +56,6 @@ struct _EBookClient;
 /**
  * EBookClientCursor:
  *
- * Contains only private data.
  *
  * Since: 3.12
  */

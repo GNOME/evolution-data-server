@@ -55,8 +55,6 @@ struct _EBookClient;
 /**
  * EBookClientView:
  *
- * Contains only private data the should be read and manipulated using the
- * functions below.
  *
  * Since: 3.2
  **/

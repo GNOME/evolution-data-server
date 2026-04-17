@@ -49,9 +49,6 @@ typedef struct _EDbHashPrivate EDbHashPrivate;
 /**
  * EDbHash:
  * @priv: private data
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  **/
 struct _EDbHash {
 	EDbHashPrivate *priv;

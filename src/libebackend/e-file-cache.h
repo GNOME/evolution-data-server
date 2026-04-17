@@ -53,9 +53,6 @@ typedef struct _EFileCachePrivate EFileCachePrivate;
 
 /**
  * EFileCache:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
  **/
 struct _EFileCache {
 	/*< private >*/

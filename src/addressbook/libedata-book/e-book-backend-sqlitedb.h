@@ -92,10 +92,6 @@ typedef enum {
 
 /**
  * EBookBackendSqliteDB:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.2
  *
  * Deprecated: 3.12: Use #EBookSqlite instead

@@ -47,10 +47,6 @@ G_BEGIN_DECLS
 
 /**
  * CamelLocalSettings:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.4
  **/
 typedef struct _CamelLocalSettings CamelLocalSettings;

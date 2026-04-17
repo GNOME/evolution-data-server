@@ -154,8 +154,6 @@ typedef gboolean (* ECalCacheSearchFunc)	(ECalCache *cal_cache,
 /**
  * ECalCache:
  *
- * Contains only private data that should be read and manipulated using
- * the functions below.
  *
  * Since: 3.26
  **/

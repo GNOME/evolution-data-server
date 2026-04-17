@@ -323,10 +323,6 @@ typedef gboolean (* ECacheSelectFunc)	(ECache *cache,
 
 /**
  * ECache:
- *
- * Contains only private data that should be read and manipulated using the
- * functions below.
- *
  * Since: 3.26
  **/
 struct _ECache {
