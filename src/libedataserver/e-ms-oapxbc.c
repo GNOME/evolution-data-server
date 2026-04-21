@@ -328,6 +328,8 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	JsonNode *root;
 	JsonObject *auth_params, *json_cookie;
 	JsonParser *parser;
+	const gchar *cookie_name;
+	const gchar *cookie_content;
 	SoupCookie *soup_cookie = NULL;
 	gchar *data;
 	gchar *response = NULL;
@@ -363,13 +365,30 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	}
 
 	json_cookie = json_node_get_object (root);
+	if (!json_object_has_member (json_cookie, "cookieName") ||
+	    !json_object_has_member (json_cookie, "cookieContent")) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data");
+		goto error;
+	}
+
+	cookie_name = json_object_get_string_member (json_cookie, "cookieName");
+	cookie_content = json_object_get_string_member (json_cookie, "cookieContent");
+	if (!cookie_name || !cookie_content) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data");
+		goto error;
+	}
 
 	soup_cookie = soup_cookie_new (
-		json_object_get_string_member (json_cookie, "cookieName"),
-		json_object_get_string_member (json_cookie, "cookieContent"),
+		cookie_name,
+		cookie_content,
 		/* [ms-oapxbc] is only supported on Microsoft Entra ID */
 		"login.microsoftonline.com",
 		"/", -1);
+	if (!soup_cookie) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Failed to create SOAP cookie");
+		goto error;
+	}
+
 	soup_cookie_set_secure (soup_cookie, TRUE);
 	soup_cookie_set_http_only (soup_cookie, TRUE);
 
