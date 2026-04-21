@@ -361,6 +361,21 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	}
 
 	json_cookie = json_node_get_object (root);
+
+	/* On microsoft-identity-broker > 2.0.1 the cookie data is wrapped in an array.
+	 * Extract it and proceed as with version <= 2.0.1.
+	 */
+	if (json_object_has_member (json_cookie, "cookieItems") &&
+	    json_node_get_value_type (json_object_get_member (json_cookie, "cookieItems")) == JSON_TYPE_ARRAY) {
+		cookie_items = json_object_get_array_member (json_cookie, "cookieItems");
+		if (json_array_get_length (cookie_items) == 0) {
+			g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("No PrtSsoCookie in response"));
+			goto error;
+		}
+		/* unpack first cookie element from array */
+		json_cookie = json_array_get_object_element (cookie_items, 0);
+	}
+
 	if (!json_object_has_member (json_cookie, "cookieName") ||
 	    !json_object_has_member (json_cookie, "cookieContent")) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"));
