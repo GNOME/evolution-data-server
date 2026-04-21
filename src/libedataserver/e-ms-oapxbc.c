@@ -328,7 +328,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	JsonNode *root;
 	JsonObject *auth_params, *json_cookie;
 	JsonParser *parser;
-	SoupCookie *soup_cookie;
+	SoupCookie *soup_cookie = NULL;
 	gchar *data;
 	gchar *response = NULL;
 	gboolean success;
@@ -354,14 +354,12 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	g_free (response);
 	if (!success) {
 		g_prefix_error (error, _("Failed to parse acquirePrtSsoCookie response: "));
-		g_clear_object (&parser);
-		return NULL;
+		goto error;
 	}
 	root = json_parser_get_root (parser);
 	if (json_node_get_value_type (root) != JSON_TYPE_OBJECT) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Failed to parse acquirePrtSsoCookie response: root is not an object"));
-		g_clear_object (&parser);
-		return NULL;
+		goto error;
 	}
 
 	json_cookie = json_node_get_object (root);
@@ -375,6 +373,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	soup_cookie_set_secure (soup_cookie, TRUE);
 	soup_cookie_set_http_only (soup_cookie, TRUE);
 
+ error:
 	g_clear_object (&parser);
 
 	return soup_cookie;
