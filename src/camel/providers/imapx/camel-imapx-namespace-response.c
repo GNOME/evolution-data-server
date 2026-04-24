@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-imapx-namespace-response
- * @include: camel/camel.h
- * @short_description: Stores an IMAP NAMESPACE response
+ * CamelIMAPXNamespaceResponse:
+ *
+ * Stores an IMAP NAMESPACE response
  *
  * #CamelIMAPXNamespaceResponse encapsulates an IMAP NAMESPACE response,
  * which consists of a set of #CamelIMAPXNamespace objects grouped by

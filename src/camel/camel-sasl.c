@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-sasl
- * @short_description: SASL (Secure Authentication and Security Layer) support
- * @include: camel/camel.h
+ * CamelSasl:
+ *
+ * SASL (Secure Authentication and Security Layer) support
  *
  * #CamelSasl is an abstract base class for pluggable authentication
  * mechanisms used by connection-based mail services. It implements the

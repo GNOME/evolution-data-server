@@ -16,10 +16,9 @@
  */
 
 /**
- * SECTION: camel-null-output-stream
- * @short_description: Null output stream
- * @include: camel/camel.h
- * @see_also: #GOutputStream
+ * CamelNullOutputStream:
+ *
+ * Null output stream
  *
  * #CamelNullOutputStream is analogous to writing to /dev/null, except it
  * counts the total number of bytes written to it.  This is primarily useful

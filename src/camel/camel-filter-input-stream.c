@@ -16,10 +16,9 @@
  */
 
 /**
- * SECTION: camel-filter-input-stream
- * @short_description: Filtered input stream
- * @include: camel/camel.h
- * @see_also: #GInputStream, #CamelMimeFilter
+ * CamelFilterInputStream:
+ *
+ * Filtered input stream
  *
  * #CamelFilterInputStream is similar to #GConverterInputStream, except it
  * operates on a #CamelMimeFilter instead of a #GConverter.

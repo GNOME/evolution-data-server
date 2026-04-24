@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-internet-address
- * @short_description: RFC 822 internet address handling
- * @include: camel/camel.h
+ * CamelInternetAddress:
+ *
+ * RFC 822 internet address handling
  *
  * #CamelInternetAddress is a #CamelAddress subclass for handling RFC 822
  * internet mail addresses. Each address consists of an optional human-readable

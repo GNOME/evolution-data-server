@@ -19,9 +19,9 @@
  */
 
 /**
- * SECTION: camel-medium
- * @short_description: Abstract class for data with headers and content
- * @include: camel/camel.h
+ * CamelMedium:
+ *
+ * Abstract class for data with headers and content
  *
  * #CamelMedium extends #CamelDataWrapper with support for named message
  * headers and a separate content object. It is the common ancestor of

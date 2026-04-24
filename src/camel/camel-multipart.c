@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-multipart
- * @short_description: A container for multiple MIME parts
- * @include: camel/camel.h
+ * CamelMultipart:
+ *
+ * A container for multiple MIME parts
  *
  * #CamelMultipart is a #CamelDataWrapper subclass that represents a
  * multipart/* MIME container. It holds an ordered list of #CamelMimePart

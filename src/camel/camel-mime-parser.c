@@ -16,10 +16,17 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
+/* What should hopefully be a fast mail parser */
+
+/* Do not change this code without asking me (Michael Zucchi) first
+ *
+ * There is almost always a reason something was done a certain way.
+ */
+
 /**
- * SECTION: camel-mime-parser
- * @short_description: Core MIME message parser
- * @include: camel/camel.h
+ * CamelMimeParser:
+ *
+ * Core MIME message parser
  *
  * #CamelMimeParser is the core mail parsing object in Camel. It parses
  * either a raw RFC 822 message or a Berkeley mbox file from a stream or a
@@ -42,13 +49,6 @@
  * a file descriptor (camel_mime_parser_init_with_fd()) is more efficient than
  * from a stream.
  **/
-
-/* What should hopefully be a fast mail parser */
-
-/* Do not change this code without asking me (Michael Zucchi) first
- *
- * There is almost always a reason something was done a certain way.
- */
 
 #include <errno.h>
 #include <stdio.h>

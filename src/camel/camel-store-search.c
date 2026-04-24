@@ -19,9 +19,9 @@
 #include "camel-store-search.h"
 
 /**
- * SECTION: camel-store-search
- * @include: camel/camel.h
- * @short_description: search between multiple folders of one #CamelStore
+ * CamelStoreSearch:
+ *
+ * Search between multiple folders of one #CamelStore
  *
  * The #CamelStoreSearch allows to search between multiple folders
  * of a single #CamelStore. It's primarily meant to be used by

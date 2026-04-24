@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-imapx-namespace
- * @include: camel/camel.h
- * @short_description: Stores an IMAP namespace
+ * CamelIMAPXNamespace:
+ *
+ * Stores an IMAP namespace
  *
  * #CamelIMAPXNamespace encapsulates an IMAP namespace, which consists of a
  * namespace category (personal/other users/shared), a mailbox prefix string,

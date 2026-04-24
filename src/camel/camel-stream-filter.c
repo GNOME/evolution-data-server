@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-stream-filter
- * @short_description: A stream that pipelines data through MIME filters
- * @include: camel/camel.h
+ * CamelStreamFilter:
+ *
+ * A stream that pipelines data through MIME filters
  *
  * #CamelStreamFilter wraps another #CamelStream and passes all data read
  * from or written to it through an ordered chain of #CamelMimeFilter

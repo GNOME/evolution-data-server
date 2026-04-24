@@ -16,10 +16,9 @@
  */
 
 /**
- * SECTION: camel-filter-output-stream
- * @short_description: Filtered output stream
- * @include: camel/camel.h
- * @see_also: #GOutputStream, #CamelMimeFilter
+ * CamelFilterOutputStream
+ *
+ * Filtered output stream
  *
  * #CamelFilterOutputStream is similar to #GConverterOutputStream, except it
  * operates on a #CamelMimeFilter instead of a #GConverter.

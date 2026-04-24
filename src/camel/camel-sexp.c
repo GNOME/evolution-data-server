@@ -18,7 +18,32 @@
  */
 
 /*
- *   The following built-in s-exp's are supported:
+ * NOTE: the filters are defined in camel-filter-search.c
+ */
+
+/**
+ * CamelSExp:
+ *
+ * S-expression matching functions for message filtering
+ *
+ * #CamelSExp implements the s-expression matching functions used by
+ * #CamelFilterDriver to evaluate filter rules against messages.
+ *
+ * Match expressions operate on a single message and return a boolean.
+ * Available matching functions include:
+ *
+ * - `(body-contains string …)` — matches if the message body contains any
+ *   of the given strings (searches text/* parts with tag-stripping for HTML).
+ * - `(header-contains header string …)` / `(header-matches …)` /
+ *   `(header-starts-with …)` / `(header-ends-with …)` — header matching.
+ * - `(header-exists header)` — tests whether a header is present.
+ * - `(match-all expression)` — evaluates a boolean against all messages.
+ * - `(user-flag flag)` / `(user-tag tag value)` — user metadata matching.
+ * - `(system-flag flag)` — system flag matching (seen, deleted, flagged, etc.).
+ * - `(pipe-message cmd)` — runs the message through an external program whose
+ *   exit code determines the match result.
+ *
+ * # The following built-in s-exp's are supported:
  *
  *   list = (and list*)
  *      perform an intersection of a number of lists, and return that.
@@ -53,7 +78,7 @@
  *   string = (cast-string string|int|bool)
  *         Cast to a string value.
  *
- *   Comparison operators:
+ * ## Comparison operators:
  *
  *   bool = (< gint gint)
  *   bool = (> gint gint)
@@ -66,9 +91,9 @@
  *   bool = (< time_t time_t)
  *   bool = (> time_t time_t)
  *   bool = (= time_t time_t)
- *      Perform a comparision of 2 integers, 2 string values, or 2 time values.
+ *      Perform a comparison of 2 integers, 2 string values, or 2 time values.
  *
- *   Function flow:
+ * ## Function flow:
  *
  *   type = (if bool function)
  *   type = (if bool function function)
@@ -76,6 +101,8 @@
  *
  *   type = (begin  func func func)
  *         Execute a sequence.  The last function return is the return type.
+
+ * Since: 3.4
  */
 
 #include "evolution-data-server-config.h"

@@ -17,11 +17,7 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
-/**
- * SECTION: camel-mime-utils
- * @short_description: MIME and mail utility functions
- * @include: camel/camel.h
- *
+/*
  * This module provides a wide collection of MIME and RFC 822 related utility
  * functions used extensively throughout Camel. It is not an object, but a
  * library of functions covering:
@@ -46,7 +42,7 @@
  * and are highly optimised. For most purposes, the higher-level interfaces
  * on #CamelMimePart, #CamelMimeMessage, and #CamelInternetAddress should be
  * preferred.
- **/
+ */
 
 #include "evolution-data-server-config.h"
 

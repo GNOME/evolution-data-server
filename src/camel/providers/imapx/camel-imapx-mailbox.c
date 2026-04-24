@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-imapx-mailbox
- * @include: camel/camel.h
- * @short_description: Stores the state of an IMAP mailbox
+ * CamelIMAPXMailbox:
+ *
+ * Stores the state of an IMAP mailbox
  *
  * #CamelIMAPXMailbox models the current state of an IMAP mailbox as
  * accumulated from untagged IMAP server responses in the current session.

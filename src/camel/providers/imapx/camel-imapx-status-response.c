@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-imapx-status-response
- * @include: camel/camel.h
- * @short_description: Stores an IMAP STATUS respose
+ * CamelIMAPXStatusResponse:
+ *
+ * Stores an IMAP STATUS response
  *
  * #CamelIMAPXStatusResponse encapsulates an IMAP STATUS response, which
  * describes the current status of a mailbox in terms of various message

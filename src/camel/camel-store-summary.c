@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-store-summary
- * @short_description: Cached folder listing for a mail store
- * @include: camel/camel.h
+ * CamelStoreSummary:
+ *
+ * Cached folder listing for a mail store
  *
  * #CamelStoreSummary is a helper class used by #CamelStore implementations
  * to cache the list of known folders and their metadata (name, flags, unread

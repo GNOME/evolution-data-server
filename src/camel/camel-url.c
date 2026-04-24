@@ -19,9 +19,9 @@
  */
 
 /**
- * SECTION: camel-url
- * @short_description: URI parsing, encoding, and manipulation
- * @include: camel/camel.h
+ * CamelURL:
+ *
+ * URI parsing, encoding, and manipulation
  *
  * #CamelURL provides a URI parser, encoder, and logic for merging relative
  * URIs with base URIs. When a URI string is parsed, it is split into its

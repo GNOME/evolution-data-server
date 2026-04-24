@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-operation
- * @short_description: Progress reporting and cancellation for long-running tasks
- * @include: camel/camel.h
+ * CamelOperation:
+ *
+ * Progress reporting and cancellation for long-running tasks
  *
  * #CamelOperation is a bi-directional rendezvous mechanism used to communicate
  * status information from long-running Camel tasks back to the calling

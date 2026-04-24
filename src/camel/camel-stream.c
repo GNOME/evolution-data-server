@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-stream
- * @short_description: Abstract base class for I/O streams
- * @include: camel/camel.h
+ * CamelStream:
+ *
+ * Abstract base class for I/O streams
  *
  * #CamelStream is an abstract base class that implements a simple read/write
  * stream interface. It is used throughout Camel for I/O abstraction, allowing

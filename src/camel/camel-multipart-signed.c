@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-multipart-signed
- * @short_description: A multipart/signed MIME container
- * @include: camel/camel.h
+ * CamelMultipartSigned:
+ *
+ * A multipart/signed MIME container
  *
  * #CamelMultipartSigned is a #CamelMultipart subclass for handling
  * multipart/signed MIME parts as defined in RFC 1847. It holds the signed

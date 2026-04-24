@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-offline-store
- * @short_description: Base class for offline-capable mail stores
- * @include: camel/camel.h
+ * CamelOfflineStore:
+ *
+ * Base class for offline-capable mail stores
  *
  * #CamelOfflineStore is a #CamelStore subclass that any remote backend
  * supporting offline operation should extend instead of #CamelStore directly.

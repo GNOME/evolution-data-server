@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-stream-buffer
- * @short_description: A buffering wrapper around a Camel stream
- * @include: camel/camel.h
+ * CamelStreamBuffer:
+ *
+ * A buffering wrapper around a Camel stream
  *
  * #CamelStreamBuffer wraps another #CamelStream and provides buffering.
  * All read and write operations are automatically buffered through virtual

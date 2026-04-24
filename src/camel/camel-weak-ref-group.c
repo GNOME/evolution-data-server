@@ -15,9 +15,9 @@
  */
 
 /**
- * SECTION: camel-weak-ref-group
- * @include: camel/camel.h
- * @short_description: A weak ref group
+ * CamelWeakRef:
+ *
+ * A weak ref group
  *
  * A #GWeakRef as such is not suitable for large sets, because
  * it causes big performance impact on free. This #CamelWeakRefGroup

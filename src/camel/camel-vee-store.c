@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-vee-store
- * @short_description: A store that manages a collection of virtual folders
- * @include: camel/camel.h
+ * CamelVeeStore:
+ *
+ * A store that manages a collection of virtual folders
  *
  * #CamelVeeStore is a #CamelStore subclass that manages a list of virtual
  * (#CamelVeeFolder) folders. It handles the store-level operations such as

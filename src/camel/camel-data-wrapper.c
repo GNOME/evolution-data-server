@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-data-wrapper
- * @short_description: Base class for structured MIME data access
- * @include: camel/camel.h
+ * CamelDataWrapper
+ *
+ * Base class for structured MIME data access
  *
  * #CamelDataWrapper is the base class used to implement structured MIME data
  * access. It serves as the programmatic interface for creating and reading

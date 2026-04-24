@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-transport
- * @short_description: Base class for mail sending backends
- * @include: camel/camel.h
+ * CamelTransport:
+ *
+ * Base class for mail sending backends
  *
  * #CamelTransport is the base class for backends that support sending mail
  * messages. It is a #CamelService subclass and adds a single core virtual
