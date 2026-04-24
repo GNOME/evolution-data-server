@@ -216,11 +216,6 @@ struct _CamelSExpTerm {
 	} value;
 };
 
-/**
- * CamelSExp:
- *
- * Since: 3.4
- **/
 struct _CamelSExp {
 	/*< private >*/
 	GObject parent;

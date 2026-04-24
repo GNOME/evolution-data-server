@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-vee-folder
- * @short_description: A virtual folder representing a saved search
- * @include: camel/camel.h
+ * CamelVeeFolder:
+ *
+ * A virtual folder representing a saved search.
  *
  * #CamelVeeFolder is a #CamelFolder subclass that implements virtual folders.
  * A virtual folder is like a persistent search over one or more real folders:

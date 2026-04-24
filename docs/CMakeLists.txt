@@ -8,12 +8,7 @@ if (ENABLE_GI_DOCGEN)
 	endif()
 
 	set(CAMEL_GIR_PATH "${CMAKE_BINARY_DIR}/src/camel")
-	configure_file(camel.toml.in camel.toml @ONLY)
-	generate_gi_documentation(
-		camel
-		${CMAKE_CURRENT_BINARY_DIR}/camel.toml
-		"${CAMEL_GIR_PATH}/Camel-${API_VERSION}.gir"
-	)
+	add_subdirectory(camel)
 	set(EDATASERVER_GIR_PATH "${CMAKE_BINARY_DIR}/src/libedataserver")
 	configure_file(libedataserver.toml.in libedataserver.toml @ONLY)
 	generate_gi_documentation(

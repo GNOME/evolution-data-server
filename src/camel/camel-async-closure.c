@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-async-closure
- * @short_description: Run asynchronous functions synchronously
- * @include: camel/camel.h
+ * CamelAsyncClosure:
+ *
+ * Run asynchronous functions synchronously.
  *
  * #CamelAsyncClosure provides a simple way to run an asynchronous function
  * synchronously without blocking the current thread.
@@ -38,14 +38,12 @@
  *    using the same #CamelAsyncClosure.
  *
  * 6) Finally, free the #CamelAsyncClosure with camel_async_closure_free().
+ *
+ * Since: 3.12
  **/
 
 #include "camel-async-closure.h"
 
-/**
- * CamelAsyncClosure:
- * Since: 3.12
- **/
 struct _CamelAsyncClosure {
 	GMainLoop *loop;
 	GMainContext *context;

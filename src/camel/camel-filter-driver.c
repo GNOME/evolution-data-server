@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-filter-driver
- * @short_description: Rule-based message filtering engine
- * @include: camel/camel.h
+ * CamelFilterDriver:
+ *
+ * Rule-based message filtering engine.
  *
  * #CamelFilterDriver manages the filtering process. Given a set of filter
  * rules — each consisting of a matching s-expression and an action

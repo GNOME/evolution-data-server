@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-offline-folder
- * @short_description: A folder that supports offline message caching
- * @include: camel/camel.h
+ * CamelOfflineFolder:
+ *
+ * A folder that supports offline message caching.
  *
  * #CamelOfflineFolder is a #CamelFolder subclass that should be used by any
  * folder in an offline-capable (#CamelOfflineStore) backend.

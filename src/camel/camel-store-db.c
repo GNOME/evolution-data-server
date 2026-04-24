@@ -33,9 +33,9 @@
 #define get_num64(_cl) ((_cl) ? g_ascii_strtoll ((_cl), NULL, 10) : 0)
 
 /**
- * SECTION: camel-store-db
- * @include: camel/camel.h
- * @short_description: a #CamelStore database
+ * CamelStoreDB:
+ *
+ * A #CamelStore database.
  *
  * The #CamelStoreDB is a descendant of the #CamelDB, which takes care
  * of the save of the message information in an internal database.

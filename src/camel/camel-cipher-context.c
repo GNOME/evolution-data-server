@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-cipher-context
- * @short_description: Encryption and digital signature interface
- * @include: camel/camel.h
+ * CamelCipherContext:
+ *
+ * Encryption and digital signature interface.
  *
  * #CamelCipherContext is an abstract base class that provides a unified
  * interface for encrypting, signing, decrypting, and verifying #CamelMimePart

@@ -20,9 +20,9 @@
  */
 
 /**
- * SECTION: camel-provider
- * @short_description: Plugin interface for mail storage and transport backends
- * @include: camel/camel.h
+ * CamelProvider:
+ *
+ * Plugin interface for mail storage and transport backends.
  *
  * #CamelProvider is the plugin descriptor structure that describes a mail
  * storage or transport backend (or both). It is the first piece of information

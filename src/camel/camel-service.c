@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-service
- * @short_description: Base class for mail access and sending services
- * @include: camel/camel.h
+ * CamelService:
+ *
+ * Base class for mail access and sending services.
  *
  * #CamelService is an abstract base class that is the common parent of
  * #CamelStore (mail storage and retrieval) and #CamelTransport (mail

@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-nntp-address
- * @short_description: NNTP newsgroup address handling
- * @include: camel/camel.h
+ * CamelNNTPAddress:
+ *
+ * NNTP newsgroup address handling.
  *
  * #CamelNNTPAddress is a #CamelAddress subclass for handling lists of NNTP
  * newsgroup names. Newsgroup names are ASCII-based, so no character encoding

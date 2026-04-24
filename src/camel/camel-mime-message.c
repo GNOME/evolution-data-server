@@ -20,9 +20,9 @@
  */
 
 /**
- * SECTION: camel-mime-message
- * @short_description: A complete RFC 822 MIME message
- * @include: camel/camel.h
+ * CamelMimeMessage:
+ *
+ * A complete RFC 822 MIME message.
  *
  * #CamelMimeMessage is a #CamelMimePart subclass that represents a complete
  * RFC 822 mail message. It adds structured accessors for message-level headers

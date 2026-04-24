@@ -18,9 +18,9 @@
  */
 
 /**
- * SECTION: camel-folder
- * @short_description: Abstract interface for a mail message store
- * @include: camel/camel.h
+ * CamelFolder:
+ *
+ * Abstract interface for a mail message store.
  *
  * #CamelFolder is the object used to abstract a mail folder that stores
  * messages. Folders are obtained from #CamelStore instances and provide

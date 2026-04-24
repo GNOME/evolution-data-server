@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-index
- * @short_description: Abstract interface for content indexing
- * @include: camel/camel.h
+ * CamelIndex:
+ *
+ * Abstract interface for content indexing.
  *
  * #CamelIndex is an abstract base class that provides a content-indexing
  * interface for Camel. It is used to build and query full-text indexes of
@@ -55,10 +55,6 @@
 struct _CamelIndexPrivate {
 	gpointer dummy;
 };
-
-/* ********************************************************************** */
-/* CamelIndex */
-/* ********************************************************************** */
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelIndex, camel_index, G_TYPE_OBJECT)
 

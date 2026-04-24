@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-address
- * @short_description: Base class for RFC-defined address types
- * @include: camel/camel.h
+ * CamelAddress:
+ *
+ * Base class for RFC-defined address types.
  *
  * #CamelAddress is a base abstract class for address types used in mail
  * headers. It provides structured access to an indexed list of addresses.

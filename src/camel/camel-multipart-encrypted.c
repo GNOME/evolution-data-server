@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-multipart-encrypted
- * @short_description: A multipart/encrypted MIME container
- * @include: camel/camel.h
+ * CamelMultipartEncrypted:
+ *
+ * A multipart/encrypted MIME container.
  *
  * #CamelMultipartEncrypted is a #CamelMultipart subclass for handling
  * multipart/encrypted MIME parts as defined in RFC 1847. It holds the

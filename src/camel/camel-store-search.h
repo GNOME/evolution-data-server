@@ -111,11 +111,6 @@ typedef struct _CamelStoreSearch CamelStoreSearch;
 typedef struct _CamelStoreSearchClass CamelStoreSearchClass;
 typedef struct _CamelStoreSearchPrivate CamelStoreSearchPrivate;
 
-/**
- * CamelStoreSearch:
- *
- * Since: 3.58
- **/
 struct _CamelStoreSearch {
 	/*< private >*/
 	GObject parent;

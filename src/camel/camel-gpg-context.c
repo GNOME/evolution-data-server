@@ -101,7 +101,7 @@ static const gchar *gpg_ctx_get_executable_name (void);
 /**
  * CamelGpgKeyInfo:
  *
- * An opaque structure holding information about a user key.
+ * Information about a user GPG key.
  *
  * Since: 3.50
  **/

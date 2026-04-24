@@ -19,9 +19,9 @@
  */
 
 /**
- * SECTION: camel-store
- * @short_description: Base class for mail storage backends
- * @include: camel/camel.h
+ * CamelStore:
+ *
+ * Base class for mail storage backends.
  *
  * #CamelStore is the base class for backends that support storage and
  * retrieval of mail messages. It is a #CamelService subclass that manages

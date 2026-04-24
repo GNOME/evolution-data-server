@@ -20,9 +20,9 @@
  */
 
 /**
- * SECTION: camel-session
- * @short_description: Application context for a Camel mail session
- * @include: camel/camel.h
+ * CamelSession:
+ *
+ * Application context for a Camel mail session.
  *
  * #CamelSession is a partially abstract class that provides the application
  * context for a Camel mail session. Client applications must subclass it and

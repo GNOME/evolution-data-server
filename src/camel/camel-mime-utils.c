@@ -17,37 +17,6 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
-/**
- * SECTION: camel-mime-utils
- * @short_description: MIME and mail utility functions
- * @include: camel/camel.h
- *
- * This module provides a wide collection of MIME and RFC 822 related utility
- * functions used extensively throughout Camel. It is not an object, but a
- * library of functions covering:
- *
- * - **Character class detection** — a fast, table-driven set of macros for
- *   classifying individual characters according to RFC character classes
- *   (atoms, LWSP, tspecials, etc.).
- *
- * - **Content-Transfer-Encoding** — highly optimised base64, quoted-printable,
- *   and UUencoding encoders and decoders.
- *
- * - **Raw header parsing** — low-level tokenisers for MIME headers.
- *
- * - **Structured header handling** — parsers and formatters for Date, Address,
- *   Content-Type, Content-Disposition, Content-ID, References, and Newsgroups
- *   headers with full RFC 2047 support.
- *
- * - **Header folding** — utilities for folding and unfolding long header
- *   values according to RFC 2822.
- *
- * Many of these functions represent years of production mail-client testing
- * and are highly optimised. For most purposes, the higher-level interfaces
- * on #CamelMimePart, #CamelMimeMessage, and #CamelInternetAddress should be
- * preferred.
- **/
-
 #include "evolution-data-server-config.h"
 
 #include <stdio.h>
@@ -3930,6 +3899,14 @@ camel_content_type_simple (CamelContentType *ct)
 		return g_strdup_printf ("%s/%s", ct->type, ct->subtype);
 }
 
+/**
+ * camel_content_transfer_encoding_decode:
+ * @in: input string
+ *
+ * Decode the contents of a content-encoding header
+ *
+ * Returns: The decoded header
+ **/
 gchar *
 camel_content_transfer_encoding_decode (const gchar *in)
 {

@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-folder-summary
- * @short_description: Manages cached message metadata for a folder
- * @include: camel/camel.h
+ * CamelFolderSummary:
+ *
+ * Manages cached message metadata for a folder.
  *
  * #CamelFolderSummary manages lists of lightweight #CamelMessageInfo
  * structures that cache metadata about each message in a folder (flags, UID,

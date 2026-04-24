@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-imapx-list-response
- * @include: camel/camel.h
- * @short_description: Stores an IMAP LIST response
+ * CamelIMAPXListResponse:
+ *
+ * Stores an IMAP LIST response
  *
  * #CamelIMAPXListResponse encapsulates an IMAP LIST response, which consists
  * of a set of mailbox attributes, a mailbox separator character, and the

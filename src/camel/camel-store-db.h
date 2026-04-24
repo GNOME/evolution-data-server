@@ -130,11 +130,6 @@ typedef struct _CamelStoreDB CamelStoreDB;
 typedef struct _CamelStoreDBClass CamelStoreDBClass;
 typedef struct _CamelStoreDBPrivate CamelStoreDBPrivate;
 
-/**
- * CamelStoreDB:
- *
- * Since: 3.58
- **/
 struct _CamelStoreDB {
 	/*< private >*/
 	CamelDB parent;

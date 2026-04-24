@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-mime-filter
- * @short_description: Stream-processing filter modules for MIME data
- * @include: camel/camel.h
+ * CamelMimeFilter:
+ *
+ * Stream-processing filter modules for MIME data.
  *
  * #CamelMimeFilter is an abstract base class for stream-processing modules
  * that transform blocks of data. Filters can be used in three ways:

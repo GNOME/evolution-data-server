@@ -17,9 +17,9 @@
  */
 
 /**
- * SECTION: camel-folder-thread
- * @short_description: Message threading / conversation grouping
- * @include: camel/camel.h
+ * CamelFolderThread:
+ *
+ * Message threading / conversation grouping.
  *
  * #CamelFolderThread computes conversation threads from a list of messages
  * in a folder, based on the In-Reply-To and References headers as described

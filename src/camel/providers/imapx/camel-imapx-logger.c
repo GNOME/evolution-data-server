@@ -16,9 +16,9 @@
  */
 
 /**
- * SECTION: camel-imapx-logger
- * @include: camel-imapx-logger.h
- * @short_description: Log input/output streams
+ * CamelIMAPXLogger:
+ *
+ * Log input/output streams
  *
  * #CamelIMAPXLogger is a simple #GConverter that just echos data to standard
  * output if the I/O debugging setting is enabled ('CAMEL_DEBUG=imapx:io').
