@@ -6706,12 +6706,19 @@ camel_imapx_server_list_sync (CamelIMAPXServer *is,
 	if (!camel_imapx_server_get_utf8_accept (is))
 		utf7_pattern = camel_utf8_utf7 (in_pattern);
 
+	/* Defer processing of LIST responses when an LSUB command will
+	 * follow, so that subscription status from LSUB is merged before
+	 * the store sees the results.  Without this, servers that lack
+	 * LIST-EXTENDED (and thus do not include \Subscribed in LIST
+	 * responses) would trigger spurious folder-deleted signals for
+	 * subscribed folders, which can reset the configured Sent folder. */
+	if (!is->priv->list_return_opts || CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, LIST_EXTENDED))
+		is->priv->list_responses_hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+
 	if (is->priv->list_return_opts != NULL) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LIST, "LIST \"\" %s RETURN (%t)",
 			utf7_pattern ? utf7_pattern : in_pattern, is->priv->list_return_opts);
 	} else {
-		is->priv->list_responses_hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LIST, "LIST \"\" %s",
 			utf7_pattern ? utf7_pattern : in_pattern);
 	}

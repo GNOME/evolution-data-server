@@ -1674,6 +1674,19 @@ imapx_store_mark_mailbox_unknown_cb (gpointer key,
 	camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN);
 }
 
+static void
+imapx_store_revert_unknown_mailbox_cb (gpointer key,
+				       gpointer value,
+				       gpointer user_data)
+{
+	CamelIMAPXMailbox *mailbox = value;
+
+	g_return_if_fail (mailbox != NULL);
+
+	if (camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN)
+		camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_UPDATED);
+}
+
 static gboolean
 imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 					 gpointer value,
@@ -1847,8 +1860,15 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	/* Don't need to test for zero, just decrement atomically. */
 	(void) g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
 
-	if (!success)
+	if (!success) {
+		if (update_folder_list) {
+			g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+			g_hash_table_foreach (imapx_store->priv->mailboxes, imapx_store_revert_unknown_mailbox_cb, imapx_store);
+			g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+		}
+
 		goto exit;
+	}
 
 	if (update_folder_list) {
 		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
@@ -1856,7 +1876,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
 	}
 
-	if (!root_folder_path || !*root_folder_path) {
+	if (update_folder_list && (!root_folder_path || !*root_folder_path)) {
 		GPtrArray *array;
 		guint ii;
 
