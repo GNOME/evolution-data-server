@@ -361,7 +361,7 @@ tmp_name (const gchar *in,
           gchar *o,
           gsize o_len)
 {
-	gchar *s;
+	const gchar *s;
 
 	s = strrchr (in, '/');
 	if (s) {

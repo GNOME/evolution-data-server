@@ -199,7 +199,6 @@ test_intervals (TCUFixture *fixture,
 	ETimezoneCache *zone_cache;
 	GSList *l1, *intervals = NULL;
 	GHashTable *from_intervals;
-	gint num_deleted = 0;
 	gint ii, start, end;
 	gboolean success;
 	GError *error = NULL;
@@ -307,8 +306,6 @@ test_intervals (TCUFixture *fixture,
 
 			interval_data_free (interval);
 			intervals = g_slist_delete_link (intervals, l1);
-
-			num_deleted++;
 		}
 
 		l1 = next;

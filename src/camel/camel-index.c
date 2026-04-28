@@ -31,7 +31,7 @@
  *
  * When a #CamelIndex is attached to a #CamelFolderSummary (via
  * camel_folder_summary_set_index()), summary generation will automatically
- * add index entries for each message's text/* content. The index can then
+ * add index entries for each message's text/... content. The index can then
  * be queried by #CamelFolderSearch to accelerate `body-contains` searches.
  **/
 

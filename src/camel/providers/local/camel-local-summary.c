@@ -631,6 +631,7 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 {
 	struct _camel_header_param *params, *scan;
 	guint32 uid, flags;
+	const gchar *const_header;
 	gchar *header;
 	gint i;
 	gchar uidstr[20];
@@ -653,9 +654,9 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 		return 0;
 
 	/* check for additional data */
-	header = strchr (xev, ';');
-	if (header) {
-		params = camel_header_param_list_decode (header + 1);
+	const_header = strchr (xev, ';');
+	if (const_header) {
+		params = camel_header_param_list_decode (const_header + 1);
 		scan = params;
 		while (scan) {
 			if (!g_ascii_strcasecmp (scan->name, "flags")) {

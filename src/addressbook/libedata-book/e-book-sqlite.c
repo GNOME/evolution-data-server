@@ -2239,7 +2239,7 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 	for (l = summary_columns; l; l = l->next) {
 		EContactField field_id;
 		const gchar *col = l->data;
-		gchar *p;
+		const gchar *p;
 		gint computed = 0;
 		gchar *freeme = NULL;
 

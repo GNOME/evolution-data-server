@@ -23,7 +23,7 @@
  * @include: camel/camel.h
  *
  * #CamelMultipart is a #CamelDataWrapper subclass that represents a
- * multipart/* MIME container. It holds an ordered list of #CamelMimePart
+ * multipart/... MIME container. It holds an ordered list of #CamelMimePart
  * children separated by a boundary string.
  *
  * Subclasses include #CamelMultipartSigned for multipart/signed (signed

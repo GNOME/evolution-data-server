@@ -29,7 +29,7 @@
  * Available matching functions include:
  *
  * - `(body-contains string …)` — matches if the message body contains any
- *   of the given strings (searches text/* parts with tag-stripping for HTML).
+ *   of the given strings (searches text/... parts with tag-stripping for HTML).
  * - `(header-contains header string …)` / `(header-matches …)` /
  *   `(header-starts-with …)` / `(header-ends-with …)` — header matching.
  * - `(header-exists header)` — tests whether a header is present.

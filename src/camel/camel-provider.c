@@ -217,7 +217,7 @@ camel_provider_traverse_directory (const gchar *provider_dir,
 {
 	GDir *dir;
 	const gchar *entry;
-	gchar *p, *name, buf[80];
+	gchar *name, buf[80];
 
 	dir = g_dir_open (provider_dir, 0, NULL);
 	if (!dir) {
@@ -233,9 +233,11 @@ camel_provider_traverse_directory (const gchar *provider_dir,
 	while ((entry = g_dir_read_name (dir))) {
 		CamelProviderModule *m = NULL;
 		FILE *fp;
+		gchar *ptr;
+		const gchar *ep;
 
-		p = strrchr (entry, '.');
-		if (!p || strcmp (p, ".urls") != 0)
+		ep = strrchr (entry, '.');
+		if (!ep || strcmp (ep, ".urls") != 0)
 			continue;
 
 		name = g_strdup_printf ("%s/%s", provider_dir, entry);
@@ -248,15 +250,15 @@ camel_provider_traverse_directory (const gchar *provider_dir,
 			continue;
 		}
 
-		p = strrchr (name, '.');
-		if (p)
-			strcpy (p, "." G_MODULE_SUFFIX);
+		ptr = strrchr (name, '.');
+		if (ptr)
+			strcpy (ptr, "." G_MODULE_SUFFIX);
 
 		while ((fgets (buf, sizeof (buf), fp))) {
 			buf[sizeof (buf) - 1] = '\0';
-			p = strchr (buf, '\n');
-			if (p)
-				*p = '\0';
+			ptr = strchr (buf, '\n');
+			if (ptr)
+				*ptr = '\0';
 
 			if (*buf) {
 				gchar *protocol = g_strdup (buf);

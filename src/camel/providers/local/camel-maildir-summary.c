@@ -267,7 +267,8 @@ camel_maildir_summary_name_to_info (CamelMessageInfo *info,
 				    const gchar *name)
 {
 	CamelFolderSummary *summary;
-	gchar *p, c, pattern[4];
+	const gchar *p;
+	gchar c, pattern[4];
 	guint32 set = 0;	/* what we set */
 	gint i;
 

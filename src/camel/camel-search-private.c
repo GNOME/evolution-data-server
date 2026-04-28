@@ -506,11 +506,11 @@ camel_search_header_match (const gchar *value,
                            camel_search_t type,
                            const gchar *default_charset)
 {
-	const gchar *name, *addr;
+	const gchar *name, *addr, *vdom, *mdom;
 	const guchar *ptr;
 	gint truth = FALSE, i;
 	CamelInternetAddress *cia;
-	gchar *v, *vdom, *mdom, *unfolded;
+	gchar *v, *unfolded;
 	gunichar c;
 
 	unfolded = camel_header_unfold (value);

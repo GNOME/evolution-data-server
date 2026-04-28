@@ -1253,7 +1253,7 @@ rfc2047_decode_word (const gchar *in,
 	 */
 
 	/* trim off the 'language' part if it's there... */
-	if ((p = strchr (charset, '*')))
+	if ((p = strchr (charenc, '*')))
 		*p = '\0';
 
 	/* slight optimization? */

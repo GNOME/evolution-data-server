@@ -151,7 +151,8 @@ e_strup (gchar *str)
 static void
 locale_parse_lang (const gchar *locale)
 {
-	gchar *codeset, *lang;
+	const gchar *codeset;
+	gchar *lang;
 
 	if ((codeset = strchr (locale, '.')))
 		lang = g_strndup (locale, codeset - locale);

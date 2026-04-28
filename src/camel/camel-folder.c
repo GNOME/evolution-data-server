@@ -1096,7 +1096,7 @@ static void
 folder_rename (CamelFolder *folder,
                const gchar *new)
 {
-	gchar *tmp;
+	const gchar *tmp;
 
 	d (printf ("CamelFolder:rename ('%s')\n", new));
 

@@ -4105,7 +4105,7 @@ e_contact_photo_set_uri (EContactPhoto *photo,
 static gchar *
 mime_type_from_filename (const gchar *filename)
 {
-	gchar *extension;
+	const gchar *extension;
 	gchar *mime_type;
 	gchar *content_type;
 	guint len;

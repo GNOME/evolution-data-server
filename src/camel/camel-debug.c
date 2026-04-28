@@ -93,7 +93,7 @@ camel_debug (const gchar *mode)
 		return TRUE;
 
 	if (debug_table) {
-		gchar *colon;
+		const gchar *colon;
 		gchar *fallback;
 		gsize fallback_len;
 
@@ -103,17 +103,19 @@ camel_debug (const gchar *mode)
 		/* Check for fully qualified debug */
 		colon = strchr (mode, ':');
 		if (colon) {
+			gchar *tmp;
+
 			fallback_len = strlen (mode) + 1;
 			fallback = g_alloca (fallback_len);
 			g_strlcpy (fallback, mode, fallback_len);
-			colon = (colon - mode) + fallback;
+			tmp = (colon - mode) + fallback;
 			/* Now check 'module[:*]' */
-			*colon = 0;
+			*tmp = 0;
 			if (g_hash_table_lookup (debug_table, fallback))
 				return TRUE;
 			/* Now check ':subsystem' */
-			*colon = ':';
-			if (g_hash_table_lookup (debug_table, colon))
+			*tmp = ':';
+			if (g_hash_table_lookup (debug_table, tmp))
 				return TRUE;
 		}
 	}

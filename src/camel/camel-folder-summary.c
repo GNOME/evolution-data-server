@@ -36,7 +36,7 @@
  * information specific to their storage format.
  *
  * If a #CamelIndex is set via camel_folder_summary_set_index(), the
- * summariser will also generate full-text index entries (for text/* parts)
+ * summariser will also generate full-text index entries (for text/... parts)
  * when building the summary from message content.
  **/
 

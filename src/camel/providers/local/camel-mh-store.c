@@ -251,7 +251,7 @@ folder_info_new (CamelStore *store,
 	/* FIXME Need to set fi->flags = CAMEL_FOLDER_NOSELECT
 	 *       (and possibly others) when appropriate. */
 	CamelFolderInfo *fi;
-	gchar *base;
+	const gchar *base;
 
 	base = strrchr (path, '/');
 
