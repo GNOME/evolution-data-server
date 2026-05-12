@@ -889,6 +889,8 @@ e_utf8_strftime (gchar *string,
 			sz = 0;
 	}
 
+	if (sz >= max)
+		sz = max - 1;
 	memcpy (string, buf, sz);
 	string[sz] = '\0';
 
