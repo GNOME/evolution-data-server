@@ -3199,23 +3199,36 @@ e_book_meta_backend_inline_local_photos_sync (EBookMetaBackend *meta_backend,
 				basename = g_file_get_basename (file);
 				if (g_file_load_contents (file, cancellable, &content, &len, NULL, error)) {
 					gchar *mime_type;
-					const gchar *image_type, *pp;
 
 					mime_type = ebmb_get_mime_type (url, content, len);
-					if (mime_type && (pp = strchr (mime_type, '/'))) {
-						image_type = pp + 1;
-					} else {
-						image_type = "X-EVOLUTION-UNKNOWN";
-					}
 
 					e_vcard_attribute_remove_param (attr, EVC_TYPE);
 					e_vcard_attribute_remove_param (attr, EVC_ENCODING);
 					e_vcard_attribute_remove_param (attr, EVC_VALUE);
 					e_vcard_attribute_remove_values (attr);
 
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), image_type);
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
-					e_vcard_attribute_add_value_decoded (attr, content, len);
+					if (e_vcard_get_version (E_VCARD (contact)) >= E_VCARD_VERSION_40) {
+						gchar *encoded, *data_uri;
+
+						encoded = g_base64_encode ((guchar *) content, len);
+						data_uri = e_util_construct_data_uri (mime_type, NULL, TRUE, encoded);
+
+						e_vcard_attribute_add_value_take (attr, data_uri);
+
+						g_free (encoded);
+					} else {
+						const gchar *image_type, *pp;
+
+						if (mime_type && (pp = strchr (mime_type, '/'))) {
+							image_type = pp + 1;
+						} else {
+							image_type = "X-EVOLUTION-UNKNOWN";
+						}
+
+						e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), image_type);
+						e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_ENCODING), "b");
+						e_vcard_attribute_add_value_decoded (attr, content, len);
+					}
 
 					g_free (mime_type);
 					g_free (content);
@@ -3309,6 +3322,11 @@ e_book_meta_backend_store_inline_photos_sync (EBookMetaBackend *meta_backend,
 	for (link = attributes, fileindex = 0; link; link = g_list_next (link), fileindex++) {
 		EVCardAttribute *attr = link->data;
 		const gchar *attr_name;
+		const gchar *photo_data = NULL;
+		const gchar *ext = NULL;
+		gsize photo_len = 0;
+		gchar *mime_type = NULL;
+		guchar *decoded_data = NULL;
 		GList *values;
 
 		attr_name = e_vcard_attribute_get_name (attr);
@@ -3323,35 +3341,62 @@ e_book_meta_backend_store_inline_photos_sync (EBookMetaBackend *meta_backend,
 			values = e_vcard_attribute_get_values_decoded (attr);
 			if (values && values->data) {
 				const GString *decoded = values->data;
-				gchar *local_filename;
 
-				if (!decoded->len)
-					continue;
+				if (decoded->len > 0) {
+					photo_data = decoded->str;
+					photo_len = decoded->len;
 
-				values = e_vcard_attribute_get_param (attr, EVC_TYPE);
-
-				local_filename = ebmb_create_photo_local_filename (meta_backend, e_contact_get_const (contact, E_CONTACT_UID),
-					attr_name, fileindex, values ? values->data : NULL);
-				if (local_filename &&
-				    g_file_set_contents (local_filename, decoded->str, decoded->len, error)) {
-					gchar *url;
-
-					e_vcard_attribute_remove_param (attr, EVC_TYPE);
-					e_vcard_attribute_remove_param (attr, EVC_ENCODING);
-					e_vcard_attribute_remove_param (attr, EVC_VALUE);
-					e_vcard_attribute_remove_values (attr);
-
-					url = g_filename_to_uri (local_filename, NULL, NULL);
-
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
-					e_vcard_attribute_add_value_take (attr, g_steal_pointer (&url));
-				} else {
-					success = FALSE;
+					values = e_vcard_attribute_get_param (attr, EVC_TYPE);
+					ext = (values && values->data) ? values->data : NULL;
 				}
+			}
+		} else {
+			values = e_vcard_attribute_get_values (attr);
+			if (values && values->data) {
+				gboolean is_base64 = FALSE;
+				const gchar *data_start = NULL;
 
-				g_free (local_filename);
+				if (e_util_split_data_uri (values->data, &mime_type, NULL, &is_base64, &data_start) && is_base64 && data_start) {
+					decoded_data = g_base64_decode (data_start, &photo_len);
+					if (decoded_data && photo_len > 0) {
+						photo_data = (const gchar *) decoded_data;
+						if (mime_type) {
+							ext = strrchr (mime_type, '/');
+							if (ext)
+								ext++;
+						}
+					}
+				}
 			}
 		}
+
+		if (photo_data && photo_len > 0) {
+			gchar *local_filename;
+
+			local_filename = ebmb_create_photo_local_filename (meta_backend, e_contact_get_const (contact, E_CONTACT_UID),
+				attr_name, fileindex, ext);
+			if (local_filename &&
+			    g_file_set_contents (local_filename, photo_data, photo_len, error)) {
+				gchar *url;
+
+				e_vcard_attribute_remove_param (attr, EVC_TYPE);
+				e_vcard_attribute_remove_param (attr, EVC_ENCODING);
+				e_vcard_attribute_remove_param (attr, EVC_VALUE);
+				e_vcard_attribute_remove_values (attr);
+
+				url = g_filename_to_uri (local_filename, NULL, NULL);
+
+				e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_VALUE), "uri");
+				e_vcard_attribute_add_value_take (attr, g_steal_pointer (&url));
+			} else if (!local_filename) {
+				success = FALSE;
+			}
+
+			g_free (local_filename);
+		}
+
+		g_free (decoded_data);
+		g_free (mime_type);
 	}
 
 	return success;
