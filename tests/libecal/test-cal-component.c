@@ -21,7 +21,7 @@
 #include <libecal/libecal.h>
 
 #if !ICAL_CHECK_VERSION(3, 99, 99)
-#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_as_utc_seconds i_cal_duration_as_int
 #define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
 #endif
 
@@ -83,7 +83,7 @@ verify_ical_durationtype_equal (ICalDuration *expected,
 
 	g_assert_nonnull (received);
 
-	g_assert_cmpint (i_cal_duration_as_seconds (expected), ==, i_cal_duration_as_seconds (received));
+	g_assert_cmpint (i_cal_duration_as_utc_seconds (expected), ==, i_cal_duration_as_utc_seconds (received));
 }
 
 static void
@@ -371,11 +371,11 @@ verify_struct_alarm_repeat_equal (const ECalComponentAlarmRepeat *expected,
 					e_cal_component_alarm_repeat_get_interval (received));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==, e_cal_component_alarm_repeat_get_interval_seconds (received));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==,
-			 i_cal_duration_as_seconds (e_cal_component_alarm_repeat_get_interval (expected)));
+			 i_cal_duration_as_utc_seconds (e_cal_component_alarm_repeat_get_interval (expected)));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (received), ==,
-			 i_cal_duration_as_seconds (e_cal_component_alarm_repeat_get_interval (received)));
+			 i_cal_duration_as_utc_seconds (e_cal_component_alarm_repeat_get_interval (received)));
 	g_assert_cmpint (e_cal_component_alarm_repeat_get_interval_seconds (expected), ==,
-			 i_cal_duration_as_seconds (e_cal_component_alarm_repeat_get_interval (received)));
+			 i_cal_duration_as_utc_seconds (e_cal_component_alarm_repeat_get_interval (received)));
 }
 
 static void

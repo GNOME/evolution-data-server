@@ -37,7 +37,7 @@ struct _ECalComponentAlarmRepeat {
 
 #if !ICAL_CHECK_VERSION(3, 99, 99)
 #define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
-#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_as_utc_seconds i_cal_duration_as_int
 #endif
 
 /**
@@ -60,7 +60,7 @@ e_cal_component_alarm_repeat_new (gint repetitions,
 	g_return_val_if_fail (I_CAL_IS_DURATION ((ICalDuration *) interval), NULL);
 
 	return e_cal_component_alarm_repeat_new_seconds (repetitions,
-		i_cal_duration_as_seconds ((ICalDuration *) interval));
+		i_cal_duration_as_utc_seconds ((ICalDuration *) interval));
 }
 
 /**
@@ -105,7 +105,7 @@ e_cal_component_alarm_repeat_copy (const ECalComponentAlarmRepeat *repeat)
 	g_return_val_if_fail (repeat != NULL, NULL);
 
 	return e_cal_component_alarm_repeat_new_seconds (repeat->repetitions,
-		i_cal_duration_as_seconds (repeat->interval));
+		i_cal_duration_as_utc_seconds (repeat->interval));
 }
 
 /**
@@ -203,7 +203,7 @@ e_cal_component_alarm_repeat_set_interval (ECalComponentAlarmRepeat *repeat,
 
 	if (repeat->interval != interval) {
 		e_cal_component_alarm_repeat_set_interval_seconds (repeat,
-			i_cal_duration_as_seconds ((ICalDuration *) interval));
+			i_cal_duration_as_utc_seconds ((ICalDuration *) interval));
 	}
 }
 
@@ -222,7 +222,7 @@ e_cal_component_alarm_repeat_get_interval_seconds (const ECalComponentAlarmRepea
 {
 	g_return_val_if_fail (repeat != NULL, 0);
 
-	return i_cal_duration_as_seconds (repeat->interval);
+	return i_cal_duration_as_utc_seconds (repeat->interval);
 }
 
 /**
@@ -240,7 +240,7 @@ e_cal_component_alarm_repeat_set_interval_seconds (ECalComponentAlarmRepeat *rep
 {
 	g_return_if_fail (repeat != NULL);
 
-	if (i_cal_duration_as_seconds (repeat->interval) != interval_seconds) {
+	if (i_cal_duration_as_utc_seconds (repeat->interval) != interval_seconds) {
 		g_clear_object (&repeat->interval);
 		repeat->interval = i_cal_duration_new_from_seconds (interval_seconds);
 	}

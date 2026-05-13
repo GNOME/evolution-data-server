@@ -41,7 +41,7 @@ struct _ECalComponentPeriod {
 };
 
 #if !ICAL_CHECK_VERSION(3, 99, 99)
-#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_as_utc_seconds i_cal_duration_as_int
 #define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
 #endif
 
@@ -369,6 +369,6 @@ e_cal_component_period_set_duration (ECalComponentPeriod *period,
 
 	if (period->duration != duration) {
 		g_clear_object (&period->duration);
-		period->duration = i_cal_duration_new_from_seconds (i_cal_duration_as_seconds ((ICalDuration *) duration));
+		period->duration = i_cal_duration_new_from_seconds (i_cal_duration_as_utc_seconds ((ICalDuration *) duration));
 	}
 }
