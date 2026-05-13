@@ -37,7 +37,7 @@
 #define _TIME_MAX	((time_t) INT_MAX)
 
 #if !ICAL_CHECK_VERSION(3, 99, 99)
-#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_as_utc_seconds i_cal_duration_as_int
 #define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
 #endif
 
@@ -359,7 +359,7 @@ compute_alarm_range (ECalComponent *comp,
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
 			dur = e_cal_component_alarm_trigger_get_duration (trigger);
-			dur_time = i_cal_duration_as_seconds (dur);
+			dur_time = i_cal_duration_as_utc_seconds (dur);
 
 			if (repeat && e_cal_component_alarm_repeat_get_repetitions (repeat) != 0) {
 				gint rdur;
@@ -468,7 +468,7 @@ e_cal_util_add_alarm_before_start (ECalComponent *comp,
 		if (!duration || !i_cal_duration_is_neg (duration))
 			continue;
 
-		if (i_cal_duration_as_seconds (duration) == (-1) * before_start_seconds)
+		if (i_cal_duration_as_utc_seconds (duration) == (-1) * before_start_seconds)
 			break;
 	}
 
@@ -574,7 +574,7 @@ add_alarm_occurrences_cb (ICalComponent *icalcomp,
 		}
 
 		dur = e_cal_component_alarm_trigger_get_duration (trigger);
-		dur_time = i_cal_duration_as_seconds (dur);
+		dur_time = i_cal_duration_as_utc_seconds (dur);
 
 		if (e_cal_component_alarm_trigger_get_kind (trigger) == E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
 			occur_time = start;

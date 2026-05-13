@@ -44,7 +44,7 @@ struct _ECalComponentAlarmTrigger {
 
 #if !ICAL_CHECK_VERSION(3, 99, 99)
 #define i_cal_duration_new_from_seconds i_cal_duration_new_from_int
-#define i_cal_duration_as_seconds i_cal_duration_as_int
+#define i_cal_duration_as_utc_seconds i_cal_duration_as_int
 #define i_cal_trigger_new_from_seconds i_cal_trigger_new_from_int
 #endif
 
@@ -427,7 +427,7 @@ e_cal_component_alarm_trigger_set_relative (ECalComponentAlarmTrigger *trigger,
 
 	trigger->kind = kind;
 	trigger->rel_duration = i_cal_duration_new_from_seconds (
-		i_cal_duration_as_seconds ((ICalDuration *) duration));
+		i_cal_duration_as_utc_seconds ((ICalDuration *) duration));
 }
 
 /**
@@ -543,10 +543,10 @@ e_cal_component_alarm_trigger_set_duration (ECalComponentAlarmTrigger *trigger,
 		return;
 
 	if (trigger->rel_duration != duration &&
-	    i_cal_duration_as_seconds (trigger->rel_duration) != i_cal_duration_as_seconds ((ICalDuration *) duration)) {
+	    i_cal_duration_as_utc_seconds (trigger->rel_duration) != i_cal_duration_as_utc_seconds ((ICalDuration *) duration)) {
 		g_clear_object (&trigger->rel_duration);
 		trigger->rel_duration = i_cal_duration_new_from_seconds (
-			i_cal_duration_as_seconds ((ICalDuration *) duration));
+			i_cal_duration_as_utc_seconds ((ICalDuration *) duration));
 	}
 }
 
