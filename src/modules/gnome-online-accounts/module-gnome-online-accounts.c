@@ -79,6 +79,13 @@ struct _EGnomeOnlineAccounts {
 
 	/* GoaAccount ID -> ESource UID */
 	GHashTable *goa_to_eds;
+
+	/* TRUE once the "files-loaded" signal has fired on the registry server */
+	gboolean files_loaded;
+	gulong files_loaded_handler_id;
+
+	/* One-shot handler waiting for GOA to come up after a deferred start */
+	gulong goa_name_owner_wait_id;
 };
 
 struct _EGnomeOnlineAccountsClass {
@@ -93,6 +100,22 @@ void e_module_unload (GTypeModule *type_module);
 GType e_gnome_online_accounts_get_type (void);
 static void e_gnome_online_accounts_oauth2_support_init
 					(EOAuth2SupportInterface *iface);
+static void gnome_online_accounts_populate_accounts_table
+					(EGnomeOnlineAccounts *extension,
+					 GList *goa_objects);
+static void gnome_online_accounts_account_added_cb
+					(EGoaClient *goa_client,
+					 GoaObject *goa_object,
+					 EGnomeOnlineAccounts *extension);
+static void gnome_online_accounts_start_accounts
+					(EGnomeOnlineAccounts *extension);
+static void gnome_online_accounts_name_owner_appeared_cb
+					(GDBusObjectManagerClient *manager,
+					 GParamSpec *pspec,
+					 EGnomeOnlineAccounts *extension);
+static ESource *gnome_online_accounts_lookup_source
+					(EGnomeOnlineAccounts *extension,
+					 const gchar *account_id);
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED (
 	EGnomeOnlineAccounts,
@@ -174,7 +197,7 @@ gnome_online_accounts_get_server (EGnomeOnlineAccounts *extension)
 
 	extensible = e_extension_get_extensible (E_EXTENSION (extension));
 
-	return E_SOURCE_REGISTRY_SERVER (extensible);
+	return extensible ? E_SOURCE_REGISTRY_SERVER (extensible) : NULL;
 }
 
 static gboolean
@@ -1084,9 +1107,29 @@ gnome_online_accounts_account_added_cb (EGoaClient *goa_client,
 		e_goa_debug_printf ("No suitable backend found for account '%s'\n", account_id);
 	}
 
-	if (source_uid == NULL && backend_name != NULL)
-		backend_factory = e_data_factory_ref_backend_factory (
-			E_DATA_FACTORY (server), backend_name, E_SOURCE_EXTENSION_COLLECTION);
+	if (source_uid == NULL && backend_name != NULL) {
+		/* GOA may have been slow to start: check whether an ESource
+		 * for this account already exists before creating a new one. */
+		ESource *existing = gnome_online_accounts_lookup_source (extension, account_id);
+
+		if (existing != NULL) {
+			const gchar *existing_uid = e_source_get_uid (existing);
+
+			e_goa_debug_printf ("Pairing late-arriving account '%s' with existing source '%s'\n",
+				account_id, existing_uid);
+
+			g_hash_table_insert (
+				extension->goa_to_eds,
+				g_strdup (account_id),
+				g_strdup (existing_uid));
+
+			gnome_online_accounts_config_sources (extension, existing, goa_object);
+			g_object_unref (existing);
+		} else {
+			backend_factory = e_data_factory_ref_backend_factory (
+				E_DATA_FACTORY (server), backend_name, E_SOURCE_EXTENSION_COLLECTION);
+		}
+	}
 
 	if (backend_factory != NULL) {
 		gnome_online_accounts_create_collection (
@@ -1289,7 +1332,6 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 {
 	EGnomeOnlineAccounts *extension;
 	EGoaClient *goa_client;
-	GList *list, *link;
 	gulong handler_id;
 	GError *error = NULL;
 
@@ -1320,26 +1362,6 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	/* Don't need the GCancellable anymore. */
 	g_clear_object (&extension->create_client);
 
-	list = e_goa_client_list_accounts (extension->goa_client);
-
-	e_goa_debug_printf ("Connected to service, received %d accounts\n", g_list_length (list));
-
-	/* This populates a hash table of GOA ID -> ESource UID strings by
-	 * searching through available data sources for ones with a "GNOME
-	 * Online Accounts" extension.  If such an extension is found, but
-	 * no corresponding GoaAccount (presumably meaning the GOA account
-	 * was somehow deleted between E-D-S sessions) then the ESource in
-	 * which the extension was found gets deleted. */
-	gnome_online_accounts_populate_accounts_table (extension, list);
-
-	for (link = list; link != NULL; link = g_list_next (link))
-		gnome_online_accounts_account_added_cb (
-			extension->goa_client,
-			GOA_OBJECT (link->data),
-			extension);
-
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-
 	/* Listen for Online Account changes. */
 
 	handler_id = g_signal_connect (
@@ -1359,6 +1381,170 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 		G_CALLBACK (gnome_online_accounts_account_swapped_cb),
 		extension);
 	extension->account_swapped_handler_id = handler_id;
+
+	/* Reconcile GOA accounts with ESources only once all source key files
+	 * are loaded.  The GOA client initialises asynchronously and its
+	 * completion idle can fire before "files-loaded" has been emitted,
+	 * which would make list_sources() return only system sources and cause
+	 * populate_accounts_table() to wrongly delete user-configured sources. */
+	if (extension->files_loaded)
+		gnome_online_accounts_start_accounts (extension);
+}
+
+/* Delete EDS collection sources whose GOA account no longer exists.
+ * Called after GOA comes up when we deferred the initial enumeration. */
+static void
+gnome_online_accounts_remove_orphaned_sources (EGnomeOnlineAccounts *extension)
+{
+	ESourceRegistryServer *server;
+	GList *list, *link;
+
+	server = gnome_online_accounts_get_server (extension);
+	list = e_source_registry_server_list_sources (server, E_SOURCE_EXTENSION_GOA);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		ESource *source = E_SOURCE (link->data);
+		ESourceGoa *goa_ext;
+		const gchar *account_id;
+
+		goa_ext = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+		account_id = e_source_goa_get_account_id (goa_ext);
+
+		if (account_id == NULL)
+			continue;
+
+		if (g_hash_table_lookup (extension->goa_to_eds, account_id) == NULL) {
+			e_goa_debug_printf ("Removing orphaned source '%s' "
+				"(GOA account '%s' no longer exists)\n",
+				e_source_get_uid (source), account_id);
+			gnome_online_accounts_remove_collection (extension, source);
+		}
+	}
+
+	g_list_free_full (list, g_object_unref);
+}
+
+/* Fires on notify::name-owner of the underlying GDBusObjectManagerClient after
+ * we deferred the initial account enumeration because GOA wasn't running yet.
+ * By the time this signal fires, GDBusObjectManagerClient has already fired
+ * object-added for every account from GetManagedObjects, so goa_to_eds is
+ * fully populated for accounts that still exist in GOA. */
+static void
+gnome_online_accounts_name_owner_appeared_cb (GDBusObjectManagerClient *manager,
+                                              GParamSpec *pspec,
+                                              EGnomeOnlineAccounts *extension)
+{
+	gchar *name_owner;
+
+	name_owner = g_dbus_object_manager_client_get_name_owner (manager);
+
+	if (!name_owner) {
+		/* GOA vanished — keep waiting for it to come back up. */
+		return;
+	}
+
+	g_free (name_owner);
+
+	/* Disconnect: this is a one-shot handler. */
+	g_signal_handler_disconnect (manager, extension->goa_name_owner_wait_id);
+	extension->goa_name_owner_wait_id = 0;
+
+	/* Remove any EDS collection sources whose GOA account was deleted
+	 * while EDS was not running (account_added_cb already updated
+	 * goa_to_eds for accounts that still exist). */
+	gnome_online_accounts_remove_orphaned_sources (extension);
+}
+
+/* Find an existing collection ESource whose GOA account-id matches,
+ * for the case where goa_to_eds wasn't pre-populated (GOA was slow to start). */
+static ESource *
+gnome_online_accounts_lookup_source (EGnomeOnlineAccounts *extension,
+                                     const gchar *account_id)
+{
+	ESourceRegistryServer *server;
+	GList *list, *link;
+	ESource *match = NULL;
+
+	server = gnome_online_accounts_get_server (extension);
+	list = e_source_registry_server_list_sources (server, E_SOURCE_EXTENSION_GOA);
+
+	for (link = list; link != NULL && match == NULL; link = g_list_next (link)) {
+		ESource *source = E_SOURCE (link->data);
+		ESourceGoa *goa_ext;
+		const gchar *source_account_id;
+
+		goa_ext = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+		source_account_id = e_source_goa_get_account_id (goa_ext);
+
+		if (g_strcmp0 (source_account_id, account_id) == 0)
+			match = g_object_ref (source);
+	}
+
+	g_list_free_full (list, g_object_unref);
+
+	return match;
+}
+
+/* Called when both the GOA client is ready AND files-loaded has fired.
+ * Enumerates GOA accounts and reconciles them with existing ESources. */
+static void
+gnome_online_accounts_start_accounts (EGnomeOnlineAccounts *extension)
+{
+	GDBusObjectManager *manager;
+	GList *list, *link;
+	gchar *name_owner;
+
+	manager = e_goa_client_ref_object_manager (extension->goa_client);
+	name_owner = g_dbus_object_manager_client_get_name_owner (
+		G_DBUS_OBJECT_MANAGER_CLIENT (manager));
+
+	if (name_owner != NULL) {
+		e_goa_debug_printf ("Connected to service, enumerating accounts\n");
+
+		list = e_goa_client_list_accounts (extension->goa_client);
+
+		e_goa_debug_printf ("Received %d accounts\n", g_list_length (list));
+
+		gnome_online_accounts_populate_accounts_table (extension, list);
+
+		for (link = list; link != NULL; link = g_list_next (link)) {
+			gnome_online_accounts_account_added_cb (
+				extension->goa_client,
+				GOA_OBJECT (link->data),
+				extension);
+		}
+
+		g_list_free_full (list, g_object_unref);
+	} else {
+		e_goa_debug_printf ("GOA daemon not running yet; "
+			"deferring account enumeration until it starts\n");
+
+		/* Watch for GOA coming up.  Once notify::name-owner fires,
+		 * all object-added signals for the initial account list will
+		 * have been processed, so we can safely remove orphaned sources. */
+		extension->goa_name_owner_wait_id = g_signal_connect (
+			G_DBUS_OBJECT_MANAGER_CLIENT (manager),
+			"notify::name-owner",
+			G_CALLBACK (gnome_online_accounts_name_owner_appeared_cb),
+			extension);
+	}
+
+	g_object_unref (manager);
+	g_free (name_owner);
+}
+
+static void
+gnome_online_accounts_files_loaded_cb (ESourceRegistryServer *server,
+                                       EGnomeOnlineAccounts *extension)
+{
+	extension->files_loaded = TRUE;
+
+	/* One-shot; no need to hear about reloads. */
+	g_signal_handler_disconnect (server, extension->files_loaded_handler_id);
+	extension->files_loaded_handler_id = 0;
+
+	if (extension->goa_client != NULL)
+		gnome_online_accounts_start_accounts (extension);
 }
 
 static void
@@ -1385,6 +1571,27 @@ gnome_online_accounts_dispose (GObject *object)
 	EGnomeOnlineAccounts *extension;
 
 	extension = E_GNOME_ONLINE_ACCOUNTS (object);
+
+	if (extension->goa_name_owner_wait_id > 0) {
+		GDBusObjectManager *manager;
+
+		manager = e_goa_client_ref_object_manager (extension->goa_client);
+		if (manager) {
+			g_signal_handler_disconnect (manager, extension->goa_name_owner_wait_id);
+			g_object_unref (manager);
+		}
+		extension->goa_name_owner_wait_id = 0;
+	}
+
+	if (extension->files_loaded_handler_id > 0) {
+		ESourceRegistryServer *server;
+
+		server = gnome_online_accounts_get_server (extension);
+		if (server)
+			g_signal_handler_disconnect (server, extension->files_loaded_handler_id);
+
+		extension->files_loaded_handler_id = 0;
+	}
 
 	if (extension->account_added_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -1436,11 +1643,11 @@ gnome_online_accounts_finalize (GObject *object)
 static void
 gnome_online_accounts_constructed (GObject *object)
 {
-	EExtension *extension;
+	EGnomeOnlineAccounts *goa_extension;
 	EExtensible *extensible;
 
-	extension = E_EXTENSION (object);
-	extensible = e_extension_get_extensible (extension);
+	goa_extension = E_GNOME_ONLINE_ACCOUNTS (object);
+	extensible = e_extension_get_extensible (E_EXTENSION (object));
 
 	e_goa_debug_printf ("Waiting for bus-acquired signal\n");
 
@@ -1450,7 +1657,14 @@ gnome_online_accounts_constructed (GObject *object)
 	g_signal_connect (
 		extensible, "bus-acquired",
 		G_CALLBACK (gnome_online_accounts_bus_acquired_cb),
-		extension);
+		goa_extension);
+
+	/* Track when all source key files are loaded so we don't reconcile GOA
+	 * accounts against an incomplete source list. */
+	goa_extension->files_loaded_handler_id = g_signal_connect (
+		extensible, "files-loaded",
+		G_CALLBACK (gnome_online_accounts_files_loaded_cb),
+		goa_extension);
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->constructed (object);
