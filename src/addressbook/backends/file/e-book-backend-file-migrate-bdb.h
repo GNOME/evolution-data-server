@@ -1,22 +1,7 @@
-/* e-book-backend-file-migrate-bdb.c - Migration of old BDB database to the new sqlite DB.
- *
- * Copyright (C) 2012 Intel Corporation
- *
- * This library is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Tristan Van Berkom <tristanvb@openismus.com>
- *
- * Based on work by Nat Friedman, Chris Toshok and Hans Petter Jansson.
+/*
+ * SPDX-FileCopyrightText: (C) 2012 Intel Corporation
+ * SPDX-License-Identifier: LGPL-2.0-or-later
+ * SPDX-FileContributor: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
 #ifndef E_BOOK_BACKEND_MIGRATE_BDB_H

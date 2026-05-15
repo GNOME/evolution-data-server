@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: (C) 2022 Red Hat (www.redhat.com)
- * SPDX-License-Identifier: LGPL-2.1-or-later
+ * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
 #ifndef E_CERTIFICATE_WIDGET_H

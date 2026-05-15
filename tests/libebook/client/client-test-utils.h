@@ -1,22 +1,10 @@
 /*
- * Copyright (C) 2011, 2012 Red Hat, Inc. (www.redhat.com)
- * Copyright (C) 2012 Intel Corporation
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Milan Crha <mcrha@redhat.com>
- *          Matthew Barnes <mbarnes@redhat.com>
- *          Tristan Van Berkom <tristanvb@openismus.com>
+ * SPDX-FileCopyrightText: (C) 2011, 2012 Red Hat, Inc. (www.redhat.com)
+ * SPDX-FileCopyrightText: (C) 2012 Intel Corporation
+ * SPDX-License-Identifier: LGPL-2.0-or-later
+ * SPDX-FileContributor: Milan Crha <mcrha@redhat.com>
+ * SPDX-FileContributor: Matthew Barnes <mbarnes@redhat.com>
+ * SPDX-FileContributor: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
 #ifndef CLIENT_TEST_UTILS_H

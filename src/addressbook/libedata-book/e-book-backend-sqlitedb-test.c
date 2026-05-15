@@ -1,20 +1,7 @@
-/* e-book-backend-sqlitedb.c
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Chenthill Palanisamy <pchenthill@novell.com>
+/*
+ * SPDX-FileCopyrightText: (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * SPDX-License-Identifier: LGPL-2.0-or-later
+ * SPDX-FileContributor: Chenthill Palanisamy <pchenthill@novell.com>
  */
 
 #include "evolution-data-server-config.h"

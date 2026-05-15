@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: (C) 2024 Siemens AG
- * SPDX-License-Identifier: LGPL-2.1-or-later
+ * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
 /**

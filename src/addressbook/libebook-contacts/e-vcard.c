@@ -1,22 +1,9 @@
-/* e-vcard.c
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- * Copyright (C) 2013 Collabora Ltd.
- *
- * This library is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library. If not, see <http://www.gnu.org/licenses/>.
- *
- * Authors: Chris Toshok (toshok@ximian.com)
- *          Philip Withnall <philip.withnall@collabora.co.uk>
+/*
+ * SPDX-FileCopyrightText: (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * SPDX-FileCopyrightText: (C) 2013 Collabora Ltd.
+ * SPDX-License-Identifier: LGPL-2.0-or-later
+ * SPDX-FileContributor: Chris Toshok (toshok@ximian.com)
+ * SPDX-FileContributor: Philip Withnall <philip.withnall@collabora.co.uk>
  */
 
 /**
