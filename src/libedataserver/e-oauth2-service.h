@@ -36,6 +36,37 @@
 G_BEGIN_DECLS
 
 /**
+ * E_OAUTH2_SERVICE_ERROR:
+ *
+ * Since: 3.62
+ **/
+#define E_OAUTH2_SERVICE_ERROR (e_oauth2_service_error_quark ())
+
+GQuark		e_oauth2_service_error_quark	(void) G_GNUC_CONST;
+
+/**
+ * EOAuth2ServiceError:
+ * @E_OAUTH2_SERVICE_ERROR_FAILED: a generic error
+ * @E_OAUTH2_SERVICE_ERROR_INVALID_SOURCE: the #ESource is not valid for the OAuth2 service
+ * @E_OAUTH2_SERVICE_ERROR_SECRET_NOT_FOUND: the OAuth2 secret was not found in the keyring
+ * @E_OAUTH2_SERVICE_ERROR_INVALID_RESPONSE: the server returned a malformed or unexpected response
+ * @E_OAUTH2_SERVICE_ERROR_TOKEN_EXPIRED: the access token expired and could not be refreshed
+ * @E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED: the server rejected the token refresh request
+ *
+ * Error codes for #EOAuth2Service operations.
+ *
+ * Since: 3.62
+ **/
+typedef enum {
+	E_OAUTH2_SERVICE_ERROR_FAILED,
+	E_OAUTH2_SERVICE_ERROR_INVALID_SOURCE,
+	E_OAUTH2_SERVICE_ERROR_SECRET_NOT_FOUND,
+	E_OAUTH2_SERVICE_ERROR_INVALID_RESPONSE,
+	E_OAUTH2_SERVICE_ERROR_TOKEN_EXPIRED,
+	E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED
+} EOAuth2ServiceError;
+
+/**
  * EOAuth2ServiceFlags:
  * @E_OAUTH2_SERVICE_FLAG_NONE: No flag set
  * @E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT: the service requires also page

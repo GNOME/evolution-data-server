@@ -21,6 +21,7 @@
 
 #include "e-data-server-util.h"
 #include "e-flag.h"
+#include "e-oauth2-service.h"
 #include "e-oauth2-services.h"
 #include "e-soup-auth-bearer.h"
 #include "e-soup-ssl-trust.h"
@@ -1119,9 +1120,11 @@ e_soup_session_handle_authentication_failure (ESoupSession *session,
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 		else
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
-	} else if (g_error_matches (op_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
-		   (!requires_credentials && g_error_matches (op_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))) {
+	} else if (g_error_matches (op_error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_TOKEN_EXPIRED) ||
+		   g_error_matches (op_error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED)) {
 		*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+	} else if (g_error_matches (op_error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_SECRET_NOT_FOUND)) {
+		*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 	} else if (!op_error) {
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Unknown error"));
 	}

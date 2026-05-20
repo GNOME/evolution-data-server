@@ -67,6 +67,8 @@ void		camel_util_decode_user_header_setting
 						 gchar **out_display_name,
 						 const gchar **out_header_name);
 
+gboolean	camel_util_is_network_error	(const GError *error);
+
 G_END_DECLS
 
 #endif /* CAMEL_UTILS_H */

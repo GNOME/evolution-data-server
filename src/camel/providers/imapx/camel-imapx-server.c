@@ -4283,11 +4283,7 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 		g_clear_error (&local_error);
 		success = TRUE;
 	} else if (local_error) {
-		/* Sadly, G_IO_ERROR_FAILED is also used for 'Connection reset by peer' error;
-		   since GLib 2.44 is used G_IO_ERROR_CONNECTION_CLOSED, which is the same as G_IO_ERROR_BROKEN_PIPE */
-		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
-		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_BROKEN_PIPE) ||
-		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT)) {
+		if (camel_util_is_network_error (local_error)) {
 			local_error->domain = CAMEL_IMAPX_SERVER_ERROR;
 			local_error->code = CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT;
 		}

@@ -518,3 +518,53 @@ camel_util_decode_user_header_setting (const gchar *setting_value,
 		*out_header_name = setting_value;
 	}
 }
+
+/**
+ * camel_util_is_network_error:
+ * @error: (nullable): a #GError, or %NULL
+ *
+ * Checks whether @error represents a network or connection error
+ * (host unreachable, connection refused, DNS failure, timeout, etc.)
+ * as opposed to a protocol-level or application-level error.
+ *
+ * Returns: %TRUE if @error is a network/connection error, %FALSE otherwise
+ *    (including when @error is %NULL)
+ *
+ * Since: 3.62
+ **/
+gboolean
+camel_util_is_network_error (const GError *error)
+{
+	if (!error)
+		return FALSE;
+
+	if (error->domain == G_IO_ERROR) {
+		switch (error->code) {
+		case G_IO_ERROR_FAILED:
+			/* G_IO_ERROR_FAILED is also used for
+			   "Connection reset by peer" */
+		case G_IO_ERROR_HOST_NOT_FOUND:
+		case G_IO_ERROR_HOST_UNREACHABLE:
+		case G_IO_ERROR_NETWORK_UNREACHABLE:
+		case G_IO_ERROR_CONNECTION_REFUSED:
+		case G_IO_ERROR_NOT_CONNECTED:
+		case G_IO_ERROR_TIMED_OUT:
+		case G_IO_ERROR_BROKEN_PIPE:
+			/* G_IO_ERROR_CONNECTION_CLOSED has the same
+			   value as G_IO_ERROR_BROKEN_PIPE */
+			return TRUE;
+		default:
+			break;
+		}
+	} else if (error->domain == G_RESOLVER_ERROR) {
+		switch (error->code) {
+		case G_RESOLVER_ERROR_NOT_FOUND:
+		case G_RESOLVER_ERROR_TEMPORARY_FAILURE:
+			return TRUE;
+		default:
+			break;
+		}
+	}
+
+	return FALSE;
+}
