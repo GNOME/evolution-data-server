@@ -4724,25 +4724,45 @@ imapx_copy_move_message_cache (CamelFolder *source_folder,
 			g_unlink (destination_filename);
 
 			if (delete_originals) {
-				if (g_rename (source_filename, destination_filename) == -1 && errno != ENOENT) {
-					g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, source_filename, destination_filename, g_strerror (errno));
+				if (g_rename (source_filename, destination_filename) == -1) {
+					gint errsv = errno;
+					if (errsv != ENOENT)
+						g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, source_filename, destination_filename, g_strerror (errsv));
 				}
 			} else {
-				GFile *source, *destination;
+				GFile *source, *tmp_file;
 				GError *local_error = NULL;
+				gchar *tmp_filename;
+				gchar *dirname;
+
+				/* Copy via a "tmp" file so an interrupted copy never leaves
+				   a truncated "cur" entry that would be treated as valid. */
+				tmp_filename = camel_data_cache_get_filename (
+					imapx_destination_folder->cache, "tmp", destination_uid);
+
+				dirname = g_path_get_dirname (tmp_filename);
+				g_mkdir_with_parents (dirname, 0700);
+				g_free (dirname);
 
 				source = g_file_new_for_path (source_filename);
-				destination = g_file_new_for_path (destination_filename);
+				tmp_file = g_file_new_for_path (tmp_filename);
 
-				if (source && destination &&
-				    !g_file_copy (source, destination, G_FILE_COPY_NONE, cancellable, NULL, NULL, &local_error)) {
-					if (local_error) {
-						g_warning ("%s: Failed to copy '%s' to '%s': %s", G_STRFUNC, source_filename, destination_filename, local_error->message);
+				if (source && tmp_file &&
+				    g_file_copy (source, tmp_file, G_FILE_COPY_NONE, cancellable, NULL, NULL, &local_error)) {
+					if (g_rename (tmp_filename, destination_filename) == -1) {
+						gint errsv = errno;
+						g_warning ("%s: Failed to rename '%s' to '%s': %s",
+							G_STRFUNC, tmp_filename, destination_filename, g_strerror (errsv));
+						g_unlink (tmp_filename);
 					}
+				} else if (local_error) {
+					g_warning ("%s: Failed to copy '%s' to '%s': %s",
+						G_STRFUNC, source_filename, destination_filename, local_error->message);
 				}
 
 				g_clear_object (&source);
-				g_clear_object (&destination);
+				g_clear_object (&tmp_file);
+				g_free (tmp_filename);
 				g_clear_error (&local_error);
 			}
 		}

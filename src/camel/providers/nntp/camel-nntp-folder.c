@@ -20,12 +20,14 @@
 
 #include "evolution-data-server-config.h"
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #include "camel-nntp-folder.h"
 #include "camel-nntp-private.h"
@@ -250,24 +252,52 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 		GIOStream *base_stream;
 
 		base_stream = camel_data_cache_add (
-			nntp_cache, "cache", msgid, NULL);
+			nntp_cache, "tmp", msgid, NULL);
 		if (base_stream != NULL) {
+			CamelStream *write_stream;
+			gchar *tmp_filename, *cache_filename, *cache_dirname;
 			gboolean success;
+			GIOStream *cache_io_stream;
 
-			stream = camel_stream_new (base_stream);
+			write_stream = camel_stream_new (base_stream);
 			g_object_unref (base_stream);
 
 			success = (camel_stream_write_to_stream (
 				CAMEL_STREAM (nntp_stream),
-				stream, cancellable, error) != -1);
+				write_stream, cancellable, error) != -1);
+
+			camel_stream_close (write_stream, NULL, NULL);
+			g_clear_object (&write_stream);
+
 			if (!success)
 				goto fail;
 
-			success = g_seekable_seek (
-				G_SEEKABLE (stream), 0,
-				G_SEEK_SET, cancellable, error);
-			if (!success)
+			tmp_filename = camel_data_cache_get_filename (nntp_cache, "tmp", msgid);
+			cache_filename = camel_data_cache_get_filename (nntp_cache, "cache", msgid);
+			cache_dirname = g_path_get_dirname (cache_filename);
+			g_mkdir_with_parents (cache_dirname, 0700);
+			g_free (cache_dirname);
+
+			if (g_rename (tmp_filename, cache_filename) == -1) {
+				gint errsv = errno;
+				g_warning ("%s: Failed to rename '%s' to '%s': %s",
+					G_STRFUNC, tmp_filename, cache_filename, g_strerror (errsv));
+				g_free (tmp_filename);
+				g_free (cache_filename);
 				goto fail;
+			}
+
+			camel_data_cache_remove (nntp_cache, "tmp", msgid, NULL);
+			g_free (tmp_filename);
+			g_free (cache_filename);
+
+			cache_io_stream = camel_data_cache_get (nntp_cache, "cache", msgid, error);
+			if (cache_io_stream != NULL) {
+				stream = camel_stream_new (cache_io_stream);
+				g_object_unref (cache_io_stream);
+			} else {
+				goto fail;
+			}
 		} else {
 			stream = CAMEL_STREAM (g_object_ref (nntp_stream));
 		}
@@ -287,7 +317,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 	goto exit;
 
  fail:
-	camel_data_cache_remove (nntp_cache, "cache", msgid, NULL);
+	camel_data_cache_remove (nntp_cache, "tmp", msgid, NULL);
 	g_prefix_error (error, _("Cannot get message %s: "), msgid);
 
 	g_clear_object (&stream);
