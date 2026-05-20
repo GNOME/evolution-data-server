@@ -41,6 +41,8 @@
 
 #include "e-oauth2-service.h"
 
+G_DEFINE_QUARK (e-oauth2-service-error-quark, e_oauth2_service_error)
+
 /* How many seconds earlier than reported by the server is the token considered expired
    and will be refreshed. */
 #define TOKEN_VALIDITY_GAP_SECS 10
@@ -1091,7 +1093,7 @@ eos_send_message (SoupSession *session,
 			*out_response_body = g_steal_pointer (&response_body);
 			success = TRUE;
 		} else {
-			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Malformed, no message body set"));
+			g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_RESPONSE, _("Malformed, no message body set"));
 		}
 	} else if (status_code != 0) {
 		GString *error_msg;
@@ -1370,7 +1372,7 @@ eos_lookup_token_sync (EOAuth2Service *service,
 		return FALSE;
 
 	if (!eos_generate_secret_uid (service, source, &uid)) {
-		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_SOURCE,
 			/* Translators: The first %s is a display name of the source, the second is its UID and
 			   the third is the name of the OAuth service. */
 			_("Source “%s” (%s) is not valid for “%s” OAuth2 service"),
@@ -1388,7 +1390,7 @@ eos_lookup_token_sync (EOAuth2Service *service,
 	g_free (uid);
 
 	if (!secret) {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND, _("OAuth2 secret not found"));
+		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_SECRET_NOT_FOUND, _("OAuth2 secret not found"));
 		return FALSE;
 	}
 
@@ -1503,6 +1505,11 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 		g_free (token_type);
 	}
 
+	if (!success && error && *error && (*error)->domain == E_SOUP_SESSION_ERROR) {
+		(*error)->domain = E_OAUTH2_SERVICE_ERROR;
+		(*error)->code = E_OAUTH2_SERVICE_ERROR_FAILED;
+	}
+
 	g_object_unref (message);
 	g_object_unref (session);
 	if (response_json)
@@ -1585,7 +1592,7 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 		} else {
 			success = FALSE;
 
-			g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Received incorrect response from server “%s”."),
+			g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_RESPONSE, _("Received incorrect response from server “%s”."),
 				e_oauth2_service_get_refresh_uri (service, source));
 		}
 
@@ -1607,10 +1614,10 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 		}
 
 		if (detailed_error && *detailed_error) {
-			g_set_error (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
+			g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED,
 				_("Failed to refresh access token. Sign to the server again, please.\n\nDetailed error: %s"), detailed_error);
 		} else {
-			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
+			g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED,
 				_("Failed to refresh access token. Sign to the server again, please."));
 		}
 
@@ -1618,8 +1625,13 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 		g_free (detailed_error);
 	}
 
-	if (local_error)
+	if (local_error) {
+		if (local_error->domain == E_SOUP_SESSION_ERROR) {
+			local_error->domain = E_OAUTH2_SERVICE_ERROR;
+			local_error->code = E_OAUTH2_SERVICE_ERROR_FAILED;
+		}
 		g_propagate_error (error, local_error);
+	}
 
 	g_object_unref (message);
 	g_object_unref (session);
@@ -1655,7 +1667,7 @@ e_oauth2_service_delete_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	if (!eos_generate_secret_uid (service, source, &uid)) {
-		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+		g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_SOURCE,
 			/* Translators: The first %s is a display name of the source, the second is its UID. */
 			_("Source “%s” (%s) is not a valid OAuth2 source"),
 			e_source_get_display_name (source),
@@ -1940,7 +1952,7 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 
 		success = FALSE;
 
-		g_set_error_literal (&local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED,
+		g_set_error_literal (&local_error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED,
 			_("The access token is expired and it failed to refresh it. Sign to the server again, please."));
 	}
 
