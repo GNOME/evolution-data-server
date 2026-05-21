@@ -59,6 +59,7 @@ gboolean	camel_pop3_store_expunge	(CamelPOP3Store *store,
 						 GError **error);
 CamelStream *	camel_pop3_store_cache_add	(CamelPOP3Store *store,
 						 const gchar *uid,
+						 GIOStream **out_io_stream,
 						 GError **error);
 CamelStream *	camel_pop3_store_cache_get	(CamelPOP3Store *store,
 						 const gchar *uid,

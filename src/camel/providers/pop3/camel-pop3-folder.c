@@ -27,7 +27,9 @@ struct _CamelPOP3FolderInfo {
 	guint32 index;		/* index of request */
 	gchar *uid;
 	struct _CamelPOP3Command *cmd;
-	struct _CamelStream *stream;
+	CamelStream *write_stream;          /* stream to write download data into */
+	GIOStream *cache_stream;            /* atomic GIOStream; NULL for memory fallback */
+	CamelPOP3Store *store;              /* borrowed; needed by cmd_tocache for commit/discard */
 };
 
 G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
@@ -171,17 +173,11 @@ cmd_tocache (CamelPOP3Engine *pe,
 	CamelPOP3FolderInfo *fi = data;
 	gchar buffer[2048];
 	gint w = 0, n;
+	gboolean success = FALSE;
 	GError *local_error = NULL;
 
-	/* What if it fails? */
-
-	/* We write an '*' to the start of the stream to say its not complete yet */
-	/* This should probably be part of the cache code */
-	if (camel_stream_write (fi->stream, "*", 1, cancellable, &local_error) == -1)
-		goto done;
-
 	while ((n = camel_stream_read ((CamelStream *) stream, buffer, sizeof (buffer), cancellable, &local_error)) > 0) {
-		n = camel_stream_write (fi->stream, buffer, n, cancellable, &local_error);
+		n = camel_stream_write (fi->write_stream, buffer, n, cancellable, &local_error);
 		if (n == -1)
 			break;
 
@@ -192,21 +188,26 @@ cmd_tocache (CamelPOP3Engine *pe,
 			camel_operation_progress (cancellable, (w * 100) / fi->size);
 	}
 
-	/* it all worked, output a '#' to say we're a-ok */
-	if (local_error == NULL) {
-		g_seekable_seek (
-			G_SEEKABLE (fi->stream),
-			0, G_SEEK_SET, cancellable, NULL);
-		camel_stream_write (fi->stream, "#", 1, cancellable, &local_error);
-	}
+	if (local_error == NULL)
+		success = TRUE;
 
-done:
-	if (local_error != NULL) {
+	if (local_error != NULL)
 		g_propagate_error (error, local_error);
+
+	if (fi->cache_stream != NULL) {
+		CamelDataCache *cache = camel_pop3_store_ref_cache (fi->store);
+
+		if (success) {
+			GIOStream *result = camel_data_cache_commit_atomic (cache, g_steal_pointer (&fi->cache_stream), error);
+			g_clear_object (&result);
+		} else {
+			camel_data_cache_discard_atomic (cache, g_steal_pointer (&fi->cache_stream));
+		}
+
+		g_clear_object (&cache);
 	}
 
-	g_object_unref (fi->stream);
-	fi->stream = NULL;
+	g_clear_object (&fi->write_stream);
 }
 
 static void
@@ -236,6 +237,15 @@ pop3_folder_dispose (GObject *object)
 				camel_pop3_engine_command_free (pop3_engine, fi[0]->cmd);
 
 				g_clear_object (&pop3_engine);
+			}
+
+			/* Clean up in case cmd_tocache never ran (e.g. command
+			 * creation failed) or the command was never submitted. */
+			g_clear_object (&fi[0]->write_stream);
+			if (fi[0]->cache_stream != NULL && pop3_store != NULL) {
+				CamelDataCache *cache = camel_pop3_store_ref_cache (pop3_store);
+				camel_data_cache_discard_atomic (cache, g_steal_pointer (&fi[0]->cache_stream));
+				g_clear_object (&cache);
 			}
 
 			g_free (fi[0]->uid);
@@ -392,9 +402,9 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 	CamelPOP3Engine *pop3_engine;
 	CamelPOP3Command *pcr;
 	CamelPOP3FolderInfo *fi;
-	gchar buffer[1];
 	gint i = -1, last;
 	CamelStream *stream = NULL;
+	gboolean is_disk_cached = FALSE;
 	CamelService *service;
 	CamelSettings *settings;
 	gboolean auto_fetch;
@@ -472,12 +482,13 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 		GError *local_error = NULL;
 
 		/* Initiate retrieval, if disk backing fails, use a memory backing */
-		stream = camel_pop3_store_cache_add (pop3_store, fi->uid, NULL);
+		stream = camel_pop3_store_cache_add (pop3_store, fi->uid, &fi->cache_stream, NULL);
+		is_disk_cached = (stream != NULL);
 		if (stream == NULL)
 			stream = camel_stream_mem_new ();
 
-		/* ref it, the cache storage routine unref's when done */
-		fi->stream = g_object_ref (stream);
+		fi->write_stream = g_object_ref (stream);
+		fi->store = pop3_store;
 		pcr = camel_pop3_engine_command_new (
 			pop3_engine,
 			CAMEL_POP3_COMMAND_MULTI,
@@ -507,9 +518,10 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 				CamelPOP3FolderInfo *pfi = pop3_folder->uids->pdata[i];
 
 				if (pfi->uid && !pfi->cmd && !camel_pop3_store_cache_has (pop3_store, pfi->uid)) {
-					pfi->stream = camel_pop3_store_cache_add (
-						pop3_store, pfi->uid, NULL);
-					if (pfi->stream != NULL) {
+					pfi->write_stream = camel_pop3_store_cache_add (
+						pop3_store, pfi->uid, &pfi->cache_stream, NULL);
+					if (pfi->write_stream != NULL) {
+						pfi->store = pop3_store;
 						pfi->cmd = camel_pop3_engine_command_new (
 							pop3_engine,
 							CAMEL_POP3_COMMAND_MULTI,
@@ -538,8 +550,6 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 		/* getting error code? */
 		/*g_warn_if_fail (pcr->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free (pop3_engine, pcr);
-		g_seekable_seek (
-			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 
 		/* Check to see we have safely written flag set */
 		if (i == -1 || local_error) {
@@ -549,15 +559,24 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 			goto done;
 		}
 
-		if (camel_stream_read (stream, buffer, 1, cancellable, error) == -1)
-			goto done;
-
-		if (buffer[0] != '#') {
-			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Cannot get message %s: %s"), uid,
-				_("Unknown reason"));
-			goto done;
+		if (is_disk_cached) {
+			/* cmd_tocache committed the data; open a fresh read stream */
+			g_clear_object (&stream);
+			stream = camel_pop3_store_cache_get (pop3_store, fi->uid, error);
+			if (stream == NULL) {
+				if (!*error)
+					g_set_error (
+						error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+						_("Cannot get message %s: %s"), uid,
+						_("Unknown reason"));
+				else
+					g_prefix_error (
+						error, _("Cannot get message %s: "), uid);
+				goto done;
+			}
+		} else {
+			/* Memory path: seek back to the start of the message */
+			g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 		}
 	}
 
@@ -574,6 +593,13 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 done:
 	if (!already_locked)
 		camel_pop3_engine_busy_unlock (pop3_engine);
+	/* Discard fi's atomic stream if cmd_tocache never ran (pcr creation failed). */
+	g_clear_object (&fi->write_stream);
+	if (fi->cache_stream != NULL) {
+		CamelDataCache *cache = camel_pop3_store_ref_cache (pop3_store);
+		camel_data_cache_discard_atomic (cache, g_steal_pointer (&fi->cache_stream));
+		g_clear_object (&cache);
+	}
 	g_clear_object (&stream);
 fail:
 	g_clear_object (&pop3_engine);

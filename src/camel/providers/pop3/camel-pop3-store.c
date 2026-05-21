@@ -15,6 +15,7 @@
 #include <ctype.h>
 
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #include "camel-pop3-folder.h"
 #include "camel-pop3-settings.h"
@@ -480,6 +481,102 @@ pop3_store_get_name (CamelService *service,
 	return name;
 }
 
+/* Called by camel_data_cache_foreach_remove() for each cache file.
+ * Returns TRUE to delete the file, FALSE to keep it. */
+static gboolean
+pop3_migrate_cache_file_cb (CamelDataCache *cdc,
+                            const gchar *filename,
+                            gpointer user_data)
+{
+	guchar first_byte;
+	FILE *f;
+
+	f = fopen (filename, "rb");
+	if (f == NULL)
+		return FALSE;
+
+	if (fread (&first_byte, 1, 1, f) != 1) {
+		fclose (f);
+		return FALSE;
+	}
+
+	fclose (f);
+
+	if (first_byte == '*')
+		return TRUE; /* incomplete old download — let foreach_remove delete it */
+
+	if (first_byte == '#') {
+		/* Complete old download: strip the sentinel byte by rewriting via a temp file. */
+		gchar *tmp_path;
+		gint tmp_fd;
+
+		tmp_path = g_strdup_printf ("%s.XXXXXX", filename);
+		tmp_fd = g_mkstemp (tmp_path);
+		if (tmp_fd != -1) {
+			FILE *src, *dst;
+
+			close (tmp_fd);
+			src = fopen (filename, "rb");
+			dst = fopen (tmp_path, "wb");
+			if (src != NULL && dst != NULL) {
+				guchar buf[4096];
+				gsize nr;
+
+				fseek (src, 1, SEEK_SET);
+				while ((nr = fread (buf, 1, sizeof (buf), src)) > 0)
+					fwrite (buf, 1, nr, dst);
+				fclose (src);
+				fclose (dst);
+				g_rename (tmp_path, filename);
+			} else {
+				if (src != NULL)
+					fclose (src);
+				if (dst != NULL) {
+					fclose (dst);
+					g_unlink (tmp_path);
+				}
+			}
+		}
+
+		g_free (tmp_path);
+	}
+
+	return FALSE;
+}
+
+/* One-shot migration of old POP3 cache files that carry a sentinel byte.
+ *
+ * Before the atomic write API, cache files started with either '*' (write
+ * in progress, file is incomplete) or '#' (write finished, message follows
+ * from byte 1).  New files contain the raw message from byte 0.  This
+ * function rewrites every old '#'-prefixed file in place (stripping the
+ * sentinel) and deletes every '*'-prefixed file.  A version marker is
+ * written afterwards so the scan is skipped on future connects. */
+static void
+pop3_store_migrate_cache_format (CamelDataCache *cache)
+{
+	const gchar *base_path;
+	gchar *ver_filename;
+	gchar *ver_content = NULL;
+
+	base_path = camel_data_cache_get_path (cache);
+	ver_filename = g_build_filename (base_path, ".cache-format-version", NULL);
+
+	if (g_file_get_contents (ver_filename, &ver_content, NULL, NULL) &&
+	    atoi (ver_content) >= 2) {
+		g_free (ver_content);
+		g_free (ver_filename);
+		return;
+	}
+
+	g_free (ver_content);
+
+	camel_data_cache_foreach_remove (cache, "cache", pop3_migrate_cache_file_cb, NULL);
+
+	g_file_set_contents (ver_filename, "2\n", -1, NULL);
+	g_free (ver_filename);
+}
+
 static gboolean
 pop3_store_connect_sync (CamelService *service,
                          GCancellable *cancellable,
@@ -529,6 +626,8 @@ pop3_store_connect_sync (CamelService *service,
 			camel_data_cache_set_expire_access (cache, -1);
 
 			store->priv->cache = g_object_ref (cache);
+
+			pop3_store_migrate_cache_format (cache);
 
 			g_object_unref (cache);
 		}
@@ -1143,11 +1242,16 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
  * camel_pop3_store_cache_add:
  * @store: a #CamelPOP3Store
  * @uid: a message UID
+ * @out_io_stream: (out) (transfer full): return location for the
+ *   underlying #GIOStream opened for atomic writing
  * @error: return location for a #GError, or %NULL
  *
- * Creates a cache file for @uid in @store and returns a #CamelStream for it.
- * If an error occurs in opening the cache file, the function sets @error and
- * returns %NULL.
+ * Creates a cache file for @uid in @store and returns a #CamelStream for
+ * writing to it.  On success the underlying atomic #GIOStream is also
+ * returned in @out_io_stream (transfer full); the caller must pass it to
+ * camel_data_cache_commit_atomic() on success or
+ * camel_data_cache_discard_atomic() on failure.  If an error occurs the
+ * function sets @error and returns %NULL.
  *
  * The returned #CamelStream is referenced for thread-safety and must be
  * unreferenced when finished with it.
@@ -1157,6 +1261,7 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 CamelStream *
 camel_pop3_store_cache_add (CamelPOP3Store *store,
                             const gchar *uid,
+                            GIOStream **out_io_stream,
                             GError **error)
 {
 	CamelDataCache *cache;
@@ -1165,14 +1270,17 @@ camel_pop3_store_cache_add (CamelPOP3Store *store,
 
 	g_return_val_if_fail (CAMEL_IS_POP3_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
+	g_return_val_if_fail (out_io_stream != NULL, NULL);
+
+	*out_io_stream = NULL;
 
 	cache = camel_pop3_store_ref_cache (store);
 	g_return_val_if_fail (cache != NULL, NULL);
 
-	base_stream = camel_data_cache_add (cache, "cache", uid, error);
+	base_stream = camel_data_cache_add_atomic (cache, "cache", uid, error);
 	if (base_stream != NULL) {
 		stream = camel_stream_new (base_stream);
-		g_object_unref (base_stream);
+		*out_io_stream = base_stream;
 	}
 
 	g_object_unref (cache);
@@ -1213,18 +1321,7 @@ camel_pop3_store_cache_get (CamelPOP3Store *store,
 
 	base_stream = camel_data_cache_get (cache, "cache", uid, error);
 	if (base_stream != NULL) {
-		GInputStream *input_stream;
-		gchar buffer[1];
-		gssize n_bytes;
-
-		input_stream = g_io_stream_get_input_stream (base_stream);
-
-		n_bytes = g_input_stream_read (
-			input_stream, buffer, 1, NULL, error);
-
-		if (n_bytes == 1 && buffer[0] == '#')
-			stream = camel_stream_new (base_stream);
-
+		stream = camel_stream_new (base_stream);
 		g_object_unref (base_stream);
 	}
 
