@@ -4,6 +4,44 @@
  * SPDX-FileContributor: Michael Zucchi <notzed@ximian.com>
  */
 
+/**
+ * CamelDataCache:
+ *
+ * A file-based cache for arbitrary keyed data, typically used by mail
+ * providers to store downloaded message bodies.
+ *
+ * Each item is identified by a (@path, @key) pair.  The @path selects a
+ * logical sub-cache (e.g. `"cur"` for downloaded messages, `"new"` for
+ * outgoing spool), and @key is a per-item identifier such as a message UID.
+ *
+ * To write a new item safely — so that a crash or cancellation never leaves
+ * a truncated file in the cache — use the atomic write API:
+ *
+ * |[<!-- language="C" -->
+ *     GIOStream *stream;
+ *     gboolean success;
+ *
+ *     stream = camel_data_cache_add_atomic (cache, "cur", uid, error);
+ *     if (!stream)
+ *         goto fail;
+ *
+ *     success = write_message_to_stream (G_OUTPUT_STREAM (
+ *         g_io_stream_get_output_stream (stream)), message, error);
+ *
+ *     if (success) {
+ *         stream = camel_data_cache_commit_atomic (cache, g_steal_pointer (&stream), error);
+ *         /<!-- -->* stream is now open on the committed file, or NULL on error *<!-- -->/
+ *     } else {
+ *         camel_data_cache_discard_atomic (cache, g_steal_pointer (&stream));
+ *     }
+ * ]|
+ *
+ * camel_data_cache_add_atomic() writes to a temporary file in the same
+ * directory as the target, so camel_data_cache_commit_atomic() can rename
+ * it into place atomically.  Any concurrent camel_data_cache_get() call for
+ * the same item blocks until the write is either committed or discarded.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <sys/types.h>
@@ -11,6 +49,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
@@ -423,63 +462,201 @@ data_cache_path (CamelDataCache *cdc,
 	return real;
 }
 
+typedef struct {
+	gchar *tmp_filename;
+	gchar *final_path;
+} CamelDCAtomicData;
+
+static void
+camel_dc_atomic_data_free (CamelDCAtomicData *adata)
+{
+	g_free (adata->tmp_filename);
+	g_free (adata->final_path);
+	g_free (adata);
+}
+
 /**
- * camel_data_cache_add:
+ * camel_data_cache_add_atomic:
  * @cdc: A #CamelDataCache
  * @path: Relative path of item to add.
  * @key: Key of item to add.
  * @error: return location for a #GError, or %NULL
  *
- * Add a new item to the cache, returning a #GIOStream to the new item.
+ * Open a temporary file for writing a new cache item identified by @path
+ * and @key.  The temporary file lives in the same directory as the final
+ * target so that camel_data_cache_commit_atomic() can rename it into place
+ * atomically (same-filesystem rename).
  *
- * The key and the path combine to form a unique key used to store the item.
+ * Any concurrent call to camel_data_cache_get() for the same @path/@key will
+ * block until the caller either commits or discards the stream.
  *
- * Potentially, expiry processing will be performed while this call is
- * executing.
+ * On success, pass the returned stream to camel_data_cache_commit_atomic()
+ * or camel_data_cache_discard_atomic(); the stream is consumed
+ * (transfer full) by both functions.  Do not call g_object_unref() on it
+ * directly.
  *
- * The returned #GIOStream is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
+ * Returns: (transfer full): a #GIOStream for writing, or %NULL on error
  *
- * Returns: (transfer full): a #GIOStream for the new cache item, or %NULL on error
+ * Since: 3.62
  **/
 GIOStream *
-camel_data_cache_add (CamelDataCache *cdc,
-                      const gchar *path,
-                      const gchar *key,
-                      GError **error)
+camel_data_cache_add_atomic (CamelDataCache *cdc,
+                             const gchar *path,
+                             const gchar *key,
+                             GError **error)
 {
-	gchar *real;
+	CamelDCAtomicData *adata;
 	GFileIOStream *stream;
 	GFile *file;
+	gchar *final_path, *tmp_filename;
+	gint fd;
 
 	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), NULL);
+	g_return_val_if_fail (path != NULL, NULL);
+	g_return_val_if_fail (key != NULL, NULL);
 
-	real = data_cache_path (cdc, TRUE, path, key);
-	/* need to loop 'cause otherwise we can call bag_add/bag_abort
-	 * after bag_reserve returned a pointer, which is an invalid
-	 * sequence. */
+	final_path = data_cache_path (cdc, TRUE, path, key);
+
 	do {
-		stream = camel_object_bag_reserve (cdc->priv->busy_bag, real);
+		stream = camel_object_bag_reserve (cdc->priv->busy_bag, final_path);
 		if (stream) {
-			g_unlink (real);
+			g_unlink (final_path);
 			camel_object_bag_remove (cdc->priv->busy_bag, stream);
 			g_object_unref (stream);
 		}
 	} while (stream != NULL);
 
-	file = g_file_new_for_path (real);
-	stream = g_file_replace_readwrite (
-		file, NULL, FALSE, G_FILE_CREATE_PRIVATE, NULL, error);
+	tmp_filename = g_strdup_printf ("%s.XXXXXX", final_path);
+
+	fd = g_mkstemp (tmp_filename);
+	if (fd == -1) {
+		gint errsv = errno;
+		g_set_error (error, G_IO_ERROR,
+		             g_io_error_from_errno (errsv),
+		             _("Failed to create cache file “%s”: %s"),
+		             tmp_filename, g_strerror (errsv));
+		camel_object_bag_abort (cdc->priv->busy_bag, final_path);
+		g_free (tmp_filename);
+		g_free (final_path);
+		return NULL;
+	}
+
+	close (fd);
+
+	file = g_file_new_for_path (tmp_filename);
+	stream = g_file_open_readwrite (file, NULL, error);
 	g_object_unref (file);
 
-	if (stream != NULL)
-		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
-	else
-		camel_object_bag_abort (cdc->priv->busy_bag, real);
-
-	g_free (real);
+	if (stream != NULL) {
+		adata = g_new (CamelDCAtomicData, 1);
+		adata->tmp_filename = tmp_filename;
+		adata->final_path = final_path;
+		g_object_set_data_full (G_OBJECT (stream), "camel-dc-atomic",
+		                        adata, (GDestroyNotify) camel_dc_atomic_data_free);
+	} else {
+		camel_object_bag_abort (cdc->priv->busy_bag, final_path);
+		g_unlink (tmp_filename);
+		g_free (tmp_filename);
+		g_free (final_path);
+	}
 
 	return stream ? G_IO_STREAM (stream) : NULL;
+}
+
+/**
+ * camel_data_cache_commit_atomic:
+ * @cdc: A #CamelDataCache
+ * @stream: (transfer full): the #GIOStream returned by camel_data_cache_add_atomic()
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finalise an atomic cache write.  @stream is closed and unreffed, the
+ * temporary file is renamed to its final location, and a new #GIOStream
+ * opened on the committed file is returned (equivalent to calling
+ * camel_data_cache_get() after a successful write).
+ *
+ * On failure the temporary file is removed and the bag reservation is
+ * released, so the caller does not need to call
+ * camel_data_cache_discard_atomic().
+ *
+ * Returns: (transfer full): a #GIOStream for the committed file, or %NULL on error
+ *
+ * Since: 3.62
+ **/
+GIOStream *
+camel_data_cache_commit_atomic (CamelDataCache *cdc,
+                                GIOStream *stream,
+                                GError **error)
+{
+	CamelDCAtomicData *adata;
+	GFileIOStream *result;
+	GFile *file;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), NULL);
+	g_return_val_if_fail (G_IS_IO_STREAM (stream), NULL);
+
+	adata = g_object_steal_data (G_OBJECT (stream), "camel-dc-atomic");
+	g_return_val_if_fail (adata != NULL, NULL);
+
+	g_io_stream_close (stream, NULL, NULL);
+	g_object_unref (stream);
+
+	if (g_rename (adata->tmp_filename, adata->final_path) == -1) {
+		gint errsv = errno;
+		g_set_error (error, G_IO_ERROR,
+		             g_io_error_from_errno (errsv),
+		             _("Failed to rename cache file “%s” to “%s”: %s"),
+		             adata->tmp_filename, adata->final_path, g_strerror (errsv));
+		g_unlink (adata->tmp_filename);
+		camel_object_bag_abort (cdc->priv->busy_bag, adata->final_path);
+		camel_dc_atomic_data_free (adata);
+		return NULL;
+	}
+
+	file = g_file_new_for_path (adata->final_path);
+	result = g_file_open_readwrite (file, NULL, error);
+	g_object_unref (file);
+
+	if (result != NULL)
+		camel_object_bag_add (cdc->priv->busy_bag, adata->final_path, result);
+	else
+		camel_object_bag_abort (cdc->priv->busy_bag, adata->final_path);
+
+	camel_dc_atomic_data_free (adata);
+
+	return result ? G_IO_STREAM (result) : NULL;
+}
+
+/**
+ * camel_data_cache_discard_atomic:
+ * @cdc: A #CamelDataCache
+ * @stream: (transfer full): the #GIOStream returned by camel_data_cache_add_atomic()
+ *
+ * Discard an atomic cache write.  @stream is closed and unreffed, the
+ * temporary file is removed, and the bag reservation is released so that
+ * other threads can retry the operation.
+ *
+ * Call this on any error path before camel_data_cache_commit_atomic().
+ *
+ * Since: 3.62
+ **/
+void
+camel_data_cache_discard_atomic (CamelDataCache *cdc,
+                                 GIOStream *stream)
+{
+	CamelDCAtomicData *adata;
+
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
+	g_return_if_fail (G_IS_IO_STREAM (stream));
+
+	adata = g_object_steal_data (G_OBJECT (stream), "camel-dc-atomic");
+	g_return_if_fail (adata != NULL);
+
+	g_io_stream_close (stream, NULL, NULL);
+	g_object_unref (stream);
+
+	g_unlink (adata->tmp_filename);
+	camel_object_bag_abort (cdc->priv->busy_bag, adata->final_path);
+	camel_dc_atomic_data_free (adata);
 }
 
 /**

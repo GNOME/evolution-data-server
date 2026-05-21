@@ -4467,11 +4467,6 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 		return NULL;
 	}
 
-	/* This makes sure that if any file is left on the disk, it is not reused.
-	   That can happen when the previous message download had been cancelled
-	   or finished with an error. */
-	camel_data_cache_remove (message_cache, "tmp", message_uid, NULL);
-
 	/* Check whether the message is already downloaded by another job */
 	cache_stream = camel_data_cache_get (message_cache, "cur", message_uid, NULL);
 	if (cache_stream) {
@@ -4483,7 +4478,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 		return result_stream;
 	}
 
-	cache_stream = camel_data_cache_add (message_cache, "tmp", message_uid, error);
+	cache_stream = camel_data_cache_add_atomic (message_cache, "cur", message_uid, error);
 	if (cache_stream == NULL) {
 		g_clear_object (&mi);
 		return NULL;
@@ -4569,7 +4564,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 			g_io_stream_close (cache_stream, cancellable, &local_error);
 			g_prefix_error (
 				&local_error, "%s: ",
-				_("Failed to close the tmp stream"));
+				_("Failed to close the cache stream"));
 		}
 
 		if (local_error == NULL &&
@@ -4580,42 +4575,12 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 		}
 
 		if (local_error == NULL) {
-			gchar *cur_filename;
-			gchar *tmp_filename;
-			gchar *dirname;
-
-			cur_filename = camel_data_cache_get_filename (message_cache, "cur", message_uid);
-			tmp_filename = camel_data_cache_get_filename (message_cache, "tmp", message_uid);
-
-			dirname = g_path_get_dirname (cur_filename);
-			g_mkdir_with_parents (dirname, 0700);
-			g_free (dirname);
-
-			if (g_rename (tmp_filename, cur_filename) == 0) {
-				/* Exchange the "tmp" stream for the "cur" stream. */
-				g_clear_object (&cache_stream);
-				cache_stream = camel_data_cache_get (message_cache, "cur", message_uid, &local_error);
-			} else {
-				g_set_error (
-					&local_error, G_FILE_ERROR,
-					g_file_error_from_errno (errno),
-					"%s: %s",
-					_("Failed to copy the tmp file"),
-					g_strerror (errno));
-			}
-
-			g_free (cur_filename);
-			g_free (tmp_filename);
+			cache_stream = camel_data_cache_commit_atomic (message_cache, g_steal_pointer (&cache_stream), &local_error);
+		} else {
+			camel_data_cache_discard_atomic (message_cache, g_steal_pointer (&cache_stream));
 		}
-
-		/* Delete the 'tmp' file only if the operation succeeded. It's because
-		   cancelled operations end before they are properly finished (IMAP-protocol speaking),
-		   thus if any other GET_MESSAGE operation was waiting for this job, then it
-		   realized that the message was not downloaded and opened its own "tmp" file, but
-		   of the same name, thus this remove would drop file which could be used
-		   by a different GET_MESSAGE job. */
-		if (!local_error && !g_cancellable_is_cancelled (cancellable))
-			camel_data_cache_remove (message_cache, "tmp", message_uid, NULL);
+	} else {
+		camel_data_cache_discard_atomic (message_cache, g_steal_pointer (&cache_stream));
 	}
 
 	if (!local_error) {
@@ -4699,55 +4664,47 @@ imapx_copy_move_message_cache (CamelFolder *source_folder,
 	if (!g_file_test (destination_filename, G_FILE_TEST_EXISTS)) {
 		GIOStream *stream;
 
-		/* To create the cache folder structure for the message file */
-		stream = camel_data_cache_add (imapx_destination_folder->cache, "cur", destination_uid, NULL);
+		stream = camel_data_cache_add_atomic (imapx_destination_folder->cache, "cur", destination_uid, NULL);
 		if (stream) {
-			g_clear_object (&stream);
-
-			/* Remove the empty file, it's gonna be replaced with actual message */
-			g_unlink (destination_filename);
-
 			if (delete_originals) {
+				/* g_rename is atomic; release the reservation first. */
+				camel_data_cache_discard_atomic (imapx_destination_folder->cache, g_steal_pointer (&stream));
 				if (g_rename (source_filename, destination_filename) == -1) {
 					gint errsv = errno;
 					if (errsv != ENOENT)
 						g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, source_filename, destination_filename, g_strerror (errsv));
 				}
 			} else {
-				GFile *source, *tmp_file;
+				GFile *source_file;
+				GFileInputStream *source_input;
 				GError *local_error = NULL;
-				gchar *tmp_filename;
-				gchar *dirname;
 
-				/* Copy via a "tmp" file so an interrupted copy never leaves
-				   a truncated "cur" entry that would be treated as valid. */
-				tmp_filename = camel_data_cache_get_filename (
-					imapx_destination_folder->cache, "tmp", destination_uid);
+				source_file = g_file_new_for_path (source_filename);
+				source_input = g_file_read (source_file, cancellable, &local_error);
+				g_clear_object (&source_file);
 
-				dirname = g_path_get_dirname (tmp_filename);
-				g_mkdir_with_parents (dirname, 0700);
-				g_free (dirname);
-
-				source = g_file_new_for_path (source_filename);
-				tmp_file = g_file_new_for_path (tmp_filename);
-
-				if (source && tmp_file &&
-				    g_file_copy (source, tmp_file, G_FILE_COPY_NONE, cancellable, NULL, NULL, &local_error)) {
-					if (g_rename (tmp_filename, destination_filename) == -1) {
-						gint errsv = errno;
-						g_warning ("%s: Failed to rename '%s' to '%s': %s",
-							G_STRFUNC, tmp_filename, destination_filename, g_strerror (errsv));
-						g_unlink (tmp_filename);
-					}
-				} else if (local_error) {
-					g_warning ("%s: Failed to copy '%s' to '%s': %s",
-						G_STRFUNC, source_filename, destination_filename, local_error->message);
+				if (source_input) {
+					g_output_stream_splice (
+						g_io_stream_get_output_stream (stream),
+						G_INPUT_STREAM (source_input),
+						G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE,
+						cancellable, &local_error);
+					g_clear_object (&source_input);
 				}
 
-				g_clear_object (&source);
-				g_clear_object (&tmp_file);
-				g_free (tmp_filename);
-				g_clear_error (&local_error);
+				if (!local_error) {
+					stream = camel_data_cache_commit_atomic (imapx_destination_folder->cache, g_steal_pointer (&stream), &local_error);
+				} else {
+					camel_data_cache_discard_atomic (imapx_destination_folder->cache, g_steal_pointer (&stream));
+				}
+
+				if (local_error) {
+					g_warning ("%s: Failed to copy '%s' to '%s': %s",
+						G_STRFUNC, source_filename, destination_filename, local_error->message);
+					g_clear_error (&local_error);
+				}
+
+				g_clear_object (&stream);
 			}
 		}
 	}
@@ -5093,7 +5050,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 
 	/* chen cleanup this later */
 	uid = imapx_get_temp_uid ();
-	base_stream = camel_data_cache_add (message_cache, "new", uid, error);
+	base_stream = camel_data_cache_add_atomic (message_cache, "new", uid, error);
 	if (base_stream == NULL) {
 		g_prefix_error (error, _("Cannot create spool file: "));
 		g_free (uid);
@@ -5111,16 +5068,23 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		CAMEL_DATA_WRAPPER (message),
 		filter_stream, cancellable, error);
 
-	g_object_unref (base_stream);
 	g_object_unref (filter_stream);
 	g_object_unref (filter);
 
 	if (res == -1) {
 		g_prefix_error (error, _("Cannot create spool file: "));
-		camel_data_cache_remove (message_cache, "new", uid, NULL);
+		camel_data_cache_discard_atomic (message_cache, g_steal_pointer (&base_stream));
 		g_free (uid);
 		return FALSE;
 	}
+
+	base_stream = camel_data_cache_commit_atomic (message_cache, g_steal_pointer (&base_stream), error);
+	if (base_stream == NULL) {
+		g_prefix_error (error, _("Cannot create spool file: "));
+		g_free (uid);
+		return FALSE;
+	}
+	g_clear_object (&base_stream);
 
 	date_time = camel_mime_message_get_date (message, NULL);
 	path = camel_data_cache_get_filename (message_cache, "new", uid);

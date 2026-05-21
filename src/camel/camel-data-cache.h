@@ -84,10 +84,6 @@ void		camel_data_cache_set_expire_age	(CamelDataCache *cdc,
 void		camel_data_cache_set_expire_access
 						(CamelDataCache *cdc,
 						 time_t when);
-GIOStream *	camel_data_cache_add		(CamelDataCache *cdc,
-						 const gchar *path,
-						 const gchar *key,
-						 GError **error);
 GIOStream *	camel_data_cache_get		(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
@@ -105,6 +101,15 @@ void		camel_data_cache_foreach_remove	(CamelDataCache *cdc,
 						 const gchar *path,
 						 CamelDataCacheRemoveFunc func,
 						 gpointer user_data);
+GIOStream *	camel_data_cache_add_atomic	(CamelDataCache *cdc,
+						 const gchar *path,
+						 const gchar *key,
+						 GError **error);
+GIOStream *	camel_data_cache_commit_atomic	(CamelDataCache *cdc,
+						 GIOStream *stream,
+						 GError **error);
+void		camel_data_cache_discard_atomic	(CamelDataCache *cdc,
+						 GIOStream *stream);
 
 G_END_DECLS
 
