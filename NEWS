@@ -1,3 +1,23 @@
+Evolution-Data-Server 3.60.2 2026-05-22
+---------------------------------------
+
+Bug Fixes:
+	I#637 - IMAPx: Sent folder reverts to default with iCloud email and Quick Resync
+	evo-I#3302 - Truncated file stored in the (mail) cache
+
+Miscellaneous:
+	e-ms-oapxbc: Simplify error handling in MS-OAPXBC OIDC extension
+	e-ms-oapxbc: Fix error handling of broker response
+	e-ms-oapxbc: Align D-Bus parameters with sso-mib (Felix Moessbauer)
+	e-ms-oapxbc: Add support for broker versions > 2.0.1 (Felix Moessbauer)
+	Do not lock SExp object in data book/cal views start
+	e-book-meta-backend: Handle data: URI-s in PHOTO/LOGO
+	Calendar: Use icaldurationtype_as_utc_seconds() for libical 4.x (Antonio Rojas)
+	OAuth2: Use its own error domain and add camel_util_is_network_error()
+
+Translations:
+	Christian Kirbach (de)
+
 Evolution-Data-Server 3.60.1 2026-04-10
 ---------------------------------------
 
