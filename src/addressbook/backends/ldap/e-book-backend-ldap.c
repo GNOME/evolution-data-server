@@ -3789,7 +3789,7 @@ rfc2254_escape (gchar *str)
 		gint j = 0;
 		for (i = 0; i < len; i++) {
 			if (IS_RFC2254_CHAR (str[i])) {
-				sprintf (newstr + j, "\\%02x", str[i]);
+				g_snprintf (newstr + j, 4, "\\%02x", (guchar) str[i]);
 				j+= 3;
 			}
 			else {
@@ -4258,7 +4258,9 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter &&
 		    g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
-			retval = g_strdup_printf ("(& %s %s)", bl->priv->ldap_search_filter, r->value.string);
+			/* Wrap user filter in (&...) to prevent structural LDAP filter injection
+			 * that could bypass the admin-configured search filter restriction. */
+			retval = g_strdup_printf ("(& %s (&%s))", bl->priv->ldap_search_filter, r->value.string);
 		} else {
 			retval = r->value.string;
 			r->value.string = NULL;
