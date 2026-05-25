@@ -1299,8 +1299,6 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				imapx_conn_manager_remove_info (conn_man, cinfo);
 
 				if (!local_error ||
-				    g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_MISC) ||
-				    g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_EOF) ||
 				    camel_util_is_network_error (local_error)) {
 					GError *tmp = local_error;
 

@@ -524,8 +524,8 @@ camel_util_decode_user_header_setting (const gchar *setting_value,
  * @error: (nullable): a #GError, or %NULL
  *
  * Checks whether @error represents a network or connection error
- * (host unreachable, connection refused, DNS failure, timeout, etc.)
- * as opposed to a protocol-level or application-level error.
+ * (host unreachable, connection refused, DNS failure, timeout, TLS failure,
+ * etc.) as opposed to a protocol-level or application-level error.
  *
  * Returns: %TRUE if @error is a network/connection error, %FALSE otherwise
  *    (including when @error is %NULL)
@@ -537,6 +537,9 @@ camel_util_is_network_error (const GError *error)
 {
 	if (!error)
 		return FALSE;
+
+	if (error->domain == G_TLS_ERROR)
+		return TRUE;
 
 	if (error->domain == G_IO_ERROR) {
 		switch (error->code) {
