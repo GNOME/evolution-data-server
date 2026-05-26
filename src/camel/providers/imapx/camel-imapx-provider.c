@@ -29,6 +29,7 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-subscriptions", NULL,
 	  N_("_Show only subscribed folders") },
+	{ CAMEL_PROVIDER_CONF_PLACEHOLDER, "imapx-subscriptions-placeholder", NULL },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
