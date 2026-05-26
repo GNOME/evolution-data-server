@@ -15,19 +15,19 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "storage", NULL,
 	  N_("Message Storage") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep-on-server", NULL,
-	  N_("_Leave messages on server"), "1" },
+	  N_("_Leave messages on server") },
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete-after-days", "keep-on-server",
 	  /* Translators: '%s' is replaced with a widget, where user can
 	   * select how many days can be message left on the server. */
-	  N_("_Delete after %s day(s)"), "0:1:7:365" },
+	  N_("_Delete after %s day(s)") },
 	{ CAMEL_PROVIDER_CONF_LABEL, "delete-after-days-hint", "keep-on-server",
 	  N_("Hint: Use 0 days to keep messages on the server indefinitely.") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "delete-expunged", "keep-on-server",
-	  N_("Delete _expunged from local Inbox"), "0" },
+	  N_("Delete _expunged from local Inbox") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable-extensions", NULL,
-	  N_("Disable _support for all POP3 extensions"), "0" },
+	  N_("Disable _support for all POP3 extensions") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "enable-utf8", "!disable-extensions",
-	  N_("Enable _UTF-8 extension, when the server supports it"), "1" },
+	  N_("Enable _UTF-8 extension, when the server supports it") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

@@ -284,7 +284,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 	properties[PROP_KEEP_ON_SERVER] =
 		g_param_spec_boolean (
 			"keep-on-server", NULL, NULL,
-			FALSE,
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |

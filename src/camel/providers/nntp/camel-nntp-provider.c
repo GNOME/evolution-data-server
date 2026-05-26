@@ -15,20 +15,20 @@
 static CamelProviderConfEntry nntp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
-	  N_("Apply _filters to new messages in all folders"), "0" },
+	  N_("Apply _filters to new messages in all folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
-	  N_("Check new messages for _Junk contents"), "0" },
+	  N_("Check new messages for _Junk contents") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "short-folder-names", NULL,
 	  N_("_Show folders in short notation (e.g. c.o.linux rather "
-	  "than comp.os.linux)"), "1" },
+	  "than comp.os.linux)") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "folder-hierarchy-relative", NULL,
-	  N_("In the subscription _dialog, show relative folder names"), "1" },
+	  N_("In the subscription _dialog, show relative folder names") },
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "limit-latest", NULL,
 	  /* Translators: The '%s' is replaced with a spin button with the actual value to use */
-	  N_("Download only up to %s latest messages"), "y:100:1000:99999999" },
+	  N_("Download only up to %s latest messages") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

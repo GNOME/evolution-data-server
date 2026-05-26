@@ -20,7 +20,7 @@ CamelProviderConfEntry smtp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "smtpsection", NULL,
 	  N_("Send Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "reencode-data", NULL,
-	  N_("_Re-encode message before send"), "0" },
+	  N_("_Re-encode message before send") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

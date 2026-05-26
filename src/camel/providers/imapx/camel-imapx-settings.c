@@ -565,7 +565,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 	properties[PROP_CHECK_ALL] =
 		g_param_spec_boolean (
 			"check-all", NULL, NULL,
-			FALSE,
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |

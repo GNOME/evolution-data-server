@@ -92,6 +92,25 @@ typedef enum {
 
 /* Generic extra config stuff */
 
+/**
+ * CamelProviderConfEntry:
+ * @type: a configuration entry type, one of #CamelProviderConfType
+ * @name: name of the entry, corresponding to a CamelSettings descendant property name
+ * @depname: (nullable): name of a dependency property, having this entry sensitive
+ *    only if the @depname is set; it can start with an exclamation mark (`!`), to negate
+ *    the condition, aka to have this entry sensitive only if the @depname is not set
+ * @text: user-visible text describing the configuration entry; it should be localized
+ * @value: (nullable): it's ignored for all but the %CAMEL_PROVIDER_CONF_OPTIONS @type,
+ *    where it contains colon (`:`) separated pairs of key:value items for a combo box
+ *    items; the value is localized with dgettext() using the translation domain of
+ *    the provider
+ *
+ * Described a configuration entry shown to the user in an application.
+ * Some types do not use all the members.
+ *
+ * The default values are taken from corresponding GObject properties
+ * of the provider's #CamelSettings descendant.
+ **/
 typedef struct {
 	CamelProviderConfType type;
 	const gchar *name, *depname;
