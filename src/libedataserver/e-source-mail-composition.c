@@ -34,6 +34,7 @@ struct _ESourceMailCompositionPrivate {
 	gchar *drafts_folder;
 	gchar *templates_folder;
 	gchar *language;
+	gchar *composer_mode;
 	gboolean sign_imip;
 	ESourceMailCompositionReplyStyle reply_style;
 	EThreeState start_bottom;
@@ -51,6 +52,7 @@ enum {
 	PROP_START_BOTTOM,
 	PROP_TOP_SIGNATURE,
 	PROP_LANGUAGE,
+	PROP_COMPOSER_MODE,
 	N_PROPS
 };
 
@@ -120,6 +122,12 @@ source_mail_composition_set_property (GObject *object,
 			e_source_mail_composition_set_top_signature (
 				E_SOURCE_MAIL_COMPOSITION (object),
 				g_value_get_enum (value));
+			return;
+
+		case PROP_COMPOSER_MODE:
+			e_source_mail_composition_set_composer_mode (
+				E_SOURCE_MAIL_COMPOSITION (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -195,6 +203,13 @@ source_mail_composition_get_property (GObject *object,
 				e_source_mail_composition_get_top_signature (
 				E_SOURCE_MAIL_COMPOSITION (object)));
 			return;
+
+		case PROP_COMPOSER_MODE:
+			g_value_take_string (
+				value,
+				e_source_mail_composition_dup_composer_mode (
+				E_SOURCE_MAIL_COMPOSITION (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -212,6 +227,7 @@ source_mail_composition_finalize (GObject *object)
 	g_free (priv->drafts_folder);
 	g_free (priv->templates_folder);
 	g_free (priv->language);
+	g_free (priv->composer_mode);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_mail_composition_parent_class)->
@@ -371,6 +387,25 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 	properties[PROP_LANGUAGE] =
 		g_param_spec_string (
 			"language",
+			NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING);
+
+	/**
+	 * ESourceMailComposition:composer-mode
+	 *
+	 * Preferred composer mode for this account, as a string nick.
+	 * %NULL for unset.
+	 *
+	 * Since: 3.62
+	 **/
+	properties[PROP_COMPOSER_MODE] =
+		g_param_spec_string (
+			"composer-mode",
 			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
@@ -997,4 +1032,85 @@ e_source_mail_composition_set_language (ESourceMailComposition *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LANGUAGE]);
+}
+
+/**
+ * e_source_mail_composition_get_composer_mode:
+ * @extension: an #ESourceMailComposition
+ *
+ * Returns a string identifying the preferred composer mode for this account,
+ * or %NULL for unset.
+ *
+ * Returns: (nullable): the composer mode nick string, or %NULL
+ *
+ * Since: 3.62
+ **/
+const gchar *
+e_source_mail_composition_get_composer_mode (ESourceMailComposition *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
+
+	return extension->priv->composer_mode;
+}
+
+/**
+ * e_source_mail_composition_dup_composer_mode:
+ * @extension: an #ESourceMailComposition
+ *
+ * Thread-safe variation of e_source_mail_composition_get_composer_mode().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailComposition:composer-mode
+ *
+ * Since: 3.62
+ **/
+gchar *
+e_source_mail_composition_dup_composer_mode (ESourceMailComposition *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_mail_composition_get_composer_mode (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_mail_composition_set_composer_mode:
+ * @extension: an #ESourceMailComposition
+ * @composer_mode: (nullable): a composer mode nick string, or %NULL
+ *
+ * Sets the preferred composer mode for this account.
+ * Use %NULL to unset any previous value.
+ *
+ * Since: 3.62
+ **/
+void
+e_source_mail_composition_set_composer_mode (ESourceMailComposition *extension,
+					     const gchar *composer_mode)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (e_util_strcmp0 (extension->priv->composer_mode, composer_mode) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->composer_mode);
+	extension->priv->composer_mode = e_util_strdup_strip (composer_mode);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_COMPOSER_MODE]);
 }

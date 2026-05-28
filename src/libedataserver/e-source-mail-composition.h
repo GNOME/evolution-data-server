@@ -121,6 +121,13 @@ gchar *		e_source_mail_composition_dup_language
 void		e_source_mail_composition_set_language
 					(ESourceMailComposition *extension,
 					 const gchar *language);
+const gchar *	e_source_mail_composition_get_composer_mode
+					(ESourceMailComposition *extension);
+gchar *		e_source_mail_composition_dup_composer_mode
+					(ESourceMailComposition *extension);
+void		e_source_mail_composition_set_composer_mode
+					(ESourceMailComposition *extension,
+					 const gchar *composer_mode);
 
 G_END_DECLS
 
