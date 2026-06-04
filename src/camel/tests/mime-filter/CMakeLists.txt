@@ -1,12 +1,12 @@
 set(TESTS
-	test1
-	test-crlf
-	test-tohtml
+	test-camel-mime-filter-canon
+	test-camel-mime-filter-crlf
+	test-camel-mime-filter-tohtml
 )
 
 set(TESTS_SKIP
-	test-charset
+	test-camel-mime-filter-charset
 )
 
-add_camel_tests(mime-filter TESTS ON)
-add_camel_tests(mime-filter TESTS_SKIP OFF)
+add_camel_tests(TESTS ON)
+add_camel_tests(TESTS_SKIP OFF)

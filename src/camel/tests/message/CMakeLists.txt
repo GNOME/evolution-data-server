@@ -1,7 +1,7 @@
 set(TESTS_SKIP
-	test1
-	test2
-	test4
+	test-camel-message-stream
+	test-camel-message-address
+	test-camel-message-parser
 )
 
-add_camel_tests(message TESTS_SKIP OFF)
+add_camel_tests(TESTS_SKIP OFF)

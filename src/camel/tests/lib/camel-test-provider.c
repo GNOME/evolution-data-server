@@ -18,7 +18,7 @@ camel_test_provider_init (gint argc,
 		path = g_build_filename (CAMEL_BUILD_DIR, "providers", argv[i], name, NULL);
 		g_free (name);
 		camel_provider_load (path, &error);
-		check_msg (error == NULL, "Cannot load provider for '%s', test aborted", argv[i]);
+		g_assert_no_error (error);
 		g_free (path);
 	}
 }

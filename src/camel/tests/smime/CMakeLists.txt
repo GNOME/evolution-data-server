@@ -1,7 +1,7 @@
 set(TESTS_SKIP
-	pgp
-#	pgp-mime
-#	pkcs7
+	test-camel-smime-pgp
+	test-camel-smime-pgp-mime
+	test-camel-smime-pkcs7
 )
 
-add_camel_tests(smime TESTS_SKIP OFF)
+add_camel_tests(TESTS_SKIP OFF)

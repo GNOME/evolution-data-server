@@ -1,0 +1,290 @@
+/*
+ * SPDX-FileCopyrightText: (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * SPDX-License-Identifier: LGPL-2.0-or-later
+ * SPDX-FileContributor: Jeffrey Stedfast <fejj@ximian.com>
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
+
+#include "camel-test.h"
+#include "messages.h"
+
+#if 0
+static void
+dump_mime_struct (CamelMimePart *mime_part,
+                 gint depth)
+{
+	CamelDataWrapper *content;
+	gchar *mime_type;
+	gint i = 0;
+
+	while (i < depth) {
+		printf ("   ");
+		i++;
+	}
+
+	content = camel_medium_get_content ((CamelMedium *) mime_part);
+
+	mime_type = camel_data_wrapper_get_mime_type (content);
+	printf ("Content-Type: %s\n", mime_type);
+	g_free (mime_type);
+
+	if (CAMEL_IS_MULTIPART (content)) {
+		guint num, index = 0;
+
+		num = camel_multipart_get_number ((CamelMultipart *) content);
+		while (index < num) {
+			mime_part = camel_multipart_get_part ((CamelMultipart *) content, index);
+			dump_mime_struct (mime_part, depth + 1);
+			index++;
+		}
+	} else if (CAMEL_IS_MIME_MESSAGE (content)) {
+		dump_mime_struct ((CamelMimePart *) content, depth + 1);
+	}
+}
+#endif
+
+static void
+test_message_parser (void)
+{
+	const gchar *msg1 =
+		"MIME-Version: 1.0\r\n"
+		"Message-ID: <1@example.com>\r\n"
+		"Date: Wed, 01 Dec 1980 00:00:00 -0800 (PST)\r\n"
+		"From: 1stfrom@example.com\r\n"
+		"To: 1stto@example.com\r\n"
+		"Subject: 1st subject\r\n"
+		"Date: Wed, 01 Dec 2022 00:00:00 -0800 (PST)\r\n"
+		"From: 2ndfrom@example.com\r\n"
+		"To: 2ndto@example.com\r\n"
+		"Subject: 2nd subject\r\n"
+		"Content-type: text/plain\r\n"
+		"\r\n";
+	const gchar *msg2 =
+		"MIME-Version: 1.0\r\n"
+		"Message-ID: <2@example.com>\r\n"
+		"Date: Wed, 01 Dec 1980 00:00:01 -0800 (PST)\r\n"
+		"From: 1stfrom2@example.com\r\n"
+		"To: 1stto2@example.com\r\n"
+		"Subject: 1st subject2\r\n"
+		"Date: Wed, 01 Dec 2022 00:00:01 -0800 (PST)\r\n"
+		"From: 2ndfrom2@example.com\r\n"
+		"To: 2ndto2@example.com\r\n"
+		"Subject: 2nd subject2\r\n"
+		"Content-type: text/plain\r\n"
+		"\r\n";
+	CamelMimeMessage *message;
+	CamelStream *stream;
+	CamelInternetAddress *addr;
+	const gchar *email;
+
+	stream = camel_stream_mem_new_with_buffer (msg1, strlen (msg1));
+	message = camel_mime_message_new ();
+
+	g_assert_true (camel_data_wrapper_construct_from_stream_sync (CAMEL_DATA_WRAPPER (message), stream, NULL, NULL));
+	g_assert_cmpstr (camel_mime_message_get_message_id (message), ==, "1@example.com");
+	g_assert_cmpstr (camel_mime_message_get_subject (message), ==, "1st subject");
+	g_assert_cmpint (camel_mime_message_get_date (message, NULL), ==, 344505600);
+
+	addr = camel_mime_message_get_from (message);
+	g_assert_nonnull (addr);
+	g_assert_cmpint (camel_address_length (CAMEL_ADDRESS (addr)), ==, 1);
+	g_assert_true (camel_internet_address_get (addr, 0, NULL, &email));
+	g_assert_cmpstr (email, ==, "1stfrom@example.com");
+
+	addr = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO);
+	g_assert_nonnull (addr);
+	g_assert_cmpint (camel_address_length (CAMEL_ADDRESS (addr)), ==, 1);
+	g_assert_true (camel_internet_address_get (addr, 0, NULL, &email));
+	g_assert_cmpstr (email, ==, "1stto@example.com");
+
+	/* Should be able to change it now, when not parsing anymore */
+	camel_mime_message_set_subject (message, "changed subject");
+	g_assert_cmpstr (camel_mime_message_get_subject (message), ==, "changed subject");
+
+	g_clear_object (&stream);
+	stream = camel_stream_mem_new_with_buffer (msg2, strlen (msg2));
+
+	/* Just in case, constructing from stream again should not preserve previous values */
+	g_assert_true (camel_data_wrapper_construct_from_stream_sync (CAMEL_DATA_WRAPPER (message), stream, NULL, NULL));
+	g_assert_cmpstr (camel_mime_message_get_message_id (message), ==, "2@example.com");
+	g_assert_cmpstr (camel_mime_message_get_subject (message), ==, "1st subject2");
+	g_assert_cmpint (camel_mime_message_get_date (message, NULL), ==, 344505601);
+
+	addr = camel_mime_message_get_from (message);
+	g_assert_nonnull (addr);
+	g_assert_cmpint (camel_address_length (CAMEL_ADDRESS (addr)), ==, 1);
+	g_assert_true (camel_internet_address_get (addr, 0, NULL, &email));
+	g_assert_cmpstr (email, ==, "1stfrom2@example.com");
+
+	addr = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO);
+	g_assert_nonnull (addr);
+	g_assert_cmpint (camel_address_length (CAMEL_ADDRESS (addr)), ==, 1);
+	g_assert_true (camel_internet_address_get (addr, 0, NULL, &email));
+	g_assert_cmpstr (email, ==, "1stto2@example.com");
+
+	/* Should be able to change it now, when not parsing anymore */
+	camel_mime_message_set_subject (message, "changed subject2");
+	g_assert_cmpstr (camel_mime_message_get_subject (message), ==, "changed subject2");
+
+	g_clear_object (&stream);
+	g_clear_object (&message);
+}
+
+static void
+test_data_messages (void)
+{
+	CamelMimeMessage *message;
+	CamelStream *stream;
+	struct dirent *dent;
+	gchar *filename;
+	struct stat st;
+	DIR *dir;
+	gint fd;
+
+	if (!(dir = opendir ("../data/messages"))) {
+		g_test_skip ("data/messages directory not found");
+		return;
+	}
+
+	while ((dent = readdir (dir)) != NULL) {
+		if (dent->d_name[0] == '.')
+			continue;
+
+		filename = g_strdup_printf ("../data/messages/%s", dent->d_name);
+		if (g_stat (filename, &st) == -1 || !S_ISREG (st.st_mode)) {
+			g_free (filename);
+			continue;
+		}
+
+		if ((fd = open (filename, O_RDONLY)) == -1) {
+			g_free (filename);
+			continue;
+		}
+
+		g_free (filename);
+
+		stream = camel_stream_fs_new_with_fd (fd);
+		message = camel_mime_message_new ();
+		camel_data_wrapper_construct_from_stream_sync (
+			CAMEL_DATA_WRAPPER (message), stream, NULL, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
+
+		/*dump_mime_struct ((CamelMimePart *) message, 0);*/
+		test_message_compare (message);
+
+		g_clear_object (&message);
+		g_clear_object (&stream);
+	}
+
+	closedir (dir);
+}
+
+static void
+test_message_preview_data (const gchar *data,
+                           const gchar *expected)
+{
+	CamelMimePart *part;
+	CamelMimeParser *parser;
+	GBytes *bytes;
+	gchar *preview;
+
+	parser = camel_mime_parser_new ();
+	camel_mime_parser_scan_from (parser, FALSE);
+	camel_mime_parser_scan_pre_from (parser, FALSE);
+
+	bytes = g_bytes_new_static (data, strlen (data));
+	camel_mime_parser_init_with_bytes (parser, bytes);
+	g_bytes_unref (bytes);
+
+	part = camel_mime_part_new ();
+	camel_mime_part_construct_from_parser_sync (part, parser, NULL, NULL);
+
+	g_clear_object (&parser);
+
+	preview = camel_mime_part_generate_preview (part, NULL, NULL);
+
+	if (g_strcmp0 (preview, expected) != 0)
+		g_error ("expected '%s' received '%s'", expected, preview);
+
+	g_clear_object (&part);
+	g_free (preview);
+}
+
+static void
+test_message_preview (void)
+{
+	struct _cases {
+		const gchar *test;
+		const gchar *expected;
+		const gchar *data;
+	} cases[] = {
+		{ "Preview text/plain UTF-8",
+		  "\xc4\x9b\xc5\xa1\xc4\x8d\xc5\x99\xc5\xbe\xc3\xbd\xc3\xa1\xc3\xad\xc3\xa9"
+		  " "
+		  "\xc4\x9a\xc5\xa0\xc4\x8c\xc5\x98\xc5\xbd\xc3\x9d\xc3\x81\xc3\x8d\xc3\x89"
+		  " ",
+		  "Content-Type: text/plain; charset=\"UTF-8\"\r\n"
+		  "Content-Transfer-Encoding: base64\r\n"
+		  "\r\n"
+		  "xJvFocSNxZnFvsO9w6HDrcOpCsSaxaDEjMWYxb3DncOBw43DiQo=\r\n" },
+		{ "Preview text/html UTF-8",
+		  "\xc4\x9b\xc5\xa1\xc4\x8d\xc5\x99\xc5\xbe\xc3\xbd\xc3\xa1\xc3\xad\xc3\xa9"
+		  "\xc4\x9a\xc5\xa0\xc4\x8c\xc5\x98\xc5\xbd\xc3\x9d\xc3\x81\xc3\x8d\xc3\x89"
+		  " ",
+		  "Content-Type: text/html; charset=\"utf-8\"\r\n"
+		  "Content-Transfer-Encoding: quoted-printable\r\n"
+		  "\r\n"
+		  "<html><head></head><body><div>=C4=9B=C5=A1=C4=8D=C5=99=C5=BE=C3=BD=C3=A1=C3=AD=\r\n"
+		  "=C3=A9</div><div>=C4=9A=C5=A0=C4=8C=C5=98=C5=BD=C3=9D=C3=81=C3=8D=C3=89</di=\r\n"
+		  "v></body></html>\r\n" },
+		{ "Preview text/plain ISO-8859-2",
+		  "\xc4\x9b\xc5\xa1\xc4\x8d\xc5\x99\xc5\xbe\xc3\xbd\xc3\xa1\xc3\xad\xc3\xa9"
+		  " "
+		  "\xc4\x9a\xc5\xa0\xc4\x8c\xc5\x98\xc5\xbd\xc3\x9d\xc3\x81\xc3\x8d\xc3\x89"
+		  " ",
+		  "Content-Type: text/plain; charset=\"ISO-8859-2\"\r\n"
+		  "Content-Transfer-Encoding: base64\r\n"
+		  "\r\n"
+		  "7Lno+L794e3pCsypyNiu3cHNyQoK\r\n" },
+		{ "Preview text/html ISO-8859-2",
+		  "\xc4\x9b\xc5\xa1\xc4\x8d\xc5\x99\xc5\xbe\xc3\xbd\xc3\xa1\xc3\xad\xc3\xa9"
+		  "\xc4\x9a\xc5\xa0\xc4\x8c\xc5\x98\xc5\xbd\xc3\x9d\xc3\x81\xc3\x8d\xc3\x89"
+		  " ",
+		  "Content-Type: text/html; charset=\"iso-8859-2\"\r\n"
+		  "Content-Transfer-Encoding: quoted-printable\r\n"
+		  "\r\n"
+		  "<html><head></head><body><div>=EC=B9=E8=F8=BE=FD=E1=ED=E9=\r\n"
+		  "</div><div>=CC=A9=C8=D8=AE=DD=C1=CD=C9</di=\r\n"
+		  "v></body></html>\r\n" },
+	};
+	guint ii;
+
+	for (ii = 0; ii < G_N_ELEMENTS (cases); ii++) {
+		test_message_preview_data (cases[ii].data, cases[ii].expected);
+	}
+}
+
+gint
+main (gint argc,
+      gchar **argv)
+{
+	gint ret;
+
+	g_test_init (&argc, &argv, NULL);
+	camel_test_init ();
+
+	g_test_add_func ("/Camel/Message/Parser/DuplicateHeaders", test_message_parser);
+	g_test_add_func ("/Camel/Message/Parser/DataMessages", test_data_messages);
+	g_test_add_func ("/Camel/Message/Parser/Preview", test_message_preview);
+
+	ret = g_test_run ();
+	camel_test_shutdown ();
+	return ret;
+}

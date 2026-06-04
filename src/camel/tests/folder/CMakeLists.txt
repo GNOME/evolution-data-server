@@ -1,15 +1,15 @@
 set(TESTS_SKIP
-	test1
-	test2
-	test3
-	test4
-	test5
-	test6
-	test7
-	test8
-	test9
-	test10
-	test11
+	test-camel-folder-store
+	test-camel-folder-ops
+	test-camel-folder-search
+	test-camel-folder-store-imap
+	test-camel-folder-store-nntp
+	test-camel-folder-ops-imap
+	test-camel-folder-ops-nntp
+	test-camel-folder-threaded
+	test-camel-folder-index
+	test-camel-folder-thread-ops
+	test-camel-folder-thread-sexp
 )
 
-add_camel_tests(folder TESTS_SKIP OFF)
+add_camel_tests(TESTS_SKIP OFF)

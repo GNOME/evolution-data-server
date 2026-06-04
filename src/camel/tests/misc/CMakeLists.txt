@@ -1,30 +1,30 @@
 set(TESTS
-	test1
-	test2
-	test3
-	utf7
-	split
-	rfc2047
+	test-camel-misc-references
+	test-camel-misc-param-list
+	test-camel-misc-hostname
+	test-camel-misc-utf7
+	test-camel-misc-search-split
+	test-camel-misc-rfc2047
 )
 
 # enable for `make check`/`make test` and install these tests
 set(TESTS_CHECK
-	test-camel-db
-	test-folder-thread
-	test-store-search
-	test-vee-folder
+	test-camel-misc-db
+	test-camel-misc-folder-thread
+	test-camel-misc-store-search
+	test-camel-misc-vee-folder
 )
 
 set(TESTS_SKIP
-	url
-	url-scan
+	test-camel-misc-url
+	test-camel-misc-url-scan
 )
 
-add_camel_tests(misc TESTS ON)
-add_camel_tests(misc TESTS_CHECK ON)
-add_camel_tests(misc TESTS_SKIP OFF)
+add_camel_tests(TESTS ON)
+add_camel_tests(TESTS_CHECK ON)
+add_camel_tests(TESTS_SKIP OFF)
 
 foreach(_test ${TESTS_CHECK})
-	add_check_test(cameltest-misc-${_test})
-	install_test_if_enabled(cameltest-misc-${_test} "session-exclusive" "TEST_INSTALLED_SERVICES=1")
+	add_check_test(${_test})
+	install_test_if_enabled(${_test} "session-exclusive" "TEST_INSTALLED_SERVICES=1")
 endforeach(_test)

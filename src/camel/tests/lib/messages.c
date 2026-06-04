@@ -27,7 +27,8 @@ test_message_create_simple (void)
 	camel_internet_address_add (addr, "Michael Zucchi", "zed@nowhere.com");
 	camel_mime_message_set_recipients (msg, CAMEL_RECIPIENT_TYPE_CC, addr);
 
-	check_unref (addr, 1);
+	g_assert_cmpuint (G_OBJECT (addr)->ref_count, ==, 1);
+	g_object_unref (addr);
 
 	camel_mime_message_set_subject (msg, "Simple message subject");
 	camel_mime_message_set_date (msg, time (0), 930);
@@ -92,8 +93,10 @@ test_message_set_content_simple (CamelMimePart *part,
 			dw, (CamelStream *) content, NULL, NULL);
 		camel_medium_set_content ((CamelMedium *) part, dw);
 
-		check_unref (content, 2);
-		check_unref (dw, 2);
+		g_assert_cmpuint (G_OBJECT (content)->ref_count, ==, 2);
+		g_object_unref (content);
+		g_assert_cmpuint (G_OBJECT (dw)->ref_count, ==, 2);
+		g_object_unref (dw);
 	}
 }
 
@@ -110,7 +113,7 @@ test_message_write_file (CamelMimeMessage *msg,
 		CAMEL_DATA_WRAPPER (msg), stream, NULL, NULL);
 	ret = camel_stream_close (stream, NULL, NULL);
 
-	check (G_OBJECT (stream)->ref_count == 1);
+	g_assert_cmpuint (G_OBJECT (stream)->ref_count, ==, 1);
 	g_object_unref (stream);
 
 	return ret;
@@ -127,8 +130,7 @@ test_message_read_file (const gchar *name)
 
 	camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg2), stream, NULL, NULL);
-	/* stream's refcount may be > 1 if the message is real big */
-	check (G_OBJECT (stream)->ref_count >=1);
+	g_assert_cmpuint (G_OBJECT (stream)->ref_count, >=, 1);
 	g_object_unref (stream);
 
 	return msg2;
@@ -173,8 +175,6 @@ test_message_compare_content (CamelDataWrapper *dw,
 	GByteArray *byte_array;
 	CamelStream *stream;
 
-	/* sigh, ok, so i len == 0, dw will probably be 0 too
-	 * camel_mime_part_set_content is weird like that */
 	if (dw == 0 && len == 0)
 		return 0;
 
@@ -190,10 +190,11 @@ test_message_compare_content (CamelDataWrapper *dw,
 		hexdump (byte_array->data, byte_array->len);
 	}
 
-	check_msg (byte_array->len == len, "buffer->len = %d, len = %d", byte_array->len, len);
-	check_msg (memcmp (byte_array->data, text, byte_array->len) == 0, "len = %d", len);
+	g_assert_cmpuint (byte_array->len, ==, len);
+	g_assert_true (memcmp (byte_array->data, text, byte_array->len) == 0);
 
-	check_unref (stream, 1);
+	g_assert_cmpuint (G_OBJECT (stream)->ref_count, ==, 1);
+	g_object_unref (stream);
 
 	return 0;
 }
@@ -209,22 +210,19 @@ test_message_compare (CamelMimeMessage *msg)
 
 	byte_array1 = g_byte_array_new ();
 	stream1 = camel_stream_mem_new_with_byte_array (byte_array1);
-	check_msg (camel_data_wrapper_write_to_stream_sync (
-		CAMEL_DATA_WRAPPER (msg), stream1, NULL, NULL) != -1,
-		"write_to_stream 1 failed", NULL);
+	g_assert_cmpint (camel_data_wrapper_write_to_stream_sync (
+		CAMEL_DATA_WRAPPER (msg), stream1, NULL, NULL), !=, -1);
 	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	msg2 = camel_mime_message_new ();
-	check_msg (camel_data_wrapper_construct_from_stream_sync (
-		CAMEL_DATA_WRAPPER (msg2), stream1, NULL, NULL) != -1,
-		"construct_from_stream 1 failed");
+	g_assert_cmpint (camel_data_wrapper_construct_from_stream_sync (
+		CAMEL_DATA_WRAPPER (msg2), stream1, NULL, NULL), !=, -1);
 	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	byte_array2 = g_byte_array_new ();
 	stream2 = camel_stream_mem_new_with_byte_array (byte_array2);
-	check_msg (camel_data_wrapper_write_to_stream_sync (
-		CAMEL_DATA_WRAPPER (msg2), stream2, NULL, NULL) != -1,
-		"write_to_stream 2 failed");
+	g_assert_cmpint (camel_data_wrapper_write_to_stream_sync (
+		CAMEL_DATA_WRAPPER (msg2), stream2, NULL, NULL), !=, -1);
 	g_seekable_seek (G_SEEKABLE (stream2), 0, G_SEEK_SET, NULL, NULL);
 
 	if (byte_array1->len != byte_array2->len) {
@@ -237,14 +235,10 @@ test_message_compare (CamelMimeMessage *msg)
 		test_message_dump_structure (msg2);
 	}
 
-	check_unref (msg2, 1);
+	g_object_unref (msg2);
 
-	check_msg (
-		byte_array1->len == byte_array2->len,
-		"byte_array1->len = %d, byte_array2->len = %d",
-		byte_array1->len, byte_array2->len);
-
-	check_msg (memcmp (byte_array1->data, byte_array2->data, byte_array1->len) == 0, "msg/stream compare");
+	g_assert_cmpuint (byte_array1->len, ==, byte_array2->len);
+	g_assert_true (memcmp (byte_array1->data, byte_array2->data, byte_array1->len) == 0);
 
 	g_object_unref (stream1);
 	g_object_unref (stream2);
@@ -298,7 +292,6 @@ message_dump_rec (CamelMimeMessage *msg,
 	g_free (mime_type);
 	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (camel_data_wrapper_get_encoding ((CamelDataWrapper *) containee)));
 
-	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {
 		parts = camel_multipart_get_number (CAMEL_MULTIPART (containee));
 		for (i = 0; i < parts; i++) {
