@@ -25,7 +25,7 @@ include:
     - mkdir $PREFIX
     - pushd po/ >/dev/null && export TXT=`intltool-update -m 2>&1` && popd >/dev/null
     - if [ ! -z "$TXT" ]; then echo -e "\\033[1;31m" 1>&2; echo "$TXT" 1>&2; echo -e "\\033[0m" 1>&2; exit 1; fi
-    - mkdir _build && pushd _build
+    - mkdir -p _build && pushd _build
     - cmake -GNinja
             -DCMAKE_BUILD_TYPE=Release
             -DCMAKE_INSTALL_PREFIX=$PREFIX
@@ -124,6 +124,18 @@ static analysis:
     when: always
     paths:
       - "public/scan-build"
+
+address and undefined behavior sanitizers:
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  stage: analysis
+  variables:
+    PERFORM_FULL_BUILD: "OFF"
+    CFLAGS: "-fsanitize=address,undefined"
+    CXXFLAGS: "-fsanitize=address,undefined"
+  script:
+    - mkdir -p public/scan-build
+    - !reference [".build", "script"]
+  allow_failure: true
 
 coverage:
   image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
