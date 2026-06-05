@@ -25,6 +25,8 @@ gint string_equal (const gchar *a, const gchar *b);
 
 gboolean	test_util_abort_on_timeout_cb	(gpointer user_data) G_GNUC_NORETURN;
 
+#ifndef __GI_SCANNER__
+
 #define TEST_TYPE_SESSION (test_session_get_type ())
 G_DECLARE_FINAL_TYPE (TestSession, test_session, TEST, SESSION, CamelSession)
 
@@ -74,9 +76,15 @@ CamelStore *	test_store_new_full		(CamelSession *session,
 void		test_add_messages		(CamelFolder *folder,
 						 ...) G_GNUC_NULL_TERMINATED;
 
+gchar *		test_build_part_string		(guint64 message_id,
+						 const guint64 *references,
+						 guint n_references);
+
 void		test_store_search_read_message_data
 						(const gchar *uid,
 						 CamelMessageInfo *inout_nfo,
 						 CamelMimeMessage **out_message);
+
+#endif /* !__GI_SCANNER__ */
 
 #endif /* CAMEL_TEST_H */

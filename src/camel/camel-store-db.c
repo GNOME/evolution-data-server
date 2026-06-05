@@ -2390,7 +2390,6 @@ camel_store_db_read_uids_flags_cb (gpointer user_data,
 	return TRUE;
 }
 
-
 /**
  * camel_store_db_dup_uids_with_flags:
  * @self: a #CamelStoreDB

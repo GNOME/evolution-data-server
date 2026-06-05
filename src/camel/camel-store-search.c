@@ -3359,6 +3359,107 @@ camel_store_search_get_uids_sync (CamelStoreSearch *self,
 }
 
 /**
+ * camel_store_search_exec_select_sync:
+ * @self: a #CamelStoreSearch
+ * @folder_name: name of the folder to query
+ * @select_columns: comma-separated column names to SELECT
+ * @order_by: (nullable): ORDER BY clause content, or %NULL
+ * @callback: a #CamelDBSelectCB called for each result row
+ * @user_data: data passed to @callback
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Executes a SELECT query on the folder's messages table, filtered
+ * by the expression set with camel_store_search_set_expression().
+ * The @callback is called for each matching row.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.64
+ **/
+gboolean
+camel_store_search_exec_select_sync (CamelStoreSearch *self,
+				     const gchar *folder_name,
+				     const gchar *select_columns,
+				     const gchar *order_by,
+				     CamelDBSelectCB callback,
+				     gpointer user_data,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	CamelFolder *folder;
+	guint32 folder_id;
+	CamelDB *cdb;
+	GString *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE_SEARCH (self), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+	g_return_val_if_fail (select_columns != NULL, FALSE);
+	g_return_val_if_fail (callback != NULL, FALSE);
+
+	if (self->priv->needs_rebuild) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_INITIALIZED,
+			"Cannot exec select: Run rebuild first");
+		return FALSE;
+	}
+
+	folder_id = camel_store_db_get_folder_id (self->priv->store_db, folder_name);
+	if (!folder_id)
+		return TRUE;
+
+	folder = g_hash_table_lookup (self->priv->folders_by_id, GUINT_TO_POINTER (folder_id));
+	if (!folder)
+		return TRUE;
+
+	g_object_ref (folder);
+
+	cdb = CAMEL_DB (self->priv->store_db);
+
+	stmt = g_string_new ("SELECT ");
+	g_string_append (stmt, select_columns);
+	g_string_append_printf (stmt, " FROM messages_%u", folder_id);
+
+	if (self->priv->where_clause_sql)
+		g_string_append_printf (stmt, " WHERE %s", self->priv->where_clause_sql);
+
+	if (order_by && *order_by)
+		g_string_append_printf (stmt, " ORDER BY %s", order_by);
+
+	camel_store_search_clear_ongoing_search_data (self);
+	self->priv->ongoing_search.cancellable = cancellable;
+	self->priv->ongoing_search.error = error;
+	self->priv->ongoing_search.folder_id = folder_id;
+	self->priv->ongoing_search.folder = folder;
+
+	do {
+		if (!camel_store_search_prepare_folder_data (self, error)) {
+			success = FALSE;
+			break;
+		}
+
+		g_warn_if_fail (self->priv->ongoing_search.in_select == 0);
+		self->priv->ongoing_search.in_select++;
+		success = camel_db_exec_select (cdb, stmt->str, callback, user_data, error);
+		self->priv->ongoing_search.in_select--;
+
+		if (!success || !self->priv->ongoing_search.success)
+			break;
+	} while (camel_store_search_handle_remote_ops_sync (self, &success, cancellable, error));
+
+	search_cache_clear (self->priv->ongoing_search.search_body);
+
+	if (success)
+		success = self->priv->ongoing_search.success;
+	camel_store_search_clear_ongoing_search_data (self);
+
+	g_string_free (stmt, TRUE);
+	g_object_unref (folder);
+
+	return success;
+}
+
+/**
  * camel_store_search_get_match_threads_kind:
  * @self: a #CamelStoreSearch
  * @out_flags: (out): bit-or of #CamelFolderThreadFlags

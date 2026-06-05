@@ -59,6 +59,7 @@ src/camel/camel-filter-search.c
 src/camel/camel-folder.c
 src/camel/camel-folder-summary.c
 src/camel/camel-folder-thread.c
+src/camel/camel-folder-view.c
 src/camel/camel-gpg-context.c
 src/camel/camel-html-parser.c
 src/camel/camel-index.c

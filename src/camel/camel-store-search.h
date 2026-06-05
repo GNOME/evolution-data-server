@@ -12,6 +12,7 @@
 
 #include <glib-object.h>
 
+#include <camel/camel-db.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-store.h>
 
@@ -154,6 +155,15 @@ gboolean	camel_store_search_get_items_sync
 gboolean	camel_store_search_get_uids_sync(CamelStoreSearch *self,
 						 const gchar *folder_name,
 						 GPtrArray **out_uids, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_store_search_exec_select_sync
+						(CamelStoreSearch *self,
+						 const gchar *folder_name,
+						 const gchar *select_columns,
+						 const gchar *order_by,
+						 CamelDBSelectCB callback,
+						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
 CamelMatchThreadsKind

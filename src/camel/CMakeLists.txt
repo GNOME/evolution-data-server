@@ -43,6 +43,7 @@ set(SOURCES
 	camel-filter-search.c
 	camel-folder-summary.c
 	camel-folder-thread.c
+	camel-folder-view.c
 	camel-folder.c
 	camel-gpg-context.c
 	camel-hostname-utils.c
@@ -184,6 +185,7 @@ set(HEADERS
 	camel-filter-search.h
 	camel-folder-summary.h
 	camel-folder-thread.h
+	camel-folder-view.h
 	camel-folder.h
 	camel-gpg-context.h
 	camel-hostname-utils.h

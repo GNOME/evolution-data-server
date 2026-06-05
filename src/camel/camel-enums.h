@@ -709,4 +709,105 @@ typedef enum _CamelVeeFolderOpFlags { /*< flags >*/
 	CAMEL_VEE_FOLDER_OP_FLAG_SKIP_EMIT	= 1 << 1
 } CamelVeeFolderOpFlags;
 
+/**
+ * CamelFolderViewThreading:
+ * @CAMEL_FOLDER_VIEW_THREADING_NONE: flat list, no threading
+ * @CAMEL_FOLDER_VIEW_THREADING_FLAT: single-level threading, all replies directly under thread root
+ * @CAMEL_FOLDER_VIEW_THREADING_FULL: full thread hierarchy with arbitrary depth
+ * @CAMEL_FOLDER_VIEW_THREADING_COMPRESSED: full thread hierarchy with straight-line chains compressed
+ *
+ * Threading mode for #CamelFolderView.
+ *
+ * Since: 3.64
+ **/
+typedef enum {
+	CAMEL_FOLDER_VIEW_THREADING_NONE,
+	CAMEL_FOLDER_VIEW_THREADING_FLAT,
+	CAMEL_FOLDER_VIEW_THREADING_FULL,
+	CAMEL_FOLDER_VIEW_THREADING_COMPRESSED
+} CamelFolderViewThreading;
+
+/**
+ * CamelFolderViewGroupBy:
+ * @CAMEL_FOLDER_VIEW_GROUP_BY_NONE: no grouping
+ * @CAMEL_FOLDER_VIEW_GROUP_BY_DATE_SENT: group by date sent
+ * @CAMEL_FOLDER_VIEW_GROUP_BY_DATE_RECEIVED: group by date received
+ *
+ * Grouping mode for #CamelFolderView.
+ *
+ * Since: 3.64
+ **/
+typedef enum {
+	CAMEL_FOLDER_VIEW_GROUP_BY_NONE,
+	CAMEL_FOLDER_VIEW_GROUP_BY_DATE_SENT,
+	CAMEL_FOLDER_VIEW_GROUP_BY_DATE_RECEIVED
+} CamelFolderViewGroupBy;
+
+/**
+ * CamelFolderViewColumn:
+ * @CAMEL_FOLDER_VIEW_COLUMN_SUBJECT: message subject
+ * @CAMEL_FOLDER_VIEW_COLUMN_FROM: raw sender address string
+ * @CAMEL_FOLDER_VIEW_COLUMN_TO: raw recipient address string
+ * @CAMEL_FOLDER_VIEW_COLUMN_CC: raw CC address string
+ * @CAMEL_FOLDER_VIEW_COLUMN_MLIST: mailing list identifier
+ * @CAMEL_FOLDER_VIEW_COLUMN_PREVIEW: body preview text
+ * @CAMEL_FOLDER_VIEW_COLUMN_SUBJECT_TRIMMED: subject with Re:/Fwd: and mailing list tags stripped
+ * @CAMEL_FOLDER_VIEW_COLUMN_SENDER: display names extracted from sender address
+ * @CAMEL_FOLDER_VIEW_COLUMN_SENDER_MAIL: email addresses extracted from sender address
+ * @CAMEL_FOLDER_VIEW_COLUMN_RECIPIENTS: display names extracted from recipient address
+ * @CAMEL_FOLDER_VIEW_COLUMN_RECIPIENTS_MAIL: email addresses extracted from recipient address
+ * @CAMEL_FOLDER_VIEW_COLUMN_CORRESPONDENTS: sender or recipients depending on message direction
+ * @CAMEL_FOLDER_VIEW_COLUMN_LABELS: comma-separated label flags
+ * @CAMEL_FOLDER_VIEW_COLUMN_FOLLOWUP_FLAG: follow-up flag text
+ * @CAMEL_FOLDER_VIEW_COLUMN_FOLLOWUP_DUE_BY: follow-up due date
+ * @CAMEL_FOLDER_VIEW_COLUMN_SCORE: message score
+ * @CAMEL_FOLDER_VIEW_COLUMN_LOCATION: folder location for virtual folders
+ * @CAMEL_FOLDER_VIEW_COLUMN_USER_HEADER_1: first user-defined header
+ * @CAMEL_FOLDER_VIEW_COLUMN_USER_HEADER_2: second user-defined header
+ * @CAMEL_FOLDER_VIEW_COLUMN_USER_HEADER_3: third user-defined header
+ * @CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT: date sent timestamp
+ * @CAMEL_FOLDER_VIEW_COLUMN_DATE_RECEIVED: date received timestamp
+ * @CAMEL_FOLDER_VIEW_COLUMN_SIZE: message size in bytes
+ * @CAMEL_FOLDER_VIEW_COLUMN_STATUS: message status derived from flags
+ * @CAMEL_FOLDER_VIEW_COLUMN_FLAGGED: flagged/important state
+ * @CAMEL_FOLDER_VIEW_COLUMN_ATTACHMENT: attachment presence
+ * @CAMEL_FOLDER_VIEW_COLUMN_UID: message UID
+ *
+ * Column flags for #CamelFolderView, used both to select which columns
+ * to pre-compute in #CamelFolderViewRow (via bit-or in
+ * camel_folder_view_set_columns()) and to identify sort criteria
+ * in camel_folder_view_set_sort().
+ *
+ * Since: 3.64
+ **/
+typedef enum { /*< flags >*/
+	CAMEL_FOLDER_VIEW_COLUMN_SUBJECT         = 1 << 0,
+	CAMEL_FOLDER_VIEW_COLUMN_FROM            = 1 << 1,
+	CAMEL_FOLDER_VIEW_COLUMN_TO              = 1 << 2,
+	CAMEL_FOLDER_VIEW_COLUMN_CC              = 1 << 3,
+	CAMEL_FOLDER_VIEW_COLUMN_MLIST           = 1 << 4,
+	CAMEL_FOLDER_VIEW_COLUMN_PREVIEW         = 1 << 5,
+	CAMEL_FOLDER_VIEW_COLUMN_SUBJECT_TRIMMED = 1 << 6,
+	CAMEL_FOLDER_VIEW_COLUMN_SENDER          = 1 << 7,
+	CAMEL_FOLDER_VIEW_COLUMN_SENDER_MAIL     = 1 << 8,
+	CAMEL_FOLDER_VIEW_COLUMN_RECIPIENTS      = 1 << 9,
+	CAMEL_FOLDER_VIEW_COLUMN_RECIPIENTS_MAIL = 1 << 10,
+	CAMEL_FOLDER_VIEW_COLUMN_CORRESPONDENTS  = 1 << 11,
+	CAMEL_FOLDER_VIEW_COLUMN_LABELS          = 1 << 12,
+	CAMEL_FOLDER_VIEW_COLUMN_FOLLOWUP_FLAG   = 1 << 13,
+	CAMEL_FOLDER_VIEW_COLUMN_FOLLOWUP_DUE_BY = 1 << 14,
+	CAMEL_FOLDER_VIEW_COLUMN_SCORE           = 1 << 15,
+	CAMEL_FOLDER_VIEW_COLUMN_LOCATION        = 1 << 16,
+	CAMEL_FOLDER_VIEW_COLUMN_USER_HEADER_1   = 1 << 17,
+	CAMEL_FOLDER_VIEW_COLUMN_USER_HEADER_2   = 1 << 18,
+	CAMEL_FOLDER_VIEW_COLUMN_USER_HEADER_3   = 1 << 19,
+	CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT       = 1 << 20,
+	CAMEL_FOLDER_VIEW_COLUMN_DATE_RECEIVED   = 1 << 21,
+	CAMEL_FOLDER_VIEW_COLUMN_SIZE            = 1 << 22,
+	CAMEL_FOLDER_VIEW_COLUMN_STATUS          = 1 << 23,
+	CAMEL_FOLDER_VIEW_COLUMN_FLAGGED         = 1 << 24,
+	CAMEL_FOLDER_VIEW_COLUMN_ATTACHMENT      = 1 << 25,
+	CAMEL_FOLDER_VIEW_COLUMN_UID             = 1 << 26
+} CamelFolderViewColumn;
+
 #endif /* CAMEL_ENUMS_H */

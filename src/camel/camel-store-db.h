@@ -237,7 +237,6 @@ GPtrArray *	camel_store_db_dup_deleted_uids	(CamelStoreDB *self,
 						 GError **error);
 const gchar *	camel_store_db_util_get_column_for_header_name
 						(const gchar *header_name);
-
 G_END_DECLS
 
 #endif /* CAMEL_STORE_DB_H */

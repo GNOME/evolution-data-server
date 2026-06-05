@@ -100,18 +100,22 @@ gint string_equal (const gchar *a, const gchar *b)
 	bp = b;
 
 	while (*ap && *bp) {
-		while (*ap == ' ' || *ap == '\n' || *ap == '\t')
+		while (*ap == ' ' || *ap == '\n' || *ap == '\t') {
 			ap++;
-		while (*bp == ' ' || *bp == '\n' || *bp == '\t')
+		}
+		while (*bp == ' ' || *bp == '\n' || *bp == '\t') {
 			bp++;
+		}
 
 		a = ap;
 		b = bp;
 
-		while (*ap && *ap != ' ' && *ap != '\n' && *ap != '\t')
+		while (*ap && *ap != ' ' && *ap != '\n' && *ap != '\t') {
 			ap++;
-		while (*bp && *bp != ' ' && *bp != '\n' && *bp != '\t')
+		}
+		while (*bp && *bp != ' ' && *bp != '\n' && *bp != '\t') {
 			bp++;
+		}
 
 		if (ap - a != bp - a
 		    && ap - a > 0
@@ -122,9 +126,6 @@ gint string_equal (const gchar *a, const gchar *b)
 
 	return 1;
 }
-
-/* --- TestSession --- */
-
 static gint n_alive_test_sessions = 0;
 
 G_DEFINE_TYPE (TestSession, test_session, CAMEL_TYPE_SESSION)
@@ -307,9 +308,6 @@ test_session_wait_for_pending_jobs (void)
 
 	g_clear_object (&ts);
 }
-
-/* --- TestFolder / TestStore helpers --- */
-
 void
 test_store_search_read_message_data (const gchar *uid,
 				     CamelMessageInfo *inout_nfo,
@@ -456,9 +454,6 @@ test_store_search_read_message_data (const gchar *uid,
 
 	g_assert_not_reached ();
 }
-
-/* --- TestFolder --- */
-
 G_DEFINE_TYPE (TestFolder, test_folder, CAMEL_TYPE_FOLDER)
 
 static gchar *
@@ -637,9 +632,6 @@ test_folder_new (CamelStore *store,
 		"full-name", folder_name,
 		NULL);
 }
-
-/* --- TestStore --- */
-
 static GInitableIface *store_parent_initable_interface = NULL;
 
 static void test_store_initable_init_iface (GInitableIface *iface);
@@ -790,6 +782,31 @@ test_store_new (void)
 	g_object_set_data_full (G_OBJECT (store), "camel-session", session, g_object_unref);
 
 	return store;
+}
+
+gchar *
+test_build_part_string (guint64 message_id,
+			const guint64 *references,
+			guint n_references)
+{
+	GString *str;
+	CamelSummaryMessageID mid;
+	guint ii;
+
+	str = g_string_new (NULL);
+
+	mid.id.id = message_id;
+	camel_util_bdata_put_number (str, mid.id.part.hi);
+	camel_util_bdata_put_number (str, mid.id.part.lo);
+	camel_util_bdata_put_number (str, n_references);
+
+	for (ii = 0; ii < n_references; ii++) {
+		mid.id.id = references[ii];
+		camel_util_bdata_put_number (str, mid.id.part.hi);
+		camel_util_bdata_put_number (str, mid.id.part.lo);
+	}
+
+	return g_string_free (str, FALSE);
 }
 
 void

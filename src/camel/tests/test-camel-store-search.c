@@ -4777,6 +4777,212 @@ test_store_search_simultaneous_read_write_stress (void)
 	test_session_check_finalized ();
 }
 
+typedef struct {
+	GPtrArray *rows; /* GPtrArray of GPtrArray of gchar* (column values) */
+	gint ncol_expected;
+} ExecSelectData;
+
+static gboolean
+exec_select_collect_cb (gpointer user_data,
+			gint ncol,
+			gchar **colvalues,
+			gchar **colnames)
+{
+	ExecSelectData *esd = user_data;
+	GPtrArray *row;
+	gint ii;
+
+	if (esd->ncol_expected > 0)
+		g_assert_cmpint (ncol, ==, esd->ncol_expected);
+
+	row = g_ptr_array_new_with_free_func (g_free);
+	for (ii = 0; ii < ncol; ii++) {
+		g_ptr_array_add (row, g_strdup (colvalues[ii]));
+	}
+	g_ptr_array_add (esd->rows, row);
+
+	return TRUE;
+}
+
+static void
+exec_select_data_clear (ExecSelectData *esd)
+{
+	guint ii;
+
+	for (ii = 0; ii < esd->rows->len; ii++) {
+		g_ptr_array_unref (g_ptr_array_index (esd->rows, ii));
+	}
+	g_ptr_array_set_size (esd->rows, 0);
+}
+
+static gboolean
+exec_select_has_uid (ExecSelectData *esd,
+		     const gchar *uid)
+{
+	guint ii;
+
+	for (ii = 0; ii < esd->rows->len; ii++) {
+		GPtrArray *row = g_ptr_array_index (esd->rows, ii);
+		const gchar *row_uid = g_ptr_array_index (row, 0);
+
+		if (g_strcmp0 (row_uid, uid) == 0)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+test_store_search_exec_select (void)
+{
+	CamelStore *store;
+	CamelStoreSearch *search;
+	CamelFolder *f1;
+	ExecSelectData esd;
+	GError *local_error = NULL;
+	gboolean success;
+
+	store = test_store_new ();
+	search = camel_store_search_new (store);
+
+	f1 = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (f1);
+	test_add_messages (f1,
+		"uid", "11",
+		"subject", "Alpha message",
+		"dsent", (gint64) 1000,
+		"",
+		"uid", "12",
+		"subject", "Beta message",
+		"dsent", (gint64) 3000,
+		"",
+		"uid", "13",
+		"subject", "Gamma note",
+		"dsent", (gint64) 2000,
+		NULL);
+
+	esd.rows = g_ptr_array_new ();
+	esd.ncol_expected = 0;
+
+	/* add folder, then exec_select without rebuild should fail */
+	camel_store_search_add_folder (search, f1);
+	success = camel_store_search_exec_select_sync (search, "f1",
+		"uid, subject", NULL,
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_error (local_error, G_IO_ERROR, G_IO_ERROR_NOT_INITIALIZED);
+	g_assert_false (success);
+	g_assert_cmpuint (esd.rows->len, ==, 0);
+	g_clear_error (&local_error);
+
+	/* rebuild without expression (match-all) */
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	/* exec_select with no filter — should return all 3 rows */
+	esd.ncol_expected = 2;
+	success = camel_store_search_exec_select_sync (search, "f1",
+		"uid, subject", NULL,
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_cmpuint (esd.rows->len, ==, 3);
+	g_assert_true (exec_select_has_uid (&esd, "11"));
+	g_assert_true (exec_select_has_uid (&esd, "12"));
+	g_assert_true (exec_select_has_uid (&esd, "13"));
+	exec_select_data_clear (&esd);
+
+	/* exec_select for non-existent folder — succeeds with 0 rows */
+	esd.ncol_expected = 0;
+	success = camel_store_search_exec_select_sync (search, "nonexistent",
+		"uid, subject", NULL,
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_cmpuint (esd.rows->len, ==, 0);
+	exec_select_data_clear (&esd);
+
+	/* exec_select with ORDER BY dsent ASC */
+	esd.ncol_expected = 1;
+	success = camel_store_search_exec_select_sync (search, "f1",
+		"uid", "dsent ASC",
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_cmpuint (esd.rows->len, ==, 3);
+	{
+		GPtrArray *row0 = g_ptr_array_index (esd.rows, 0);
+		GPtrArray *row1 = g_ptr_array_index (esd.rows, 1);
+		GPtrArray *row2 = g_ptr_array_index (esd.rows, 2);
+		g_assert_cmpstr (g_ptr_array_index (row0, 0), ==, "11");
+		g_assert_cmpstr (g_ptr_array_index (row1, 0), ==, "13");
+		g_assert_cmpstr (g_ptr_array_index (row2, 0), ==, "12");
+	}
+	exec_select_data_clear (&esd);
+
+	/* exec_select with ORDER BY dsent DESC */
+	esd.ncol_expected = 1;
+	success = camel_store_search_exec_select_sync (search, "f1",
+		"uid", "dsent DESC",
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_cmpuint (esd.rows->len, ==, 3);
+	{
+		GPtrArray *row0 = g_ptr_array_index (esd.rows, 0);
+		GPtrArray *row1 = g_ptr_array_index (esd.rows, 1);
+		GPtrArray *row2 = g_ptr_array_index (esd.rows, 2);
+		g_assert_cmpstr (g_ptr_array_index (row0, 0), ==, "12");
+		g_assert_cmpstr (g_ptr_array_index (row1, 0), ==, "13");
+		g_assert_cmpstr (g_ptr_array_index (row2, 0), ==, "11");
+	}
+	exec_select_data_clear (&esd);
+
+	/* now set a filter expression and rebuild */
+	camel_store_search_set_expression (search, "(header-contains \"subject\" \"message\")");
+	success = camel_store_search_rebuild_sync (search, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	/* exec_select with filter — should return only "message" subjects (11, 12), not "note" (13) */
+	esd.ncol_expected = 2;
+	success = camel_store_search_exec_select_sync (search, "f1",
+		"uid, subject", NULL,
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_cmpuint (esd.rows->len, ==, 2);
+	g_assert_true (exec_select_has_uid (&esd, "11"));
+	g_assert_true (exec_select_has_uid (&esd, "12"));
+	g_assert_false (exec_select_has_uid (&esd, "13"));
+	exec_select_data_clear (&esd);
+
+	/* exec_select with filter + ORDER BY */
+	esd.ncol_expected = 1;
+	success = camel_store_search_exec_select_sync (search, "f1",
+		"uid", "dsent ASC",
+		exec_select_collect_cb, &esd, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	g_assert_cmpuint (esd.rows->len, ==, 2);
+	{
+		GPtrArray *row0 = g_ptr_array_index (esd.rows, 0);
+		GPtrArray *row1 = g_ptr_array_index (esd.rows, 1);
+		g_assert_cmpstr (g_ptr_array_index (row0, 0), ==, "11");
+		g_assert_cmpstr (g_ptr_array_index (row1, 0), ==, "12");
+	}
+	exec_select_data_clear (&esd);
+
+	g_ptr_array_unref (esd.rows);
+	g_clear_object (&f1);
+	g_clear_object (&search);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -4810,6 +5016,7 @@ main (gint argc,
 	g_test_add_func ("/Camel/CamelStoreSearch/MatchIndex", test_store_search_match_index);
 	g_test_add_func ("/Camel/CamelStoreSearch/SummaryChanges", test_store_search_summary_changes);
 	g_test_add_func ("/Camel/CamelStoreSearch/SimultaneousReadWriteStress", test_store_search_simultaneous_read_write_stress);
+	g_test_add_func ("/Camel/CamelStoreSearch/ExecSelect", test_store_search_exec_select);
 
 	return g_test_run ();
 }

@@ -284,6 +284,277 @@ test_folder_thread_only_leaves (void)
 	g_ptr_array_unref (items);
 }
 
+/*
+ * Thread tree:
+ *   A->[] B->[A] C->[B,A] D->[C,A] E->[A] F->[A,B] G->[F] H->[G,C] I->[H,D]
+ *
+ * Dump what CamelFolderThread produces for various subsets.
+ */
+
+#define TID_A 1000
+#define TID_B 2000
+#define TID_C 3000
+#define TID_D 4000
+#define TID_E 5000
+#define TID_F 6000
+#define TID_G 7000
+#define TID_H 8000
+#define TID_I 9000
+
+static void
+dump_thread_node (CamelFolderThreadNode *node,
+		  guint depth,
+		  GString *out)
+{
+	while (node) {
+		TestFolderThreadItem *item = camel_folder_thread_node_get_item (node);
+		guint ii;
+
+		for (ii = 0; ii < depth; ii++) {
+			g_string_append (out, "  ");
+		}
+
+		if (item)
+			g_string_append_printf (out, "%s(%u)\n",
+				test_folder_thread_item_get_uid (item), depth);
+		else
+			g_string_append_printf (out, "<phantom>(%u)\n", depth);
+
+		if (camel_folder_thread_node_get_child (node))
+			dump_thread_node (camel_folder_thread_node_get_child (node),
+				depth + 1, out);
+
+		node = camel_folder_thread_node_get_next (node);
+	}
+}
+
+static GPtrArray *
+create_thread_items (const gchar *first_uid, ...)
+{
+	GPtrArray *items;
+	va_list ap;
+	const gchar *uid;
+
+	items = g_ptr_array_new_with_free_func (test_folder_thread_item_free);
+
+	uid = first_uid;
+	va_start (ap, first_uid);
+
+	while (uid) {
+		guint64 mid = va_arg (ap, guint64);
+		const gchar *refs_str = va_arg (ap, const gchar *);
+		gint64 dsent = va_arg (ap, gint64);
+
+		add_test_folder_thread_item (items, uid, uid, mid, refs_str, dsent, dsent);
+
+		uid = va_arg (ap, const gchar *);
+	}
+
+	va_end (ap);
+
+	return items;
+}
+
+static gchar *
+get_thread_dump (GPtrArray *items)
+{
+	CamelFolderThread *thread;
+	CamelFolderThreadNode *root;
+	GString *out;
+
+	thread = test_folder_thread_create_new (items, CAMEL_FOLDER_THREAD_FLAG_NONE);
+	root = camel_folder_thread_get_tree (thread);
+
+	out = g_string_new (NULL);
+	dump_thread_node (root, 0, out);
+
+	g_clear_object (&thread);
+
+	return g_string_free (out, FALSE);
+}
+
+static void
+test_folder_thread_complex_steps (void)
+{
+	GPtrArray *items;
+	gchar *dump;
+
+	/* refs format: space-separated guint64 values, parent-to-root order */
+	#define REFS_B "1000"
+	#define REFS_C "2000 1000"
+	#define REFS_D "3000 1000"
+	#define REFS_F "1000 2000"
+	#define REFS_G "6000"
+	#define REFS_H "7000 3000"
+	#define REFS_I "8000 4000"
+
+	#define VERIFY_STEP(label, expected_str) \
+		dump = get_thread_dump (items); \
+		g_assert_cmpstr (dump, ==, expected_str); \
+		g_free (dump); \
+		g_ptr_array_unref (items);
+
+	/* Step 1: B, D, H */
+	items = create_thread_items (
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		NULL);
+	VERIFY_STEP ("step 1",
+		"b(0)\n"
+		"  h(1)\n"
+		"  d(1)\n");
+
+	/* Step 2: B, C, D, H */
+	items = create_thread_items (
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		NULL);
+	VERIFY_STEP ("step 2",
+		"b(0)\n"
+		"  c(1)\n"
+		"    h(2)\n"
+		"    d(2)\n");
+
+	/* Step 4: B, C, D, F, H */
+	items = create_thread_items (
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		NULL);
+	VERIFY_STEP ("step 4",
+		"b(0)\n"
+		"  f(1)\n"
+		"    c(2)\n"
+		"      h(3)\n"
+		"      d(3)\n");
+
+	/* Step 5: B, C, D, F, G, H */
+	items = create_thread_items (
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"g", (guint64) TID_G, REFS_G, (gint64) 7000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		NULL);
+	VERIFY_STEP ("step 5",
+		"b(0)\n"
+		"  g(1)\n"
+		"    h(2)\n"
+		"  f(1)\n"
+		"    c(2)\n"
+		"      d(3)\n");
+
+	/* Step 7: A, B, C, D, F, G, H */
+	items = create_thread_items (
+		"a", (guint64) TID_A, NULL, (gint64) 1000,
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"g", (guint64) TID_G, REFS_G, (gint64) 7000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		NULL);
+	VERIFY_STEP ("step 7",
+		"a(0)\n"
+		"  f(1)\n"
+		"    g(2)\n"
+		"      h(3)\n"
+		"  b(1)\n"
+		"    c(2)\n"
+		"      d(3)\n");
+
+	/* Step 8: A, B, C, D, F, G, H, I */
+	items = create_thread_items (
+		"a", (guint64) TID_A, NULL, (gint64) 1000,
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"g", (guint64) TID_G, REFS_G, (gint64) 7000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		"i", (guint64) TID_I, REFS_I, (gint64) 9000,
+		NULL);
+	VERIFY_STEP ("step 8",
+		"a(0)\n"
+		"  f(1)\n"
+		"    g(2)\n"
+		"      h(3)\n"
+		"        i(4)\n"
+		"  b(1)\n"
+		"    c(2)\n"
+		"      d(3)\n");
+
+	/* Step 9: A, B, C, D, F, G, I (H removed) */
+	items = create_thread_items (
+		"a", (guint64) TID_A, NULL, (gint64) 1000,
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"g", (guint64) TID_G, REFS_G, (gint64) 7000,
+		"i", (guint64) TID_I, REFS_I, (gint64) 9000,
+		NULL);
+	VERIFY_STEP ("step 9",
+		"a(0)\n"
+		"  f(1)\n"
+		"    g(2)\n"
+		"  b(1)\n"
+		"    c(2)\n"
+		"      d(3)\n"
+		"        i(4)\n");
+
+	/* Step 11: A, B, C, D, F, H, I (G removed) */
+	items = create_thread_items (
+		"a", (guint64) TID_A, NULL, (gint64) 1000,
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		"i", (guint64) TID_I, REFS_I, (gint64) 9000,
+		NULL);
+	VERIFY_STEP ("step 11",
+		"a(0)\n"
+		"  f(1)\n"
+		"  b(1)\n"
+		"    c(2)\n"
+		"      h(3)\n"
+		"        i(4)\n"
+		"      d(3)\n");
+
+	/* Step 12: B, C, D, F, H, I (A removed) */
+	items = create_thread_items (
+		"b", (guint64) TID_B, REFS_B, (gint64) 2000,
+		"c", (guint64) TID_C, REFS_C, (gint64) 3000,
+		"d", (guint64) TID_D, REFS_D, (gint64) 4000,
+		"f", (guint64) TID_F, REFS_F, (gint64) 6000,
+		"h", (guint64) TID_H, REFS_H, (gint64) 8000,
+		"i", (guint64) TID_I, REFS_I, (gint64) 9000,
+		NULL);
+	VERIFY_STEP ("step 12",
+		"b(0)\n"
+		"  f(1)\n"
+		"    c(2)\n"
+		"      h(3)\n"
+		"        i(4)\n"
+		"      d(3)\n");
+
+	#undef VERIFY_STEP
+	#undef REFS_B
+	#undef REFS_C
+	#undef REFS_D
+	#undef REFS_F
+	#undef REFS_G
+	#undef REFS_H
+	#undef REFS_I
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -292,6 +563,7 @@ main (gint argc,
 	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/-/issues/");
 
 	g_test_add_func ("/Camel/CamelFolderThread/OnlyLeaves", test_folder_thread_only_leaves);
+	g_test_add_func ("/Camel/CamelFolderThread/ComplexSteps", test_folder_thread_complex_steps);
 
 	return g_test_run ();
 }

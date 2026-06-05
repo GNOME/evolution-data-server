@@ -59,6 +59,7 @@ set(TESTS
 	test-camel-text-index
 	test-camel-db
 	test-camel-folder-thread
+	test-camel-folder-view
 	test-camel-store-search
 	test-camel-vee-folder
 	test-camel-folder-body-search

@@ -29,6 +29,7 @@
 #include <camel/camel-folder.h>
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder-thread.h>
+#include <camel/camel-folder-view.h>
 #include <camel/camel-gpg-context.h>
 #include <camel/camel-hostname-utils.h>
 #include <camel/camel-html-parser.h>
