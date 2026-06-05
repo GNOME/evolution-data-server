@@ -109,6 +109,22 @@ flatpak:
       - "${BUNDLE}"
     expire_in: 14 days
 
+static analysis:
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  stage: analysis
+  script:
+    - mkdir -p _build && cd _build
+    - scan-build -o scan-build sh ../.gitlab-ci/build-and-test.sh
+    - cd ..
+    - mkdir -p public
+    # scan-build puts everything in a subdirectory (e.g. scan-build/ugly-name-here), so move that to a well-known name
+    - mv _build/scan-build/* public/scan-build
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
+    paths:
+      - "public/scan-build"
+
 coverage:
   image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
   stage: analysis
@@ -141,6 +157,8 @@ pages:
     - job: fedora
       artifacts: true
     - job: coverage
+      artifacts: true
+    - job: "static analysis"
       artifacts: true
   interruptible: false
   variables:
