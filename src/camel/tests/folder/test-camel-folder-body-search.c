@@ -248,6 +248,11 @@ test_body_search (gconstpointer user_data)
 	assert_body_search (folder, "telescope", 1);
 	assert_body_search (folder, "nothing", 1);
 
+	/* substring search -- not in the index, falls back to per-message regex */
+	assert_body_search (folder, "yloph", 1);
+	assert_body_search (folder, "anora", 3);
+	assert_body_search (folder, "aleido", 1);
+
 	/* delete the "xylophone" message and expunge */
 	g_assert_nonnull (uid0);
 	camel_folder_delete_message (folder, uid0);
