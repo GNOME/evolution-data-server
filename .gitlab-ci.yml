@@ -114,7 +114,7 @@ static analysis:
   stage: analysis
   script:
     - mkdir -p _build && cd _build
-    - scan-build -o scan-build sh ../.gitlab-ci/build-and-test.sh
+    - scan-build --html-title="scan-build (${CI_PROJECT_NAME})" -o scan-build sh ../.gitlab-ci/build-and-test.sh
     - cd ..
     - mkdir -p public
     # scan-build puts everything in a subdirectory (e.g. scan-build/ugly-name-here), so move that to a well-known name
