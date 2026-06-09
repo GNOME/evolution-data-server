@@ -1,3 +1,7 @@
+set(TESTS_CHECK
+	test-camel-folder-body-search
+)
+
 set(TESTS_SKIP
 	test-camel-folder-store
 	test-camel-folder-ops
@@ -12,4 +16,10 @@ set(TESTS_SKIP
 	test-camel-folder-thread-sexp
 )
 
+add_camel_tests(TESTS_CHECK ON)
 add_camel_tests(TESTS_SKIP OFF)
+
+foreach(_test ${TESTS_CHECK})
+	add_check_test(${_test})
+	install_test_if_enabled(${_test} "session-exclusive" "")
+endforeach(_test)

@@ -497,9 +497,6 @@ camel_maildir_folder_new (CamelStore *parent_store,
 
 	g_free (basename);
 
-	/* indexing doesn't work with maildir properly, thus disable it */
-	g_object_set (folder, "index-body", FALSE, NULL);
-
 	return folder;
 }
 

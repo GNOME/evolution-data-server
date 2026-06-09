@@ -30,7 +30,7 @@
 /* cursor debug */
 #define c(x)
 
-#define CAMEL_TEXT_INDEX_MAX_WORDLEN  (36)
+#define CAMEL_TEXT_INDEX_MAX_WORDLEN  (128)
 
 #define CAMEL_TEXT_INDEX_LOCK(kf, lock) \
 	(g_rec_mutex_lock (&((CamelTextIndex *) kf)->priv->lock))
@@ -890,6 +890,11 @@ camel_text_index_new (const gchar *path,
 	p->word_hash = camel_partition_table_new (p->blocks, rb->word_hash_root);
 	p->name_index = camel_key_table_new (p->blocks, rb->name_index_root);
 	p->name_hash = camel_partition_table_new (p->blocks, rb->name_hash_root);
+
+	if (p->word_hash != NULL && p->word_index != NULL)
+		camel_partition_table_set_key_table (p->word_hash, p->word_index);
+	if (p->name_hash != NULL && p->name_index != NULL)
+		camel_partition_table_set_key_table (p->name_hash, p->name_index);
 
 	if (p->word_index == NULL || p->word_hash == NULL
 	    || p->name_index == NULL || p->name_hash == NULL) {
@@ -1879,6 +1884,8 @@ main (gint argc,
 
 	ki = camel_key_table_new (bs, root->word_root);
 	cpi = camel_partition_table_new (bs, root->word_hash_root);
+	if (cpi != NULL && ki != NULL)
+		camel_partition_table_set_key_table (cpi, ki);
 
 	fp = fopen ("/usr/dict/words", "r");
 	if (fp == NULL) {

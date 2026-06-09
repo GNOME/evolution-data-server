@@ -34,6 +34,7 @@ struct _CamelPartitionTablePrivate {
 	GMutex lock;	/* for locking partition */
 
 	CamelBlockFile *blocks;
+	CamelKeyTable *key_table;
 	camel_block_t rootid;
 
 	/* we keep a list of partition blocks active at all times */
@@ -47,6 +48,8 @@ partition_table_finalize (GObject *object)
 {
 	CamelPartitionTable *table = CAMEL_PARTITION_TABLE (object);
 	CamelBlock *bl;
+
+	g_clear_object (&table->priv->key_table);
 
 	if (table->priv->blocks != NULL) {
 		while ((bl = g_queue_pop_head (&table->priv->partition)) != NULL) {
@@ -253,6 +256,29 @@ fail:
 	return ret;
 }
 
+/**
+ * camel_partition_table_set_key_table:
+ * @cpi: a #CamelPartitionTable
+ * @key_table: (nullable): a #CamelKeyTable, or %NULL
+ *
+ * Sets the #CamelKeyTable to use for resolving hash collisions.
+ * When set, lookup and remove operations verify the actual key
+ * string stored in the key table, not just the hash value.
+ *
+ * Since: 3.62
+ **/
+void
+camel_partition_table_set_key_table (CamelPartitionTable *cpi,
+                                     CamelKeyTable *key_table)
+{
+	g_return_if_fail (CAMEL_IS_PARTITION_TABLE (cpi));
+
+	if (key_table != NULL)
+		g_return_if_fail (CAMEL_IS_KEY_TABLE (key_table));
+
+	g_set_object (&cpi->priv->key_table, key_table);
+}
+
 camel_key_t
 camel_partition_table_lookup (CamelPartitionTable *cpi,
                               const gchar *key)
@@ -289,11 +315,18 @@ camel_partition_table_lookup (CamelPartitionTable *cpi,
 
 	pkb = (CamelPartitionKeyBlock *) &block->data;
 
-	/* What to do about duplicate hash's? */
 	for (i = 0; i < pkb->used; i++) {
 		if (pkb->keys[i].hashid == hashid) {
-			/* !! need to: lookup and compare string value */
-			/* get_key() if key == key ... */
+			if (cpi->priv->key_table != NULL) {
+				gchar *stored = NULL;
+
+				camel_key_table_lookup (cpi->priv->key_table, pkb->keys[i].keyid, &stored, NULL);
+				if (g_strcmp0 (stored, key) != 0) {
+					g_free (stored);
+					continue;
+				}
+				g_free (stored);
+			}
 			keyid = pkb->keys[i].keyid;
 			break;
 		}
@@ -340,13 +373,19 @@ camel_partition_table_remove (CamelPartitionTable *cpi,
 	}
 	pkb = (CamelPartitionKeyBlock *) &block->data;
 
-	/* What to do about duplicate hash's? */
 	for (i = 0; i < pkb->used; i++) {
 		if (pkb->keys[i].hashid == hashid) {
-			/* !! need to: lookup and compare string value */
-			/* get_key() if key == key ... */
+			if (cpi->priv->key_table != NULL) {
+				gchar *stored = NULL;
 
-			/* remove this key */
+				camel_key_table_lookup (cpi->priv->key_table, pkb->keys[i].keyid, &stored, NULL);
+				if (g_strcmp0 (stored, key) != 0) {
+					g_free (stored);
+					continue;
+				}
+				g_free (stored);
+			}
+
 			pkb->used--;
 			for (; i < pkb->used; i++) {
 				pkb->keys[i].keyid = pkb->keys[i + 1].keyid;
@@ -389,7 +428,7 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 	CamelPartitionMapBlock *ptb, *ptn;
 	CamelPartitionKeyBlock *kb, *newkb, *nkb = NULL, *pkb = NULL;
 	CamelBlock *block, *ptblock, *ptnblock;
-	gint i, half, len;
+	gint i, half, len, upper, lower;
 	CamelPartitionKey keys[CAMEL_BLOCK_SIZE / 4];
 	GList *ptblock_link;
 	gint ret = -1;
@@ -562,8 +601,25 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 		len++;
 		qsort (keys, len, sizeof (keys[0]), keys_cmp);
 
-		/* Split keys, fix partition table */
+		/* Split keys, fix partition table.
+		 * Ensure all entries with the same hash stay in the same
+		 * partition; find_partition returns one block per hash, so
+		 * splitting entries with the same hash across blocks makes
+		 * the later ones unreachable. Both halves must fit within
+		 * the block capacity (G_N_ELEMENTS (kb->keys)). */
 		half = len / 2;
+		upper = MIN ((gint) G_N_ELEMENTS (kb->keys), len - 1);
+		lower = MAX (1, len - (gint) G_N_ELEMENTS (kb->keys));
+		while (half < upper &&
+		       keys[half].hashid == keys[half - 1].hashid)
+			half++;
+		if (half >= upper &&
+		    keys[half].hashid == keys[half - 1].hashid) {
+			half = len / 2;
+			while (half > lower &&
+			       keys[half - 1].hashid == keys[half - 2].hashid)
+				half--;
+		}
 		partid = keys[half - 1].hashid;
 
 		if (index < newindex) {

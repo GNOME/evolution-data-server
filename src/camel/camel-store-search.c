@@ -3808,6 +3808,75 @@ camel_store_search_search_body_run_sync (CamelStoreSearch *self,
 			gboolean could_search;
 
 			could_search = camel_folder_search_body_sync (self->priv->ongoing_search.folder, op->words, &uids, cancellable, NULL);
+
+			if (!could_search && !g_cancellable_is_cancelled (cancellable)) {
+				CamelFolderSummary *summary;
+				CamelIndex *body_index = NULL;
+
+				summary = camel_folder_get_folder_summary (self->priv->ongoing_search.folder);
+				if (summary)
+					body_index = camel_folder_summary_get_index (summary);
+
+				if (body_index && op->words && op->words->len > 0) {
+					GHashTable *result_set = NULL;
+					guint ii;
+
+					for (ii = 0; ii < op->words->len; ii++) {
+						const gchar *word = g_ptr_array_index (op->words, ii);
+						CamelIndexCursor *idc;
+						GHashTable *word_set;
+						const gchar *name;
+
+						if (g_cancellable_is_cancelled (cancellable)) {
+							g_clear_pointer (&result_set, g_hash_table_unref);
+							break;
+						}
+
+						idc = camel_index_find (body_index, word);
+						if (!idc) {
+							g_clear_pointer (&result_set, g_hash_table_unref);
+							break;
+						}
+
+						word_set = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
+						while ((name = camel_index_cursor_next (idc)) != NULL)
+							g_hash_table_add (word_set, (gpointer) camel_pstring_strdup (name));
+						g_object_unref (idc);
+
+						if (result_set == NULL) {
+							result_set = word_set;
+						} else {
+							GHashTableIter iter;
+							gpointer key;
+
+							g_hash_table_iter_init (&iter, result_set);
+							while (g_hash_table_iter_next (&iter, &key, NULL)) {
+								if (!g_hash_table_contains (word_set, key))
+									g_hash_table_iter_remove (&iter);
+							}
+							g_hash_table_unref (word_set);
+						}
+
+						if (g_hash_table_size (result_set) == 0) {
+							g_clear_pointer (&result_set, g_hash_table_unref);
+							break;
+						}
+					}
+
+					if (result_set) {
+						GHashTableIter iter;
+						gpointer key;
+
+						uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+						g_hash_table_iter_init (&iter, result_set);
+						while (g_hash_table_iter_next (&iter, &key, NULL))
+							g_ptr_array_add (uids, (gpointer) camel_pstring_strdup ((const gchar *) key));
+						g_hash_table_unref (result_set);
+						could_search = TRUE;
+					}
+				}
+			}
+
 			search_cache_add_token_result (cache, op->needle, folder_id, uids, !could_search);
 
 			g_clear_pointer (&uids, g_ptr_array_unref);

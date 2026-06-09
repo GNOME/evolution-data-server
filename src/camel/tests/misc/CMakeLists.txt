@@ -9,6 +9,7 @@ set(TESTS
 
 # enable for `make check`/`make test` and install these tests
 set(TESTS_CHECK
+	test-camel-misc-text-index
 	test-camel-misc-db
 	test-camel-misc-folder-thread
 	test-camel-misc-store-search

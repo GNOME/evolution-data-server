@@ -63,6 +63,8 @@ typedef struct _CamelPartitionKeyBlock CamelPartitionKeyBlock;
 typedef struct _CamelPartitionMap CamelPartitionMap;
 typedef struct _CamelPartitionMapBlock CamelPartitionMapBlock;
 
+typedef struct _CamelKeyTable CamelKeyTable;
+
 typedef struct _CamelPartitionTable CamelPartitionTable;
 typedef struct _CamelPartitionTableClass CamelPartitionTableClass;
 typedef struct _CamelPartitionTablePrivate CamelPartitionTablePrivate;
@@ -104,6 +106,9 @@ GType		camel_partition_table_get_type	(void);
 CamelPartitionTable *
 		camel_partition_table_new	(CamelBlockFile *bs,
 						 camel_block_t root);
+void		camel_partition_table_set_key_table
+						(CamelPartitionTable *cpi,
+						 CamelKeyTable *key_table);
 gint		camel_partition_table_sync	(CamelPartitionTable *cpi);
 gint		camel_partition_table_add	(CamelPartitionTable *cpi,
 						 const gchar *key,
@@ -120,7 +125,6 @@ gboolean	camel_partition_table_remove	(CamelPartitionTable *cpi,
 typedef struct _CamelKeyBlock CamelKeyBlock;
 typedef struct _CamelKeyRootBlock CamelKeyRootBlock;
 
-typedef struct _CamelKeyTable CamelKeyTable;
 typedef struct _CamelKeyTableClass CamelKeyTableClass;
 typedef struct _CamelKeyTablePrivate CamelKeyTablePrivate;
 
