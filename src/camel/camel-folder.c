@@ -1472,6 +1472,90 @@ folder_search_body_sync (CamelFolder *folder,
 			 GCancellable *cancellable,
 			 GError **error)
 {
+	CamelFolderSummary *summary;
+	CamelIndex *body_index = NULL;
+	CamelIndexCursor *idc;
+	GHashTable *result_set = NULL;
+	guint ii;
+
+	if (!words || words->len == 0)
+		goto not_supported;
+
+	summary = camel_folder_get_folder_summary (folder);
+	if (summary)
+		body_index = camel_folder_summary_get_index (summary);
+
+	if (!body_index)
+		goto not_supported;
+
+	idc = camel_index_words (body_index);
+	if (!idc)
+		goto not_supported;
+
+	if (!camel_index_cursor_next (idc)) {
+		g_clear_object (&idc);
+		goto not_supported;
+	}
+	g_clear_object (&idc);
+
+	for (ii = 0; ii < words->len; ii++) {
+		const gchar *word = g_ptr_array_index (words, ii);
+		GHashTable *word_set;
+		const gchar *name;
+
+		if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+			g_clear_pointer (&result_set, g_hash_table_unref);
+			return FALSE;
+		}
+
+		idc = camel_index_find (body_index, word);
+		if (!idc) {
+			g_clear_pointer (&result_set, g_hash_table_unref);
+			goto not_supported;
+		}
+
+		word_set = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
+		while ((name = camel_index_cursor_next (idc)) != NULL) {
+			g_hash_table_add (word_set, (gpointer) camel_pstring_strdup (name));
+		}
+		g_clear_object (&idc);
+
+		if (result_set == NULL) {
+			result_set = word_set;
+		} else {
+			GHashTableIter iter;
+			gpointer key;
+
+			g_hash_table_iter_init (&iter, result_set);
+			while (g_hash_table_iter_next (&iter, &key, NULL)) {
+				if (!g_hash_table_contains (word_set, key)) {
+					g_hash_table_iter_remove (&iter);
+				}
+			}
+			g_hash_table_unref (word_set);
+		}
+
+		if (g_hash_table_size (result_set) == 0) {
+			g_hash_table_unref (result_set);
+			*out_uids = g_ptr_array_new ();
+			return TRUE;
+		}
+	}
+
+	if (result_set) {
+		GHashTableIter iter;
+		gpointer key;
+
+		*out_uids = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+		g_hash_table_iter_init (&iter, result_set);
+		while (g_hash_table_iter_next (&iter, &key, NULL)) {
+			g_ptr_array_add (*out_uids, (gpointer) camel_pstring_strdup ((const gchar *) key));
+		}
+		g_hash_table_unref (result_set);
+		return TRUE;
+	}
+
+ not_supported:
 	g_set_error_literal (
 		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 		_("Cannot search message bodies remotely, not supported"));
