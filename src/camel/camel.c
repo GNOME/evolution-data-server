@@ -255,6 +255,7 @@ camel_shutdown (void)
 	if (certdb) {
 		camel_certdb_save (certdb);
 		camel_certdb_set_default (NULL);
+		g_clear_object (&certdb);
 	}
 
 	/* These next calls must come last. */
