@@ -5399,9 +5399,6 @@ main (gint argc,
 	TCUClosure closure_events = { TCU_LOAD_COMPONENT_SET_EVENTS };
 	gint res;
 
-#if !GLIB_CHECK_VERSION (2, 35, 1)
-	g_type_init ();
-#endif
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
 

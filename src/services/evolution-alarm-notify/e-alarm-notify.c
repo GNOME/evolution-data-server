@@ -1274,8 +1274,6 @@ e_alarm_notify_new (GCancellable *cancellable,
 	return g_initable_new (
 		E_TYPE_ALARM_NOTIFY, cancellable, error,
 		"application-id", ALARM_NOTIFY_DBUS_SERVICE_NAME,
-		#if GLIB_CHECK_VERSION(2, 60, 0)
 		"flags", G_APPLICATION_ALLOW_REPLACEMENT,
-		#endif
 		NULL);
 }
