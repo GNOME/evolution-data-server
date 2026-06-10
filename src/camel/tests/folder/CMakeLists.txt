@@ -21,5 +21,6 @@ add_camel_tests(TESTS_SKIP OFF)
 
 foreach(_test ${TESTS_CHECK})
 	add_check_test(${_test})
+	set_tests_properties(${_test} PROPERTIES ENVIRONMENT "GSETTINGS_SCHEMA_DIR=${CMAKE_BINARY_DIR}/data")
 	install_test_if_enabled(${_test} "session-exclusive" "")
 endforeach(_test)
