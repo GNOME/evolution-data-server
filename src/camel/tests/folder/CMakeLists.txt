@@ -1,5 +1,6 @@
 set(TESTS_CHECK
 	test-camel-folder-body-search
+	test-camel-maildir-flags
 )
 
 set(TESTS_SKIP

@@ -707,6 +707,9 @@ maildir_summary_check (CamelLocalSummary *cls,
 			if ((mdi && !camel_maildir_message_info_get_filename (mdi)) ||
 			    !expected_filename ||
 			    strcmp (expected_filename, d->d_name) != 0) {
+				const gchar *old_filename;
+				gboolean externally_changed;
+
 				if (!mdi) {
 					g_clear_object (&info);
 					info = camel_folder_summary_get ((CamelFolderSummary *) cls, uid);
@@ -715,8 +718,47 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 				g_warn_if_fail (mdi != NULL);
 
+				old_filename = mdi ? camel_maildir_message_info_get_filename (mdi) : NULL;
+				externally_changed = g_strcmp0 (old_filename, d->d_name) != 0;
+
 				if (mdi)
 					camel_maildir_message_info_set_filename (mdi, d->d_name);
+
+				if (info && externally_changed) {
+					guint32 ondisk_flags = 0;
+					guint32 all_maildir_flags = 0;
+					const gchar *fp;
+					gchar sep_pattern[4];
+					gchar fc;
+					gint fi;
+
+					sep_pattern[0] = mds->priv->filename_flag_sep;
+					sep_pattern[1] = '2';
+					sep_pattern[2] = ',';
+					sep_pattern[3] = '\0';
+
+					for (fi = 0; fi < G_N_ELEMENTS (flagbits); fi++) {
+						all_maildir_flags |= flagbits[fi].flagbit;
+					}
+
+					fp = strstr (d->d_name, sep_pattern);
+					if (fp) {
+						fp += 3;
+						while ((fc = *fp++)) {
+							for (fi = 0; fi < G_N_ELEMENTS (flagbits); fi++) {
+								if (flagbits[fi].flag == fc) {
+									ondisk_flags |= flagbits[fi].flagbit;
+									break;
+								}
+							}
+						}
+					}
+
+					camel_message_info_set_flags (info, all_maildir_flags, ondisk_flags);
+					camel_message_info_set_folder_flagged (info, FALSE);
+					if (changes)
+						camel_folder_change_info_change_uid (changes, uid);
+				}
 			}
 
 			g_free (expected_filename);
