@@ -1017,8 +1017,11 @@ refresh_thread_func (gpointer data)
 		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 		info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-		if (!info)
-			break;
+		if (!info) {
+			/* File temporarily gone (atomic write); wait for it to reappear */
+			last_modified = 0;
+			continue;
+		}
 
 		modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 		g_object_unref (info);
@@ -1077,7 +1080,7 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 		GError *error = NULL;
 
 		priv->refresh_monitor = g_file_monitor_file (
-			custom_file, G_FILE_MONITOR_WATCH_MOUNTS, NULL, &error);
+			custom_file, G_FILE_MONITOR_WATCH_MOUNTS | G_FILE_MONITOR_WATCH_MOVES, NULL, &error);
 
 		if (error == NULL) {
 			g_signal_connect (
