@@ -336,14 +336,16 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 		_("_OK"), GTK_RESPONSE_OK,
 		NULL);
 
-	if (dialog_parent)
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (dialog_parent));
+	if (dialog_parent) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
+
+		if (gtk_window_get_modal (dialog_parent))
+			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	}
 
 	prompter_password->priv->ongoing.dialog = GTK_DIALOG (dialog);
 	gtk_dialog_set_default_response (prompter_password->priv->ongoing.dialog, GTK_RESPONSE_OK);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	if (dialog_parent)
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
 
 	content_area = gtk_dialog_get_content_area (prompter_password->priv->ongoing.dialog);
 

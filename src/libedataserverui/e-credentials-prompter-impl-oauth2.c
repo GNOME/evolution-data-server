@@ -1371,8 +1371,12 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		_("_Cancel"), GTK_RESPONSE_CANCEL,
 		NULL);
 
-	if (dialog_parent)
+	if (dialog_parent) {
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (dialog_parent));
+
+		if (gtk_window_get_modal (dialog_parent))
+			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	}
 
 	g_action_map_add_action_entries (action_map, action_entries, G_N_ELEMENTS (action_entries), prompter_oauth2);
 	gtk_widget_insert_action_group (dialog, "cpi-oauth2", G_ACTION_GROUP (action_map));
@@ -1402,8 +1406,6 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	prompter_oauth2->priv->dialog = GTK_DIALOG (dialog);
 	gtk_window_set_resizable (GTK_WINDOW (dialog), TRUE);
-	if (dialog_parent)
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), dialog_parent);
 #if !GTK_CHECK_VERSION(4, 0, 0)
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
