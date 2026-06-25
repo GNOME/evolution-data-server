@@ -58,6 +58,11 @@ struct _EGnomeOnlineAccounts {
 	EExtension parent;
 
 	EGoaClient *goa_client;
+	GError *goa_client_error;
+	GMutex goa_client_lock;
+	GCond goa_client_cond;
+	gboolean goa_client_creation_done;
+	gboolean goa_accounts_loaded;
 	gulong account_added_handler_id;
 	gulong account_removed_handler_id;
 	gulong account_swapped_handler_id;
@@ -713,6 +718,11 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (source), FALSE);
 
 	if (goa_object_peek_oauth2_based (goa_object) != NULL) {
+		ESourceAuthentication *auth_extension;
+
+		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		e_source_authentication_set_method (auth_extension, "OAuth2");
+
 		/* This module provides OAuth 2.0 support to the collection.
 		 * Note, children of the collection source will automatically
 		 * inherit our EOAuth2Support through the property binding in
@@ -1329,6 +1339,16 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	goa_client = e_goa_client_new_finish (result, &error);
 
 	if (error != NULL) {
+		extension = E_GNOME_ONLINE_ACCOUNTS (user_data);
+
+		g_mutex_lock (&extension->goa_client_lock);
+		extension->goa_client_error = g_error_copy (error);
+		extension->goa_client_creation_done = TRUE;
+		g_cond_broadcast (&extension->goa_client_cond);
+		g_mutex_unlock (&extension->goa_client_lock);
+
+		g_clear_object (&extension->create_client);
+
 		e_goa_debug_printf ("Failed to connect to the service: %s\n", error->message);
 
 		g_warn_if_fail (goa_client == NULL);
@@ -1345,6 +1365,11 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 
 	extension = E_GNOME_ONLINE_ACCOUNTS (user_data);
 	extension->goa_client = goa_client;  /* takes ownership */
+
+	g_mutex_lock (&extension->goa_client_lock);
+	extension->goa_client_creation_done = TRUE;
+	g_cond_broadcast (&extension->goa_client_cond);
+	g_mutex_unlock (&extension->goa_client_lock);
 
 	/* Don't need the GCancellable anymore. */
 	g_clear_object (&extension->create_client);
@@ -1440,6 +1465,11 @@ gnome_online_accounts_name_owner_appeared_cb (GDBusObjectManagerClient *manager,
 	 * while EDS was not running (account_added_cb already updated
 	 * goa_to_eds for accounts that still exist). */
 	gnome_online_accounts_remove_orphaned_sources (extension);
+
+	g_mutex_lock (&extension->goa_client_lock);
+	extension->goa_accounts_loaded = TRUE;
+	g_cond_broadcast (&extension->goa_client_cond);
+	g_mutex_unlock (&extension->goa_client_lock);
 }
 
 /* Find an existing collection ESource whose GOA account-id matches,
@@ -1502,6 +1532,11 @@ gnome_online_accounts_start_accounts (EGnomeOnlineAccounts *extension)
 		}
 
 		g_list_free_full (list, g_object_unref);
+
+		g_mutex_lock (&extension->goa_client_lock);
+		extension->goa_accounts_loaded = TRUE;
+		g_cond_broadcast (&extension->goa_client_cond);
+		g_mutex_unlock (&extension->goa_client_lock);
 	} else {
 		e_goa_debug_printf ("GOA daemon not running yet; "
 			"deferring account enumeration until it starts\n");
@@ -1524,14 +1559,61 @@ static void
 gnome_online_accounts_files_loaded_cb (ESourceRegistryServer *server,
                                        EGnomeOnlineAccounts *extension)
 {
+	GList *list, *link;
+
 	extension->files_loaded = TRUE;
 
 	/* One-shot; no need to hear about reloads. */
 	g_signal_handler_disconnect (server, extension->files_loaded_handler_id);
 	extension->files_loaded_handler_id = 0;
 
+	list = e_source_registry_server_list_sources (server, E_SOURCE_EXTENSION_GOA);
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		ESource *source = E_SOURCE (link->data);
+		ESourceAuthentication *auth_extension;
+		gchar *method;
+
+		if (!e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
+			continue;
+
+		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		method = e_source_authentication_dup_method (auth_extension);
+
+		if (e_oauth2_services_is_oauth2_alias_static (method))
+			e_server_side_source_set_oauth2_support (E_SERVER_SIDE_SOURCE (source), E_OAUTH2_SUPPORT (extension));
+
+		g_free (method);
+	}
+	g_list_free_full (list, g_object_unref);
+
 	if (extension->goa_client != NULL)
 		gnome_online_accounts_start_accounts (extension);
+}
+
+static void
+gnome_online_accounts_clear_client (EGnomeOnlineAccounts *extension)
+{
+	if (extension->goa_client != NULL) {
+		if (extension->account_added_handler_id > 0)
+			g_signal_handler_disconnect (extension->goa_client, extension->account_added_handler_id);
+		if (extension->account_removed_handler_id > 0)
+			g_signal_handler_disconnect (extension->goa_client, extension->account_removed_handler_id);
+		if (extension->account_swapped_handler_id > 0)
+			g_signal_handler_disconnect (extension->goa_client, extension->account_swapped_handler_id);
+		extension->account_added_handler_id = 0;
+		extension->account_removed_handler_id = 0;
+		extension->account_swapped_handler_id = 0;
+		g_clear_object (&extension->goa_client);
+	}
+
+	g_cancellable_cancel (extension->create_client);
+	g_clear_object (&extension->create_client);
+
+	g_mutex_lock (&extension->goa_client_lock);
+	g_clear_error (&extension->goa_client_error);
+	extension->goa_client_creation_done = FALSE;
+	extension->goa_accounts_loaded = FALSE;
+	g_mutex_unlock (&extension->goa_client_lock);
 }
 
 static void
@@ -1542,6 +1624,9 @@ gnome_online_accounts_bus_acquired_cb (EDBusServer *server,
 	/* Connect to the GNOME Online Accounts service. */
 
 	e_goa_debug_printf ("Bus-acquired, connecting to the service\n");
+
+	gnome_online_accounts_clear_client (extension);
+	extension->create_client = g_cancellable_new ();
 
 	/* Note we don't reference the extension.  If the
 	 * extension gets destroyed before this completes
@@ -1580,33 +1665,7 @@ gnome_online_accounts_dispose (GObject *object)
 		extension->files_loaded_handler_id = 0;
 	}
 
-	if (extension->account_added_handler_id > 0) {
-		g_signal_handler_disconnect (
-			extension->goa_client,
-			extension->account_added_handler_id);
-		extension->account_added_handler_id = 0;
-	}
-
-	if (extension->account_removed_handler_id > 0) {
-		g_signal_handler_disconnect (
-			extension->goa_client,
-			extension->account_removed_handler_id);
-		extension->account_removed_handler_id = 0;
-	}
-
-	if (extension->account_swapped_handler_id > 0) {
-		g_signal_handler_disconnect (
-			extension->goa_client,
-			extension->account_swapped_handler_id);
-		extension->account_swapped_handler_id = 0;
-	}
-
-	/* This cancels e_goa_client_new() in case it still
-	 * hasn't completed.  We're no longer interested. */
-	g_cancellable_cancel (extension->create_client);
-
-	g_clear_object (&extension->goa_client);
-	g_clear_object (&extension->create_client);
+	gnome_online_accounts_clear_client (extension);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->
@@ -1621,6 +1680,9 @@ gnome_online_accounts_finalize (GObject *object)
 	extension = E_GNOME_ONLINE_ACCOUNTS (object);
 
 	g_hash_table_destroy (extension->goa_to_eds);
+	g_mutex_clear (&extension->goa_client_lock);
+	g_cond_clear (&extension->goa_client_cond);
+	g_clear_error (&extension->goa_client_error);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->
@@ -1665,14 +1727,39 @@ gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
                                              gint *out_expires_in,
                                              GError **error)
 {
+	EGnomeOnlineAccounts *extension;
 	GoaObject *goa_object;
 	GoaAccount *goa_account;
 	GoaOAuth2Based *goa_oauth2_based;
 	gboolean success;
 	GError *local_error = NULL;
 
-	goa_object = gnome_online_accounts_ref_account (
-		E_GNOME_ONLINE_ACCOUNTS (support), source);
+	extension = E_GNOME_ONLINE_ACCOUNTS (support);
+
+	g_mutex_lock (&extension->goa_client_lock);
+	if (!extension->goa_client_creation_done || !extension->goa_accounts_loaded) {
+		gint64 end_time = g_get_monotonic_time () + 30 * G_TIME_SPAN_SECOND;
+
+		while ((!extension->goa_client_creation_done || !extension->goa_accounts_loaded) &&
+		       !g_cancellable_is_cancelled (cancellable)) {
+			if (!g_cond_wait_until (&extension->goa_client_cond, &extension->goa_client_lock, end_time))
+				break;
+		}
+	}
+	g_mutex_unlock (&extension->goa_client_lock);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return FALSE;
+
+	if (extension->goa_client == NULL) {
+		if (extension->goa_client_error != NULL)
+			g_propagate_error (error, g_error_copy (extension->goa_client_error));
+		else
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Unable to connect to the GNOME Online Accounts service"));
+		return FALSE;
+	}
+
+	goa_object = gnome_online_accounts_ref_account (extension, source);
 
 	if (goa_object == NULL) {
 		e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): Cannot find a corresponding GOA account\n",
@@ -1769,8 +1856,8 @@ e_gnome_online_accounts_oauth2_support_init (EOAuth2SupportInterface *iface)
 static void
 e_gnome_online_accounts_init (EGnomeOnlineAccounts *extension)
 {
-	/* Used to cancel unfinished e_goa_client_new(). */
-	extension->create_client = g_cancellable_new ();
+	g_mutex_init (&extension->goa_client_lock);
+	g_cond_init (&extension->goa_client_cond);
 
 	extension->goa_to_eds = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
