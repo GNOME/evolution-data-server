@@ -36,6 +36,7 @@ struct _ESoupAuthBearerPrivate {
 	GMutex property_lock;
 	gchar *access_token;
 	time_t expiry;
+	gboolean rejected;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (
@@ -77,6 +78,9 @@ e_soup_auth_bearer_is_expired_locked (ESoupAuthBearer *bearer)
 {
 	gboolean expired = TRUE;
 
+	if (bearer->priv->rejected)
+		return TRUE;
+
 	if (bearer->priv->expiry != EXPIRY_INVALID)
 		expired = (bearer->priv->expiry <= time (NULL));
 
@@ -109,16 +113,18 @@ e_soup_auth_bearer_update (SoupAuth *auth,
 	bearer = E_SOUP_AUTH_BEARER (auth);
 
 	if (message && soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED) {
+		const gchar *error;
+
+		error = auth_header ? g_hash_table_lookup (auth_header, "error") : NULL;
+
 		g_mutex_lock (&bearer->priv->property_lock);
 
-		/* Expire the token, it's likely to be invalid. */
-		bearer->priv->expiry = EXPIRY_INVALID;
+		bearer->priv->rejected = TRUE;
 
-		e_soup_auth_bearer_debug_print ("%s: bearer:%p message:%p token:%p did set it as expired\n", G_STRFUNC, bearer, message, bearer->priv->access_token);
+		e_soup_auth_bearer_debug_print ("%s: bearer:%p message:%p token:%p error:'%s' marked as rejected\n",
+			G_STRFUNC, bearer, message, bearer->priv->access_token, error ? error : "(null)");
 
 		g_mutex_unlock (&bearer->priv->property_lock);
-
-		return FALSE;
 	} else if (message) {
 		g_mutex_lock (&bearer->priv->property_lock);
 
@@ -277,6 +283,8 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 		bearer->priv->access_token = g_strdup (access_token);
 	}
 
+	bearer->priv->rejected = FALSE;
+
 	if (expires_in_seconds > 0)
 		bearer->priv->expiry = time (NULL) + expires_in_seconds - TOKEN_VALIDITY_GAP_SECS;
 	else
@@ -329,4 +337,24 @@ e_soup_auth_bearer_is_expired (ESoupAuthBearer *bearer)
 	g_mutex_unlock (&bearer->priv->property_lock);
 
 	return expired;
+}
+
+/**
+ * e_soup_auth_bearer_clear_rejected:
+ * @bearer: an #ESoupAuthBearer
+ *
+ * Clears the rejection flag set when the server responds with 401 Unauthorized.
+ * The time-based token expiry is preserved, so the existing token can be
+ * re-sent without a redundant token refresh from the credential provider.
+ *
+ * Since: 3.62
+ **/
+void
+e_soup_auth_bearer_clear_rejected (ESoupAuthBearer *bearer)
+{
+	g_return_if_fail (E_IS_SOUP_AUTH_BEARER (bearer));
+
+	g_mutex_lock (&bearer->priv->property_lock);
+	bearer->priv->rejected = FALSE;
+	g_mutex_unlock (&bearer->priv->property_lock);
 }

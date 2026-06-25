@@ -16,17 +16,22 @@
 
 #include "evolution-data-server-config.h"
 
+#include <fcntl.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #ifndef BUILDING_VALUE_HELPER
 #include <json-glib/json-glib.h>
+
+#include "camel/camel.h"
 
 #include "e-data-server-util.h"
 #include "e-secret-store.h"
 #include "e-soup-session.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
+#include "e-source-collection.h"
 
 #include "e-oauth2-service.h"
 
@@ -1890,6 +1895,73 @@ eos_finish_access_token_request_locked (ESource *source,
  *
  * Since: 3.28
  **/
+
+static ESource *
+eos_ref_credential_source (ESource *source,
+			   EOAuth2ServiceRefSourceFunc ref_source,
+			   gpointer ref_source_user_data)
+{
+	ESource *collection = g_object_ref (source);
+	ESource *cred_source = NULL;
+
+	while (collection &&
+	       !e_source_has_extension (collection, E_SOURCE_EXTENSION_COLLECTION)) {
+		const gchar *parent_uid = e_source_get_parent (collection);
+		ESource *parent = NULL;
+
+		if (parent_uid && *parent_uid)
+			parent = ref_source (ref_source_user_data, parent_uid);
+
+		g_clear_object (&collection);
+		collection = parent;
+	}
+
+	if (e_util_can_use_collection_as_credential_source (collection, source))
+		cred_source = g_object_ref (collection);
+
+	g_clear_object (&collection);
+
+	return cred_source ? cred_source : g_object_ref (source);
+}
+
+static gint
+eos_acquire_refresh_lock (const gchar *secret_uid,
+			  gchar **out_lock_path)
+{
+	gchar *path;
+	gint fd;
+
+	if (!secret_uid) {
+		*out_lock_path = NULL;
+		return -1;
+	}
+
+	path = g_strdup_printf ("%s/.evo-oauth2-%s.lock", g_get_tmp_dir (), secret_uid);
+	fd = g_open (path, O_CREAT | O_RDWR, 0600);
+
+	if (fd != -1)
+		camel_lock_folder (path, fd, CAMEL_LOCK_WRITE, NULL);
+
+	*out_lock_path = path;
+
+	return fd;
+}
+
+static void
+eos_release_refresh_lock (gint lock_fd,
+			  gchar *lock_path)
+{
+	if (lock_fd != -1) {
+		camel_unlock_folder (lock_path, lock_fd);
+		close (lock_fd);
+	}
+
+	if (lock_path) {
+		g_unlink (lock_path);
+		g_free (lock_path);
+	}
+}
+
 gboolean
 e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 					ESource *source,
@@ -1900,10 +1972,14 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 					GCancellable *cancellable,
 					GError **error)
 {
+	ESource *cred_source = NULL;
 	ResponseCode resp;
 	gchar *refresh_token = NULL;
 	gchar *local_access_token = NULL;
+	gchar *secret_uid = NULL;
+	gchar *lock_path = NULL;
 	gint local_expires_in = 0;
+	gint lock_fd = -1;
 	GError *local_error = NULL;
 	gboolean success = TRUE;
 
@@ -1913,37 +1989,58 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (out_access_token != NULL, FALSE);
 	g_return_val_if_fail (out_expires_in != NULL, FALSE);
 
+	cred_source = eos_ref_credential_source (source, ref_source, ref_source_user_data);
+
 	G_LOCK (access_token_requests);
-	resp = eos_wait_for_access_token_request_locked (source, out_access_token, out_expires_in, cancellable, error);
+	resp = eos_wait_for_access_token_request_locked (cred_source, out_access_token, out_expires_in, cancellable, error);
 	if (resp != RESPONSE_UNKNOWN && resp != RESPONSE_FAILURE && *out_expires_in <= TOKEN_VALIDITY_GAP_SECS) {
 		*out_expires_in = 0;
 	} else if (resp != RESPONSE_UNKNOWN) {
 		G_UNLOCK (access_token_requests);
+		g_object_unref (cred_source);
 
 		return resp != RESPONSE_FAILURE;
 	}
 
-	eos_reserve_access_token_request_locked (source);
+	eos_reserve_access_token_request_locked (cred_source);
 
 	G_UNLOCK (access_token_requests);
 
-	if (!eos_lookup_token_sync (service, source, &refresh_token, &local_access_token, &local_expires_in, cancellable, &local_error)) {
+	if (!eos_lookup_token_sync (service, cred_source, &refresh_token, &local_access_token, &local_expires_in, cancellable, &local_error)) {
 		G_LOCK (access_token_requests);
-		eos_finish_access_token_request_locked (source, NULL, 0, local_error);
+		eos_finish_access_token_request_locked (cred_source, NULL, 0, local_error);
 		g_propagate_error (error, local_error);
 		G_UNLOCK (access_token_requests);
+		g_object_unref (cred_source);
 		return FALSE;
 	}
 
 	if (local_expires_in <= TOKEN_VALIDITY_GAP_SECS && refresh_token) {
-		success = e_oauth2_service_refresh_and_store_token_sync (service, source, refresh_token,
+		eos_generate_secret_uid (service, cred_source, &secret_uid);
+
+		lock_fd = eos_acquire_refresh_lock (secret_uid, &lock_path);
+
+		if (lock_fd != -1) {
+			g_clear_pointer (&refresh_token, e_util_safe_free_string);
+			g_clear_pointer (&local_access_token, e_util_safe_free_string);
+
+			if (eos_lookup_token_sync (service, cred_source, &refresh_token, &local_access_token, &local_expires_in, cancellable, NULL) &&
+			    local_expires_in > TOKEN_VALIDITY_GAP_SECS)
+				goto finished;
+		}
+
+		success = e_oauth2_service_refresh_and_store_token_sync (service, cred_source, refresh_token,
 			ref_source, ref_source_user_data, cancellable, &local_error);
 
 		g_clear_pointer (&refresh_token, e_util_safe_free_string);
 		g_clear_pointer (&local_access_token, e_util_safe_free_string);
 
-		success = success && eos_lookup_token_sync (service, source, &refresh_token, &local_access_token, &local_expires_in, cancellable, &local_error);
+		success = success && eos_lookup_token_sync (service, cred_source, &refresh_token, &local_access_token, &local_expires_in, cancellable, &local_error);
 	}
+
+ finished:
+	eos_release_refresh_lock (lock_fd, lock_path);
+	g_free (secret_uid);
 
 	e_util_safe_free_string (refresh_token);
 
@@ -1959,15 +2056,17 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 	G_LOCK (access_token_requests);
 	if (success) {
 		g_warn_if_fail (local_error == NULL);
-		eos_finish_access_token_request_locked (source, local_access_token, local_expires_in, NULL);
+		eos_finish_access_token_request_locked (cred_source, local_access_token, local_expires_in, NULL);
 		*out_access_token = local_access_token;
 		*out_expires_in = local_expires_in;
 	} else {
 		g_warn_if_fail (local_access_token == NULL);
-		eos_finish_access_token_request_locked (source, NULL, 0, local_error);
+		eos_finish_access_token_request_locked (cred_source, NULL, 0, local_error);
 		g_propagate_error (error, local_error);
 	}
 	G_UNLOCK (access_token_requests);
+
+	g_object_unref (cred_source);
 
 	return success;
 }

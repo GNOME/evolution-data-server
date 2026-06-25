@@ -56,6 +56,8 @@ void		e_soup_auth_bearer_set_access_token
 						 const gchar *access_token,
 						 gint expires_in_seconds);
 gboolean	e_soup_auth_bearer_is_expired	(ESoupAuthBearer *bearer);
+void		e_soup_auth_bearer_clear_rejected
+						(ESoupAuthBearer *bearer);
 
 G_END_DECLS
 

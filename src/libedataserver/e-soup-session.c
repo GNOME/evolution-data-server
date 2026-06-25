@@ -1655,10 +1655,13 @@ e_soup_session_send_message_ready_cb (GObject *source_object,
 
 	if (message && soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED && !asd->caught_bearer_expired) {
 		g_mutex_lock (&esession->priv->property_lock);
-		if (esession->priv->using_bearer_auth && e_soup_auth_bearer_is_expired (esession->priv->using_bearer_auth)) {
-			g_signal_emit_by_name (message, "restarted");
-			asd->caught_bearer_expired = TRUE;
-			caught_bearer_expired = TRUE;
+		if (esession->priv->using_bearer_auth) {
+			e_soup_auth_bearer_clear_rejected (esession->priv->using_bearer_auth);
+			if (e_soup_auth_bearer_is_expired (esession->priv->using_bearer_auth)) {
+				g_signal_emit_by_name (message, "restarted");
+				asd->caught_bearer_expired = TRUE;
+				caught_bearer_expired = TRUE;
+			}
 		}
 		g_mutex_unlock (&esession->priv->property_lock);
 	}
@@ -1998,14 +2001,20 @@ e_soup_session_send_message_sync (ESoupSession *session,
 					}
 				}
 			}
-		} else if (soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED && !caught_bearer_expired) {
+		}
+
+		if (!redirected && soup_message_get_status (message) == SOUP_STATUS_UNAUTHORIZED && !caught_bearer_expired) {
 			g_mutex_lock (&session->priv->property_lock);
-			if (session->priv->using_bearer_auth && e_soup_auth_bearer_is_expired (session->priv->using_bearer_auth)) {
-				g_signal_emit_by_name (message, "restarted");
-				resend_count++;
-				redirected = TRUE;
-				caught_bearer_expired = TRUE;
-				g_clear_error (&local_error);
+			if (session->priv->using_bearer_auth) {
+				e_soup_auth_bearer_clear_rejected (session->priv->using_bearer_auth);
+				if (e_soup_auth_bearer_is_expired (session->priv->using_bearer_auth)) {
+					g_clear_object (&input_stream);
+					g_signal_emit_by_name (message, "restarted");
+					resend_count++;
+					redirected = TRUE;
+					caught_bearer_expired = TRUE;
+					g_clear_error (&local_error);
+				}
 			}
 			g_mutex_unlock (&session->priv->property_lock);
 		}
