@@ -868,6 +868,38 @@ e_test_server_utils_finish_run (void)
 {
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
+		GWeakRef weak;
+		GDBusConnection *connection;
+		gint ii;
+
+		/* Spin the main context briefly here, thus any pending sources
+		   catching on the connection have a change to finish before
+		   the test is finished. */
+		connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+		if (connection != NULL) {
+			g_weak_ref_init (&weak, connection);
+			g_object_unref (connection);
+		} else {
+			g_weak_ref_init (&weak, NULL);
+		}
+
+		for (ii = 0; ii < 20; ii++) {
+			while (g_main_context_pending (NULL)) {
+				g_main_context_iteration (NULL, FALSE);
+			}
+
+			connection = g_weak_ref_get (&weak);
+			if (connection != NULL) {
+				g_object_unref (connection);
+			} else {
+				break;
+			}
+
+			g_usleep (G_USEC_PER_SEC / 20);
+		}
+
+		g_weak_ref_clear (&weak);
+
 		/* Teardown the D-Bus Daemon */
 		g_test_dbus_down (global_test_dbus);
 		g_object_unref (global_test_dbus);
