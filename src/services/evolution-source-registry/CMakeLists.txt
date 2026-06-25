@@ -91,7 +91,6 @@ target_compile_definitions(evolution-source-registry PRIVATE
 target_compile_options(evolution-source-registry PUBLIC
 	${BACKEND_CFLAGS}
 	${DATA_SERVER_CFLAGS}
-	${GTK_CFLAGS}
 )
 
 target_include_directories(evolution-source-registry PUBLIC
@@ -101,14 +100,12 @@ target_include_directories(evolution-source-registry PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
-	${GTK_INCLUDE_DIRS}
 )
 
 target_link_libraries(evolution-source-registry
 	${DEPENDENCIES}
 	${BACKEND_LDFLAGS}
 	${DATA_SERVER_LDFLAGS}
-	${GTK_LDFLAGS}
 )
 
 install(TARGETS evolution-source-registry

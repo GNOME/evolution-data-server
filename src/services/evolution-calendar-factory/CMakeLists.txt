@@ -49,7 +49,6 @@ target_compile_options(evolution-calendar-factory PUBLIC
 	${BACKEND_CFLAGS}
 	${DATA_SERVER_CFLAGS}
 	${CALENDAR_CFLAGS}
-	${GTK_CFLAGS}
 )
 
 target_include_directories(evolution-calendar-factory PUBLIC
@@ -59,7 +58,6 @@ target_include_directories(evolution-calendar-factory PUBLIC
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${CALENDAR_INCLUDE_DIRS}
-	${GTK_INCLUDE_DIRS}
 )
 
 target_link_libraries(evolution-calendar-factory
@@ -67,7 +65,6 @@ target_link_libraries(evolution-calendar-factory
 	${BACKEND_LDFLAGS}
 	${DATA_SERVER_LDFLAGS}
 	${CALENDAR_LDFLAGS}
-	${GTK_LDFLAGS}
 )
 
 install(TARGETS evolution-calendar-factory

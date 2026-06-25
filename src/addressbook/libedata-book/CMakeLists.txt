@@ -182,7 +182,6 @@ target_compile_definitions(evolution-addressbook-factory-subprocess PRIVATE
 
 target_compile_options(evolution-addressbook-factory-subprocess PUBLIC
 	${ADDRESSBOOK_CFLAGS}
-	${GTK_CFLAGS}
 )
 
 target_include_directories(evolution-addressbook-factory-subprocess PUBLIC
@@ -195,13 +194,11 @@ target_include_directories(evolution-addressbook-factory-subprocess PUBLIC
 	${CMAKE_SOURCE_DIR}/src/addressbook
 	${CMAKE_CURRENT_BINARY_DIR}
 	${ADDRESSBOOK_INCLUDE_DIRS}
-	${GTK_INCLUDE_DIRS}
 )
 
 target_link_libraries(evolution-addressbook-factory-subprocess
 	${DEPENDENCIES}
 	${ADDRESSBOOK_LDFLAGS}
-	${GTK_LDFLAGS}
 )
 
 install(TARGETS evolution-addressbook-factory-subprocess

@@ -9,10 +9,6 @@
 #include <stdlib.h>
 #include <glib/gi18n.h>
 
-#if defined (ENABLE_MAINTAINER_MODE) && defined (HAVE_GTK)
-#include <gtk/gtk.h>
-#endif
-
 #include <e-dbus-subprocess-backend.h>
 #include <libebackend/libebackend.h>
 #include <libedataserver/libedataserver.h>
@@ -153,13 +149,6 @@ main (gint argc,
 	g_type_ensure (G_TYPE_DBUS_CONNECTION);
 	g_type_ensure (G_TYPE_DBUS_PROXY);
 	g_type_ensure (G_BUS_TYPE_SESSION);
-
-#if defined (ENABLE_MAINTAINER_MODE) && defined (HAVE_GTK)
-	if (g_getenv ("EDS_TESTING") == NULL)
-		/* This is only to load gtk-modules, like
-		 * bug-buddy's gnomesegvhandler, if possible */
-		gtk_init_check (&argc, &argv);
-#endif
 
 	context = g_option_context_new (NULL);
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);

@@ -152,7 +152,6 @@ target_compile_definitions(evolution-calendar-factory-subprocess PRIVATE
 
 target_compile_options(evolution-calendar-factory-subprocess PUBLIC
 	${CALENDAR_CFLAGS}
-	${GTK_CFLAGS}
 )
 
 target_include_directories(evolution-calendar-factory-subprocess PUBLIC
@@ -165,13 +164,11 @@ target_include_directories(evolution-calendar-factory-subprocess PUBLIC
 	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CALENDAR_INCLUDE_DIRS}
-	${GTK_INCLUDE_DIRS}
 )
 
 target_link_libraries(evolution-calendar-factory-subprocess
 	${DEPENDENCIES}
 	${CALENDAR_LDFLAGS}
-	${GTK_LDFLAGS}
 )
 
 install(TARGETS evolution-calendar-factory-subprocess
