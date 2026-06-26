@@ -63,6 +63,10 @@ void		e_source_selectable_set_selected
 guint		e_source_selectable_get_order	(ESourceSelectable *extension);
 void		e_source_selectable_set_order	(ESourceSelectable *extension,
 						 guint order);
+const gchar *	e_source_selectable_get_groups	(ESourceSelectable *extension);
+gchar *		e_source_selectable_dup_groups	(ESourceSelectable *extension);
+void		e_source_selectable_set_groups	(ESourceSelectable *extension,
+						 const gchar *groups);
 
 G_END_DECLS
 
