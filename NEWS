@@ -1,3 +1,92 @@
+Evolution-Data-Server 3.61.1 2026-06-26
+---------------------------------------
+
+Bug Fixes:
+	I#143 - WebDAV: Implement sync-collection (RFC 6578)
+	I#220 - Allow message body indexing for local accounts again
+	I#510 - goa: Fix a race when reading accounts after start
+	I#630 - nntp: Chunk OVER requests with adaptive retry and auto-reconnect (Mikhail Gavrilov)
+	I#632 - nntp: Fix GSocket ref leak in stream timeout helpers (Mikhail Gavrilov)
+	I#634 - Maildir: Prevent creating folders of a similar name
+	I#637 - IMAPx: Sent folder reverts to default with iCloud email and Quick Resync
+	I#643 - Camel: Clean up provider conf entries definitions
+	I#644 - Maildir: Prefer flags from the file name (externally modified)
+	I#645 - OAuth2: Correct when using collection ESource for child sources
+	I#647 - Calendar: Atomic write breaks .ics file change monitoring
+	M!207 - camel: Use XDG_DATA_HOME for nssdb path (André)
+	M!222 - Make CMAKE_BUILD_TYPE enumeration for cmake-gui (Дилян Палаузов)
+	M!223 - CI: Avoid extra path in cmake invocation (Дилян Палаузов)
+	M!224 - Remove unneeded GLIB_CHECK_VERSION macros (Дилян Палаузов)
+	evo-I#538 - GOA: Change how GOA accounts have set OAuth2 support
+	evo-I#2624 - Add per-account composer mode property to ESourceMailComposition
+	evo-I#3302 - Truncated file stored in the (mail) cache
+	evo-I#3322 - IMAP: Add "Manage subscriptions" into "Receiving options"
+	evo-I#3344 - ECredentialsPrompter: Inherit modality from the parent window
+
+Miscellaneous:
+	nntp: Rename nntp_get_stream_socket() to nntp_ref_stream_socket()
+	ESoupSession: Correct e_soup_session_get_authentication_requires_credentials()
+	Remove function declarations with no implementation (Corentin Noël)
+	e-gdata-session: Ensure soup message body is filled on retry
+	CamelStoreSearch: Remove dead code (Corentin Noël)
+	CamelStreamProcess: Handle the errno before doing other system calls (Corentin Noël)
+	CamelSmtpTransport: Fix a potential double-free error (Corentin Noël)
+	camel: Add documentation (Corentin Noël)
+	camel: Fix DIGEST-MD5 setting authenticated on rspauth mismatch
+	camel: Fix off-by-one OOB read in RFC 2047 quoted_decode
+	e-oauth2-service: Do not log secret contents on JSON parse failure
+	camel: Fix shell command injection in NTLM SASL authentication
+	pop3: Add maximum line buffer size to prevent unbounded memory growth
+	smtp: Sanitize ENVID parameter to prevent SMTP command injection
+	pop3: Reject credentials containing CRLF to prevent command injection
+	smtp: Fix heap out-of-bounds read in smtp_decode_status_code
+	ESoupSession: Reject HTTPS-to-HTTP redirects
+	camel: Add MIME nesting depth limit to prevent stack exhaustion
+	e-oauth2-service: Add state parameter to OAuth2 authorization requests
+	camel: Add size limits on MIME header blocks and body parts
+	carddav: Validate photo/logo URI origin to prevent SSRF
+	e-ms-oapxbc: Simplify error handling in MS-OAPXBC OIDC extension (Felix Moessbauer)
+	e-ms-oapxbc: Fix error handling of broker response (Felix Moessbauer)
+	e-ms-oapxbc: Align D-Bus parameters with sso-mib (Felix Moessbauer)
+	e-ms-oapxbc: Add support for broker versions > 2.0.1 (Felix Moessbauer)
+	Fix some compiler warnings
+	docs: Remove all "Contains only private data…" from structure comments (Corentin Noël)
+	docs: Put Camel documentation into a subfolder (Corentin Noël)
+	Do not lock SExp object in data book/cal views start
+	e-book-meta-backend: Handle data: URI-s in PHOTO/LOGO
+	Calendar: Use icaldurationtype_as_utc_seconds() for libical 4.x (Antonio Rojas)
+	Convert license/copyright comments into SPDX notation
+	OAuth2: Use its own error domain and add camel_util_is_network_error()
+	camel: Add atomic write API to CamelDataCache and convert all providers
+	POP3: Remove sentinel bytes and migrate existing cache files
+	camel: Recognize all G_TLS_ERROR codes as network errors
+	camel: Clean up test files and convert them to glib test API
+	CI: Add a job to produce a test coverage report (Federico Mena Quintero)
+	CI: add a job for static analysis with scan-build (Federico Mena Quintero)
+	CI: Add a job to run the tests with address and undefined-behavior sanitizers (Federico Mena Quintero)
+	camel: Test substring body search with and without index
+	Camel: Move search with index from the store search to a common place
+	camel: Fix CamelCertDB leak in camel_shutdown()
+	Camel: Add GSETTINGS_SCHEMA_DIR into the tests
+	Camel: Reorganize tests directories
+	Use "--output-on-failure" for ctest in "make test"
+	docs/index.html: Provide links to the coverage and static analysis reports (Federico Mena Quintero)
+	Make the scan-build page's title prettier (Federico Mena Quintero)
+	Calendar: Do not use persistent refresh thread in the 'file' backend
+	tests: Flush main context when finishing server tests
+	Drop optional gtk+ code from background processes
+
+Translations:
+	Aurimas Aurimas Černius (lt)
+	Ekaterine Papava (ka)
+	Emin Tufan Çetin (tr)
+	Juliano de Souza Camargo (pt_BR)
+	Kjartan Maraas (nb)
+	Kristjan ESPERANTO (eo)
+	Марко Костић (sr)
+	Martin (sl)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.60.0 2026-03-13
 ---------------------------------------
 
