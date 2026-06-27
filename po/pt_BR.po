@@ -19,17 +19,17 @@
 # Leônidas Araújo <leorusvellt@hotmail.com>, 2022.
 # Matheus Barbosa <mdpb.matheus@gmail.com>, 2022.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2012-2025.
-# Álvaro Burns <>, 2025.
 # Juliano de Souza Camargo <julianosc@pm.me>, 2024-2026.
+# Álvaro Burns <>, 2025-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-06-10 11:38+0000\n"
-"PO-Revision-Date: 2026-06-21 18:41-0300\n"
-"Last-Translator: Juliano de Souza Camargo <julianosc@pm.me>\n"
+"POT-Creation-Date: 2026-06-25 15:47+0000\n"
+"PO-Revision-Date: 2026-06-26 11:16-0300\n"
+"Last-Translator: Álvaro Burns <>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -208,7 +208,7 @@ msgstr "Não foi possível renomear a velha base de dados de “%s” para “%s
 #: src/camel/providers/nntp/camel-nntp-store.c:406
 #: src/libebackend/e-server-side-source.c:488 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
-#: src/libedataserver/e-soup-session.c:2173
+#: src/libedataserver/e-soup-session.c:2182
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
 #: src/libedataserverui/e-reminders-widget.c:2278
@@ -1470,32 +1470,32 @@ msgstr "Dia de morte: %s"
 msgid "Cannot get URI"
 msgstr "Não foi possível obter URI"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:230
+#: src/calendar/backends/file/e-cal-backend-file.c:224
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Não é possível salvar dados da agenda: URI malformado."
 
+#: src/calendar/backends/file/e-cal-backend-file.c:231
 #: src/calendar/backends/file/e-cal-backend-file.c:237
-#: src/calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data"
 msgstr "Não é possível salvar dados da agenda"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1176
-#: src/calendar/backends/file/e-cal-backend-file.c:1305
+#: src/calendar/backends/file/e-cal-backend-file.c:1189
+#: src/calendar/backends/file/e-cal-backend-file.c:1318
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "Não foi possível analisar arquivo ISC “%s”"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1187
-#: src/calendar/backends/file/e-cal-backend-file.c:1316
+#: src/calendar/backends/file/e-cal-backend-file.c:1200
+#: src/calendar/backends/file/e-cal-backend-file.c:1329
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "O arquivo “%s” não é um componente de VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3749
-#: src/calendar/backends/file/e-cal-backend-file.c:3755
-#: src/calendar/backends/file/e-cal-backend-file.c:3761
-#: src/calendar/backends/file/e-cal-backend-file.c:3788
+#: src/calendar/backends/file/e-cal-backend-file.c:3762
+#: src/calendar/backends/file/e-cal-backend-file.c:3768
+#: src/calendar/backends/file/e-cal-backend-file.c:3774
+#: src/calendar/backends/file/e-cal-backend-file.c:3801
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
 msgid "Unsupported method"
 msgstr "Não há suporte ao método"
@@ -7940,27 +7940,27 @@ msgstr ""
 msgid "Failed to create SOAP cookie"
 msgstr "Falha ao criar cookie SOAP"
 
-#: src/libedataserver/e-oauth2-service.c:1096
+#: src/libedataserver/e-oauth2-service.c:1101
 msgid "Malformed, no message body set"
 msgstr "Malformado, nenhum corpo de mensagem definido"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1378
+#: src/libedataserver/e-oauth2-service.c:1383
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Fonte “%s” (%s) não é válido para um serviço OAuth2 “%s”"
 
-#: src/libedataserver/e-oauth2-service.c:1393
+#: src/libedataserver/e-oauth2-service.c:1398
 msgid "OAuth2 secret not found"
 msgstr "Segredo de OAuth2 não localizado"
 
-#: src/libedataserver/e-oauth2-service.c:1595
+#: src/libedataserver/e-oauth2-service.c:1600
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Resposta incorreta recebida do servidor “%s”."
 
-#: src/libedataserver/e-oauth2-service.c:1618
+#: src/libedataserver/e-oauth2-service.c:1623
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7972,19 +7972,19 @@ msgstr ""
 "\n"
 "Erro detalhado: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1621
+#: src/libedataserver/e-oauth2-service.c:1626
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Falha ao renovar token de acesso. Autentique-se no servidor novamente, por "
 "favor."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1672
+#: src/libedataserver/e-oauth2-service.c:1677
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Fonte “%s” (%s) não é uma fonte OAuth2 válida"
 
-#: src/libedataserver/e-oauth2-service.c:1956
+#: src/libedataserver/e-oauth2-service.c:2053
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -8028,7 +8028,7 @@ msgstr "Falha com error HTTP %d: %s"
 msgid "Failed to setup authentication"
 msgstr "Falha ao configurar a autenticação"
 
-#: src/libedataserver/e-soup-session.c:1834
+#: src/libedataserver/e-soup-session.c:1837
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
@@ -8037,7 +8037,7 @@ msgstr[0] ""
 msgstr[1] ""
 "O servidor está ocupado, aguardando para tentar novamente (%d:%02d minutos)"
 
-#: src/libedataserver/e-soup-session.c:1840
+#: src/libedataserver/e-soup-session.c:1843
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
@@ -8046,11 +8046,11 @@ msgstr[0] ""
 msgstr[1] ""
 "O servidor está ocupado, aguardando para tentar novamente (%d segundos)"
 
-#: src/libedataserver/e-soup-session.c:1961
+#: src/libedataserver/e-soup-session.c:1964
 msgid "Too many redirects"
 msgstr "Muitos redirecionamentos"
 
-#: src/libedataserver/e-soup-session.c:1983
+#: src/libedataserver/e-soup-session.c:1986
 msgid "Redirect from HTTPS to HTTP is not allowed"
 msgstr "Redirecionar de HTTPS para HTTP não é permitido"
 
@@ -8794,11 +8794,11 @@ msgstr "Abrir com “%s”"
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1469
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1471
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1544
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1546
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8808,16 +8808,16 @@ msgstr ""
 "código de autorização resultante abaixo para continuar o processo de "
 "autenticação."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1581
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1583
 msgid "_Authorization code:"
 msgstr "Código de _autenticação:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1594
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1596
 msgid "C_ontinue"
 msgstr "C_ontinuar"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1793
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1794
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1795
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1796
 msgid "Preparing request, please wait…"
 msgstr "Preparando requisição, por favor, aguarde…"
 
@@ -8888,16 +8888,16 @@ msgstr ""
 msgid "_OK"
 msgstr "_OK"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:483
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:485
 msgid "_User Name:"
 msgstr "_Nome de usuário:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:495
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:497
 msgid "_Password:"
 msgstr "_Senha:"
 
 #. Remember password check
-#: src/libedataserverui/e-credentials-prompter-impl-password.c:511
+#: src/libedataserverui/e-credentials-prompter-impl-password.c:513
 msgid "_Add this password to your keyring"
 msgstr "_Adicionar esta senha ao seu chaveiro"
 
@@ -9235,7 +9235,11 @@ msgstr "Falha ao localizar elemento da conta"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Falha ao localizar ASUrl e OABUrl na reposta de auto-detecção"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1683
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1758
+msgid "Unable to connect to the GNOME Online Accounts service"
+msgstr "Impossibilitado de conectar-se ao serviço de Contas on-line do GNOME"
+
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1770
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -9244,24 +9248,24 @@ msgstr ""
 "Não foi possível encontrar uma conta correspondente no serviço "
 "org.gnome.OnlineAccounts a fim de obter um token de acesso para “%s”"
 
-#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1733
+#: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1820
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Falha ao obter um token de acesso para “%s”: "
 
-#: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:25
-#: src/services/evolution-calendar-factory/evolution-calendar-factory.c:27
+#: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:21
+#: src/services/evolution-calendar-factory/evolution-calendar-factory.c:23
 #: src/services/evolution-user-prompter/evolution-user-prompter.c:20
 msgid "Keep running after the last client is closed"
 msgstr "Continua executando depois do último cliente sair"
 
-#: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:27
-#: src/services/evolution-calendar-factory/evolution-calendar-factory.c:29
+#: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:23
+#: src/services/evolution-calendar-factory/evolution-calendar-factory.c:25
 msgid "Wait running until at least one client is connected"
 msgstr "Aguarda a execução até que pelo menos um cliente esteja conectado"
 
-#: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:29
-#: src/services/evolution-calendar-factory/evolution-calendar-factory.c:31
+#: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:25
+#: src/services/evolution-calendar-factory/evolution-calendar-factory.c:27
 msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
@@ -9344,7 +9348,7 @@ msgid_plural "You have %d reminders"
 msgstr[0] "Você tem %d lembrete"
 msgstr[1] "Você tem %d lembretes"
 
-#: src/services/evolution-source-registry/evolution-source-registry.c:28
+#: src/services/evolution-source-registry/evolution-source-registry.c:24
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Não migre os dados do usuário de versões anteriores do Evolution"
 
