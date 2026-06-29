@@ -193,8 +193,17 @@ struct _CamelStoreClass {
 	gboolean	(*get_can_auto_save_changes)
 						(CamelStore *store);
 
+	gboolean	(*search_multimailbox_sync)
+						(CamelStore *store,
+						 GPtrArray *folders, /* CamelFolder * */
+						 const gchar *search_key,
+						 const GPtrArray *words,
+						 GHashTable **out_results, /* gchar *folder_name ~> GPtrArray { gchar *uids } */
+						 GCancellable *cancellable,
+						 GError **error);
+
 	/* Padding for future expansion */
-	gpointer reserved_methods[19];
+	gpointer reserved_methods[18];
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
@@ -246,6 +255,14 @@ CamelFolderInfo *
 		camel_folder_info_clone		(CamelFolderInfo *fi);
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
+						 GError **error);
+gboolean	camel_store_search_multimailbox_sync
+						(CamelStore *store,
+						 GPtrArray *folders, /* CamelFolder * */
+						 const gchar *search_key,
+						 const GPtrArray *words,
+						 GHashTable **out_results, /* gchar *folder_name ~> GPtrArray { gchar *uids } */
+						 GCancellable *cancellable,
 						 GError **error);
 
 CamelFolder *	camel_store_get_folder_sync	(CamelStore *store,

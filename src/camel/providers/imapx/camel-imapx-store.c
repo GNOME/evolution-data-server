@@ -3177,6 +3177,79 @@ exit:
 	return success;
 }
 
+static gboolean
+imapx_store_search_multimailbox_sync (CamelStore *store,
+                                      GPtrArray *folders,
+                                      const gchar *search_key,
+                                      const GPtrArray *words,
+                                      GHashTable **out_results,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (store);
+	CamelIMAPXConnManager *conn_man;
+	GPtrArray *mailboxes;
+	GHashTable *results;
+	guint ii;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), FALSE);
+	g_return_val_if_fail (out_results != NULL, FALSE);
+
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
+
+	mailboxes = g_ptr_array_new_full (folders->len, g_object_unref);
+	for (ii = 0; ii < folders->len; ii++) {
+		CamelFolder *folder = g_ptr_array_index (folders, ii);
+		if (CAMEL_IS_IMAPX_FOLDER (folder)) {
+			CamelIMAPXMailbox *mailbox = camel_imapx_folder_ref_mailbox (CAMEL_IMAPX_FOLDER (folder));
+			if (mailbox) {
+				g_ptr_array_add (mailboxes, mailbox);
+			}
+		}
+	}
+
+	if (mailboxes->len > 0) {
+		results = camel_imapx_conn_manager_multimailbox_search_sync (
+			conn_man, mailboxes, search_key, words, cancellable, error);
+
+		if (results) {
+			GHashTable *folder_results;
+
+			/* The results table from the conn-manager is keyed by IMAP mailbox
+			 * name (which uses the server's separator character). Translate to
+			 * Camel folder paths (always '/' separator) before returning. */
+			folder_results = g_hash_table_new_full (g_str_hash, g_str_equal,
+				g_free, (GDestroyNotify) g_ptr_array_unref);
+
+			for (ii = 0; ii < mailboxes->len; ii++) {
+				CamelIMAPXMailbox *mailbox = g_ptr_array_index (mailboxes, ii);
+				const gchar *mbox_name = camel_imapx_mailbox_get_name (mailbox);
+				gchar separator = camel_imapx_mailbox_get_separator (mailbox);
+				GPtrArray *uids = g_hash_table_lookup (results, mbox_name);
+				gchar *folder_path;
+
+				if (!uids)
+					continue;
+
+				folder_path = camel_imapx_mailbox_to_folder_path (mbox_name, separator);
+				g_hash_table_insert (folder_results, folder_path, g_ptr_array_ref (uids));
+			}
+
+			g_clear_pointer (&results, g_hash_table_unref);
+			*out_results = folder_results;
+			success = TRUE;
+		}
+	} else {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			"No IMAPX folders to search");
+	}
+
+	g_ptr_array_unref (mailboxes);
+
+	return success;
+}
+
 static void
 imapx_store_mailbox_created (CamelIMAPXStore *imapx_store,
 			     CamelIMAPXMailbox *mailbox)
@@ -3255,6 +3328,7 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->delete_folder_sync = imapx_store_delete_folder_sync;
 	store_class->rename_folder_sync = imapx_store_rename_folder_sync;
 	store_class->initial_setup_sync = imapx_initial_setup_sync;
+	store_class->search_multimailbox_sync = imapx_store_search_multimailbox_sync;
 
 	offline_store_class = CAMEL_OFFLINE_STORE_CLASS (class);
 	offline_store_class->dup_downsync_folders = imapx_store_dup_downsync_folders;

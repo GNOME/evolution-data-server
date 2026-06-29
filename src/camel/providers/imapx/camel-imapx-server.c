@@ -154,6 +154,10 @@ static gboolean	imapx_untagged_recent		(CamelIMAPXServer *is,
 						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
+static gboolean	imapx_untagged_esearch		(CamelIMAPXServer *is,
+						 GInputStream *input_stream,
+						 GCancellable *cancellable,
+						 GError **error);
 static gboolean	imapx_untagged_search		(CamelIMAPXServer *is,
 						 GInputStream *input_stream,
 						 GCancellable *cancellable,
@@ -171,6 +175,7 @@ enum {
 	IMAPX_UNTAGGED_ID_BAD = 0,
 	IMAPX_UNTAGGED_ID_BYE,
 	IMAPX_UNTAGGED_ID_CAPABILITY,
+	IMAPX_UNTAGGED_ID_ESEARCH,
 	IMAPX_UNTAGGED_ID_EXISTS,
 	IMAPX_UNTAGGED_ID_EXPUNGE,
 	IMAPX_UNTAGGED_ID_FETCH,
@@ -194,6 +199,7 @@ static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
 	{CAMEL_IMAPX_UNTAGGED_BAD, imapx_untagged_ok_no_bad, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_BYE, imapx_untagged_bye, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_CAPABILITY, imapx_untagged_capability, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_ESEARCH, imapx_untagged_esearch, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_EXISTS, imapx_untagged_exists, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_EXPUNGE, imapx_untagged_expunge, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_FETCH, imapx_untagged_fetch, NULL, TRUE},
@@ -260,6 +266,9 @@ struct _CamelIMAPXServerPrivate {
 	 * when finished and reset the pointer to NULL. */
 	GArray *search_results;
 	GMutex search_results_lock;
+
+	GHashTable *esearch_results;
+	GMutex esearch_results_lock;
 
 	GHashTable *known_alerts;
 	GMutex known_alerts_lock;
@@ -1798,6 +1807,110 @@ imapx_untagged_search (CamelIMAPXServer *is,
 
 exit:
 	g_array_unref (search_results);
+
+	return success;
+}
+
+static gboolean
+imapx_untagged_esearch (CamelIMAPXServer *is,
+                        GInputStream *input_stream,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	gint tok;
+	guint len;
+	guchar *token = NULL;
+	gboolean success = FALSE;
+	gchar *tag = NULL;
+	gchar *mailbox_name = NULL;
+	gchar *utf8_mailbox_name = NULL;
+	guint64 uidvalidity = 0;
+	GArray *uids = NULL;
+
+	tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+	if (tok != '(') {
+		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
+			"ESEARCH: expecting '('");
+		goto exit;
+	}
+
+	while (TRUE) {
+		tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+		if (tok == ')')
+			break;
+		if (tok == IMAPX_TOK_ERROR)
+			goto exit;
+
+		if (token && g_ascii_strcasecmp ((gchar *) token, "TAG") == 0) {
+			tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+			if (tok == IMAPX_TOK_ERROR)
+				goto exit;
+			g_free (tag);
+			tag = g_strndup ((gchar *) token, len);
+		} else if (token && g_ascii_strcasecmp ((gchar *) token, "MAILBOX") == 0) {
+			tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+			if (tok == IMAPX_TOK_ERROR)
+				goto exit;
+			g_free (mailbox_name);
+			mailbox_name = g_strndup ((gchar *) token, len);
+		} else if (token && g_ascii_strcasecmp ((gchar *) token, "UIDVALIDITY") == 0) {
+			if (!camel_imapx_input_stream_number (CAMEL_IMAPX_INPUT_STREAM (input_stream), &uidvalidity, cancellable, error))
+				goto exit;
+		} else {
+			tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+			if (tok == IMAPX_TOK_ERROR)
+				goto exit;
+		}
+	}
+
+	tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+	if (tok == '\n') {
+		success = TRUE;
+		goto exit;
+	}
+	if (tok == IMAPX_TOK_ERROR)
+		goto exit;
+
+	if (token && g_ascii_strcasecmp ((gchar *) token, "UID") == 0) {
+		tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+		if (tok == IMAPX_TOK_ERROR)
+			goto exit;
+		if (token && g_ascii_strcasecmp ((gchar *) token, "ALL") == 0) {
+			uids = imapx_parse_uids (CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
+			if (!uids)
+				goto exit;
+		}
+	}
+
+	while (tok != '\n') {
+		tok = camel_imapx_input_stream_token (CAMEL_IMAPX_INPUT_STREAM (input_stream), &token, &len, cancellable, error);
+		if (tok == IMAPX_TOK_ERROR)
+			goto exit;
+	}
+
+	if (mailbox_name && uids) {
+		if (camel_imapx_server_get_utf8_accept (is)) {
+			utf8_mailbox_name = g_strdup (mailbox_name);
+		} else {
+			utf8_mailbox_name = camel_utf7_utf8 (mailbox_name);
+		}
+
+		g_mutex_lock (&is->priv->esearch_results_lock);
+		if (is->priv->esearch_results == NULL) {
+			is->priv->esearch_results = g_hash_table_new_full (
+				g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_array_unref);
+		}
+
+		g_hash_table_insert (is->priv->esearch_results, utf8_mailbox_name, g_array_ref (uids));
+		g_mutex_unlock (&is->priv->esearch_results_lock);
+	}
+
+	success = TRUE;
+
+ exit:
+	g_free (tag);
+	g_free (mailbox_name);
+	g_clear_pointer (&uids, g_array_unref);
 
 	return success;
 }
@@ -3764,6 +3877,10 @@ imapx_server_finalize (GObject *object)
 		g_array_unref (is->priv->search_results);
 	g_mutex_clear (&is->priv->search_results_lock);
 
+	if (is->priv->esearch_results != NULL)
+		g_hash_table_destroy (is->priv->esearch_results);
+	g_mutex_clear (&is->priv->esearch_results_lock);
+
 	g_hash_table_destroy (is->priv->known_alerts);
 	g_mutex_clear (&is->priv->known_alerts_lock);
 
@@ -3843,6 +3960,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	g_mutex_init (&is->priv->changes_lock);
 	g_mutex_init (&is->priv->search_results_lock);
 	g_mutex_init (&is->priv->known_alerts_lock);
+	g_mutex_init (&is->priv->esearch_results_lock);
 
 	g_weak_ref_init (&is->priv->store, NULL);
 	g_weak_ref_init (&is->priv->select_mailbox, NULL);
@@ -7067,6 +7185,114 @@ camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 
 	if (uid_search_results)
 		g_array_unref (uid_search_results);
+
+	return results;
+}
+
+GHashTable *
+camel_imapx_server_multimailbox_search_sync (CamelIMAPXServer *is,
+                                             GPtrArray *mailboxes, /* CamelIMAPXMailbox * */
+                                             const gchar *search_key,
+                                             const gchar * const *words,
+                                             GCancellable *cancellable,
+                                             GError **error)
+{
+	CamelIMAPXCommand *ic;
+	GHashTable *esearch_results = NULL;
+	GHashTable *results = NULL;
+	guint ii;
+	gboolean need_charset = FALSE;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+	g_return_val_if_fail (mailboxes != NULL, NULL);
+
+	if (CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, MULTISEARCH)) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			"IMAP server does not support multimailbox search");
+		return NULL;
+	}
+
+	if (!camel_imapx_server_get_utf8_accept (is)) {
+		for (ii = 0; !need_charset && words && words[ii]; ii++) {
+			need_charset = !imapx_util_all_is_ascii (words[ii]);
+		}
+	}
+
+	ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_ESEARCH, "ESEARCH IN (mailboxes (");
+	for (ii = 0; ii < mailboxes->len; ii++) {
+		CamelIMAPXMailbox *mailbox = g_ptr_array_index (mailboxes, ii);
+		const gchar *name = camel_imapx_mailbox_get_name (mailbox);
+		gchar *utf7_name = NULL;
+
+		if (!camel_imapx_server_get_utf8_accept (is)) {
+			utf7_name = camel_utf8_utf7 (name);
+			name = utf7_name;
+		}
+
+		if (ii > 0)
+			camel_imapx_command_add (ic, " ");
+		camel_imapx_command_add (ic, "%S", name);
+		g_free (utf7_name);
+	}
+	camel_imapx_command_add (ic, "))");
+
+	if (need_charset)
+		camel_imapx_command_add (ic, " CHARSET UTF-8");
+
+	if (search_key && words) {
+		camel_imapx_command_add (ic, " (");
+		for (ii = 0; words[ii]; ii++) {
+			if (ii > 0)
+				camel_imapx_command_add (ic, " ");
+			camel_imapx_command_add (ic, "%t %s", search_key, words[ii]);
+		}
+		camel_imapx_command_add (ic, ")");
+	}
+
+	success = camel_imapx_server_process_command_sync (is, ic, _("Search failed"), cancellable, error);
+
+	camel_imapx_command_unref (ic);
+
+	g_mutex_lock (&is->priv->esearch_results_lock);
+	esearch_results = g_steal_pointer (&is->priv->esearch_results);
+	g_mutex_unlock (&is->priv->esearch_results_lock);
+
+	if (success) {
+		results = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_ptr_array_unref);
+
+		/* Fill in empty arrays for searched mailboxes so they are cached as searched */
+		for (ii = 0; ii < mailboxes->len; ii++) {
+			CamelIMAPXMailbox *mailbox = g_ptr_array_index (mailboxes, ii);
+			const gchar *mbox_name = camel_imapx_mailbox_get_name (mailbox);
+			g_hash_table_insert (results, g_strdup (mbox_name), g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free));
+		}
+
+		if (esearch_results != NULL) {
+			GHashTableIter iter;
+			gpointer key, value;
+
+			g_hash_table_iter_init (&iter, esearch_results);
+			while (g_hash_table_iter_next (&iter, &key, &value)) {
+				const gchar *mbox_name = key;
+				GArray *uid_search_results = value;
+				GPtrArray *uids = g_hash_table_lookup (results, mbox_name);
+
+				if (uids == NULL)
+					continue;
+
+				for (ii = 0; ii < uid_search_results->len; ii++) {
+					guint32 numeric_uid = g_array_index (uid_search_results, guint32, ii);
+					gchar uid_str[64];
+
+					g_warn_if_fail (g_snprintf (uid_str, sizeof (uid_str), "%" G_GUINT32_FORMAT, numeric_uid) < sizeof (uid_str));
+					g_ptr_array_add (uids, (gpointer) camel_pstring_strdup (uid_str));
+				}
+			}
+		}
+	}
+
+	g_clear_pointer (&esearch_results, g_hash_table_unref);
 
 	return results;
 }

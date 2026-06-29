@@ -81,6 +81,8 @@ camel_imapx_job_get_kind_name (guint32 job_kind)
 		return "UPDATE_QUOTA_INFO";
 	case CAMEL_IMAPX_JOB_UID_SEARCH:
 		return "UID_SEARCH";
+	case CAMEL_IMAPX_JOB_ESEARCH:
+		return "ESEARCH";
 	case CAMEL_IMAPX_JOB_LAST:
 		break;
 	}

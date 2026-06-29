@@ -269,6 +269,13 @@ GPtrArray *	camel_imapx_server_uid_search_sync
 						 const gchar * const *words,
 						 GCancellable *cancellable,
 						 GError **error);
+GHashTable *	camel_imapx_server_multimailbox_search_sync
+						(CamelIMAPXServer *is,
+						 GPtrArray *mailboxes, /* CamelIMAPXMailbox * */
+						 const gchar *search_key,
+						 const gchar * const *words,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	camel_imapx_server_can_use_idle	(CamelIMAPXServer *is);
 gboolean	camel_imapx_server_is_in_idle	(CamelIMAPXServer *is);
 CamelIMAPXMailbox *

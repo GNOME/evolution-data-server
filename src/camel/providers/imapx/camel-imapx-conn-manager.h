@@ -175,6 +175,13 @@ GPtrArray *	camel_imapx_conn_manager_uid_search_sync
 						 const GPtrArray *words,
 						 GCancellable *cancellable,
 						 GError **error);
+GHashTable *	camel_imapx_conn_manager_multimailbox_search_sync
+						(CamelIMAPXConnManager *conn_man,
+						 GPtrArray *mailboxes, /* CamelIMAPXMailbox * */
+						 const gchar *search_key,
+						 const GPtrArray *words,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /* for debugging purposes only */
 void		camel_imapx_conn_manager_dump_queue_status

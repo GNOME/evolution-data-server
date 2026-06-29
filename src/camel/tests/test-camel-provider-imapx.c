@@ -9,6 +9,14 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
+#ifdef G_OS_UNIX
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#endif
+
 #include <camel/camel.h>
 
 #include "camel-test.h"
@@ -506,6 +514,96 @@ test_create_multipart_message (const gchar *subject)
 	g_object_unref (mp_mixed);
 
 	return msg;
+}
+
+static gboolean
+test_server_has_capability (const gchar *capability_name)
+{
+#ifdef G_OS_UNIX
+	struct sockaddr_in addr;
+	const gchar *host;
+	const gchar *user;
+	const gchar *password;
+	guint16 port;
+	gchar buf[4096];
+	gchar *login_cmd;
+	gchar *cap_cmd;
+	gboolean found = FALSE;
+	gssize nread;
+	int fd;
+
+	if (external_server) {
+		host = external_server->host;
+		port = external_server->port;
+		user = external_server->user;
+		password = external_server->password;
+	} else {
+		host = dovecot_test_server_get_host (test_server);
+		port = dovecot_test_server_get_port (test_server);
+		user = dovecot_test_server_get_user (test_server);
+		password = dovecot_test_server_get_password (test_server);
+	}
+
+	memset (&addr, 0, sizeof (addr));
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = inet_addr (host);
+	addr.sin_port = htons (port);
+
+	fd = socket (AF_INET, SOCK_STREAM, 0);
+	if (fd < 0) {
+		return FALSE;
+	}
+
+	if (connect (fd, (struct sockaddr *) &addr, sizeof (addr)) < 0) {
+		close (fd);
+		return FALSE;
+	}
+
+	nread = read (fd, buf, sizeof (buf) - 1);
+	if (nread <= 0) {
+		close (fd);
+		return FALSE;
+	}
+	buf[nread] = '\0';
+
+	login_cmd = g_strdup_printf ("a1 LOGIN %s %s\r\n", user, password);
+	if (write (fd, login_cmd, strlen (login_cmd)) < 0) {
+		g_free (login_cmd);
+		close (fd);
+		return FALSE;
+	}
+	g_free (login_cmd);
+
+	nread = read (fd, buf, sizeof (buf) - 1);
+	if (nread <= 0) {
+		close (fd);
+		return FALSE;
+	}
+	buf[nread] = '\0';
+
+	if (strcasestr (buf, capability_name)) {
+		found = TRUE;
+	} else {
+		cap_cmd = g_strdup ("a2 CAPABILITY\r\n");
+		if (write (fd, cap_cmd, strlen (cap_cmd)) >= 0) {
+			nread = read (fd, buf, sizeof (buf) - 1);
+			if (nread > 0) {
+				buf[nread] = '\0';
+				if (strcasestr (buf, capability_name)) {
+					found = TRUE;
+				}
+			}
+		}
+		g_free (cap_cmd);
+	}
+
+	write (fd, "a3 LOGOUT\r\n", 11);
+	close (fd);
+
+	return found;
+#else
+	return FALSE;
+#endif
 }
 
 static void
@@ -1799,6 +1897,391 @@ test_subscription_state (void)
 	test_imapx_teardown (session, service);
 }
 
+static void
+append_test_message (CamelFolder *folder,
+		     const gchar *subject)
+{
+	CamelMimeMessage *msg;
+	GError *error = NULL;
+	gboolean success;
+	const gchar *body;
+
+	body = "This is a long message body designed to evaluate the multimailbox search capability. "
+	       "It has enough content to exceed the preview limit, so the word we are searching for is not "
+	       "included in the generated message preview. Thus, the client must perform a server-side "
+	       "search instead of checking locally. We need to make sure that the preview does not contain "
+	       "our search target word, so here is some more text to fill it up. Test";
+
+	msg = test_create_message (subject, body);
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_clear_object (&msg);
+}
+
+static guint
+count_result_uids (GHashTable *results,
+		   const gchar *folder_path)
+{
+	GPtrArray *uids;
+
+	uids = g_hash_table_lookup (results, folder_path);
+	if (uids) {
+		return uids->len;
+	}
+
+	return 0;
+}
+
+static void
+test_multimailbox_search (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder_a;
+	CamelFolder *folder_b;
+	CamelFolder *folder_c;
+	GPtrArray *folders;
+	GPtrArray *words;
+	GHashTable *results = NULL;
+	gchar *path_a;
+	gchar *path_b;
+	gchar *path_c;
+	GError *error = NULL;
+	gboolean success;
+	gboolean has_multisearch;
+	CamelStoreSearch *search;
+	GPtrArray *search_items = NULL;
+
+	has_multisearch = test_server_has_capability ("MULTISEARCH");
+	if (has_multisearch) {
+		g_test_message ("Server supports MULTISEARCH, testing with extension");
+	} else {
+		g_test_message ("Server lacks MULTISEARCH, testing fallback path");
+	}
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-msearch");
+	store = CAMEL_STORE (service);
+	test_imapx_connect_service (service);
+
+	test_imapx_create_folder (store, "", "MSearchA");
+	test_imapx_create_folder (store, "", "MSearchB");
+	test_imapx_create_folder (store, "", "MSearchC");
+
+	path_a = test_folder_path ("MSearchA");
+	path_b = test_folder_path ("MSearchB");
+	path_c = test_folder_path ("MSearchC");
+
+	folder_a = camel_store_get_folder_sync (store, path_a, 0, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (folder_a);
+
+	folder_b = camel_store_get_folder_sync (store, path_b, 0, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (folder_b);
+
+	folder_c = camel_store_get_folder_sync (store, path_c, 0, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (folder_c);
+
+	/* Folder A: 4 messages, 2 match "Alpha", 1 matches "Beta" */
+	append_test_message (folder_a, "Alpha Report");
+	append_test_message (folder_a, "Beta Analysis");
+	append_test_message (folder_a, "Alpha Beta Combined");
+	append_test_message (folder_a, "Gamma Unrelated");
+
+	/* Folder B: 3 messages, 1 matches "Alpha", 1 matches "Beta" */
+	append_test_message (folder_b, "Alpha Summary");
+	append_test_message (folder_b, "Beta Overview");
+	append_test_message (folder_b, "Delta Nothing");
+
+	/* Folder C: 3 messages, 1 matches both "Alpha" and "Beta" */
+	append_test_message (folder_c, "Alpha Beta Review");
+	append_test_message (folder_c, "Beta Conclusion");
+	append_test_message (folder_c, "Epsilon Filler");
+
+	success = camel_folder_refresh_info_sync (folder_a, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	success = camel_folder_refresh_info_sync (folder_b, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	success = camel_folder_refresh_info_sync (folder_c, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	g_assert_cmpint (camel_folder_get_message_count (folder_a), ==, 4);
+	g_assert_cmpint (camel_folder_get_message_count (folder_b), ==, 3);
+	g_assert_cmpint (camel_folder_get_message_count (folder_c), ==, 3);
+
+	/* Case 1: Single word "Alpha" across all three folders.
+	 * Expected: folder_a=2, folder_b=1, folder_c=1 */
+	g_test_message ("Case 1: Single word, multiple folders");
+
+	folders = g_ptr_array_new ();
+	g_ptr_array_add (folders, folder_a);
+	g_ptr_array_add (folders, folder_b);
+	g_ptr_array_add (folders, folder_c);
+
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "Alpha");
+
+	success = camel_store_search_multimailbox_sync (
+		store, folders, "SUBJECT", words, &results, NULL, &error);
+
+	if (has_multisearch) {
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_assert_nonnull (results);
+
+		g_test_message ("  Returned %u folder(s)", g_hash_table_size (results));
+		g_assert_cmpuint (count_result_uids (results, path_a), ==, 2);
+		g_assert_cmpuint (count_result_uids (results, path_b), ==, 1);
+		g_assert_cmpuint (count_result_uids (results, path_c), ==, 1);
+
+		g_hash_table_unref (results);
+		results = NULL;
+	} else {
+		g_assert_false (success);
+		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED);
+		g_test_message ("  Expected NOT_SUPPORTED: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_ptr_array_unref (words);
+	g_ptr_array_unref (folders);
+
+	/* Case 2: Single word "Alpha" with only one folder.
+	 * Expected: folder_b=1 */
+	g_test_message ("Case 2: Single word, single folder");
+
+	folders = g_ptr_array_new ();
+	g_ptr_array_add (folders, folder_b);
+
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "Alpha");
+
+	success = camel_store_search_multimailbox_sync (
+		store, folders, "SUBJECT", words, &results, NULL, &error);
+
+	if (has_multisearch) {
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_assert_nonnull (results);
+
+		g_test_message ("  Returned %u folder(s)", g_hash_table_size (results));
+		g_assert_cmpuint (count_result_uids (results, path_b), ==, 1);
+
+		g_hash_table_unref (results);
+		results = NULL;
+	} else {
+		g_assert_false (success);
+		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED);
+		g_test_message ("  Expected NOT_SUPPORTED: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_ptr_array_unref (words);
+	g_ptr_array_unref (folders);
+
+	/* Case 3: Multiple words "Alpha" "Beta" across all three folders.
+	 * Multiple SUBJECT keys are ANDed by IMAP, so only messages whose
+	 * subject contains both words match.
+	 * Expected: folder_a=1 ("Alpha Beta Combined"),
+	 *           folder_b=0, folder_c=1 ("Alpha Beta Review") */
+	g_test_message ("Case 3: Multiple words, multiple folders");
+
+	folders = g_ptr_array_new ();
+	g_ptr_array_add (folders, folder_a);
+	g_ptr_array_add (folders, folder_b);
+	g_ptr_array_add (folders, folder_c);
+
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "Alpha");
+	g_ptr_array_add (words, (gpointer) "Beta");
+
+	success = camel_store_search_multimailbox_sync (
+		store, folders, "SUBJECT", words, &results, NULL, &error);
+
+	if (has_multisearch) {
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_assert_nonnull (results);
+
+		g_test_message ("  Returned %u folder(s)", g_hash_table_size (results));
+		g_assert_cmpuint (count_result_uids (results, path_a), ==, 1);
+		g_assert_cmpuint (count_result_uids (results, path_b), ==, 0);
+		g_assert_cmpuint (count_result_uids (results, path_c), ==, 1);
+
+		g_hash_table_unref (results);
+		results = NULL;
+	} else {
+		g_assert_false (success);
+		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED);
+		g_test_message ("  Expected NOT_SUPPORTED: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_ptr_array_unref (words);
+	g_ptr_array_unref (folders);
+
+	/* Case 4: Multiple words "Alpha" "Beta" with single folder.
+	 * Expected: folder_a=1 ("Alpha Beta Combined") */
+	g_test_message ("Case 4: Multiple words, single folder");
+
+	folders = g_ptr_array_new ();
+	g_ptr_array_add (folders, folder_a);
+
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "Alpha");
+	g_ptr_array_add (words, (gpointer) "Beta");
+
+	success = camel_store_search_multimailbox_sync (
+		store, folders, "SUBJECT", words, &results, NULL, &error);
+
+	if (has_multisearch) {
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_assert_nonnull (results);
+
+		g_test_message ("  Returned %u folder(s)", g_hash_table_size (results));
+		g_assert_cmpuint (count_result_uids (results, path_a), ==, 1);
+
+		g_hash_table_unref (results);
+		results = NULL;
+	} else {
+		g_assert_false (success);
+		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED);
+		g_test_message ("  Expected NOT_SUPPORTED: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_ptr_array_unref (words);
+	g_ptr_array_unref (folders);
+
+	/* Case 5: Word with no matches across all folders.
+	 * Expected: all folders return 0 results */
+	g_test_message ("Case 5: No matches");
+
+	folders = g_ptr_array_new ();
+	g_ptr_array_add (folders, folder_a);
+	g_ptr_array_add (folders, folder_b);
+	g_ptr_array_add (folders, folder_c);
+
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "Zzznonexistent");
+
+	success = camel_store_search_multimailbox_sync (
+		store, folders, "SUBJECT", words, &results, NULL, &error);
+
+	if (has_multisearch) {
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_assert_nonnull (results);
+
+		g_test_message ("  Returned %u folder(s)", g_hash_table_size (results));
+		g_assert_cmpuint (count_result_uids (results, path_a), ==, 0);
+		g_assert_cmpuint (count_result_uids (results, path_b), ==, 0);
+		g_assert_cmpuint (count_result_uids (results, path_c), ==, 0);
+
+		g_hash_table_unref (results);
+		results = NULL;
+	} else {
+		g_assert_false (success);
+		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED);
+		g_test_message ("  Expected NOT_SUPPORTED: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_ptr_array_unref (words);
+	g_ptr_array_unref (folders);
+
+	/* Case 6: Word with diacritics/umlauts "München" across all three folders.
+	 * Expected: folder_a=0, folder_b=1 ("München Report"), folder_c=0 */
+	g_test_message ("Case 6: Word with diacritics/umlauts");
+
+	append_test_message (folder_b, "München Report");
+	success = camel_folder_refresh_info_sync (folder_b, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	folders = g_ptr_array_new ();
+	g_ptr_array_add (folders, folder_a);
+	g_ptr_array_add (folders, folder_b);
+	g_ptr_array_add (folders, folder_c);
+
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "München");
+
+	success = camel_store_search_multimailbox_sync (
+		store, folders, "SUBJECT", words, &results, NULL, &error);
+
+	if (has_multisearch) {
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_assert_nonnull (results);
+
+		g_test_message ("  Returned %u folder(s)", g_hash_table_size (results));
+		g_assert_cmpuint (count_result_uids (results, path_a), ==, 0);
+		g_assert_cmpuint (count_result_uids (results, path_b), ==, 1);
+		g_assert_cmpuint (count_result_uids (results, path_c), ==, 0);
+
+		g_hash_table_unref (results);
+		results = NULL;
+	} else {
+		g_assert_false (success);
+		g_assert_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED);
+		g_test_message ("  Expected NOT_SUPPORTED: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	g_ptr_array_unref (words);
+	g_ptr_array_unref (folders);
+
+	/* Case 7: High-level CamelStoreSearch integration.
+	 * Expected: 11 matches returned across all folders */
+	g_test_message ("Case 7: CamelStoreSearch integration");
+
+	search = camel_store_search_new (store);
+	camel_store_search_add_folder (search, folder_a);
+	camel_store_search_add_folder (search, folder_b);
+	camel_store_search_add_folder (search, folder_c);
+
+	camel_store_search_set_expression (search, "(body-contains \"Test\")");
+
+	success = camel_store_search_rebuild_sync (search, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	success = camel_store_search_get_items_sync (search, &search_items, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (search_items);
+
+	/* All messages (11 in total) have the custom body containing "Test". */
+	g_assert_cmpuint (search_items->len, ==, 11);
+
+	g_clear_pointer (&search_items, g_ptr_array_unref);
+	g_object_unref (search);
+
+	g_object_unref (folder_a);
+	g_object_unref (folder_b);
+	g_object_unref (folder_c);
+
+	test_imapx_delete_folder (store, "MSearchA");
+	test_imapx_delete_folder (store, "MSearchB");
+	test_imapx_delete_folder (store, "MSearchC");
+
+	g_free (path_a);
+	g_free (path_b);
+	g_free (path_c);
+	test_imapx_teardown (session, service);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -1863,6 +2346,7 @@ main (gint argc,
 	g_test_add_func ("/Camel/IMAPx/UserFlags", test_user_flags);
 	g_test_add_func ("/Camel/IMAPx/ServerSearch", test_server_search);
 	g_test_add_func ("/Camel/IMAPx/SubscriptionState", test_subscription_state);
+	g_test_add_func ("/Camel/IMAPx/MultimailboxSearch", test_multimailbox_search);
 
 	ret = g_test_run ();
 

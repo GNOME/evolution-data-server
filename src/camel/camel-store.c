@@ -1391,6 +1391,52 @@ camel_store_can_refresh_folder (CamelStore *store,
 	return class->can_refresh_folder (store, info, error);
 }
 
+/**
+ * camel_store_search_multimailbox_sync:
+ * @store: a #CamelStore
+ * @folders: (element-type CamelFolder): array of folders to search
+ * @search_key: search key (e.g. BODY)
+ * @words: (element-type utf8): words/phrases to search
+ * @out_results: (out) (transfer container) (element-type utf8 GPtrArray): return location for
+ *   a %GHashTable mapping folder names (gchar*) to arrays of matching UID strings (#GPtrArray of
+ *   gchar*)
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Runs search across multiple mailboxes in a single operation.
+ * Returns %G_IO_ERROR_NOT_SUPPORTED when the store does not support this operation.
+ *
+ * Returns: whether search succeeded
+ *
+ * Since: 3.62
+ **/
+gboolean
+camel_store_search_multimailbox_sync (CamelStore *store,
+                                      GPtrArray *folders,
+                                      const gchar *search_key,
+                                      const GPtrArray *words,
+                                      GHashTable **out_results,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folders != NULL, FALSE);
+	g_return_val_if_fail (out_results != NULL, FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, FALSE);
+
+	if (class->search_multimailbox_sync == NULL) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			"Store does not support multimailbox search");
+		return FALSE;
+	}
+
+	return class->search_multimailbox_sync (store, folders, search_key, words, out_results, cancellable, error);
+}
+
 static void
 camel_store_vfolder_rebuild_done_cb (GObject *source_object,
 				     GAsyncResult *result,
