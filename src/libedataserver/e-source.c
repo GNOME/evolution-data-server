@@ -3018,13 +3018,34 @@ e_source_get_extension (ESource *source,
 
 	/* Create a new instance of the appropriate GType. */
 	if (class != NULL) {
+		GType extension_type = G_TYPE_FROM_CLASS (class);
+
+		g_clear_pointer (&hash_table, g_hash_table_destroy);
+
 		g_mutex_lock (&source->priv->changed_lock);
 		source->priv->ignore_changed_signal++;
 		g_mutex_unlock (&source->priv->changed_lock);
 
+		g_rec_mutex_unlock (&source->priv->lock);
+
 		extension = g_object_new (
-			G_TYPE_FROM_CLASS (class),
+			extension_type,
 			"source", source, NULL);
+
+		g_rec_mutex_lock (&source->priv->lock);
+
+		/* Another thread may have created the same extension
+		 * while the lock was released; use the existing one. */
+		if (g_hash_table_lookup (source->priv->extensions, extension_name) != NULL) {
+			g_mutex_lock (&source->priv->changed_lock);
+			source->priv->ignore_changed_signal--;
+			g_mutex_unlock (&source->priv->changed_lock);
+
+			g_clear_object (&extension);
+			extension = g_hash_table_lookup (source->priv->extensions, extension_name);
+			goto exit;
+		}
+
 		source_load_from_key_file (
 			G_OBJECT (extension),
 			source->priv->key_file,
@@ -3045,7 +3066,7 @@ e_source_get_extension (ESource *source,
 #endif
 	}
 
-	g_hash_table_destroy (hash_table);
+	g_clear_pointer (&hash_table, g_hash_table_destroy);
 
 exit:
 	g_rec_mutex_unlock (&source->priv->lock);
@@ -3068,7 +3089,7 @@ gboolean
 e_source_has_extension (ESource *source,
                         const gchar *extension_name)
 {
-	ESourceExtension *extension;
+	gboolean has_it;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (extension_name != NULL, FALSE);
@@ -3076,8 +3097,9 @@ e_source_has_extension (ESource *source,
 	g_rec_mutex_lock (&source->priv->lock);
 
 	/* Two cases to check for, either one is good enough:
-	 * 1) Our internal GKeyFile has a group named 'extension_name'.
-	 * 2) Our 'extensions' table has an entry for 'extension_name'.
+	 * 1) Our 'extensions' table has an entry for 'extension_name'.
+	 * 2) Our internal GKeyFile has a group named 'extension_name'
+	 *    AND it maps to a registered ESourceExtension subclass.
 	 *
 	 * We have to check both data structures in case a new extension
 	 * not present in the GKeyFile was instantiated, but we have not
@@ -3089,16 +3111,19 @@ e_source_has_extension (ESource *source,
 	 * a registered extension name and not just an arbitrary key
 	 * file group name. */
 
-	if (g_key_file_has_group (source->priv->key_file, extension_name)) {
-		extension = e_source_get_extension (source, extension_name);
-	} else {
-		GHashTable *hash_table = source->priv->extensions;
-		extension = g_hash_table_lookup (hash_table, extension_name);
+	has_it = g_hash_table_contains (source->priv->extensions, extension_name);
+
+	if (!has_it && g_key_file_has_group (source->priv->key_file, extension_name)) {
+		GHashTable *hash_table;
+
+		hash_table = source_find_extension_classes ();
+		has_it = g_hash_table_contains (hash_table, extension_name);
+		g_hash_table_destroy (hash_table);
 	}
 
 	g_rec_mutex_unlock (&source->priv->lock);
 
-	return (extension != NULL);
+	return has_it;
 }
 
 /**
