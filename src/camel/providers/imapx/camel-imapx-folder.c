@@ -1261,6 +1261,8 @@ camel_imapx_folder_new (CamelStore *store,
 	CamelIMAPXFolder *imapx_folder;
 	const gchar *short_name;
 	gchar *state_file;
+	gchar *real_junk_path = NULL;
+	gchar *real_trash_path = NULL;
 	gboolean filter_all;
 	gboolean filter_inbox;
 	gboolean filter_junk;
@@ -1288,6 +1290,11 @@ camel_imapx_folder_new (CamelStore *store,
 		"limit-value", &offline_limit_value,
 		NULL);
 
+	if (camel_imapx_settings_get_use_real_junk_path (CAMEL_IMAPX_SETTINGS (settings)))
+		real_junk_path = camel_imapx_settings_dup_real_junk_path (CAMEL_IMAPX_SETTINGS (settings));
+	if (camel_imapx_settings_get_use_real_trash_path (CAMEL_IMAPX_SETTINGS (settings)))
+		real_trash_path = camel_imapx_settings_dup_real_trash_path (CAMEL_IMAPX_SETTINGS (settings));
+
 	g_object_unref (settings);
 
 	short_name = strrchr (folder_name, '/');
@@ -1301,6 +1308,34 @@ camel_imapx_folder_new (CamelStore *store,
 		"display-name", short_name,
 		"full_name", folder_name,
 		"parent-store", store, NULL);
+
+	if (real_junk_path != NULL && g_ascii_strcasecmp (real_junk_path, folder_name) == 0)
+		add_folder_flags |= CAMEL_FOLDER_IS_JUNK;
+
+	if (real_trash_path != NULL && g_ascii_strcasecmp (real_trash_path, folder_name) == 0)
+		add_folder_flags |= CAMEL_FOLDER_IS_TRASH;
+
+	if (filter_all)
+		add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+
+	if (camel_imapx_mailbox_is_inbox (folder_name)) {
+		if (filter_inbox)
+			add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+
+		if (filter_junk)
+			add_folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+	} else {
+		if (filter_junk && !filter_junk_inbox)
+			add_folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+
+		if (imapx_folder_get_apply_filters (CAMEL_IMAPX_FOLDER (folder)))
+			add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+	}
+
+	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | add_folder_flags);
+
+	g_clear_pointer (&real_junk_path, g_free);
+	g_clear_pointer (&real_trash_path, g_free);
 
 	folder_summary = camel_imapx_summary_new (folder);
 	if (!folder_summary) {
@@ -1339,25 +1374,6 @@ camel_imapx_folder_new (CamelStore *store,
 	camel_binding_bind_property (store, "online",
 		imapx_folder->cache, "expire-enabled",
 		G_BINDING_SYNC_CREATE);
-
-	if (filter_all)
-		add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-
-	if (camel_imapx_mailbox_is_inbox (folder_name)) {
-		if (filter_inbox)
-			add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-
-		if (filter_junk)
-			add_folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-	} else {
-		if (filter_junk && !filter_junk_inbox)
-			add_folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-
-		if (imapx_folder_get_apply_filters (imapx_folder))
-			add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-	}
-
-	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | add_folder_flags);
 
 	camel_store_summary_connect_folder_summary (
 		CAMEL_IMAPX_STORE (store)->summary,

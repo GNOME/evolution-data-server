@@ -116,6 +116,7 @@ struct _CamelFolderSummaryPrivate {
 
 	gboolean is_junk_folder;
 	gboolean is_trash_folder;
+	gulong folder_flags_handler_id;
 };
 
 /* this should probably be conditional on it existing */
@@ -193,6 +194,32 @@ free_o_name (gpointer key,
 }
 
 static void
+folder_summary_folder_flags_notify_cb (GObject *folder_object,
+				       GParamSpec *param,
+				       gpointer user_data)
+{
+	CamelFolderSummary *summary = user_data;
+	CamelFolder *folder = CAMEL_FOLDER (folder_object);
+	guint32 folder_flags;
+	gboolean new_is_junk;
+	gboolean new_is_trash;
+
+	folder_flags = camel_folder_get_flags (folder);
+
+	new_is_junk = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
+	new_is_trash = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
+
+	if (new_is_junk == summary->priv->is_junk_folder &&
+	    new_is_trash == summary->priv->is_trash_folder)
+		return;
+
+	summary->priv->is_junk_folder = new_is_junk;
+	summary->priv->is_trash_folder = new_is_trash;
+
+	camel_folder_summary_touch (summary);
+}
+
+static void
 folder_summary_constructed (GObject *object)
 {
 	CamelFolderSummary *self = CAMEL_FOLDER_SUMMARY (object);
@@ -241,6 +268,10 @@ folder_summary_constructed (GObject *object)
 
 		self->priv->is_junk_folder = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
 		self->priv->is_trash_folder = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
+
+		self->priv->folder_flags_handler_id = g_signal_connect (
+			self->priv->folder, "notify::flags",
+			G_CALLBACK (folder_summary_folder_flags_notify_cb), self);
 	}
 }
 
@@ -274,6 +305,10 @@ folder_summary_dispose (GObject *object)
 	g_clear_object (&summary->priv->filter_index);
 
 	if (summary->priv->folder) {
+		if (summary->priv->folder_flags_handler_id) {
+			g_signal_handler_disconnect (summary->priv->folder, summary->priv->folder_flags_handler_id);
+			summary->priv->folder_flags_handler_id = 0;
+		}
 		g_object_weak_unref (G_OBJECT (summary->priv->folder), (GWeakNotify) g_nullify_pointer, &summary->priv->folder);
 		summary->priv->folder = NULL;
 	}

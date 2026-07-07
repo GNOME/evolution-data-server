@@ -768,6 +768,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelSettings *settings;
 	CamelStoreInfo *si;
 	const gchar *user_cache_dir;
+	guint32 add_folder_flags = CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 	gboolean subscribed = TRUE;
 	gboolean filter_all = FALSE, filter_junk = TRUE;
 
@@ -791,7 +792,13 @@ camel_nntp_folder_new (CamelStore *parent,
 		"parent-store", parent, NULL);
 	nntp_folder = (CamelNNTPFolder *) folder;
 
-	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
+	if (filter_all || nntp_folder_get_apply_filters (nntp_folder))
+		add_folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+
+	if (filter_junk)
+		add_folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+
+	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | add_folder_flags);
 
 	storage_path = g_build_filename (user_cache_dir, folder_name, NULL);
 	root = g_strdup_printf ("%s.cmeta", storage_path);
@@ -801,12 +808,6 @@ camel_nntp_folder_new (CamelStore *parent,
 	g_free (storage_path);
 
 	camel_folder_take_folder_summary (folder, (CamelFolderSummary *) camel_nntp_summary_new (folder));
-
-	if (filter_all || nntp_folder_get_apply_filters (nntp_folder))
-		camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_FILTER_RECENT);
-
-	if (filter_junk)
-		camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_FILTER_JUNK);
 
 	camel_folder_summary_load (camel_folder_get_folder_summary (folder), NULL);
 

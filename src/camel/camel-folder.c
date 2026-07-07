@@ -148,6 +148,7 @@ enum {
 	PROP_PARENT_STORE,
 	PROP_MARK_SEEN,
 	PROP_MARK_SEEN_TIMEOUT,
+	PROP_FLAGS,
 	N_PROPS
 };
 
@@ -794,6 +795,12 @@ folder_set_property (GObject *object,
 				CAMEL_FOLDER (object),
 				g_value_get_int (value));
 			return;
+
+		case PROP_FLAGS:
+			camel_folder_set_flags (
+				CAMEL_FOLDER (object),
+				g_value_get_uint (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -839,6 +846,12 @@ folder_get_property (GObject *object,
 		case PROP_MARK_SEEN_TIMEOUT:
 			g_value_set_int (
 				value, camel_folder_get_mark_seen_timeout (
+				CAMEL_FOLDER (object)));
+			return;
+
+		case PROP_FLAGS:
+			g_value_set_uint (
+				value, camel_folder_get_flags (
 				CAMEL_FOLDER (object)));
 			return;
 	}
@@ -1829,6 +1842,22 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_STATIC_STRINGS |
 			CAMEL_FOLDER_PARAM_PERSISTENT);
 
+	/**
+	 * CamelFolder:flags:
+	 *
+	 * Folder flags (bit-or of #CamelFolderFlags).
+	 *
+	 * Since: 3.62
+	 **/
+	properties[PROP_FLAGS] =
+		g_param_spec_uint (
+			"flags", NULL, NULL,
+			0, G_MAXUINT32,
+			0,
+			G_PARAM_READWRITE |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties (object_class, N_PROPS, properties);
 
 	/**
@@ -2318,7 +2347,12 @@ camel_folder_set_flags (CamelFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
+	if (folder->priv->folder_flags == folder_flags)
+		return;
+
 	folder->priv->folder_flags = folder_flags;
+
+	g_object_notify_by_pspec (G_OBJECT (folder), properties[PROP_FLAGS]);
 }
 
 /**

@@ -245,12 +245,12 @@ camel_vtrash_folder_new (CamelStore *parent_store,
 	vtrash->priv->bit = vdata[type].bit;
 	vtrash->priv->type = type;
 
+	camel_folder_set_flags (CAMEL_FOLDER (vtrash), camel_folder_get_flags (CAMEL_FOLDER (vtrash)) | vdata[type].flags);
+
 	camel_vee_folder_construct (
 		CAMEL_VEE_FOLDER (vtrash),
 		CAMEL_STORE_FOLDER_PRIVATE |
 		CAMEL_STORE_FOLDER_CREATE);
-
-	camel_folder_set_flags (CAMEL_FOLDER (vtrash), camel_folder_get_flags (CAMEL_FOLDER (vtrash)) | vdata[type].flags);
 	camel_vee_folder_set_expression_sync ((CamelVeeFolder *) vtrash, vdata[type].expr, CAMEL_VEE_FOLDER_OP_FLAG_SKIP_REBUILD, NULL, NULL);
 
 	return (CamelFolder *) vtrash;
