@@ -3167,7 +3167,7 @@ e_cal_util_init_recur_task_sync (ICalComponent *vtodo,
 
 	due = i_cal_component_get_due (vtodo);
 	if (!due || i_cal_time_is_null_time (due) || !i_cal_time_is_valid_time (due) ||
-	    i_cal_time_compare (dtstart, due) < 0) {
+	    i_cal_time_compare (dtstart, due) > 0) {
 		g_clear_object (&due);
 
 		success = e_cal_util_find_next_occurrence (vtodo, NULL, &due, cal_client, cancellable, error);
