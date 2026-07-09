@@ -1,6 +1,8 @@
 set(SOURCES
 	camel-test.c
 	camel-test.h
+	dovecot-helper.c
+	dovecot-helper.h
 	messages.c
 	messages.h
 	addresses.c

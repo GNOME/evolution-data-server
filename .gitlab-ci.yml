@@ -17,7 +17,7 @@ include:
       tarball-artifact-path: "${TARBALL_NAME}"
 
 .build:
-  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
   stage: build
   script:
     - export SOURCE=$PWD
@@ -45,11 +45,12 @@ include:
             ..
     - ninja
     - ninja install
+    - export CAMEL_TEST_REQUIRE_DOVECOT=1
     - ctest --force-new-ctest-process --output-on-failure
     - popd
 
 fedora:
-  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
   stage: build
   variables:
     PERFORM_FULL_BUILD: "ON"
@@ -110,7 +111,7 @@ flatpak:
     expire_in: 14 days
 
 static analysis:
-  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
   stage: analysis
   script:
     - mkdir -p _build && cd _build
@@ -126,7 +127,7 @@ static analysis:
       - "public/scan-build"
 
 address and undefined behavior sanitizers:
-  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
   stage: analysis
   variables:
     PERFORM_FULL_BUILD: "OFF"
@@ -138,7 +139,7 @@ address and undefined behavior sanitizers:
   allow_failure: true
 
 coverage:
-  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
   stage: analysis
   needs:
     - job: fedora
@@ -163,7 +164,7 @@ coverage:
       - public
 
 pages:
-  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v1
+  image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
   stage: pages
   needs:
     - job: fedora

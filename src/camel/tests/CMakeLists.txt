@@ -63,6 +63,7 @@ set(TESTS
 	test-camel-vee-folder
 	test-camel-folder-body-search
 	test-camel-maildir-flags
+	test-camel-provider-imapx
 )
 
 # Tests that are built but not run automatically
