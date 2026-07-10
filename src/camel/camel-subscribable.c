@@ -395,9 +395,6 @@ subscribable_unsubscribe_folder_thread (GTask *task,
 	CAMEL_CHECK_LOCAL_GERROR (
 		subscribable, unsubscribe_folder_sync, success, local_error);
 
-	if (success)
-		camel_store_delete_cached_folder (CAMEL_STORE (subscribable), folder_name);
-
 	camel_operation_pop_message (cancellable);
 
 	if (local_error != NULL) {

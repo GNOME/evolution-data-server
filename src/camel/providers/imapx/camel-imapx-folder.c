@@ -205,6 +205,22 @@ imapx_folder_get_property (GObject *object,
 }
 
 static void
+imapx_folder_delete (CamelFolder *folder)
+{
+	CamelStore *store;
+
+	store = camel_folder_get_parent_store (folder);
+	if (store != NULL) {
+		camel_store_summary_disconnect_folder_summary (
+			CAMEL_IMAPX_STORE (store)->summary,
+			camel_folder_get_folder_summary (folder));
+	}
+
+	/* Chain up to parent's delete_() method. */
+	CAMEL_FOLDER_CLASS (camel_imapx_folder_parent_class)->delete_ (folder);
+}
+
+static void
 imapx_folder_dispose (GObject *object)
 {
 	CamelIMAPXFolder *folder = CAMEL_IMAPX_FOLDER (object);
@@ -1129,6 +1145,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	object_class->finalize = imapx_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
+	folder_class->delete_ = imapx_folder_delete;
 	folder_class->get_permanent_flags = imapx_get_permanent_flags;
 	folder_class->rename = imapx_rename;
 	folder_class->dup_uncached_uids = imapx_dup_uncached_uids;

@@ -1013,7 +1013,6 @@ camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary,
 
 	if (!g_hash_table_lookup (summary->priv->folder_summaries, folder_summary)) {
 		g_rec_mutex_unlock (&summary->priv->summary_lock);
-		g_warning ("%s: Store summary %p is not connected to folder summary %p", G_STRFUNC, summary, folder_summary);
 		return FALSE;
 	}
 
