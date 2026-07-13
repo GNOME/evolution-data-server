@@ -416,6 +416,8 @@ imapx_update_store_summary (CamelFolder *folder)
 		camel_store_summary_touch (imapx_store->summary);
 		camel_store_summary_save (imapx_store->summary);
 	}
+
+	camel_store_info_unref (si);
 }
 
 gchar *
