@@ -7,7 +7,7 @@
 static void
 test_query (const gchar *query)
 {
-	ECalBackendSExp *sexp = e_cal_backend_sexp_new (query);
+	ECalBackendSExp *sexp;
 	time_t start, end;
 	gboolean generator;
 

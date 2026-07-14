@@ -1679,7 +1679,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		case GPG_CTX_MODE_SET_KEY_TRUST:
 			if (!strncmp ((const gchar *) status, "GET_LINE ", 9)) {
 				if (!strncmp ((const gchar *) status + 9, "edit_ownertrust.value", 21)) {
-					const gchar *choice = "m";
+					const gchar *choice;
 
 					switch (gpg->set_key_trust_value) {
 					case CAMEL_GPG_TRUST_NONE:
@@ -1699,6 +1699,9 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 						break;
 					case CAMEL_GPG_TRUST_ULTIMATE:
 						choice = "5";
+						break;
+					default:
+						choice = "m";
 						break;
 					}
 

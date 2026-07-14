@@ -293,20 +293,16 @@ data_book_view_watcher_memory_place_contact_data_locked (EDataBookViewWatcherMem
 							 ContactData *cd)
 {
 	gint indices_index = contact_data_get_indices_index (cd, self->priv->sort_fields, self->priv->sort_fields_stamp, self->priv->collator);
-	guint new_index = 0;
 
 	if (!self->priv->contacts->len) {
-		new_index = 0;
 		g_ptr_array_add (self->priv->contacts, cd);
 	} else if (self->priv->contacts->len == 1) {
 		gint cmp_value;
 
 		cmp_value = data_book_view_watcher_memory_compare (self, cd, g_ptr_array_index (self->priv->contacts, 0));
 		if (cmp_value < 0) {
-			new_index = 0;
 			g_ptr_array_insert (self->priv->contacts, 0, cd);
 		} else {
-			new_index = 1;
 			g_ptr_array_add (self->priv->contacts, cd);
 		}
 	} else {
@@ -314,12 +310,10 @@ data_book_view_watcher_memory_place_contact_data_locked (EDataBookViewWatcherMem
 
 		cmp_value = data_book_view_watcher_memory_compare (self, cd, g_ptr_array_index (self->priv->contacts, 0));
 		if (cmp_value < 0) {
-			new_index = 0;
 			g_ptr_array_insert (self->priv->contacts, 0, cd);
 		} else {
 			cmp_value = data_book_view_watcher_memory_compare (self, cd, g_ptr_array_index (self->priv->contacts, self->priv->contacts->len - 1));
 			if (cmp_value > 0) {
-				new_index = self->priv->contacts->len;
 				g_ptr_array_add (self->priv->contacts, cd);
 			} else {
 				guint min_index = 0, max_index = self->priv->contacts->len - 1;
@@ -334,8 +328,7 @@ data_book_view_watcher_memory_place_contact_data_locked (EDataBookViewWatcherMem
 						min_index = mid_index;
 				}
 
-				new_index = min_index + 1;
-				g_ptr_array_insert (self->priv->contacts, new_index, cd);
+				g_ptr_array_insert (self->priv->contacts, min_index + 1, cd);
 			}
 		}
 	}

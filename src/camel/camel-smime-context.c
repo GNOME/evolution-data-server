@@ -658,14 +658,12 @@ sm_verify_cmsg (CamelCipherContext *context,
 	SECItem **digests;
 	PLArenaPool *poolp = NULL;
 	CamelStream *mem;
-	NSSCMSVerificationStatus status;
 	CamelCipherValiditySign sign_status = CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN;
 	CamelCipherValidity *valid;
 	GString *description;
 
 	description = g_string_new ("");
 	valid = camel_cipher_validity_new ();
-	status = NSSCMSVS_Unverified;
 
 	/* NB: this probably needs to go into a decoding routine that can be used for processing
 	 * enveloped data too */
@@ -747,7 +745,6 @@ sm_verify_cmsg (CamelCipherContext *context,
 				if (NSS_CMSSignedData_VerifyCertsOnly (sigd, p->certdb, certUsageEmailSigner) != SECSuccess) {
 					g_string_printf (description, _("Certificate is the only message, cannot verify certificates"));
 				} else {
-					status = NSSCMSVS_GoodSignature;
 					g_string_printf (description, _("Certificate is the only message, certificates imported and verified"));
 				}
 			} else {
@@ -762,6 +759,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 					const gchar *status_description;
 					gchar *cn, *em;
 					gint idx;
+					NSSCMSVerificationStatus status;
 
 					si = NSS_CMSSignedData_GetSignerInfo (sigd, j);
 					NSS_CMSSignedData_VerifySignerInfo (sigd, j, p->certdb, certUsageEmailSigner);
