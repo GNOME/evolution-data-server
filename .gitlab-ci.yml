@@ -47,6 +47,11 @@ include:
     - ninja install
     - export CAMEL_TEST_REQUIRE_DOVECOT=1
     - ctest --force-new-ctest-process --output-on-failure
+    - sudo /usr/libexec/cyrus-imapd/master -d
+    - sleep 1
+    - export TERM=dumb
+    - echo 'createmailbox user/testuser' | cyradm --user cyrus --password cyruspass 127.0.0.1 10143
+    - GSETTINGS_SCHEMA_DIR=$PREFIX/share/glib-2.0/schemas src/camel/tests/test-camel-provider-imapx --use-server $SOURCE/.gitlab-ci/cyrus-test-server.conf --data-dir $SOURCE/src/camel/tests/data
     - popd
 
 fedora:
