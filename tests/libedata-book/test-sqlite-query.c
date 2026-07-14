@@ -315,6 +315,8 @@ test_sqlite_query_contains_nickname (EbSqlFixture *fixture,
 	g_assert_cmpstr (g_ptr_array_index (values, 0), ==, "bobby brown");
 	g_assert_cmpstr (g_ptr_array_index (values, 1), ==, "janet jackson");
 	g_assert_cmpstr (g_ptr_array_index (values, 2), ==, "micheal jackson");
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	g_clear_pointer (&values, g_ptr_array_unref);
 
 	success = e_book_sqlite_dup_query_contacts (fixture->ebsql, sexp_exists,
 		E_CONTACT_FULL_NAME, E_BOOK_CURSOR_SORT_ASCENDING, 1, G_MAXUINT, &contacts, NULL, &error);
@@ -356,6 +358,8 @@ test_sqlite_query_contains_nickname (EbSqlFixture *fixture,
 	g_assert_cmpstr (g_ptr_array_index (values, 0), ==, "bobby brown");
 	g_assert_cmpstr (g_ptr_array_index (values, 1), ==, "janet jackson");
 	g_assert_cmpstr (g_ptr_array_index (values, 2), ==, "micheal jackson");
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	g_clear_pointer (&values, g_ptr_array_unref);
 
 	success = e_book_sqlite_dup_query_contacts (fixture->ebsql, sexp_contains_empty,
 		E_CONTACT_FULL_NAME, E_BOOK_CURSOR_SORT_ASCENDING, 1, G_MAXUINT, &contacts, NULL, &error);
@@ -395,6 +399,8 @@ test_sqlite_query_contains_nickname (EbSqlFixture *fixture,
 	g_assert_cmpstr (g_ptr_array_index (uids, 1), ==, "custom-1");
 	g_assert_cmpstr (g_ptr_array_index (values, 0), ==, "janet jackson");
 	g_assert_cmpstr (g_ptr_array_index (values, 1), ==, "micheal jackson");
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	g_clear_pointer (&values, g_ptr_array_unref);
 
 	success = e_book_sqlite_dup_query_contacts (fixture->ebsql, sexp_contains_jackson,
 		E_CONTACT_FULL_NAME, E_BOOK_CURSOR_SORT_ASCENDING, 1, G_MAXUINT, &contacts, NULL, &error);
@@ -454,6 +460,8 @@ test_sqlite_query_contains_phone (EbSqlFixture *fixture,
 	g_assert_cmpstr (g_ptr_array_index (values, 0), ==, "bobby brown");
 	g_assert_cmpstr (g_ptr_array_index (values, 1), ==, "janet jackson");
 	g_assert_cmpstr (g_ptr_array_index (values, 2), ==, "micheal jackson");
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	g_clear_pointer (&values, g_ptr_array_unref);
 
 	success = e_book_sqlite_dup_query_contacts (fixture->ebsql, sexp_exists,
 		E_CONTACT_FULL_NAME, E_BOOK_CURSOR_SORT_ASCENDING, 1, G_MAXUINT, &contacts, NULL, &error);
@@ -495,6 +503,8 @@ test_sqlite_query_contains_phone (EbSqlFixture *fixture,
 	g_assert_cmpstr (g_ptr_array_index (values, 0), ==, "bobby brown");
 	g_assert_cmpstr (g_ptr_array_index (values, 1), ==, "janet jackson");
 	g_assert_cmpstr (g_ptr_array_index (values, 2), ==, "micheal jackson");
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	g_clear_pointer (&values, g_ptr_array_unref);
 
 	success = e_book_sqlite_dup_query_contacts (fixture->ebsql, sexp_contains_empty,
 		E_CONTACT_FULL_NAME, E_BOOK_CURSOR_SORT_ASCENDING, 1, G_MAXUINT, &contacts, NULL, &error);
@@ -534,6 +544,8 @@ test_sqlite_query_contains_phone (EbSqlFixture *fixture,
 	g_assert_cmpstr (g_ptr_array_index (uids, 1), ==, "custom-1");
 	g_assert_cmpstr (g_ptr_array_index (values, 0), ==, "bobby brown");
 	g_assert_cmpstr (g_ptr_array_index (values, 1), ==, "micheal jackson");
+	g_clear_pointer (&uids, g_ptr_array_unref);
+	g_clear_pointer (&values, g_ptr_array_unref);
 
 	success = e_book_sqlite_dup_query_contacts (fixture->ebsql, sexp_contains_9,
 		E_CONTACT_FULL_NAME, E_BOOK_CURSOR_SORT_ASCENDING, 1, G_MAXUINT, &contacts, NULL, &error);

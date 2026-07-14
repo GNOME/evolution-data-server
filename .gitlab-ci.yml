@@ -133,6 +133,7 @@ address and undefined behavior sanitizers:
     PERFORM_FULL_BUILD: "OFF"
     CFLAGS: "-fsanitize=address,undefined"
     CXXFLAGS: "-fsanitize=address,undefined"
+    LSAN_OPTIONS: "suppressions=$CI_PROJECT_DIR/.gitlab-ci/lsan.supp"
   script:
     - mkdir -p public/scan-build
     - !reference [".build", "script"]

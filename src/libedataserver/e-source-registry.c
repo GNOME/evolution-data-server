@@ -2186,9 +2186,11 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 			g_main_loop_ref (create_context->main_loop),
 			(GDestroyNotify) g_main_loop_unref);
 		g_source_attach (timeout_source, create_context->main_context);
-		g_source_unref (timeout_source);
 
 		g_main_loop_run (create_context->main_loop);
+
+		g_source_destroy (timeout_source);
+		g_source_unref (timeout_source);
 	}
 
 	g_signal_handler_disconnect (

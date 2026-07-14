@@ -1,0 +1,13 @@
+# LeakSanitizer suppressions for evolution-data-server CI
+#
+# GLib/GIO: GDBusObjectManagerClient proxy leak (async_initable_init_first
+# allocates proxy state that is never fully released on shutdown)
+leak:async_initable_init_first
+
+# GLib: GScanner internal string buffer retained after g_scanner_destroy
+leak:g_scanner_get_token_i
+
+# GLib/GIO: GDBusObjectManagerClient and ESource registry thread leaks
+leak:e_dbus_object_manager_client_new_for_bus_sync
+leak:source_registry_object_manager_thread
+

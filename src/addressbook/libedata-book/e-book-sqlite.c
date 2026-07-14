@@ -2977,6 +2977,7 @@ ebsql_new_internal (const gchar *path,
 	ebsql = ebsql_ref_from_hash (path);
 	if (ebsql) {
 		EBSQL_NOTE (SCHEMA, g_printerr ("SCHEMA: An EBookSqlite already existed\n"));
+		summary_fields_array_free (fields, n_fields);
 		goto exit;
 	}
 

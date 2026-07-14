@@ -25,6 +25,7 @@ test_remove_contact_by_uid_sync (ETestServerFixture *fixture,
 		g_error ("Failed to add contact");
 
 	uid = e_contact_get (contact, E_CONTACT_UID);
+	g_clear_object (&contact);
 
 	if (!e_book_client_remove_contact_by_uid_sync (book_client, uid, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
 		g_error ("remove contact sync: %s", error->message);

@@ -39,6 +39,7 @@ verify_commit (EContact *contact)
 	g_assert_true (e_vcard_attribute_is_single_valued (attr));
 	email_value = e_vcard_attribute_get_value (attr);
 	g_assert_true (!g_strcmp0 (email_value, EMAIL_ADD));
+	g_free (email_value);
 }
 
 static gboolean
@@ -48,6 +49,7 @@ commit_verify_cb (EBookTestClosure *closure)
 
 	contact = ebook_test_utils_book_get_contact (book, uid);
 	verify_commit (contact);
+	g_clear_object (&contact);
 
 	g_main_loop_quit ((GMainLoop *) (closure->user_data));
 

@@ -24,6 +24,7 @@ test_add_contact_sync (ETestServerFixture *fixture,
 
 	test_print ("successfully added and retrieved contact '%s'\n", uid);
 	g_object_unref (contact);
+	g_free (uid);
 }
 
 static void
@@ -44,6 +45,7 @@ test_add_contact_async (ETestServerFixture *fixture,
 		book, contact, ebook_test_utils_callback_quit, fixture->loop);
 
 	g_main_loop_run (fixture->loop);
+	g_clear_object (&contact);
 }
 
 gint

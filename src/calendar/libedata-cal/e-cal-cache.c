@@ -1551,6 +1551,8 @@ ecc_sexp_func_starts_before (ESExp *esexp,
 	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s<='%s')",
 		ECC_COLUMN_OCCUR_START, ECC_COLUMN_OCCUR_START, date_str);
 
+	g_free (date_str);
+
 	return result;
 }
 

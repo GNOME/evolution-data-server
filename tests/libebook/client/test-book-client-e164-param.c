@@ -112,6 +112,8 @@ test_add_e164_param (ETestServerFixture *fixture,
 	} else {
 		g_assert_true (values->next == NULL);
 	}
+
+	g_object_unref (contact);
 }
 
 #endif /* ENABLE_PHONENUMBER */

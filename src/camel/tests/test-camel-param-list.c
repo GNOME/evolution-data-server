@@ -106,6 +106,7 @@ test_param_list_encoding (void)
 
 		text = camel_header_param_list_format (head);
 		g_assert_cmpstr (text, ==, encode_data[i].list);
+		g_free (text);
 		camel_header_param_list_free (head);
 	}
 }

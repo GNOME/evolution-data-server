@@ -644,6 +644,8 @@ get_required_fields_reply (GObject *source_object,
 		g_strfreev (strv);
 	}
 
+	g_free (prop_value);
+
 	if (cb != NULL && error == NULL)
 		cb (data->book, E_BOOK_ERROR_OK, elist, data->closure);
 	if (cb != NULL && error != NULL)
@@ -828,6 +830,8 @@ get_supported_fields_reply (GObject *source_object,
 		}
 		g_strfreev (strv);
 	}
+
+	g_free (prop_value);
 
 	if (cb != NULL && error == NULL)
 		cb (data->book, E_BOOK_ERROR_OK, elist, data->closure);

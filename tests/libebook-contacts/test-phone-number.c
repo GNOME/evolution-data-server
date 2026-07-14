@@ -372,6 +372,8 @@ test_country_code_for_region (void)
 	g_assert_cmpint (code, ==, 0);
 
 #endif /* ENABLE_PHONENUMBER */
+
+	g_clear_error (&error);
 }
 
 static void
@@ -399,6 +401,7 @@ test_default_region (void)
 #endif /* ENABLE_PHONENUMBER */
 
 	g_free (country);
+	g_clear_error (&error);
 }
 
 gint

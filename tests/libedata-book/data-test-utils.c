@@ -494,6 +494,7 @@ step_test_free (StepData *data)
 		g_free (assertion->locale);
 		g_slice_free (StepAssertion, assertion);
 	}
+	g_list_free (data->assertions);
 
 	g_slice_free (StepData, data);
 }

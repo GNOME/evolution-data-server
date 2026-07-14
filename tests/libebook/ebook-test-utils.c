@@ -118,6 +118,10 @@ ebook_test_utils_book_add_contact_from_test_case_verify (EBook *book,
 	if (contact)
 		*contact = g_object_ref (contact_final);
 
+	g_free (vcard);
+	g_clear_object (&contact_orig);
+	g_clear_object (&contact_final);
+
 	return uid;
 }
 

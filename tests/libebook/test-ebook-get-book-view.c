@@ -81,14 +81,20 @@ get_book_view_cb (EBookTestClosure *closure)
 	g_assert_true (closure->view);
 
 	setup_and_start_view (closure->view, loop);
+	g_free (closure);
 }
 
 static void
 setup_book (EBook *book)
 {
-	ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", NULL);
-	ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-2", NULL);
-	ebook_test_utils_book_add_contact_from_test_case_verify (book, "name-only", NULL);
+	gchar *uid;
+
+	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", NULL);
+	g_free (uid);
+	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-2", NULL);
+	g_free (uid);
+	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "name-only", NULL);
+	g_free (uid);
 }
 
 static void

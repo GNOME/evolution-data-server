@@ -1395,9 +1395,11 @@ source_remove_sync (ESource *source,
 			g_main_loop_ref (remove_context->main_loop),
 			(GDestroyNotify) g_main_loop_unref);
 		g_source_attach (timeout_source, remove_context->main_context);
-		g_source_unref (timeout_source);
 
 		g_main_loop_run (remove_context->main_loop);
+
+		g_source_destroy (timeout_source);
+		g_source_unref (timeout_source);
 	}
 
 	g_signal_handler_disconnect (source, notify_dbus_object_id);

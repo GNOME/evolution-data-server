@@ -55,6 +55,7 @@ test_cursor_sexp_calculate_position (EbSqlCursorFixture *fixture,
 	if (!e_book_sqlite_cursor_set_sexp (((EbSqlFixture *) fixture)->ebsql,
 					    fixture->cursor, sexp, &error))
 		g_error ("Failed to set sexp: %s", error->message);
+	g_free (sexp);
 
 	/* Check new position after modified sexp */
 	if (!e_book_sqlite_cursor_calculate (((EbSqlFixture *) fixture)->ebsql,
@@ -84,6 +85,7 @@ test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
 	if (!e_book_sqlite_cursor_set_sexp (((EbSqlFixture *) fixture)->ebsql,
 					    fixture->cursor, sexp, &error))
 		g_error ("Failed to set sexp: %s", error->message);
+	g_free (sexp);
 
 	/* Step 6 results from the beginning of the filtered list, gets up to contact 'sorted-8' */
 	if (!e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
