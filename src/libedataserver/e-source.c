@@ -124,6 +124,8 @@ struct _ESourcePrivate {
 	GMutex connection_status_change_lock;
 	ESourceConnectionStatus connection_status;
 
+	GSource *dbus_data_change;
+
 	GMutex property_lock;
 
 	gchar *display_name;
@@ -779,12 +781,18 @@ source_parse_dbus_data (ESource *source,
 	return TRUE;
 }
 
-static void
-source_notify_dbus_data_cb (EDBusSource *dbus_source,
-                            GParamSpec *pspec,
-                            ESource *source)
+static gboolean
+source_idle_dbus_data_change_cb (gpointer user_data)
 {
+	ESource *source = E_SOURCE (user_data);
 	GError *local_error = NULL;
+
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
+
+	g_mutex_lock (&source->priv->changed_lock);
+	g_clear_pointer (&source->priv->dbus_data_change, g_source_unref);
+	g_mutex_unlock (&source->priv->changed_lock);
 
 	g_rec_mutex_lock (&source->priv->lock);
 
@@ -799,6 +807,28 @@ source_notify_dbus_data_cb (EDBusSource *dbus_source,
 	}
 
 	g_rec_mutex_unlock (&source->priv->lock);
+
+	return FALSE;
+}
+
+static void
+source_notify_dbus_data_cb (EDBusSource *dbus_source,
+                            GParamSpec *pspec,
+                            ESource *source)
+{
+	g_mutex_lock (&source->priv->changed_lock);
+	if (source->priv->dbus_data_change == NULL &&
+	    source->priv->initialized) {
+		source->priv->dbus_data_change = g_idle_source_new ();
+		g_source_set_callback (
+			source->priv->dbus_data_change,
+			source_idle_dbus_data_change_cb,
+			g_object_ref (source), g_object_unref);
+		g_source_attach (
+			source->priv->dbus_data_change,
+			source->priv->main_context);
+	}
+	g_mutex_unlock (&source->priv->changed_lock);
 }
 
 static gboolean
@@ -1265,6 +1295,14 @@ source_dispose (GObject *object)
 		priv->connection_status_change = NULL;
 	}
 	g_mutex_unlock (&priv->connection_status_change_lock);
+
+	g_mutex_lock (&priv->changed_lock);
+	if (priv->dbus_data_change != NULL) {
+		g_source_destroy (priv->dbus_data_change);
+		g_source_unref (priv->dbus_data_change);
+		priv->dbus_data_change = NULL;
+	}
+	g_mutex_unlock (&priv->changed_lock);
 
 	g_hash_table_remove_all (priv->extensions);
 
