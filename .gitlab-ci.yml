@@ -142,7 +142,6 @@ address and undefined behavior sanitizers:
   script:
     - mkdir -p public/scan-build
     - !reference [".build", "script"]
-  allow_failure: true
 
 coverage:
   image: registry.gitlab.gnome.org/gnome/evolution/fedora:v2
