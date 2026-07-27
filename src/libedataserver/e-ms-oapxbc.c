@@ -211,10 +211,11 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 }
 
 static gchar *
-prepare_prt_sso_request_data (JsonObject *auth_params,
+prepare_prt_sso_request_data (JsonObject *account,
+			      JsonObject *auth_params,
 			      const gchar *sso_url)
 {
-	JsonNode *params, *auth_params_node, *sso_url_node;
+	JsonNode *params, *account_node, *auth_params_node, *sso_url_node;
 	JsonObject *params_obj;
 	JsonGenerator *gen;
 	gchar *data;
@@ -223,10 +224,13 @@ prepare_prt_sso_request_data (JsonObject *auth_params,
 	params_obj = json_object_new ();
 	json_node_set_object (params, params_obj);
 	json_object_unref (params_obj);
+	account_node = json_node_new (JSON_NODE_OBJECT);
+	json_node_set_object (account_node, account);
 	auth_params_node = json_node_new (JSON_NODE_OBJECT);
 	json_node_set_object (auth_params_node, auth_params);
 	sso_url_node = json_node_new (JSON_NODE_VALUE);
 	json_node_set_string (sso_url_node, sso_url);
+	json_object_set_member (params_obj, "account", account_node);
 	json_object_set_member (params_obj, "authParameters", auth_params_node);
 	json_object_set_member (params_obj, "ssoUrl", sso_url_node);
 
@@ -333,7 +337,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 
 	g_return_val_if_fail (E_IS_MS_OAPXBC (self), NULL);
 	auth_params = prepare_prt_auth_params (self, account, scopes, redirect_uri);
-	data = prepare_prt_sso_request_data (auth_params, sso_url);
+	data = prepare_prt_sso_request_data (account, auth_params, sso_url);
 	json_object_unref (auth_params);
 
 	success = e_dbus_identity_broker1_call_acquire_prt_sso_cookie_sync (
