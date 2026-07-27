@@ -14,7 +14,6 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <utime.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -246,7 +245,10 @@ lock_touch (const gchar *path)
 	g_snprintf (name, name_len, "%s.lock", path);
 
 	d (fprintf (stderr, "Updating lock %s\n", name));
-	utime (name, NULL);
+
+	/* AT_SYMLINK_NOFOLLOW keeps this atomic, so a symlink swapped in for
+	 * the lock file gets its own timestamp updated, not the link target's */
+	utimensat (AT_FDCWD, name, NULL, AT_SYMLINK_NOFOLLOW);
 }
 
 static void
