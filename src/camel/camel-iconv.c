@@ -96,6 +96,9 @@ struct {
 	{ "gb2312.1980-0",  "gb18030"    },
 	{ "gb-2312",        "gb18030"    },
 	{ "gb2312",         "gb18030"    },
+	/* "gb2313" is a known mislabeling of "gb2312" (codepage 936)
+	 * produced by some Chinese Windows/Outlook installations */
+	{ "gb2313",         "gb18030"    },
 	{ "gb18030-0",      "gb18030"    },
 	{ "gbk-0",          "GBK"        },
 
