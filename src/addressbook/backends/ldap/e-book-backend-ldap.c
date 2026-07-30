@@ -2215,6 +2215,7 @@ get_contact_dtor (LDAPOp *op)
 typedef struct {
 	LDAPOp op;
 	GSList *contacts;
+	struct berval *cookie;
 } LDAPGetContactListOp;
 
 static void
@@ -2350,6 +2351,8 @@ contact_list_dtor (LDAPOp *op)
 	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp *) op;
 
 	g_slist_free_full (contact_list_op->contacts, g_object_unref);
+
+	g_clear_pointer (&contact_list_op->cookie, ber_bvfree);
 
 	g_free (contact_list_op);
 }
@@ -4961,12 +4964,75 @@ generate_cache_handler (LDAPOp *op,
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
 	} else {
+		LDAPControl **serverctrls = NULL;
+		struct berval *cookie = NULL;
+		ber_int_t total_count = 0;
+		gint ldap_err = LDAP_SUCCESS;
+		gint parse_err = LDAP_CONTROL_NOT_FOUND;
 		GSList *l;
 		gint contact_num = 0;
 		gchar *status_msg;
 		GDateTime *now;
 		gchar *update_str;
 		GList *contacts, *link;
+
+		if (msg_type == LDAP_RES_SEARCH_RESULT) {
+			g_rec_mutex_lock (&eds_ldap_handler_lock);
+			if (bl->priv->ldap) {
+				ldap_parse_result (bl->priv->ldap, res, &ldap_err, NULL, NULL, NULL, &serverctrls, 0);
+				if (serverctrls) {
+					parse_err = ldap_parse_page_control (bl->priv->ldap, serverctrls, &total_count, &cookie);
+				}
+			}
+			g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+			g_clear_pointer (&serverctrls, ldap_controls_free);
+
+			if (parse_err == LDAP_SUCCESS && cookie && cookie->bv_len > 0) {
+				LDAPControl *page_ctrl = NULL;
+				LDAPControl *server_controls[2] = { NULL, NULL };
+				gint page_size = 1000;
+				gint contact_list_msgid = -1;
+
+				if (bl->priv->ldap_limit > 0)
+					page_size = bl->priv->ldap_limit;
+
+				g_clear_pointer (&contact_list_op->cookie, ber_bvfree);
+				contact_list_op->cookie = g_steal_pointer (&cookie);
+
+				g_rec_mutex_lock (&eds_ldap_handler_lock);
+				if (bl->priv->ldap) {
+					ldap_create_page_control (bl->priv->ldap, page_size, contact_list_op->cookie, 0, &page_ctrl);
+					if (page_ctrl)
+						server_controls[0] = page_ctrl;
+
+					ldap_err = ldap_search_ext (
+						bl->priv->ldap,
+						bl->priv->ldap_rootdn,
+						bl->priv->ldap_scope,
+						"(cn=*)",
+						NULL, 0,
+						server_controls[0] ? server_controls : NULL,
+						NULL,
+						NULL, /* XXX timeout */
+						LDAP_NO_LIMIT, &contact_list_msgid);
+
+					if (page_ctrl)
+						ldap_control_free (page_ctrl);
+				} else {
+					ldap_err = LDAP_SERVER_DOWN;
+				}
+				g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+				if (ldap_err == LDAP_SUCCESS && contact_list_msgid != -1) {
+					ldap_op_change_id (op, contact_list_msgid);
+					return;
+				}
+			}
+
+			g_clear_pointer (&cookie, ber_bvfree);
+			g_clear_pointer (&contact_list_op->cookie, ber_bvfree);
+		}
 
 		contacts = e_book_backend_cache_get_contacts (bl->priv->cache, NULL);
 		for (link = contacts; link; link = g_list_next (link)) {
@@ -4992,12 +5058,14 @@ generate_cache_handler (LDAPOp *op,
 			e_book_backend_cache_add_contact (bl->priv->cache, contact);
 			e_book_backend_notify_update (op->backend, contact);
 		}
-		e_book_backend_cache_set_populated (bl->priv->cache);
-		now = g_date_time_new_now_utc ();
-		update_str = g_date_time_format_iso8601 (now);
-		g_date_time_unref (now);
-		e_book_backend_cache_set_time (bl->priv->cache, update_str);
-		g_free (update_str);
+		if (ldap_err == LDAP_SUCCESS) {
+			e_book_backend_cache_set_populated (bl->priv->cache);
+			now = g_date_time_new_now_utc ();
+			update_str = g_date_time_format_iso8601 (now);
+			g_date_time_unref (now);
+			e_book_backend_cache_set_time (bl->priv->cache, update_str);
+			g_free (update_str);
+		}
 		e_file_cache_thaw_changes (E_FILE_CACHE (bl->priv->cache));
 		e_book_backend_notify_complete (op->backend);
 		ldap_op_finished (op);
@@ -5017,6 +5085,9 @@ generate_cache_dtor (LDAPOp *op)
 	EBookBackendLDAP *ldap_backend = E_BOOK_BACKEND_LDAP (op->backend);
 
 	g_slist_free_full (contact_list_op->contacts, g_object_unref);
+
+	g_clear_pointer (&contact_list_op->cookie, ber_bvfree);
+
 	g_free (contact_list_op);
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -5094,16 +5165,34 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	do {
+		LDAPControl *page_ctrl = NULL;
+		LDAPControl *server_controls[2] = { NULL, NULL };
+		gint page_size = 1000;
+
+		if (priv->ldap_limit > 0)
+			page_size = priv->ldap_limit;
+
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (priv->ldap) {
+			ldap_create_page_control (
+				priv->ldap, page_size,
+				NULL, 0, &page_ctrl);
+			if (page_ctrl)
+				server_controls[0] = page_ctrl;
+
 			ldap_error = ldap_search_ext (
 				priv->ldap,
 				priv->ldap_rootdn,
 				priv->ldap_scope,
 				"(cn=*)",
-				NULL, 0, NULL, NULL,
+				NULL, 0,
+				server_controls[0] ? server_controls : NULL,
+				NULL,
 				NULL, /* XXX timeout */
 				LDAP_NO_LIMIT, &contact_list_msgid);
+
+			if (page_ctrl)
+				ldap_control_free (page_ctrl);
 		} else {
 			ldap_error = LDAP_SERVER_DOWN;
 		}
