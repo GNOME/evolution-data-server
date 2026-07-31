@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.61.2 2026-07-31
+---------------------------------------
+
+Bug Fixes:
+	I#104 - LDAP: Support Simple Paged Results Control (RFC 2696) (John Cardullo)
+	I#132 - Implement IMAP4 Multimailbox SEARCH Extension (John Cardullo)
+	I#650 - Camel: Real junk folder does not count unread junk-marked messages
+	I#651 - e_cal_util_init_recur_task_sync: Due date incorrectly reset
+	I#653 - camel-lock-helper: No follow symlink on lock time change
+	M!227 - Correct some issues found by static analyzer (Federico Mena Quintero)
+	M!230 - Fix memory leaks detected by LeakSanitizer in CI
+	M!231 - CI: Run IMAPx tests also under Cyrus server
+	M!232 - CI: Make the sanitizer job fail on errors (Federico Mena Quintero)
+	M!233 - e-ms-oapc: fix prt_sso_request (Benedikt Niedermayr)
+	M!235 - e-ms-oapxbc: Microsoft Identity Broker v3 fixes (Konrad Schwarz)
+	evo-I#2142 - ESourceSelectable: Add 'groups' property (IGS_GIT)
+	evo-I#3345 - source-registry: Deadlock when setting up m365 GOA account
+
+Miscellaneous:
+	Camel: Fix a memory leak after folder unsubscribe/deletion
+	IMAPx: Fix a memory leak in imapx_update_store_summary()
+	camel: Add IMAPx provider integration tests
+	ESource: Schedule D-Bus object change signal notification in idle
+	camel-iconv: Treat "gb2313" charset as "gb18030"
+
+Translations:
+	Aurimas Aurimas Černius (lt)
+	Baurzhan Muftakhidinov (kk)
+	burns (pt_BR)
+	Marcel Mrówka (pl)
+	Martin (sl)
+	Sabri Ünal (tr)
+
 Evolution-Data-Server 3.61.1 2026-06-26
 ---------------------------------------
 
