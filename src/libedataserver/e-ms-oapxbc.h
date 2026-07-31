@@ -25,6 +25,7 @@ EMsOapxbc *	e_ms_oapxbc_new_sync	(const gchar *client_id,
 
 JsonObject *	e_ms_oapxbc_get_accounts_sync
 					(EMsOapxbc *self,
+				         const gchar *redirect_uri,
 					 GCancellable *cancellable,
 					 GError **error);
 

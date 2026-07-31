@@ -146,6 +146,7 @@ e_ms_oapxbc_new_sync (const gchar *client_id,
  **/
 JsonObject *
 e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
+			       const gchar *redirect_uri,
 			       GCancellable *cancellable,
 			       GError **error)
 {
@@ -165,7 +166,7 @@ e_ms_oapxbc_get_accounts_sync (EMsOapxbc *self,
 	json_builder_set_member_name (builder, "clientId");
 	json_builder_add_string_value (builder, self->client_id);
 	json_builder_set_member_name (builder, "redirectUri");
-	json_builder_add_string_value (builder, self->client_id);
+	json_builder_add_string_value (builder, redirect_uri);
 	json_builder_end_object (builder);
 	root = json_builder_get_root (builder);
 	g_object_unref (builder);
@@ -247,7 +248,8 @@ static JsonObject *
 prepare_prt_auth_params (EMsOapxbc *self,
 			 JsonObject *account,
 			 JsonArray *scopes,
-			 const gchar *redirect_uri)
+			 const gchar *redirect_uri,
+			 const gchar *sso_url)
 {
 	JsonNode *account_node, *scopes_node, *root;
 	JsonObject *auth_params;
@@ -280,6 +282,8 @@ prepare_prt_auth_params (EMsOapxbc *self,
 	json_builder_add_value (builder, scopes_node);
 	json_builder_set_member_name (builder, "username");
 	json_builder_add_string_value (builder, username);
+	json_builder_set_member_name (builder, "ssoUrl");
+	json_builder_add_string_value (builder, sso_url);
 	json_builder_end_object (builder);
 
 	root = json_builder_get_root (builder);
@@ -336,7 +340,7 @@ e_ms_oapxbc_acquire_prt_sso_cookie_sync (EMsOapxbc *self,
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_MS_OAPXBC (self), NULL);
-	auth_params = prepare_prt_auth_params (self, account, scopes, redirect_uri);
+	auth_params = prepare_prt_auth_params (self, account, scopes, redirect_uri, sso_url);
 	data = prepare_prt_sso_request_data (account, auth_params, sso_url);
 	json_object_unref (auth_params);
 
