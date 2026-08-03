@@ -13,10 +13,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#ifndef G_OS_WIN32
-#include <gio/gdesktopappinfo.h>
-#endif
-
 #include "libecal/libecal.h"
 #include "libedataserverui/libedataserverui.h"
 
@@ -218,47 +214,6 @@ e_alarm_notify_audio (EAlarmNotify *an,
 	}
 
 	return keep_in_reminders;
-}
-
-/* Copy of e_util_is_running_gnome() from Evolution */
-static gboolean
-e_alarm_notify_is_running_gnome (void)
-{
-#ifdef G_OS_WIN32
-	return FALSE;
-#else
-	static gint runs_gnome = -1;
-
-	if (runs_gnome == -1) {
-		const gchar *desktop;
-		desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-		runs_gnome = 0;
-		if (desktop != NULL) {
-			gint ii;
-			gchar **desktops = g_strsplit (desktop, ":", -1);
-			for (ii = 0; desktops[ii]; ii++) {
-				if (!g_ascii_strcasecmp (desktops[ii], "gnome")) {
-					runs_gnome = 1;
-					break;
-				}
-			}
-			g_strfreev (desktops);
-		}
-
-		if (runs_gnome) {
-			GDesktopAppInfo *app_info;
-
-			app_info = g_desktop_app_info_new ("gnome-notifications-panel.desktop");
-			if (!app_info) {
-				runs_gnome = 0;
-			}
-
-			g_clear_object (&app_info);
-		}
-	}
-
-	return runs_gnome != 0;
-#endif
 }
 
 static gchar *
@@ -867,45 +822,42 @@ e_alarm_notify_reminders_changed_cb (ERemindersWidget *reminders,
 		n_reminders = gtk_tree_model_iter_n_children (model, NULL);
 	}
 
-	/* This is to update tray icon only, which is not used in GNOME */
-	if (!e_alarm_notify_is_running_gnome ()) {
-		if (n_reminders <= 0) {
-			if (an->priv->status_icon) {
-				gtk_status_icon_set_visible (an->priv->status_icon, FALSE);
-				g_clear_object (&an->priv->status_icon);
-			}
+	if (n_reminders <= 0) {
+		if (an->priv->status_icon) {
+			gtk_status_icon_set_visible (an->priv->status_icon, FALSE);
+			g_clear_object (&an->priv->status_icon);
+		}
+	} else {
+		if (!an->priv->status_icon) {
+			an->priv->status_icon = gtk_status_icon_new ();
+			gtk_status_icon_set_title (an->priv->status_icon, _("Reminders"));
+			gtk_status_icon_set_from_icon_name (an->priv->status_icon, "appointment-soon");
+
+			g_signal_connect (an->priv->status_icon, "activate",
+				G_CALLBACK (e_alarm_notify_status_icon_activated_cb), an);
+
+			g_signal_connect (an->priv->status_icon, "popup-menu",
+				G_CALLBACK (e_alarm_notify_status_icon_popup_menu_cb), an);
+		}
+
+		if (n_reminders == 1 && an->priv->status_icon_tooltip) {
+			gtk_status_icon_set_tooltip_text (an->priv->status_icon, an->priv->status_icon_tooltip);
 		} else {
-			if (!an->priv->status_icon) {
-				an->priv->status_icon = gtk_status_icon_new ();
-				gtk_status_icon_set_title (an->priv->status_icon, _("Reminders"));
-				gtk_status_icon_set_from_icon_name (an->priv->status_icon, "appointment-soon");
+			gchar *str;
 
-				g_signal_connect (an->priv->status_icon, "activate",
-					G_CALLBACK (e_alarm_notify_status_icon_activated_cb), an);
+			str = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE,
+				"You have %d reminder", "You have %d reminders",
+				n_reminders), n_reminders);
+			gtk_status_icon_set_tooltip_text (an->priv->status_icon, str);
+			g_free (str);
+		}
 
-				g_signal_connect (an->priv->status_icon, "popup-menu",
-					G_CALLBACK (e_alarm_notify_status_icon_popup_menu_cb), an);
-			}
+		gtk_status_icon_set_visible (an->priv->status_icon, TRUE);
 
-			if (n_reminders == 1 && an->priv->status_icon_tooltip) {
-				gtk_status_icon_set_tooltip_text (an->priv->status_icon, an->priv->status_icon_tooltip);
-			} else {
-				gchar *str;
-
-				str = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE,
-					"You have %d reminder", "You have %d reminders",
-					n_reminders), n_reminders);
-				gtk_status_icon_set_tooltip_text (an->priv->status_icon, str);
-				g_free (str);
-			}
-
-			gtk_status_icon_set_visible (an->priv->status_icon, TRUE);
-
-			if (an->priv->status_icon_blink_id <= 0 &&
-			    an->priv->last_n_reminders < n_reminders) {
-				an->priv->status_icon_blink_countdown = 30;
-				an->priv->status_icon_blink_id = e_named_timeout_add (500, e_alarm_notify_status_icon_blink_cb, an);
-			}
+		if (an->priv->status_icon_blink_id <= 0 &&
+		    an->priv->last_n_reminders < n_reminders) {
+			an->priv->status_icon_blink_countdown = 30;
+			an->priv->status_icon_blink_id = e_named_timeout_add (500, e_alarm_notify_status_icon_blink_cb, an);
 		}
 	}
 
@@ -1253,11 +1205,22 @@ e_alarm_notify_initable_init (GInitableIface *iface)
 static void
 e_alarm_notify_init (EAlarmNotify *an)
 {
+	/* the value is set, but not used, because it's checked for it earlier;
+	   it's here only to have glib know about it */
+	static gboolean is_autostart = FALSE;
+	static GOptionEntry options[] = {
+		{ "autostart", '\0', 0, G_OPTION_ARG_NONE, &is_autostart,
+		  N_("The app is auto-started"), NULL },
+		{ NULL }
+	};
+
 	an->priv = e_alarm_notify_get_instance_private (an);
 	an->priv->notification_ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	an->priv->last_n_reminders = G_MAXINT32;
 
 	g_mutex_init (&an->priv->dismiss_lock);
+
+	g_application_add_main_option_entries (G_APPLICATION (an), options);
 }
 
 /*

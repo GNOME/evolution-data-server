@@ -7,7 +7,7 @@ After=graphical-session.target
 Type=dbus
 Slice=app.slice
 BusName=@ALARM_NOTIFY_DBUS_SERVICE_NAME@
-ExecStart=@privlibexecdir@/evolution-alarm-notify
+ExecStart=@privlibexecdir@/evolution-alarm-notify --autostart
 Restart=on-failure
 
 [Install]
