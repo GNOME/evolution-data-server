@@ -5517,6 +5517,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 			    GHashTable *known_uids,
 			    guint64 from_uidl,
 			    guint64 to_uidl,
+			    guint64 changedsince,
 			    GCancellable *cancellable,
 			    GError **error)
 {
@@ -5534,9 +5535,17 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 		from_uidl = 1;
 
 	if (to_uidl > 0) {
-		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH %lld:%lld (UID FLAGS)", from_uidl, to_uidl);
+		if (changedsince > 0) {
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH %lld:%lld (UID FLAGS) (CHANGEDSINCE %lld VANISHED)", from_uidl, to_uidl, changedsince);
+		} else {
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH %lld:%lld (UID FLAGS)", from_uidl, to_uidl);
+		}
 	} else {
-		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH %lld:* (UID FLAGS)", from_uidl);
+		if (changedsince > 0) {
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH %lld:* (UID FLAGS) (CHANGEDSINCE %lld VANISHED)", from_uidl, changedsince);
+		} else {
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH %lld:* (UID FLAGS)", from_uidl);
+		}
 	}
 
 	g_return_val_if_fail (is->priv->fetch_changes_mailbox == NULL, FALSE);
@@ -5794,6 +5803,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	guint64 highestmodseq;
 	guint32 total;
 	guint64 uidl;
+	guint64 changedsince_modseq = 0;
 	gboolean need_rescan, do_old_flags_update;
 	gboolean uidvalidity_changed;
 	gboolean success;
@@ -5869,7 +5879,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		    imapx_summary->modseq != highestmodseq) {
 			c (
 				is->priv->tagprefix,
-				"Eep, after QRESYNC we're out of sync. "
+				"After QRESYNC folder changed, doing incremental CHANGEDSINCE resync. "
 				"total %u / %u, unread %u / %u, modseq %"
 				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT " in folder:'%s'\n",
 				total, messages,
@@ -5879,8 +5889,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				highestmodseq,
 				camel_folder_get_full_name (folder));
 
-			/* To make sure whole folder content is re-checked when the cache is out of sync */
-			total = 0;
+			changedsince_modseq = imapx_summary->modseq;
 		} else {
 			imapx_summary->uidnext = uidnext;
 
@@ -5921,7 +5930,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
-	do_old_flags_update = camel_imapx_server_do_old_flags_update (folder);
+	do_old_flags_update = !changedsince_modseq && camel_imapx_server_do_old_flags_update (folder);
 
 	if (do_old_flags_update) {
 		/* Remember summary state before running the update, in case there are
@@ -5931,9 +5940,15 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		summary_uids = camel_folder_summary_dup_uids (CAMEL_FOLDER_SUMMARY (imapx_summary));
 	}
 
-	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
-	if (success && uidl != 1 && do_old_flags_update)
-		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
+	if (changedsince_modseq) {
+		/* Use the whole 1:* range on purpose, to receive VANISHED responses for
+		   the whole mailbox, not only for the not-yet-locally-known messages. */
+		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 1, 0, changedsince_modseq, cancellable, error);
+	} else {
+		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, 0, cancellable, error);
+		if (success && uidl != 1 && do_old_flags_update)
+			success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, 0, cancellable, error);
+	}
 
 	if (success) {
 		imapx_summary->modseq = highestmodseq;

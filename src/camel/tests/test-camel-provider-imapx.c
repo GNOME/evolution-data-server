@@ -1331,6 +1331,146 @@ test_refresh_info (void)
 }
 
 static void
+test_qresync_changedsince (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelSettings *settings;
+	CamelSession *session2;
+	CamelService *service2;
+	CamelFolder *folder2;
+	CamelSettings *settings2;
+	CamelMimeMessage *msg;
+	CamelMessageInfo *info;
+	GPtrArray *uids;
+	GPtrArray *new_uids;
+	gchar *folder_name;
+	gchar *deleted_uid;
+	guint32 flags;
+	guint uid_index;
+	GError *error = NULL;
+	gboolean success;
+	gboolean deleted_uid_found;
+	gint ii;
+
+	if (!test_server_has_capability ("QRESYNC")) {
+		g_test_skip ("Server lacks QRESYNC");
+		return;
+	}
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-qresync");
+	store = CAMEL_STORE (service);
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "use-qresync", TRUE, NULL);
+	g_object_unref (settings);
+
+	test_imapx_connect_service (service);
+
+	test_imapx_create_folder (store, "", "QResyncTest");
+
+	folder_name = test_folder_path ("QResyncTest");
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	for (ii = 0; ii < 3; ii++) {
+		gchar *subject;
+
+		subject = g_strdup_printf ("QResync message %d", ii);
+		msg = test_create_message (subject, "Body.\n");
+		success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_object_unref (msg);
+		g_free (subject);
+	}
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 3);
+
+	uids = camel_folder_dup_uids (folder);
+	g_assert_cmpint (uids->len, ==, 3);
+	deleted_uid = g_strdup (uids->pdata[1]);
+
+	session2 = test_imapx_session_new ();
+	service2 = test_imapx_create_service (session2, "test-qresync-ext");
+
+	settings2 = camel_service_ref_settings (service2);
+	g_object_set (settings2, "use-qresync", TRUE, NULL);
+	g_object_unref (settings2);
+
+	test_imapx_connect_service (service2);
+
+	folder2 = camel_store_get_folder_sync (CAMEL_STORE (service2),
+		folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	success = camel_folder_refresh_info_sync (folder2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	camel_folder_set_message_flags (folder2, uids->pdata[0],
+		CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	success = camel_folder_synchronize_sync (folder2, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	camel_folder_delete_message (folder2, deleted_uid);
+
+	success = camel_folder_expunge_sync (folder2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	g_object_unref (folder2);
+
+	test_imapx_teardown (session2, service2);
+
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 3);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 2);
+
+	info = camel_folder_get_message_info (folder, uids->pdata[0]);
+	g_assert_nonnull (info);
+	flags = camel_message_info_get_flags (info);
+	g_assert_true ((flags & CAMEL_MESSAGE_SEEN) != 0);
+	g_clear_object (&info);
+
+	new_uids = camel_folder_dup_uids (folder);
+	g_assert_cmpint (new_uids->len, ==, 2);
+
+	deleted_uid_found = FALSE;
+	for (uid_index = 0; uid_index < new_uids->len; uid_index++) {
+		if (g_strcmp0 (new_uids->pdata[uid_index], deleted_uid) == 0) {
+			deleted_uid_found = TRUE;
+			break;
+		}
+	}
+	g_assert_false (deleted_uid_found);
+
+	g_ptr_array_unref (new_uids);
+	g_ptr_array_unref (uids);
+	g_free (deleted_uid);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "QResyncTest");
+
+	g_free (folder_name);
+
+	test_imapx_teardown (session, service);
+}
+
+static void
 test_copy_messages (void)
 {
 	CamelSession *session;
@@ -2338,6 +2478,7 @@ main (gint argc,
 	g_test_add_func ("/Camel/IMAPx/Expunge", test_expunge);
 	g_test_add_func ("/Camel/IMAPx/TransferMessages", test_transfer_messages);
 	g_test_add_func ("/Camel/IMAPx/RefreshInfo", test_refresh_info);
+	g_test_add_func ("/Camel/IMAPx/QResyncChangedSince", test_qresync_changedsince);
 	g_test_add_func ("/Camel/IMAPx/CopyMessages", test_copy_messages);
 	g_test_add_func ("/Camel/IMAPx/NestedFolderRename", test_nested_folder_rename);
 	g_test_add_func ("/Camel/IMAPx/MessageInfo", test_message_info);
