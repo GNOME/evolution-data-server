@@ -64,6 +64,7 @@ set(TESTS
 	test-camel-folder-body-search
 	test-camel-maildir-flags
 	test-camel-provider-imapx
+	test-camel-provider-nntp
 )
 
 # Tests that are built but not run automatically

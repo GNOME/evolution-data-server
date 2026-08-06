@@ -257,8 +257,7 @@ test_imapx_connect_service (CamelService *service)
 	GError *error = NULL;
 	gboolean success;
 
-	success = camel_offline_store_set_online_sync (
-		CAMEL_OFFLINE_STORE (service), TRUE, NULL, &error);
+	success = camel_offline_store_set_online_sync (CAMEL_OFFLINE_STORE (service), TRUE, NULL, &error);
 	g_assert_no_error (error);
 	g_assert_true (success);
 

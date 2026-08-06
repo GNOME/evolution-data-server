@@ -52,6 +52,23 @@ include:
     - export TERM=dumb
     - echo 'createmailbox user/testuser' | cyradm --user cyrus --password cyruspass 127.0.0.1 10143
     - GSETTINGS_SCHEMA_DIR=$PREFIX/share/glib-2.0/schemas src/camel/tests/test-camel-provider-imapx --use-server $SOURCE/.gitlab-ci/cyrus-test-server.conf --data-dir $SOURCE/src/camel/tests/data
+    - sudo killall master || true
+    - |
+      $HOME/_wendzel/sbin/wendzelnntpd < /dev/null > /tmp/wendzelnntpd.log 2>&1 &
+      for i in $(seq 1 20); do
+        if bash -c 'exec 3<>/dev/tcp/127.0.0.1/11119' 2>/dev/null; then
+          break
+        fi
+        sleep 0.5
+      done
+      if GSETTINGS_SCHEMA_DIR=$PREFIX/share/glib-2.0/schemas src/camel/tests/test-camel-provider-nntp --use-server $SOURCE/.gitlab-ci/nntp-test-server.conf --data-dir $SOURCE/src/camel/tests/data; then
+        NNTP_OK=1
+      else
+        NNTP_OK=0
+        cat /tmp/wendzelnntpd.log 2>&1 || true
+      fi
+      killall -9 wendzelnntpd || true
+      [ "$NNTP_OK" = "1" ]
     - popd
 
 fedora:
