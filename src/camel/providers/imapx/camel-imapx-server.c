@@ -5930,7 +5930,11 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
-	do_old_flags_update = !changedsince_modseq && camel_imapx_server_do_old_flags_update (folder);
+	/* bypass the single-client-mode throttle on a message/unread count mismatch */
+	do_old_flags_update = !changedsince_modseq &&
+		(total != messages ||
+		camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)) != unseen ||
+		camel_imapx_server_do_old_flags_update (folder));
 
 	if (do_old_flags_update) {
 		/* Remember summary state before running the update, in case there are
