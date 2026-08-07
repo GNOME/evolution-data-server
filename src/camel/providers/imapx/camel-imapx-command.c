@@ -483,7 +483,11 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 
 		g_string_append_c (buffer, '{');
 		g_string_append_printf (buffer, "%u", total_size);
-		if (camel_imapx_server_have_capability (ic->is, IMAPX_CAPABILITY_LITERALPLUS)) {
+		if (camel_imapx_server_have_capability (ic->is, IMAPX_CAPABILITY_LITERALPLUS) ||
+		    (camel_imapx_server_have_capability (ic->is, IMAPX_CAPABILITY_LITERALMINUS) &&
+		     /* RFC 7888 (LITERAL-): non-synchronizing literals are only
+		      * allowed for octet counts of 4096 or less. */
+		     total_size <= 4096)) {
 			g_string_append_c (buffer, '+');
 		} else {
 			type &= ~CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
