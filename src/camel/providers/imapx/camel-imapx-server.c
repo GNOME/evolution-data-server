@@ -3657,9 +3657,35 @@ preauthed:
 
 	is->priv->utf8_accept = FALSE;
 
-	/* RFC 6855 */
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ACCEPT) ||
+	/* RFC 9051 (IMAP4rev2): UTF-8 mailbox names and strings are the
+	 * default behavior; only an explicit "ENABLE IMAP4rev2" is needed
+	 * when the server also advertises IMAP4rev1 for backward
+	 * compatibility (see RFC 9051 Appendix A). */
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, IMAP4REV2)) {
+		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, IMAP4REV1)) {
+			GError *local_error = NULL;
+
+			g_mutex_unlock (&is->priv->stream_lock);
+
+			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NAMESPACE, "ENABLE IMAP4rev2");
+			camel_imapx_server_process_command_sync (is, ic, _("Failed to issue ENABLE IMAP4rev2"), cancellable, &local_error);
+			camel_imapx_command_unref (ic);
+
+			if (local_error != NULL) {
+				g_propagate_error (error, local_error);
+				goto exception;
+			}
+
+			g_mutex_lock (&is->priv->stream_lock);
+		}
+
+		is->priv->utf8_accept = TRUE;
+
+		if (CAMEL_IS_IMAPX_INPUT_STREAM (is->priv->input_stream))
+			camel_imapx_input_stream_set_utf8_accept (CAMEL_IMAPX_INPUT_STREAM (is->priv->input_stream), TRUE);
+	} else if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ACCEPT) ||
 	    CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, UTF8_ONLY)) {
+		/* RFC 6855 */
 		GError *local_error = NULL;
 
 		g_mutex_unlock (&is->priv->stream_lock);
