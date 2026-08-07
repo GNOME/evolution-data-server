@@ -461,10 +461,12 @@ struct {
 } capa_table[] = { /* used to create capa_htable only */
 	{ "IMAP4", IMAPX_CAPABILITY_IMAP4 },
 	{ "IMAP4REV1", IMAPX_CAPABILITY_IMAP4REV1 },
+	{ "IMAP4REV2", IMAPX_CAPABILITY_IMAP4REV2 },
 	{ "STATUS",  IMAPX_CAPABILITY_STATUS } ,
 	{ "NAMESPACE", IMAPX_CAPABILITY_NAMESPACE },
 	{ "UIDPLUS",  IMAPX_CAPABILITY_UIDPLUS },
 	{ "LITERAL+", IMAPX_CAPABILITY_LITERALPLUS },
+	{ "LITERAL-", IMAPX_CAPABILITY_LITERALMINUS },
 	{ "STARTTLS", IMAPX_CAPABILITY_STARTTLS },
 	{ "IDLE", IMAPX_CAPABILITY_IDLE },
 	{ "CONDSTORE", IMAPX_CAPABILITY_CONDSTORE },
@@ -473,6 +475,7 @@ struct {
 	{ "LIST-STATUS", IMAPX_CAPABILITY_LIST_STATUS },
 	{ "QUOTA", IMAPX_CAPABILITY_QUOTA },
 	{ "MOVE", IMAPX_CAPABILITY_MOVE },
+	{ "UNSELECT", IMAPX_CAPABILITY_UNSELECT },
 	{ "NOTIFY", IMAPX_CAPABILITY_NOTIFY },
 	{ "SPECIAL-USE", IMAPX_CAPABILITY_SPECIAL_USE },
 	{ "X-GM-EXT-1", IMAPX_CAPABILITY_X_GM_EXT_1 },
@@ -586,6 +589,23 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 		g_propagate_error (error, local_error);
 		imapx_free_capability (cinfo);
 		cinfo = NULL;
+	}
+
+	if (cinfo != NULL && (cinfo->capa & IMAPX_CAPABILITY_IMAP4REV2) != 0) {
+		/* RFC 9051 folds several formerly optional extensions into the
+		 * IMAP4rev2 baseline; a strictly compliant IMAP4rev2 server
+		 * is not required to list them individually in its CAPABILITY
+		 * response, so imply them here to keep using the existing
+		 * capability-driven code paths for these extensions. */
+		cinfo->capa |= IMAPX_CAPABILITY_NAMESPACE |
+			       IMAPX_CAPABILITY_UIDPLUS |
+			       IMAPX_CAPABILITY_IDLE |
+			       IMAPX_CAPABILITY_LIST_EXTENDED |
+			       IMAPX_CAPABILITY_LIST_STATUS |
+			       IMAPX_CAPABILITY_MOVE |
+			       IMAPX_CAPABILITY_UNSELECT |
+			       IMAPX_CAPABILITY_SPECIAL_USE |
+			       IMAPX_CAPABILITY_LITERALMINUS;
 	}
 
 	return cinfo;
