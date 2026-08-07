@@ -44,6 +44,9 @@
 /* set if we are using authtypes from a broken AUTH= */
 #define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 5)
 
+/* rfc6531 (SMTPUTF8): supports internationalized email addresses */
+#define CAMEL_SMTP_TRANSPORT_SMTPUTF8               (1 << 6)
+
 enum {
 	PROP_0,
 	PROP_CONNECTABLE,
@@ -73,6 +76,7 @@ static gboolean		smtp_mail		(CamelSmtpTransport *transport,
 						 CamelStream *ostream,
 						 const gchar *sender,
 						 gboolean has_8bit_parts,
+						 gboolean request_smtputf8,
 						 gboolean request_dsn,
 						 const gchar *dsn_envid,
 						 GCancellable *cancellable,
@@ -939,10 +943,13 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	CamelInternetAddress *cia;
 	CamelStreamBuffer *istream;
 	CamelStream *ostream;
+	GPtrArray *enc_recipients;
 	gboolean has_8bit_parts = FALSE;
 	gboolean request_dsn;
+	gboolean requires_smtputf8 = FALSE;
 	const gchar *addr, *message_id;
 	gint i, len;
+	guint j;
 
 	smtp_debug_print_server_name (CAMEL_SERVICE (transport), "Sending with");
 
@@ -968,6 +975,47 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 		return FALSE;
 	}
 
+	requires_smtputf8 = !camel_string_is_all_ascii (addr);
+
+	len = camel_address_length (recipients);
+	if (len == 0) {
+		g_clear_object (&istream);
+		g_clear_object (&ostream);
+		g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot send message: no recipients defined."));
+		return FALSE;
+	}
+
+	cia = CAMEL_INTERNET_ADDRESS (recipients);
+	enc_recipients = g_ptr_array_new_with_free_func (g_free);
+
+	for (i = 0; i < len; i++) {
+		const gchar *rcpt_addr;
+
+		if (!camel_internet_address_get (cia, i, NULL, &rcpt_addr) || !rcpt_addr) {
+			g_ptr_array_unref (enc_recipients);
+			g_clear_object (&istream);
+			g_clear_object (&ostream);
+			g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Cannot send message: one or more invalid recipients"));
+			return FALSE;
+		}
+
+		if (!camel_string_is_all_ascii (rcpt_addr))
+			requires_smtputf8 = TRUE;
+
+		g_ptr_array_add (enc_recipients, camel_internet_address_encode_address (NULL, NULL, rcpt_addr));
+	}
+
+	if (requires_smtputf8 && (smtp_transport->flags & CAMEL_SMTP_TRANSPORT_SMTPUTF8) == 0) {
+		g_ptr_array_unref (enc_recipients);
+		g_clear_object (&istream);
+		g_clear_object (&ostream);
+		g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot send message: the mail server does not support internationalized (non-ASCII) email addresses."));
+		return FALSE;
+	}
+
 	camel_operation_push_message (cancellable, _("Sending message"));
 
 	/* find out if the message has 8bit mime parts; quoted-printable are reencoded to 8bit too */
@@ -977,6 +1025,7 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	if (smtp_transport->need_rset &&
 	    !smtp_rset (smtp_transport, istream, ostream, cancellable, error)) {
 		camel_operation_pop_message (cancellable);
+		g_ptr_array_unref (enc_recipients);
 		g_clear_object (&istream);
 		g_clear_object (&ostream);
 		return FALSE;
@@ -989,52 +1038,29 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	/* rfc1652 (8BITMIME) requires that you notify the ESMTP daemon that
 	 * you'll be sending an 8bit mime message at "MAIL FROM:" time. */
 	if (!smtp_mail (
-		smtp_transport, istream, ostream, addr, has_8bit_parts, request_dsn, message_id, cancellable, error)) {
+		smtp_transport, istream, ostream, addr, has_8bit_parts, requires_smtputf8,
+		request_dsn, message_id, cancellable, error)) {
 		camel_operation_pop_message (cancellable);
+		g_ptr_array_unref (enc_recipients);
 		g_clear_object (&istream);
 		g_clear_object (&ostream);
 		return FALSE;
 	}
 
-	len = camel_address_length (recipients);
-	if (len == 0) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot send message: no recipients defined."));
-		camel_operation_pop_message (cancellable);
-		smtp_transport->need_rset = TRUE;
-		g_clear_object (&istream);
-		g_clear_object (&ostream);
-		return FALSE;
-	}
+	for (j = 0; j < enc_recipients->len; j++) {
+		const gchar *enc = g_ptr_array_index (enc_recipients, j);
 
-	cia = CAMEL_INTERNET_ADDRESS (recipients);
-	for (i = 0; i < len; i++) {
-		gchar *enc;
-
-		if (!camel_internet_address_get (cia, i, NULL, &addr)) {
-			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Cannot send message: "
-				"one or more invalid recipients"));
-			camel_operation_pop_message (cancellable);
-			smtp_transport->need_rset = TRUE;
-			g_clear_object (&istream);
-			g_clear_object (&ostream);
-			return FALSE;
-		}
-
-		enc = camel_internet_address_encode_address (NULL, NULL, addr);
 		if (!smtp_rcpt (smtp_transport, istream, ostream, enc, request_dsn, cancellable, error)) {
-			g_free (enc);
 			camel_operation_pop_message (cancellable);
 			smtp_transport->need_rset = TRUE;
+			g_ptr_array_unref (enc_recipients);
 			g_clear_object (&istream);
 			g_clear_object (&ostream);
 			return FALSE;
 		}
-		g_free (enc);
 	}
+
+	g_ptr_array_unref (enc_recipients);
 
 	if (!smtp_data (smtp_transport, istream, ostream, message, cancellable, error)) {
 		camel_operation_pop_message (cancellable);
@@ -1449,7 +1475,8 @@ smtp_helo (CamelSmtpTransport *transport,
 	transport->flags &= ~(CAMEL_SMTP_TRANSPORT_8BITMIME |
 			      CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES |
 			      CAMEL_SMTP_TRANSPORT_STARTTLS |
-			      CAMEL_SMTP_TRANSPORT_DSN);
+			      CAMEL_SMTP_TRANSPORT_DSN |
+			      CAMEL_SMTP_TRANSPORT_SMTPUTF8);
 
 	if (transport->authtypes) {
 		g_hash_table_foreach (transport->authtypes, authtypes_free, NULL);
@@ -1562,6 +1589,8 @@ smtp_helo (CamelSmtpTransport *transport,
 				transport->flags |= CAMEL_SMTP_TRANSPORT_STARTTLS;
 			} else if (!g_ascii_strncasecmp (token, "DSN", 3)) {
 				transport->flags |= CAMEL_SMTP_TRANSPORT_DSN;
+			} else if (!g_ascii_strncasecmp (token, "SMTPUTF8", 8)) {
+				transport->flags |= CAMEL_SMTP_TRANSPORT_SMTPUTF8;
 			} else if (!g_ascii_strncasecmp (token, "AUTH", 4)) {
 				if (!transport->authtypes || transport->flags & CAMEL_SMTP_TRANSPORT_AUTH_EQUAL) {
 					/* Don't bother parsing any authtypes if we already have a list.
@@ -1608,6 +1637,7 @@ smtp_mail (CamelSmtpTransport *transport,
 	   CamelStream *ostream,
            const gchar *sender,
            gboolean has_8bit_parts,
+           gboolean request_smtputf8,
 	   gboolean request_dsn,
 	   const gchar *dsn_envid,
            GCancellable *cancellable,
@@ -1623,6 +1653,9 @@ smtp_mail (CamelSmtpTransport *transport,
 		g_string_append_printf (cmd, " FROM:<%s> BODY=8BITMIME", sender);
 	else
 		g_string_append_printf (cmd, " FROM:<%s>", sender);
+
+	if (request_smtputf8 && (transport->flags & CAMEL_SMTP_TRANSPORT_SMTPUTF8) != 0)
+		g_string_append (cmd, " SMTPUTF8");
 
 	if (request_dsn && (transport->flags & CAMEL_SMTP_TRANSPORT_DSN) != 0) {
 		CamelSettings *settings;
