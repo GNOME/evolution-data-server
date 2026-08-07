@@ -5,6 +5,7 @@
 #include "camel-nntp-settings.h"
 
 struct _CamelNNTPSettingsPrivate {
+	guint disconnect_after_idle;
 	gboolean filter_all;
 	gboolean filter_junk;
 	gboolean folder_hierarchy_relative;
@@ -15,6 +16,7 @@ struct _CamelNNTPSettingsPrivate {
 
 enum {
 	PROP_0,
+	PROP_DISCONNECT_AFTER_IDLE,
 	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
 	PROP_FOLDER_HIERARCHY_RELATIVE,
@@ -51,6 +53,12 @@ nntp_settings_set_property (GObject *object,
 			camel_network_settings_set_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_DISCONNECT_AFTER_IDLE:
+			camel_nntp_settings_set_disconnect_after_idle (
+				CAMEL_NNTP_SETTINGS (object),
+				g_value_get_uint (value));
 			return;
 
 		case PROP_FILTER_ALL:
@@ -129,6 +137,13 @@ nntp_settings_get_property (GObject *object,
 				value,
 				camel_network_settings_dup_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_DISCONNECT_AFTER_IDLE:
+			g_value_set_uint (
+				value,
+				camel_nntp_settings_get_disconnect_after_idle (
+				CAMEL_NNTP_SETTINGS (object)));
 			return;
 
 		case PROP_FILTER_ALL:
@@ -213,6 +228,23 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = nntp_settings_set_property;
 	object_class->get_property = nntp_settings_get_property;
+
+	/**
+	 * CamelNNTPSettings:disconnect-after-idle
+	 *
+	 * Number of seconds of no server activity after which to
+	 * proactively disconnect, or 0 to never proactively disconnect
+	 *
+	 * Since: 3.62
+	 **/
+	properties[PROP_DISCONNECT_AFTER_IDLE] =
+		g_param_spec_uint (
+			"disconnect-after-idle", NULL, NULL,
+			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * CamelNNTPSettings:folder-hierarchy-relative
@@ -335,6 +367,49 @@ static void
 camel_nntp_settings_init (CamelNNTPSettings *settings)
 {
 	settings->priv = camel_nntp_settings_get_instance_private (settings);
+}
+
+/**
+ * camel_nntp_settings_get_disconnect_after_idle:
+ * @settings: a #CamelNNTPSettings
+ *
+ * Returns the number of seconds of no server activity after which to
+ * proactively disconnect, or 0 to never proactively disconnect.
+ *
+ * Returns: number of idle seconds after which to disconnect, or 0
+ *
+ * Since: 3.62
+ **/
+guint
+camel_nntp_settings_get_disconnect_after_idle (CamelNNTPSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NNTP_SETTINGS (settings), 0);
+
+	return settings->priv->disconnect_after_idle;
+}
+
+/**
+ * camel_nntp_settings_set_disconnect_after_idle:
+ * @settings: a #CamelNNTPSettings
+ * @disconnect_after_idle: number of idle seconds after which to disconnect, or 0
+ *
+ * Sets the number of seconds of no server activity after which to
+ * proactively disconnect, or 0 to never proactively disconnect.
+ *
+ * Since: 3.62
+ **/
+void
+camel_nntp_settings_set_disconnect_after_idle (CamelNNTPSettings *settings,
+					       guint disconnect_after_idle)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
+
+	if (settings->priv->disconnect_after_idle == disconnect_after_idle)
+		return;
+
+	settings->priv->disconnect_after_idle = disconnect_after_idle;
+
+	g_object_notify_by_pspec (G_OBJECT (settings), properties[PROP_DISCONNECT_AFTER_IDLE]);
 }
 
 /**

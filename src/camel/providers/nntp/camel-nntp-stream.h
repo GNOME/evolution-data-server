@@ -32,6 +32,8 @@
 
 G_BEGIN_DECLS
 
+struct _CamelNNTPStore;
+
 typedef struct _CamelNNTPStream CamelNNTPStream;
 typedef struct _CamelNNTPStreamClass CamelNNTPStreamClass;
 
@@ -83,7 +85,8 @@ gint		camel_nntp_stream_getd		(CamelNNTPStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_nntp_stream_lock		(CamelNNTPStream *nntp_stream);
-void		camel_nntp_stream_unlock	(CamelNNTPStream *nntp_stream);
+void		camel_nntp_stream_unlock	(CamelNNTPStream *nntp_stream,
+						 struct _CamelNNTPStore *nntp_store);
 void		camel_nntp_stream_set_timeout	(CamelNNTPStream *nntp_stream,
 						 guint timeout_seconds);
 guint		camel_nntp_stream_get_timeout	(CamelNNTPStream *nntp_stream);

@@ -1026,6 +1026,109 @@ test_group_switching (void)
 	test_nntp_teardown (session, service);
 }
 
+static gboolean
+test_wait_for_connection_status (CamelService *service,
+				 CamelServiceConnectionStatus want_status,
+				 gboolean want_equal,
+				 gint64 timeout_seconds)
+{
+	gint64 deadline;
+	gboolean matches;
+
+	deadline = g_get_monotonic_time () + timeout_seconds * G_USEC_PER_SEC;
+	matches = (camel_service_get_connection_status (service) == want_status) == want_equal;
+
+	while (!matches && g_get_monotonic_time () < deadline) {
+		while (g_main_context_iteration (NULL, FALSE)) {
+		}
+
+		g_usleep (50000);
+
+		matches = (camel_service_get_connection_status (service) == want_status) == want_equal;
+	}
+
+	return matches;
+}
+
+static void
+test_disconnect_after_idle (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelSettings *settings;
+	CamelStore *store;
+	CamelFolderInfo *fi;
+	GError *error = NULL;
+
+	session = test_nntp_session_new ();
+	service = test_nntp_create_service (session, "test-disconnect-after-idle");
+	store = CAMEL_STORE (service);
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "disconnect-after-idle", 1, NULL);
+	g_object_unref (settings);
+
+	test_nntp_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+	camel_folder_info_free (fi);
+
+	g_assert_cmpint (camel_service_get_connection_status (CAMEL_SERVICE (service)), ==, CAMEL_SERVICE_CONNECTED);
+
+	g_assert_true (test_wait_for_connection_status (CAMEL_SERVICE (service), CAMEL_SERVICE_CONNECTED, FALSE, 10));
+
+	test_nntp_teardown (session, service);
+}
+
+static void
+test_disconnect_after_idle_reset_by_activity (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelSettings *settings;
+	CamelStore *store;
+	CamelFolderInfo *fi;
+	GError *error = NULL;
+
+	session = test_nntp_session_new ();
+	service = test_nntp_create_service (session, "test-disconnect-idle-reset");
+	store = CAMEL_STORE (service);
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "disconnect-after-idle", 2, NULL);
+	g_object_unref (settings);
+
+	test_nntp_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+	camel_folder_info_free (fi);
+
+	/* Less than the 2-second idle timeout: activity here should reset
+	 * the countdown, not just let it keep ticking from the first LIST. */
+	g_usleep (G_USEC_PER_SEC);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+	camel_folder_info_free (fi);
+
+	g_assert_cmpint (camel_service_get_connection_status (CAMEL_SERVICE (service)), ==, CAMEL_SERVICE_CONNECTED);
+
+	/* Still well within the 2-second window since the second LIST above;
+	 * a naive one-shot timer started at the first LIST would have fired
+	 * by now instead of being reset. */
+	g_assert_true (test_wait_for_connection_status (CAMEL_SERVICE (service), CAMEL_SERVICE_CONNECTED, TRUE, 1));
+
+	/* Now let the (reset) countdown actually elapse. */
+	g_assert_true (test_wait_for_connection_status (CAMEL_SERVICE (service), CAMEL_SERVICE_CONNECTED, FALSE, 10));
+
+	test_nntp_teardown (session, service);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -1057,6 +1160,8 @@ main (gint argc,
 	g_test_add_func ("/Camel/NNTP/InvalidArticleFetch", test_invalid_article_fetch);
 	g_test_add_func ("/Camel/NNTP/LocalMessageFlags", test_local_message_flags);
 	g_test_add_func ("/Camel/NNTP/GroupSwitching", test_group_switching);
+	g_test_add_func ("/Camel/NNTP/DisconnectAfterIdle", test_disconnect_after_idle);
+	g_test_add_func ("/Camel/NNTP/DisconnectAfterIdleResetByActivity", test_disconnect_after_idle_reset_by_activity);
 
 	ret = g_test_run ();
 

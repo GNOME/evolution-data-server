@@ -45,6 +45,7 @@ struct _CamelNNTPStorePrivate {
 	CamelNNTPStoreSummary *summary;
 	CamelNNTPCapabilities capabilities;
 	gchar *current_group;
+	GSource *idle_disconnect_source;
 };
 
 enum {
@@ -58,6 +59,7 @@ static GInitableIface *parent_initable_interface;
 /* Forward Declarations */
 static void camel_nntp_store_initable_init (GInitableIface *iface);
 static void camel_network_service_init (CamelNetworkServiceInterface *iface);
+static void nntp_store_cancel_idle_disconnect (CamelNNTPStore *nntp_store);
 static void camel_subscribable_init (CamelSubscribableInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -143,6 +145,8 @@ nntp_store_dispose (GObject *object)
 	CamelNNTPStorePrivate *priv;
 
 	priv = CAMEL_NNTP_STORE (object)->priv;
+
+	nntp_store_cancel_idle_disconnect (CAMEL_NNTP_STORE (object));
 
 	/* Only run this the first time. */
 	if (priv->summary != NULL) {
@@ -1205,6 +1209,8 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			else if (ret != 231) {
 				/* newgroups not supported :S so reload the complete list */
 				nntp_store_summary->last_newslist[0] = 0;
+				camel_nntp_stream_unlock (nntp_stream, nntp_store);
+				g_clear_object (&nntp_stream);
 				goto do_complete_list;
 			}
 
@@ -1234,7 +1240,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 				goto error;
 			}
 
-			all = g_hash_table_new (g_str_hash, g_str_equal);
+			all = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) camel_store_info_unref);
 
 			store_summary = CAMEL_STORE_SUMMARY (nntp_store_summary);
 			array = camel_store_summary_array (store_summary);
@@ -1275,7 +1281,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 
  error:
 	if (nntp_stream)
-		camel_nntp_stream_unlock (nntp_stream);
+		camel_nntp_stream_unlock (nntp_stream, nntp_store);
 	g_clear_object (&nntp_stream);
 	g_clear_object (&nntp_store_summary);
 
@@ -2173,6 +2179,87 @@ camel_nntp_raw_command_auth (CamelNNTPStore *nntp_store,
 	return ret;
 }
 
+static void
+nntp_store_cancel_idle_disconnect (CamelNNTPStore *nntp_store)
+{
+	g_mutex_lock (&nntp_store->priv->property_lock);
+
+	if (nntp_store->priv->idle_disconnect_source) {
+		g_source_destroy (nntp_store->priv->idle_disconnect_source);
+		g_clear_pointer (&nntp_store->priv->idle_disconnect_source, g_source_unref);
+	}
+
+	g_mutex_unlock (&nntp_store->priv->property_lock);
+}
+
+static gboolean
+nntp_store_idle_disconnect_cb (gpointer user_data)
+{
+	GWeakRef *weak_ref = user_data;
+	CamelNNTPStore *nntp_store;
+
+	nntp_store = g_weak_ref_get (weak_ref);
+	if (!nntp_store)
+		return G_SOURCE_REMOVE;
+
+	g_mutex_lock (&nntp_store->priv->property_lock);
+
+	if (g_main_current_source () == nntp_store->priv->idle_disconnect_source &&
+	    !g_source_is_destroyed (g_main_current_source ())) {
+		g_clear_pointer (&nntp_store->priv->idle_disconnect_source, g_source_unref);
+
+		g_mutex_unlock (&nntp_store->priv->property_lock);
+
+		camel_service_disconnect_sync (CAMEL_SERVICE (nntp_store), TRUE, NULL, NULL);
+	} else {
+		g_mutex_unlock (&nntp_store->priv->property_lock);
+	}
+
+	g_object_unref (nntp_store);
+
+	return G_SOURCE_REMOVE;
+}
+
+/**
+ * camel_nntp_store_maybe_schedule_idle_disconnect:
+ * @nntp_store: a #CamelNNTPStore
+ *
+ * Considers (re)scheduling the proactive idle disconnect, per the
+ * "disconnect-after-idle" setting.
+ *
+ * Since: 3.62
+ **/
+void
+camel_nntp_store_maybe_schedule_idle_disconnect (CamelNNTPStore *nntp_store)
+{
+	CamelSettings *settings;
+	guint disconnect_after_idle;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (nntp_store));
+	disconnect_after_idle = camel_nntp_settings_get_disconnect_after_idle (CAMEL_NNTP_SETTINGS (settings));
+	g_object_unref (settings);
+
+	if (!disconnect_after_idle)
+		return;
+
+	g_mutex_lock (&nntp_store->priv->property_lock);
+
+	if (nntp_store->priv->idle_disconnect_source) {
+		g_source_destroy (nntp_store->priv->idle_disconnect_source);
+		g_source_unref (nntp_store->priv->idle_disconnect_source);
+	}
+
+	nntp_store->priv->idle_disconnect_source = g_timeout_source_new_seconds (disconnect_after_idle);
+	g_source_set_callback (
+		nntp_store->priv->idle_disconnect_source,
+		nntp_store_idle_disconnect_cb,
+		camel_utils_weak_ref_new (nntp_store),
+		(GDestroyNotify) camel_utils_weak_ref_free);
+	g_source_attach (nntp_store->priv->idle_disconnect_source, NULL);
+
+	g_mutex_unlock (&nntp_store->priv->property_lock);
+}
+
 gint
 camel_nntp_command (CamelNNTPStore *nntp_store,
                     GCancellable *cancellable,
@@ -2194,6 +2281,8 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 	gint ret, retry;
 	guint u;
 	GError *local_error = NULL;
+
+	nntp_store_cancel_idle_disconnect (nntp_store);
 
 	service = CAMEL_SERVICE (nntp_store);
 	status = camel_service_get_connection_status (service);
@@ -2347,7 +2436,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 		}
 
 		if (ret == -1) {
-			camel_nntp_stream_unlock (nntp_stream);
+			camel_nntp_stream_unlock (nntp_stream, nntp_store);
 			g_clear_object (&nntp_stream);
 		}
 
@@ -2358,7 +2447,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 		if (ret != -1 && out_nntp_stream)
 			*out_nntp_stream = g_object_ref (nntp_stream);
 		else
-			camel_nntp_stream_unlock (nntp_stream);
+			camel_nntp_stream_unlock (nntp_stream, nntp_store);
 	}
 
 	g_clear_object (&nntp_stream);

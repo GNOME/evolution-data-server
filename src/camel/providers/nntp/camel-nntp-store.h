@@ -121,6 +121,8 @@ gint		camel_nntp_command		(CamelNNTPStore *nntp_store,
 						 gchar **line,
 						 const gchar *fmt,
 						 ...);
+void		camel_nntp_store_maybe_schedule_idle_disconnect
+						(CamelNNTPStore *nntp_store);
 
 G_END_DECLS
 

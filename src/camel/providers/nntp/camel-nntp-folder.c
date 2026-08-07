@@ -284,7 +284,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 	}
 
 	if (nntp_stream)
-		camel_nntp_stream_unlock (nntp_stream);
+		camel_nntp_stream_unlock (nntp_stream, nntp_store);
 
 	g_clear_object (&nntp_cache);
 	g_clear_object (&nntp_stream);
@@ -403,7 +403,7 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 
  exit:
 	if (nntp_stream)
-		camel_nntp_stream_unlock (nntp_stream);
+		camel_nntp_stream_unlock (nntp_stream, nntp_store);
 	g_clear_object (&nntp_stream);
 
 	return success;
