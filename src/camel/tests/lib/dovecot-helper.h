@@ -18,6 +18,7 @@ void			dovecot_test_server_free	(DovecotTestServer *server);
 
 const gchar *		dovecot_test_server_get_host	(DovecotTestServer *server);
 guint16			dovecot_test_server_get_port	(DovecotTestServer *server);
+guint16			dovecot_test_server_get_smtp_port	(DovecotTestServer *server);
 const gchar *		dovecot_test_server_get_user	(DovecotTestServer *server);
 const gchar *		dovecot_test_server_get_password	(DovecotTestServer *server);
 const gchar *		dovecot_test_server_get_maildir_path	(DovecotTestServer *server);

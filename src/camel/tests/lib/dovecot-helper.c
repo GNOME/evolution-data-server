@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <errno.h>
 #endif
 
 #include "dovecot-helper.h"
@@ -36,7 +37,14 @@ struct _DovecotTestServer {
 	guint16 port;
 	guint16 tls_port;
 	gboolean tls_enabled;
+	guint16 smtp_port;
+	guint16 relay_port;
 	GSubprocess *process;
+
+	/* Fake SMTP relay used as the submission service's backend. */
+	GSocketListener *relay_listener;
+	GCancellable *relay_cancellable;
+	GThread *relay_thread;
 };
 
 static DovecotTestServer *global_server_for_atexit = NULL;
@@ -205,6 +213,32 @@ generate_self_signed_cert (DovecotTestServer *server)
 }
 
 static gboolean
+get_mail_uid_gid (uid_t *out_uid,
+		   gid_t *out_gid)
+{
+	/* Dovecot's userdb refuses a uid/gid of 0. */
+	if (getuid () == 0) {
+		struct passwd *nobody_pw;
+
+		nobody_pw = getpwnam ("nobody");
+		if (!nobody_pw) {
+			g_warning ("Running as root and no 'nobody' user found; mail services may fail to start");
+			*out_uid = getuid ();
+			*out_gid = getgid ();
+			return TRUE;
+		}
+
+		*out_uid = nobody_pw->pw_uid;
+		*out_gid = nobody_pw->pw_gid;
+	} else {
+		*out_uid = getuid ();
+		*out_gid = getgid ();
+	}
+
+	return TRUE;
+}
+
+static gboolean
 create_directory_tree (DovecotTestServer *server)
 {
 	const gchar *subdirs[] = {
@@ -212,12 +246,17 @@ create_directory_tree (DovecotTestServer *server)
 		"lib",
 		"log",
 		"home",
+		"Maildir",
 		"Maildir/cur",
 		"Maildir/new",
 		"Maildir/tmp",
 		NULL
 	};
+	uid_t mail_uid;
+	gid_t mail_gid;
 	gint ii;
+
+	get_mail_uid_gid (&mail_uid, &mail_gid);
 
 	for (ii = 0; subdirs[ii]; ii++) {
 		gchar *path;
@@ -228,6 +267,13 @@ create_directory_tree (DovecotTestServer *server)
 			g_warning ("Failed to create directory: %s", path);
 			g_free (path);
 			return FALSE;
+		}
+
+		if ((g_str_equal (subdirs[ii], "home") || g_str_has_prefix (subdirs[ii], "Maildir")) &&
+		    (mail_uid != getuid () || mail_gid != getgid ()) &&
+		    chown (path, mail_uid, mail_gid) != 0) {
+			g_warning ("Failed to chown directory %s to uid %u gid %u: %s",
+				path, (guint) mail_uid, (guint) mail_gid, g_strerror (errno));
 		}
 
 		g_free (path);
@@ -264,6 +310,170 @@ write_passwd_file (DovecotTestServer *server)
 }
 
 static gboolean
+fake_relay_write_line (GOutputStream *ostream,
+		       const gchar *line)
+{
+	gchar *full_line;
+	gboolean success;
+	GError *error = NULL;
+
+	full_line = g_strdup_printf ("%s\r\n", line);
+	success = g_output_stream_write_all (ostream, full_line, strlen (full_line), NULL, NULL, &error);
+	if (!success)
+		g_clear_error (&error);
+
+	g_free (full_line);
+
+	return success;
+}
+
+static void
+fake_relay_handle_connection (GSocketConnection *connection)
+{
+	GInputStream *istream;
+	GDataInputStream *distream;
+	GOutputStream *ostream;
+	gboolean in_data = FALSE;
+
+	istream = g_io_stream_get_input_stream (G_IO_STREAM (connection));
+	ostream = g_io_stream_get_output_stream (G_IO_STREAM (connection));
+
+	distream = g_data_input_stream_new (istream);
+	g_data_input_stream_set_newline_type (distream, G_DATA_STREAM_NEWLINE_TYPE_CR_LF);
+
+	if (!fake_relay_write_line (ostream, "220 fake-relay ESMTP ready")) {
+		g_object_unref (distream);
+		return;
+	}
+
+	while (TRUE) {
+		gchar *line;
+		gsize len = 0;
+		GError *error = NULL;
+		gboolean keep_going = TRUE;
+
+		line = g_data_input_stream_read_line (distream, &len, NULL, &error);
+		if (!line) {
+			g_clear_error (&error);
+			break;
+		}
+
+		if (in_data) {
+			if (g_strcmp0 (line, ".") == 0) {
+				in_data = FALSE;
+				keep_going = fake_relay_write_line (ostream, "250 2.0.0 OK: queued as fake");
+			}
+		} else if (g_ascii_strncasecmp (line, "EHLO", 4) == 0 ||
+			   g_ascii_strncasecmp (line, "HELO", 4) == 0) {
+			keep_going = fake_relay_write_line (ostream, "250-fake-relay greets you") &&
+				     fake_relay_write_line (ostream, "250 8BITMIME");
+		} else if (g_ascii_strncasecmp (line, "MAIL FROM", 9) == 0) {
+			keep_going = fake_relay_write_line (ostream, "250 2.1.0 OK");
+		} else if (g_ascii_strncasecmp (line, "RCPT TO", 7) == 0) {
+			keep_going = fake_relay_write_line (ostream, "250 2.1.5 OK");
+		} else if (g_ascii_strncasecmp (line, "DATA", 4) == 0) {
+			in_data = TRUE;
+			keep_going = fake_relay_write_line (ostream, "354 Send message, end with <CRLF>.<CRLF>");
+		} else if (g_ascii_strncasecmp (line, "RSET", 4) == 0) {
+			keep_going = fake_relay_write_line (ostream, "250 2.0.0 OK");
+		} else if (g_ascii_strncasecmp (line, "QUIT", 4) == 0) {
+			fake_relay_write_line (ostream, "221 2.0.0 Bye");
+			g_free (line);
+			break;
+		} else {
+			keep_going = fake_relay_write_line (ostream, "250 2.0.0 OK");
+		}
+
+		g_free (line);
+
+		if (!keep_going)
+			break;
+	}
+
+	g_object_unref (distream);
+}
+
+static gpointer
+fake_relay_thread_func (gpointer user_data)
+{
+	DovecotTestServer *server = user_data;
+
+	while (TRUE) {
+		GSocketConnection *connection;
+		GError *error = NULL;
+
+		connection = g_socket_listener_accept (
+			server->relay_listener, NULL, server->relay_cancellable, &error);
+
+		if (!connection) {
+			g_clear_error (&error);
+			break;
+		}
+
+		fake_relay_handle_connection (connection);
+		g_object_unref (connection);
+	}
+
+	return NULL;
+}
+
+static gboolean
+start_fake_relay (DovecotTestServer *server)
+{
+	GSocketListener *listener;
+	GInetAddress *inet_address;
+	GSocketAddress *request_address;
+	GSocketAddress *effective_address = NULL;
+	GError *error = NULL;
+	gboolean success;
+
+	listener = g_socket_listener_new ();
+
+	inet_address = g_inet_address_new_loopback (G_SOCKET_FAMILY_IPV4);
+	request_address = g_inet_socket_address_new (inet_address, 0);
+	g_object_unref (inet_address);
+
+	success = g_socket_listener_add_address (
+		listener, request_address, G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_TCP,
+		NULL, &effective_address, &error);
+	g_object_unref (request_address);
+
+	if (!success) {
+		g_warning ("Failed to create fake SMTP relay listener: %s", error->message);
+		g_clear_error (&error);
+		g_object_unref (listener);
+		return FALSE;
+	}
+
+	server->relay_port = g_inet_socket_address_get_port (G_INET_SOCKET_ADDRESS (effective_address));
+	g_object_unref (effective_address);
+
+	server->relay_listener = listener;
+	server->relay_cancellable = g_cancellable_new ();
+	server->relay_thread = g_thread_new ("fake-smtp-relay", fake_relay_thread_func, server);
+
+	return TRUE;
+}
+
+static void
+stop_fake_relay (DovecotTestServer *server)
+{
+	if (server->relay_cancellable)
+		g_cancellable_cancel (server->relay_cancellable);
+
+	if (server->relay_listener)
+		g_socket_listener_close (server->relay_listener);
+
+	if (server->relay_thread) {
+		g_thread_join (server->relay_thread);
+		server->relay_thread = NULL;
+	}
+
+	g_clear_object (&server->relay_cancellable);
+	g_clear_object (&server->relay_listener);
+}
+
+static gboolean
 write_dovecot_conf (DovecotTestServer *server,
 		     const gchar *protocol)
 {
@@ -271,13 +481,31 @@ write_dovecot_conf (DovecotTestServer *server,
 	gchar *conf_path;
 	gchar *passwd_path;
 	struct passwd *pw;
+	const gchar *login_user;
+	const gchar *login_group;
+	gboolean with_submission;
+	uid_t mail_uid;
+	gid_t mail_gid;
 	gboolean success;
 	GError *error = NULL;
+
+	with_submission = g_strcmp0 (protocol, "imap") == 0;
 
 	pw = getpwuid (getuid ());
 	if (!pw) {
 		g_warning ("Failed to get passwd entry for uid %u", (guint) getuid ());
 		return FALSE;
+	}
+
+	get_mail_uid_gid (&mail_uid, &mail_gid);
+
+	/* imap-login/submission-login refuse to run as root. */
+	if (mail_uid != getuid ()) {
+		login_user = "nobody";
+		login_group = "nogroup";
+	} else {
+		login_user = pw->pw_name;
+		login_group = pw->pw_name;
 	}
 
 	conf_path = g_build_filename (server->tmp_dir, "dovecot.conf", NULL);
@@ -291,11 +519,13 @@ write_dovecot_conf (DovecotTestServer *server,
 		"\n"
 		"protocols {\n"
 		"  %s = yes\n"
+		"%s"
 		"}\n"
 		"\n"
 		"listen = 127.0.0.1\n"
 		"ssl = %s\n"
 		"auth_allow_cleartext = yes\n"
+		"auth_mechanisms = plain login\n"
 		"base_dir = %s/run\n"
 		"state_dir = %s/lib\n"
 		"log_path = %s/log/dovecot.log\n"
@@ -330,20 +560,21 @@ write_dovecot_conf (DovecotTestServer *server,
 		"}\n",
 		/* protocols */
 		protocol,
+		with_submission ? "  submission = yes\n" : "",
 		/* ssl */
 		server->tls_enabled ? "yes" : "no",
 		/* base_dir, state_dir, log_path */
 		server->tmp_dir, server->tmp_dir, server->tmp_dir,
 		/* default_internal_user, default_internal_group, default_login_user */
-		pw->pw_name, pw->pw_name, pw->pw_name,
+		pw->pw_name, pw->pw_name, login_user,
 		/* first_valid_uid, first_valid_gid */
-		(guint) getuid (), (guint) getgid (),
+		(guint) mail_uid, (guint) mail_gid,
 		/* mail_home, mail_path */
 		server->tmp_dir, server->tmp_dir,
 		/* passdb passwd_file_path */
 		passwd_path,
 		/* userdb static uid, gid, home, mail_path */
-		(guint) getuid (), (guint) getgid (), server->tmp_dir, server->tmp_dir);
+		(guint) mail_uid, (guint) mail_gid, server->tmp_dir, server->tmp_dir);
 
 	if (server->tls_enabled) {
 		g_string_append_printf (contents,
@@ -373,7 +604,7 @@ write_dovecot_conf (DovecotTestServer *server,
 		/* service anvil: user, group */
 		pw->pw_name, pw->pw_name,
 		/* service <protocol>-login: user, group, inet_listener name, port */
-		protocol, pw->pw_name, pw->pw_name, protocol, (guint) server->port);
+		protocol, login_user, login_group, protocol, (guint) server->port);
 
 	if (server->tls_enabled) {
 		g_string_append_printf (contents,
@@ -453,6 +684,31 @@ write_dovecot_conf (DovecotTestServer *server,
 			pw->pw_name, pw->pw_name);
 	}
 
+	if (with_submission) {
+		g_string_append_printf (contents,
+			"\n"
+			"submission_relay_host = 127.0.0.1\n"
+			"submission_relay_port = %u\n"
+			"submission_relay_ssl = no\n"
+			"\n"
+			"service submission-login {\n"
+			"  chroot =\n"
+			"  user = %s\n"
+			"  group = %s\n"
+			"  inet_listener submission {\n"
+			"    port = %u\n"
+			"  }\n"
+			"}\n"
+			"\n"
+			"service submission {\n"
+			"  user = %s\n"
+			"  group = %s\n"
+			"}\n",
+			(guint) server->relay_port,
+			login_user, login_group, (guint) server->smtp_port,
+			pw->pw_name, pw->pw_name);
+	}
+
 	success = g_file_set_contents (conf_path, contents->str, -1, &error);
 	if (!success) {
 		g_warning ("Failed to write dovecot.conf: %s", error->message);
@@ -505,6 +761,11 @@ dovecot_test_server_new_internal (const gchar *protocol,
 		return NULL;
 	}
 
+	/* Allow the mail process to traverse into this 0700 directory
+	 * when it runs as a different unprivileged user (e.g. "nobody"). */
+	if (g_chmod (server->tmp_dir, 0755) != 0)
+		g_warning ("Failed to chmod temp directory %s: %s", server->tmp_dir, g_strerror (errno));
+
 	if (!create_directory_tree (server)) {
 		dovecot_test_server_free (server);
 		return NULL;
@@ -532,6 +793,20 @@ dovecot_test_server_new_internal (const gchar *protocol,
 		}
 
 		if (!generate_self_signed_cert (server)) {
+			dovecot_test_server_free (server);
+			return NULL;
+		}
+	}
+
+	if (g_strcmp0 (protocol, "imap") == 0) {
+		server->smtp_port = pick_free_port ();
+		if (server->smtp_port == 0) {
+			g_warning ("Failed to pick a free port");
+			dovecot_test_server_free (server);
+			return NULL;
+		}
+
+		if (!start_fake_relay (server)) {
 			dovecot_test_server_free (server);
 			return NULL;
 		}
@@ -573,6 +848,14 @@ dovecot_test_server_new_internal (const gchar *protocol,
 		return NULL;
 	}
 
+	if (server->smtp_port != 0 &&
+	    !wait_for_port (server->smtp_port, DOVECOT_STARTUP_TIMEOUT_SECS)) {
+		g_warning ("Dovecot did not start listening on port %u within %d seconds",
+			server->smtp_port, DOVECOT_STARTUP_TIMEOUT_SECS);
+		dovecot_test_server_free (server);
+		return NULL;
+	}
+
 	global_server_for_atexit = server;
 	atexit (atexit_cleanup);
 
@@ -601,6 +884,8 @@ dovecot_test_server_free (DovecotTestServer *server)
 	if (global_server_for_atexit == server) {
 		global_server_for_atexit = NULL;
 	}
+
+	stop_fake_relay (server);
 
 	if (server->process) {
 #ifdef G_OS_UNIX
@@ -647,6 +932,14 @@ dovecot_test_server_get_port (DovecotTestServer *server)
 	g_return_val_if_fail (server != NULL, 0);
 
 	return server->port;
+}
+
+guint16
+dovecot_test_server_get_smtp_port (DovecotTestServer *server)
+{
+	g_return_val_if_fail (server != NULL, 0);
+
+	return server->smtp_port;
 }
 
 const gchar *
