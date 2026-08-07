@@ -23,6 +23,7 @@ typedef struct _ExternalServer {
 	CamelNetworkSecurityMethod security_method;
 	gchar *group;
 	gchar *group2;
+	gchar *group_readonly;
 } ExternalServer;
 
 typedef struct _NntpTestSession NntpTestSession;
@@ -90,34 +91,90 @@ static const gchar *nntp_drivers[] = { "nntp" };
  *   tls-port=11129
  *   group=camel.test.group
  *   group2=camel.test.group2
+ *   group-readonly=camel.test.readonly
  *   user=testuser
  *   password=testpass
  *   security-method=none
  *
- * Required keys: host, port, tls-port, group, group2
+ * Required keys: host, port, tls-port, group, group2, group-readonly
  * Optional keys: user, password (default: unset, i.e. anonymous access),
  *                security-method (none | ssl | starttls; default: none)
  *
  * Unlike the IMAPx provider test, there is no local/embedded NNTP server
  * fallback: a real NNTP server (e.g. INN) needs a newsgroup created ahead
  * of time by an administrative tool (ctlinnd), which is outside what an
- * NNTP client can do for itself.
+ * NNTP client can do for itself. See main() for how a server is found
+ * when --use-server isn't given.
  */
+static ExternalServer *
+load_external_server_from_file (const gchar *filename)
+{
+	ExternalServer *server;
+	GKeyFile *key_file;
+	gchar *security_str;
+	GError *error = NULL;
+
+	key_file = g_key_file_new ();
+
+	if (!g_key_file_load_from_file (key_file, filename, G_KEY_FILE_NONE, &error))
+		g_error ("Failed to load server config '%s': %s", filename, error->message);
+
+	server = g_new0 (ExternalServer, 1);
+
+	server->host = g_key_file_get_string (key_file, "Server", "host", &error);
+	if (!server->host)
+		g_error ("Missing 'host' in [Server]: %s", error->message);
+
+	server->port = (guint16) g_key_file_get_integer (key_file, "Server", "port", &error);
+	if (error)
+		g_error ("Missing or invalid 'port' in [Server]: %s", error->message);
+
+	server->tls_port = (guint16) g_key_file_get_integer (key_file, "Server", "tls-port", &error);
+	if (error)
+		g_error ("Missing or invalid 'tls-port' in [Server]: %s", error->message);
+
+	server->group = g_key_file_get_string (key_file, "Server", "group", &error);
+	if (!server->group)
+		g_error ("Missing 'group' in [Server]: %s", error->message);
+
+	server->group2 = g_key_file_get_string (key_file, "Server", "group2", &error);
+	if (!server->group2)
+		g_error ("Missing 'group2' in [Server]: %s", error->message);
+
+	server->group_readonly = g_key_file_get_string (key_file, "Server", "group-readonly", &error);
+	if (!server->group_readonly)
+		g_error ("Missing 'group-readonly' in [Server]: %s", error->message);
+
+	server->user = g_key_file_get_string (key_file, "Server", "user", NULL);
+	server->password = g_key_file_get_string (key_file, "Server", "password", NULL);
+
+	security_str = g_key_file_get_string (key_file, "Server", "security-method", NULL);
+	if (!security_str || g_ascii_strcasecmp (security_str, "none") == 0)
+		server->security_method = CAMEL_NETWORK_SECURITY_METHOD_NONE;
+	else if (g_ascii_strcasecmp (security_str, "ssl") == 0)
+		server->security_method = CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT;
+	else if (g_ascii_strcasecmp (security_str, "starttls") == 0)
+		server->security_method = CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT;
+	else
+		g_error ("Unknown security-method '%s' (expected: none, ssl, starttls)", security_str);
+	g_free (security_str);
+
+	g_key_file_free (key_file);
+
+	return server;
+}
+
 static void
 parse_use_server_arg (gint *argc,
 		      gchar ***argv)
 {
-	GKeyFile *key_file;
 	gchar *filename = NULL;
-	gchar *security_str;
-	GError *error = NULL;
 	gint ii;
 
 	for (ii = 1; ii < *argc; ii++) {
 		if (g_strcmp0 ((*argv)[ii], "--use-server") == 0 && ii + 1 < *argc) {
 			filename = g_strdup ((*argv)[ii + 1]);
-			memmove (&(*argv)[ii], &(*argv)[ii + 2],
-				(*argc - ii - 1) * sizeof (gchar *));
+			memmove (&(*argv)[ii], &(*argv)[ii + 2], (*argc - ii - 1) * sizeof (gchar *));
 			*argc -= 2;
 			break;
 		}
@@ -126,48 +183,7 @@ parse_use_server_arg (gint *argc,
 	if (!filename)
 		return;
 
-	key_file = g_key_file_new ();
-
-	if (!g_key_file_load_from_file (key_file, filename, G_KEY_FILE_NONE, &error))
-		g_error ("Failed to load server config '%s': %s", filename, error->message);
-
-	external_server = g_new0 (ExternalServer, 1);
-
-	external_server->host = g_key_file_get_string (key_file, "Server", "host", &error);
-	if (!external_server->host)
-		g_error ("Missing 'host' in [Server]: %s", error->message);
-
-	external_server->port = (guint16) g_key_file_get_integer (key_file, "Server", "port", &error);
-	if (error)
-		g_error ("Missing or invalid 'port' in [Server]: %s", error->message);
-
-	external_server->tls_port = (guint16) g_key_file_get_integer (key_file, "Server", "tls-port", &error);
-	if (error)
-		g_error ("Missing or invalid 'tls-port' in [Server]: %s", error->message);
-
-	external_server->group = g_key_file_get_string (key_file, "Server", "group", &error);
-	if (!external_server->group)
-		g_error ("Missing 'group' in [Server]: %s", error->message);
-
-	external_server->group2 = g_key_file_get_string (key_file, "Server", "group2", &error);
-	if (!external_server->group2)
-		g_error ("Missing 'group2' in [Server]: %s", error->message);
-
-	external_server->user = g_key_file_get_string (key_file, "Server", "user", NULL);
-	external_server->password = g_key_file_get_string (key_file, "Server", "password", NULL);
-
-	security_str = g_key_file_get_string (key_file, "Server", "security-method", NULL);
-	if (!security_str || g_ascii_strcasecmp (security_str, "none") == 0)
-		external_server->security_method = CAMEL_NETWORK_SECURITY_METHOD_NONE;
-	else if (g_ascii_strcasecmp (security_str, "ssl") == 0)
-		external_server->security_method = CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT;
-	else if (g_ascii_strcasecmp (security_str, "starttls") == 0)
-		external_server->security_method = CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT;
-	else
-		g_error ("Unknown security-method '%s' (expected: none, ssl, starttls)", security_str);
-	g_free (security_str);
-
-	g_key_file_free (key_file);
+	external_server = load_external_server_from_file (filename);
 	g_free (filename);
 }
 
@@ -182,6 +198,7 @@ external_server_free (ExternalServer *server)
 	g_free (server->password);
 	g_free (server->group);
 	g_free (server->group2);
+	g_free (server->group_readonly);
 	g_free (server);
 }
 
@@ -758,6 +775,56 @@ test_unsupported_operations (void)
 	test_nntp_teardown (session, service);
 }
 
+/* Posting-allowed is enforced against the "Newsgroups:" header of the
+ * received article, after the whole article has been sent -- not via the
+ * initial POST command's response -- so the rejection surfaces as a plain
+ * CAMEL_ERROR_GENERIC (whatever line the server sent), not the 440-specific
+ * CAMEL_FOLDER_ERROR_INSUFFICIENT_PERMISSION (see nntp_folder_append_message_sync). */
+static void
+test_post_to_readonly_group (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderInfo *fi;
+	CamelMimeMessage *msg;
+	gchar *subject;
+	GError *error = NULL;
+	gboolean success;
+	const gchar *body = "Readonly group post rejection test body.";
+
+	session = test_nntp_session_new ();
+	service = test_nntp_create_service (session, "test-readonly-post");
+	store = CAMEL_STORE (service);
+
+	test_nntp_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+	g_assert_true (test_folder_info_contains (fi, external_server->group_readonly));
+	camel_folder_info_free (fi);
+
+	folder = camel_store_get_folder_sync (store, external_server->group_readonly, 0, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (folder);
+
+	subject = g_strdup_printf ("Camel NNTP Readonly Test %08x", g_test_rand_int ());
+	msg = test_create_message (subject, body);
+
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_false (success);
+	g_assert_error (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC);
+	g_clear_error (&error);
+
+	g_object_unref (msg);
+	g_free (subject);
+	g_object_unref (folder);
+
+	test_nntp_teardown (session, service);
+}
+
 static void
 test_subscribed_only_listing (void)
 {
@@ -1129,10 +1196,137 @@ test_disconnect_after_idle_reset_by_activity (void)
 	test_nntp_teardown (session, service);
 }
 
+/* Local NNTP server discovery, used only when --use-server wasn't given
+ * (i.e. plain `make check`/`ctest` runs): unlike the IMAPx provider test,
+ * there's no way to spin up a throwaway NNTP server here (newsgroups are
+ * server-administered, see the comment above load_external_server_from_file),
+ * so this looks for one the developer already has running, in order of
+ * preference:
+ *
+ *   1. ~/.config/camel/tests/nntp-server.conf, in the same [Server] format
+ *      documented above load_external_server_from_file (so it can specify
+ *      tls-port and thus exercise the STARTTLS/TLS tests too);
+ *   2. a plain NNTP server answering on 127.0.0.1:119, assumed to provide
+ *      the default group/group2 names; if 127.0.0.1:563 (the standard
+ *      dedicated-TLS/NNTPS port) also answers, the TLS tests run too.
+ *
+ * If neither is found, the tests are skipped.
+ */
+static gchar *
+get_local_server_config_path (void)
+{
+	return g_build_filename (g_get_user_config_dir (), "camel", "tests", "nntp-server.conf", NULL);
+}
+
+static gboolean
+probe_local_nntp_port (const gchar *host,
+		       guint16 port)
+{
+	GSocketClient *client;
+	GSocketConnection *connection;
+
+	client = g_socket_client_new ();
+	g_socket_client_set_timeout (client, 2);
+
+	connection = g_socket_client_connect_to_host (client, host, port, NULL, NULL);
+	g_object_unref (client);
+
+	if (!connection)
+		return FALSE;
+
+	g_io_stream_close (G_IO_STREAM (connection), NULL, NULL);
+	g_object_unref (connection);
+
+	return TRUE;
+}
+
+static ExternalServer *
+discover_local_external_server (void)
+{
+	ExternalServer *server;
+	gchar *config_path;
+
+	config_path = get_local_server_config_path ();
+
+	if (g_file_test (config_path, G_FILE_TEST_EXISTS)) {
+		server = load_external_server_from_file (config_path);
+		g_free (config_path);
+		return server;
+	}
+
+	g_free (config_path);
+
+	if (!probe_local_nntp_port ("127.0.0.1", 119))
+		return NULL;
+
+	server = g_new0 (ExternalServer, 1);
+	server->host = g_strdup ("127.0.0.1");
+	server->port = 119;
+	server->tls_port = probe_local_nntp_port ("127.0.0.1", 563) ? 563 : 0;
+	server->group = g_strdup ("camel.test.group");
+	server->group2 = g_strdup ("camel.test.group2");
+	server->group_readonly = g_strdup ("camel.test.readonly");
+	server->security_method = CAMEL_NETWORK_SECURITY_METHOD_NONE;
+
+	return server;
+}
+
+/* A discovered server (as opposed to one named via --use-server, which is
+ * assumed to be a known-good, dedicated CI fixture) might be a developer's
+ * general-purpose news server: check it actually has the groups these tests
+ * need before touching anything, and reset them to a known (unsubscribed)
+ * local state, since that's the only kind of "cleanup" a plain NNTP client
+ * can do -- there's no protocol command to clear out old postings. */
+static void
+preflight_discovered_server (ExternalServer *server)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolderInfo *fi;
+	GError *error = NULL;
+
+	session = test_nntp_session_new ();
+	service = test_nntp_create_service (session, "test-discover-preflight");
+	store = CAMEL_STORE (service);
+
+	test_nntp_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+
+	if (!test_folder_info_contains (fi, server->group) ||
+	    !test_folder_info_contains (fi, server->group2) ||
+	    !test_folder_info_contains (fi, server->group_readonly)) {
+		gchar *config_path = get_local_server_config_path ();
+
+		g_error (
+			"Found an NNTP server at %s:%u, but it's missing the newsgroup(s) these "
+			"tests need ('%s', '%s', '%s' with posting disabled). Create them there "
+			"first (e.g. with your NNTP server's admin tool), or point %s at a server "
+			"that already has them (see the [Server] format documented above "
+			"load_external_server_from_file).",
+			server->host, server->port, server->group, server->group2,
+			server->group_readonly, config_path);
+	}
+
+	camel_folder_info_free (fi);
+
+	if (camel_subscribable_folder_is_subscribed (CAMEL_SUBSCRIBABLE (store), server->group))
+		camel_subscribable_unsubscribe_folder_sync (CAMEL_SUBSCRIBABLE (store), server->group, NULL, NULL);
+
+	if (camel_subscribable_folder_is_subscribed (CAMEL_SUBSCRIBABLE (store), server->group2))
+		camel_subscribable_unsubscribe_folder_sync (CAMEL_SUBSCRIBABLE (store), server->group2, NULL, NULL);
+
+	test_nntp_teardown (session, service);
+}
+
 gint
 main (gint argc,
       gchar **argv)
 {
+	gboolean is_discovered = FALSE;
 	gint ret;
 
 	parse_use_server_arg (&argc, &argv);
@@ -1141,21 +1335,38 @@ main (gint argc,
 	camel_test_provider_init (1, nntp_drivers);
 
 	if (!external_server) {
+		external_server = discover_local_external_server ();
+		is_discovered = TRUE;
+	}
+
+	if (!external_server) {
+		gchar *config_path = get_local_server_config_path ();
+
 		g_test_message ("Pass --use-server <config.conf> to run the NNTP provider tests "
-			"against a real server (see the comment above parse_use_server_arg "
-			"for the file format)");
+			"against a real server (see the comment above load_external_server_from_file "
+			"for the file format), or place that same config at '%s', or run a plain "
+			"NNTP server on 127.0.0.1:119 (plus 563 for the TLS tests) with "
+			"'camel.test.group'/'camel.test.group2' newsgroups already created.", config_path);
+
+		g_free (config_path);
 		camel_test_shutdown ();
 		return 0;
 	}
 
+	if (is_discovered)
+		preflight_discovered_server (external_server);
+
 	g_test_add_func ("/Camel/NNTP/Connect", test_connect);
-	g_test_add_func ("/Camel/NNTP/ConnectStartTls", test_connect_starttls);
-	g_test_add_func ("/Camel/NNTP/ConnectTls", test_connect_tls);
+	if (external_server->tls_port != 0) {
+		g_test_add_func ("/Camel/NNTP/ConnectStartTls", test_connect_starttls);
+		g_test_add_func ("/Camel/NNTP/ConnectTls", test_connect_tls);
+	}
 	g_test_add_func ("/Camel/NNTP/ListGroups", test_list_groups);
 	g_test_add_func ("/Camel/NNTP/SubscriptionState", test_subscription_state);
 	g_test_add_func ("/Camel/NNTP/PostAndFetchMessage", test_post_and_fetch_message);
 	g_test_add_func ("/Camel/NNTP/ReconnectAfterDisconnect", test_reconnect_after_disconnect);
 	g_test_add_func ("/Camel/NNTP/UnsupportedOperations", test_unsupported_operations);
+	g_test_add_func ("/Camel/NNTP/PostToReadonlyGroup", test_post_to_readonly_group);
 	g_test_add_func ("/Camel/NNTP/SubscribedOnlyListing", test_subscribed_only_listing);
 	g_test_add_func ("/Camel/NNTP/InvalidArticleFetch", test_invalid_article_fetch);
 	g_test_add_func ("/Camel/NNTP/LocalMessageFlags", test_local_message_flags);
