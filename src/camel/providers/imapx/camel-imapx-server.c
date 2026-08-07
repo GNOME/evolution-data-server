@@ -1896,6 +1896,35 @@ imapx_untagged_esearch (CamelIMAPXServer *is,
 
 		g_hash_table_insert (is->priv->esearch_results, utf8_mailbox_name, g_array_ref (uids));
 		g_mutex_unlock (&is->priv->esearch_results_lock);
+	} else if (!mailbox_name) {
+		/* RFC 9051 (IMAP4rev2) requires the SEARCH command to return
+		 * an ESEARCH response instead of the classic SEARCH response;
+		 * feed the (possibly empty, when no "UID ALL" was returned)
+		 * result set into the same place imapx_untagged_search() uses,
+		 * so that regular (non-multi-mailbox) UID SEARCH callers keep
+		 * working against IMAP4rev2-only servers. */
+		GArray *search_results;
+		guint ii;
+
+		search_results = g_array_new (FALSE, FALSE, sizeof (guint64));
+
+		if (uids) {
+			for (ii = 0; ii < uids->len; ii++) {
+				guint64 numeric_uid = g_array_index (uids, guint32, ii);
+				g_array_append_val (search_results, numeric_uid);
+			}
+		}
+
+		g_mutex_lock (&is->priv->search_results_lock);
+
+		if (is->priv->search_results == NULL)
+			is->priv->search_results = g_array_ref (search_results);
+		else
+			g_warning ("%s: Conflicting search results", G_STRFUNC);
+
+		g_mutex_unlock (&is->priv->search_results_lock);
+
+		g_array_unref (search_results);
 	}
 
 	success = TRUE;
