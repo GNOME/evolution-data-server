@@ -582,7 +582,7 @@ dovecot_test_server_new_internal (const gchar *protocol,
 DovecotTestServer *
 dovecot_test_server_new (void)
 {
-	return dovecot_test_server_new_internal ("imap", FALSE);
+	return dovecot_test_server_new_internal ("imap", TRUE);
 }
 
 DovecotTestServer *

@@ -61,6 +61,15 @@ imapx_test_session_authenticate_sync (CamelSession *session,
 	return result == CAMEL_AUTHENTICATION_ACCEPTED;
 }
 
+static CamelCertTrust
+imapx_test_session_trust_prompt (CamelSession *session,
+				 CamelService *service,
+				 GTlsCertificate *certificate,
+				 GTlsCertificateFlags errors)
+{
+	return CAMEL_CERT_TRUST_FULLY;
+}
+
 static void
 imapx_test_session_class_init (ImapxTestSessionClass *klass)
 {
@@ -68,6 +77,7 @@ imapx_test_session_class_init (ImapxTestSessionClass *klass)
 
 	session_class = CAMEL_SESSION_CLASS (klass);
 	session_class->authenticate_sync = imapx_test_session_authenticate_sync;
+	session_class->trust_prompt = imapx_test_session_trust_prompt;
 }
 
 static void
@@ -195,20 +205,19 @@ test_imapx_session_new (void)
 }
 
 static CamelService *
-test_imapx_create_service (CamelSession *session,
-			   const gchar *uid)
+test_imapx_create_service_full (CamelSession *session,
+				const gchar *uid,
+				CamelNetworkSecurityMethod security_method)
 {
 	CamelService *service;
 	CamelSettings *settings;
 	const gchar *host;
 	const gchar *user;
 	const gchar *password;
-	CamelNetworkSecurityMethod security_method;
 	guint16 port;
 	GError *error = NULL;
 
-	service = camel_session_add_service (session, uid, "imapx",
-		CAMEL_PROVIDER_STORE, &error);
+	service = camel_session_add_service (session, uid, "imapx", CAMEL_PROVIDER_STORE, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (service);
 
@@ -217,13 +226,15 @@ test_imapx_create_service (CamelSession *session,
 		port = external_server->port;
 		user = external_server->user;
 		password = external_server->password;
-		security_method = external_server->security_method;
 	} else {
 		host = dovecot_test_server_get_host (test_server);
-		port = dovecot_test_server_get_port (test_server);
 		user = dovecot_test_server_get_user (test_server);
 		password = dovecot_test_server_get_password (test_server);
-		security_method = CAMEL_NETWORK_SECURITY_METHOD_NONE;
+
+		if (security_method == CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT)
+			port = dovecot_test_server_get_tls_port (test_server);
+		else
+			port = dovecot_test_server_get_port (test_server);
 	}
 
 	settings = camel_service_ref_settings (service);
@@ -231,8 +242,7 @@ test_imapx_create_service (CamelSession *session,
 	camel_network_settings_set_host (CAMEL_NETWORK_SETTINGS (settings), host);
 	camel_network_settings_set_port (CAMEL_NETWORK_SETTINGS (settings), port);
 	camel_network_settings_set_user (CAMEL_NETWORK_SETTINGS (settings), user);
-	camel_network_settings_set_security_method (CAMEL_NETWORK_SETTINGS (settings),
-		security_method);
+	camel_network_settings_set_security_method (CAMEL_NETWORK_SETTINGS (settings), security_method);
 
 	g_object_set (settings, "use-idle", FALSE, NULL);
 
@@ -241,6 +251,17 @@ test_imapx_create_service (CamelSession *session,
 	camel_service_set_password (service, password);
 
 	return service;
+}
+
+static CamelService *
+test_imapx_create_service (CamelSession *session,
+			   const gchar *uid)
+{
+	CamelNetworkSecurityMethod security_method;
+
+	security_method = external_server ? external_server->security_method : CAMEL_NETWORK_SECURITY_METHOD_NONE;
+
+	return test_imapx_create_service_full (session, uid, security_method);
 }
 
 static void
@@ -623,6 +644,54 @@ test_connect (void)
 	test_flush_main_context ();
 	g_object_unref (session);
 	test_flush_main_context ();
+}
+
+static void
+test_connect_starttls (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolderInfo *fi;
+	GError *error = NULL;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service_full (session, "test-connect-starttls", CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+	g_assert_true (test_folder_info_contains (fi, "INBOX"));
+	camel_folder_info_free (fi);
+
+	test_imapx_teardown (session, service);
+}
+
+static void
+test_connect_tls (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolderInfo *fi;
+	GError *error = NULL;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service_full (session, "test-connect-tls", CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (fi);
+	g_assert_true (test_folder_info_contains (fi, "INBOX"));
+	camel_folder_info_free (fi);
+
+	test_imapx_teardown (session, service);
 }
 
 static void
@@ -2468,6 +2537,10 @@ main (gint argc,
 	}
 
 	g_test_add_func ("/Camel/IMAPx/Connect", test_connect);
+	if (!external_server) {
+		g_test_add_func ("/Camel/IMAPx/ConnectStartTls", test_connect_starttls);
+		g_test_add_func ("/Camel/IMAPx/ConnectTls", test_connect_tls);
+	}
 	g_test_add_func ("/Camel/IMAPx/ListFolders", test_list_folders);
 	g_test_add_func ("/Camel/IMAPx/CreateDeleteFolder", test_create_delete_folder);
 	g_test_add_func ("/Camel/IMAPx/RenameFolder", test_rename_folder);
