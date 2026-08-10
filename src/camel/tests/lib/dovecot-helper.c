@@ -13,6 +13,7 @@
 #ifdef G_OS_UNIX
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <unistd.h>
@@ -28,8 +29,13 @@
 
 struct _DovecotTestServer {
 	gchar *tmp_dir;
+	gchar *maildir_path;
 	gchar *dovecot_path;
+	gchar *cert_path;
+	gchar *key_path;
 	guint16 port;
+	guint16 tls_port;
+	gboolean tls_enabled;
 	GSubprocess *process;
 };
 
@@ -140,6 +146,65 @@ find_dovecot_binary (void)
 }
 
 static gboolean
+generate_self_signed_cert (DovecotTestServer *server)
+{
+#ifdef G_OS_UNIX
+	gchar *cert_path;
+	gchar *key_path;
+	const gchar *argv[15];
+	gint exit_status = 0;
+	gboolean success;
+	GError *error = NULL;
+
+	cert_path = g_build_filename (server->tmp_dir, "cert.pem", NULL);
+	key_path = g_build_filename (server->tmp_dir, "key.pem", NULL);
+
+	argv[0] = "openssl";
+	argv[1] = "req";
+	argv[2] = "-x509";
+	argv[3] = "-newkey";
+	argv[4] = "rsa:2048";
+	argv[5] = "-nodes";
+	argv[6] = "-keyout";
+	argv[7] = key_path;
+	argv[8] = "-out";
+	argv[9] = cert_path;
+	argv[10] = "-days";
+	argv[11] = "2";
+	argv[12] = "-subj";
+	argv[13] = "/CN=127.0.0.1";
+	argv[14] = NULL;
+
+	success = g_spawn_sync (
+		NULL, (gchar **) argv, NULL,
+		G_SPAWN_SEARCH_PATH | G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+		NULL, NULL, NULL, NULL, &exit_status, &error);
+
+	if (!success) {
+		g_warning ("Failed to generate self-signed certificate: %s", error->message);
+		g_clear_error (&error);
+		g_free (cert_path);
+		g_free (key_path);
+		return FALSE;
+	}
+
+	if (!WIFEXITED (exit_status) || WEXITSTATUS (exit_status) != 0) {
+		g_warning ("openssl exited abnormally while generating a self-signed certificate");
+		g_free (cert_path);
+		g_free (key_path);
+		return FALSE;
+	}
+
+	server->cert_path = cert_path;
+	server->key_path = key_path;
+
+	return TRUE;
+#else
+	return FALSE;
+#endif
+}
+
+static gboolean
 create_directory_tree (DovecotTestServer *server)
 {
 	const gchar *subdirs[] = {
@@ -147,6 +212,9 @@ create_directory_tree (DovecotTestServer *server)
 		"lib",
 		"log",
 		"home",
+		"Maildir/cur",
+		"Maildir/new",
+		"Maildir/tmp",
 		NULL
 	};
 	gint ii;
@@ -196,11 +264,12 @@ write_passwd_file (DovecotTestServer *server)
 }
 
 static gboolean
-write_dovecot_conf (DovecotTestServer *server)
+write_dovecot_conf (DovecotTestServer *server,
+		     const gchar *protocol)
 {
+	GString *contents;
 	gchar *conf_path;
 	gchar *passwd_path;
-	gchar *contents;
 	struct passwd *pw;
 	gboolean success;
 	GError *error = NULL;
@@ -214,16 +283,18 @@ write_dovecot_conf (DovecotTestServer *server)
 	conf_path = g_build_filename (server->tmp_dir, "dovecot.conf", NULL);
 	passwd_path = g_build_filename (server->tmp_dir, "passwd", NULL);
 
-	contents = g_strdup_printf (
+	contents = g_string_new (NULL);
+
+	g_string_append_printf (contents,
 		"dovecot_config_version = 2.4.4\n"
 		"dovecot_storage_version = 2.4.4\n"
 		"\n"
 		"protocols {\n"
-		"  imap = yes\n"
+		"  %s = yes\n"
 		"}\n"
 		"\n"
 		"listen = 127.0.0.1\n"
-		"ssl = no\n"
+		"ssl = %s\n"
 		"auth_allow_cleartext = yes\n"
 		"base_dir = %s/run\n"
 		"state_dir = %s/lib\n"
@@ -256,7 +327,35 @@ write_dovecot_conf (DovecotTestServer *server)
 		"    home = %s/home\n"
 		"    mail_path = %s/Maildir\n"
 		"  }\n"
-		"}\n"
+		"}\n",
+		/* protocols */
+		protocol,
+		/* ssl */
+		server->tls_enabled ? "yes" : "no",
+		/* base_dir, state_dir, log_path */
+		server->tmp_dir, server->tmp_dir, server->tmp_dir,
+		/* default_internal_user, default_internal_group, default_login_user */
+		pw->pw_name, pw->pw_name, pw->pw_name,
+		/* first_valid_uid, first_valid_gid */
+		(guint) getuid (), (guint) getgid (),
+		/* mail_home, mail_path */
+		server->tmp_dir, server->tmp_dir,
+		/* passdb passwd_file_path */
+		passwd_path,
+		/* userdb static uid, gid, home, mail_path */
+		(guint) getuid (), (guint) getgid (), server->tmp_dir, server->tmp_dir);
+
+	if (server->tls_enabled) {
+		g_string_append_printf (contents,
+			"\n"
+			"ssl_server {\n"
+			"  cert_file = %s\n"
+			"  key_file = %s\n"
+			"}\n",
+			server->cert_path, server->key_path);
+	}
+
+	g_string_append_printf (contents,
 		"\n"
 		"service anvil {\n"
 		"  chroot =\n"
@@ -264,16 +363,31 @@ write_dovecot_conf (DovecotTestServer *server)
 		"  group = %s\n"
 		"}\n"
 		"\n"
-		"service imap-login {\n"
+		"service %s-login {\n"
 		"  chroot =\n"
 		"  user = %s\n"
 		"  group = %s\n"
-		"  inet_listener imap {\n"
+		"  inet_listener %s {\n"
 		"    port = %u\n"
-		"  }\n"
+		"  }\n",
+		/* service anvil: user, group */
+		pw->pw_name, pw->pw_name,
+		/* service <protocol>-login: user, group, inet_listener name, port */
+		protocol, pw->pw_name, pw->pw_name, protocol, (guint) server->port);
+
+	if (server->tls_enabled) {
+		g_string_append_printf (contents,
+			"  inet_listener %ss {\n"
+			"    port = %u\n"
+			"    ssl = yes\n"
+			"  }\n",
+			protocol, (guint) server->tls_port);
+	}
+
+	g_string_append_printf (contents,
 		"}\n"
 		"\n"
-		"service imap {\n"
+		"service %s {\n"
 		"  user = %s\n"
 		"  group = %s\n"
 		"}\n"
@@ -298,11 +412,6 @@ write_dovecot_conf (DovecotTestServer *server)
 		"  group = %s\n"
 		"}\n"
 		"\n"
-		"service imap-hibernate {\n"
-		"  user = %s\n"
-		"  group = %s\n"
-		"}\n"
-		"\n"
 		"service stats {\n"
 		"  user = %s\n"
 		"  group = %s\n"
@@ -317,24 +426,8 @@ write_dovecot_conf (DovecotTestServer *server)
 		"  user = %s\n"
 		"  group = %s\n"
 		"}\n",
-		/* base_dir, state_dir, log_path */
-		server->tmp_dir, server->tmp_dir, server->tmp_dir,
-		/* default_internal_user, default_internal_group, default_login_user */
-		pw->pw_name, pw->pw_name, pw->pw_name,
-		/* first_valid_uid, first_valid_gid */
-		(guint) getuid (), (guint) getgid (),
-		/* mail_home, mail_path */
-		server->tmp_dir, server->tmp_dir,
-		/* passdb passwd_file_path */
-		passwd_path,
-		/* userdb static uid, gid, home, mail_path */
-		(guint) getuid (), (guint) getgid (), server->tmp_dir, server->tmp_dir,
-		/* service anvil: user, group */
-		pw->pw_name, pw->pw_name,
-		/* service imap-login: user, group, port */
-		pw->pw_name, pw->pw_name, (guint) server->port,
-		/* service imap: user, group */
-		pw->pw_name, pw->pw_name,
+		/* service <protocol>: user, group */
+		protocol, pw->pw_name, pw->pw_name,
 		/* service auth: user, group */
 		pw->pw_name, pw->pw_name,
 		/* service auth-worker: user, group */
@@ -343,8 +436,6 @@ write_dovecot_conf (DovecotTestServer *server)
 		pw->pw_name, pw->pw_name,
 		/* service dict-async: user, group */
 		pw->pw_name, pw->pw_name,
-		/* service imap-hibernate: user, group */
-		pw->pw_name, pw->pw_name,
 		/* service stats: user, group */
 		pw->pw_name, pw->pw_name,
 		/* service log: user, group */
@@ -352,13 +443,23 @@ write_dovecot_conf (DovecotTestServer *server)
 		/* service config: user, group */
 		pw->pw_name, pw->pw_name);
 
-	success = g_file_set_contents (conf_path, contents, -1, &error);
+	if (g_strcmp0 (protocol, "imap") == 0) {
+		g_string_append_printf (contents,
+			"\n"
+			"service imap-hibernate {\n"
+			"  user = %s\n"
+			"  group = %s\n"
+			"}\n",
+			pw->pw_name, pw->pw_name);
+	}
+
+	success = g_file_set_contents (conf_path, contents->str, -1, &error);
 	if (!success) {
 		g_warning ("Failed to write dovecot.conf: %s", error->message);
 		g_clear_error (&error);
 	}
 
-	g_free (contents);
+	g_string_free (contents, TRUE);
 	g_free (conf_path);
 	g_free (passwd_path);
 
@@ -374,8 +475,9 @@ atexit_cleanup (void)
 	}
 }
 
-DovecotTestServer *
-dovecot_test_server_new (void)
+static DovecotTestServer *
+dovecot_test_server_new_internal (const gchar *protocol,
+				   gboolean enable_tls)
 {
 	DovecotTestServer *server;
 	gchar *dovecot_path;
@@ -392,8 +494,9 @@ dovecot_test_server_new (void)
 
 	server = g_new0 (DovecotTestServer, 1);
 	server->dovecot_path = dovecot_path;
+	server->tls_enabled = enable_tls;
 
-	server->tmp_dir = g_dir_make_tmp ("camel-test-imap-XXXXXX", &error);
+	server->tmp_dir = g_dir_make_tmp ("camel-test-dovecot-XXXXXX", &error);
 	if (!server->tmp_dir) {
 		g_warning ("Failed to create temp directory: %s", error->message);
 		g_clear_error (&error);
@@ -414,12 +517,32 @@ dovecot_test_server_new (void)
 		return NULL;
 	}
 
+	if (server->tls_enabled) {
+		gint attempt;
+
+		for (attempt = 0; attempt < 5 &&
+		     (server->tls_port == 0 || server->tls_port == server->port); attempt++) {
+			server->tls_port = pick_free_port ();
+		}
+
+		if (server->tls_port == 0 || server->tls_port == server->port) {
+			g_warning ("Failed to pick a free TLS port");
+			dovecot_test_server_free (server);
+			return NULL;
+		}
+
+		if (!generate_self_signed_cert (server)) {
+			dovecot_test_server_free (server);
+			return NULL;
+		}
+	}
+
 	if (!write_passwd_file (server)) {
 		dovecot_test_server_free (server);
 		return NULL;
 	}
 
-	if (!write_dovecot_conf (server)) {
+	if (!write_dovecot_conf (server, protocol)) {
 		dovecot_test_server_free (server);
 		return NULL;
 	}
@@ -454,6 +577,18 @@ dovecot_test_server_new (void)
 	atexit (atexit_cleanup);
 
 	return server;
+}
+
+DovecotTestServer *
+dovecot_test_server_new (void)
+{
+	return dovecot_test_server_new_internal ("imap", FALSE);
+}
+
+DovecotTestServer *
+dovecot_test_server_new_pop3 (void)
+{
+	return dovecot_test_server_new_internal ("pop3", TRUE);
 }
 
 void
@@ -491,7 +626,10 @@ dovecot_test_server_free (DovecotTestServer *server)
 	}
 
 	g_free (server->tmp_dir);
+	g_free (server->maildir_path);
 	g_free (server->dovecot_path);
+	g_free (server->cert_path);
+	g_free (server->key_path);
 	g_free (server);
 }
 
@@ -525,4 +663,24 @@ dovecot_test_server_get_password (DovecotTestServer *server)
 	g_return_val_if_fail (server != NULL, NULL);
 
 	return DOVECOT_TEST_PASSWORD;
+}
+
+const gchar *
+dovecot_test_server_get_maildir_path (DovecotTestServer *server)
+{
+	g_return_val_if_fail (server != NULL, NULL);
+
+	if (!server->maildir_path) {
+		server->maildir_path = g_build_filename (server->tmp_dir, "Maildir", NULL);
+	}
+
+	return server->maildir_path;
+}
+
+guint16
+dovecot_test_server_get_tls_port (DovecotTestServer *server)
+{
+	g_return_val_if_fail (server != NULL, 0);
+
+	return server->tls_port;
 }

@@ -65,6 +65,7 @@ set(TESTS
 	test-camel-maildir-flags
 	test-camel-provider-imapx
 	test-camel-provider-nntp
+	test-camel-provider-pop3
 )
 
 # Tests that are built but not run automatically

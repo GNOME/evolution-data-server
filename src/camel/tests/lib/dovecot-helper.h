@@ -13,12 +13,15 @@ G_BEGIN_DECLS
 typedef struct _DovecotTestServer DovecotTestServer;
 
 DovecotTestServer *	dovecot_test_server_new		(void);
+DovecotTestServer *	dovecot_test_server_new_pop3	(void);
 void			dovecot_test_server_free	(DovecotTestServer *server);
 
 const gchar *		dovecot_test_server_get_host	(DovecotTestServer *server);
 guint16			dovecot_test_server_get_port	(DovecotTestServer *server);
 const gchar *		dovecot_test_server_get_user	(DovecotTestServer *server);
 const gchar *		dovecot_test_server_get_password	(DovecotTestServer *server);
+const gchar *		dovecot_test_server_get_maildir_path	(DovecotTestServer *server);
+guint16			dovecot_test_server_get_tls_port	(DovecotTestServer *server);
 
 G_END_DECLS
 
