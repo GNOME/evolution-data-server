@@ -1593,6 +1593,69 @@ e_soup_session_read_bytes (SoupMessage *message,
 	return bytes;
 }
 
+#define E_SOUP_SESSION_ERROR_BODY_IDLE_TIMEOUT_SECS 5
+
+typedef struct _ESoupSessionErrorBodyTimeoutData {
+	GCancellable *idle_cancellable;
+	guint timeout_id;
+} ESoupSessionErrorBodyTimeoutData;
+
+static gboolean
+e_soup_session_error_body_idle_timeout_cb (gpointer user_data)
+{
+	ESoupSessionErrorBodyTimeoutData *timeout_data = user_data;
+
+	timeout_data->timeout_id = 0;
+	g_cancellable_cancel (timeout_data->idle_cancellable);
+
+	return G_SOURCE_REMOVE;
+}
+
+static GByteArray *
+e_soup_session_read_error_body_bytes (SoupMessage *message,
+				      GInputStream *input_stream,
+				      GCancellable *cancellable)
+{
+	GByteArray *bytes;
+	ESoupSessionErrorBodyTimeoutData timeout_data;
+	goffset expected_length;
+	gpointer buffer;
+	gssize nread = 0;
+	gboolean success = FALSE;
+
+	expected_length = soup_message_headers_get_content_length (soup_message_get_response_headers (message));
+	if (expected_length > 0)
+		bytes = g_byte_array_sized_new (expected_length > 1024 * 1024 * 10 ? 1024 * 1024 * 10 : expected_length);
+	else
+		bytes = g_byte_array_new ();
+
+	buffer = g_malloc (BUFFER_SIZE);
+	timeout_data.idle_cancellable = camel_operation_new_proxy (cancellable);
+	timeout_data.timeout_id = 0;
+
+	do {
+		timeout_data.timeout_id = g_timeout_add_seconds (E_SOUP_SESSION_ERROR_BODY_IDLE_TIMEOUT_SECS, e_soup_session_error_body_idle_timeout_cb, &timeout_data);
+
+		nread = g_input_stream_read (input_stream, buffer, BUFFER_SIZE, timeout_data.idle_cancellable, NULL);
+
+		if (timeout_data.timeout_id)
+			g_source_remove (timeout_data.timeout_id);
+
+		success = nread >= 0;
+
+		if (nread > 0)
+			g_byte_array_append (bytes, buffer, nread);
+	} while (success && nread > 0);
+
+	g_object_unref (timeout_data.idle_cancellable);
+	g_free (buffer);
+
+	if (!success && !bytes->len)
+		g_clear_pointer (&bytes, g_byte_array_unref);
+
+	return bytes;
+}
+
 static void
 e_soup_session_store_data_on_message (SoupMessage *message,
 				      GInputStream *input_stream,
@@ -1601,7 +1664,7 @@ e_soup_session_store_data_on_message (SoupMessage *message,
 	if (input_stream) {
 		GByteArray *bytes;
 
-		bytes = e_soup_session_read_bytes (message, input_stream, cancellable, NULL);
+		bytes = e_soup_session_read_error_body_bytes (message, input_stream, cancellable);
 
 		if (bytes) {
 			g_object_set_data_full (G_OBJECT (message), E_SOUP_SESSION_MESSAGE_BYTES_KEY,
@@ -1635,7 +1698,7 @@ e_soup_session_send_message_ready_cb (GObject *source_object,
 
 	if (message) {
 		if (!SOUP_STATUS_IS_SUCCESSFUL (soup_message_get_status (message))) {
-			e_soup_session_store_data_on_message (message, input_stream, NULL);
+			e_soup_session_store_data_on_message (message, input_stream, g_task_get_cancellable (asd->task));
 			g_clear_object (&input_stream);
 		}
 
