@@ -1551,6 +1551,27 @@ camel_imapx_conn_manager_refresh_info_sync (CamelIMAPXConnManager *conn_man,
 	return success;
 }
 
+static void
+imapx_conn_manager_filter_uids_by_current_flags (CamelFolderSummary *summary,
+                                                 GPtrArray *uids,
+                                                 guint32 flags_set,
+                                                 guint32 flags_clear)
+{
+	guint ii;
+
+	for (ii = uids->len; ii > 0; ii--) {
+		const gchar *uid = g_ptr_array_index (uids, ii - 1);
+		CamelMessageInfo *info = camel_folder_summary_get (summary, uid);
+		guint32 flags = info ? camel_message_info_get_flags (info) : 0;
+		gboolean keep = info && (flags & flags_set) == flags_set && (flags & flags_clear) == 0;
+
+		g_clear_object (&info);
+
+		if (!keep)
+			g_ptr_array_remove_index (uids, ii - 1);
+	}
+}
+
 static gboolean
 imapx_conn_manager_move_to_real_junk_sync (CamelIMAPXConnManager *conn_man,
 					   CamelFolder *folder,
@@ -1580,6 +1601,9 @@ imapx_conn_manager_move_to_real_junk_sync (CamelIMAPXConnManager *conn_man,
 	if (camel_imapx_settings_get_use_real_junk_path (settings)) {
 		real_junk_path = camel_imapx_settings_dup_real_junk_path (settings);
 		camel_imapx_folder_claim_move_to_real_junk_uids (imapx_folder, uids_to_copy);
+		imapx_conn_manager_filter_uids_by_current_flags (
+			camel_folder_get_folder_summary (folder), uids_to_copy,
+			CAMEL_MESSAGE_JUNK, CAMEL_MESSAGE_NOTJUNK);
 	}
 	g_object_unref (settings);
 
@@ -1654,6 +1678,7 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 	GPtrArray *uids_to_copy;
 	gchar *real_trash_path = NULL;
 	guint32 folder_deleted_count = 0;
+	guint test_delay_ms;
 	gboolean success = TRUE;
 
 	*out_need_to_expunge = FALSE;
@@ -1671,6 +1696,14 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 	if (camel_imapx_settings_get_use_real_trash_path (settings)) {
 		real_trash_path = camel_imapx_settings_dup_real_trash_path (settings);
 		camel_imapx_folder_claim_move_to_real_trash_uids (CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+
+		test_delay_ms = camel_imapx_folder_get_test_move_to_trash_delay_ms (imapx_folder);
+		if (test_delay_ms > 0)
+			g_usleep ((gulong) test_delay_ms * 1000);
+
+		imapx_conn_manager_filter_uids_by_current_flags (
+			camel_folder_get_folder_summary (folder), uids_to_copy,
+			CAMEL_MESSAGE_DELETED, 0);
 	}
 	g_object_unref (settings);
 
@@ -1764,6 +1797,9 @@ imapx_conn_manager_move_to_not_junk_sync (CamelIMAPXConnManager *conn_man,
 	uids_to_copy = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
 
 	camel_imapx_folder_claim_move_to_not_junk_uids (CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+	imapx_conn_manager_filter_uids_by_current_flags (
+		camel_folder_get_folder_summary (folder), uids_to_copy,
+		CAMEL_MESSAGE_NOTJUNK, 0);
 
 	if (uids_to_copy->len > 0) {
 		CamelFolder *dest_folder = NULL;

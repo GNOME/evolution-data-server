@@ -79,6 +79,19 @@ void		camel_imapx_folder_add_move_to_real_trash
 void		camel_imapx_folder_add_move_to_not_junk
 						(CamelIMAPXFolder *folder,
 						 const gchar *message_uid);
+void		camel_imapx_folder_remove_move_uid
+						(CamelIMAPXFolder *folder,
+						 const gchar *message_uid);
+guint		camel_imapx_folder_get_test_move_to_trash_delay_ms
+						(CamelIMAPXFolder *folder);
+void		camel_imapx_folder_set_test_move_to_trash_delay_ms
+						(CamelIMAPXFolder *folder,
+						 guint delay_ms);
+guint		camel_imapx_folder_get_test_expunge_decision_delay_ms
+						(CamelIMAPXFolder *folder);
+void		camel_imapx_folder_set_test_expunge_decision_delay_ms
+						(CamelIMAPXFolder *folder,
+						 guint delay_ms);
 void		camel_imapx_folder_invalidate_local_cache
 						(CamelIMAPXFolder *folder,
 						 guint64 new_uidvalidity);

@@ -2490,6 +2490,588 @@ test_multimailbox_search (void)
 	test_imapx_teardown (session, service);
 }
 
+static gpointer
+test_synchronize_thread (gpointer user_data)
+{
+	CamelFolder *folder = user_data;
+	GError *error = NULL;
+	gboolean success;
+
+	success = camel_folder_synchronize_sync (folder, FALSE, NULL, &error);
+	if (!success)
+		g_test_message ("Background synchronize failed: %s", error ? error->message : "(unknown)");
+	g_clear_error (&error);
+
+	return NULL;
+}
+
+static void
+test_real_trash_delete_during_sync (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderSummary *summary;
+	CamelSettings *settings;
+	CamelSession *verify_session;
+	CamelService *verify_service;
+	CamelFolder *verify_folder;
+	CamelMimeMessage *msg;
+	GPtrArray *uids;
+	GPtrArray *server_uid_array;
+	GThread *sync_thread;
+	gchar *folder_name;
+	gchar *uid;
+	gboolean uid_on_server;
+	GError *error = NULL;
+	gboolean success;
+	guint ii;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-real-trash-delete-during-sync");
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+	test_imapx_create_folder (store, "", "RealTrashDuringSync");
+
+	folder_name = test_folder_path ("RealTrashDuringSync");
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "use-real-trash-path", TRUE, "real-trash-path", folder_name, NULL);
+	g_object_unref (settings);
+
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	msg = test_create_message ("Real trash during-sync message", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 1);
+
+	uids = camel_folder_dup_uids (folder);
+	g_assert_cmpint (uids->len, ==, 1);
+	uid = g_strdup (g_ptr_array_index (uids, 0));
+	g_ptr_array_unref (uids);
+
+	summary = camel_folder_get_folder_summary (folder);
+
+	camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
+
+	g_object_set (folder, "test-expunge-decision-delay-ms", 300, NULL);
+
+	sync_thread = g_thread_new ("real-trash-sync", test_synchronize_thread, folder);
+
+	g_usleep (100000);
+
+	camel_folder_delete_message (folder, uid);
+
+	g_thread_join (sync_thread);
+
+	g_object_set (folder, "test-expunge-decision-delay-ms", 0, NULL);
+
+	g_assert_true (camel_folder_summary_check_uid (summary, uid));
+
+	success = camel_folder_synchronize_sync (folder, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	verify_session = test_imapx_session_new ();
+	verify_service = test_imapx_create_service (verify_session, "test-real-trash-delete-during-sync-verify");
+	test_imapx_connect_service (verify_service);
+
+	verify_folder = camel_store_get_folder_sync (CAMEL_STORE (verify_service), folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	success = camel_folder_refresh_info_sync (verify_folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	server_uid_array = camel_folder_dup_uids (verify_folder);
+	uid_on_server = FALSE;
+	for (ii = 0; ii < server_uid_array->len; ii++) {
+		if (g_strcmp0 (g_ptr_array_index (server_uid_array, ii), uid) == 0)
+			uid_on_server = TRUE;
+	}
+	g_ptr_array_unref (server_uid_array);
+
+	g_object_unref (verify_folder);
+	test_imapx_teardown (verify_session, verify_service);
+
+	g_assert_false (camel_folder_summary_check_uid (summary, uid));
+	g_assert_false (uid_on_server);
+
+	g_free (uid);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "RealTrashDuringSync");
+	g_free (folder_name);
+
+	test_imapx_teardown (session, service);
+}
+
+static void
+test_expunge_deleted_flag_ordering_repro (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderSummary *summary;
+	CamelSettings *settings;
+	CamelSession *verify_session;
+	CamelService *verify_service;
+	CamelFolder *verify_folder;
+	CamelMimeMessage *msg;
+	GPtrArray *uids;
+	GPtrArray *server_uid_array;
+	gchar *folder_name;
+	gchar *target_uid;
+	gchar *other_uid;
+	gboolean target_on_server;
+	gboolean target_present_locally;
+	GError *error = NULL;
+	gboolean success;
+	guint ii;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-expunge-order-repro");
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+	test_imapx_create_folder (store, "", "OrderRepro");
+
+	folder_name = test_folder_path ("OrderRepro");
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "use-real-trash-path", TRUE, "real-trash-path", folder_name, NULL);
+	g_object_unref (settings);
+
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	msg = test_create_message ("Order repro target message", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	msg = test_create_message ("Order repro other message", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 2);
+
+	uids = camel_folder_dup_uids (folder);
+	camel_folder_sort_uids (folder, uids);
+	g_assert_cmpint (uids->len, ==, 2);
+
+	target_uid = g_strdup (g_ptr_array_index (uids, 0));
+	other_uid = g_strdup (g_ptr_array_index (uids, 1));
+	g_ptr_array_unref (uids);
+
+	summary = camel_folder_get_folder_summary (folder);
+
+	camel_folder_set_message_flags (folder, other_uid, CAMEL_MESSAGE_FLAGGED, CAMEL_MESSAGE_FLAGGED);
+	success = camel_folder_synchronize_sync (folder, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	camel_folder_delete_message (folder, target_uid);
+	camel_folder_set_message_flags (folder, other_uid, CAMEL_MESSAGE_FLAGGED, 0);
+
+	success = camel_folder_synchronize_sync (folder, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	verify_session = test_imapx_session_new ();
+	verify_service = test_imapx_create_service (verify_session, "test-expunge-order-repro-verify");
+	test_imapx_connect_service (verify_service);
+
+	verify_folder = camel_store_get_folder_sync (CAMEL_STORE (verify_service), folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	success = camel_folder_refresh_info_sync (verify_folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	server_uid_array = camel_folder_dup_uids (verify_folder);
+	target_on_server = FALSE;
+	for (ii = 0; ii < server_uid_array->len; ii++) {
+		if (g_strcmp0 (g_ptr_array_index (server_uid_array, ii), target_uid) == 0)
+			target_on_server = TRUE;
+	}
+	g_ptr_array_unref (server_uid_array);
+
+	target_present_locally = camel_folder_summary_check_uid (summary, target_uid);
+
+	g_object_unref (verify_folder);
+	test_imapx_teardown (verify_session, verify_service);
+
+	g_assert_true (target_present_locally == target_on_server);
+
+	g_free (target_uid);
+	g_free (other_uid);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "OrderRepro");
+	g_free (folder_name);
+
+	test_imapx_teardown (session, service);
+}
+
+static gpointer
+test_expunge_thread (gpointer user_data)
+{
+	CamelFolder *folder = user_data;
+	GError *error = NULL;
+
+	camel_folder_expunge_sync (folder, NULL, &error);
+	g_clear_error (&error);
+
+	return NULL;
+}
+
+static void
+test_expunge_wrong_message_repro (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderSummary *summary;
+	CamelSession *verify_session;
+	CamelService *verify_service;
+	CamelFolder *verify_folder;
+	CamelMimeMessage *msg;
+	GPtrArray *uids;
+	GPtrArray *server_uid_array;
+	GThread *expunge_thread;
+	gchar *folder_name;
+	gchar *target_uid;
+	gchar *victim_uid;
+	gboolean victim_on_server;
+	gboolean victim_present_locally;
+	GError *error = NULL;
+	gboolean success;
+	guint ii;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-expunge-race-repro");
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+	test_imapx_create_folder (store, "", "ExpungeRaceRepro");
+
+	folder_name = test_folder_path ("ExpungeRaceRepro");
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	msg = test_create_message ("Repro target message", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	msg = test_create_message ("Repro victim message", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 2);
+
+	uids = camel_folder_dup_uids (folder);
+	camel_folder_sort_uids (folder, uids);
+	g_assert_cmpint (uids->len, ==, 2);
+
+	target_uid = g_strdup (g_ptr_array_index (uids, 0));
+	victim_uid = g_strdup (g_ptr_array_index (uids, 1));
+	g_ptr_array_unref (uids);
+
+	summary = camel_folder_get_folder_summary (folder);
+
+	camel_folder_delete_message (folder, target_uid);
+
+	expunge_thread = g_thread_new ("expunge-race", test_expunge_thread, folder);
+
+	g_usleep (500000);
+
+	camel_folder_delete_message (folder, victim_uid);
+
+	g_thread_join (expunge_thread);
+
+	verify_session = test_imapx_session_new ();
+	verify_service = test_imapx_create_service (verify_session, "test-expunge-race-repro-verify");
+	test_imapx_connect_service (verify_service);
+
+	verify_folder = camel_store_get_folder_sync (CAMEL_STORE (verify_service), folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	success = camel_folder_refresh_info_sync (verify_folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	server_uid_array = camel_folder_dup_uids (verify_folder);
+	victim_on_server = FALSE;
+	for (ii = 0; ii < server_uid_array->len; ii++) {
+		if (g_strcmp0 (g_ptr_array_index (server_uid_array, ii), victim_uid) == 0)
+			victim_on_server = TRUE;
+	}
+	g_ptr_array_unref (server_uid_array);
+
+	victim_present_locally = camel_folder_summary_check_uid (summary, victim_uid);
+
+	g_object_unref (verify_folder);
+	test_imapx_teardown (verify_session, verify_service);
+
+	g_assert_true (victim_present_locally);
+	g_assert_true (victim_on_server);
+
+	g_free (target_uid);
+	g_free (victim_uid);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "ExpungeRaceRepro");
+	g_free (folder_name);
+
+	test_imapx_teardown (session, service);
+}
+
+static void
+test_copy_move_snapshot_race_repro (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderSummary *summary;
+	CamelSettings *settings;
+	CamelSession *verify_session;
+	CamelService *verify_service;
+	CamelFolder *verify_folder;
+	CamelMimeMessage *msg;
+	GPtrArray *uids;
+	GPtrArray *server_uid_array;
+	GThread *sync_thread;
+	gchar *folder_name;
+	gchar *trash_name;
+	gchar *uid1, *uid2, *uid3, *uid4, *uid5;
+	gboolean uid3_on_server;
+	gboolean uid3_present_locally;
+	GError *error = NULL;
+	gboolean success;
+	guint ii;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-snapshot-race-repro");
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+	test_imapx_create_folder (store, "", "SnapshotRaceRepro");
+	test_imapx_create_folder (store, "", "SnapshotRaceTrash");
+
+	folder_name = test_folder_path ("SnapshotRaceRepro");
+	trash_name = test_folder_path ("SnapshotRaceTrash");
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "use-real-trash-path", TRUE, "real-trash-path", trash_name, NULL);
+	g_object_unref (settings);
+
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	for (ii = 0; ii < 5; ii++) {
+		gchar *subject;
+
+		subject = g_strdup_printf ("Snapshot race message %u", ii);
+		msg = test_create_message (subject, "Body.\n");
+		success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (success);
+		g_object_unref (msg);
+		g_free (subject);
+	}
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 5);
+
+	uids = camel_folder_dup_uids (folder);
+	camel_folder_sort_uids (folder, uids);
+	g_assert_cmpint (uids->len, ==, 5);
+
+	uid1 = g_strdup (g_ptr_array_index (uids, 0));
+	uid2 = g_strdup (g_ptr_array_index (uids, 1));
+	uid3 = g_strdup (g_ptr_array_index (uids, 2));
+	uid4 = g_strdup (g_ptr_array_index (uids, 3));
+	uid5 = g_strdup (g_ptr_array_index (uids, 4));
+	g_ptr_array_unref (uids);
+
+	summary = camel_folder_get_folder_summary (folder);
+
+	camel_folder_delete_message (folder, uid2);
+	camel_folder_delete_message (folder, uid4);
+
+	sync_thread = g_thread_new ("snapshot-race-sync", test_synchronize_thread, folder);
+
+	g_usleep (400000);
+
+	camel_folder_summary_remove_uid (summary, uid1);
+
+	g_thread_join (sync_thread);
+
+	verify_session = test_imapx_session_new ();
+	verify_service = test_imapx_create_service (verify_session, "test-snapshot-race-repro-verify");
+	test_imapx_connect_service (verify_service);
+
+	verify_folder = camel_store_get_folder_sync (CAMEL_STORE (verify_service), folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	success = camel_folder_refresh_info_sync (verify_folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	server_uid_array = camel_folder_dup_uids (verify_folder);
+	uid3_on_server = FALSE;
+	for (ii = 0; ii < server_uid_array->len; ii++) {
+		if (g_strcmp0 (g_ptr_array_index (server_uid_array, ii), uid3) == 0)
+			uid3_on_server = TRUE;
+	}
+	g_ptr_array_unref (server_uid_array);
+
+	uid3_present_locally = camel_folder_summary_check_uid (summary, uid3);
+
+	g_object_unref (verify_folder);
+	test_imapx_teardown (verify_session, verify_service);
+
+	g_assert_true (uid3_present_locally);
+	g_assert_true (uid3_on_server);
+
+	g_free (uid1);
+	g_free (uid2);
+	g_free (uid3);
+	g_free (uid4);
+	g_free (uid5);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "SnapshotRaceRepro");
+	test_imapx_delete_folder (store, "SnapshotRaceTrash");
+	g_free (trash_name);
+	g_free (folder_name);
+
+	test_imapx_teardown (session, service);
+}
+
+static void
+test_move_to_real_trash_stale_staging_repro (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolder *trash_folder;
+	CamelFolderSummary *summary;
+	CamelFolderSummary *trash_summary;
+	CamelSettings *settings;
+	CamelMimeMessage *msg;
+	GPtrArray *uids;
+	GThread *sync_thread;
+	gchar *folder_name;
+	gchar *trash_name;
+	gchar *uid;
+	GError *error = NULL;
+	gboolean success;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-move-to-trash-stale-staging");
+	store = CAMEL_STORE (service);
+
+	test_imapx_connect_service (service);
+	test_imapx_create_folder (store, "", "StaleStagingSource");
+	test_imapx_create_folder (store, "", "StaleStagingTrash");
+
+	folder_name = test_folder_path ("StaleStagingSource");
+	trash_name = test_folder_path ("StaleStagingTrash");
+
+	settings = camel_service_ref_settings (service);
+	g_object_set (settings, "use-real-trash-path", TRUE, "real-trash-path", trash_name, NULL);
+	g_object_unref (settings);
+
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	trash_folder = camel_store_get_folder_sync (store, trash_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	msg = test_create_message ("Stale staging message", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 1);
+
+	uids = camel_folder_dup_uids (folder);
+	g_assert_cmpint (uids->len, ==, 1);
+	uid = g_strdup (g_ptr_array_index (uids, 0));
+	g_ptr_array_unref (uids);
+
+	summary = camel_folder_get_folder_summary (folder);
+	trash_summary = camel_folder_get_folder_summary (trash_folder);
+
+	camel_folder_delete_message (folder, uid);
+
+	g_object_set (folder, "test-move-to-trash-delay-ms", 2000, NULL);
+
+	sync_thread = g_thread_new ("stale-staging-sync", test_synchronize_thread, folder);
+
+	g_usleep (100000);
+
+	camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_DELETED, 0);
+
+	g_thread_join (sync_thread);
+
+	g_object_set (folder, "test-move-to-trash-delay-ms", 0, NULL);
+
+	g_assert_true (camel_folder_summary_check_uid (summary, uid));
+
+	success = camel_folder_refresh_info_sync (trash_folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	g_assert_false (camel_folder_summary_check_uid (trash_summary, uid));
+
+	g_free (uid);
+	g_object_unref (trash_folder);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "StaleStagingSource");
+	test_imapx_delete_folder (store, "StaleStagingTrash");
+	g_free (trash_name);
+	g_free (folder_name);
+
+	test_imapx_teardown (session, service);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2560,6 +3142,11 @@ main (gint argc,
 	g_test_add_func ("/Camel/IMAPx/ServerSearch", test_server_search);
 	g_test_add_func ("/Camel/IMAPx/SubscriptionState", test_subscription_state);
 	g_test_add_func ("/Camel/IMAPx/MultimailboxSearch", test_multimailbox_search);
+	g_test_add_func ("/Camel/IMAPx/RealTrashDeleteDuringSync", test_real_trash_delete_during_sync);
+	g_test_add_func ("/Camel/IMAPx/ExpungeDeletedFlagOrderingRepro", test_expunge_deleted_flag_ordering_repro);
+	g_test_add_func ("/Camel/IMAPx/ExpungeWrongMessageRepro", test_expunge_wrong_message_repro);
+	g_test_add_func ("/Camel/IMAPx/CopyMoveSnapshotRaceRepro", test_copy_move_snapshot_race_repro);
+	g_test_add_func ("/Camel/IMAPx/MoveToRealTrashStaleStagingRepro", test_move_to_real_trash_stale_staging_repro);
 
 	ret = g_test_run ();
 

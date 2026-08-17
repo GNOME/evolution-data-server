@@ -32,6 +32,9 @@ struct _CamelIMAPXFolderPrivate {
 
 	gboolean check_folder;
 	gint64 last_full_update;
+
+	guint test_move_to_trash_delay_ms;
+	guint test_expunge_decision_delay_ms;
 };
 
 enum {
@@ -40,6 +43,8 @@ enum {
 	PROP_APPLY_FILTERS,
 	PROP_CHECK_FOLDER,
 	PROP_LAST_FULL_UPDATE,
+	PROP_TEST_MOVE_TO_TRASH_DELAY_MS,
+	PROP_TEST_EXPUNGE_DECISION_DELAY_MS,
 	N_PROPS
 };
 
@@ -160,6 +165,18 @@ imapx_folder_set_property (GObject *object,
 				CAMEL_IMAPX_FOLDER (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_TEST_MOVE_TO_TRASH_DELAY_MS:
+			camel_imapx_folder_set_test_move_to_trash_delay_ms (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_uint (value));
+			return;
+
+		case PROP_TEST_EXPUNGE_DECISION_DELAY_MS:
+			camel_imapx_folder_set_test_expunge_decision_delay_ms (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_uint (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -197,6 +214,20 @@ imapx_folder_get_property (GObject *object,
 			g_value_take_object (
 				value,
 				camel_imapx_folder_ref_mailbox (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+
+		case PROP_TEST_MOVE_TO_TRASH_DELAY_MS:
+			g_value_set_uint (
+				value,
+				camel_imapx_folder_get_test_move_to_trash_delay_ms (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+
+		case PROP_TEST_EXPUNGE_DECISION_DELAY_MS:
+			g_value_set_uint (
+				value,
+				camel_imapx_folder_get_test_expunge_decision_delay_ms (
 				CAMEL_IMAPX_FOLDER (object)));
 			return;
 	}
@@ -1208,6 +1239,20 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			G_PARAM_STATIC_STRINGS |
 			CAMEL_FOLDER_PARAM_PERSISTENT);
 
+	properties[PROP_TEST_MOVE_TO_TRASH_DELAY_MS] =
+		g_param_spec_uint (
+			"test-move-to-trash-delay-ms", NULL, NULL,
+			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS);
+
+	properties[PROP_TEST_EXPUNGE_DECISION_DELAY_MS] =
+		g_param_spec_uint (
+			"test-expunge-decision-delay-ms", NULL, NULL,
+			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS);
+
 	/**
 	 * CamelIMAPXFolder:mailbox
 	 *
@@ -1696,6 +1741,56 @@ camel_imapx_folder_add_move_to_not_junk (CamelIMAPXFolder *folder,
 		(gpointer) camel_pstring_strdup (message_uid));
 
 	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+}
+
+void
+camel_imapx_folder_remove_move_uid (CamelIMAPXFolder *folder,
+                                    const gchar *message_uid)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+	g_return_if_fail (message_uid != NULL);
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	g_hash_table_remove (folder->priv->move_to_real_trash_uids, message_uid);
+	g_hash_table_remove (folder->priv->move_to_real_junk_uids, message_uid);
+	g_hash_table_remove (folder->priv->move_to_not_junk_uids, message_uid);
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+}
+
+guint
+camel_imapx_folder_get_test_move_to_trash_delay_ms (CamelIMAPXFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), 0);
+
+	return folder->priv->test_move_to_trash_delay_ms;
+}
+
+void
+camel_imapx_folder_set_test_move_to_trash_delay_ms (CamelIMAPXFolder *folder,
+                                                     guint delay_ms)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	folder->priv->test_move_to_trash_delay_ms = delay_ms;
+}
+
+guint
+camel_imapx_folder_get_test_expunge_decision_delay_ms (CamelIMAPXFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), 0);
+
+	return folder->priv->test_expunge_decision_delay_ms;
+}
+
+void
+camel_imapx_folder_set_test_expunge_decision_delay_ms (CamelIMAPXFolder *folder,
+                                                        guint delay_ms)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	folder->priv->test_expunge_decision_delay_ms = delay_ms;
 }
 
 void
