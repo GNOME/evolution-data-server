@@ -6102,6 +6102,7 @@ camel_imapx_server_check_folder_path (CamelIMAPXServer *is,
 		*out_same_as_other_folder = folder_name != NULL && g_ascii_strcasecmp (folder_name, path) == 0;
 	}
 
+	g_clear_pointer (&si, camel_store_info_unref);
 	g_object_unref (imapx_store);
 }
 
