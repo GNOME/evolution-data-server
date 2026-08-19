@@ -101,6 +101,16 @@ data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *iface,
 }
 
 static void
+data_book_factory_emit_backend_closed (EDataFactory *data_factory,
+				       const gchar *uid,
+				       const gchar *extension_name)
+{
+	EDataBookFactory *data_book_factory = E_DATA_BOOK_FACTORY (data_factory);
+
+	e_dbus_address_book_factory_emit_backend_closed (data_book_factory->priv->dbus_factory, uid, extension_name);
+}
+
+static void
 data_book_factory_backend_closed_cb (EBackend *backend,
 				     const gchar *sender,
 				     EDataFactory *data_factory)
@@ -315,6 +325,7 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	data_factory_class->complete_open = data_book_complete_open;
 	data_factory_class->create_backend = data_book_factory_create_backend;
 	data_factory_class->open_backend = data_book_factory_open_backend;
+	data_factory_class->emit_backend_closed = data_book_factory_emit_backend_closed;
 }
 
 static void

@@ -128,6 +128,16 @@ data_cal_complete_open (EDataFactory *data_factory,
 }
 
 static void
+data_cal_factory_emit_backend_closed (EDataFactory *data_factory,
+				      const gchar *uid,
+				      const gchar *extension_name)
+{
+	EDataCalFactory *data_cal_factory = E_DATA_CAL_FACTORY (data_factory);
+
+	e_dbus_calendar_factory_emit_backend_closed (data_cal_factory->priv->dbus_factory, uid, extension_name);
+}
+
+static void
 data_cal_factory_backend_closed_cb (EBackend *backend,
 				    const gchar *sender,
 				    EDataFactory *data_factory)
@@ -269,6 +279,7 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	data_factory_class->complete_open = data_cal_complete_open;
 	data_factory_class->create_backend = data_cal_factory_create_backend;
 	data_factory_class->open_backend = data_cal_factory_open_backend;
+	data_factory_class->emit_backend_closed = data_cal_factory_emit_backend_closed;
 }
 
 static gboolean

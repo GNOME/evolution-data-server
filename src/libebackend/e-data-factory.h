@@ -77,7 +77,11 @@ struct _EDataFactoryClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	gpointer reserved[13];
+	void		(* emit_backend_closed)	(EDataFactory *data_factory,
+						 const gchar *uid,
+						 const gchar *extension_name);
+
+	gpointer reserved[12];
 };
 
 GType		e_data_factory_get_type		(void) G_GNUC_CONST;

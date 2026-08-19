@@ -24,5 +24,20 @@
     <arg name="object_path" direction="out" type="s"/>
     <arg name="bus_name" direction="out" type="s"/>
   </method>
+  <!--
+      BackendClosed:
+      @source_uid: Unique identifier for a data source
+      @extension_name: The source extension name the backend was opened for
+
+      Emitted once the address book backend for @source_uid is truly
+      freed (its last reference dropped), not merely closed by one of
+      possibly several clients sharing it.
+
+      Since: 3.62
+  -->
+  <signal name="BackendClosed">
+    <arg name="source_uid" type="s"/>
+    <arg name="extension_name" type="s"/>
+  </signal>
 </interface>
 

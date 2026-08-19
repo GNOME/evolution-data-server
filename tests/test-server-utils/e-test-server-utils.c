@@ -718,6 +718,133 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	g_signal_handlers_disconnect_by_func (fixture->registry, e_test_server_utils_source_added, &pair);
 }
 
+#define BACKEND_CLOSE_WAIT_SECONDS 7
+
+typedef struct {
+	GMainLoop *loop;
+	gchar *uid;
+	gboolean matched;
+	guint signal_subscription_id;
+	guint watcher_id;
+	guint timeout_id;
+} BackendCloseWait;
+
+static void
+backend_close_wait_mark_matched (BackendCloseWait *wait)
+{
+	wait->matched = TRUE;
+
+	if (wait->timeout_id) {
+		g_source_remove (wait->timeout_id);
+		wait->timeout_id = 0;
+	}
+
+	if (g_main_loop_is_running (wait->loop))
+		g_main_loop_quit (wait->loop);
+}
+
+static void
+backend_close_wait_signal_cb (GDBusConnection *connection,
+                              const gchar *sender_name,
+                              const gchar *object_path,
+                              const gchar *interface_name,
+                              const gchar *signal_name,
+                              GVariant *parameters,
+                              gpointer user_data)
+{
+	BackendCloseWait *wait = user_data;
+	const gchar *uid = NULL;
+
+	g_variant_get (parameters, "(&s&s)", &uid, NULL);
+
+	if (g_strcmp0 (uid, wait->uid) == 0)
+		backend_close_wait_mark_matched (wait);
+}
+
+static void
+backend_close_wait_vanished_cb (GDBusConnection *connection,
+                                const gchar *name,
+                                gpointer user_data)
+{
+	backend_close_wait_mark_matched (user_data);
+}
+
+static gboolean
+backend_close_wait_timeout_cb (gpointer user_data)
+{
+	BackendCloseWait *wait = user_data;
+
+	g_error ("Timed out waiting for the backend for '%s' to fully close", wait->uid);
+
+	return G_SOURCE_REMOVE;
+}
+
+static gboolean
+backend_close_wait_get_factory_info (ETestServiceType type,
+                                     const gchar **out_bus_name,
+                                     const gchar **out_object_path,
+                                     const gchar **out_interface_name)
+{
+	switch (type) {
+	case E_TEST_SERVER_ADDRESS_BOOK:
+		*out_bus_name = ADDRESS_BOOK_DBUS_SERVICE_NAME;
+		*out_object_path = "/org/gnome/evolution/dataserver/AddressBookFactory";
+		*out_interface_name = "org.gnome.evolution.dataserver.AddressBookFactory";
+		return TRUE;
+
+	case E_TEST_SERVER_CALENDAR:
+		*out_bus_name = CALENDAR_DBUS_SERVICE_NAME;
+		*out_object_path = "/org/gnome/evolution/dataserver/CalendarFactory";
+		*out_interface_name = "org.gnome.evolution.dataserver.CalendarFactory";
+		return TRUE;
+
+	default:
+		return FALSE;
+	}
+}
+
+static BackendCloseWait *
+backend_close_wait_start (GDBusConnection *connection,
+                          const gchar *bus_name,
+                          const gchar *object_path,
+                          const gchar *interface_name,
+                          const gchar *uid)
+{
+	BackendCloseWait *wait;
+
+	wait = g_slice_new0 (BackendCloseWait);
+	wait->loop = g_main_loop_new (NULL, FALSE);
+	wait->uid = g_strdup (uid);
+
+	wait->signal_subscription_id = g_dbus_connection_signal_subscribe (
+		connection, bus_name, interface_name, "BackendClosed", object_path,
+		NULL, G_DBUS_SIGNAL_FLAGS_NONE,
+		backend_close_wait_signal_cb, wait, NULL);
+
+	wait->watcher_id = g_bus_watch_name_on_connection (
+		connection, bus_name, G_BUS_NAME_WATCHER_FLAGS_NONE,
+		NULL, backend_close_wait_vanished_cb, wait, NULL);
+
+	return wait;
+}
+
+static void
+backend_close_wait_finish (GDBusConnection *connection,
+                           BackendCloseWait *wait)
+{
+	if (!wait->matched) {
+		wait->timeout_id = g_timeout_add_seconds (BACKEND_CLOSE_WAIT_SECONDS, backend_close_wait_timeout_cb, wait);
+
+		g_main_loop_run (wait->loop);
+	}
+
+	g_dbus_connection_signal_unsubscribe (connection, wait->signal_subscription_id);
+	g_bus_unwatch_name (wait->watcher_id);
+	g_main_loop_unref (wait->loop);
+	g_free (wait->uid);
+	g_slice_free (BackendCloseWait, wait);
+}
+
 /**
  * e_test_server_utils_teardown:
  * @fixture: An #ETestServerFixture
@@ -731,6 +858,22 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 {
 	ETestServerClosure *closure = (ETestServerClosure *) user_data;
 	GError             *error = NULL;
+	GDBusConnection *backend_close_connection = NULL;
+	BackendCloseWait *backend_close_wait = NULL;
+	const gchar *backend_close_bus_name = NULL;
+	const gchar *backend_close_object_path = NULL;
+	const gchar *backend_close_interface_name = NULL;
+
+	if (backend_close_wait_get_factory_info (closure->type, &backend_close_bus_name,
+						 &backend_close_object_path, &backend_close_interface_name)) {
+		backend_close_connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+
+		if (backend_close_connection)
+			backend_close_wait = backend_close_wait_start (
+				backend_close_connection, backend_close_bus_name,
+				backend_close_object_path, backend_close_interface_name,
+				fixture->source_name);
+	}
 
 	/* Try to finalize the EClient */
 	switch (closure->type) {
@@ -768,6 +911,11 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	case E_TEST_SERVER_NONE:
 		break;
 	}
+
+	if (backend_close_wait)
+		backend_close_wait_finish (backend_close_connection, backend_close_wait);
+
+	g_clear_object (&backend_close_connection);
 
 	/* Assert that our EClient has finalized */
 	if (closure->type != E_TEST_SERVER_NONE)
