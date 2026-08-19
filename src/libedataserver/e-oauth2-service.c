@@ -1320,8 +1320,11 @@ eos_store_token_sync (EOAuth2Service *service,
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
 
-	if (!refresh_token || !access_token || !expires_in)
+	if (!refresh_token || !access_token || !expires_in) {
+		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_RESPONSE,
+			_("Token record is incomplete"));
 		return FALSE;
+	}
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
@@ -1342,6 +1345,14 @@ eos_store_token_sync (EOAuth2Service *service,
 		success = e_secret_store_store_sync (uid, secret, label, TRUE, cancellable, error);
 
 		g_free (label);
+	} else {
+		g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_SOURCE,
+			/* Translators: The first %s is a display name of the source, the second is its UID and
+			   the third is the name of the OAuth service. */
+			_("Source “%s” (%s) is not valid for “%s” OAuth2 service"),
+			e_source_get_display_name (source),
+			e_source_get_uid (source),
+			e_oauth2_service_get_name (service));
 	}
 
 	g_free (uid);
@@ -1420,6 +1431,9 @@ eos_lookup_token_sync (EOAuth2Service *service,
 	if (!success) {
 		g_clear_pointer (out_refresh_token, e_util_safe_free_string);
 		g_clear_pointer (out_access_token, e_util_safe_free_string);
+
+		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_SECRET_NOT_FOUND,
+			_("OAuth2 secret record is incomplete"));
 	}
 
 	e_util_safe_free_string (secret);
@@ -1467,8 +1481,11 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (ref_source != NULL, FALSE);
 
 	session = eos_create_soup_session (ref_source, ref_source_user_data, source);
-	if (!session)
+	if (!session) {
+		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_FAILED,
+			_("Failed to create HTTP session"));
 		return FALSE;
+	}
 
 	post_form = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
@@ -1479,6 +1496,9 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 	g_hash_table_destroy (post_form);
 
 	if (!message) {
+		g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_FAILED,
+			_("Failed to create HTTP request for “%s”"),
+			e_oauth2_service_get_refresh_uri (service, source));
 		g_object_unref (session);
 		return FALSE;
 	}
@@ -1563,8 +1583,11 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (ref_source != NULL, FALSE);
 
 	session = eos_create_soup_session (ref_source, ref_source_user_data, source);
-	if (!session)
+	if (!session) {
+		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_FAILED,
+			_("Failed to create HTTP session"));
 		return FALSE;
+	}
 
 	post_form = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
@@ -1575,6 +1598,9 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 	g_hash_table_destroy (post_form);
 
 	if (!message) {
+		g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_FAILED,
+			_("Failed to create HTTP request for “%s”"),
+			e_oauth2_service_get_refresh_uri (service, source));
 		g_object_unref (session);
 		return FALSE;
 	}
@@ -2061,6 +2087,12 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 		*out_expires_in = local_expires_in;
 	} else {
 		g_warn_if_fail (local_access_token == NULL);
+
+		if (!local_error) {
+			g_set_error_literal (&local_error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_REFRESH_FAILED,
+				_("Failed to obtain access token. Sign to the server again, please."));
+		}
+
 		eos_finish_access_token_request_locked (cred_source, NULL, 0, local_error);
 		g_propagate_error (error, local_error);
 	}

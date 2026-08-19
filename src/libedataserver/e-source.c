@@ -1862,10 +1862,15 @@ source_get_oauth2_access_token_thread (GTask         *task,
 		E_SOURCE (source_object), cancellable,
 		&async_context->access_token,
 		&async_context->expires_in,
-		&local_error))
+		&local_error)) {
 		g_task_return_pointer (task, g_steal_pointer (&async_context), async_context_free);
-	else
+	} else {
+		if (!local_error) {
+			local_error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_FAILED,
+				_("Failed to obtain OAuth 2.0 access token"));
+		}
 		g_task_return_error (task, g_steal_pointer (&local_error));
+	}
 
 	g_clear_pointer (&async_context, async_context_free);
 }
