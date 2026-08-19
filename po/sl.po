@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-08-03 15:00+0000\n"
-"PO-Revision-Date: 2026-08-04 12:43+0200\n"
+"POT-Creation-Date: 2026-08-19 14:23+0000\n"
+"PO-Revision-Date: 2026-08-19 19:28+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -180,14 +180,14 @@ msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:1827
 #: src/camel/camel-filter-driver.c:1843 src/camel/camel-filter-driver.c:1978
 #: src/camel/camel-gpg-context.c:3232
-#: src/camel/providers/imapx/camel-imapx-server.c:3493
-#: src/camel/providers/imapx/camel-imapx-server.c:3499
-#: src/camel/providers/imapx/camel-imapx-server.c:3509
-#: src/camel/providers/imapx/camel-imapx-server.c:3521
-#: src/camel/providers/nntp/camel-nntp-store.c:406
+#: src/camel/providers/imapx/camel-imapx-server.c:3486
+#: src/camel/providers/imapx/camel-imapx-server.c:3492
+#: src/camel/providers/imapx/camel-imapx-server.c:3502
+#: src/camel/providers/imapx/camel-imapx-server.c:3514
+#: src/camel/providers/nntp/camel-nntp-store.c:410
 #: src/libebackend/e-server-side-source.c:488 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
-#: src/libedataserver/e-soup-session.c:2182
+#: src/libedataserver/e-soup-session.c:2245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
 #: src/libedataserverui/e-reminders-widget.c:2278
@@ -3854,7 +3854,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Vpisan je neveljaven predmet GType za protokol »%s«"
 
 #: src/camel/camel-session.c:532
-#: src/camel/providers/imapx/camel-imapx-server.c:3414
+#: src/camel/providers/imapx/camel-imapx-server.c:3407
 #: src/camel/providers/pop3/camel-pop3-store.c:292
 #: src/camel/providers/pop3/camel-pop3-store.c:901
 #: src/camel/providers/smtp/camel-smtp-transport.c:687
@@ -5054,11 +5054,11 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Za dokončanje tega opravila je treba biti povezan v omrežje (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:979
-#: src/camel/providers/imapx/camel-imapx-server.c:3586
-#: src/camel/providers/nntp/camel-nntp-store.c:335
-#: src/camel/providers/nntp/camel-nntp-store.c:1335
-#: src/camel/providers/nntp/camel-nntp-store.c:2148
-#: src/camel/providers/nntp/camel-nntp-store.c:2301
+#: src/camel/providers/imapx/camel-imapx-server.c:3579
+#: src/camel/providers/nntp/camel-nntp-store.c:339
+#: src/camel/providers/nntp/camel-nntp-store.c:1341
+#: src/camel/providers/nntp/camel-nntp-store.c:2154
+#: src/camel/providers/nntp/camel-nntp-store.c:2390
 #: src/camel/providers/pop3/camel-pop3-folder.c:443
 #: src/camel/providers/pop3/camel-pop3-folder.c:642
 #: src/camel/providers/pop3/camel-pop3-folder.c:927
@@ -5073,28 +5073,28 @@ msgstr "Za dokončanje tega opravila je treba biti povezan v omrežje (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Za dokončanje tega opravila je treba biti povezan v omrežje"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1601
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1697
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1625
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
 #, c-format
 msgid "No destination folder specified"
 msgstr "Ni določene ciljne mape."
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1628
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1652
 msgid "Unable to move junk messages"
 msgstr "Ni mogoče premakniti vsiljenih sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1763
 msgid "Unable to move deleted messages"
 msgstr "Ni mogoče premakniti izbrisanih sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1815
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1851
 msgid "Unable to move Not-Junk messages"
 msgstr "Ni mogoče premakniti ne neželenih sporočil"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:699
+#: src/camel/providers/imapx/camel-imapx-folder.c:730
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Podatki količinske omejitve za mapo »%s : %s« niso na voljo."
@@ -5103,34 +5103,34 @@ msgstr "Podatki količinske omejitve za mapo »%s : %s« niso na voljo."
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:966
+#: src/camel/providers/imapx/camel-imapx-folder.c:997
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Poteka odstranjevanje datotek predpomnilnika iz mape »%s : %s«"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1032
+#: src/camel/providers/imapx/camel-imapx-folder.c:1063
 msgid "You must be working online to search in headers"
 msgstr "Če želite iskati v glavah, morate delati v spletu"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1086
+#: src/camel/providers/imapx/camel-imapx-folder.c:1117
 msgid "You must be working online to search in message body"
 msgstr "Če želite iskati v telesu sporočila, morate delati v spletu"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1175
+#: src/camel/providers/imapx/camel-imapx-folder.c:1206
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Uve_ljavi filtre sporočil v tej mapi"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1190
+#: src/camel/providers/imapx/camel-imapx-folder.c:1221
 msgid "Always check for _new mail in this folder"
 msgstr "Vedno preveri _novo pošto v tej mapi"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1361
+#: src/camel/providers/imapx/camel-imapx-folder.c:1406
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Ni mogoče ustvariti povzetka mape za %s"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1373
+#: src/camel/providers/imapx/camel-imapx-folder.c:1418
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Ni mogoče ustvariti predpomnilnika za %s:"
@@ -5138,7 +5138,7 @@ msgstr "Ni mogoče ustvariti predpomnilnika za %s:"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1551
+#: src/camel/providers/imapx/camel-imapx-folder.c:1596
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Za mapo »%s : %s« ni ustreznega poštnega nabiralnika IMAP"
@@ -5295,41 +5295,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Za branje in hranjenje pošte na strežnikih IMAP."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1192
+#: src/camel/providers/imapx/camel-imapx-server.c:1185
 msgid "Error writing to cache stream"
 msgstr "Napaka med pisanjem v predpomnilnik pretoka"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3209
-#: src/camel/providers/imapx/camel-imapx-server.c:3296
-#: src/camel/providers/imapx/camel-imapx-server.c:3619
+#: src/camel/providers/imapx/camel-imapx-server.c:3202
+#: src/camel/providers/imapx/camel-imapx-server.c:3289
+#: src/camel/providers/imapx/camel-imapx-server.c:3612
 msgid "Failed to get capabilities"
 msgstr "Napaka med pridobivanjem podatkov funkcionalnosti"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3228
+#: src/camel/providers/imapx/camel-imapx-server.c:3221
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3229
+#: src/camel/providers/imapx/camel-imapx-server.c:3222
 #: src/camel/providers/smtp/camel-smtp-transport.c:274
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ni podprt"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3238
+#: src/camel/providers/imapx/camel-imapx-server.c:3231
 msgid "Failed to issue STARTTLS"
 msgstr "Izvajanje ukaza STARTTLS je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3285
+#: src/camel/providers/imapx/camel-imapx-server.c:3278
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela:"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3401
+#: src/camel/providers/imapx/camel-imapx-server.c:3394
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Strežnik IMAP %s ne podpira zahtevanega načina overitve %s."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3427
+#: src/camel/providers/imapx/camel-imapx-server.c:3420
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
@@ -5338,178 +5338,177 @@ msgstr ""
 "Besedilna overitev ne dovoljena na varnih povezavah. Spremeniti je treba "
 "šifriranje na STARTTLS or TLS za račun »%s«."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3440
-#: src/camel/providers/nntp/camel-nntp-store.c:441
-#: src/camel/providers/nntp/camel-nntp-store.c:583
+#: src/camel/providers/imapx/camel-imapx-server.c:3433
+#: src/camel/providers/nntp/camel-nntp-store.c:445
+#: src/camel/providers/nntp/camel-nntp-store.c:587
 msgid "Cannot authenticate without a username"
 msgstr "Brez uporabniškega imena ni mogoče overiti povezave."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3449
-#: src/camel/providers/nntp/camel-nntp-store.c:592
+#: src/camel/providers/imapx/camel-imapx-server.c:3442
+#: src/camel/providers/nntp/camel-nntp-store.c:596
 #: src/camel/providers/pop3/camel-pop3-store.c:794
 #: src/camel/providers/pop3/camel-pop3-store.c:844
 msgid "Authentication password not available"
 msgstr "Geslo za overitev ni na voljo."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3459
-#: src/camel/providers/imapx/camel-imapx-server.c:3472
+#: src/camel/providers/imapx/camel-imapx-server.c:3452
+#: src/camel/providers/imapx/camel-imapx-server.c:3465
 msgid "Failed to authenticate"
 msgstr "Overitev je spodletela"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3544
+#: src/camel/providers/imapx/camel-imapx-server.c:3537
 msgid "Failed to issue ID"
 msgstr "Izvajanje določila ID je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3646
+#: src/camel/providers/imapx/camel-imapx-server.c:3639
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "Spodletela je uporaba možnosti ENABLE UTF8=ACCEPT"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3668
+#: src/camel/providers/imapx/camel-imapx-server.c:3661
 msgid "Failed to issue NAMESPACE"
 msgstr "Izvajanje ukaza NAMESPACE je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3686
+#: src/camel/providers/imapx/camel-imapx-server.c:3679
 msgid "Failed to enable QResync"
 msgstr "Omogočanje QResync je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3731
+#: src/camel/providers/imapx/camel-imapx-server.c:3724
 msgid "Failed to issue NOTIFY"
 msgstr "Izvajanje ukaza NOTIFY je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4219
+#: src/camel/providers/imapx/camel-imapx-server.c:4212
 msgid "Failed to select mailbox"
 msgstr "Napaka izbiranja poštnega predala"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4320
+#: src/camel/providers/imapx/camel-imapx-server.c:4313
 msgid "Cannot issue command, no stream available"
 msgstr "Ni mogoče izvesti ukaza. Pretok ni na voljo."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4583
+#: src/camel/providers/imapx/camel-imapx-server.c:4576
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ni mogoče dobiti sporočila zID %s: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4584
+#: src/camel/providers/imapx/camel-imapx-server.c:4577
 msgid "No such message available."
 msgstr "Na voljo ni takšnega sporočila."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4628
-#: src/camel/providers/imapx/camel-imapx-server.c:4653
-#: src/camel/providers/imapx/camel-imapx-server.c:4692
+#: src/camel/providers/imapx/camel-imapx-server.c:4621
+#: src/camel/providers/imapx/camel-imapx-server.c:4646
+#: src/camel/providers/imapx/camel-imapx-server.c:4685
 msgid "Error fetching message"
 msgstr "Napaka med pridobivanjem sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4670
-#: src/camel/providers/imapx/camel-imapx-server.c:5390
+#: src/camel/providers/imapx/camel-imapx-server.c:4663
+#: src/camel/providers/imapx/camel-imapx-server.c:5387
 msgid "Error performing NOOP"
 msgstr "Napaka med izvajanjem ukaza NOOP"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4685
+#: src/camel/providers/imapx/camel-imapx-server.c:4678
 msgid "Failed to close the cache stream"
 msgstr "Zapiranje toka predpomnilnika je spodletelo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4940
+#: src/camel/providers/imapx/camel-imapx-server.c:4937
 msgid "Error moving messages"
 msgstr "Napaka med premikanjem sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4940
+#: src/camel/providers/imapx/camel-imapx-server.c:4937
 msgid "Error copying messages"
 msgstr "Napaka med kopiranjem sporočil"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5173
-#: src/camel/providers/imapx/camel-imapx-server.c:5193
-#: src/camel/providers/imapx/camel-imapx-server.c:5201
+#: src/camel/providers/imapx/camel-imapx-server.c:5170
+#: src/camel/providers/imapx/camel-imapx-server.c:5190
+#: src/camel/providers/imapx/camel-imapx-server.c:5198
 msgid "Cannot create spool file: "
 msgstr "Ni mogoče ustvariti vrstilne datoteke:"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5287
+#: src/camel/providers/imapx/camel-imapx-server.c:5284
 msgid "Error appending message"
 msgstr "Napaka med pripenjanjem sporočila"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5558
+#: src/camel/providers/imapx/camel-imapx-server.c:5564
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Preiskovanje za spremenjena sporočila v »%s : %s«"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5562
+#: src/camel/providers/imapx/camel-imapx-server.c:5568
 msgid "Error scanning changes"
 msgstr "Napaka preiskovanja sprememb"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5586
+#: src/camel/providers/imapx/camel-imapx-server.c:5592
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Pridobivanje podatkov povzetka za nova sporočila v »%s : %s«."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5621
+#: src/camel/providers/imapx/camel-imapx-server.c:5627
 msgid "Error fetching message info"
 msgstr "Napaka med pridobivanjem podrobnosti sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5810
+#: src/camel/providers/imapx/camel-imapx-server.c:5817
 msgid "Error running STATUS"
 msgstr "Napaka zagona ukaza STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6436
-#: src/camel/providers/imapx/camel-imapx-server.c:6490
-#: src/camel/providers/imapx/camel-imapx-server.c:6572
+#: src/camel/providers/imapx/camel-imapx-server.c:6447
+#: src/camel/providers/imapx/camel-imapx-server.c:6480
+#: src/camel/providers/imapx/camel-imapx-server.c:6543
 msgid "Error syncing changes"
 msgstr "Napaka med usklajevanjem sprememb"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6449
-#: src/camel/providers/imapx/camel-imapx-server.c:6500
-#: src/camel/providers/imapx/camel-imapx-server.c:6591
-#: src/camel/providers/imapx/camel-imapx-server.c:6728
+#: src/camel/providers/imapx/camel-imapx-server.c:6618
+#: src/camel/providers/imapx/camel-imapx-server.c:6643
+#: src/camel/providers/imapx/camel-imapx-server.c:6802
 msgid "Error expunging message"
 msgstr "Napaka med uničevanjem sporočila"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6812
+#: src/camel/providers/imapx/camel-imapx-server.c:6870
 msgid "Error fetching folders"
 msgstr "Napaka med pridobivanjem map"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6820
+#: src/camel/providers/imapx/camel-imapx-server.c:6878
 msgid "Error fetching subscribed folders"
 msgstr "Napaka pridobivanja naročenih map"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6877
+#: src/camel/providers/imapx/camel-imapx-server.c:6935
 msgid "Error creating folder"
 msgstr "Napaka med ustvarjanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6927
+#: src/camel/providers/imapx/camel-imapx-server.c:6985
 msgid "Error deleting folder"
 msgstr "Napaka med brisanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6973
+#: src/camel/providers/imapx/camel-imapx-server.c:7031
 msgid "Error renaming folder"
 msgstr "Napaka med preimenovanjem mape"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7005
+#: src/camel/providers/imapx/camel-imapx-server.c:7063
 msgid "Error subscribing to folder"
 msgstr "Napaka naročanja na mapo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7041
+#: src/camel/providers/imapx/camel-imapx-server.c:7099
 msgid "Error unsubscribing from folder"
 msgstr "Napaka odjavljanja naročnine na mapo"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7081
+#: src/camel/providers/imapx/camel-imapx-server.c:7139
 msgid "IMAP server does not support quotas"
 msgstr "Strežnik IMAP ne podpira količinskih omejitev"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7093
+#: src/camel/providers/imapx/camel-imapx-server.c:7151
 msgid "Error retrieving quota information"
 msgstr "Napaka pridobivanja podatkov količinske omejitve"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7158
-#: src/camel/providers/imapx/camel-imapx-server.c:7253
+#: src/camel/providers/imapx/camel-imapx-server.c:7216
+#: src/camel/providers/imapx/camel-imapx-server.c:7311
 msgid "Search failed"
 msgstr "Iskanje je spodletelo"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7392
+#: src/camel/providers/imapx/camel-imapx-server.c:7450
 msgid "Error running IDLE"
 msgstr "Napaka med zagonom IDLE"
 
@@ -6328,37 +6327,37 @@ msgid ""
 msgstr ""
 "Možnost omogoča overitev na strežniku NNTP z besedilnim, nešifriranim geslom."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:363
+#: src/camel/providers/nntp/camel-nntp-store.c:367
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "Ni mogoče prebrati pozdrava iz %s:"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:375
+#: src/camel/providers/nntp/camel-nntp-store.c:379
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Strežnik NNTP %s je vrnil napako %d: %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:394
+#: src/camel/providers/nntp/camel-nntp-store.c:398
 #, c-format
 msgid "Failed to issue STARTTLS for NNTP server %s: "
 msgstr "Izvajanje ukaza STARTTLS za strežnik NNTP %s je spodletelo:"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:405
+#: src/camel/providers/nntp/camel-nntp-store.c:409
 #, c-format
 msgid "NNTP server %s doesn’t support STARTTLS: %s"
 msgstr "Strežnik NNTP %s ne podpira overitve STARTTLS: %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:425
+#: src/camel/providers/nntp/camel-nntp-store.c:429
 #, c-format
 msgid "Failed to connect to NNTP server %s in secure mode: "
 msgstr "Povezava s strežnikom NNTP %s v varnem načinu je spodletela: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:496
+#: src/camel/providers/nntp/camel-nntp-store.c:500
 #, c-format
 msgid "USENET News via %s"
 msgstr "USNET Novice po %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1233
+#: src/camel/providers/nntp/camel-nntp-store.c:1239
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -6369,26 +6368,26 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1352
+#: src/camel/providers/nntp/camel-nntp-store.c:1358
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "V novičarski shrambi ni mogoče ustvariti mape: mogoče se je naročiti na "
 "storitev."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1368
+#: src/camel/providers/nntp/camel-nntp-store.c:1374
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Ni mogoče preimenovati map v shrambi novic."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1391
+#: src/camel/providers/nntp/camel-nntp-store.c:1397
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Ni mogoče preimenovati map v shrambi novic: namesto tega prekličite "
 "naročnino."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1608
+#: src/camel/providers/nntp/camel-nntp-store.c:1614
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -6399,7 +6398,7 @@ msgstr ""
 "\n"
 "novičarska skupina ne obstaja. Izbran predmet je verjetno nadrejena mapa."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1675
+#: src/camel/providers/nntp/camel-nntp-store.c:1681
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -6410,17 +6409,17 @@ msgstr ""
 "\n"
 "novičarska skupina ne obstaja!"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2099
+#: src/camel/providers/nntp/camel-nntp-store.c:2105
 msgid "NNTP Command failed: "
 msgstr "Ukaz NNTP je spodletel:"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2205
-#: src/camel/providers/nntp/camel-nntp-store.c:2238
+#: src/camel/providers/nntp/camel-nntp-store.c:2294
+#: src/camel/providers/nntp/camel-nntp-store.c:2327
 #, c-format
 msgid "Not connected."
 msgstr "Brez povezave."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2315
+#: src/camel/providers/nntp/camel-nntp-store.c:2404
 #, c-format
 msgid "No such folder: %s"
 msgstr "Ni takšne mape: %s"
@@ -7532,13 +7531,13 @@ msgstr "Vir %s ne podpira ustvarjanja oddaljenih virov"
 msgid "%s does not support deleting remote resources"
 msgstr "Vir %s ne podpira brisanja oddaljenih virov"
 
-#: src/libebackend/e-data-factory.c:1445
+#: src/libebackend/e-data-factory.c:1466
 #: src/libebackend/e-subprocess-factory.c:283
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "Za UID »%s« ni mogoče najti podatkovnega vira"
 
-#: src/libebackend/e-data-factory.c:1600
+#: src/libebackend/e-data-factory.c:1621
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
@@ -7914,23 +7913,43 @@ msgstr "Ustvarjanje piškotka SOAP ni uspelo"
 msgid "Malformed, no message body set"
 msgstr "Nepravilno oblikovan del, ni določenega telesa sporočila"
 
+#: src/libedataserver/e-oauth2-service.c:1325
+msgid "Token record is incomplete"
+msgstr "Zapis o žetonu je nepopoln"
+
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1383
+#: src/libedataserver/e-oauth2-service.c:1352
+#: src/libedataserver/e-oauth2-service.c:1394
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Vir »%s« (%s) ni veljaven za storitev OAuth2 »%s«"
 
-#: src/libedataserver/e-oauth2-service.c:1398
+#: src/libedataserver/e-oauth2-service.c:1409
 msgid "OAuth2 secret not found"
 msgstr "Skrivne kode OAuth2 ni mogoče najti"
 
-#: src/libedataserver/e-oauth2-service.c:1600
+#: src/libedataserver/e-oauth2-service.c:1436
+msgid "OAuth2 secret record is incomplete"
+msgstr "Zapis skrivne kode OAuth2 je nepopoln"
+
+#: src/libedataserver/e-oauth2-service.c:1486
+#: src/libedataserver/e-oauth2-service.c:1588
+msgid "Failed to create HTTP session"
+msgstr "Ustvarjanje HTTP-seje ni uspelo"
+
+#: src/libedataserver/e-oauth2-service.c:1500
+#: src/libedataserver/e-oauth2-service.c:1602
+#, c-format
+msgid "Failed to create HTTP request for “%s”"
+msgstr "Ustvarjanje HTTP-zahtevka za »%s« ni uspelo"
+
+#: src/libedataserver/e-oauth2-service.c:1626
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Prejet je napačen odziv s strežnika »%s«."
 
-#: src/libedataserver/e-oauth2-service.c:1623
+#: src/libedataserver/e-oauth2-service.c:1649
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7942,24 +7961,29 @@ msgstr ""
 "\n"
 "Podrobnosti napake: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1652
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Osveževanje žetona je spodletelo. Znova se je treba prijaviti na strežnik."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1677
+#: src/libedataserver/e-oauth2-service.c:1703
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Vir »%s« (%s) ni veljaven vir OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:2053
+#: src/libedataserver/e-oauth2-service.c:2079
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
 "Žeton za dostop je potekel, a ga ni mogoče osvežiti. Znova se je treba "
 "prijaviti na strežnik."
+
+#: src/libedataserver/e-oauth2-service.c:2093
+msgid "Failed to obtain access token. Sign to the server again, please."
+msgstr ""
+"Pridobivanje dostopnega žetona ni uspelo. Ponovno se prijavite na strežnik."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -7997,7 +8021,7 @@ msgstr "Opravilo je spodletelo z napako HTTP %d: %s"
 msgid "Failed to setup authentication"
 msgstr "Nastavitev preverjanja pristnosti je spodletela"
 
-#: src/libedataserver/e-soup-session.c:1837
+#: src/libedataserver/e-soup-session.c:1900
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
@@ -8006,7 +8030,7 @@ msgstr[1] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minuta)"
 msgstr[2] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minuti)"
 msgstr[3] "Strežnik je zaseden in čaka na ponoven poskus (%d:%02d minute)"
 
-#: src/libedataserver/e-soup-session.c:1843
+#: src/libedataserver/e-soup-session.c:1906
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
@@ -8015,11 +8039,11 @@ msgstr[1] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
 msgstr[2] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
 msgstr[3] "Strežnik je zaseden in čaka na ponoven poskus (%d s)"
 
-#: src/libedataserver/e-soup-session.c:1964
+#: src/libedataserver/e-soup-session.c:2027
 msgid "Too many redirects"
 msgstr "Zaznanih je preveč preusmeritev"
 
-#: src/libedataserver/e-soup-session.c:1986
+#: src/libedataserver/e-soup-session.c:2049
 msgid "Redirect from HTTPS to HTTP is not allowed"
 msgstr "Preusmeritev s HTTPS na HTTP ni dovoljena"
 
@@ -8038,7 +8062,11 @@ msgstr "Podatkovnega vira »%s« ni mogoče odstraniti"
 msgid "Data source “%s” is not writable"
 msgstr "Podatkovni vir »%s« ni zapisljiv"
 
-#: src/libedataserver/e-source.c:2205
+#: src/libedataserver/e-source.c:1870
+msgid "Failed to obtain OAuth 2.0 access token"
+msgstr "Pridobivanje dostopnega žetona OAuth 2.0 ni uspelo"
+
+#: src/libedataserver/e-source.c:2210
 msgid "Unnamed"
 msgstr "Neimenovano"
 
