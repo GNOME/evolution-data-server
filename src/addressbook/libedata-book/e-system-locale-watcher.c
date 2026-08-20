@@ -4,7 +4,7 @@
  */
 
 /**
- * SECTION: e-source-locale-watcher
+ * SECTION: e-system-locale-watcher
  * @include: libedata-book/libedata-book.h
  * @short_description: Watch changes of system locale
  *

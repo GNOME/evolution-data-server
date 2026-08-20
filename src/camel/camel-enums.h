@@ -492,8 +492,15 @@ typedef enum { /*< flags >*/
 /**
  * CamelStoreGetFolderInfoFlags:
  * @CAMEL_STORE_FOLDER_INFO_FAST:
+ *   Allow the unread_message_count fields of some or all of the returned
+ *   #CamelFolderInfo structures to be set to -1, if the store cannot
+ *   determine that information quickly.
  * @CAMEL_STORE_FOLDER_INFO_RECURSIVE:
+ *   Include all levels of hierarchy below the requested folder, not just
+ *   its immediate subfolders.
  * @CAMEL_STORE_FOLDER_INFO_SUBSCRIBED:
+ *   List only subscribed folders. If the store doesn't support
+ *   subscriptions, all folders are listed.
  * @CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL:
  *   Do not include virtual trash or junk folders.
  * @CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST:

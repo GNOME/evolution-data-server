@@ -161,7 +161,7 @@ e_book_util_conflict_resolution_to_operation_flags (EConflictResolution conflict
  * e_book_util_foreach_address:
  * @email_address: one or more email addresses as string
  * @func: (scope call): a function to call for each email
- * @user_data (closure func): user data passed to @func
+ * @user_data: (closure func): user data passed to @func
  *
  * Parses the @email_address and calls @func for each found address.
  * The first parameter of the @func is the name, the second parameter

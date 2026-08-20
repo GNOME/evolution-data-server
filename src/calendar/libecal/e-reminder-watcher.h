@@ -39,11 +39,9 @@ G_BEGIN_DECLS
 
 /**
  * EReminderData:
- * @source_uid: the source UID
- * @component: the #ECalComponent that triggered the reminder
- * @instance: the #ECalComponentAlarmInstance describing the reminder alarm
  *
- * Contains data related to single reminder occurrence.
+ * An opaque structure containing data related to single reminder occurrence.
+ * Use the functions below to work with it.
  *
  * Since: 3.30
  **/

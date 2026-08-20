@@ -2530,7 +2530,7 @@ e_soup_session_message_restarted_cb (SoupMessage *message,
  * e_soup_session_util_set_message_request_body:
  * @message: a #SoupMessage
  * @content_type: (nullable): optional Content-Type of the @data, or %NULL
- * @input_stream (transfer none): the request body data as a #GInputStream
+ * @input_stream: (transfer none): the request body data as a #GInputStream
  * @length: length of the @data
  *
  * Sets the request body of the @message from the @input_stream of the @length, with optional

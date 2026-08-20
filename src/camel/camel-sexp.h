@@ -70,8 +70,8 @@ typedef enum {
 
 /**
  * CamelSExpResult:
- * @type: a #CamelSExpResultType, defining the @value type
- * @value: a union with the actual value
+ * @type: a #CamelSExpResultType, defining the type of the value held
+ *    in the "value" union member
  * @time_generator: a boolean whether the occuring times are used
  * @occuring_start: start time
  * @occuring_end: end time
@@ -165,10 +165,9 @@ typedef enum {
  * @type: a type of the symbol, either CAMEL_SEXP_TERM_FUNC or CAMEL_SEXP_TERM_VAR
  * @name: name of the symbol
  * @data: user data for the callback
- * @f.func: a #CamelSExpFunc callback
- * @f.ifunc: a #CamelSExpIFunc callback
  *
- * Describes a function or a variable symbol
+ * Describes a function or a variable symbol. When @type is %CAMEL_SEXP_TERM_FUNC,
+ * the "f" union member holds either a #CamelSExpFunc or a #CamelSExpIFunc callback.
  *
  * Since: 3.4
  **/
@@ -185,7 +184,10 @@ struct _CamelSExpSymbol {
 /**
  * CamelSExpTerm:
  * @type: a type of the term; one of #CamelSExpTermType
- * @value: value of the term
+ * @var: the #CamelSExpSymbol used when @type is %CAMEL_SEXP_TERM_VAR
+ *
+ * The "value" union member holds the actual value of the term, chosen
+ * according to @type.
  *
  * Since: 3.4
  **/
