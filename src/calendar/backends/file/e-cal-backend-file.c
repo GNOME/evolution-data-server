@@ -144,7 +144,6 @@ save_file_when_idle (gpointer user_data)
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 	if (!priv->is_dirty || !writable) {
 		priv->dirty_idle_id = 0;
-		priv->is_dirty = FALSE;
 		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return FALSE;
 	}
@@ -1498,7 +1497,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 
 	/* Claim a successful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
-		/* Success */
+		writable = e_cal_backend_get_writable (E_CAL_BACKEND (backend));
 		goto done;
 	}
 
@@ -1518,18 +1517,16 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	}
 
 	if (!err) {
-		if (writable) {
-			ESource *source;
+		ESource *source;
 
-			source = e_backend_get_source (E_BACKEND (backend));
+		source = e_backend_get_source (E_BACKEND (backend));
 
-			g_signal_connect (
-				source, "changed",
-				G_CALLBACK (source_changed_cb), backend);
+		g_signal_connect (
+			source, "changed",
+			G_CALLBACK (source_changed_cb), backend);
 
-			if (!get_source_writable (E_BACKEND (backend)))
-				writable = FALSE;
-		}
+		if (writable && !get_source_writable (E_BACKEND (backend)))
+			writable = FALSE;
 	}
 
 	g_free (str_uri);
@@ -3851,6 +3848,23 @@ cal_backend_file_email_address_changed_cb (GObject *object,
 }
 
 static void
+cal_backend_file_writable_changed_cb (GObject *object,
+				      GParamSpec *param,
+				      gpointer user_data)
+{
+	ECalBackendFile *cbfile = user_data;
+	ECalBackendFilePrivate *priv = cbfile->priv;
+
+	if (!e_cal_backend_get_writable (E_CAL_BACKEND (cbfile)))
+		return;
+
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+	if (priv->is_dirty && !priv->dirty_idle_id)
+		save (cbfile, FALSE);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
+}
+
+static void
 cal_backend_file_constructed (GObject *object)
 {
 	ECalBackend *backend;
@@ -3918,6 +3932,9 @@ cal_backend_file_constructed (GObject *object)
 
 	g_signal_connect_object (local_extension, "notify::email-address",
 		G_CALLBACK (cal_backend_file_email_address_changed_cb), backend, 0);
+
+	g_signal_connect_object (backend, "notify::writable",
+		G_CALLBACK (cal_backend_file_writable_changed_cb), backend, 0);
 }
 
 static void
