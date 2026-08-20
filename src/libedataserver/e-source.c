@@ -1075,6 +1075,18 @@ e_source_dbus_object_notify_source_cb (GObject *dbus_object,
 }
 
 static void
+e_source_dbus_object_interfaces_changed_cb (GDBusObject *dbus_object,
+					    GDBusInterface *interface,
+					    gpointer user_data)
+{
+	ESource *source = user_data;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	e_source_changed (source);
+}
+
+static void
 source_set_dbus_object (ESource *source,
                         EDBusObject *dbus_object)
 {
@@ -1089,6 +1101,10 @@ source_set_dbus_object (ESource *source,
 
 	g_signal_connect_object (source->priv->dbus_object, "notify::source",
 		G_CALLBACK (e_source_dbus_object_notify_source_cb), source, 0);
+	g_signal_connect_object (source->priv->dbus_object, "interface-added",
+		G_CALLBACK (e_source_dbus_object_interfaces_changed_cb), source, 0);
+	g_signal_connect_object (source->priv->dbus_object, "interface-removed",
+		G_CALLBACK (e_source_dbus_object_interfaces_changed_cb), source, 0);
 }
 
 static void
