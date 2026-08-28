@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.61.3 2026-08-28
+---------------------------------------
+
+Bug Fixes:
+	I#1 - Use gnome-shell-calendar-server for Reminders in GNOME
+	I#602 - IMAPx: Sometimes removes message from local summary in error
+	I#633 - NNTP: Add an option to disconnect on idle
+	I#648 - IMAPx: Use CHANGEDSINCE for UID FETCH with QRESYNC
+	M!236 - Camel: Add NNTP unit tests
+	M!240 - Camel: Add POP3 provider unit tests
+	M!241 - OAuth2: Always set GError when getting an access token fails (David Woodhouse)
+	M!242 - tests: Harden backend close on the factory side
+	ews-I#344 - ESoupSession: Set timeout for error body read
+
+Miscellaneous:
+	SetupBuildFlags.cmake: Add `-Wunused-function`
+	IMAPx: Refresh folder in single-client mode on message count mismatch
+	NNTP: Enhance unit tests to optionally run also during `make test`
+	IMAPx: Add STARTTLS/TLS connection tests to the unit tests
+	IMAPx: Fix a memory leak
+	ECalBackendFile: Improve tracking of backend's 'writable' state
+	ESource: Claim ESource changed when D-Bus interfaces were added/removed
+	Correct some gtk-doc warnings in the developer comments
+
+Translations:
+	Anders Jonsson (sv)
+	Asier Saratsua Garmendia (eu)
+	Aurimas Černius (lt)
+	Ekaterine Papava (ka)
+	Guillaume Bernard (fr)
+	Martin (sl)
+	Yuri Chornoivan (uk)
+
 Evolution-Data-Server 3.61.2 2026-07-31
 ---------------------------------------
 
