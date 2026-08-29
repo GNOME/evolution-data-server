@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues/\n"
-"POT-Creation-Date: 2026-07-27 12:40+0000\n"
-"PO-Revision-Date: 2026-07-29 13:06+0500\n"
+"POT-Creation-Date: 2026-08-20 13:40+0000\n"
+"PO-Revision-Date: 2026-08-29 11:53+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -93,7 +93,7 @@ msgid "Loading..."
 msgstr "Жүктеу..."
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1180
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4814
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4817
 msgid "Searching..."
 msgstr "Іздеу..."
 
@@ -135,7 +135,7 @@ msgstr "Ескі дерекқордың атын «%s»-ден «%s»-ге өз�
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:132
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4697
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4700
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:41
 #: src/addressbook/libebook-contacts/e-phone-number.c:41
 #: src/addressbook/libebook/e-book.c:1065 src/addressbook/libebook/e-book-client.c:2108
@@ -162,13 +162,13 @@ msgstr "Ескі дерекқордың атын «%s»-ден «%s»-ге өз�
 #: src/calendar/libecal/e-cal-client.c:6079 src/calendar/libecal/e-cal-client.c:6409
 #: src/calendar/libecal/e-cal-client.c:6614 src/calendar/libedata-cal/e-cal-cache.c:1827
 #: src/camel/camel-filter-driver.c:1843 src/camel/camel-filter-driver.c:1978
-#: src/camel/camel-gpg-context.c:3232 src/camel/providers/imapx/camel-imapx-server.c:3493
-#: src/camel/providers/imapx/camel-imapx-server.c:3499
-#: src/camel/providers/imapx/camel-imapx-server.c:3509
-#: src/camel/providers/imapx/camel-imapx-server.c:3521
-#: src/camel/providers/nntp/camel-nntp-store.c:406
+#: src/camel/camel-gpg-context.c:3232 src/camel/providers/imapx/camel-imapx-server.c:3486
+#: src/camel/providers/imapx/camel-imapx-server.c:3492
+#: src/camel/providers/imapx/camel-imapx-server.c:3502
+#: src/camel/providers/imapx/camel-imapx-server.c:3514
+#: src/camel/providers/nntp/camel-nntp-store.c:410
 #: src/libebackend/e-server-side-source.c:488 src/libedataserver/e-client.c:172
-#: src/libedataserver/e-soup-session.c:1129 src/libedataserver/e-soup-session.c:2182
+#: src/libedataserver/e-soup-session.c:1129 src/libedataserver/e-soup-session.c:2245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
 #: src/libedataserverui/e-reminders-widget.c:2278
@@ -195,7 +195,7 @@ msgid "Invalid DN syntax"
 msgstr "DN синтаксисі қате"
 
 #: src/addressbook/backends/ldap/e-book-backend-ldap.c:1130
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4696
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4699
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP қатесі 0x%x (%s)"
@@ -213,18 +213,18 @@ msgstr "%s: ldap_first_entry функциясы NULL мәнін қайтарды
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Өңделмейтін %d нәтиже түрі қайтарылды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2341
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2477
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6270
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2342
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2480
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6359
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Өңделмейтін %d іздеу нәтижесінің түрі қайтарылды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2634
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2637
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP контактілер тізімі бос болмауы керек."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2672
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2675
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same LDAP "
@@ -236,46 +236,46 @@ msgstr[0] ""
 "LDAP адрес кітапшаларындағы контактілер тізімінде әрбір мүше бірдей LDAP адрес "
 "кітапшасынан болуы керек, бірақ %d мүшені тану мүмкін болмады."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4643
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4646
 msgid "Receiving LDAP search results..."
 msgstr "LDAP іздеу нәтижелерін алу..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4840
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4843
 msgid "Error performing search"
 msgstr "Іздеуді орындау қатесі"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4987
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5053
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Контакттарды жүктеп алу (%d)..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5092
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5163
 #: src/addressbook/libedata-book/e-book-meta-backend.c:784
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:726
 msgid "Refreshing…"
 msgstr "Жаңарту…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5577
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5666
 msgid "The backend does not support bulk additions"
 msgstr "Бұл қызмет топтап қосуды қолдамайды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5672
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5761
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP серверіне контактіні қосу..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5734
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5823
 msgid "The backend does not support bulk modifications"
 msgstr "Бұл қызмет топтап өзгертуді қолдамайды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5756
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5845
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP серверінен контактіні өзгерту..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5828
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5917
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP серверінен контактіні өшіру..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6467
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6556
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "«%s» пайдаланушысы үшін DN алу сәтсіз аяқталды"
@@ -1414,32 +1414,32 @@ msgstr "Қайтыс болған күні: %s"
 msgid "Cannot get URI"
 msgstr "URI алу мүмкін емес"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:224
+#: src/calendar/backends/file/e-cal-backend-file.c:223
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Күнтізбе деректерін сақтау мүмкін емес: URI пішімі қате."
 
-#: src/calendar/backends/file/e-cal-backend-file.c:231
-#: src/calendar/backends/file/e-cal-backend-file.c:237
+#: src/calendar/backends/file/e-cal-backend-file.c:230
+#: src/calendar/backends/file/e-cal-backend-file.c:236
 msgid "Cannot save calendar data"
 msgstr "Күнтізбе деректерін сақтау мүмкін емес"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1189
-#: src/calendar/backends/file/e-cal-backend-file.c:1318
+#: src/calendar/backends/file/e-cal-backend-file.c:1188
+#: src/calendar/backends/file/e-cal-backend-file.c:1317
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "«%s» ICS файлын талдау мүмкін емес"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1200
-#: src/calendar/backends/file/e-cal-backend-file.c:1329
+#: src/calendar/backends/file/e-cal-backend-file.c:1199
+#: src/calendar/backends/file/e-cal-backend-file.c:1328
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "«%s» файлы VCALENDAR компоненті емес"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3762
-#: src/calendar/backends/file/e-cal-backend-file.c:3768
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/backends/file/e-cal-backend-file.c:3801
+#: src/calendar/backends/file/e-cal-backend-file.c:3759
+#: src/calendar/backends/file/e-cal-backend-file.c:3765
+#: src/calendar/backends/file/e-cal-backend-file.c:3771
+#: src/calendar/backends/file/e-cal-backend-file.c:3798
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
 msgid "Unsupported method"
 msgstr "Қолдауы жоқ тәсілі"
@@ -3798,7 +3798,7 @@ msgstr "Тұрақты өрнекті компиляциялау сәтсіз а
 msgid "Invalid GType registered for protocol “%s”"
 msgstr "«%s» протоколы үшін жарамсыз GType тіркелген"
 
-#: src/camel/camel-session.c:532 src/camel/providers/imapx/camel-imapx-server.c:3414
+#: src/camel/camel-session.c:532 src/camel/providers/imapx/camel-imapx-server.c:3407
 #: src/camel/providers/pop3/camel-pop3-store.c:292
 #: src/camel/providers/pop3/camel-pop3-store.c:901
 #: src/camel/providers/smtp/camel-smtp-transport.c:687
@@ -4972,11 +4972,11 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Бұл әрекетті орындау үшін желіде жұмыс істеуіңіз керек (%s)"
 
 #: src/camel/providers/imapx/camel-imapx-conn-manager.c:979
-#: src/camel/providers/imapx/camel-imapx-server.c:3586
-#: src/camel/providers/nntp/camel-nntp-store.c:335
-#: src/camel/providers/nntp/camel-nntp-store.c:1335
-#: src/camel/providers/nntp/camel-nntp-store.c:2148
-#: src/camel/providers/nntp/camel-nntp-store.c:2301
+#: src/camel/providers/imapx/camel-imapx-server.c:3579
+#: src/camel/providers/nntp/camel-nntp-store.c:339
+#: src/camel/providers/nntp/camel-nntp-store.c:1341
+#: src/camel/providers/nntp/camel-nntp-store.c:2154
+#: src/camel/providers/nntp/camel-nntp-store.c:2390
 #: src/camel/providers/pop3/camel-pop3-folder.c:443
 #: src/camel/providers/pop3/camel-pop3-folder.c:642
 #: src/camel/providers/pop3/camel-pop3-folder.c:927
@@ -4991,21 +4991,21 @@ msgstr "Бұл әрекетті орындау үшін желіде жұмыс 
 msgid "You must be working online to complete this operation"
 msgstr "Бұл әрекетті орындау үшін желіде жұмыс істеуіңіз керек"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1601
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1697
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1625
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
 #, c-format
 msgid "No destination folder specified"
 msgstr "Мақсат бумасы көрсетілмеген"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1628
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1652
 msgid "Unable to move junk messages"
 msgstr "Спам хабарламаларды жылжыту мүмкін емес"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1763
 msgid "Unable to move deleted messages"
 msgstr "Өшірілген хабарламаларды жылжыту мүмкін емес"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1815
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1851
 msgid "Unable to move Not-Junk messages"
 msgstr "Спам емес хабарламаларды жылжыту мүмкін емес"
 
@@ -5014,7 +5014,7 @@ msgstr "Спам емес хабарламаларды жылжыту мүмкі
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:699
+#: src/camel/providers/imapx/camel-imapx-folder.c:730
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "«%s : %s» бумасы үшін квота ақпараты қолжетімді емес"
@@ -5025,34 +5025,34 @@ msgstr "«%s : %s» бумасы үшін квота ақпараты қолже
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:966
+#: src/camel/providers/imapx/camel-imapx-folder.c:997
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "«%s : %s» бумасындағы ескірген кэш файлдарын өшіру"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1032
+#: src/camel/providers/imapx/camel-imapx-folder.c:1063
 msgid "You must be working online to search in headers"
 msgstr "Тақырыптамалардан іздеу үшін желіде жұмыс істеуіңіз керек"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1086
+#: src/camel/providers/imapx/camel-imapx-folder.c:1117
 msgid "You must be working online to search in message body"
 msgstr "Хабарлама мәтінінен іздеу үшін желіде жұмыс істеуіңіз керек"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1175
+#: src/camel/providers/imapx/camel-imapx-folder.c:1206
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Бұл бумаға хабарлама сүзгілерін (_filters) қолдану"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1190
+#: src/camel/providers/imapx/camel-imapx-folder.c:1221
 msgid "Always check for _new mail in this folder"
 msgstr "Бұл бумада жаңа поштаны (_new) әрқашан тексеру"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1361
+#: src/camel/providers/imapx/camel-imapx-folder.c:1406
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s үшін бума жиынтығын жасау мүмкін болмады"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1373
+#: src/camel/providers/imapx/camel-imapx-folder.c:1418
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s үшін кэш жасау мүмкін болмады: "
@@ -5062,7 +5062,7 @@ msgstr "%s үшін кэш жасау мүмкін болмады: "
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1551
+#: src/camel/providers/imapx/camel-imapx-folder.c:1596
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "«%s : %s» бумасы үшін қолжетімді IMAP пошта жәшігі жоқ"
@@ -5219,41 +5219,41 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP серверлерінде поштаны оқу және сақтау үшін."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:1192
+#: src/camel/providers/imapx/camel-imapx-server.c:1185
 msgid "Error writing to cache stream"
 msgstr "Кэш ағымына жазу қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3209
-#: src/camel/providers/imapx/camel-imapx-server.c:3296
-#: src/camel/providers/imapx/camel-imapx-server.c:3619
+#: src/camel/providers/imapx/camel-imapx-server.c:3202
+#: src/camel/providers/imapx/camel-imapx-server.c:3289
+#: src/camel/providers/imapx/camel-imapx-server.c:3612
 msgid "Failed to get capabilities"
 msgstr "Мүмкіндіктерді алу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3228
+#: src/camel/providers/imapx/camel-imapx-server.c:3221
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "%s IMAP серверіне қауіпсіз режимде қосылу сәтсіз аяқталды: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3229
+#: src/camel/providers/imapx/camel-imapx-server.c:3222
 #: src/camel/providers/smtp/camel-smtp-transport.c:274
 msgid "STARTTLS not supported"
 msgstr "STARTTLS үшін қолдау жоқ"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3238
+#: src/camel/providers/imapx/camel-imapx-server.c:3231
 msgid "Failed to issue STARTTLS"
 msgstr "STARTTLS жіберу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3285
+#: src/camel/providers/imapx/camel-imapx-server.c:3278
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "%s IMAP серверіне қауіпсіз режимде қосылу сәтсіз аяқталды: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3401
+#: src/camel/providers/imapx/camel-imapx-server.c:3394
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP сервері %s аутентификациясын қолдамайды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3427
+#: src/camel/providers/imapx/camel-imapx-server.c:3420
 #, c-format
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change encryption to "
@@ -5262,91 +5262,91 @@ msgstr ""
 "Қауіпсіз емес қосылымдарда ашық мәтіндік аутентификацияға рұқсат жоқ. «%s» тіркелгісі "
 "үшін шифрлеуді STARTTLS немесе TLS күйіне өзгертіңіз."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3440
-#: src/camel/providers/nntp/camel-nntp-store.c:441
-#: src/camel/providers/nntp/camel-nntp-store.c:583
+#: src/camel/providers/imapx/camel-imapx-server.c:3433
+#: src/camel/providers/nntp/camel-nntp-store.c:445
+#: src/camel/providers/nntp/camel-nntp-store.c:587
 msgid "Cannot authenticate without a username"
 msgstr "Пайдаланушы аты болмаса, аутентификация өтпейді"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3449
-#: src/camel/providers/nntp/camel-nntp-store.c:592
+#: src/camel/providers/imapx/camel-imapx-server.c:3442
+#: src/camel/providers/nntp/camel-nntp-store.c:596
 #: src/camel/providers/pop3/camel-pop3-store.c:794
 #: src/camel/providers/pop3/camel-pop3-store.c:844
 msgid "Authentication password not available"
 msgstr "Аутентификация паролі қолжетімді емес"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3459
-#: src/camel/providers/imapx/camel-imapx-server.c:3472
+#: src/camel/providers/imapx/camel-imapx-server.c:3452
+#: src/camel/providers/imapx/camel-imapx-server.c:3465
 msgid "Failed to authenticate"
 msgstr "Аутентификация сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3544
+#: src/camel/providers/imapx/camel-imapx-server.c:3537
 msgid "Failed to issue ID"
 msgstr "ID жіберу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3646
+#: src/camel/providers/imapx/camel-imapx-server.c:3639
 msgid "Failed to issue ENABLE UTF8=ACCEPT"
 msgstr "ENABLE UTF8=ACCEPT жіберу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3668
+#: src/camel/providers/imapx/camel-imapx-server.c:3661
 msgid "Failed to issue NAMESPACE"
 msgstr "NAMESPACE жіберу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3686
+#: src/camel/providers/imapx/camel-imapx-server.c:3679
 msgid "Failed to enable QResync"
 msgstr "QResync іске қосу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:3731
+#: src/camel/providers/imapx/camel-imapx-server.c:3724
 msgid "Failed to issue NOTIFY"
 msgstr "NOTIFY жіберу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4219
+#: src/camel/providers/imapx/camel-imapx-server.c:4212
 msgid "Failed to select mailbox"
 msgstr "Пошта жәшігін таңдау сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4320
+#: src/camel/providers/imapx/camel-imapx-server.c:4313
 msgid "Cannot issue command, no stream available"
 msgstr "Команданы жіберу мүмкін емес, қолжетімді ағын жоқ"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4583
+#: src/camel/providers/imapx/camel-imapx-server.c:4576
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "ID-і %s хабарламаны алу мүмкін емес: %s"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4584
+#: src/camel/providers/imapx/camel-imapx-server.c:4577
 msgid "No such message available."
 msgstr "Ондай хабарлама жоқ."
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4628
-#: src/camel/providers/imapx/camel-imapx-server.c:4653
-#: src/camel/providers/imapx/camel-imapx-server.c:4692
+#: src/camel/providers/imapx/camel-imapx-server.c:4621
+#: src/camel/providers/imapx/camel-imapx-server.c:4646
+#: src/camel/providers/imapx/camel-imapx-server.c:4685
 msgid "Error fetching message"
 msgstr "Хабарламаны алу қатемен аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4670
-#: src/camel/providers/imapx/camel-imapx-server.c:5390
+#: src/camel/providers/imapx/camel-imapx-server.c:4663
+#: src/camel/providers/imapx/camel-imapx-server.c:5387
 msgid "Error performing NOOP"
 msgstr "NOOP орындау қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4685
+#: src/camel/providers/imapx/camel-imapx-server.c:4678
 msgid "Failed to close the cache stream"
 msgstr "Кэш ағынын жабу сәтсіз аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4940
+#: src/camel/providers/imapx/camel-imapx-server.c:4937
 msgid "Error moving messages"
 msgstr "Хабарламаларды жылжыту қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:4940
+#: src/camel/providers/imapx/camel-imapx-server.c:4937
 msgid "Error copying messages"
 msgstr "Хабарламаларды көшіру қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5173
-#: src/camel/providers/imapx/camel-imapx-server.c:5193
-#: src/camel/providers/imapx/camel-imapx-server.c:5201
+#: src/camel/providers/imapx/camel-imapx-server.c:5170
+#: src/camel/providers/imapx/camel-imapx-server.c:5190
+#: src/camel/providers/imapx/camel-imapx-server.c:5198
 msgid "Cannot create spool file: "
 msgstr "Спул файлын жасау мүмкін емес: "
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5287
+#: src/camel/providers/imapx/camel-imapx-server.c:5284
 msgid "Error appending message"
 msgstr "Хабарламаны жалғау қатесі"
 
@@ -5355,12 +5355,12 @@ msgstr "Хабарламаны жалғау қатесі"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5558
+#: src/camel/providers/imapx/camel-imapx-server.c:5564
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "«%s : %s» ішінде өзгерген хабарламаларды сканерлеу"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5562
+#: src/camel/providers/imapx/camel-imapx-server.c:5568
 msgid "Error scanning changes"
 msgstr "Өзгерістерді анықтау қатесі"
 
@@ -5369,75 +5369,74 @@ msgstr "Өзгерістерді анықтау қатесі"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-server.c:5586
+#: src/camel/providers/imapx/camel-imapx-server.c:5592
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "«%s : %s» ішіндегі жаңа хабарламалар туралы жиынтық ақпаратты алу"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5621
+#: src/camel/providers/imapx/camel-imapx-server.c:5627
 msgid "Error fetching message info"
 msgstr "Хабарлама ақпаратын алу қатемен аяқталды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:5810
+#: src/camel/providers/imapx/camel-imapx-server.c:5817
 msgid "Error running STATUS"
 msgstr "STATUS орындау қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6436
-#: src/camel/providers/imapx/camel-imapx-server.c:6490
-#: src/camel/providers/imapx/camel-imapx-server.c:6572
+#: src/camel/providers/imapx/camel-imapx-server.c:6447
+#: src/camel/providers/imapx/camel-imapx-server.c:6480
+#: src/camel/providers/imapx/camel-imapx-server.c:6543
 msgid "Error syncing changes"
 msgstr "Өзгерістерді синхрондау қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6449
-#: src/camel/providers/imapx/camel-imapx-server.c:6500
-#: src/camel/providers/imapx/camel-imapx-server.c:6591
-#: src/camel/providers/imapx/camel-imapx-server.c:6728
+#: src/camel/providers/imapx/camel-imapx-server.c:6618
+#: src/camel/providers/imapx/camel-imapx-server.c:6643
+#: src/camel/providers/imapx/camel-imapx-server.c:6802
 msgid "Error expunging message"
 msgstr "Хабарламаны өшіру қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6812
+#: src/camel/providers/imapx/camel-imapx-server.c:6870
 msgid "Error fetching folders"
 msgstr "Бумаларды алу қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6820
+#: src/camel/providers/imapx/camel-imapx-server.c:6878
 msgid "Error fetching subscribed folders"
 msgstr "Жазылған бумаларды алу қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6877
+#: src/camel/providers/imapx/camel-imapx-server.c:6935
 msgid "Error creating folder"
 msgstr "Буманы жасау қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6927
+#: src/camel/providers/imapx/camel-imapx-server.c:6985
 msgid "Error deleting folder"
 msgstr "Буманы өшіру қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6973
+#: src/camel/providers/imapx/camel-imapx-server.c:7031
 msgid "Error renaming folder"
 msgstr "Бума атын ауыстыру қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7005
+#: src/camel/providers/imapx/camel-imapx-server.c:7063
 msgid "Error subscribing to folder"
 msgstr "Бумаға жазылу қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7041
+#: src/camel/providers/imapx/camel-imapx-server.c:7099
 msgid "Error unsubscribing from folder"
 msgstr "Бумадан жазылуды өшіру қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7081
+#: src/camel/providers/imapx/camel-imapx-server.c:7139
 msgid "IMAP server does not support quotas"
 msgstr "IMAP сервері квоталарды қолдамайды"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7093
+#: src/camel/providers/imapx/camel-imapx-server.c:7151
 msgid "Error retrieving quota information"
 msgstr "Квоталар ақпаратын алу қатесі"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7158
-#: src/camel/providers/imapx/camel-imapx-server.c:7253
+#: src/camel/providers/imapx/camel-imapx-server.c:7216
+#: src/camel/providers/imapx/camel-imapx-server.c:7311
 msgid "Search failed"
 msgstr "Іздеу сәтсіз аяқталды"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7392
+#: src/camel/providers/imapx/camel-imapx-server.c:7450
 msgid "Error running IDLE"
 msgstr "IDLE орындау қатесі"
 
@@ -6249,37 +6248,37 @@ msgstr "Бұл опция NNTP серверіне аутентификацияс
 msgid "This option will authenticate with the NNTP server using a plaintext password."
 msgstr "Бұл опция NNTP серверіне ашық мәтіндік пароль арқылы аутентификацияланады."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:363
+#: src/camel/providers/nntp/camel-nntp-store.c:367
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "%s серверінен сәлемдесуді оқу мүмкін болмады: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:375
+#: src/camel/providers/nntp/camel-nntp-store.c:379
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "%s NNTP сервері %d қате кодын қайтарды: %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:394
+#: src/camel/providers/nntp/camel-nntp-store.c:398
 #, c-format
 msgid "Failed to issue STARTTLS for NNTP server %s: "
 msgstr "%s NNTP сервері үшін STARTTLS жіберу сәтсіз аяқталды: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:405
+#: src/camel/providers/nntp/camel-nntp-store.c:409
 #, c-format
 msgid "NNTP server %s doesn’t support STARTTLS: %s"
 msgstr "%s NNTP сервері STARTTLS қолдамайды: %s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:425
+#: src/camel/providers/nntp/camel-nntp-store.c:429
 #, c-format
 msgid "Failed to connect to NNTP server %s in secure mode: "
 msgstr "%s NNTP серверіне қауіпсіз режимде қосылу сәтсіз аяқталды: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:496
+#: src/camel/providers/nntp/camel-nntp-store.c:500
 #, c-format
 msgid "USENET News via %s"
 msgstr "%s арқылы USENET жаңалықтары"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1233
+#: src/camel/providers/nntp/camel-nntp-store.c:1239
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -6290,23 +6289,23 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1352
+#: src/camel/providers/nntp/camel-nntp-store.c:1358
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Жаңалықтар қоймасында бума жасау мүмкін емес: оның орнына жазылыңыз."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1368
+#: src/camel/providers/nntp/camel-nntp-store.c:1374
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Жаңалықтар қоймасында бума атын өзгерту мүмкін емес."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1391
+#: src/camel/providers/nntp/camel-nntp-store.c:1397
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Жаңалықтар қоймасында буманы өшіру мүмкін емес: оның орнына жазылудан бас тартыңыз."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1608
+#: src/camel/providers/nntp/camel-nntp-store.c:1614
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -6317,7 +6316,7 @@ msgstr ""
 "\n"
 "Мұндай жаңалықтар тобы жоқ. Таңдалған элемент ата-лық бума болуы мүмкін."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:1675
+#: src/camel/providers/nntp/camel-nntp-store.c:1681
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -6328,17 +6327,17 @@ msgstr ""
 "\n"
 "жаңалықтар тобы жоқ!"
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2099
+#: src/camel/providers/nntp/camel-nntp-store.c:2105
 msgid "NNTP Command failed: "
 msgstr "NNTP командасы сәтсіз аяқталды: "
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2205
-#: src/camel/providers/nntp/camel-nntp-store.c:2238
+#: src/camel/providers/nntp/camel-nntp-store.c:2294
+#: src/camel/providers/nntp/camel-nntp-store.c:2327
 #, c-format
 msgid "Not connected."
 msgstr "Байланыспаған."
 
-#: src/camel/providers/nntp/camel-nntp-store.c:2315
+#: src/camel/providers/nntp/camel-nntp-store.c:2404
 #, c-format
 msgid "No such folder: %s"
 msgstr "Ондай бума жоқ: %s"
@@ -7420,12 +7419,12 @@ msgstr "%s қашықтағы ресурстарды жасауды қолдам
 msgid "%s does not support deleting remote resources"
 msgstr "%s қашықтағы ресурстарды өшіруді қолдамайды"
 
-#: src/libebackend/e-data-factory.c:1445 src/libebackend/e-subprocess-factory.c:283
+#: src/libebackend/e-data-factory.c:1466 src/libebackend/e-subprocess-factory.c:283
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "«%s» UID үшін мұндай бастапқы көз жоқ"
 
-#: src/libebackend/e-data-factory.c:1600
+#: src/libebackend/e-data-factory.c:1621
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "«%s» бастапқы көзі және «%s» кеңейтілуі үшін бэкэнд зауыты (factory) табылмады."
@@ -7439,7 +7438,7 @@ msgstr "Деректер көзінде [%s] тобы жетіспейді"
 msgid "Failed to lookup credentials: "
 msgstr "Сенім грамоталарын іздеу сәтсіз аяқталды: "
 
-#: src/libebackend/e-server-side-source.c:1363 src/libedataserver/e-source.c:1613
+#: src/libebackend/e-server-side-source.c:1363 src/libedataserver/e-source.c:1629
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "«%s» деректер көзі қашықтағы ресурстарды жасауды қолдамайды"
@@ -7449,7 +7448,7 @@ msgstr "«%s» деректер көзі қашықтағы ресурстард
 msgid "Data source “%s” has no collection backend to create the remote resource"
 msgstr "«%s» деректер көзінде қашықтағы ресурсты жасау үшін жиынтық бэкэнд жоқ"
 
-#: src/libebackend/e-server-side-source.c:1405 src/libedataserver/e-source.c:1709
+#: src/libebackend/e-server-side-source.c:1405 src/libedataserver/e-source.c:1725
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "«%s» деректер көзі қашықтағы ресурстарды өшіруді қолдамайды"
@@ -7460,7 +7459,7 @@ msgid "Data source “%s” has no collection backend to delete the remote resou
 msgstr "«%s» деректер көзінде қашықтағы ресурсты өшіру үшін жиынтық бэкэнд жоқ"
 
 #: src/libebackend/e-server-side-source.c:1458
-#: src/libebackend/e-source-registry-server.c:1025 src/libedataserver/e-source.c:1830
+#: src/libebackend/e-source-registry-server.c:1025 src/libedataserver/e-source.c:1846
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "«%s» деректер көзі OAuth 2.0 аутентификациясын қолдамайды"
@@ -7728,44 +7727,44 @@ msgstr "%s шақыру сәтсіз аяқталды: "
 msgid "Failed to create broker proxy: "
 msgstr "Брокер проксиін жасау сәтсіз аяқталды: "
 
-#: src/libedataserver/e-ms-oapxbc.c:186
+#: src/libedataserver/e-ms-oapxbc.c:187
 msgid "Failed to call getAccounts: "
 msgstr "getAccounts шақыру сәтсіз аяқталды: "
 
-#: src/libedataserver/e-ms-oapxbc.c:194
+#: src/libedataserver/e-ms-oapxbc.c:195
 msgid "Failed to parse getAccounts response: "
 msgstr "getAccounts жауабын талдау сәтсіз аяқталды: "
 
-#: src/libedataserver/e-ms-oapxbc.c:201
+#: src/libedataserver/e-ms-oapxbc.c:202
 #, c-format
 msgid "Failed to parse getAccounts response: root is not an object"
 msgstr "getAccounts жауабын талдау сәтсіз аяқталды: түбір (root) объект емес"
 
-#: src/libedataserver/e-ms-oapxbc.c:350
+#: src/libedataserver/e-ms-oapxbc.c:354
 msgid "Failed to acquire PRT SSO cookie: "
 msgstr "PRT SSO cookie алу сәтсіз аяқталды: "
 
-#: src/libedataserver/e-ms-oapxbc.c:358
+#: src/libedataserver/e-ms-oapxbc.c:362
 msgid "Failed to parse acquirePrtSsoCookie response: "
 msgstr "acquirePrtSsoCookie жауабын талдау сәтсіз аяқталды: "
 
-#: src/libedataserver/e-ms-oapxbc.c:363
+#: src/libedataserver/e-ms-oapxbc.c:367
 #, c-format
 msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
 msgstr "acquirePrtSsoCookie жауабын талдау сәтсіз аяқталды: түбір (root) объект емес"
 
-#: src/libedataserver/e-ms-oapxbc.c:376
+#: src/libedataserver/e-ms-oapxbc.c:380
 #, c-format
 msgid "No PrtSsoCookie in response"
 msgstr "Жауапта PrtSsoCookie жоқ"
 
-#: src/libedataserver/e-ms-oapxbc.c:385 src/libedataserver/e-ms-oapxbc.c:392
+#: src/libedataserver/e-ms-oapxbc.c:389 src/libedataserver/e-ms-oapxbc.c:396
 #, c-format
 msgid "Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"
 msgstr ""
 "acquirePrtSsoCookie жауабын талдау сәтсіз аяқталды: PrtSsoCookie деректері жарамсыз"
 
-#: src/libedataserver/e-ms-oapxbc.c:403
+#: src/libedataserver/e-ms-oapxbc.c:407
 #, c-format
 msgid "Failed to create SOAP cookie"
 msgstr "SOAP кукиін жасау сәтсіз аяқталды"
@@ -7774,24 +7773,41 @@ msgstr "SOAP кукиін жасау сәтсіз аяқталды"
 msgid "Malformed, no message body set"
 msgstr "Пішімі қате, хабарлама мәтіні орнатылмаған"
 
+#: src/libedataserver/e-oauth2-service.c:1325
+msgid "Token record is incomplete"
+msgstr "Токен жазбасы толық емес"
+
 #. Translators: The first %s is a display name of the source, the second is
 #. its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1383
+#: src/libedataserver/e-oauth2-service.c:1352 src/libedataserver/e-oauth2-service.c:1394
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "«%s» (%s) бастапқы көзі «%s» OAuth2 қызметі үшін жарамсыз"
 
-#: src/libedataserver/e-oauth2-service.c:1398
+#: src/libedataserver/e-oauth2-service.c:1409
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 кілті табылмады"
 
-#: src/libedataserver/e-oauth2-service.c:1600
+#: src/libedataserver/e-oauth2-service.c:1436
+msgid "OAuth2 secret record is incomplete"
+msgstr "OAuth2 құпия кілті жазбасы толық емес"
+
+#: src/libedataserver/e-oauth2-service.c:1486 src/libedataserver/e-oauth2-service.c:1588
+msgid "Failed to create HTTP session"
+msgstr "HTTP сеансын жасау сәтсіз аяқталды"
+
+#: src/libedataserver/e-oauth2-service.c:1500 src/libedataserver/e-oauth2-service.c:1602
+#, c-format
+msgid "Failed to create HTTP request for “%s”"
+msgstr "«%s» үшін HTTP сұрауын жасау сәтсіз аяқталды"
+
+#: src/libedataserver/e-oauth2-service.c:1626
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "«%s» серверінен қате жауап алынды."
 
-#: src/libedataserver/e-oauth2-service.c:1623
+#: src/libedataserver/e-oauth2-service.c:1649
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7802,24 +7818,28 @@ msgstr ""
 "\n"
 "Толық қате: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1652
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Рұқсат токенін жаңарту сәтсіз аяқталды. Серверге қайта кіріңіз."
 
 #. Translators: The first %s is a display name of the source, the second is
 #. its UID.
-#: src/libedataserver/e-oauth2-service.c:1677
+#: src/libedataserver/e-oauth2-service.c:1703
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "«%s» (%s) бастапқы көзі жарамды OAuth2 көзі емес"
 
-#: src/libedataserver/e-oauth2-service.c:2053
+#: src/libedataserver/e-oauth2-service.c:2079
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server again, "
 "please."
 msgstr ""
 "Рұқсат токенінің мерзімі өткен және оны жаңарту сәтсіз аяқталды. Серверге қайта "
 "кіріңіз."
+
+#: src/libedataserver/e-oauth2-service.c:2093
+msgid "Failed to obtain access token. Sign to the server again, please."
+msgstr "Қол жеткізу токенін алу сәтсіз аяқталды. Серверге қайта кіріңіз."
 
 #. Translators: This is a user-visible string, display name of an OAuth2
 #. service.
@@ -7860,23 +7880,23 @@ msgstr "HTTP %d қатесімен сәтсіз аяқталды: %s"
 msgid "Failed to setup authentication"
 msgstr "Аутентификацияны баптау сәтсіз аяқталды"
 
-#: src/libedataserver/e-soup-session.c:1837
+#: src/libedataserver/e-soup-session.c:1900
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] "Сервер бос емес, қайталап көру күтілуде (%d:%02d минут)"
 
-#: src/libedataserver/e-soup-session.c:1843
+#: src/libedataserver/e-soup-session.c:1906
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
 msgstr[0] "Сервер бос емес, қайталап көру күтілуде (%d секунд)"
 
-#: src/libedataserver/e-soup-session.c:1964
+#: src/libedataserver/e-soup-session.c:2027
 msgid "Too many redirects"
 msgstr "Қайта бағыттаулар тым көп"
 
-#: src/libedataserver/e-soup-session.c:1986
+#: src/libedataserver/e-soup-session.c:2049
 msgid "Redirect from HTTPS to HTTP is not allowed"
 msgstr "HTTPS-тен HTTP-ге бағыттауға рұқсат етілмейді"
 
@@ -7885,17 +7905,21 @@ msgstr "HTTPS-тен HTTP-ге бағыттауға рұқсат етілмей�
 msgid "Source file is missing a [%s] group"
 msgstr "Бастапқы файлда [%s] тобы жетіспейді"
 
-#: src/libedataserver/e-source.c:1407
+#: src/libedataserver/e-source.c:1423
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "«%s» деректер көзін өшіру мүмкін емес"
 
-#: src/libedataserver/e-source.c:1524
+#: src/libedataserver/e-source.c:1540
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "«%s» деректер көзіне жазу мүмкін емес"
 
-#: src/libedataserver/e-source.c:2205
+#: src/libedataserver/e-source.c:1886
+msgid "Failed to obtain OAuth 2.0 access token"
+msgstr "OAuth 2.0 қол жеткізу токенін алу сәтсіз аяқталды"
+
+#: src/libedataserver/e-source.c:2226
 msgid "Unnamed"
 msgstr "Атаусыз"
 
@@ -9093,26 +9117,26 @@ msgstr ""
 "Процесс бойынша құрастыру кезіндегі бэкэнд опциясын алмастырады; іске қосу үшін 1, "
 "сөндіру үшін 0, басқа кез келген мән — құрастыру кезіндегі опцияны пайдалану"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:323
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:334
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:880
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:1128
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:278
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:289
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:833
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1080
 msgid "Reminders"
 msgstr "Еске салулар"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:451
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:406
 msgid "Warning"
 msgstr "Ескерту"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:452
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:407
 msgid "_No"
 msgstr "_Жоқ"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:453
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:408
 msgid "_Yes"
 msgstr "_Иә"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:457
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:412
 #, c-format
 msgid ""
 "A calendar reminder is about to trigger. This reminder is configured to run the "
@@ -9129,43 +9153,47 @@ msgstr ""
 "\n"
 "Бұл бағдарламаны орындағыңыз келетініне сенімдісіз бе?"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:472
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:427
 msgid "Do not ask me about this program again"
 msgstr "Мені бұл бағдарлама жөнінде келесіде сұрамау"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:783
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:738
 msgid "Display Reminders window with _notifications"
 msgstr "Еске салғыштар терезесін хабарландырулармен көрсету (_n)"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:784
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:739
 msgid "Keep reminder notification window always on _top"
 msgstr "Еске салғыштар туралы хабарландыру терезесін әрқашан үстінде (_top) ұстау"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:785
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:740
 msgid "Enable _desktop notifications"
 msgstr "Жұмыс үстелі хабарландыруларын іске қосу (_d)"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:786
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:741
 msgid "Enable _audio notifications"
 msgstr "Дыбыстық хабарландыруларды іске қосу (_a)"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:787
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:742
 msgid "Display reminders for _completed tasks"
 msgstr "Аяқталған тапсырмалар үшін еске салғыштарды көрсету (_c)"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:788
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:743
 msgid "Display reminders for _past events"
 msgstr "Өткен оқиғалар үшін еске салғыштарды көрсету (_p)"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:802
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:757
 msgid "Reminders Options:"
 msgstr "Еске салулар опциялары:"
 
-#: src/services/evolution-alarm-notify/e-alarm-notify.c:896
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:849
 #, c-format
 msgid "You have %d reminder"
 msgid_plural "You have %d reminders"
 msgstr[0] "Сізде %d еске салу бар"
+
+#: src/services/evolution-alarm-notify/e-alarm-notify.c:1213
+msgid "The app is auto-started"
+msgstr "Қолданба автоматты түрде іске қосылған"
 
 #: src/services/evolution-source-registry/evolution-source-registry.c:24
 msgid "Don’t migrate user data from previous versions of Evolution"
