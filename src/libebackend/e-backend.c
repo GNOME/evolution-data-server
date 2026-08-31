@@ -1139,6 +1139,14 @@ e_backend_ref_main_context (EBackend *backend)
  * The provided credentials are received through #EBackendClass.authenticate_sync()
  * method asynchronously.
  *
+ * Note for sources authenticating with OAuth2: their credentials cannot be
+ * looked up silently, thus this call always ends in an interactive prompt
+ * (an OAuth2 consent window in the client). A backend whose source uses
+ * OAuth2 should call e_backend_schedule_authenticate() with %NULL credentials
+ * instead and obtain the access token in its #EBackendClass.authenticate_sync()
+ * implementation, for example with e_source_get_oauth2_access_token_sync(),
+ * invoking the credentials-required only when that fails.
+ *
  * If an error occurs, the function sets @error and returns %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on error
@@ -1324,6 +1332,11 @@ backend_scheduled_credentials_required_done_cb (GObject *source_object,
  * This is useful when the caller just wants to start the operation
  * without having actual place where to show the operation result.
  *
+ * See the note about sources authenticating with OAuth2 in
+ * e_backend_credentials_required_sync(): for them, prefer
+ * e_backend_schedule_authenticate(), because a credentials-required
+ * always ends in an interactive prompt.
+ *
  * Since: 3.16
  **/
 void
@@ -1350,6 +1363,12 @@ e_backend_schedule_credentials_required (EBackend *backend,
  * This is usually done automatically, when an 'authenticate' signal is
  * received for the associated #ESource. With %NULL @credentials an attempt
  * without it is run.
+ *
+ * This is also the right entry point for sources authenticating with OAuth2:
+ * the #EBackendClass.authenticate_sync() implementation can obtain the access
+ * token silently, for example with e_source_get_oauth2_access_token_sync(),
+ * while e_backend_schedule_credentials_required() would always open an
+ * interactive prompt for them.
  *
  * Since: 3.16
  **/
