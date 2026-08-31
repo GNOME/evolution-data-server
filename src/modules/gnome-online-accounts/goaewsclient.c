@@ -169,6 +169,11 @@ ews_autodiscover_parse_protocol (xmlNode *node,
 		}
 	}
 
+	if (got_as_url) {
+		*result = g_steal_pointer (&data);
+		return TRUE;
+	}
+
 	*result = NULL;
 	g_clear_pointer (&data, ews_autodiscover_result_free);
 	return FALSE;
