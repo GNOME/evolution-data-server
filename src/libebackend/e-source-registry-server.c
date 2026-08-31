@@ -1011,6 +1011,7 @@ e_source_registry_server_get_access_token_sync (EOAuth2Support *support,
 {
 	EOAuth2ServiceRefSourceFunc ref_source;
 	ESourceRegistryServer *server;
+	ESource *collection_source;
 	EOAuth2Service *service;
 	gboolean success;
 
@@ -1018,12 +1019,25 @@ e_source_registry_server_get_access_token_sync (EOAuth2Support *support,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	server = E_SOURCE_REGISTRY_SERVER (support);
+
+	/* Prefer the collection source, the same way the credentials prompter does */
+	collection_source = e_source_registry_server_find_extension (server, source, E_SOURCE_EXTENSION_COLLECTION);
+	if (collection_source) {
+		if (collection_source != source &&
+		    e_util_can_use_collection_as_credential_source (collection_source, source)) {
+			source = collection_source;
+		} else {
+			g_clear_object (&collection_source);
+		}
+	}
+
 	service = e_oauth2_services_find (server->priv->oauth2_services, source);
 
 	if (!service) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 			_("Data source “%s” does not support OAuth 2.0 authentication"),
 			e_source_get_display_name (source));
+		g_clear_object (&collection_source);
 		return FALSE;
 	}
 
@@ -1033,6 +1047,7 @@ e_source_registry_server_get_access_token_sync (EOAuth2Support *support,
 		out_access_token, out_expires_in, cancellable, error);
 
 	g_clear_object (&service);
+	g_clear_object (&collection_source);
 
 	return success;
 }
