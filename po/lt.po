@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-08-07 11:34+0000\n"
-"PO-Revision-Date: 2026-08-10 22:22+0300\n"
+"POT-Creation-Date: 2026-08-31 14:40+0000\n"
+"PO-Revision-Date: 2026-09-01 22:49+0300\n"
 "Last-Translator: Aurimas Černius <aurimas.cernius@mailo.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -188,7 +188,7 @@ msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
 #: src/camel/providers/nntp/camel-nntp-store.c:410
 #: src/libebackend/e-server-side-source.c:488 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
-#: src/libedataserver/e-soup-session.c:2182
+#: src/libedataserver/e-soup-session.c:2245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
 #: src/libedataserverui/e-reminders-widget.c:2278
@@ -1439,32 +1439,32 @@ msgstr "Mirties diena: %s"
 msgid "Cannot get URI"
 msgstr "Nepavyko gauti URI"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:224
+#: src/calendar/backends/file/e-cal-backend-file.c:223
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Nepavyko išsaugoti kalendoriaus duomenų: Netinkamai suformuotas URI."
 
-#: src/calendar/backends/file/e-cal-backend-file.c:231
-#: src/calendar/backends/file/e-cal-backend-file.c:237
+#: src/calendar/backends/file/e-cal-backend-file.c:230
+#: src/calendar/backends/file/e-cal-backend-file.c:236
 msgid "Cannot save calendar data"
 msgstr "Nepavyko išsaugoti kalendoriaus duomenų"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1189
-#: src/calendar/backends/file/e-cal-backend-file.c:1318
+#: src/calendar/backends/file/e-cal-backend-file.c:1188
+#: src/calendar/backends/file/e-cal-backend-file.c:1317
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "Nepavyko išanalizuoti ISC failo „%s“"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1200
-#: src/calendar/backends/file/e-cal-backend-file.c:1329
+#: src/calendar/backends/file/e-cal-backend-file.c:1199
+#: src/calendar/backends/file/e-cal-backend-file.c:1328
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Failas „%s“ nėra VCALENDAR komponentas"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3762
-#: src/calendar/backends/file/e-cal-backend-file.c:3768
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/backends/file/e-cal-backend-file.c:3801
+#: src/calendar/backends/file/e-cal-backend-file.c:3759
+#: src/calendar/backends/file/e-cal-backend-file.c:3765
+#: src/calendar/backends/file/e-cal-backend-file.c:3771
+#: src/calendar/backends/file/e-cal-backend-file.c:3798
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
 msgid "Unsupported method"
 msgstr "Nepalaikomas metodas"
@@ -5043,28 +5043,28 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1601
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1697
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1625
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nenurodytas paskirties aplankas"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1628
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1652
 msgid "Unable to move junk messages"
 msgstr "Nepavyko perkelti brukalo laiškų"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1763
 msgid "Unable to move deleted messages"
 msgstr "Nepavyko perkelti ištrintų laiškų"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1815
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1851
 msgid "Unable to move Not-Junk messages"
 msgstr "Nepavyko perkelti ne brukalo laiškų"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:699
+#: src/camel/providers/imapx/camel-imapx-folder.c:730
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Nėra kvotos informacijos aplankui „%s : %s“"
@@ -5073,34 +5073,34 @@ msgstr "Nėra kvotos informacijos aplankui „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:966
+#: src/camel/providers/imapx/camel-imapx-folder.c:997
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Šalinami užsilikę podėlio failai aplanke „%s : %s“"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1032
+#: src/camel/providers/imapx/camel-imapx-folder.c:1063
 msgid "You must be working online to search in headers"
 msgstr "Norėdami ieškoti antraštėse turite dirbti prisijungę"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1086
+#: src/camel/providers/imapx/camel-imapx-folder.c:1117
 msgid "You must be working online to search in message body"
 msgstr "Norėdami ieškoti laiškų tekste turite dirbti prisijungę"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1175
+#: src/camel/providers/imapx/camel-imapx-folder.c:1206
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Šiam aplankui taikyti laiškų _filtrus"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1190
+#: src/camel/providers/imapx/camel-imapx-folder.c:1221
 msgid "Always check for _new mail in this folder"
 msgstr "Visada tikrinti, ar nėra naujų laiškų šiame aplanke"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1361
+#: src/camel/providers/imapx/camel-imapx-folder.c:1406
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nepavyko sukurti %s aplanko santraukos"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1373
+#: src/camel/providers/imapx/camel-imapx-folder.c:1418
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nepavyko %s sukurti podėlio: "
@@ -5108,7 +5108,7 @@ msgstr "Nepavyko %s sukurti podėlio: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1551
+#: src/camel/providers/imapx/camel-imapx-folder.c:1596
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Nėra IMAP pašto dėžės aplankui „%s : %s“"
@@ -5424,61 +5424,61 @@ msgstr "Klaida gaunant laiško informaciją"
 msgid "Error running STATUS"
 msgstr "Klaida vykdant STATUS"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6435
-#: src/camel/providers/imapx/camel-imapx-server.c:6468
-#: src/camel/providers/imapx/camel-imapx-server.c:6531
+#: src/camel/providers/imapx/camel-imapx-server.c:6447
+#: src/camel/providers/imapx/camel-imapx-server.c:6480
+#: src/camel/providers/imapx/camel-imapx-server.c:6543
 msgid "Error syncing changes"
 msgstr "Klaida sinchronizuojant pakeitimus"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6590
-#: src/camel/providers/imapx/camel-imapx-server.c:6615
-#: src/camel/providers/imapx/camel-imapx-server.c:6765
+#: src/camel/providers/imapx/camel-imapx-server.c:6618
+#: src/camel/providers/imapx/camel-imapx-server.c:6643
+#: src/camel/providers/imapx/camel-imapx-server.c:6802
 msgid "Error expunging message"
 msgstr "Klaida sunaikinant laišką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6833
+#: src/camel/providers/imapx/camel-imapx-server.c:6870
 msgid "Error fetching folders"
 msgstr "Klaida gaunant aplankus"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6841
+#: src/camel/providers/imapx/camel-imapx-server.c:6878
 msgid "Error fetching subscribed folders"
 msgstr "Klaida gaunant priregistruotus aplankus"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6898
+#: src/camel/providers/imapx/camel-imapx-server.c:6935
 msgid "Error creating folder"
 msgstr "Klaida kuriant aplanką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6948
+#: src/camel/providers/imapx/camel-imapx-server.c:6985
 msgid "Error deleting folder"
 msgstr "Klaida trinant aplanką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6994
+#: src/camel/providers/imapx/camel-imapx-server.c:7031
 msgid "Error renaming folder"
 msgstr "Klaida pervadinant aplanką"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7026
+#: src/camel/providers/imapx/camel-imapx-server.c:7063
 msgid "Error subscribing to folder"
 msgstr "Klaida registruojantis prie aplanko"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7062
+#: src/camel/providers/imapx/camel-imapx-server.c:7099
 msgid "Error unsubscribing from folder"
 msgstr "Klaida išsiregistruojant iš aplanko"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7102
+#: src/camel/providers/imapx/camel-imapx-server.c:7139
 msgid "IMAP server does not support quotas"
 msgstr "IMAP serveris nepalaiko kvotų"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7114
+#: src/camel/providers/imapx/camel-imapx-server.c:7151
 msgid "Error retrieving quota information"
 msgstr "Gaunama gaunant kvotos informaciją"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7179
-#: src/camel/providers/imapx/camel-imapx-server.c:7274
+#: src/camel/providers/imapx/camel-imapx-server.c:7216
+#: src/camel/providers/imapx/camel-imapx-server.c:7311
 msgid "Search failed"
 msgstr "Paieška nepavyko"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7413
+#: src/camel/providers/imapx/camel-imapx-server.c:7450
 msgid "Error running IDLE"
 msgstr "Klaida vykdant IDLE"
 
@@ -7503,13 +7503,13 @@ msgstr "%s nepalaiko nutolusių resursų sukūrimo"
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepalaiko nutolusių resursų trynimo"
 
-#: src/libebackend/e-data-factory.c:1445
+#: src/libebackend/e-data-factory.c:1466
 #: src/libebackend/e-subprocess-factory.c:283
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "Nėra tokio šaltinio UID „%s“"
 
-#: src/libebackend/e-data-factory.c:1600
+#: src/libebackend/e-data-factory.c:1621
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "Realizacijos gamykla šaltiniui „%s“ bei plėtiniui „%s“ nerasta."
@@ -7524,7 +7524,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Nepavyko ieškoti įgaliojimų: "
 
 #: src/libebackend/e-server-side-source.c:1363
-#: src/libedataserver/e-source.c:1613
+#: src/libedataserver/e-source.c:1629
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių išteklių kūrimo"
@@ -7538,7 +7538,7 @@ msgstr ""
 "sukurti"
 
 #: src/libebackend/e-server-side-source.c:1405
-#: src/libedataserver/e-source.c:1709
+#: src/libedataserver/e-source.c:1725
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių išteklių trynimo"
@@ -7553,7 +7553,7 @@ msgstr ""
 
 #: src/libebackend/e-server-side-source.c:1458
 #: src/libebackend/e-source-registry-server.c:1025
-#: src/libedataserver/e-source.c:1830
+#: src/libedataserver/e-source.c:1846
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "Duomenų šaltinis „%s“ nepalaiko OAuth 2.0 tapatybės nustatymo"
@@ -7878,23 +7878,43 @@ msgstr "Nepavyko sukurti SOAP slapuko"
 msgid "Malformed, no message body set"
 msgstr "Blogai suformuotas, nenustatytas laiško turinys"
 
+#: src/libedataserver/e-oauth2-service.c:1325
+msgid "Token record is incomplete"
+msgstr "Leksemų įrašas yra nepilnas"
+
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1383
+#: src/libedataserver/e-oauth2-service.c:1352
+#: src/libedataserver/e-oauth2-service.c:1394
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas „%s“ OAuth2 šaltinis"
 
-#: src/libedataserver/e-oauth2-service.c:1398
+#: src/libedataserver/e-oauth2-service.c:1409
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 paslaptis nerasta"
 
-#: src/libedataserver/e-oauth2-service.c:1600
+#: src/libedataserver/e-oauth2-service.c:1436
+msgid "OAuth2 secret record is incomplete"
+msgstr "OAuth2 paslapčių įrašas yra ne pilnas"
+
+#: src/libedataserver/e-oauth2-service.c:1486
+#: src/libedataserver/e-oauth2-service.c:1588
+msgid "Failed to create HTTP session"
+msgstr "Nepavyko sukurti HTTP seanso"
+
+#: src/libedataserver/e-oauth2-service.c:1500
+#: src/libedataserver/e-oauth2-service.c:1602
+#, c-format
+msgid "Failed to create HTTP request for “%s”"
+msgstr "Nepavyko sukurti HTTP užklausos „%s“"
+
+#: src/libedataserver/e-oauth2-service.c:1626
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Gautas neteisingas atsakymas iš serverio „%s“."
 
-#: src/libedataserver/e-oauth2-service.c:1623
+#: src/libedataserver/e-oauth2-service.c:1649
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7906,24 +7926,29 @@ msgstr ""
 "\n"
 "Detali klaida: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1652
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Nepavyko atnaujinti prieigos leksemos. Dar kartą prisijunkite prie serverio."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1677
+#: src/libedataserver/e-oauth2-service.c:1703
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas OAuth2 šaltinis"
 
-#: src/libedataserver/e-oauth2-service.c:2053
+#: src/libedataserver/e-oauth2-service.c:2079
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
 "Baigėsi prieigos leksemos galiojimas ir nepavyko jos atnaujinti. Iš naujo "
 "prisijunkite prie serverio."
+
+#: src/libedataserver/e-oauth2-service.c:2093
+msgid "Failed to obtain access token. Sign to the server again, please."
+msgstr ""
+"Nepavyko gauti prieigos leksemos. Dar kartą prisijunkite prie serverio."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -7961,7 +7986,7 @@ msgstr "Nepavyko su HTTP klaida %d: %s"
 msgid "Failed to setup authentication"
 msgstr "Nepavyko nustatyti tapatybės patvirtinimo"
 
-#: src/libedataserver/e-soup-session.c:1837
+#: src/libedataserver/e-soup-session.c:1900
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
@@ -7969,7 +7994,7 @@ msgstr[0] "Serveris užsiėmęs, laukiama pakartojimo (%d:%02d minutė)"
 msgstr[1] "Serveris užsiėmęs, laukiama pakartojimo (%d:%02d minutės)"
 msgstr[2] "Serveris užsiėmęs, laukiama pakartojimo (%d:%02d minučių)"
 
-#: src/libedataserver/e-soup-session.c:1843
+#: src/libedataserver/e-soup-session.c:1906
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
@@ -7977,11 +8002,11 @@ msgstr[0] "Serveris užsiėmęs, laukiama pakartojimo (%d sekundė)"
 msgstr[1] "Serveris užsiėmęs, laukiama pakartojimo (%d sekundės)"
 msgstr[2] "Serveris užsiėmęs, laukiama pakartojimo (%d sekundžių)"
 
-#: src/libedataserver/e-soup-session.c:1964
+#: src/libedataserver/e-soup-session.c:2027
 msgid "Too many redirects"
 msgstr "Per daug nukreipimų"
 
-#: src/libedataserver/e-soup-session.c:1986
+#: src/libedataserver/e-soup-session.c:2049
 msgid "Redirect from HTTPS to HTTP is not allowed"
 msgstr "Nukreipimas iš HTTPS į HTTP neleidžiamas"
 
@@ -7990,17 +8015,21 @@ msgstr "Nukreipimas iš HTTPS į HTTP neleidžiamas"
 msgid "Source file is missing a [%s] group"
 msgstr "Šaltinio failui trūksta [%s] grupės"
 
-#: src/libedataserver/e-source.c:1407
+#: src/libedataserver/e-source.c:1423
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Duomenų šaltinis „%s“ nėra pašalinamas"
 
-#: src/libedataserver/e-source.c:1524
+#: src/libedataserver/e-source.c:1540
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Duomenų šaltinis „%s“ nėra rašomas"
 
-#: src/libedataserver/e-source.c:2205
+#: src/libedataserver/e-source.c:1886
+msgid "Failed to obtain OAuth 2.0 access token"
+msgstr "Nepavyko gauti OAuth 2.0 prieigos leksemos"
+
+#: src/libedataserver/e-source.c:2226
 msgid "Unnamed"
 msgstr "Neįvardytas"
 
@@ -9118,37 +9147,37 @@ msgid "Failed to get password from GOA: "
 msgstr "Nepavyko gauti slaptažodžio iš GOA: "
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:214
+#: src/modules/gnome-online-accounts/goaewsclient.c:219
 #, c-format
 msgid "Code: %u — Unexpected response from server"
 msgstr "Kodas: %u – netikėtas atsakas iš serverio"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:236
+#: src/modules/gnome-online-accounts/goaewsclient.c:241
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Nepavyko perskaityti automatinio aptikimo atsako XML"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:245
+#: src/modules/gnome-online-accounts/goaewsclient.c:250
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Nepavyko rasti Autodiscover elemento"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:257
+#: src/modules/gnome-online-accounts/goaewsclient.c:262
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Nepavyko rasti Response elemento"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:269
+#: src/modules/gnome-online-accounts/goaewsclient.c:274
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Nepavyko rasti Account elemento"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:288
+#: src/modules/gnome-online-accounts/goaewsclient.c:293
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nepavyko rasti ASUrl ir OABUrl automatinio aptikimo atsake"
