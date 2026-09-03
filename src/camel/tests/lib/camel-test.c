@@ -251,9 +251,27 @@ test_session_new (void)
 	return session;
 }
 
+static gboolean test_util_reset_idle_timer (gpointer user_data);
+
 void
 test_session_check_finalized (void)
 {
+	/* folders release their last references in an idle callback of
+	 * a session job (the dispose-time summary save); let those run */
+	if (n_alive_test_sessions > 0) {
+		guint timeout_id;
+
+		timeout_id = g_timeout_add_seconds (5, test_util_reset_idle_timer, &timeout_id);
+		g_assert_cmpuint (timeout_id, !=, 0);
+
+		while (n_alive_test_sessions > 0 && timeout_id) {
+			g_main_context_iteration (NULL, TRUE);
+		}
+
+		if (timeout_id != 0)
+			g_assert_true (g_source_remove (timeout_id));
+	}
+
 	g_assert_cmpint (n_alive_test_sessions, ==, 0);
 }
 

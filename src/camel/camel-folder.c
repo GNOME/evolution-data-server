@@ -93,6 +93,8 @@ struct _CamelFolderPrivate {
 	GMutex store_changes_lock;
 	guint store_changes_id;
 	gboolean store_changes_after_frozen;
+
+	gboolean dispose_save_deferred; /* the dispose-time summary save ran (or runs) in a thread */
 };
 
 struct _AsyncContext {
@@ -859,6 +861,71 @@ folder_get_property (GObject *object,
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
+typedef struct _DisposeSaveData {
+	CamelFolder *folder;
+	CamelStore *parent_store; /* keeps the store DB alive for the save */
+} DisposeSaveData;
+
+static void
+folder_dispose_save_summary_job (CamelSession *session,
+				 GCancellable *cancellable,
+				 gpointer user_data,
+				 GError **error)
+{
+	DisposeSaveData *dsd = user_data;
+
+	if (dsd->folder->priv->summary)
+		camel_folder_summary_save (dsd->folder->priv->summary, NULL);
+}
+
+static void
+folder_dispose_save_summary_job_done (gpointer user_data)
+{
+	DisposeSaveData *dsd = user_data;
+
+	g_clear_object (&dsd->folder);
+	g_clear_object (&dsd->parent_store);
+	g_free (dsd);
+}
+
+/* Returns FALSE to save immediately */
+static gboolean
+folder_dispose_defer_summary_save (CamelFolder *folder)
+{
+	DisposeSaveData *dsd;
+	CamelSession *session;
+	gchar *description;
+
+	if (!folder->priv->parent_store)
+		return FALSE;
+
+	session = camel_service_ref_session (CAMEL_SERVICE (folder->priv->parent_store));
+	if (!session)
+		return FALSE;
+
+	folder->priv->dispose_save_deferred = TRUE;
+
+	dsd = g_new0 (DisposeSaveData, 1);
+	dsd->folder = g_object_ref (folder);
+	dsd->parent_store = g_object_ref (folder->priv->parent_store);
+
+	/* Translators: The first “%s” is replaced with an account name and the second “%s”
+	   is replaced with a full path name. The spaces around “:” are intentional, as
+	   the whole “%s : %s” is meant as an absolute identification of the folder. */
+	description = g_strdup_printf (_("Storing changes in folder “%s : %s”"),
+		camel_service_get_display_name (CAMEL_SERVICE (dsd->parent_store)),
+		camel_folder_get_full_display_name (folder));
+
+	camel_session_submit_job (session, description,
+		folder_dispose_save_summary_job,
+		dsd, folder_dispose_save_summary_job_done);
+
+	g_object_unref (session);
+	g_free (description);
+
+	return TRUE;
+}
+
 static void
 folder_dispose (GObject *object)
 {
@@ -871,6 +938,13 @@ folder_dispose (GObject *object)
 		g_source_remove (folder->priv->store_changes_id);
 	folder->priv->store_changes_id = 0;
 	g_mutex_unlock (&folder->priv->store_changes_lock);
+
+	/* The save can wait a long time for the store DB; do not block
+	 * the disposing thread (often the UI thread) with it */
+	if (folder->priv->summary && !folder->priv->dispose_save_deferred &&
+	    (camel_folder_summary_get_flags (folder->priv->summary) & CAMEL_FOLDER_SUMMARY_DIRTY) != 0 &&
+	    folder_dispose_defer_summary_save (folder))
+		return;
 
 	if (folder->priv->summary) {
 		camel_folder_summary_save (folder->priv->summary, NULL);

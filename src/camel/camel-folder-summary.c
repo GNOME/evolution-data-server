@@ -93,6 +93,8 @@ struct _CamelFolderSummaryPrivate {
 	struct _CamelIndex *index;
 
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
+	GThread *summary_lock_owner; /* protected by the summary_lock itself */
+	guint summary_lock_depth;
 	GRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
 
 	guint32 nextuid;	/* next uid? */
@@ -104,7 +106,17 @@ struct _CamelFolderSummaryPrivate {
 	guint32 visible_count;
 
 	GHashTable *uids; /* uids of all known message infos; the 'value' are used flags for the message info */
+	guint64 uids_generation; /* incremented (under the summary lock) on every change of the 'uids' content */
 	GHashTable *loaded_infos; /* uid->CamelMessageInfo *, those currently in memory */
+
+	/* single-flight gate for whole-folder DB loads */
+	GMutex db_load_lock;
+	GCond db_load_cond;
+	gboolean db_load_running;
+	gboolean db_load_success;
+	guint64 db_load_seq; /* incremented when a load finishes; to detect whether one ran while waiting */
+
+	GMutex save_lock; /* serializes the saves; the DIRTY flag is tested and cleared only with it held */
 
 	struct _CamelFolder *folder; /* parent folder, for events */
 	time_t cache_load_time;
@@ -144,6 +156,7 @@ static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *sum
 
 static gchar *next_uid_string (CamelFolderSummary *summary);
 static gboolean prepare_fetch_all (CamelFolderSummary *summary, GError **error);
+static gboolean folder_summary_lock_is_owner (CamelFolderSummary *summary);
 
 static CamelMessageInfo * message_info_from_uid (CamelFolderSummary *summary, const gchar *uid);
 
@@ -169,6 +182,13 @@ static guint signals[LAST_SIGNAL];
 static GParamSpec *properties[N_PROPS] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
+
+/* The 'uids' hash table content changed; called with the summary lock held */
+static void
+folder_summary_uids_changed (CamelFolderSummary *summary)
+{
+	summary->priv->uids_generation++;
+}
 
 /* only for testing purposes */
 void _camel_folder_summary_unload_uid (CamelFolderSummary *self, const gchar *uid);
@@ -317,13 +337,50 @@ folder_summary_dispose (GObject *object)
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->dispose (object);
 }
 
+static gpointer
+folder_summary_free_tables_thread (gpointer user_data)
+{
+	GPtrArray *tables = user_data;
+
+	g_ptr_array_unref (tables);
+
+	return NULL;
+}
+
+/* Freeing large tables unrefs each info and interned string one by one,
+ * which can take a second or more; do it in a transient thread */
+static void
+folder_summary_free_tables (GHashTable *uids,
+			    GHashTable *loaded_infos)
+{
+	if (g_hash_table_size (uids) + g_hash_table_size (loaded_infos) > 1000) {
+		GPtrArray *tables;
+		GThread *thread;
+
+		tables = g_ptr_array_new_with_free_func ((GDestroyNotify) g_hash_table_unref);
+		g_ptr_array_add (tables, uids);
+		g_ptr_array_add (tables, loaded_infos);
+
+		thread = g_thread_try_new ("free-summary", folder_summary_free_tables_thread, tables, NULL);
+		if (thread) {
+			g_thread_unref (thread);
+			return;
+		}
+
+		g_ptr_array_set_free_func (tables, NULL);
+		g_ptr_array_unref (tables);
+	}
+
+	g_hash_table_destroy (uids);
+	g_hash_table_destroy (loaded_infos);
+}
+
 static void
 folder_summary_finalize (GObject *object)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (object);
 
-	g_hash_table_destroy (summary->priv->uids);
-	g_hash_table_destroy (summary->priv->loaded_infos);
+	folder_summary_free_tables (summary->priv->uids, summary->priv->loaded_infos);
 
 	g_hash_table_foreach (summary->priv->filter_charset, free_o_name, NULL);
 	g_hash_table_destroy (summary->priv->filter_charset);
@@ -331,6 +388,9 @@ folder_summary_finalize (GObject *object)
 	g_rec_mutex_clear (&summary->priv->summary_lock);
 	g_rec_mutex_clear (&summary->priv->filter_lock);
 	g_mutex_clear (&summary->priv->info_flags_changed_lock);
+	g_mutex_clear (&summary->priv->db_load_lock);
+	g_mutex_clear (&summary->priv->save_lock);
+	g_cond_clear (&summary->priv->db_load_cond);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->finalize (object);
@@ -601,11 +661,18 @@ summary_header_save (CamelFolderSummary *summary,
 			inout_record->jnd_count = 0;
 	}
 
+	/* a flag change racing the count queries can make these go backwards
+	 * transiently; it also marked the summary dirty, thus the next save
+	 * re-derives them from the DB */
+	camel_folder_summary_lock (summary);
+
 	summary->priv->unread_count = inout_record->unread_count;
 	summary->priv->deleted_count = inout_record->deleted_count;
 	summary->priv->junk_count = inout_record->junk_count;
 	summary->priv->visible_count = inout_record->visible_count;
 	summary->priv->junk_not_deleted_count = inout_record->jnd_count;
+
+	camel_folder_summary_unlock (summary);
 
 	return TRUE;
 }
@@ -753,6 +820,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 		summary->priv->uids,
 		(gpointer) camel_pstring_strdup (uid),
 		GUINT_TO_POINTER (new_flags));
+	folder_summary_uids_changed (summary);
 
 	g_object_thaw_notify (summary_object);
 	camel_folder_summary_unlock (summary);
@@ -909,6 +977,10 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 	g_rec_mutex_init (&summary->priv->summary_lock);
 	g_rec_mutex_init (&summary->priv->filter_lock);
 	g_mutex_init (&summary->priv->info_flags_changed_lock);
+	g_mutex_init (&summary->priv->db_load_lock);
+	g_mutex_init (&summary->priv->save_lock);
+	g_cond_init (&summary->priv->db_load_cond);
+	summary->priv->db_load_success = TRUE;
 
 	summary->priv->cache_load_time = 0;
 	summary->priv->timeout_handle = 0;
@@ -1435,7 +1507,31 @@ camel_folder_summary_peek_loaded (CamelFolderSummary *summary,
 	return info;
 }
 
-static CamelMessageInfo * /* (transfer none) */
+/* Merges a message info loaded from the DB into the summary; expects
+ * the summary lock to be held. Changes made during the unlocked DB read
+ * are re-validated here: a dirty in-memory info wins, a removed UID is
+ * not re-added. */
+static void
+cfs_merge_loaded_message_info_locked (CamelFolderSummary *summary,
+				      CamelMessageInfo *info)
+{
+	CamelMessageInfo *existing;
+	const gchar *uid = camel_message_info_get_uid (info);
+
+	existing = g_hash_table_lookup (summary->priv->loaded_infos, uid);
+	if (existing && camel_message_info_get_dirty (existing))
+		return;
+
+	/* removed from the summary while the DB read was running */
+	if (!g_hash_table_contains (summary->priv->uids, uid))
+		return;
+
+	/* Summary always holds a ref for the loaded infos; as the UID
+	 * comes from the "info", do replace it in the hash table too */
+	g_hash_table_replace (summary->priv->loaded_infos, (gchar *) uid, g_object_ref (info));
+}
+
+static void
 cfs_load_record_to_message_info (CamelFolderSummary *summary,
 				 const CamelStoreDBMessageRecord *record)
 {
@@ -1446,28 +1542,16 @@ cfs_load_record_to_message_info (CamelFolderSummary *summary,
 	bdata_ptr = record->bdata;
 
 	if (camel_message_info_load (info, record, &bdata_ptr)) {
-		CamelMessageInfo *existing;
-
-		/* Just now we are reading from the DB, it can't be dirty. */
 		camel_message_info_set_dirty (info, FALSE);
+
 		camel_folder_summary_lock (summary);
-
-		existing = g_hash_table_lookup (summary->priv->loaded_infos, camel_message_info_get_uid (info));
-		if (existing && camel_message_info_get_dirty (existing)) {
-			g_clear_object (&info);
-		} else {
-			/* Summary always holds a ref for the loaded infos; this consumes it */
-			/* as the UID comes from the "info", do replace it in the hash table too */
-			g_hash_table_replace (summary->priv->loaded_infos, (gchar *) camel_message_info_get_uid (info), info);
-		}
-
+		cfs_merge_loaded_message_info_locked (summary, info);
 		camel_folder_summary_unlock (summary);
 	} else {
-		g_clear_object (&info);
 		g_warning ("Loading messageinfo from db failed");
 	}
 
-	return info;
+	g_clear_object (&info);
 }
 
 struct _db_pass_data {
@@ -1491,6 +1575,7 @@ message_info_from_uid (CamelFolderSummary *summary,
 		CamelStoreDB *sdb;
 		CamelStoreDBMessageRecord record = { 0, };
 		const gchar *folder_name;
+		guint attempts = 0;
 
 		folder_name = camel_folder_get_full_name (summary->priv->folder);
 
@@ -1511,12 +1596,36 @@ message_info_from_uid (CamelFolderSummary *summary,
 
 		sdb = camel_store_get_db (parent_store);
 
-		if (camel_store_db_read_message (sdb, folder_name, uid, &record, NULL)) {
-			info = cfs_load_record_to_message_info (summary, &record);
-			camel_store_db_message_record_clear (&record);
-		}
+		do {
+			/* do not hold the summary lock while waiting for the SQLite connection */
+			camel_folder_summary_unlock (summary);
+
+			if (camel_store_db_read_message (sdb, folder_name, uid, &record, NULL)) {
+				cfs_load_record_to_message_info (summary, &record);
+				camel_store_db_message_record_clear (&record);
+			}
+
+			/* nothing from before the gap is reused - the fresh lookup
+			 * below is the only result */
+			camel_folder_summary_lock (summary);
+
+			info = g_hash_table_lookup (summary->priv->loaded_infos, uid);
+
+			/* The loaded info could have been dropped again before
+			 * the lookup (like by a concurrent cache prune), thus retry
+			 * while the summary claims the UID exists; only a few times,
+			 * because the DB row can be legitimately missing when
+			 * the summary content and the DB content differ */
+		} while (!info && ++attempts < 10 && g_hash_table_contains (summary->priv->uids, uid));
+
+		if (info)
+			g_object_ref (info);
 
 		cfs_schedule_info_release_timer (summary);
+
+		camel_folder_summary_unlock (summary);
+
+		return info;
 	}
 
 	if (info)
@@ -1837,14 +1946,32 @@ cfs_cache_size (CamelFolderSummary *summary)
 		return g_hash_table_size (summary->priv->uids);
 }
 
+typedef struct _LoadMessagesData {
+	CamelFolderSummary *summary;
+	GPtrArray *infos; /* CamelMessageInfo * */
+} LoadMessagesData;
+
 static gboolean
 cfs_load_messages_cb (CamelStoreDB *storedb,
 		      const CamelStoreDBMessageRecord *record,
 		      gpointer user_data)
 {
-	CamelFolderSummary *summary = user_data;
+	LoadMessagesData *data = user_data;
+	CamelMessageInfo *info;
+	gchar *bdata_ptr;
 
-	cfs_load_record_to_message_info (summary, record);
+	/* only construct the info here; the merge into the summary cannot take
+	 * the summary lock inside the SQLite callback, it would deadlock */
+	info = camel_message_info_new (data->summary);
+	bdata_ptr = record->bdata;
+
+	if (camel_message_info_load (info, record, &bdata_ptr)) {
+		camel_message_info_set_dirty (info, FALSE);
+		g_ptr_array_add (data->infos, info);
+	} else {
+		g_clear_object (&info);
+		g_warning ("Loading messageinfo from db failed");
+	}
 
 	return TRUE;
 }
@@ -1856,7 +1983,9 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 	CamelStore *parent_store;
 	CamelStoreDB *sdb;
 	const gchar *folder_name;
+	LoadMessagesData data;
 	gboolean res;
+	guint ii;
 
 	/* FIXME[disk-summary] baseclass this, and vfolders we may have to
 	 * load better. */
@@ -1872,9 +2001,26 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
 	sdb = camel_store_get_db (parent_store);
 
-	res = camel_store_db_read_messages (sdb, folder_name, cfs_load_messages_cb, summary, error);
+	data.summary = summary;
+	data.infos = g_ptr_array_new_with_free_func (g_object_unref);
 
+	res = camel_store_db_read_messages (sdb, folder_name, cfs_load_messages_cb, &data, error);
+
+	/* the load gate (or the caller's own recursive hold) serializes bulk loads;
+	 * changes made during the read are re-validated per info below */
+	camel_folder_summary_lock (summary);
+
+	for (ii = 0; ii < data.infos->len; ii++) {
+		cfs_merge_loaded_message_info_locked (summary, g_ptr_array_index (data.infos, ii));
+	}
+
+	/* The timer bookkeeping expects the summary lock to be held */
 	cfs_schedule_info_release_timer (summary);
+
+	camel_folder_summary_unlock (summary);
+
+	g_ptr_array_unref (data.infos);
+
 	return res;
 }
 
@@ -1890,10 +2036,50 @@ prepare_fetch_all (CamelFolderSummary *summary,
 	loaded = cfs_cache_size (summary);
 	known = camel_folder_summary_count (summary);
 
+	/* Only one whole-folder load runs at a time; concurrent callers wait
+	 * for it and re-check, rather than run the same large read in parallel */
 	if (known - loaded > 50) {
-		camel_folder_summary_lock (summary);
-		res = cfs_reload_from_db (summary, error);
-		camel_folder_summary_unlock (summary);
+		guint64 seq_before;
+
+		if (folder_summary_lock_is_owner (summary)) {
+			/* cannot wait on the gate while owning the summary lock, which
+			 * the running loader needs to finish - it would deadlock */
+			return cfs_reload_from_db (summary, error);
+		}
+
+		g_mutex_lock (&summary->priv->db_load_lock);
+
+		seq_before = summary->priv->db_load_seq;
+
+		while (summary->priv->db_load_running) {
+			g_cond_wait (&summary->priv->db_load_cond, &summary->priv->db_load_lock);
+		}
+
+		loaded = cfs_cache_size (summary);
+		known = camel_folder_summary_count (summary);
+
+		if (known - loaded > 50) {
+			summary->priv->db_load_running = TRUE;
+			g_mutex_unlock (&summary->priv->db_load_lock);
+
+			res = cfs_reload_from_db (summary, error);
+
+			g_mutex_lock (&summary->priv->db_load_lock);
+			summary->priv->db_load_running = FALSE;
+			summary->priv->db_load_success = res;
+			summary->priv->db_load_seq++;
+			g_cond_broadcast (&summary->priv->db_load_cond);
+		} else if (summary->priv->db_load_seq != seq_before) {
+			/* loaded meanwhile by another thread; its result applies here too */
+			res = summary->priv->db_load_success;
+
+			if (!res) {
+				g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					_("Failed to load folder summary from the database"));
+			}
+		}
+
+		g_mutex_unlock (&summary->priv->db_load_lock);
 	}
 
 	/* update also cache load time, even when not loaded anything */
@@ -1952,6 +2138,8 @@ camel_folder_summary_load (CamelFolderSummary *summary,
 	CamelStoreDB *sdb;
 	const gchar *full_name;
 	GHashTable *new_uids;
+	guint64 generation;
+	guint attempts;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
@@ -1981,11 +2169,34 @@ camel_folder_summary_load (CamelFolderSummary *summary,
 
 	sdb = camel_store_get_db (parent_store);
 
-	new_uids = camel_store_db_dup_uids_with_flags (sdb, full_name, error);
+	/* Read the UID-s without the summary lock held; when the summary changed
+	 * meanwhile retry, with the lock held on the last attempt */
+	for (attempts = 3; attempts > 0; attempts--) {
+		gboolean last_attempt = attempts == 1;
 
-	if (new_uids) {
-		g_clear_pointer (&summary->priv->uids, g_hash_table_unref);
-		summary->priv->uids = new_uids;
+		generation = summary->priv->uids_generation;
+
+		if (!last_attempt)
+			camel_folder_summary_unlock (summary);
+
+		new_uids = camel_store_db_dup_uids_with_flags (sdb, full_name, error);
+
+		/* concurrent loads are not serialized; the generation check below
+		 * discards this read if the summary changed meanwhile */
+		if (!last_attempt)
+			camel_folder_summary_lock (summary);
+
+		if (!new_uids)
+			break;
+
+		if (generation == summary->priv->uids_generation) {
+			g_clear_pointer (&summary->priv->uids, g_hash_table_unref);
+			summary->priv->uids = new_uids;
+			folder_summary_uids_changed (summary);
+			break;
+		}
+
+		g_clear_pointer (&new_uids, g_hash_table_unref);
 	}
 
 	camel_folder_summary_unlock (summary);
@@ -1999,11 +2210,11 @@ typedef struct _SaveData {
 	CamelStoreDB *sdb;
 	GError **out_error;
 	gboolean success;
+	CamelMessageInfo *failed_info; /* borrowed; its dirty flag is restored after the DB locks are released */
 } SaveData;
 
 static void
-save_to_db_cb (gpointer key,
-               gpointer value,
+save_to_db_cb (gpointer value,
                gpointer user_data)
 {
 	CamelMessageInfo *mi = value;
@@ -2019,23 +2230,38 @@ save_to_db_cb (gpointer key,
 	memset (&record, 0, sizeof (CamelStoreDBMessageRecord));
 	bdata_str = g_string_new (NULL);
 
+	/* Snapshot the content and reset the dirty flag atomically, otherwise
+	 * a modification between the two is silently lost. The FOLDER_FLAGGED
+	 * flag stays; it tracks the sync to the server, not to the DB. */
+	camel_message_info_property_lock (mi);
+
+	if (!camel_message_info_get_dirty (mi)) {
+		camel_message_info_property_unlock (mi);
+		g_string_free (bdata_str, TRUE);
+		return;
+	}
+
 	if (!camel_message_info_save (mi, &record, bdata_str)) {
+		camel_message_info_property_unlock (mi);
 		g_warning ("Failed to save message info: %s\n", camel_message_info_get_uid (mi));
 		g_string_free (bdata_str, TRUE);
 		camel_store_db_message_record_clear (&record);
 		return;
 	}
 
+	camel_message_info_set_dirty (mi, FALSE);
+
+	camel_message_info_property_unlock (mi);
+
 	g_warn_if_fail (record.bdata == NULL);
 	record.bdata = g_string_free (bdata_str, FALSE);
 	bdata_str = NULL;
 
 	dt->success = camel_store_db_write_message (dt->sdb, dt->folder_name, &record, dt->out_error);
-	if (dt->success) {
-		/* Reset the dirty flag which decides if the changes are synced to the DB or not.
-		The FOLDER_FLAGGED should be used to check if the changes are synced to the server.
-		So, don't unset the FOLDER_FLAGGED flag */
-		camel_message_info_set_dirty (mi, FALSE);
+	if (!dt->success) {
+		/* re-dirty it only after the CamelDB locks are released; re-dirtying
+		 * touches the summary and would invert the lock order here */
+		dt->failed_info = mi;
 	}
 
 	camel_store_db_message_record_clear (&record);
@@ -2049,6 +2275,9 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 	CamelStoreDB *sdb;
 	CamelDB *cdb;
 	const gchar *full_name;
+	GHashTableIter iter;
+	GPtrArray *infos;
+	gpointer value = NULL;
 	SaveData dt;
 
 	if (is_in_memory_summary (summary))
@@ -2062,7 +2291,18 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 	sdb = camel_store_get_db (parent_store);
 	cdb = CAMEL_DB (sdb);
 
+	/* snapshot the infos with the summary lock held, write them to the DB
+	 * without it */
 	camel_folder_summary_lock (summary);
+
+	infos = g_ptr_array_new_full (g_hash_table_size (summary->priv->loaded_infos), g_object_unref);
+	g_hash_table_iter_init (&iter, summary->priv->loaded_infos);
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		g_ptr_array_add (infos, g_object_ref (value));
+	}
+
+	camel_folder_summary_unlock (summary);
+
 	camel_db_writer_lock (cdb);
 
 	dt.summary = summary;
@@ -2070,15 +2310,27 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 	dt.sdb = sdb;
 	dt.out_error = error;
 	dt.success = TRUE;
+	dt.failed_info = NULL;
 
 	/* Push MessageInfo-es */
 	camel_db_begin_transaction (cdb, NULL);
-	g_hash_table_foreach (summary->priv->loaded_infos, save_to_db_cb, &dt);
+	g_ptr_array_foreach (infos, (GFunc) save_to_db_cb, &dt);
 	camel_db_end_transaction (cdb, NULL);
 
 	camel_db_writer_unlock (cdb);
-	camel_folder_summary_unlock (summary);
+
+	if (dt.failed_info) {
+		/* the row was not written; include the info in the next save */
+		camel_message_info_set_dirty (dt.failed_info, TRUE);
+	}
+
+	g_ptr_array_unref (infos);
+
+	/* only the timer bookkeeping; staleness of the written rows is handled
+	 * per info by the atomic snapshot-and-clear in save_to_db_cb() */
+	camel_folder_summary_lock (summary);
 	cfs_schedule_info_release_timer (summary);
+	camel_folder_summary_unlock (summary);
 
 	return dt.success;
 }
@@ -2107,6 +2359,7 @@ camel_folder_summary_save (CamelFolderSummary *summary,
 	const gchar *full_name;
 	gint count;
 	gboolean success;
+	gboolean own_save_lock;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
@@ -2114,54 +2367,78 @@ camel_folder_summary_save (CamelFolderSummary *summary,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->summary_header_save != NULL, FALSE);
 
-	if (!(summary->priv->flags & CAMEL_FOLDER_SUMMARY_DIRTY) ||
-	    is_in_memory_summary (summary))
+	if (is_in_memory_summary (summary))
 		return TRUE;
 
-	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	if (!parent_store)
-		return FALSE;
-
-	sdb = camel_store_get_db (parent_store);
+	/* Serialize the saves; a concurrent save can have claimed the dirty
+	 * infos (and cleared the DIRTY flag) without having committed its
+	 * transaction yet, thus the flag can be tested only when no other
+	 * save is running - a save which returned means a committed save.
+	 * A caller owning the (recursive) summary lock cannot wait here,
+	 * because a concurrent save takes the summary lock; such caller is
+	 * serialized by its own summary lock hold instead. */
+	own_save_lock = !folder_summary_lock_is_owner (summary);
+	if (own_save_lock)
+		g_mutex_lock (&summary->priv->save_lock);
 
 	camel_folder_summary_lock (summary);
 
 	d (printf ("\ncamel_folder_summary_save called \n"));
 
+	if (!(summary->priv->flags & CAMEL_FOLDER_SUMMARY_DIRTY)) {
+		camel_folder_summary_unlock (summary);
+		if (own_save_lock)
+			g_mutex_unlock (&summary->priv->save_lock);
+		return TRUE;
+	}
+
+	parent_store = summary->priv->folder ? camel_folder_get_parent_store (summary->priv->folder) : NULL;
+	if (!parent_store) {
+		camel_folder_summary_unlock (summary);
+		if (own_save_lock)
+			g_mutex_unlock (&summary->priv->save_lock);
+		return FALSE;
+	}
+
+	sdb = camel_store_get_db (parent_store);
+
 	summary->priv->flags &= ~CAMEL_FOLDER_SUMMARY_DIRTY;
 
 	count = cfs_count_dirty (summary);
-	if (!count) {
-		gboolean res = camel_folder_summary_header_save (summary, error);
-		camel_folder_summary_unlock (summary);
-		return res;
-	}
 
-	success = save_message_infos_to_db (summary, error);
-	if (!success) {
-		/* Failed, so lets reset the flag */
-		summary->priv->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-		camel_folder_summary_unlock (summary);
-		return FALSE;
-	}
-
-	memset (&record, 0, sizeof (CamelStoreDBFolderRecord));
-
-	if (!klass->summary_header_save (summary, &record, error)) {
-		summary->priv->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-		camel_folder_summary_unlock (summary);
-		return FALSE;
-	}
-
-	full_name = camel_folder_get_full_name (summary->priv->folder);
-	success = camel_store_db_write_folder (sdb, full_name, &record, error);
-
-	if (!success)
-		summary->priv->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-
+	/* the DB work below runs without the summary lock; a concurrent change
+	 * re-sets the DIRTY flag cleared above and the next save picks it up */
 	camel_folder_summary_unlock (summary);
 
-	camel_store_db_folder_record_clear (&record);
+	if (!count) {
+		success = camel_folder_summary_header_save (summary, error);
+	} else {
+		success = save_message_infos_to_db (summary, error);
+
+		if (success) {
+			memset (&record, 0, sizeof (CamelStoreDBFolderRecord));
+
+			success = klass->summary_header_save (summary, &record, error);
+
+			if (success) {
+				full_name = camel_folder_get_full_name (summary->priv->folder);
+				success = camel_store_db_write_folder (sdb, full_name, &record, error);
+			}
+
+			camel_store_db_folder_record_clear (&record);
+		}
+	}
+
+	if (!success) {
+		/* the save did not finish; leave the summary marked dirty for
+		 * the next attempt (setting the flag bit is idempotent) */
+		camel_folder_summary_lock (summary);
+		summary->priv->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
+		camel_folder_summary_unlock (summary);
+	}
+
+	if (own_save_lock)
+		g_mutex_unlock (&summary->priv->save_lock);
 
 	return success;
 }
@@ -2203,24 +2480,19 @@ camel_folder_summary_header_save (CamelFolderSummary *summary,
 		return FALSE;
 
 	sdb = camel_store_get_db (parent_store);
-	camel_folder_summary_lock (summary);
 
 	d (printf ("\ncamel_folder_summary_header_save called \n"));
 
 	memset (&record, 0, sizeof (CamelStoreDBFolderRecord));
 
 	success = klass->summary_header_save (summary, &record, error);
-	if (!success) {
-		camel_folder_summary_unlock (summary);
+	if (!success)
 		return FALSE;
-	}
 
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	success = camel_store_db_write_folder (sdb, full_name, &record, error);
 
 	camel_store_db_folder_record_clear (&record);
-
-	camel_folder_summary_unlock (summary);
 
 	return success;
 }
@@ -2386,6 +2658,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 		summary->priv->uids,
 		(gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)),
 		GUINT_TO_POINTER (camel_message_info_get_flags (info)));
+	folder_summary_uids_changed (summary);
 
 	/* Summary always holds a ref for the loaded infos */
 	g_object_ref (info);
@@ -2623,6 +2896,7 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 
 	g_hash_table_remove_all (summary->priv->uids);
 	g_hash_table_remove_all (summary->priv->loaded_infos);
+	folder_summary_uids_changed (summary);
 
 	summary->priv->saved_count = 0;
 	summary->priv->unread_count = 0;
@@ -2714,6 +2988,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	uid_copy = camel_pstring_strdup (uid);
 	g_hash_table_remove (summary->priv->uids, uid_copy);
 	g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
+	folder_summary_uids_changed (summary);
 
 	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
@@ -2769,6 +3044,8 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 			camel_pstring_free (uid_copy);
 		}
 	}
+
+	folder_summary_uids_changed (summary);
 
 	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
@@ -3420,6 +3697,18 @@ camel_folder_summary_lock (CamelFolderSummary *summary)
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
+
+	summary->priv->summary_lock_owner = g_thread_self ();
+	summary->priv->summary_lock_depth++;
+}
+
+/* Whether the calling thread already holds the summary lock */
+static gboolean
+folder_summary_lock_is_owner (CamelFolderSummary *summary)
+{
+	/* racy for other threads, but they can never see g_thread_self() */
+	return summary->priv->summary_lock_depth > 0 &&
+		summary->priv->summary_lock_owner == g_thread_self ();
 }
 
 /**
@@ -3434,6 +3723,12 @@ void
 camel_folder_summary_unlock (CamelFolderSummary *summary)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+
+	g_warn_if_fail (folder_summary_lock_is_owner (summary));
+
+	summary->priv->summary_lock_depth--;
+	if (!summary->priv->summary_lock_depth)
+		summary->priv->summary_lock_owner = NULL;
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }

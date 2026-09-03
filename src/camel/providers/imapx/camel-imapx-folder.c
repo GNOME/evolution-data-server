@@ -35,6 +35,8 @@ struct _CamelIMAPXFolderPrivate {
 
 	guint test_move_to_trash_delay_ms;
 	guint test_expunge_decision_delay_ms;
+
+	gboolean summary_disconnected; /* dispose can run repeatedly (folder resurrection) */
 };
 
 enum {
@@ -260,7 +262,9 @@ imapx_folder_dispose (GObject *object)
 	g_clear_object (&folder->cache);
 
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
-	if (store != NULL) {
+	if (store != NULL && !folder->priv->summary_disconnected) {
+		folder->priv->summary_disconnected = TRUE;
+
 		camel_store_summary_disconnect_folder_summary (
 			CAMEL_IMAPX_STORE (store)->summary,
 			camel_folder_get_folder_summary (CAMEL_FOLDER (folder)));

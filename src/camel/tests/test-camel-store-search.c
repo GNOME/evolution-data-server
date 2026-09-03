@@ -4983,6 +4983,262 @@ test_store_search_exec_select (void)
 	test_session_check_finalized ();
 }
 
+static void
+test_store_search_summary_teardown_large (void)
+{
+	CamelStore *store;
+	CamelFolder *f1;
+	CamelFolderSummary *summary;
+	GError *local_error = NULL;
+	guint ii;
+
+	store = test_store_new ();
+
+	f1 = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (f1);
+
+	summary = camel_folder_get_folder_summary (f1);
+	g_assert_nonnull (summary);
+
+	/* more than 1000 entries makes the finalize free the tables
+	 * in a transient thread */
+	for (ii = 0; ii < 1010; ii++) {
+		CamelMessageInfo *mi;
+		gchar *uid;
+
+		uid = g_strdup_printf ("%u", ii + 1);
+		mi = camel_message_info_new (summary);
+		camel_message_info_set_uid (mi, uid);
+		camel_message_info_set_subject (mi, uid);
+		camel_folder_summary_add (summary, mi, FALSE);
+		g_clear_object (&mi);
+		g_free (uid);
+	}
+
+	g_assert_cmpuint (camel_folder_summary_count (summary), ==, 1010);
+
+	g_clear_object (&f1);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
+typedef struct _LoadStressData {
+	CamelFolder *folder;
+	gint n_pending;
+	GMainLoop *loop;
+} LoadStressData;
+
+static gpointer
+test_summary_load_stress_load_thread (gpointer user_data)
+{
+	LoadStressData *lsd = user_data;
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (lsd->folder);
+	guint ii;
+
+	for (ii = 0; ii < SIMULTANEOUS_N_REPEATS; ii++) {
+		GError *local_error = NULL;
+
+		g_assert_true (camel_folder_summary_load (summary, &local_error));
+		g_assert_no_error (local_error);
+	}
+
+	if (g_atomic_int_dec_and_test (&lsd->n_pending))
+		g_main_loop_quit (lsd->loop);
+
+	return NULL;
+}
+
+static gpointer
+test_summary_load_stress_change_thread (gpointer user_data)
+{
+	LoadStressData *lsd = user_data;
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (lsd->folder);
+	guint ii;
+
+	/* races the loads with changes of the 'uids' content, exercising
+	 * the generation-check retry in camel_folder_summary_load() */
+	for (ii = 0; ii < SIMULTANEOUS_N_REPEATS; ii++) {
+		camel_folder_summary_replace_flags (summary, "21",
+			(ii & 1) ? CAMEL_MESSAGE_SEEN : 0);
+	}
+
+	if (g_atomic_int_dec_and_test (&lsd->n_pending))
+		g_main_loop_quit (lsd->loop);
+
+	return NULL;
+}
+
+static gboolean
+test_summary_load_stress_start_idle_cb (gpointer user_data)
+{
+	LoadStressData *lsd = user_data;
+
+	lsd->n_pending = 2;
+
+	g_thread_unref (g_thread_new ("load-stress-load", test_summary_load_stress_load_thread, user_data));
+	g_thread_unref (g_thread_new ("load-stress-change", test_summary_load_stress_change_thread, user_data));
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_store_search_summary_load_stress (void)
+{
+	LoadStressData lsd = { NULL, };
+	CamelStore *store;
+	CamelFolder *f1;
+	GMainLoop *loop;
+	GError *local_error = NULL;
+	guint source_id;
+
+	store = test_store_new ();
+
+	f1 = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (f1);
+	test_add_messages (f1,
+		"uid", "21",
+		"subject", "s21",
+		"",
+		"uid", "22",
+		"subject", "s22",
+		NULL);
+
+	g_assert_true (camel_folder_summary_save (camel_folder_get_folder_summary (f1), &local_error));
+	g_assert_no_error (local_error);
+
+	loop = g_main_loop_new (NULL, FALSE);
+
+	source_id = g_timeout_add_seconds (SIMULTANEOUS_TIMEOUT_SECS, test_simultaneous_timeout_cb, NULL);
+	g_assert_cmpuint (source_id, !=, 0);
+
+	lsd.folder = f1;
+	lsd.loop = loop;
+
+	g_idle_add (test_summary_load_stress_start_idle_cb, &lsd);
+	g_main_loop_run (loop);
+
+	g_source_remove (source_id);
+	g_main_loop_unref (loop);
+
+	g_assert_cmpuint (camel_folder_summary_count (camel_folder_get_folder_summary (f1)), ==, 2);
+
+	g_clear_object (&f1);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
+typedef struct _FetchAllStressData {
+	CamelFolder *folder;
+	gint n_pending;
+	GMainLoop *loop;
+} FetchAllStressData;
+
+static gpointer
+test_prepare_fetch_all_stress_thread (gpointer user_data)
+{
+	FetchAllStressData *fasd = user_data;
+	CamelFolderSummary *summary = camel_folder_get_folder_summary (fasd->folder);
+	GError *local_error = NULL;
+
+	/* all the threads race one whole-folder load through the
+	 * single-flight gate; the waiters take over the runner's result */
+	g_assert_true (camel_folder_summary_prepare_fetch_all (summary, &local_error));
+	g_assert_no_error (local_error);
+
+	if (g_atomic_int_dec_and_test (&fasd->n_pending))
+		g_main_loop_quit (fasd->loop);
+
+	return NULL;
+}
+
+static gboolean
+test_prepare_fetch_all_stress_start_idle_cb (gpointer user_data)
+{
+	FetchAllStressData *fasd = user_data;
+	guint ii;
+
+	fasd->n_pending = 4;
+
+	for (ii = 0; ii < 4; ii++) {
+		g_thread_unref (g_thread_new ("fetch-all-stress", test_prepare_fetch_all_stress_thread, user_data));
+	}
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_store_search_prepare_fetch_all_stress (void)
+{
+	FetchAllStressData fasd = { NULL, };
+	CamelStore *store;
+	CamelFolder *f1;
+	CamelFolderSummary *summary;
+	GMainLoop *loop;
+	GError *local_error = NULL;
+	GPtrArray *uids;
+	guint source_id, ii;
+
+	store = test_store_new ();
+
+	f1 = camel_store_get_folder_sync (store, "f1", 0, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_nonnull (f1);
+
+	summary = camel_folder_get_folder_summary (f1);
+
+	/* more than 50 not-loaded infos makes prepare_fetch_all read the DB */
+	for (ii = 0; ii < 60; ii++) {
+		CamelMessageInfo *mi;
+		gchar *uid;
+
+		uid = g_strdup_printf ("%u", ii + 1);
+		mi = camel_message_info_new (summary);
+		camel_message_info_set_uid (mi, uid);
+		camel_message_info_set_subject (mi, uid);
+		camel_folder_summary_add (summary, mi, FALSE);
+		g_clear_object (&mi);
+		g_free (uid);
+	}
+
+	g_assert_true (camel_folder_summary_save (summary, &local_error));
+	g_assert_no_error (local_error);
+
+	uids = camel_folder_summary_dup_uids (summary);
+	g_assert_nonnull (uids);
+	for (ii = 0; ii < uids->len; ii++) {
+		_camel_folder_summary_unload_uid (summary, g_ptr_array_index (uids, ii));
+	}
+	g_ptr_array_unref (uids);
+
+	loop = g_main_loop_new (NULL, FALSE);
+
+	source_id = g_timeout_add_seconds (SIMULTANEOUS_TIMEOUT_SECS, test_simultaneous_timeout_cb, NULL);
+	g_assert_cmpuint (source_id, !=, 0);
+
+	fasd.folder = f1;
+	fasd.loop = loop;
+
+	g_idle_add (test_prepare_fetch_all_stress_start_idle_cb, &fasd);
+	g_main_loop_run (loop);
+
+	g_source_remove (source_id);
+	g_main_loop_unref (loop);
+
+	g_assert_cmpuint (camel_folder_summary_count (summary), ==, 60);
+
+	g_clear_object (&f1);
+	g_clear_object (&store);
+
+	test_session_wait_for_pending_jobs ();
+	test_session_check_finalized ();
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -5016,6 +5272,9 @@ main (gint argc,
 	g_test_add_func ("/Camel/CamelStoreSearch/MatchIndex", test_store_search_match_index);
 	g_test_add_func ("/Camel/CamelStoreSearch/SummaryChanges", test_store_search_summary_changes);
 	g_test_add_func ("/Camel/CamelStoreSearch/SimultaneousReadWriteStress", test_store_search_simultaneous_read_write_stress);
+	g_test_add_func ("/Camel/CamelStoreSearch/SummaryTeardownLarge", test_store_search_summary_teardown_large);
+	g_test_add_func ("/Camel/CamelStoreSearch/SummaryLoadStress", test_store_search_summary_load_stress);
+	g_test_add_func ("/Camel/CamelStoreSearch/PrepareFetchAllStress", test_store_search_prepare_fetch_all_stress);
 	g_test_add_func ("/Camel/CamelStoreSearch/ExecSelect", test_store_search_exec_select);
 
 	return g_test_run ();
