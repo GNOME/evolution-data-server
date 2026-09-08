@@ -113,8 +113,12 @@ cell_renderer_color_render (GtkCellRenderer *cell,
                             GtkCellRendererState flags)
 #endif
 {
+	static const float radius = 4.0f;
 #if GTK_CHECK_VERSION(4, 0, 0)
+	GskRoundedRect rounded_rect;
 	graphene_rect_t rect;
+#else
+	double xx, yy, width, height;
 #endif
 	ECellRendererColorPrivate *priv;
 	GdkRectangle pix_rect;
@@ -149,10 +153,24 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	rect.size.width = draw_rect.width;
 	rect.size.height = draw_rect.height;
 
+	gsk_rounded_rect_init_from_rect (&rounded_rect, &rect, radius);
+	gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
 	gtk_snapshot_append_color (snapshot, &priv->rgba, &rect);
+	gtk_snapshot_pop (snapshot);
 #else
+	xx = pix_rect.x;
+	yy = pix_rect.y;
+	width = draw_rect.width;
+	height = draw_rect.height;
+
 	gdk_cairo_set_source_rgba (cr, &priv->rgba);
-	cairo_rectangle (cr, pix_rect.x, pix_rect.y, draw_rect.width, draw_rect.height);
+
+	cairo_new_sub_path (cr);
+	cairo_arc (cr, xx + width - radius, yy + radius, radius, -G_PI / 2, 0);
+	cairo_arc (cr, xx + width - radius, yy + height - radius, radius, 0, G_PI / 2);
+	cairo_arc (cr, xx + radius, yy + height - radius, radius, G_PI / 2, G_PI);
+	cairo_arc (cr, xx + radius, yy + radius, radius, G_PI, 3 * G_PI / 2);
+	cairo_close_path (cr);
 
 	cairo_fill (cr);
 #endif
