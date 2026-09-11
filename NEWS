@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.62.0 2026-09-11
+---------------------------------------
+
+Bug Fixes:
+	I#660 - GOA EWS: Do not require OABUrl in autodiscover
+	I#662 - EBackend: Document how OAuth2 sources should ask to be authenticated (Tobias Mueller)
+	I#665 - CalDAV: Ignore Bad Request (400) on overwrite
+	M!243 - ESourceRegistry: Name the credentials source in failed-lookup debug message (Tobias Mueller)
+
+Translations:
+	Alan Mortensen (da)
+	Aurimas Černius (lt)
+	Balázs Úr (hu)
+	Baurzhan Muftakhidinov (kk)
+	Emin Tufan Çetin (tr)
+	Juliano de Souza Camargo (pt_BR)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.61.3 2026-08-28
 ---------------------------------------
 
