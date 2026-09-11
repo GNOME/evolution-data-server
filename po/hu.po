@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
 "ues/\n"
-"POT-Creation-Date: 2026-09-02 09:52+0000\n"
-"PO-Revision-Date: 2026-09-08 23:01+0200\n"
+"POT-Creation-Date: 2026-09-11 08:08+0000\n"
+"PO-Revision-Date: 2026-09-11 18:54+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -52,7 +52,7 @@ msgstr "A fogadott objektum nem érvényes vCard"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1948
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1858
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1272
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1273
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -190,7 +190,7 @@ msgstr "Nem sikerült átnevezni a régi adatbázist „%s” névről „%s” 
 #: src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -1410,7 +1410,7 @@ msgstr "Alfabetikus index lett beállítva egy hibás területi beállításhoz"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "A megadott „%s” URL nem hivatkozik CalDAV naptárra"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2406
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2412
 msgid "Failed to parse response data"
 msgstr "Nem sikerült feldolgozni a válasz adatait"
 
@@ -2804,13 +2804,11 @@ msgstr "Nem lehet létrehozni a gyorsítótár útvonalát"
 
 #: src/camel/camel-data-cache.c:536
 #, c-format
-#| msgid "Failed to create cache “%s”:"
 msgid "Failed to create cache file “%s”: %s"
 msgstr "Nem sikerült létrehozni a(z) „%s” gyorsítótárfájlt: %s"
 
 #: src/camel/camel-data-cache.c:607
 #, c-format
-#| msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgid "Failed to rename cache file “%s” to “%s”: %s"
 msgstr "Nem sikerült átnevezni a gyorsítótárfájlt „%s” névről „%s” névre: %s"
 
@@ -3060,6 +3058,99 @@ msgstr "Mappa frissítése: „%s : %s”"
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Nem használt memória felszabadítása ennél a mappánál: „%s : %s”"
+
+#: src/camel/camel-folder-view.c:2253 src/camel/camel-folder-view.c:2326
+#| msgid "Folders"
+msgid "Older"
+msgstr "Régebbi"
+
+#: src/camel/camel-folder-view.c:2256
+msgid "Future"
+msgstr "Jövőbeli"
+
+#: src/camel/camel-folder-view.c:2274
+msgid "Today"
+msgstr "Ma"
+
+#: src/camel/camel-folder-view.c:2276 src/camel/camel-folder-view.c:2285
+msgid "Yesterday"
+msgstr "Tegnap"
+
+#: src/camel/camel-folder-view.c:2278 src/camel/camel-folder-view.c:2289
+msgid "Last 7 Days"
+msgstr "Elmúlt 7 nap"
+
+#: src/camel/camel-folder-view.c:2280
+msgid "This Month"
+msgstr "Ez a hónap"
+
+#: src/camel/camel-folder-view.c:2300
+#| msgid "Last Revision"
+msgid "Last Month"
+msgstr "Utolsó hónap"
+
+#: src/camel/camel-folder-view.c:2305
+msgctxt "group-label"
+msgid "January"
+msgstr "Január"
+
+#: src/camel/camel-folder-view.c:2306
+msgctxt "group-label"
+msgid "February"
+msgstr "Február"
+
+#: src/camel/camel-folder-view.c:2307
+msgctxt "group-label"
+msgid "March"
+msgstr "Március"
+
+#: src/camel/camel-folder-view.c:2308
+msgctxt "group-label"
+msgid "April"
+msgstr "Április"
+
+#: src/camel/camel-folder-view.c:2309
+msgctxt "group-label"
+msgid "May"
+msgstr "Május"
+
+#: src/camel/camel-folder-view.c:2310
+msgctxt "group-label"
+msgid "June"
+msgstr "Június"
+
+#: src/camel/camel-folder-view.c:2311
+msgctxt "group-label"
+msgid "July"
+msgstr "Július"
+
+#: src/camel/camel-folder-view.c:2312
+msgctxt "group-label"
+msgid "August"
+msgstr "Augusztus"
+
+#: src/camel/camel-folder-view.c:2313
+#| msgid "Member"
+msgctxt "group-label"
+msgid "September"
+msgstr "Szeptember"
+
+#: src/camel/camel-folder-view.c:2314
+msgctxt "group-label"
+msgid "October"
+msgstr "Október"
+
+#: src/camel/camel-folder-view.c:2315
+#| msgid "Member"
+msgctxt "group-label"
+msgid "November"
+msgstr "November"
+
+#: src/camel/camel-folder-view.c:2316
+#| msgid "Member"
+msgctxt "group-label"
+msgid "December"
+msgstr "December"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:613
@@ -4951,18 +5042,18 @@ msgstr "Nem lehet törölni az üzeneteket: a(z) „%s” mappa nem található"
 msgid "Cannot count messages: Folder “%s” not found"
 msgstr "Nem lehet megszámolni az üzeneteket: a(z) „%s” mappa nem található"
 
-#: src/camel/camel-store-db.c:2439
+#: src/camel/camel-store-db.c:2438
 #, c-format
 msgid "Cannot get UIDs and flags: Folder “%s” not found"
 msgstr ""
 "Nem lehet lekérni az UID-kat és jelzőket: a(z) „%s” mappa nem található"
 
-#: src/camel/camel-store-db.c:2507
+#: src/camel/camel-store-db.c:2506
 #, c-format
 msgid "Cannot get junk UIDs: Folder “%s” not found"
 msgstr "Nem lehet lekérni a szemét UID-kat: a(z) „%s” mappa nem található"
 
-#: src/camel/camel-store-db.c:2556
+#: src/camel/camel-store-db.c:2555
 #, c-format
 msgid "Cannot get deleted UIDs: Folder “%s” not found"
 msgstr "Nem lehet lekérni a törölt UID-kat: a(z) „%s” mappa nem található"
@@ -5423,7 +5514,6 @@ msgid "Error performing NOOP"
 msgstr "Hiba a NOOP végrehajtásakor"
 
 #: src/camel/providers/imapx/camel-imapx-server.c:4678
-#| msgid "Failed to close the tmp stream"
 msgid "Failed to close the cache stream"
 msgstr "Nem sikerült lezárni a gyorsítótár-adatfolyamot"
 
@@ -7630,7 +7720,7 @@ msgstr ""
 "törléséhez"
 
 #: src/libebackend/e-server-side-source.c:1474
-#: src/libebackend/e-source-registry-server.c:1025
+#: src/libebackend/e-source-registry-server.c:1038
 #: src/libedataserver/e-source.c:1846
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -7943,21 +8033,18 @@ msgstr ""
 
 #: src/libedataserver/e-ms-oapxbc.c:380
 #, c-format
-#| msgid "Failed to parse acquirePrtSsoCookie response: "
 msgid "No PrtSsoCookie in response"
 msgstr "Nincs PrtSsoCookie a válaszban"
 
 #: src/libedataserver/e-ms-oapxbc.c:389 src/libedataserver/e-ms-oapxbc.c:396
 #, c-format
-#| msgid "Failed to parse acquirePrtSsoCookie response: "
 msgid "Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"
 msgstr ""
-"Nem sikerült feldolgozni az acquirePrtSsoCookie válaszát: érvénytelen PrtSsoCo"
-"okie adatok"
+"Nem sikerült feldolgozni az acquirePrtSsoCookie válaszát: érvénytelen "
+"PrtSsoCookie adatok"
 
 #: src/libedataserver/e-ms-oapxbc.c:407
 #, c-format
-#| msgid "Failed to acquire PRT SSO cookie: "
 msgid "Failed to create SOAP cookie"
 msgstr "Nem sikerült létrehozni a SOAP-sütit"
 
@@ -7987,14 +8074,12 @@ msgstr "Az OAuth2 titkos rekordja befejezetlen"
 
 #: src/libedataserver/e-oauth2-service.c:1486
 #: src/libedataserver/e-oauth2-service.c:1588
-#| msgid "Failed to create collection"
 msgid "Failed to create HTTP session"
 msgstr "Nem sikerült létrehozni a HTTP-munkamenetet"
 
 #: src/libedataserver/e-oauth2-service.c:1500
 #: src/libedataserver/e-oauth2-service.c:1602
 #, c-format
-#| msgid "Failed to create cache “%s”:"
 msgid "Failed to create HTTP request for “%s”"
 msgstr "Nem sikerült létrehozni a HTTP-kérést ehhez: „%s”"
 
@@ -8036,11 +8121,10 @@ msgstr ""
 "a kiszolgálóra."
 
 #: src/libedataserver/e-oauth2-service.c:2093
-#| msgid "Failed to refresh access token. Sign to the server again, please."
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
-"Nem sikerült beszerezni a hozzáférési tokent. Jelentkezzen be újra a kiszolgál"
-"ón."
+"Nem sikerült beszerezni a hozzáférési tokent. Jelentkezzen be újra a "
+"kiszolgálón."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -8101,7 +8185,6 @@ msgid "Too many redirects"
 msgstr "Túl sok átirányítás"
 
 #: src/libedataserver/e-soup-session.c:2049
-#| msgid "Required algorithm is not allowed."
 msgid "Redirect from HTTPS to HTTP is not allowed"
 msgstr "A HTTPS-ről HTTP-re való átirányítás nem engedélyezett"
 
@@ -8121,7 +8204,6 @@ msgid "Data source “%s” is not writable"
 msgstr "A(z) „%s” adatforrás nem írható"
 
 #: src/libedataserver/e-source.c:1886
-#| msgid "Failed to obtain an access token for “%s”: "
 msgid "Failed to obtain OAuth 2.0 access token"
 msgstr "Nem sikerült beszerezni az OAuth 2.0 hozzáférési tokent"
 
@@ -8508,7 +8590,6 @@ msgid "Access Control Entry privilege cannot be NULL."
 msgstr "A hozzáférés-vezérlési bejegyzés jogosultsága nem lehet NULL."
 
 #: src/libedataserver/e-webdav-session.c:5313
-#| msgid "Server didn’t return object’s href"
 msgid "Server did not return sync-token"
 msgstr "A kiszolgáló nem adott vissza szinkronizációs tokent"
 
@@ -8696,35 +8777,35 @@ msgstr "Hozzáférési token kérése, kis türelmet…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:652
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:682
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s címjegyzék hitelesítési kérés"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:687
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s naptár hitelesítési kérés"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:662
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s feljegyzéslista hitelesítési kérés"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:667
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:697
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s feladatlista hitelesítési kérés"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:673
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:703
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s levél hitelesítési kérés"
@@ -8732,7 +8813,7 @@ msgstr "%s levél hitelesítési kérés"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:678
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:708
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s-fiók hitelesítési kérés"
@@ -8740,7 +8821,7 @@ msgstr "%s-fiók hitelesítési kérés"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:722
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8752,7 +8833,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:699
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:729
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8764,7 +8845,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:736
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8776,7 +8857,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:713
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:743
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8788,7 +8869,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:720
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:750
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8800,7 +8881,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:727
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:757
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8812,7 +8893,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:734
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:764
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8821,37 +8902,37 @@ msgstr ""
 "Jelentkezzen be a(z) %s-fiókjába, és fogadja el a feltételeket, hogy "
 "hozzáférjen a(z) „%s” fiókhoz."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Nem sikerült megnyitni a böngészőt: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1243
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1273
 msgid "_Copy URL"
 msgstr "URL _másolása"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1275
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1306
 msgid "Open in _Browser"
 msgstr "Megnyitás _böngészőben"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1262
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1292
 #, c-format
 msgid "Open with “%s”"
 msgstr "Megnyitás ezzel: „%s”"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1371
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1401
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_Mégse"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1471
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1501
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1546
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1576
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8862,16 +8943,16 @@ msgstr ""
 "kapott, alábbi felhatalmazási kódot vagy az URL-t, amelyet az OAuth2 "
 "varázsló befejezése adott."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1583
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1613
 msgid "_Authorization code:"
 msgstr "_Felhatalmazási kód:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1596
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1626
 msgid "C_ontinue"
 msgstr "_Folytatás"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1795
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1796
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1825
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1826
 msgid "Preparing request, please wait…"
 msgstr "Kérés előkészítése, kis türelmet…"
 
@@ -9292,7 +9373,6 @@ msgstr ""
 "felderítés válaszában"
 
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1758
-#| msgid "Collection/GNOME Online Accounts"
 msgid "Unable to connect to the GNOME Online Accounts service"
 msgstr "Nem lehet kapcsolódni a GNOME internetes fiókok szolgáltatáshoz"
 
