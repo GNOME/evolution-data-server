@@ -408,14 +408,16 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 					const gchar *page_uri,
 					const gchar *page_content)
 {
+	ESource *use_source;
 	gchar *authorization_code = NULL;
 	gchar *error_message = NULL;
 
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);
 
-	if (e_oauth2_service_extract_error_message (prompter_oauth2->priv->service,
-		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+	use_source = prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source;
+
+	if (e_oauth2_service_extract_error_message (prompter_oauth2->priv->service, use_source,
 		page_title, page_uri, page_content, &error_message) && error_message) {
 		gchar *complete_message;
 
@@ -429,8 +431,36 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 
 	g_clear_pointer (&error_message, g_free);
 
-	if (!e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
-		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+	if (page_uri && *page_uri) {
+		const gchar *redirect_uri;
+
+		redirect_uri = e_oauth2_service_get_redirect_uri (prompter_oauth2->priv->service, use_source);
+		if (redirect_uri && *redirect_uri) {
+			GUri *page, *redirect;
+			gboolean can_process = TRUE;
+
+			page = g_uri_parse (page_uri, G_URI_FLAGS_PARSE_RELAXED | SOUP_HTTP_URI_FLAGS, NULL);
+			redirect = g_uri_parse (redirect_uri, G_URI_FLAGS_PARSE_RELAXED | SOUP_HTTP_URI_FLAGS, NULL);
+
+			if (page && redirect) {
+				#define non_null(_x) ((_x) ? (_x) : "")
+				#define is_equal(_fn) (g_ascii_strcasecmp (non_null (_fn (page)), non_null (_fn (redirect))) == 0)
+
+				can_process = is_equal (g_uri_get_host) && is_equal (g_uri_get_path);
+
+				#undef is_equal
+				#undef non_null
+			}
+
+			g_clear_pointer (&redirect, g_uri_unref);
+			g_clear_pointer (&page, g_uri_unref);
+
+			if (!can_process)
+				return;
+		}
+	}
+
+	if (!e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service, use_source,
 		page_title, page_uri, page_content, &authorization_code)) {
 		return;
 	}
