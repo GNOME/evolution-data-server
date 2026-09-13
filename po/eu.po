@@ -9,8 +9,8 @@
 msgid ""
 msgstr "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues/\n"
-"POT-Creation-Date: 2026-08-07 11:34+0000\n"
-"PO-Revision-Date: 2026-08-12 06:00+0100\n"
+"POT-Creation-Date: 2026-09-11 08:08+0000\n"
+"PO-Revision-Date: 2026-09-13 06:00+0100\n"
 "Last-Translator: Asier Saratsua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -49,7 +49,7 @@ msgstr "Jasotako objektua ez da baliozko vCard bat"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1948
 #: src/calendar/backends/caldav/e-cal-backend-caldav.c:1858
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1272
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1273
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
@@ -177,11 +177,11 @@ msgstr "Huts egin du “%s” datu-base zaharra “%s” gisa aldatzean: %s"
 #: src/camel/providers/imapx/camel-imapx-server.c:3502
 #: src/camel/providers/imapx/camel-imapx-server.c:3514
 #: src/camel/providers/nntp/camel-nntp-store.c:410
-#: src/libebackend/e-server-side-source.c:488 src/libedataserver/e-client.c:172
+#: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
-#: src/libedataserver/e-soup-session.c:2182
+#: src/libedataserver/e-soup-session.c:2245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -1376,7 +1376,7 @@ msgstr "Indize alfabetikoa okerreko lokalarekin ezarrita"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Emandako “%s” URLak ez dauka CalDAV egutegiaren erreferentziarik"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2406
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2412
 msgid "Failed to parse response data"
 msgstr "Huts egin du erantzunaren datuak aztertzean"
 
@@ -1410,32 +1410,32 @@ msgstr "Heriotza.-eguna: %s"
 msgid "Cannot get URI"
 msgstr "Ezin da URIa eskuratu"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:224
+#: src/calendar/backends/file/e-cal-backend-file.c:223
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Egutegiko datuak ezin dira gorde: gaizki osatutako URIa."
 
-#: src/calendar/backends/file/e-cal-backend-file.c:231
-#: src/calendar/backends/file/e-cal-backend-file.c:237
+#: src/calendar/backends/file/e-cal-backend-file.c:230
+#: src/calendar/backends/file/e-cal-backend-file.c:236
 msgid "Cannot save calendar data"
 msgstr "Ezin dira egutegiko datuak gorde"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1189
-#: src/calendar/backends/file/e-cal-backend-file.c:1318
+#: src/calendar/backends/file/e-cal-backend-file.c:1188
+#: src/calendar/backends/file/e-cal-backend-file.c:1317
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "Ezin izan da “%s” ICS fitxategia analizatu"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1200
-#: src/calendar/backends/file/e-cal-backend-file.c:1329
+#: src/calendar/backends/file/e-cal-backend-file.c:1199
+#: src/calendar/backends/file/e-cal-backend-file.c:1328
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "“%s” fitxategia ez da VCALENDAR osagaia"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3762
-#: src/calendar/backends/file/e-cal-backend-file.c:3768
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/backends/file/e-cal-backend-file.c:3801
+#: src/calendar/backends/file/e-cal-backend-file.c:3759
+#: src/calendar/backends/file/e-cal-backend-file.c:3765
+#: src/calendar/backends/file/e-cal-backend-file.c:3771
+#: src/calendar/backends/file/e-cal-backend-file.c:3798
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
 msgid "Unsupported method"
 msgstr "Onartzen ez den metodoa"
@@ -3012,6 +3012,94 @@ msgstr "“%s : %s” karpeta freskatzen"
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Askatu “%s : %s” karpetaren erabili gabeko memoria"
+
+#: src/camel/camel-folder-view.c:2253 src/camel/camel-folder-view.c:2326
+msgid "Older"
+msgstr "Zaharragoa"
+
+#: src/camel/camel-folder-view.c:2256
+msgid "Future"
+msgstr "Etorkizuna"
+
+#: src/camel/camel-folder-view.c:2274
+msgid "Today"
+msgstr "Gaur"
+
+#: src/camel/camel-folder-view.c:2276 src/camel/camel-folder-view.c:2285
+msgid "Yesterday"
+msgstr "Atzo"
+
+#: src/camel/camel-folder-view.c:2278 src/camel/camel-folder-view.c:2289
+msgid "Last 7 Days"
+msgstr "Azken 7 egunak"
+
+#: src/camel/camel-folder-view.c:2280
+msgid "This Month"
+msgstr "Hilabete hau"
+
+#: src/camel/camel-folder-view.c:2300
+msgid "Last Month"
+msgstr "Azken hilabetea"
+
+#: src/camel/camel-folder-view.c:2305
+msgctxt "group-label"
+msgid "January"
+msgstr "Urtarrila"
+
+#: src/camel/camel-folder-view.c:2306
+msgctxt "group-label"
+msgid "February"
+msgstr "Otsaila"
+
+#: src/camel/camel-folder-view.c:2307
+msgctxt "group-label"
+msgid "March"
+msgstr "Martxoa"
+
+#: src/camel/camel-folder-view.c:2308
+msgctxt "group-label"
+msgid "April"
+msgstr "Apirila"
+
+#: src/camel/camel-folder-view.c:2309
+msgctxt "group-label"
+msgid "May"
+msgstr "Maiatza"
+
+#: src/camel/camel-folder-view.c:2310
+msgctxt "group-label"
+msgid "June"
+msgstr "Ekaina"
+
+#: src/camel/camel-folder-view.c:2311
+msgctxt "group-label"
+msgid "July"
+msgstr "Uztaila"
+
+#: src/camel/camel-folder-view.c:2312
+msgctxt "group-label"
+msgid "August"
+msgstr "Abuztua"
+
+#: src/camel/camel-folder-view.c:2313
+msgctxt "group-label"
+msgid "September"
+msgstr "Iraila"
+
+#: src/camel/camel-folder-view.c:2314
+msgctxt "group-label"
+msgid "October"
+msgstr "Urria"
+
+#: src/camel/camel-folder-view.c:2315
+msgctxt "group-label"
+msgid "November"
+msgstr "Azaroa"
+
+#: src/camel/camel-folder-view.c:2316
+msgctxt "group-label"
+msgid "December"
+msgstr "Abendua"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:613
@@ -4763,17 +4851,17 @@ msgstr "Ezin dira mezuak ezabatu: “%s” karpeta ez da aurkitu"
 msgid "Cannot count messages: Folder “%s” not found"
 msgstr "Ezin dira mezuak zenbatu: “%s” karpeta ez da aurkitu"
 
-#: src/camel/camel-store-db.c:2439
+#: src/camel/camel-store-db.c:2438
 #, c-format
 msgid "Cannot get UIDs and flags: Folder “%s” not found"
 msgstr "Ezin dira UIDak eta banderak eskuratu: “%s” karpeta ez da aurkitu"
 
-#: src/camel/camel-store-db.c:2507
+#: src/camel/camel-store-db.c:2506
 #, c-format
 msgid "Cannot get junk UIDs: Folder “%s” not found"
 msgstr "Ezin dira zaborrezko UIDak eskuratu: “%s” karpeta ez da aurkitu"
 
-#: src/camel/camel-store-db.c:2556
+#: src/camel/camel-store-db.c:2555
 #, c-format
 msgid "Cannot get deleted UIDs: Folder “%s” not found"
 msgstr "Ezin dira ezabatutako UIDak eskuratu: “%s” karpeta ez da aurkitu"
@@ -4892,28 +4980,28 @@ msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Linean jardun behar duzu lanean eragiketa hau bukatzeko"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1601
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1697
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1625
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
 #, c-format
 msgid "No destination folder specified"
 msgstr "Ez da helburuko karpetarik zehaztu"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1628
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1652
 msgid "Unable to move junk messages"
 msgstr "Ezin da mezu baztergarririk lekuz aldatu"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1730
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1763
 msgid "Unable to move deleted messages"
 msgstr "Ezin dira ezabatutako mezuak lekuz aldatu"
 
-#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1815
+#: src/camel/providers/imapx/camel-imapx-conn-manager.c:1851
 msgid "Unable to move Not-Junk messages"
 msgstr "Ezin dira baztergarriak ez diren mezuak lekuz aldatu"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:699
+#: src/camel/providers/imapx/camel-imapx-folder.c:730
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Ez dago “%s : %s” karpetaren kuotari buruzko informaziorik erabilgarri"
@@ -4922,34 +5010,34 @@ msgstr "Ez dago “%s : %s” karpetaren kuotari buruzko informaziorik erabilgar
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:966
+#: src/camel/providers/imapx/camel-imapx-folder.c:997
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Cache fitxategi zaharrak kentzen “%s : %s” karpetatik"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1032
+#: src/camel/providers/imapx/camel-imapx-folder.c:1063
 msgid "You must be working online to search in headers"
 msgstr "Linean jardun behar duzu goiburuetan bilaketak egiteko"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1086
+#: src/camel/providers/imapx/camel-imapx-folder.c:1117
 msgid "You must be working online to search in message body"
 msgstr "Linean jardun behar duzu mezu-gorputzetan bilaketak egiteko"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1175
+#: src/camel/providers/imapx/camel-imapx-folder.c:1206
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Aplikatu mezuen _iragazkiak karpeta honi"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1190
+#: src/camel/providers/imapx/camel-imapx-folder.c:1221
 msgid "Always check for _new mail in this folder"
 msgstr "Begiratu beti mezu _berriak dauden karpeta honetan"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1361
+#: src/camel/providers/imapx/camel-imapx-folder.c:1406
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Ezin izan da %s(r)en laburpenaren karpeta sortu"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1373
+#: src/camel/providers/imapx/camel-imapx-folder.c:1418
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Ezin izan da %s(r)en cachea sortu: "
@@ -4957,7 +5045,7 @@ msgstr "Ezin izan da %s(r)en cachea sortu: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1551
+#: src/camel/providers/imapx/camel-imapx-folder.c:1596
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Ez dago “%s : %s” karpetaren IMAP postontzirik eskuragarri"
@@ -5270,61 +5358,61 @@ msgstr "Errorea mezuaren informazioa eskuratzean"
 msgid "Error running STATUS"
 msgstr "Errorea STATUS (egoera) exekutatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6435
-#: src/camel/providers/imapx/camel-imapx-server.c:6468
-#: src/camel/providers/imapx/camel-imapx-server.c:6531
+#: src/camel/providers/imapx/camel-imapx-server.c:6447
+#: src/camel/providers/imapx/camel-imapx-server.c:6480
+#: src/camel/providers/imapx/camel-imapx-server.c:6543
 msgid "Error syncing changes"
 msgstr "Errorea aldaketak sinkronizatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6590
-#: src/camel/providers/imapx/camel-imapx-server.c:6615
-#: src/camel/providers/imapx/camel-imapx-server.c:6765
+#: src/camel/providers/imapx/camel-imapx-server.c:6618
+#: src/camel/providers/imapx/camel-imapx-server.c:6643
+#: src/camel/providers/imapx/camel-imapx-server.c:6802
 msgid "Error expunging message"
 msgstr "Errorea mezua betirako borratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6833
+#: src/camel/providers/imapx/camel-imapx-server.c:6870
 msgid "Error fetching folders"
 msgstr "Errorea karpetak hartzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6841
+#: src/camel/providers/imapx/camel-imapx-server.c:6878
 msgid "Error fetching subscribed folders"
 msgstr "Errorea harpidetutako karpetak eskuratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6898
+#: src/camel/providers/imapx/camel-imapx-server.c:6935
 msgid "Error creating folder"
 msgstr "Errorea karpeta sortzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6948
+#: src/camel/providers/imapx/camel-imapx-server.c:6985
 msgid "Error deleting folder"
 msgstr "Errorea karpeta ezabatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:6994
+#: src/camel/providers/imapx/camel-imapx-server.c:7031
 msgid "Error renaming folder"
 msgstr "Errorea karpeta izenez aldatzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7026
+#: src/camel/providers/imapx/camel-imapx-server.c:7063
 msgid "Error subscribing to folder"
 msgstr "Errorea karpetara harpidetzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7062
+#: src/camel/providers/imapx/camel-imapx-server.c:7099
 msgid "Error unsubscribing from folder"
 msgstr "Errorea karpetatik harpidetza kentzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7102
+#: src/camel/providers/imapx/camel-imapx-server.c:7139
 msgid "IMAP server does not support quotas"
 msgstr "IMAP zerbitzariak ez du kuotarik onartzen"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7114
+#: src/camel/providers/imapx/camel-imapx-server.c:7151
 msgid "Error retrieving quota information"
 msgstr "Errorea kuotaren informazioa eskuratzean"
 
-#: src/camel/providers/imapx/camel-imapx-server.c:7179
-#: src/camel/providers/imapx/camel-imapx-server.c:7274
+#: src/camel/providers/imapx/camel-imapx-server.c:7216
+#: src/camel/providers/imapx/camel-imapx-server.c:7311
 msgid "Search failed"
 msgstr "Bilaketak huts egin du"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: src/camel/providers/imapx/camel-imapx-server.c:7413
+#: src/camel/providers/imapx/camel-imapx-server.c:7450
 msgid "Error running IDLE"
 msgstr "Errorea IDLE (inaktibo) exekutatzean"
 
@@ -7212,13 +7300,13 @@ msgstr "%s(e)k ez du urruneko baliabideak sortzerik onartzen"
 msgid "%s does not support deleting remote resources"
 msgstr "%s(e)k ez du urruneko baliabideak ezabatzerik onartzen"
 
-#: src/libebackend/e-data-factory.c:1445
+#: src/libebackend/e-data-factory.c:1466
 #: src/libebackend/e-subprocess-factory.c:283
 #, c-format
 msgid "No such source for UID “%s”"
 msgstr "Ez dago halako iturbururik “%s” UIDarentzako"
 
-#: src/libebackend/e-data-factory.c:1600
+#: src/libebackend/e-data-factory.c:1621
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "Ezin izan da “%s” iturburuaren eta “%s” hedapenaren motorraren sortzailerik aurkitu."
@@ -7228,42 +7316,42 @@ msgstr "Ezin izan da “%s” iturburuaren eta “%s” hedapenaren motorraren s
 msgid "Data source is missing a [%s] group"
 msgstr "Datuen iturburuari [%s] talde bat falta zaio"
 
-#: src/libebackend/e-server-side-source.c:457
+#: src/libebackend/e-server-side-source.c:473
 msgid "Failed to lookup credentials: "
 msgstr "Huts egin du kredentzialak bilatzean: "
 
-#: src/libebackend/e-server-side-source.c:1363
-#: src/libedataserver/e-source.c:1613
+#: src/libebackend/e-server-side-source.c:1379
+#: src/libedataserver/e-source.c:1629
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "“%s” datu iturburuak ez du urruneko baliabideak sortzerik onartzen"
 
-#: src/libebackend/e-server-side-source.c:1377
+#: src/libebackend/e-server-side-source.c:1393
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr "“%s” datu iturburuak ez dauka motor bildumarik urruneko baliabideak sortzeko"
 
-#: src/libebackend/e-server-side-source.c:1405
-#: src/libedataserver/e-source.c:1709
+#: src/libebackend/e-server-side-source.c:1421
+#: src/libedataserver/e-source.c:1725
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "“%s” datu iturburuak ez du urruneko baliabideak ezabatzerik onartzen"
 
-#: src/libebackend/e-server-side-source.c:1419
+#: src/libebackend/e-server-side-source.c:1435
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr "“%s” datu iturburuak ez dauka motor bildumarik urruneko baliabideak ezabatzeko"
 
-#: src/libebackend/e-server-side-source.c:1458
-#: src/libebackend/e-source-registry-server.c:1025
-#: src/libedataserver/e-source.c:1830
+#: src/libebackend/e-server-side-source.c:1474
+#: src/libebackend/e-source-registry-server.c:1038
+#: src/libedataserver/e-source.c:1846
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "“%s” datu iturburuak ez du OAuth 2.0 autentifikazioa onartzen"
 
-#: src/libebackend/e-server-side-source.c:1862
+#: src/libebackend/e-server-side-source.c:1878
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "Fitxategiak “.source” luzapena eduki behar du"
@@ -7579,23 +7667,43 @@ msgstr "Huts egin du SOAP cookie-a sortzeak"
 msgid "Malformed, no message body set"
 msgstr "Gaizki osatua, ez da mezu-gorputzik ezarri"
 
+#: src/libedataserver/e-oauth2-service.c:1325
+msgid "Token record is incomplete"
+msgstr "Token-erregistroa ez dago ororik"
+
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1383
+#: src/libedataserver/e-oauth2-service.c:1352
+#: src/libedataserver/e-oauth2-service.c:1394
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” iturburua (%s) ez da baliozkoa “%s” OAuth2 zerbitzurako"
 
-#: src/libedataserver/e-oauth2-service.c:1398
+#: src/libedataserver/e-oauth2-service.c:1409
 msgid "OAuth2 secret not found"
 msgstr "Ez da aurkitu OAuth2 sekretua"
 
-#: src/libedataserver/e-oauth2-service.c:1600
+#: src/libedataserver/e-oauth2-service.c:1436
+msgid "OAuth2 secret record is incomplete"
+msgstr "OAuth2 ezkutukoen erregistroa ez dago osorik"
+
+#: src/libedataserver/e-oauth2-service.c:1486
+#: src/libedataserver/e-oauth2-service.c:1588
+msgid "Failed to create HTTP session"
+msgstr "Huts egin du HTTP saioa sortzeak"
+
+#: src/libedataserver/e-oauth2-service.c:1500
+#: src/libedataserver/e-oauth2-service.c:1602
+#, c-format
+msgid "Failed to create HTTP request for “%s”"
+msgstr "Huts egin du HTTP eskaria sortzeak honetarako: “%s”"
+
+#: src/libedataserver/e-oauth2-service.c:1626
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Erantzun okerra jaso da “%s” zerbitzaritik."
 
-#: src/libedataserver/e-oauth2-service.c:1623
+#: src/libedataserver/e-oauth2-service.c:1649
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7605,21 +7713,25 @@ msgstr "Huts egin du atzipen-tokena freskatzeak. Hasi saioa zerbitzarian berriro
 "\n"
 "Errorearen xehetasunak: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1652
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Huts egin du atzipen-tokenak freskatzeak. Hasi saioa zerbitzarian berriro."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1677
+#: src/libedataserver/e-oauth2-service.c:1703
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” iturburua (%s) ez da baliozko OAuth2 iturburua"
 
-#: src/libedataserver/e-oauth2-service.c:2053
+#: src/libedataserver/e-oauth2-service.c:2079
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr "Atzipen-tokena iraungi da eta huts egin du hura freskatzeak. Hasi saioa zerbitzarian berriro."
+
+#: src/libedataserver/e-oauth2-service.c:2093
+msgid "Failed to obtain access token. Sign to the server again, please."
+msgstr "Huts egin du atzipen-tokenak eskuratzeak. Hasi saioa zerbitzarian berriro."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -7657,44 +7769,48 @@ msgstr "Huts egin du HTTPren %d errorearekin: %s"
 msgid "Failed to setup authentication"
 msgstr "Huts egin du autentifikazioa konfiguratzeak"
 
-#: src/libedataserver/e-soup-session.c:1837
+#: src/libedataserver/e-soup-session.c:1900
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] "Zerbitzaria lanpetuta dago, berriro saiatzeko esperoan (%d:%02d minutu)"
 msgstr[1] "Zerbitzaria lanpetuta dago, berriro saiatzeko esperoan (%d:%02d minutu)"
 
-#: src/libedataserver/e-soup-session.c:1843
+#: src/libedataserver/e-soup-session.c:1906
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
 msgstr[0] "Zerbitzaria lanpetuta dago, berriro saiatzeko esperoan (segundo %d)"
 msgstr[1] "Zerbitzaria lanpetuta dago, berriro saiatzeko esperoan (%d segundo)"
 
-#: src/libedataserver/e-soup-session.c:1964
+#: src/libedataserver/e-soup-session.c:2027
 msgid "Too many redirects"
-msgstr "Berbideratze gehiegi"
+msgstr "Birbideratze gehiegi"
 
-#: src/libedataserver/e-soup-session.c:1986
+#: src/libedataserver/e-soup-session.c:2049
 msgid "Redirect from HTTPS to HTTP is not allowed"
-msgstr "Ez da onartzen HTTPStik HTTPra berbideratzea"
+msgstr "Ez da onartzen HTTPStik HTTPra birbideratzea"
 
 #: src/libedataserver/e-source.c:762
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Iturburuaren fitxategiari [%s] talde bat falta zaio"
 
-#: src/libedataserver/e-source.c:1407
+#: src/libedataserver/e-source.c:1423
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "“%s” datuen iturburua ez da aldagarria"
 
-#: src/libedataserver/e-source.c:1524
+#: src/libedataserver/e-source.c:1540
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "“%s” datuen iturburua ezin da idazgarria"
 
-#: src/libedataserver/e-source.c:2205
+#: src/libedataserver/e-source.c:1886
+msgid "Failed to obtain OAuth 2.0 access token"
+msgstr "Huts egin du OAuth 2.0 sarbide-tokena eskuratzeak"
+
+#: src/libedataserver/e-source.c:2226
 msgid "Unnamed"
 msgstr "Izengabea"
 
@@ -8252,35 +8368,35 @@ msgstr "Atzipen-tokena eskatzen, itxaron…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:652
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:682
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s helbide-liburuaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:687
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s egutegiaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:662
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s zirkular-zerrendaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:667
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:697
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s zeregin-zerrendaren autentifikazio-eskaera"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:673
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:703
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s postaren autentifikazio-eskaera"
@@ -8288,7 +8404,7 @@ msgstr "%s postaren autentifikazio-eskaera"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:678
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:708
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s kontuaren autentifikazio-eskaera"
@@ -8296,7 +8412,7 @@ msgstr "%s kontuaren autentifikazio-eskaera"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:722
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8306,7 +8422,7 @@ msgstr "Zure “%s” helbide-liburua atzitu ahal izateko, hasi saioa zure %s ko
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:699
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:729
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8316,7 +8432,7 @@ msgstr "Zure “%s” egutegia atzitu ahal izateko, hasi saioa zure %s kontuan e
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:736
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8326,7 +8442,7 @@ msgstr "Zure “%s” posta-kontua atzitu ahal izateko, hasi saioa zure %s kontu
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:713
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:743
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8336,7 +8452,7 @@ msgstr "Zure “%s” posta-garraioa atzitu ahal izateko, hasi saioa zure %s kon
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:720
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:750
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8346,7 +8462,7 @@ msgstr "Zure “%s” zirkular-zerrenda atzitu ahal izateko, hasi saioa zure %s 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:727
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:757
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8356,60 +8472,60 @@ msgstr "Zure “%s” zeregin-zerrenda atzitu ahal izateko, hasi saioa zure %s k
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:734
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:764
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr "Zure “%s” kontua atzitu ahal izateko, hasi saioa zure %s kontuan eta onartu baldintzak."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Huts egin du nabigatzailea irekitzeak: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1243
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1273
 msgid "_Copy URL"
 msgstr "_Kopiatu URLa"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1275
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1306
 msgid "Open in _Browser"
 msgstr "Ireki _nabigatzailean"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1262
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1292
 #, c-format
 msgid "Open with “%s”"
 msgstr "Ireki honekin: “%s”"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1371
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1401
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_Utzi"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1471
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1501
 msgid "URL:"
 msgstr "URLa:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1546
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1576
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr "Ireki goiko URLa nabigatzaile batean eta jarraitu hango OAuth2 morroiari. Kopiatu hemen azpian sortutako baimen-kodea, edo OAuth2 morroiak eman duen URLa, autentifikazio-prozesuarekin jarraitzeko."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1583
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1613
 msgid "_Authorization code:"
 msgstr "_Baimen-kodea:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1596
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1626
 msgid "C_ontinue"
 msgstr "_Jarraitu"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1795
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1796
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1825
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1826
 msgid "Preparing request, please wait…"
 msgstr "Eskaria prestatzen, itxaron…"
 
@@ -8784,37 +8900,37 @@ msgid "Failed to get password from GOA: "
 msgstr "Huts egin du GOAtik pasahitza eskuratzean: "
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:214
+#: src/modules/gnome-online-accounts/goaewsclient.c:219
 #, c-format
 msgid "Code: %u — Unexpected response from server"
 msgstr "Kodea: %u - Zerbitzariaren ustekabeko erantzuna"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:236
+#: src/modules/gnome-online-accounts/goaewsclient.c:241
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Huts egin du autodiscover (automatikoki ezagutu) XML erantzuna analizatzean"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:245
+#: src/modules/gnome-online-accounts/goaewsclient.c:250
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Huts egin du detekzio automatikoaren elementua bilatzean"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:257
+#: src/modules/gnome-online-accounts/goaewsclient.c:262
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Huts egin du Erantzuna elementua bilatzean"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:269
+#: src/modules/gnome-online-accounts/goaewsclient.c:274
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Huts egin du Kontua elementua bilatzean"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:288
+#: src/modules/gnome-online-accounts/goaewsclient.c:293
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Huts egin du ASUrl eta OABUrl bilatzean Autodiscover (automatikoki ezagutu) erantzunean"
@@ -8833,7 +8949,7 @@ msgstr "Ezin da org.gnome.OnlineAccounts zerbitzuko dagokion  kontua bilatu (hor
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1820
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
-msgstr "Huts egin du “%s”(r)en sarbidearen tokena lortzean: "
+msgstr "Huts egin du “%s”(r)en sarbide-tokena lortzean: "
 
 #: src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:21
 #: src/services/evolution-calendar-factory/evolution-calendar-factory.c:23
