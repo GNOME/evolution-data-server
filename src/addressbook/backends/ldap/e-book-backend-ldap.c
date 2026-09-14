@@ -199,6 +199,10 @@ static void category_populate (EBookBackendLDAP *self, EContact *contact, gchar 
 static struct berval ** category_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
 static gboolean category_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
 
+static void jabber_populate (EBookBackendLDAP *self, EContact *contact, gchar **values);
+static struct berval ** jabber_ber (EBookBackendLDAP *self, EContact *contact, const gchar *ldap_attr, GError **error);
+static gboolean jabber_compare (EBookBackendLDAP *self, EContact *contact1, EContact *contact2, const gchar *ldap_attr);
+
 static void home_address_populate (EBookBackendLDAP *self, EContact *card, gchar **values);
 static struct berval **home_address_ber (EBookBackendLDAP *self, EContact *card, const gchar *ldap_attr, GError **error);
 static gboolean home_address_compare (EBookBackendLDAP *self, EContact *ecard1, EContact * ecard2, const gchar *ldap_attr);
@@ -349,6 +353,7 @@ static struct prop_info {
 
 	/* misc fields */
 	CONTACT_STRING_PROP    (E_CONTACT_HOMEPAGE_URL,  "labeledURI"),
+	COMPLEX_PROP  (E_CONTACT_IM_JABBER, "jid", jabber_populate, jabber_ber, jabber_compare),
 	/* map nickname to the displayName with the evo scheme, or possibly prefill the file-as without the evo scheme */
 	COMPLEX_PROP   (E_CONTACT_NICKNAME, "displayName", nickname_populate, nickname_ber, nickname_compare),
 	E_STRING_PROP  (E_CONTACT_SPOUSE,      "spouseName"),
@@ -3125,6 +3130,96 @@ category_compare (EBookBackendLDAP *self,
 		equal = !strcmp (categories1, categories2);
 	else
 		equal = (categories1 == categories2);
+
+	return equal;
+}
+
+static void
+jabber_populate (EBookBackendLDAP *self,
+		 EContact *contact,
+		 gchar **values)
+{
+	GList *jabber_ids = NULL;
+	gint ii;
+
+	for (ii = 0; values[ii]; ii++) {
+		jabber_ids = g_list_append (jabber_ids, values[ii]);
+	}
+
+	e_contact_set (contact, E_CONTACT_IM_JABBER, jabber_ids);
+
+	g_list_free (jabber_ids);
+}
+
+static struct berval **
+jabber_ber (EBookBackendLDAP *self,
+	    EContact *contact,
+	    const gchar *ldap_attr,
+	    GError **error)
+{
+	struct berval **result;
+	GList *jabber_ids, *iter;
+	guint num, ii;
+
+	jabber_ids = e_contact_get (contact, E_CONTACT_IM_JABBER);
+	num = g_list_length (jabber_ids);
+
+	if (num == 0)
+		return NULL;
+
+	result = g_new0 (struct berval *, num + 1);
+
+	ii = 0;
+	for (iter = jabber_ids; iter; iter = g_list_next (iter)) {
+		const gchar *jabber_id = iter->data;
+
+		result[ii] = g_new (struct berval, 1);
+		result[ii]->bv_val = g_strdup (jabber_id);
+		result[ii]->bv_len = strlen (jabber_id);
+		ii++;
+	}
+
+	g_list_free_full (jabber_ids, g_free);
+
+	return result;
+}
+
+static gboolean
+jabber_compare (EBookBackendLDAP *self,
+		EContact *contact1,
+		EContact *contact2,
+		const gchar *ldap_attr)
+{
+	GList *jabber_ids1, *jabber_ids2, *l1, *l2;
+	gboolean equal = TRUE;
+
+	jabber_ids1 = e_contact_get (contact1, E_CONTACT_IM_JABBER);
+	jabber_ids2 = e_contact_get (contact2, E_CONTACT_IM_JABBER);
+
+	if (g_list_length (jabber_ids1) != g_list_length (jabber_ids2)) {
+		equal = FALSE;
+	} else {
+		for (l1 = jabber_ids1; l1 && equal; l1 = g_list_next (l1)) {
+			const gchar *jabber_id1 = l1->data;
+
+			equal = FALSE;
+
+			for (l2 = jabber_ids2; l2; l2 = g_list_next (l2)) {
+				gchar *jabber_id2 = l2->data;
+
+				if (!g_strcmp0 (jabber_id1, jabber_id2)) {
+					jabber_ids2 = g_list_remove_link (jabber_ids2, l2);
+					g_free (jabber_id2);
+					g_list_free_1 (l2);
+					equal = TRUE;
+					break;
+				}
+			}
+		}
+	}
+
+	g_list_free_full (jabber_ids1, g_free);
+	g_list_free_full (jabber_ids2, g_free);
 
 	return equal;
 }
