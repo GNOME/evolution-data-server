@@ -329,14 +329,14 @@ gchar *		e_cal_util_component_get_recurid_as_string
 						(ICalComponent *icalcomp);
 ICalComponent *	e_cal_util_construct_instance	(ICalComponent *icalcomp,
 						 const ICalTime *rid);
-/* #ifndef EDS_DISABLE_DEPRECATED */ /* Fully deprecate it for 3.40 */
+#ifndef EDS_DISABLE_DEPRECATED
 void		e_cal_util_remove_instances	(ICalComponent *icalcomp,
 						 const ICalTime *rid,
 						 ECalObjModType mod);
 ICalComponent *	e_cal_util_split_at_instance	(ICalComponent *icalcomp,
 						 const ICalTime *rid,
 						 const ICalTime *master_dtstart);
-/* #endif / * EDS_DISABLE_DEPRECATED */
+#endif /* EDS_DISABLE_DEPRECATED */
 void		e_cal_util_normalize_rrule_until_value
 						(ICalComponent *icalcomp,
 						 ICalTime *ttuntil,
