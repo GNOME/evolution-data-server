@@ -566,7 +566,10 @@ test_server_has_capability (const gchar *capability_name)
 
 	memset (&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = inet_addr (host);
+
+	if (inet_pton (AF_INET, host, &addr.sin_addr) <= 0)
+		return FALSE;
+
 	addr.sin_port = htons (port);
 
 	fd = socket (AF_INET, SOCK_STREAM, 0);
