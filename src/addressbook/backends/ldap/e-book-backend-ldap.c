@@ -4363,7 +4363,8 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		}
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	} else {
-		if (g_strcmp0 (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
+		if (g_strcmp0 (query, "(contains \"x-evolution-any-field\" \"\")") != 0 &&
+		    g_strcmp0 (query, "(contains \"x-evolution-any-field\"  \"\")") != 0)
 			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
 		retval = NULL;
 	}
