@@ -1320,7 +1320,7 @@ eos_store_token_sync (EOAuth2Service *service,
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
 
-	if (!refresh_token || !access_token || !expires_in) {
+	if (!refresh_token || !*refresh_token || !access_token || !expires_in) {
 		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_INVALID_RESPONSE,
 			_("Token record is incomplete"));
 		return FALSE;
@@ -1426,7 +1426,7 @@ eos_lookup_token_sync (EOAuth2Service *service,
 			*out_expires_in = num_expires_after - num_now - 1;
 	}
 
-	success = success && *out_refresh_token != NULL;
+	success = success && *out_refresh_token != NULL && **out_refresh_token != '\0';
 
 	if (!success) {
 		g_clear_pointer (out_refresh_token, e_util_safe_free_string);
