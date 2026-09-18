@@ -615,6 +615,50 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 }
 
 static gboolean
+ecb_caldav_href_is_collection (const GUri *request_uri,
+			       const gchar *href)
+{
+	GUri *href_uri;
+	const gchar *href_path, *request_path;
+	gsize href_len, request_len;
+	gboolean is_collection;
+
+	g_return_val_if_fail (href != NULL, FALSE);
+
+	href_len = strlen (href);
+
+	/* a trailing slash is a clear indication of a collection, not a resource */
+	if (href_len > 0 && href[href_len - 1] == '/')
+		return TRUE;
+
+	if (!request_uri)
+		return FALSE;
+
+	href_uri = g_uri_parse_relative ((GUri *) request_uri, href, SOUP_HTTP_URI_FLAGS, NULL);
+	if (!href_uri)
+		return FALSE;
+
+	href_path = g_uri_get_path (href_uri);
+	request_path = g_uri_get_path ((GUri *) request_uri);
+
+	href_len = href_path ? strlen (href_path) : 0;
+	request_len = request_path ? strlen (request_path) : 0;
+
+	if (href_len > 1 && href_path[href_len - 1] == '/')
+		href_len--;
+
+	if (request_len > 1 && request_path[request_len - 1] == '/')
+		request_len--;
+
+	is_collection = href_len > 0 && href_len == request_len &&
+		strncmp (href_path, request_path, href_len) == 0;
+
+	g_uri_unref (href_uri);
+
+	return is_collection;
+}
+
+static gboolean
 ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 				    EWebDAVSession *webdav,
 				    GSList **in_link,
@@ -626,6 +670,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 	EXmlDocument *xml;
 	ICalComponentKind backend_kind;
 	gint left_to_go = E_CALDAV_MAX_MULTIGET_AMOUNT;
+	guint consecutive_bad_request_count = 0;
 	GSList *link;
 	gboolean success = TRUE;
 
@@ -664,6 +709,12 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 			continue;
 
 		left_to_go--;
+
+		if (nfo->extra && ecb_caldav_href_is_collection (NULL, nfo->extra)) {
+			e_cal_meta_backend_info_free (nfo);
+			nfo_link->data = NULL;
+			continue;
+		}
 
 		/* iCloud returns broken calendar-multiget responses, with
 		   empty <DAV:href> elements, thus read one-by-one for it.
@@ -728,11 +779,24 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 
 					nfo_link->data = NULL;
 					g_clear_error (&local_error);
+					success = TRUE;
+					continue;
+				} else if (!success && g_error_matches (local_error, E_SOUP_SESSION_ERROR, SOUP_STATUS_BAD_REQUEST) &&
+					   consecutive_bad_request_count < 3) {
+					consecutive_bad_request_count++;
+
+					e_cal_meta_backend_info_free (nfo);
+					nfo_link->data = NULL;
+					g_clear_error (&local_error);
+					success = TRUE;
 					continue;
 				} else if (local_error) {
 					g_propagate_error (error, local_error);
 				}
 			}
+
+			if (success)
+				consecutive_bad_request_count = 0;
 
 			if (success && calendar_data) {
 				ICalComponent *vcalendar;
@@ -822,8 +886,7 @@ ecb_caldav_get_calendar_items_cb (EWebDAVSession *webdav,
 	g_return_val_if_fail (href != NULL, FALSE);
 
 	/* Skip collection resource, if returned by the server (like iCloud.com does) */
-	if (g_str_has_suffix (href, "/") ||
-	    (request_uri && *g_uri_get_path ((GUri *) request_uri) && g_str_has_suffix (href, g_uri_get_path ((GUri *) request_uri))))
+	if (ecb_caldav_href_is_collection (request_uri, href))
 		return TRUE;
 
 	etag = e_webdav_session_util_maybe_dequote (g_strdup ((const gchar *) e_xml_find_child_and_get_text (prop_node, E_WEBDAV_NS_DAV, "getetag")));
@@ -979,7 +1042,7 @@ ecb_caldav_resource_modified_cb (EWebDAVSession *webdav,
 {
 	CalDAVChangesData *ccd = user_data;
 
-	if (href && *href && etag && *etag) {
+	if (href && *href && etag && *etag && !ecb_caldav_href_is_collection (NULL, href)) {
 		ECalMetaBackendInfo *nfo;
 
 		nfo = e_cal_meta_backend_info_new ("", etag, NULL, href);
@@ -1304,6 +1367,10 @@ ecb_caldav_extract_existing_cb (EWebDAVSession *webdav,
 		xmlNodePtr calendar_data_node = NULL, etag_node = NULL;
 
 		g_return_val_if_fail (href != NULL, FALSE);
+
+		/* Skip collection resource, if returned by the server (like iCloud.com does) */
+		if (ecb_caldav_href_is_collection (request_uri, href))
+			return TRUE;
 
 		e_xml_find_children_nodes (prop_node, 2,
 			E_WEBDAV_NS_CALDAV, "calendar-data", &calendar_data_node,
