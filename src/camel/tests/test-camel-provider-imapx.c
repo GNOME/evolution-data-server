@@ -604,7 +604,7 @@ test_server_has_capability (const gchar *capability_name)
 	}
 	buf[nread] = '\0';
 
-	if (strcasestr (buf, capability_name)) {
+	if (camel_strstrcase (buf, capability_name)) {
 		found = TRUE;
 	} else {
 		cap_cmd = g_strdup ("a2 CAPABILITY\r\n");
@@ -612,7 +612,7 @@ test_server_has_capability (const gchar *capability_name)
 			nread = read (fd, buf, sizeof (buf) - 1);
 			if (nread > 0) {
 				buf[nread] = '\0';
-				if (strcasestr (buf, capability_name)) {
+				if (camel_strstrcase (buf, capability_name)) {
 					found = TRUE;
 				}
 			}
