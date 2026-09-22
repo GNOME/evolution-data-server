@@ -3056,7 +3056,7 @@ gpg_encrypt_sync (CamelCipherContext *context,
 		camel_medium_set_content ((CamelMedium *) encpart, dw);
 		g_object_unref (dw);
 
-		camel_mime_part_set_description (encpart, _("This is a digitally encrypted message part"));
+		camel_mime_part_set_description (encpart, "This is a digitally encrypted message part");
 
 		vstream = camel_stream_mem_new ();
 		camel_stream_write_string (vstream, "Version: 1\n", NULL, NULL);
