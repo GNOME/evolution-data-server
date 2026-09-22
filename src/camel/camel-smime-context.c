@@ -1068,6 +1068,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 
 		camel_mime_part_set_filename (sigpart, "smime.p7s");
 		camel_mime_part_set_disposition (sigpart, "attachment");
+		camel_mime_part_set_description (sigpart, "S/MIME Cryptographic Signature");
 		camel_mime_part_set_encoding (sigpart, CAMEL_TRANSFER_ENCODING_BASE64);
 
 		mps = camel_multipart_signed_new ();
