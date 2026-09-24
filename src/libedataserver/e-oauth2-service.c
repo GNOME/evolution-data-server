@@ -1146,8 +1146,18 @@ eos_generate_secret_uid (EOAuth2Service *service,
 		return FALSE;
 	}
 
-	if (out_uid)
-		*out_uid = g_strdup_printf ("OAuth2::%s[%s]", e_oauth2_service_get_name (service), user);
+	if (out_uid) {
+		gchar *store_id;
+
+		store_id = e_source_authentication_dup_credential_store_id (authentication_extension);
+
+		if (store_id && *store_id)
+			*out_uid = g_strdup_printf ("OAuth2::%s[%s][%s]", e_oauth2_service_get_name (service), user, store_id);
+		else
+			*out_uid = g_strdup_printf ("OAuth2::%s[%s]", e_oauth2_service_get_name (service), user);
+
+		g_free (store_id);
+	}
 
 	g_free (user);
 

@@ -33,6 +33,7 @@ struct _ESourceAuthenticationPrivate {
 	gboolean remember_password;
 	gchar *user;
 	gchar *credential_name;
+	gchar *credential_store_id;
 	gboolean is_external;
 
 	/* GNetworkAddress caches data internally, so we maintain the
@@ -51,6 +52,7 @@ enum {
 	PROP_REMEMBER_PASSWORD,
 	PROP_USER,
 	PROP_CREDENTIAL_NAME,
+	PROP_CREDENTIAL_STORE_ID,
 	PROP_IS_EXTERNAL,
 	N_PROPS
 };
@@ -131,6 +133,12 @@ source_authentication_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
+		case PROP_CREDENTIAL_STORE_ID:
+			e_source_authentication_set_credential_store_id (
+				E_SOURCE_AUTHENTICATION (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_IS_EXTERNAL:
 			e_source_authentication_set_is_external (
 				E_SOURCE_AUTHENTICATION (object),
@@ -204,6 +212,13 @@ source_authentication_get_property (GObject *object,
 				E_SOURCE_AUTHENTICATION (object)));
 			return;
 
+		case PROP_CREDENTIAL_STORE_ID:
+			g_value_take_string (
+				value,
+				e_source_authentication_dup_credential_store_id (
+				E_SOURCE_AUTHENTICATION (object)));
+			return;
+
 		case PROP_IS_EXTERNAL:
 			g_value_set_boolean (
 				value,
@@ -239,6 +254,7 @@ source_authentication_finalize (GObject *object)
 	g_free (priv->method);
 	g_free (priv->proxy_uid);
 	g_free (priv->user);
+	g_free (priv->credential_store_id);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_authentication_parent_class)->finalize (object);
@@ -379,6 +395,26 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 	properties[PROP_CREDENTIAL_NAME] =
 		g_param_spec_string (
 			"credential-name",
+			NULL, NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING);
+
+	/**
+	 * ESourceAuthentication:credential-store-id
+	 *
+	 * An optional identifier under which the source's credential is stored,
+	 * letting sources that share a service and user name keep separate
+	 * credentials. An empty string or %NULL keeps the default identifier.
+	 *
+	 * Since: 3.64
+	 **/
+	properties[PROP_CREDENTIAL_STORE_ID] =
+		g_param_spec_string (
+			"credential-store-id",
 			NULL, NULL,
 			NULL,
 			G_PARAM_READWRITE |
@@ -998,6 +1034,92 @@ e_source_authentication_set_credential_name (ESourceAuthentication *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CREDENTIAL_NAME]);
+}
+
+/**
+ * e_source_authentication_get_credential_store_id:
+ * @extension: an #ESourceAuthentication
+ *
+ * Returns the identifier under which the source's credential is stored,
+ * or %NULL when the default identifier is used. See
+ * #ESourceAuthentication:credential-store-id.
+ *
+ * Returns: (nullable): the credential store id, or %NULL
+ *
+ * Since: 3.64
+ **/
+const gchar *
+e_source_authentication_get_credential_store_id (ESourceAuthentication *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	return extension->priv->credential_store_id;
+}
+
+/**
+ * e_source_authentication_dup_credential_store_id:
+ * @extension: an #ESourceAuthentication
+ *
+ * Thread-safe variation of e_source_authentication_get_credential_store_id().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: (nullable): a newly-allocated copy of #ESourceAuthentication:credential-store-id
+ *
+ * Since: 3.64
+ **/
+gchar *
+e_source_authentication_dup_credential_store_id (ESourceAuthentication *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_authentication_get_credential_store_id (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_authentication_set_credential_store_id:
+ * @extension: an #ESourceAuthentication
+ * @credential_store_id: (nullable): a credential store id, or %NULL
+ *
+ * Sets the identifier under which the source's credential is stored.
+ * See #ESourceAuthentication:credential-store-id.
+ *
+ * The internal copy of @credential_store_id is automatically stripped
+ * of leading and trailing whitespace. If the resulting string is
+ * empty, %NULL is set instead.
+ *
+ * Since: 3.64
+ **/
+void
+e_source_authentication_set_credential_store_id (ESourceAuthentication *extension,
+						 const gchar *credential_store_id)
+{
+	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (e_util_strcmp0 (extension->priv->credential_store_id, credential_store_id) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->credential_store_id);
+	extension->priv->credential_store_id = e_util_strdup_strip (credential_store_id);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_CREDENTIAL_STORE_ID]);
 }
 
 /**
