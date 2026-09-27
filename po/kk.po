@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues/\n"
-"POT-Creation-Date: 2026-08-20 13:40+0000\n"
-"PO-Revision-Date: 2026-08-29 11:53+0500\n"
+"POT-Creation-Date: 2026-09-24 10:07+0000\n"
+"PO-Revision-Date: 2026-09-27 16:32+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -31,13 +31,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Берілген «%s» URL адресі CardDAV адрес кітапшасына сілтеме жасамайды"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1822
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1686
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1753
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:988
 msgid "Server didn’t return object’s href"
 msgstr "Сервер объектінің href мәнін қайтармады"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1824
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1688
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1755
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:990
 msgid "Server didn’t return object’s ETag"
 msgstr "Сервер объектінің ETag мәнін қайтармады"
@@ -47,8 +47,8 @@ msgid "Received object is not a valid vCard"
 msgstr "Алынған объект жарамды vCard емес"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1948
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1858
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1272
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1925
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1273
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete or broken. "
@@ -93,7 +93,7 @@ msgid "Loading..."
 msgstr "Жүктеу..."
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1180
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4817
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4913
 msgid "Searching..."
 msgstr "Іздеу..."
 
@@ -134,8 +134,8 @@ msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Ескі дерекқордың атын «%s»-ден «%s»-ге өзгерту сәтсіз аяқталды: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:132
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4700
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1138
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4796
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:41
 #: src/addressbook/libebook-contacts/e-phone-number.c:41
 #: src/addressbook/libebook/e-book.c:1065 src/addressbook/libebook/e-book-client.c:2108
@@ -167,10 +167,10 @@ msgstr "Ескі дерекқордың атын «%s»-ден «%s»-ге өз�
 #: src/camel/providers/imapx/camel-imapx-server.c:3502
 #: src/camel/providers/imapx/camel-imapx-server.c:3514
 #: src/camel/providers/nntp/camel-nntp-store.c:410
-#: src/libebackend/e-server-side-source.c:488 src/libedataserver/e-client.c:172
+#: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129 src/libedataserver/e-soup-session.c:2245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -182,49 +182,49 @@ msgstr "Белгісіз қате"
 msgid "Not connected"
 msgstr "Байланыспаған"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:875
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:880
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "v3 немесе v2 байланыстыруларын пайдалану сәтсіз аяқталды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:987
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP серверіне қайта қосылуда..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1114
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1119
 msgid "Invalid DN syntax"
 msgstr "DN синтаксисі қате"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1130
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4699
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4795
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP қатесі 0x%x (%s)"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1783
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2131
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2144
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1788
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2136
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2149
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: ldap_first_entry функциясы NULL мәнін қайтарды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2060
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2200
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2065
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2205
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Өңделмейтін %d нәтиже түрі қайтарылды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2342
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2480
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6359
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2347
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2485
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6455
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Өңделмейтін %d іздеу нәтижесінің түрі қайтарылды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2637
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2642
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP контактілер тізімі бос болмауы керек."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2675
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2680
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same LDAP "
@@ -236,46 +236,46 @@ msgstr[0] ""
 "LDAP адрес кітапшаларындағы контактілер тізімінде әрбір мүше бірдей LDAP адрес "
 "кітапшасынан болуы керек, бірақ %d мүшені тану мүмкін болмады."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4646
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4742
 msgid "Receiving LDAP search results..."
 msgstr "LDAP іздеу нәтижелерін алу..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4843
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4939
 msgid "Error performing search"
 msgstr "Іздеуді орындау қатесі"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5053
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5149
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Контакттарды жүктеп алу (%d)..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5163
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5259
 #: src/addressbook/libedata-book/e-book-meta-backend.c:784
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:726
 msgid "Refreshing…"
 msgstr "Жаңарту…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5666
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5762
 msgid "The backend does not support bulk additions"
 msgstr "Бұл қызмет топтап қосуды қолдамайды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5761
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5857
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP серверіне контактіні қосу..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5823
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5919
 msgid "The backend does not support bulk modifications"
 msgstr "Бұл қызмет топтап өзгертуді қолдамайды"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5845
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5941
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP серверінен контактіні өзгерту..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5917
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6013
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP серверінен контактіні өшіру..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6556
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6652
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "«%s» пайдаланушысы үшін DN алу сәтсіз аяқталды"
@@ -1377,7 +1377,7 @@ msgstr "Алфавиттік индекс дұрыс емес локаль үш�
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Берілген «%s» URL адресі CalDAV күнтізбесіне сілтеме жасамайды"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2406
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2479
 msgid "Failed to parse response data"
 msgstr "Жауап деректерін талдау сәтсіз аяқталды"
 
@@ -2931,7 +2931,7 @@ msgstr "Іздеу сүзгісін орындау қатесі: %s: %s"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:233
+#: src/camel/camel-folder.c:235 src/camel/camel-folder.c:915
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "«%s : %s» бумасында өзгерістерді сақтау"
@@ -2941,7 +2941,7 @@ msgstr "«%s : %s» бумасында өзгерістерді сақтау"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:509
+#: src/camel/camel-folder.c:511
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2952,7 +2952,7 @@ msgstr[0] "«%s : %s» ішіндегі жаңа спам хабарламаны
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:552
+#: src/camel/camel-folder.c:554
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2963,17 +2963,17 @@ msgstr[0] "«%s : %s» ішіндегі жаңа пайдалы хабарлам
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:600
+#: src/camel/camel-folder.c:602
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "«%s : %s» ішіндегі жаңа хабарламаны сүзу"
 
-#: src/camel/camel-folder.c:1208 src/camel/providers/local/camel-maildir-folder.c:319
+#: src/camel/camel-folder.c:1282 src/camel/providers/local/camel-maildir-folder.c:319
 msgid "Moving messages"
 msgstr "Хабарламаларды жылжыту"
 
-#: src/camel/camel-folder.c:1211
+#: src/camel/camel-folder.c:1285
 msgid "Copying messages"
 msgstr "Хабарламаларды көшіру"
 
@@ -2982,7 +2982,7 @@ msgstr "Хабарламаларды көшіру"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1256
+#: src/camel/camel-folder.c:1330
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "«%s : %s» бумасы үшін квота ақпаратына қолдау көрсетілмейді"
@@ -2992,20 +2992,20 @@ msgstr "«%s : %s» бумасы үшін квота ақпаратына қол
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1358
+#: src/camel/camel-folder.c:1432
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "«%s : %s» бумасын сүзу"
 
-#: src/camel/camel-folder.c:1460
+#: src/camel/camel-folder.c:1534
 msgid "Cannot get message headers, local message file not found"
 msgstr "Хабарлама тақырыптамаларын алу мүмкін емес, жергілікті хабарлама файлы табылмады"
 
-#: src/camel/camel-folder.c:1476
+#: src/camel/camel-folder.c:1550
 msgid "Cannot search message headers remotely, not supported"
 msgstr "Хабарлама тақырыптамаларын қашықтан іздеу мүмкін емес, қолдау көрсетілмейді"
 
-#: src/camel/camel-folder.c:1574
+#: src/camel/camel-folder.c:1648
 msgid "Cannot search message bodies remotely, not supported"
 msgstr "Хабарлама мәтіндерін қашықтан іздеу мүмкін емес, қолдау көрсетілмейді"
 
@@ -3014,7 +3014,7 @@ msgstr "Хабарлама мәтіндерін қашықтан іздеу мү
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3333
+#: src/camel/camel-folder.c:3407
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "«%s : %s» бумасын тазарту"
@@ -3024,7 +3024,7 @@ msgstr "«%s : %s» бумасын тазарту"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3468
+#: src/camel/camel-folder.c:3542
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "«%s : %s» ішіндегі «%s» хабарламасын алу"
@@ -3034,7 +3034,7 @@ msgstr "«%s : %s» ішіндегі «%s» хабарламасын алу"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3693
+#: src/camel/camel-folder.c:3767
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "\"%s : %s\" үшін квоталар ақпаратын алу"
@@ -3044,7 +3044,7 @@ msgstr "\"%s : %s\" үшін квоталар ақпаратын алу"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3993
+#: src/camel/camel-folder.c:4067
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "«%s : %s» бумасын жаңарту"
@@ -3054,10 +3054,102 @@ msgstr "«%s : %s» бумасын жаңарту"
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1778
+#: src/camel/camel-folder-summary.c:1887
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "«%s : %s» бумасы үшін пайдаланылмаған жадты босату"
+
+#: src/camel/camel-folder-summary.c:2078
+msgid "Failed to load folder summary from the database"
+msgstr "Дерекқордан бума қорытындысын жүктеу сәтсіз аяқталды"
+
+#: src/camel/camel-folder-view.c:2253 src/camel/camel-folder-view.c:2326
+msgid "Older"
+msgstr "Ескірек"
+
+#: src/camel/camel-folder-view.c:2256
+msgid "Future"
+msgstr "Болашақ"
+
+#: src/camel/camel-folder-view.c:2274
+msgid "Today"
+msgstr "Бүгін"
+
+#: src/camel/camel-folder-view.c:2276 src/camel/camel-folder-view.c:2285
+msgid "Yesterday"
+msgstr "Кеше"
+
+#: src/camel/camel-folder-view.c:2278 src/camel/camel-folder-view.c:2289
+msgid "Last 7 Days"
+msgstr "Соңғы 7 күн"
+
+#: src/camel/camel-folder-view.c:2280
+msgid "This Month"
+msgstr "Осы ай"
+
+#: src/camel/camel-folder-view.c:2300
+msgid "Last Month"
+msgstr "Өткен ай"
+
+#: src/camel/camel-folder-view.c:2305
+msgctxt "group-label"
+msgid "January"
+msgstr "Қаңтар"
+
+#: src/camel/camel-folder-view.c:2306
+msgctxt "group-label"
+msgid "February"
+msgstr "Ақпан"
+
+#: src/camel/camel-folder-view.c:2307
+msgctxt "group-label"
+msgid "March"
+msgstr "Наурыз"
+
+#: src/camel/camel-folder-view.c:2308
+msgctxt "group-label"
+msgid "April"
+msgstr "Сәуір"
+
+#: src/camel/camel-folder-view.c:2309
+msgctxt "group-label"
+msgid "May"
+msgstr "Мамыр"
+
+#: src/camel/camel-folder-view.c:2310
+msgctxt "group-label"
+msgid "June"
+msgstr "Маусым"
+
+#: src/camel/camel-folder-view.c:2311
+msgctxt "group-label"
+msgid "July"
+msgstr "Шілде"
+
+#: src/camel/camel-folder-view.c:2312
+msgctxt "group-label"
+msgid "August"
+msgstr "Тамыз"
+
+#: src/camel/camel-folder-view.c:2313
+msgctxt "group-label"
+msgid "September"
+msgstr "Қыркүйек"
+
+#: src/camel/camel-folder-view.c:2314
+msgctxt "group-label"
+msgid "October"
+msgstr "Қазан"
+
+#: src/camel/camel-folder-view.c:2315
+msgctxt "group-label"
+msgid "November"
+msgstr "Қараша"
+
+#: src/camel/camel-folder-view.c:2316
+msgctxt "group-label"
+msgid "December"
+msgstr "Желтоқсан"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the
 #. used gpg, like '/usr/bin/gpg2'
@@ -3230,8 +3322,8 @@ msgstr "gpg орындау сәтсіз аяқталды."
 
 #: src/camel/camel-gpg-context.c:2726 src/camel/camel-gpg-context.c:2734
 #: src/camel/camel-gpg-context.c:2742 src/camel/camel-gpg-context.c:2762
-#: src/camel/camel-smime-context.c:1153 src/camel/camel-smime-context.c:1167
-#: src/camel/camel-smime-context.c:1179
+#: src/camel/camel-smime-context.c:1154 src/camel/camel-smime-context.c:1168
+#: src/camel/camel-smime-context.c:1180
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Хабарлама қолтаңбасын тексеру мүмкін емес: Хабарлама пішімі қате"
@@ -3243,10 +3335,6 @@ msgstr "Хабарлама қолтаңбасын тексеру мүмкін е
 #: src/camel/camel-gpg-context.c:2977
 msgid "Could not generate encrypting data: "
 msgstr "Шифрлеу деректерін жасау мүмкін болмады: "
-
-#: src/camel/camel-gpg-context.c:3059
-msgid "This is a digitally encrypted message part"
-msgstr "Бұл хабарламаның сандық шифрленген бөлігі"
 
 #: src/camel/camel-gpg-context.c:3121 src/camel/camel-gpg-context.c:3130
 #: src/camel/camel-gpg-context.c:3155
@@ -3270,7 +3358,7 @@ msgid "Failed to decrypt MIME part: %s"
 msgstr "MIME бөлігінің шифрін ашу сәтсіз аяқталды: %s"
 
 #: src/camel/camel-gpg-context.c:3270 src/camel/camel-multipart-encrypted.c:34
-#: src/camel/camel-smime-context.c:1722
+#: src/camel/camel-smime-context.c:1723
 msgid "Encrypted content"
 msgstr "Шифрленген мазмұн"
 
@@ -4711,7 +4799,7 @@ msgstr "Қолтаңба хеш-сомалары табылмады"
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Қол қоюшы: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1575
+#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1576
 msgid "Cannot create encoder context"
 msgstr "Кодтаушы контекстін жасау мүмкін емес"
 
@@ -4719,56 +4807,56 @@ msgstr "Кодтаушы контекстін жасау мүмкін емес"
 msgid "Failed to add data to CMS encoder"
 msgstr "CMS кодтаушысына деректерді қосу сәтсіз аяқталды"
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1592
+#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1593
 msgid "Failed to encode data"
 msgstr "Деректерді кодтау сәтсіз аяқталды"
 
-#: src/camel/camel-smime-context.c:1198 src/camel/camel-smime-context.c:1697
+#: src/camel/camel-smime-context.c:1199 src/camel/camel-smime-context.c:1698
 msgid "Decoder failed"
 msgstr "Декодтаушы қатесі"
 
-#: src/camel/camel-smime-context.c:1469
+#: src/camel/camel-smime-context.c:1470
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "«%s» үшін жарамды немесе сәйкес сертификат табылмады"
 
-#: src/camel/camel-smime-context.c:1509
+#: src/camel/camel-smime-context.c:1510
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Ортақ топтық шифрлеу алгоритмі табылмады"
 
-#: src/camel/camel-smime-context.c:1517
+#: src/camel/camel-smime-context.c:1518
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Топтық шифрлеу кілті үшін слот бөлу мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1528
+#: src/camel/camel-smime-context.c:1529
 msgid "Cannot create CMS Message"
 msgstr "CMS хабарламасын жасау мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1534
+#: src/camel/camel-smime-context.c:1535
 msgid "Cannot create CMS Enveloped data"
 msgstr "CMS конверттелген деректерін жасау мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1540
+#: src/camel/camel-smime-context.c:1541
 msgid "Cannot attach CMS Enveloped data"
 msgstr "CMS конверттелген деректерін тіркеу мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1546
+#: src/camel/camel-smime-context.c:1547
 msgid "Cannot attach CMS data object"
 msgstr "CMS деректер объектісін тіркеу мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1555
+#: src/camel/camel-smime-context.c:1556
 msgid "Cannot create CMS Recipient information"
 msgstr "CMS алушы ақпаратын жасау мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1560
+#: src/camel/camel-smime-context.c:1561
 msgid "Cannot add CMS Recipient information"
 msgstr "CMS алушы ақпаратын қосу мүмкін емес"
 
-#: src/camel/camel-smime-context.c:1586
+#: src/camel/camel-smime-context.c:1587
 msgid "Failed to add data to encoder"
 msgstr "Кодтаушыға деректерді қосу сәтсіз аяқталды"
 
-#: src/camel/camel-smime-context.c:1704
+#: src/camel/camel-smime-context.c:1705
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME шифрін ашу: Шифрленген мазмұн табылмады"
 
@@ -4862,17 +4950,17 @@ msgstr "Хабарламаларды өшіру мүмкін емес: «%s» б
 msgid "Cannot count messages: Folder “%s” not found"
 msgstr "Хабарламаларды санау мүмкін емес: «%s» бумасы табылмады"
 
-#: src/camel/camel-store-db.c:2439
+#: src/camel/camel-store-db.c:2438
 #, c-format
 msgid "Cannot get UIDs and flags: Folder “%s” not found"
 msgstr "UID және жалаушаларды алу мүмкін емес: «%s» бумасы табылмады"
 
-#: src/camel/camel-store-db.c:2507
+#: src/camel/camel-store-db.c:2506
 #, c-format
 msgid "Cannot get junk UIDs: Folder “%s” not found"
 msgstr "Спам UID-терін алу мүмкін емес: «%s» бумасы табылмады"
 
-#: src/camel/camel-store-db.c:2556
+#: src/camel/camel-store-db.c:2555
 #, c-format
 msgid "Cannot get deleted UIDs: Folder “%s” not found"
 msgstr "Өшірілген UID-терді алу мүмкін емес: «%s» бумасы табылмады"
@@ -5014,7 +5102,7 @@ msgstr "Спам емес хабарламаларды жылжыту мүмкі
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:730
+#: src/camel/providers/imapx/camel-imapx-folder.c:734
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "«%s : %s» бумасы үшін квота ақпараты қолжетімді емес"
@@ -5025,34 +5113,34 @@ msgstr "«%s : %s» бумасы үшін квота ақпараты қолже
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:997
+#: src/camel/providers/imapx/camel-imapx-folder.c:1001
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "«%s : %s» бумасындағы ескірген кэш файлдарын өшіру"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1063
+#: src/camel/providers/imapx/camel-imapx-folder.c:1067
 msgid "You must be working online to search in headers"
 msgstr "Тақырыптамалардан іздеу үшін желіде жұмыс істеуіңіз керек"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1117
+#: src/camel/providers/imapx/camel-imapx-folder.c:1121
 msgid "You must be working online to search in message body"
 msgstr "Хабарлама мәтінінен іздеу үшін желіде жұмыс істеуіңіз керек"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1206
+#: src/camel/providers/imapx/camel-imapx-folder.c:1210
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Бұл бумаға хабарлама сүзгілерін (_filters) қолдану"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1221
+#: src/camel/providers/imapx/camel-imapx-folder.c:1225
 msgid "Always check for _new mail in this folder"
 msgstr "Бұл бумада жаңа поштаны (_new) әрқашан тексеру"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1406
+#: src/camel/providers/imapx/camel-imapx-folder.c:1410
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s үшін бума жиынтығын жасау мүмкін болмады"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1418
+#: src/camel/providers/imapx/camel-imapx-folder.c:1422
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s үшін кэш жасау мүмкін болмады: "
@@ -5062,7 +5150,7 @@ msgstr "%s үшін кэш жасау мүмкін болмады: "
 #. is replaced with a full path name. The spaces around “:” are intentional,
 #. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1596
+#: src/camel/providers/imapx/camel-imapx-folder.c:1600
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "«%s : %s» бумасы үшін қолжетімді IMAP пошта жәшігі жоқ"
@@ -7434,37 +7522,37 @@ msgstr "«%s» бастапқы көзі және «%s» кеңейтілуі ү
 msgid "Data source is missing a [%s] group"
 msgstr "Деректер көзінде [%s] тобы жетіспейді"
 
-#: src/libebackend/e-server-side-source.c:457
+#: src/libebackend/e-server-side-source.c:473
 msgid "Failed to lookup credentials: "
 msgstr "Сенім грамоталарын іздеу сәтсіз аяқталды: "
 
-#: src/libebackend/e-server-side-source.c:1363 src/libedataserver/e-source.c:1629
+#: src/libebackend/e-server-side-source.c:1379 src/libedataserver/e-source.c:1629
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "«%s» деректер көзі қашықтағы ресурстарды жасауды қолдамайды"
 
-#: src/libebackend/e-server-side-source.c:1377
+#: src/libebackend/e-server-side-source.c:1393
 #, c-format
 msgid "Data source “%s” has no collection backend to create the remote resource"
 msgstr "«%s» деректер көзінде қашықтағы ресурсты жасау үшін жиынтық бэкэнд жоқ"
 
-#: src/libebackend/e-server-side-source.c:1405 src/libedataserver/e-source.c:1725
+#: src/libebackend/e-server-side-source.c:1421 src/libedataserver/e-source.c:1725
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "«%s» деректер көзі қашықтағы ресурстарды өшіруді қолдамайды"
 
-#: src/libebackend/e-server-side-source.c:1419
+#: src/libebackend/e-server-side-source.c:1435
 #, c-format
 msgid "Data source “%s” has no collection backend to delete the remote resource"
 msgstr "«%s» деректер көзінде қашықтағы ресурсты өшіру үшін жиынтық бэкэнд жоқ"
 
-#: src/libebackend/e-server-side-source.c:1458
-#: src/libebackend/e-source-registry-server.c:1025 src/libedataserver/e-source.c:1846
+#: src/libebackend/e-server-side-source.c:1474
+#: src/libebackend/e-source-registry-server.c:1038 src/libedataserver/e-source.c:1846
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "«%s» деректер көзі OAuth 2.0 аутентификациясын қолдамайды"
 
-#: src/libebackend/e-server-side-source.c:1862
+#: src/libebackend/e-server-side-source.c:1878
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "Файлдың кеңейтілуі «.source» болуы керек"
@@ -7949,7 +8037,7 @@ msgstr "Қолтаңба скрипті жергілікті файл болуы
 msgid "Source “%s” does not support proxy lookups"
 msgstr "«%s» бастапқы көзі проксиді іздеуді қолдамайды"
 
-#: src/libedataserver/e-source-registry.c:1461
+#: src/libedataserver/e-source-registry.c:1486
 #, c-format
 msgid "Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
 msgstr "«%s» нысан жолы бар «%s» D-Bus қызметіне қосылу мүмкін емес, иесі табылмады"
@@ -8470,7 +8558,7 @@ msgstr "Рұқсат токені сұралуда, күте тұрыңыз…"
 #. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication
 #. request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:652
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:682
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s Адрестік кітапша аутентификация сұранымы"
@@ -8478,7 +8566,7 @@ msgstr "%s Адрестік кітапша аутентификация сұра
 #. Translators: The %s is replaced with an OAuth2 service display name, like
 #. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:687
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s Күнтізбе аутентификация сұранымы"
@@ -8486,7 +8574,7 @@ msgstr "%s Күнтізбе аутентификация сұранымы"
 #. Translators: The %s is replaced with an OAuth2 service display name, like
 #. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:662
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s жазбалар тізімінің аутентификация сұранымы"
@@ -8494,7 +8582,7 @@ msgstr "%s жазбалар тізімінің аутентификация сұ
 #. Translators: The %s is replaced with an OAuth2 service display name, like
 #. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:667
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:697
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s тапсырмалар тізімінің аутентификация сұранымы"
@@ -8502,7 +8590,7 @@ msgstr "%s тапсырмалар тізімінің аутентификаци�
 #. Translators: The %s is replaced with an OAuth2 service display name, like
 #. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:673
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:703
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s Пошта аутентификация сұранымы"
@@ -8511,7 +8599,7 @@ msgstr "%s Пошта аутентификация сұранымы"
 #. Translators: The %s is replaced with an OAuth2 service display name, like
 #. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:678
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:708
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s тіркелгісінің аутентификация сұранымы"
@@ -8521,7 +8609,7 @@ msgstr "%s тіркелгісінің аутентификация сұраны�
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:722
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your address book "
@@ -8535,7 +8623,7 @@ msgstr ""
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:699
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:729
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your calendar “%s”."
@@ -8548,7 +8636,7 @@ msgstr ""
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:736
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail account "
@@ -8562,7 +8650,7 @@ msgstr ""
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:713
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:743
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail transport "
@@ -8576,7 +8664,7 @@ msgstr ""
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:720
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:750
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo list “%s”."
@@ -8589,7 +8677,7 @@ msgstr ""
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:727
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:757
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task list “%s”."
@@ -8602,7 +8690,7 @@ msgstr ""
 #. thus it can form a string like "Login to your Google account and...". The
 #. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:734
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:764
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your account “%s”."
@@ -8610,37 +8698,37 @@ msgstr ""
 "Өзіңіздің %s тіркелгіңізге кіріп, \"%s\" тіркелгіңізге қатынау үшін шарттарды "
 "қабылдаңыз."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Браузерді ашу сәтсіз аяқталды: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1243
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1273
 msgid "_Copy URL"
 msgstr "URL көшіру (_C)"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1275
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1306
 msgid "Open in _Browser"
 msgstr "Браузерде ашу (_B)"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1262
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1292
 #, c-format
 msgid "Open with “%s”"
 msgstr "«%s» арқылы ашу"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1371
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1401
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "Ба_с тарту"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1471
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1501
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1546
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1576
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy the "
 "resulting authorization code, or the URL the OAuth2 wizard finished with, below to "
@@ -8650,16 +8738,16 @@ msgstr ""
 "Аутентификация процесін жалғастыру үшін алынған авторизация кодын немесе OAuth2 шебері "
 "аяқталған URL адресін төменде көшіріп қойыңыз."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1583
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1613
 msgid "_Authorization code:"
 msgstr "Авторизация коды (_A):"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1596
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1626
 msgid "C_ontinue"
 msgstr "Жалғастыру (_o)"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1795
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1796
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1825
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1826
 msgid "Preparing request, please wait…"
 msgstr "Сұраныс дайындалуда, күте тұрыңыз…"
 
@@ -9044,37 +9132,37 @@ msgid "Failed to get password from GOA: "
 msgstr "GOA-дан пароль алу сәтсіз аяқталды: "
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:214
+#: src/modules/gnome-online-accounts/goaewsclient.c:219
 #, c-format
 msgid "Code: %u — Unexpected response from server"
 msgstr "Коды: %u — Серверден күтпеген жауап алынды"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:236
+#: src/modules/gnome-online-accounts/goaewsclient.c:241
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Autodiscover жауап XML талдау сәтсіз аяқталды"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:245
+#: src/modules/gnome-online-accounts/goaewsclient.c:250
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Autodiscover элементін табу сәтсіз аяқталды"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:257
+#: src/modules/gnome-online-accounts/goaewsclient.c:262
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Response элементін табу сәтсіз аяқталды"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:269
+#: src/modules/gnome-online-accounts/goaewsclient.c:274
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Account элементін табу сәтсіз аяқталды"
 
 #. TODO: more specific
-#: src/modules/gnome-online-accounts/goaewsclient.c:288
+#: src/modules/gnome-online-accounts/goaewsclient.c:293
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Autodiscover жауабында ASUrl және OABUrl табу сәтсіз аяқталды"
@@ -9466,6 +9554,9 @@ msgstr "Интернетте"
 #: src/services/evolution-source-registry/builtin/webdav-notes-stub.source.desktop.in:3
 msgid "WebDAV Notes"
 msgstr "WebDAV естеліктері"
+
+#~ msgid "This is a digitally encrypted message part"
+#~ msgstr "Бұл хабарламаның сандық шифрленген бөлігі"
 
 #~ msgid "Failed to copy the tmp file"
 #~ msgstr "Уақытша файлды көшіру қатесі"
