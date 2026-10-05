@@ -54,6 +54,7 @@ set(TESTS
 	test-camel-search-split
 	test-camel-rfc2047
 	test-camel-quoted-printable
+	test-camel-multipart-signed
 	test-camel-mime-filter-canon
 	test-camel-mime-filter-crlf
 	test-camel-mime-filter-tohtml
