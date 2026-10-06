@@ -235,6 +235,8 @@ gchar *		e_util_get_source_full_name	(struct _ESourceRegistry *registry,
 void		e_util_unref_in_thread		(gpointer object);
 
 gchar *		e_util_generate_uid		(void);
+void		e_util_fill_random_bytes	(guint8 *buffer,
+						 gsize buffer_len);
 
 gboolean	e_util_identity_can_send	(struct _ESourceRegistry *registry,
 						 struct _ESource *identity_source);

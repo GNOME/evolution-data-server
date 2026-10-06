@@ -12,10 +12,16 @@
 #include <malloc.h>
 #endif
 
+#include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+
+#ifdef HAVE_GETRANDOM
+#include <sys/random.h>
+#endif
 
 #ifdef G_OS_WIN32
 #include <mbstring.h>
@@ -2656,6 +2662,45 @@ e_util_unref_in_thread (gpointer object)
 }
 
 /**
+ * e_util_fill_random_bytes:
+ * @buffer: (out caller-allocates) (array length=buffer_len): a buffer to fill
+ * @buffer_len: how many bytes to write into @buffer
+ *
+ * Fills @buffer with random bytes from the system's cryptographically
+ * secure generator, arc4random_buf() or getrandom(). Only where neither
+ * is available it falls back to g_random_int_range().
+ *
+ * Since: 3.64
+ **/
+void
+e_util_fill_random_bytes (guint8 *buffer,
+			  gsize buffer_len)
+{
+#ifdef HAVE_ARC4RANDOM_BUF
+	arc4random_buf (buffer, buffer_len);
+#else
+	gsize filled = 0;
+
+#ifdef HAVE_GETRANDOM
+	while (filled < buffer_len) {
+		gssize got = getrandom (buffer + filled, buffer_len - filled, 0);
+
+		if (got < 0 && errno == EINTR)
+			continue;
+		if (got <= 0)
+			break;
+
+		filled += got;
+	}
+#endif
+
+	for (; filled < buffer_len; filled++) {
+		buffer[filled] = (guint8) g_random_int_range (0, 256);
+	}
+#endif
+}
+
+/**
  * e_util_generate_uid:
  *
  * Generates a unique identificator, which can be used as part of
@@ -2676,6 +2721,7 @@ e_util_generate_uid (void)
 	static volatile gint counter = 0;
 	gchar *uid;
 	GChecksum *checksum;
+	guint8 random_bytes[16];
 
 	checksum = g_checksum_new (G_CHECKSUM_SHA1);
 
@@ -2704,6 +2750,9 @@ e_util_generate_uid (void)
 
 	#undef add_i64
 	#undef add_str
+
+	e_util_fill_random_bytes (random_bytes, sizeof (random_bytes));
+	g_checksum_update (checksum, random_bytes, sizeof (random_bytes));
 
 	uid = g_strdup (g_checksum_get_string (checksum));
 

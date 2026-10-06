@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
+#include <string.h>
+
 #include "e-test-server-utils.h"
 
 #include <libedataserver/libedataserver.h>
@@ -145,6 +147,19 @@ test_filename_is_in_path (ETestServerFixture *fixture,
 	}
 }
 
+static void
+test_fill_random_bytes (void)
+{
+	guint8 first[32] = { 0 }, second[32] = { 0 }, zeros[32] = { 0 };
+
+	e_util_fill_random_bytes (first, sizeof (first));
+	e_util_fill_random_bytes (second, sizeof (second));
+	e_util_fill_random_bytes (NULL, 0);
+
+	g_assert_true (memcmp (first, zeros, sizeof (first)) != 0);
+	g_assert_true (memcmp (first, second, sizeof (first)) != 0);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -170,6 +185,8 @@ main (gint argc,
 		e_test_server_utils_setup,
 		test_filename_is_in_path,
 		e_test_server_utils_teardown);
+
+	g_test_add_func ("/libedataserver-test/FillRandomBytes", test_fill_random_bytes);
 
 	return e_test_server_utils_run (argc, argv);
 }
