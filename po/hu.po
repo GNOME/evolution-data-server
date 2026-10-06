@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
 "ues/\n"
-"POT-Creation-Date: 2026-09-11 08:08+0000\n"
-"PO-Revision-Date: 2026-09-11 18:54+0200\n"
+"POT-Creation-Date: 2026-09-29 08:01+0000\n"
+"PO-Revision-Date: 2026-10-06 08:31+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -35,13 +35,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "A megadott „%s” URL nem hivatkozik CardDAV címjegyzékre"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1822
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1686
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1753
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:988
 msgid "Server didn’t return object’s href"
 msgstr "A kiszolgáló nem adta vissza az objektum href hivatkozását"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1824
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1688
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1755
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:990
 msgid "Server didn’t return object’s ETag"
 msgstr "A kiszolgáló nem adta vissza az objektum ETag címkéjét"
@@ -51,7 +51,7 @@ msgid "Received object is not a valid vCard"
 msgstr "A fogadott objektum nem érvényes vCard"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1948
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1858
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1925
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1273
 #, c-format
 msgid ""
@@ -98,7 +98,7 @@ msgid "Loading..."
 msgstr "Betöltés…"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1180
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4817
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4913
 msgid "Searching..."
 msgstr "Keresés…"
 
@@ -141,8 +141,8 @@ msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Nem sikerült átnevezni a régi adatbázist „%s” névről „%s” névre: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:132
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4700
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1138
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4796
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:41
 #: src/addressbook/libebook-contacts/e-phone-number.c:41
 #: src/addressbook/libebook/e-book.c:1065
@@ -202,49 +202,49 @@ msgstr "Ismeretlen hiba"
 msgid "Not connected"
 msgstr "Nincs kapcsolódva"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:875
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:880
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Nem sikerült kötni se v3, se v2 kötések használatával"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:987
 msgid "Reconnecting to LDAP server..."
 msgstr "Újrakapcsolódás az LDAP-kiszolgálóhoz…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1114
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1119
 msgid "Invalid DN syntax"
 msgstr "Érvénytelen DN-szintaxis"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1130
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4699
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4795
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-hiba 0x%x (%s)"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1783
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2131
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2144
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1788
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2136
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2149
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: NULL lett visszaadva az ldap_first_entry hívásából"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2060
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2200
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2065
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2205
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: kezeletlen %d eredménytípus lett visszaadva"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2342
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2480
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6359
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2347
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2485
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6455
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: kezeletlen %d keresési eredménytípus lett visszaadva"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2637
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2642
 msgid "LDAP contact lists cannot be empty."
 msgstr "Az LDAP névjegylistái nem lehetnek üresek."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2675
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2680
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -261,46 +261,46 @@ msgstr[1] ""
 "tag ugyanabból az LDAP-címjegyzékből származzon, de %d tagot nem sikerült "
 "felismerni."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4646
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4742
 msgid "Receiving LDAP search results..."
 msgstr "LDAP keresési eredmények fogadása…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4843
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4939
 msgid "Error performing search"
 msgstr "Hiba a keresés végrehajtásakor"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5053
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5149
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Névjegyek letöltése (%d)…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5163
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5259
 #: src/addressbook/libedata-book/e-book-meta-backend.c:784
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:726
 msgid "Refreshing…"
 msgstr "Frissítés…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5666
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5762
 msgid "The backend does not support bulk additions"
 msgstr "A háttérprogram nem támogatja a tömeges hozzáadásokat"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5761
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5857
 msgid "Adding contact to LDAP server..."
 msgstr "Névjegy hozzáadása az LDAP-kiszolgálóhoz…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5823
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5919
 msgid "The backend does not support bulk modifications"
 msgstr "A háttérprogram nem támogatja a tömeges módosításokat"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5845
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5941
 msgid "Modifying contact from LDAP server..."
 msgstr "Névjegy módosítása az LDAP-kiszolgálón…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5917
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6013
 msgid "Removing contact from LDAP server..."
 msgstr "Névjegy eltávolítása az LDAP-kiszolgálóról…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6556
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6652
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Nem sikerült lekérni a(z) „%s” felhasználó DN bejegyzését"
@@ -1410,7 +1410,7 @@ msgstr "Alfabetikus index lett beállítva egy hibás területi beállításhoz"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "A megadott „%s” URL nem hivatkozik CalDAV naptárra"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2412
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2479
 msgid "Failed to parse response data"
 msgstr "Nem sikerült feldolgozni a válasz adatait"
 
@@ -2946,7 +2946,7 @@ msgstr "Hiba a szűrő keresésének végrehajtásakor: %s: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:233
+#: src/camel/camel-folder.c:235 src/camel/camel-folder.c:915
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Változtatások tárolása ebben a mappában: „%s : %s”"
@@ -2954,7 +2954,7 @@ msgstr "Változtatások tárolása ebben a mappában: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:509
+#: src/camel/camel-folder.c:511
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2964,7 +2964,7 @@ msgstr[1] "Új levélszemetek tanulása itt: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:552
+#: src/camel/camel-folder.c:554
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2974,26 +2974,26 @@ msgstr[1] "Új érvényes levelek tanulása itt: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:600
+#: src/camel/camel-folder.c:602
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Új üzenet szűrése itt: „%s : %s”"
 msgstr[1] "Új üzenetek szűrése itt: „%s : %s”"
 
-#: src/camel/camel-folder.c:1208
+#: src/camel/camel-folder.c:1282
 #: src/camel/providers/local/camel-maildir-folder.c:319
 msgid "Moving messages"
 msgstr "Üzenetek áthelyezése"
 
-#: src/camel/camel-folder.c:1211
+#: src/camel/camel-folder.c:1285
 msgid "Copying messages"
 msgstr "Üzenetek másolása"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1256
+#: src/camel/camel-folder.c:1330
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "A kvótainformációk nem támogatottak ennél a mappánál: „%s : %s”"
@@ -3001,28 +3001,28 @@ msgstr "A kvótainformációk nem támogatottak ennél a mappánál: „%s : %s�
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1358
+#: src/camel/camel-folder.c:1432
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Mappa szűrése: „%s : %s”"
 
-#: src/camel/camel-folder.c:1460
+#: src/camel/camel-folder.c:1534
 msgid "Cannot get message headers, local message file not found"
 msgstr ""
 "Nem lehet lekérni az üzenet fejléceit, a helyi üzenetfájl nem található"
 
-#: src/camel/camel-folder.c:1476
+#: src/camel/camel-folder.c:1550
 msgid "Cannot search message headers remotely, not supported"
 msgstr "Nem lehet távolról keresni az üzenet fejléceit, nem támogatott"
 
-#: src/camel/camel-folder.c:1574
+#: src/camel/camel-folder.c:1648
 msgid "Cannot search message bodies remotely, not supported"
 msgstr "Nem lehet távolról keresni az üzenet törzseit, nem támogatott"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3333
+#: src/camel/camel-folder.c:3407
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Mappa kitörlése: „%s : %s”"
@@ -3030,7 +3030,7 @@ msgstr "Mappa kitörlése: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3468
+#: src/camel/camel-folder.c:3542
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "A(z) „%s” üzenet lekérése itt: „%s : %s”"
@@ -3038,7 +3038,7 @@ msgstr "A(z) „%s” üzenet lekérése itt: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3693
+#: src/camel/camel-folder.c:3767
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Kvótainformációk lekérése ehhez: „%s : %s”"
@@ -3046,7 +3046,7 @@ msgstr "Kvótainformációk lekérése ehhez: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3993
+#: src/camel/camel-folder.c:4067
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Mappa frissítése: „%s : %s”"
@@ -3054,13 +3054,17 @@ msgstr "Mappa frissítése: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1778
+#: src/camel/camel-folder-summary.c:1887
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Nem használt memória felszabadítása ennél a mappánál: „%s : %s”"
 
+#: src/camel/camel-folder-summary.c:2078
+#| msgid "Could not create folder summary for %s"
+msgid "Failed to load folder summary from the database"
+msgstr "Nem sikerült betölteni a mappaösszesítőt az adatbázisból"
+
 #: src/camel/camel-folder-view.c:2253 src/camel/camel-folder-view.c:2326
-#| msgid "Folders"
 msgid "Older"
 msgstr "Régebbi"
 
@@ -3085,7 +3089,6 @@ msgid "This Month"
 msgstr "Ez a hónap"
 
 #: src/camel/camel-folder-view.c:2300
-#| msgid "Last Revision"
 msgid "Last Month"
 msgstr "Utolsó hónap"
 
@@ -3130,7 +3133,6 @@ msgid "August"
 msgstr "Augusztus"
 
 #: src/camel/camel-folder-view.c:2313
-#| msgid "Member"
 msgctxt "group-label"
 msgid "September"
 msgstr "Szeptember"
@@ -3141,13 +3143,11 @@ msgid "October"
 msgstr "Október"
 
 #: src/camel/camel-folder-view.c:2315
-#| msgid "Member"
 msgctxt "group-label"
 msgid "November"
 msgstr "November"
 
 #: src/camel/camel-folder-view.c:2316
-#| msgid "Member"
 msgctxt "group-label"
 msgid "December"
 msgstr "December"
@@ -3317,8 +3317,8 @@ msgstr "Nem sikerült a gpg végrehajtása."
 
 #: src/camel/camel-gpg-context.c:2726 src/camel/camel-gpg-context.c:2734
 #: src/camel/camel-gpg-context.c:2742 src/camel/camel-gpg-context.c:2762
-#: src/camel/camel-smime-context.c:1153 src/camel/camel-smime-context.c:1167
-#: src/camel/camel-smime-context.c:1179
+#: src/camel/camel-smime-context.c:1154 src/camel/camel-smime-context.c:1168
+#: src/camel/camel-smime-context.c:1180
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nem lehet ellenőrizni az üzenet aláírását: helytelen üzenetformátum"
@@ -3330,10 +3330,6 @@ msgstr "Nem lehet ellenőrizni az üzenet aláírását: "
 #: src/camel/camel-gpg-context.c:2977
 msgid "Could not generate encrypting data: "
 msgstr "Nem sikerült előállítani a titkosítási adatokat: "
-
-#: src/camel/camel-gpg-context.c:3059
-msgid "This is a digitally encrypted message part"
-msgstr "Ez egy digitálisan titkosított üzenetrész"
 
 #: src/camel/camel-gpg-context.c:3121 src/camel/camel-gpg-context.c:3130
 #: src/camel/camel-gpg-context.c:3155
@@ -3357,7 +3353,7 @@ msgid "Failed to decrypt MIME part: %s"
 msgstr "Nem sikerült visszafejteni a MIME-részt: %s"
 
 #: src/camel/camel-gpg-context.c:3270 src/camel/camel-multipart-encrypted.c:34
-#: src/camel/camel-smime-context.c:1722
+#: src/camel/camel-smime-context.c:1723
 msgid "Encrypted content"
 msgstr "Titkosított tartalom"
 
@@ -4886,7 +4882,7 @@ msgstr "Nem találhatók az aláírás kivonatai"
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Aláíró: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1575
+#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1576
 msgid "Cannot create encoder context"
 msgstr "Nem lehet létrehozni a kódolókörnyezetet"
 
@@ -4894,56 +4890,56 @@ msgstr "Nem lehet létrehozni a kódolókörnyezetet"
 msgid "Failed to add data to CMS encoder"
 msgstr "Nem sikerült hozzáadni az adatokat a CMS-kódolóhoz"
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1592
+#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1593
 msgid "Failed to encode data"
 msgstr "Nem sikerült kódolni az adatokat"
 
-#: src/camel/camel-smime-context.c:1198 src/camel/camel-smime-context.c:1697
+#: src/camel/camel-smime-context.c:1199 src/camel/camel-smime-context.c:1698
 msgid "Decoder failed"
 msgstr "A dekódoló sikertelen"
 
-#: src/camel/camel-smime-context.c:1469
+#: src/camel/camel-smime-context.c:1470
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Nem található érvényes vagy megfelelő tanúsítvány ehhez: „%s”"
 
-#: src/camel/camel-smime-context.c:1509
+#: src/camel/camel-smime-context.c:1510
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Nem található általános tömeges titkosítási algoritmus"
 
-#: src/camel/camel-smime-context.c:1517
+#: src/camel/camel-smime-context.c:1518
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Nem lehet lefoglalni foglalatot a titkosítás tömeges kulcsához"
 
-#: src/camel/camel-smime-context.c:1528
+#: src/camel/camel-smime-context.c:1529
 msgid "Cannot create CMS Message"
 msgstr "Nem lehet létrehozni CMS-üzenetet"
 
-#: src/camel/camel-smime-context.c:1534
+#: src/camel/camel-smime-context.c:1535
 msgid "Cannot create CMS Enveloped data"
 msgstr "Nem lehet létrehozni CMS-sel borítékolt adatokat"
 
-#: src/camel/camel-smime-context.c:1540
+#: src/camel/camel-smime-context.c:1541
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Nem lehet csatolni CMS-sel borítékolt adatokat"
 
-#: src/camel/camel-smime-context.c:1546
+#: src/camel/camel-smime-context.c:1547
 msgid "Cannot attach CMS data object"
 msgstr "Nem lehet csatolni CMS-adatobjektumot"
 
-#: src/camel/camel-smime-context.c:1555
+#: src/camel/camel-smime-context.c:1556
 msgid "Cannot create CMS Recipient information"
 msgstr "Nem lehet létrehozni a CMS-címzett információit"
 
-#: src/camel/camel-smime-context.c:1560
+#: src/camel/camel-smime-context.c:1561
 msgid "Cannot add CMS Recipient information"
 msgstr "Nem lehet hozzáadni a CMS-címzett információit"
 
-#: src/camel/camel-smime-context.c:1586
+#: src/camel/camel-smime-context.c:1587
 msgid "Failed to add data to encoder"
 msgstr "Nem sikerült hozzáadni az adatokat a kódolóhoz"
 
-#: src/camel/camel-smime-context.c:1704
+#: src/camel/camel-smime-context.c:1705
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME visszafejtés: nem található titkosított tartalom"
 
@@ -5197,7 +5193,7 @@ msgstr "Nem lehet áthelyezni a nem szemét üzeneteket"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:730
+#: src/camel/providers/imapx/camel-imapx-folder.c:734
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Nem érhetők el kvótainformációk ehhez a mappához: „%s : %s”"
@@ -5206,35 +5202,35 @@ msgstr "Nem érhetők el kvótainformációk ehhez a mappához: „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:997
+#: src/camel/providers/imapx/camel-imapx-folder.c:1001
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Elavult gyorsítótárfájlok eltávolítása ebben a mappában: „%s : %s”"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1063
+#: src/camel/providers/imapx/camel-imapx-folder.c:1067
 msgid "You must be working online to search in headers"
 msgstr "A fejlécekben való kereséséhez a hálózatra kapcsolódva kell dolgoznia"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1117
+#: src/camel/providers/imapx/camel-imapx-folder.c:1121
 msgid "You must be working online to search in message body"
 msgstr ""
 "Az üzenettörzsben való kereséséhez a hálózatra kapcsolódva kell dolgoznia"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1206
+#: src/camel/providers/imapx/camel-imapx-folder.c:1210
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Üzenet_szűrők alkalmazása erre a mappára"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1221
+#: src/camel/providers/imapx/camel-imapx-folder.c:1225
 msgid "Always check for _new mail in this folder"
 msgstr "Mindig _keressen új leveleket ebben a mappában"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1406
+#: src/camel/providers/imapx/camel-imapx-folder.c:1410
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nem sikerült létrehozni mappaösszesítőt ehhez: %s"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1418
+#: src/camel/providers/imapx/camel-imapx-folder.c:1422
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nem sikerült létrehozni a(z) %s gyorsítótárát: "
@@ -5242,7 +5238,7 @@ msgstr "Nem sikerült létrehozni a(z) %s gyorsítótárát: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1596
+#: src/camel/providers/imapx/camel-imapx-folder.c:1600
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Nem érhető el IMAP postafiók ehhez a mappához: „%s : %s”"
@@ -8052,43 +8048,43 @@ msgstr "Nem sikerült létrehozni a SOAP-sütit"
 msgid "Malformed, no message body set"
 msgstr "Helytelenül formázott, nincs üzenettörzs beállítva"
 
-#: src/libedataserver/e-oauth2-service.c:1325
+#: src/libedataserver/e-oauth2-service.c:1335
 msgid "Token record is incomplete"
 msgstr "A tokenrekord befejezetlen"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1352
-#: src/libedataserver/e-oauth2-service.c:1394
+#: src/libedataserver/e-oauth2-service.c:1362
+#: src/libedataserver/e-oauth2-service.c:1404
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "A(z) „%s” (%s) forrás nem érvényes a(z) „%s” OAuth2 szolgáltatáshoz"
 
-#: src/libedataserver/e-oauth2-service.c:1409
+#: src/libedataserver/e-oauth2-service.c:1419
 msgid "OAuth2 secret not found"
 msgstr "Az OAuth2 titok nem található"
 
-#: src/libedataserver/e-oauth2-service.c:1436
+#: src/libedataserver/e-oauth2-service.c:1446
 msgid "OAuth2 secret record is incomplete"
 msgstr "Az OAuth2 titkos rekordja befejezetlen"
 
-#: src/libedataserver/e-oauth2-service.c:1486
-#: src/libedataserver/e-oauth2-service.c:1588
+#: src/libedataserver/e-oauth2-service.c:1496
+#: src/libedataserver/e-oauth2-service.c:1598
 msgid "Failed to create HTTP session"
 msgstr "Nem sikerült létrehozni a HTTP-munkamenetet"
 
-#: src/libedataserver/e-oauth2-service.c:1500
-#: src/libedataserver/e-oauth2-service.c:1602
+#: src/libedataserver/e-oauth2-service.c:1510
+#: src/libedataserver/e-oauth2-service.c:1612
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "Nem sikerült létrehozni a HTTP-kérést ehhez: „%s”"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1636
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Hibás válasz érkezett a(z) „%s” kiszolgálótól."
 
-#: src/libedataserver/e-oauth2-service.c:1649
+#: src/libedataserver/e-oauth2-service.c:1659
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -8100,19 +8096,19 @@ msgstr ""
 "\n"
 "Részletes hiba: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1652
+#: src/libedataserver/e-oauth2-service.c:1662
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Nem sikerült frissíteni a hozzáférési tokent. Jelentkezzen be újra a "
 "kiszolgálóra."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1703
+#: src/libedataserver/e-oauth2-service.c:1713
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "A(z) „%s” (%s) forrás nem érvényes OAuth2 forrás"
 
-#: src/libedataserver/e-oauth2-service.c:2079
+#: src/libedataserver/e-oauth2-service.c:2089
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -8120,7 +8116,7 @@ msgstr ""
 "A hozzáférési token lejárt, és nem sikerült frissíteni. Jelentkezzen be újra "
 "a kiszolgálóra."
 
-#: src/libedataserver/e-oauth2-service.c:2093
+#: src/libedataserver/e-oauth2-service.c:2103
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
 "Nem sikerült beszerezni a hozzáférési tokent. Jelentkezzen be újra a "
@@ -8237,7 +8233,7 @@ msgstr "Az aláírás parancsfájlja csak helyi fájl lehet"
 msgid "Source “%s” does not support proxy lookups"
 msgstr "A(z) „%s” forrás nem támogatja a proxykereséseket"
 
-#: src/libedataserver/e-source-registry.c:1461
+#: src/libedataserver/e-source-registry.c:1486
 #, c-format
 msgid ""
 "Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
