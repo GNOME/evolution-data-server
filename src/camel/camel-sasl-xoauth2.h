@@ -47,6 +47,8 @@ struct _CamelSaslXOAuth2Class {
 
 GType		camel_sasl_xoauth2_get_type	(void) G_GNUC_CONST;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (CamelSaslXOAuth2, g_object_unref)
+
 G_END_DECLS
 
 #endif /* CAMEL_SASL_XOAUTH2_H */

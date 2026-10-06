@@ -103,6 +103,7 @@
       <xi:include href="xml/e-source-mail-transport.xml"/>
       <xi:include href="xml/e-source-memo-list.xml"/>
       <xi:include href="xml/e-source-mdn.xml"/>
+      <xi:include href="xml/e-source-oauth2-client.xml"/>
       <xi:include href="xml/e-source-offline.xml"/>
       <xi:include href="xml/e-source-openpgp.xml"/>
       <xi:include href="xml/e-source-proxy.xml"/>
@@ -271,6 +272,7 @@
       <xi:include href="xml/e-oauth2-service.xml"/>
       <xi:include href="xml/e-oauth2-services.xml"/>
       <xi:include href="xml/e-oauth2-service-base.xml"/>
+      <xi:include href="xml/e-oauth2-service-dynamic.xml"/>
       <xi:include href="xml/e-oauth2-service-google.xml"/>
       <xi:include href="xml/e-oauth2-service-outlook.xml"/>
       <xi:include href="xml/e-oauth2-service-yahoo.xml"/>

@@ -2436,6 +2436,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_MAIL_TRANSPORT);
 	g_type_ensure (E_TYPE_SOURCE_MDN);
 	g_type_ensure (E_TYPE_SOURCE_MEMO_LIST);
+	g_type_ensure (E_TYPE_SOURCE_OAUTH2_CLIENT);
 	g_type_ensure (E_TYPE_SOURCE_OFFLINE);
 	g_type_ensure (E_TYPE_SOURCE_OPENPGP);
 	g_type_ensure (E_TYPE_SOURCE_PROXY);

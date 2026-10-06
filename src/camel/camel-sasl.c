@@ -44,6 +44,7 @@
 #include "camel-sasl-plain.h"
 #include "camel-sasl-popb4smtp.h"
 #include "camel-sasl-xoauth2.h"
+#include "camel-sasl-xoauth2-dynamic.h"
 #include "camel-sasl-xoauth2-google.h"
 #include "camel-sasl-xoauth2-outlook.h"
 #include "camel-sasl-xoauth2-yahoo.h"
@@ -146,6 +147,7 @@ sasl_build_class_table (void)
 	g_type_ensure (CAMEL_TYPE_SASL_PLAIN);
 	g_type_ensure (CAMEL_TYPE_SASL_POPB4SMTP);
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2);
+	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_DYNAMIC);
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_GOOGLE);
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_OUTLOOK);
 	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_YAHOO);

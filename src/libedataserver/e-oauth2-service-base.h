@@ -36,6 +36,8 @@ G_BEGIN_DECLS
 typedef struct _EOAuth2ServiceBase EOAuth2ServiceBase;
 typedef struct _EOAuth2ServiceBaseClass EOAuth2ServiceBaseClass;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (EOAuth2ServiceBase, g_object_unref)
+
 struct _EOAuth2ServiceBase {
 	EExtension parent;
 };

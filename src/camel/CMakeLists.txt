@@ -109,6 +109,7 @@ set(SOURCES
 	camel-sasl-plain.c
 	camel-sasl-popb4smtp.c
 	camel-sasl-xoauth2.c
+	camel-sasl-xoauth2-dynamic.c
 	camel-sasl-xoauth2-google.c
 	camel-sasl-xoauth2-outlook.c
 	camel-sasl-xoauth2-yahoo.c
@@ -254,6 +255,7 @@ set(HEADERS
 	camel-sasl-plain.h
 	camel-sasl-popb4smtp.h
 	camel-sasl-xoauth2.h
+	camel-sasl-xoauth2-dynamic.h
 	camel-sasl-xoauth2-google.h
 	camel-sasl-xoauth2-outlook.h
 	camel-sasl-xoauth2-yahoo.h

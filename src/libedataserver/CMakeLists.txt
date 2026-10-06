@@ -70,6 +70,7 @@ set(SOURCES
 	e-network-monitor.c
 	e-oauth2-service.c
 	e-oauth2-service-base.c
+	e-oauth2-service-dynamic.c
 	e-oauth2-service-google.c
 	e-oauth2-service-outlook.c
 	e-oauth2-service-yahoo.c
@@ -108,6 +109,7 @@ set(SOURCES
 	e-source-mail-transport.c
 	e-source-mdn.c
 	e-source-memo-list.c
+	e-source-oauth2-client.c
 	e-source-offline.c
 	e-source-openpgp.c
 	e-source-proxy.c
@@ -165,6 +167,7 @@ set(HEADERS
 	e-network-monitor.h
 	e-oauth2-service.h
 	e-oauth2-service-base.h
+	e-oauth2-service-dynamic.h
 	e-oauth2-service-google.h
 	e-oauth2-service-outlook.h
 	e-oauth2-service-yahoo.h
@@ -204,6 +207,7 @@ set(HEADERS
 	e-source-mail-transport.h
 	e-source-mdn.h
 	e-source-memo-list.h
+	e-source-oauth2-client.h
 	e-source-offline.h
 	e-source-openpgp.h
 	e-source-proxy.h

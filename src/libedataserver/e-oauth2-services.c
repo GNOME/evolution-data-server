@@ -23,6 +23,7 @@
 #include "e-oauth2-service.h"
 
 /* Known built-in implementations */
+#include "e-oauth2-service-dynamic.h"
 #include "e-oauth2-service-google.h"
 #include "e-oauth2-service-outlook.h"
 #include "e-oauth2-service-yahoo.h"
@@ -123,6 +124,7 @@ e_oauth2_services_class_init (EOAuth2ServicesClass *klass)
 	object_class->constructor = oauth2_services_constructor;
 
 	/* Ensure built-in service types are registered */
+	g_type_ensure (E_TYPE_OAUTH2_SERVICE_DYNAMIC);
 	g_type_ensure (E_TYPE_OAUTH2_SERVICE_GOOGLE);
 	g_type_ensure (E_TYPE_OAUTH2_SERVICE_OUTLOOK);
 	g_type_ensure (E_TYPE_OAUTH2_SERVICE_YAHOO);

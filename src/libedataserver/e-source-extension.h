@@ -36,6 +36,8 @@ typedef struct _ESourceExtension ESourceExtension;
 typedef struct _ESourceExtensionClass ESourceExtensionClass;
 typedef struct _ESourceExtensionPrivate ESourceExtensionPrivate;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (ESourceExtension, g_object_unref)
+
 /**
  * ESourceExtension:
  * Since: 3.6

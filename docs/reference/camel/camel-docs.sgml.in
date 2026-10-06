@@ -150,6 +150,7 @@
       <xi:include href="xml/camel-sasl-plain.xml"/>
       <xi:include href="xml/camel-sasl-popb4smtp.xml"/>
       <xi:include href="xml/camel-sasl-xoauth2.xml"/>
+      <xi:include href="xml/camel-sasl-xoauth2-dynamic.xml"/>
       <xi:include href="xml/camel-sasl-xoauth2-google.xml"/>
       <xi:include href="xml/camel-sasl-xoauth2-outlook.xml"/>
       <xi:include href="xml/camel-sasl-xoauth2-yahoo.xml"/>

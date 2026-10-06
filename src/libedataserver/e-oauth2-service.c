@@ -144,6 +144,21 @@ eos_default_get_redirect_uri (EOAuth2Service *service,
 	return "urn:ietf:wg:oauth:2.0:oob";
 }
 
+static gboolean
+eos_check_refresh_uri (EOAuth2Service *service,
+		       ESource *source,
+		       GError **error)
+{
+	if (e_oauth2_service_get_refresh_uri (service, source))
+		return TRUE;
+
+	g_set_error (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_FAILED,
+		_("The OAuth2 service “%s” has no token endpoint set for this account"),
+		e_oauth2_service_get_display_name (service));
+
+	return FALSE;
+}
+
 static void
 eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 					      ESource *source,
@@ -1488,6 +1503,9 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (authorization_code != NULL, FALSE);
 	g_return_val_if_fail (ref_source != NULL, FALSE);
 
+	if (!eos_check_refresh_uri (service, source, error))
+		return FALSE;
+
 	session = eos_create_soup_session (ref_source, ref_source_user_data, source);
 	if (!session) {
 		g_set_error_literal (error, E_OAUTH2_SERVICE_ERROR, E_OAUTH2_SERVICE_ERROR_FAILED,
@@ -1589,6 +1607,9 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (refresh_token != NULL, FALSE);
 	g_return_val_if_fail (ref_source != NULL, FALSE);
+
+	if (!eos_check_refresh_uri (service, source, error))
+		return FALSE;
 
 	session = eos_create_soup_session (ref_source, ref_source_user_data, source);
 	if (!session) {

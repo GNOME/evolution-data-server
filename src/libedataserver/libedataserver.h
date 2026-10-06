@@ -31,6 +31,7 @@
 #include <libedataserver/e-network-monitor.h>
 #include <libedataserver/e-oauth2-service.h>
 #include <libedataserver/e-oauth2-service-base.h>
+#include <libedataserver/e-oauth2-service-dynamic.h>
 #include <libedataserver/e-oauth2-service-google.h>
 #include <libedataserver/e-oauth2-service-outlook.h>
 #include <libedataserver/e-oauth2-service-yahoo.h>
@@ -70,6 +71,7 @@
 #include <libedataserver/e-source-mail-transport.h>
 #include <libedataserver/e-source-mdn.h>
 #include <libedataserver/e-source-memo-list.h>
+#include <libedataserver/e-source-oauth2-client.h>
 #include <libedataserver/e-source-offline.h>
 #include <libedataserver/e-source-openpgp.h>
 #include <libedataserver/e-source-proxy.h>
