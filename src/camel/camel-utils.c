@@ -5,8 +5,13 @@
 
 #include "evolution-data-server-config.h"
 
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_GETRANDOM
+#include <sys/random.h>
+#endif
 #include <gio/gio.h>
 
 #include "camel-mime-utils.h"
@@ -570,4 +575,44 @@ camel_util_is_network_error (const GError *error)
 	}
 
 	return FALSE;
+}
+
+/**
+ * camel_util_fill_random_bytes:
+ * @buffer: (out caller-allocates) (array length=buffer_len) (element-type guint8): a buffer to fill
+ * @buffer_len: how many bytes to write into @buffer
+ *
+ * Fills @buffer with random bytes from the system's cryptographically
+ * secure generator, arc4random_buf() or getrandom(). Only where neither
+ * is available it falls back to g_random_int_range().
+ *
+ * Since: 3.64
+ **/
+void
+camel_util_fill_random_bytes (gpointer buffer,
+			      gsize buffer_len)
+{
+#ifdef HAVE_ARC4RANDOM_BUF
+	arc4random_buf (buffer, buffer_len);
+#else
+	guint8 *bytes = buffer;
+	gsize filled = 0;
+
+#ifdef HAVE_GETRANDOM
+	while (filled < buffer_len) {
+		gssize got = getrandom (bytes + filled, buffer_len - filled, 0);
+
+		if (got < 0 && errno == EINTR)
+			continue;
+		if (got <= 0)
+			break;
+
+		filled += got;
+	}
+#endif
+
+	for (; filled < buffer_len; filled++) {
+		bytes[filled] = (guint8) g_random_int_range (0, 256);
+	}
+#endif
 }

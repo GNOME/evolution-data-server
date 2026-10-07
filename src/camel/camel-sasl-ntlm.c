@@ -13,6 +13,7 @@
 #include "camel-network-settings.h"
 #include "camel-sasl-ntlm.h"
 #include "camel-stream-process.h"
+#include "camel-utils.h"
 
 struct _CamelSaslNTLMPrivate {
 	gint placeholder;  /* allow for future expansion */
@@ -873,8 +874,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		guint8 digest[16];
 		gsize digest_len = sizeof (digest);
 
-		sess_nonce.clnt[0] = g_random_int ();
-		sess_nonce.clnt[1] = g_random_int ();
+		camel_util_fill_random_bytes (sess_nonce.clnt, sizeof (sess_nonce.clnt));
 
 		/* LM response is 8-byte client nonce, NUL-padded to 24 */
 		memcpy (lm_resp, sess_nonce.clnt, 8);

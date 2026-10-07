@@ -68,6 +68,8 @@ void		camel_util_decode_user_header_setting
 						 const gchar **out_header_name);
 
 gboolean	camel_util_is_network_error	(const GError *error);
+void		camel_util_fill_random_bytes	(gpointer buffer,
+						 gsize buffer_len);
 
 G_END_DECLS
 

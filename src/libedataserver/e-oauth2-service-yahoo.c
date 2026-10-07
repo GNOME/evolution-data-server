@@ -143,8 +143,8 @@ eos_yahoo_prepare_authentication_uri_query (EOAuth2Service *service,
 
 	g_return_if_fail (uri_query != NULL);
 
-	nonce_val = getpid () + g_get_real_time () + g_get_monotonic_time() + g_random_int () + g_random_int ();
-	nonce_str = g_strdup_printf ("%" G_GUINT64_FORMAT "d", nonce_val);
+	e_util_fill_random_bytes (&nonce_val, sizeof (nonce_val));
+	nonce_str = g_strdup_printf ("%" G_GUINT64_FORMAT, nonce_val);
 
 	e_oauth2_service_util_set_to_form (uri_query, "scope", YAHOO_SCOPE);
 	e_oauth2_service_util_set_to_form (uri_query, "nonce", nonce_str);
