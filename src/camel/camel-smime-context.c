@@ -482,6 +482,22 @@ fail:
 	return NULL;
 }
 
+/* Higher wins: a bad signature, then a good one from a trusted signer */
+static gint
+sm_sign_status_rank (CamelCipherValiditySign status)
+{
+	switch (status) {
+	case CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN:
+		return 1;
+	case CAMEL_CIPHER_VALIDITY_SIGN_GOOD:
+		return 2;
+	case CAMEL_CIPHER_VALIDITY_SIGN_BAD:
+		return 3;
+	default:
+		return 0;
+	}
+}
+
 static const gchar *
 sm_status_description (NSSCMSVerificationStatus status,
 		       CamelCipherValiditySign *out_sign_status)
@@ -661,6 +677,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 	CamelCipherValiditySign sign_status = CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN;
 	CamelCipherValidity *valid;
 	GString *description;
+	gboolean have_signer = FALSE;
 
 	description = g_string_new ("");
 	valid = camel_cipher_validity_new ();
@@ -754,6 +771,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 				}
 
 				for (j = 0; j < nsigners; j++) {
+					CamelCipherValiditySign signer_status;
 					CERTCertificate *cert;
 					NSSCMSSignerInfo *si;
 					const gchar *status_description;
@@ -765,7 +783,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 					NSS_CMSSignedData_VerifySignerInfo (sigd, j, p->certdb, certUsageEmailSigner);
 
 					status = NSS_CMSSignerInfo_GetVerificationStatus (si);
-					status_description = sm_status_description (status, &sign_status);
+					status_description = sm_status_description (status, &signer_status);
 
 					/* certificate trust is verified first; check the signature itself,
 					   because CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN means "valid signature,
@@ -789,8 +807,13 @@ sm_verify_cmsg (CamelCipherContext *context,
 						/* now verify signature */
 						if (NSS_CMSSignerInfo_Verify (si, digest, contentType) != SECSuccess ||
 						    NSS_CMSSignerInfo_GetVerificationStatus (si) != NSSCMSVS_GoodSignature) {
-							sign_status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
+							signer_status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 						}
+					}
+
+					if (!have_signer || sm_sign_status_rank (signer_status) > sm_sign_status_rank (sign_status)) {
+						sign_status = signer_status;
+						have_signer = TRUE;
 					}
 
 					#if defined (NSS_VMAJOR) && defined (NSS_VMINOR) && (NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 89))
