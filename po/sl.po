@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-09-24 10:07+0000\n"
-"PO-Revision-Date: 2026-09-24 18:19+0200\n"
+"POT-Creation-Date: 2026-10-07 13:32+0000\n"
+"PO-Revision-Date: 2026-10-07 21:08+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -188,8 +188,8 @@ msgstr "Ni mogoče preimenovati stare podatkovne zbirke iz »%s« v »%s«: %s"
 #: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:352
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -3344,7 +3344,7 @@ msgstr ""
 msgid "Failed to pass command to GPG: %s"
 msgstr "Posredovanje ukaza h GPG je spodletelo: %s"
 
-#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1022
+#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1045
 msgid "Could not generate signing data: "
 msgstr "Ni mogoče ustvariti podatkov za podpis:"
 
@@ -3358,8 +3358,8 @@ msgstr "Izvajanje gpg je spodletelo."
 
 #: src/camel/camel-gpg-context.c:2726 src/camel/camel-gpg-context.c:2734
 #: src/camel/camel-gpg-context.c:2742 src/camel/camel-gpg-context.c:2762
-#: src/camel/camel-smime-context.c:1154 src/camel/camel-smime-context.c:1168
-#: src/camel/camel-smime-context.c:1180
+#: src/camel/camel-smime-context.c:1177 src/camel/camel-smime-context.c:1191
+#: src/camel/camel-smime-context.c:1203
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Ni mogoče preveriti podpisa sporočila: neveljavna oblika sporočila"
@@ -3394,7 +3394,7 @@ msgid "Failed to decrypt MIME part: %s"
 msgstr "Odšifriranje dela MIME je spodletelo: %s"
 
 #: src/camel/camel-gpg-context.c:3270 src/camel/camel-multipart-encrypted.c:34
-#: src/camel/camel-smime-context.c:1723
+#: src/camel/camel-smime-context.c:1746
 msgid "Encrypted content"
 msgstr "Šifrirana vsebina"
 
@@ -3894,6 +3894,18 @@ msgstr "OAuth2"
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
 "Možnost določa uporabo žetona dostopa OAuth 2.0 za povezavo s strežnikom."
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:23
+msgid "OAuth2 (dynamic client)"
+msgstr "OAuth2 (dinamični odjemalec)"
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token, of a dynamically registered "
+"client, to connect to the server"
+msgstr ""
+"Ta možnost bo za povezavo s strežnikom uporabila dostopni žeton OAuth 2.0 "
+"dinamično registriranega odjemalca"
 
 #: src/camel/camel-sasl-xoauth2-google.c:12
 msgid "OAuth2 (Google)"
@@ -4723,7 +4735,7 @@ msgstr "Zaklenjeno geslo"
 msgid "Unknown PKCS11 error"
 msgstr "Neznana napaka PKCS11"
 
-#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:803
+#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:826
 msgid "Certificate signature algorithm disabled"
 msgstr "Onemogočen algoritem podpisa potrdila"
 
@@ -4731,7 +4743,7 @@ msgstr "Onemogočen algoritem podpisa potrdila"
 msgid "Legacy database"
 msgstr "Opuščena zbirka podatkov"
 
-#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:800
+#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:823
 msgid "Signature algorithm disabled"
 msgstr "Onemogočen algoritem podpisa"
 
@@ -4798,143 +4810,143 @@ msgid "Cannot add CMS Signer information"
 msgstr "Ni mogoče dodati podatkov o podpisniku CMS"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: src/camel/camel-smime-context.c:498
+#: src/camel/camel-smime-context.c:514
 msgid "Unverified"
 msgstr "Nepreverjeno"
 
-#: src/camel/camel-smime-context.c:501
+#: src/camel/camel-smime-context.c:517
 msgid "Good signature"
 msgstr "Dober podpis"
 
-#: src/camel/camel-smime-context.c:503
+#: src/camel/camel-smime-context.c:519
 msgid "Bad signature"
 msgstr "Slab podpis"
 
-#: src/camel/camel-smime-context.c:505
+#: src/camel/camel-smime-context.c:521
 msgid "Content tampered with or altered in transit"
 msgstr "Vsebina je bila med potjo spremenjena"
 
-#: src/camel/camel-smime-context.c:508
+#: src/camel/camel-smime-context.c:524
 msgid "Signing certificate not found"
 msgstr "Potrdila za podpisovanje ni mogoče najti"
 
-#: src/camel/camel-smime-context.c:511
+#: src/camel/camel-smime-context.c:527
 msgid "Signing certificate not trusted"
 msgstr "Potrdilu za podpisovanje ni mogoče zaupati"
 
-#: src/camel/camel-smime-context.c:513
+#: src/camel/camel-smime-context.c:529
 msgid "Signature algorithm unknown"
 msgstr "Neznan algoritem podpisa"
 
-#: src/camel/camel-smime-context.c:515
+#: src/camel/camel-smime-context.c:531
 msgid "Signature algorithm unsupported"
 msgstr "Nepodprt algoritem podpisa"
 
-#: src/camel/camel-smime-context.c:517
+#: src/camel/camel-smime-context.c:533
 msgid "Malformed signature"
 msgstr "Nepravilen podpis"
 
-#: src/camel/camel-smime-context.c:519
+#: src/camel/camel-smime-context.c:535
 msgid "Processing error"
 msgstr "Napaka med obdelavo"
 
-#: src/camel/camel-smime-context.c:681
+#: src/camel/camel-smime-context.c:698
 msgid "No signed data in signature"
 msgstr "V podpisu ni podpisanih podatkov"
 
-#: src/camel/camel-smime-context.c:686
+#: src/camel/camel-smime-context.c:703
 msgid "Digests missing from enveloped data"
 msgstr "V ovitih podatkih manjka izvleček"
 
-#: src/camel/camel-smime-context.c:699 src/camel/camel-smime-context.c:710
+#: src/camel/camel-smime-context.c:716 src/camel/camel-smime-context.c:727
 msgid "Cannot calculate digests"
 msgstr "Ni mogoče izračunati izvlečkov"
 
-#: src/camel/camel-smime-context.c:717 src/camel/camel-smime-context.c:721
+#: src/camel/camel-smime-context.c:734 src/camel/camel-smime-context.c:738
 msgid "Cannot set message digests"
 msgstr "Ni mogoče določiti izvlečkov sporočil"
 
-#: src/camel/camel-smime-context.c:731 src/camel/camel-smime-context.c:736
+#: src/camel/camel-smime-context.c:748 src/camel/camel-smime-context.c:753
 msgid "Certificate import failed"
 msgstr "Uvoz potrdila je spodletel"
 
-#: src/camel/camel-smime-context.c:746
+#: src/camel/camel-smime-context.c:763
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Potrdilo je edino sporočilo, ki pa ga ni mogoče preveriti."
 
-#: src/camel/camel-smime-context.c:748
+#: src/camel/camel-smime-context.c:765
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "Potrdilo je edino sporočilo, je uvoženo in preverjeno."
 
-#: src/camel/camel-smime-context.c:752
+#: src/camel/camel-smime-context.c:769
 msgid "Cannot find signature digests"
 msgstr "Izvlečkov sporočil ni mogoče najti"
 
-#: src/camel/camel-smime-context.c:812
+#: src/camel/camel-smime-context.c:835
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Podpisnik: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1576
+#: src/camel/camel-smime-context.c:1057 src/camel/camel-smime-context.c:1599
 msgid "Cannot create encoder context"
 msgstr "Ni mogoče ustvariti vsebine šifrirnika"
 
-#: src/camel/camel-smime-context.c:1040
+#: src/camel/camel-smime-context.c:1063
 msgid "Failed to add data to CMS encoder"
 msgstr "Dodajanje podatkov v šifrirnik CMS je spodletelo"
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1593
+#: src/camel/camel-smime-context.c:1068 src/camel/camel-smime-context.c:1616
 msgid "Failed to encode data"
 msgstr "Šifriranje podatkov je spodletelo"
 
-#: src/camel/camel-smime-context.c:1199 src/camel/camel-smime-context.c:1698
+#: src/camel/camel-smime-context.c:1222 src/camel/camel-smime-context.c:1721
 msgid "Decoder failed"
 msgstr "Dejanje odšifrirnika je spodletelo"
 
-#: src/camel/camel-smime-context.c:1470
+#: src/camel/camel-smime-context.c:1493
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Ni mogoče najti veljavnega oziroma ustreznega potrdila za »%s«"
 
-#: src/camel/camel-smime-context.c:1510
+#: src/camel/camel-smime-context.c:1533
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Ni mogoče najti splošnega algoritma za množično šifriranje"
 
-#: src/camel/camel-smime-context.c:1518
+#: src/camel/camel-smime-context.c:1541
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Ni mogoče najti reže za množični šifrirni ključ"
 
-#: src/camel/camel-smime-context.c:1529
+#: src/camel/camel-smime-context.c:1552
 msgid "Cannot create CMS Message"
 msgstr "Ni mogoče ustvariti sporočila CMS"
 
-#: src/camel/camel-smime-context.c:1535
+#: src/camel/camel-smime-context.c:1558
 msgid "Cannot create CMS Enveloped data"
 msgstr "Ni mogoče ustvariti podatkov zavitih v CMS"
 
-#: src/camel/camel-smime-context.c:1541
+#: src/camel/camel-smime-context.c:1564
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Ni mogoče pripeti podatkov zavitih v CMS"
 
-#: src/camel/camel-smime-context.c:1547
+#: src/camel/camel-smime-context.c:1570
 msgid "Cannot attach CMS data object"
 msgstr "Ni mogoče pripeti podatkovnega predmeta CMS"
 
-#: src/camel/camel-smime-context.c:1556
+#: src/camel/camel-smime-context.c:1579
 msgid "Cannot create CMS Recipient information"
 msgstr "Ni mogoče ustvariti podatkov prejemnika za CMS"
 
-#: src/camel/camel-smime-context.c:1561
+#: src/camel/camel-smime-context.c:1584
 msgid "Cannot add CMS Recipient information"
 msgstr "Ni mogoče dodati podatkov prejemnika za CMS"
 
-#: src/camel/camel-smime-context.c:1587
+#: src/camel/camel-smime-context.c:1610
 msgid "Failed to add data to encoder"
 msgstr "Dodajanje podatkov v šifrirnik je spodletelo"
 
-#: src/camel/camel-smime-context.c:1705
+#: src/camel/camel-smime-context.c:1728
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Odšifriranje S/MIME: Šifrirane vsebine ni mogoče najti"
 
@@ -7997,47 +8009,53 @@ msgstr ""
 msgid "Failed to create SOAP cookie"
 msgstr "Ustvarjanje piškotka SOAP ni uspelo"
 
-#: src/libedataserver/e-oauth2-service.c:1101
+#: src/libedataserver/e-oauth2-service.c:156
+#, c-format
+msgid "The OAuth2 service “%s” has no token endpoint set for this account"
+msgstr ""
+"Storitev OAuth2 »%s« nima nastavljene končne točke za žetone za ta račun"
+
+#: src/libedataserver/e-oauth2-service.c:1114
 msgid "Malformed, no message body set"
 msgstr "Nepravilno oblikovan del, ni določenega telesa sporočila"
 
-#: src/libedataserver/e-oauth2-service.c:1325
+#: src/libedataserver/e-oauth2-service.c:1348
 msgid "Token record is incomplete"
 msgstr "Zapis o žetonu je nepopoln"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1352
-#: src/libedataserver/e-oauth2-service.c:1394
+#: src/libedataserver/e-oauth2-service.c:1375
+#: src/libedataserver/e-oauth2-service.c:1417
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Vir »%s« (%s) ni veljaven za storitev OAuth2 »%s«"
 
-#: src/libedataserver/e-oauth2-service.c:1409
+#: src/libedataserver/e-oauth2-service.c:1432
 msgid "OAuth2 secret not found"
 msgstr "Skrivne kode OAuth2 ni mogoče najti"
 
-#: src/libedataserver/e-oauth2-service.c:1436
+#: src/libedataserver/e-oauth2-service.c:1459
 msgid "OAuth2 secret record is incomplete"
 msgstr "Zapis skrivne kode OAuth2 je nepopoln"
 
-#: src/libedataserver/e-oauth2-service.c:1486
-#: src/libedataserver/e-oauth2-service.c:1588
+#: src/libedataserver/e-oauth2-service.c:1512
+#: src/libedataserver/e-oauth2-service.c:1617
 msgid "Failed to create HTTP session"
 msgstr "Ustvarjanje HTTP-seje ni uspelo"
 
-#: src/libedataserver/e-oauth2-service.c:1500
-#: src/libedataserver/e-oauth2-service.c:1602
+#: src/libedataserver/e-oauth2-service.c:1526
+#: src/libedataserver/e-oauth2-service.c:1631
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "Ustvarjanje HTTP-zahtevka za »%s« ni uspelo"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1655
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Prejet je napačen odziv s strežnika »%s«."
 
-#: src/libedataserver/e-oauth2-service.c:1649
+#: src/libedataserver/e-oauth2-service.c:1678
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -8049,18 +8067,18 @@ msgstr ""
 "\n"
 "Podrobnosti napake: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1652
+#: src/libedataserver/e-oauth2-service.c:1681
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Osveževanje žetona je spodletelo. Znova se je treba prijaviti na strežnik."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1703
+#: src/libedataserver/e-oauth2-service.c:1732
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Vir »%s« (%s) ni veljaven vir OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:2079
+#: src/libedataserver/e-oauth2-service.c:2108
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -8068,10 +8086,16 @@ msgstr ""
 "Žeton za dostop je potekel, a ga ni mogoče osvežiti. Znova se je treba "
 "prijaviti na strežnik."
 
-#: src/libedataserver/e-oauth2-service.c:2093
+#: src/libedataserver/e-oauth2-service.c:2122
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
 "Pridobivanje dostopnega žetona ni uspelo. Ponovno se prijavite na strežnik."
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: src/libedataserver/e-oauth2-service-dynamic.c:126
+msgctxt "OAuth2Service"
+msgid "OAuth2 (automatic)"
+msgstr "OAuth2 (samodejno)"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -8710,50 +8734,50 @@ msgstr "Povpraševanje po poverilnicah preklicano"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Vir »%s« ne podpira poizvedbe po poverilnicah"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:347
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:350
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Pridobivanje žetona za dostop do »%s« je spodletelo: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Checking returned code"
 msgstr "Preverjanje vrnjene kode"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Requesting access token, please wait…"
 msgstr "Poteka preverjanje žetona za dostop ..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:682
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s zahteva overitev imenika"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:687
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s zahteva overitev koledarja"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:695
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s zahteva overitev seznama opomnikov"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:697
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:700
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s zahteva overitev seznama nalog"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:703
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s zahteva overitev elektronske pošte"
@@ -8761,7 +8785,7 @@ msgstr "%s zahteva overitev elektronske pošte"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:708
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s zahteva overitev računa"
@@ -8769,7 +8793,7 @@ msgstr "%s zahteva overitev računa"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:722
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8780,7 +8804,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:729
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8791,7 +8815,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:736
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8803,7 +8827,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:743
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8815,7 +8839,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:750
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:753
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8827,7 +8851,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:757
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:760
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8839,44 +8863,44 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:764
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:767
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr "Prijavite se v %s in sprejmite pogoje uporabe za dostop do »%s«."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Odpiranje brskalnika je spodletelo: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1273
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
 msgid "_Copy URL"
 msgstr "Kopiraj _URL"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1275
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1306
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1278
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1309
 msgid "Open in _Browser"
 msgstr "Odpri v _brskalniku"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1292
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1295
 #, c-format
 msgid "Open with “%s”"
 msgstr "Odpri s programom »%s«"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1401
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1404
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_Prekliči"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1501
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1504
 msgid "URL:"
 msgstr "Naslov URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1576
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1579
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8885,16 +8909,16 @@ msgstr ""
 "Navedeni naslov URL in sledite overitvenemu čarovniku OAuth2. Kopirajte "
 "spodnjo overitveno kodo, da nadaljujete postopek preverjanja pristnosti."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1613
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1616
 msgid "_Authorization code:"
 msgstr "_Overitvena koda:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1626
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1629
 msgid "C_ontinue"
 msgstr "_Nadaljuj"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1825
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1826
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1828
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1829
 msgid "Preparing request, please wait…"
 msgstr "Priprava zahteve je v teku, počakajte ..."
 
