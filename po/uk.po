@@ -11,18 +11,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/iss"
-"ues/\n"
-"POT-Creation-Date: 2026-09-24 10:07+0000\n"
-"PO-Revision-Date: 2026-09-24 13:41+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
+"sues/\n"
+"POT-Creation-Date: 2026-10-07 13:32+0000\n"
+"PO-Revision-Date: 2026-10-07 19:34+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2"
-" && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>="
+"2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 25.12.1\n"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:274
@@ -189,8 +189,8 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:352
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -1306,7 +1306,8 @@ msgstr ""
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1325
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:1375
 msgid "Refresh skipped due to being disabled on metered network."
-msgstr "Оновлення пропущено, оскільки його вимкнено у мережах з обліком даних."
+msgstr ""
+"Оновлення пропущено, оскільки його вимкнено у мережах з обліком даних."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2042
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2541
@@ -3111,7 +3112,6 @@ msgid "Release unused memory for folder “%s : %s”"
 msgstr "Звільнення невикористаної пам'яті для теки «%s : %s»"
 
 #: src/camel/camel-folder-summary.c:2078
-#| msgid "Could not create folder summary for %s"
 msgid "Failed to load folder summary from the database"
 msgstr "Не вдалося завантажити резюме теки з бази даних"
 
@@ -3323,7 +3323,8 @@ msgstr "Не вдалося зашифрувати: ключ для отриму
 #: src/camel/camel-gpg-context.c:1627
 #, c-format
 msgid "Failed to encrypt: The key for recipient “%s” is expired."
-msgstr "Не вдалося зашифрувати: строк дії ключа для отримувача «%s» вичерпано."
+msgstr ""
+"Не вдалося зашифрувати: строк дії ключа для отримувача «%s» вичерпано."
 
 #. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1634
@@ -3354,7 +3355,7 @@ msgstr ""
 msgid "Failed to pass command to GPG: %s"
 msgstr "Не вдалося передати GPG команду: %s"
 
-#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1022
+#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1045
 msgid "Could not generate signing data: "
 msgstr "Не вдалося створити підписані дані: "
 
@@ -3368,8 +3369,8 @@ msgstr "Не вдалося виконати gpg."
 
 #: src/camel/camel-gpg-context.c:2726 src/camel/camel-gpg-context.c:2734
 #: src/camel/camel-gpg-context.c:2742 src/camel/camel-gpg-context.c:2762
-#: src/camel/camel-smime-context.c:1154 src/camel/camel-smime-context.c:1168
-#: src/camel/camel-smime-context.c:1180
+#: src/camel/camel-smime-context.c:1177 src/camel/camel-smime-context.c:1191
+#: src/camel/camel-smime-context.c:1203
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
@@ -3387,7 +3388,8 @@ msgstr "Не вдалося створити шифровані дані: "
 #: src/camel/camel-gpg-context.c:3155
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "Не вдалося розшифрувати повідомлення: неправильний формат повідомлення"
+msgstr ""
+"Не вдалося розшифрувати повідомлення: неправильний формат повідомлення"
 
 #: src/camel/camel-gpg-context.c:3143
 #, c-format
@@ -3405,7 +3407,7 @@ msgid "Failed to decrypt MIME part: %s"
 msgstr "Не вдалося декодувати секцію MIME: %s"
 
 #: src/camel/camel-gpg-context.c:3270 src/camel/camel-multipart-encrypted.c:34
-#: src/camel/camel-smime-context.c:1723
+#: src/camel/camel-smime-context.c:1746
 msgid "Encrypted content"
 msgstr "Зашифрований вміст"
 
@@ -3736,7 +3738,8 @@ msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: src/camel/camel-sasl-gssapi.c:77
-msgid "This option will connect to the server using Kerberos 5 authentication."
+msgid ""
+"This option will connect to the server using Kerberos 5 authentication."
 msgstr "З'єднуватись з сервером використовуючи Kerberos 5."
 
 #: src/camel/camel-sasl-gssapi.c:138
@@ -3896,9 +3899,25 @@ msgid "OAuth2"
 msgstr "OAuth2"
 
 #: src/camel/camel-sasl-xoauth2.c:16
-msgid "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the server"
 msgstr ""
 "Цей параметр використовуватиме ключ доступу OAuth 2.0, щоб під'єднатись до "
+"сервера"
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:23
+msgid "OAuth2 (dynamic client)"
+msgstr "OAuth2 (динамічний клієнт)"
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token, of a dynamically registered "
+"client, to connect to the server"
+msgstr ""
+"Цей параметр використовуватиме ключ доступу OAuth 2.0 динамічно зареєстровано"
+"го клієнта, щоб під'єднатись до "
 "сервера"
 
 #: src/camel/camel-sasl-xoauth2-google.c:12
@@ -4158,7 +4177,8 @@ msgstr ""
 "пошти."
 
 #: src/camel/camel-smime-context.c:138
-msgid "Not encrypted: you do not have certificates for each of the recipients."
+msgid ""
+"Not encrypted: you do not have certificates for each of the recipients."
 msgstr "Не зашифровано: у вас немає сертифікатів для кожного з отримувачів."
 
 #: src/camel/camel-smime-context.c:139
@@ -4332,7 +4352,8 @@ msgid "Unable to import.  MAC algorithm not supported."
 msgstr "Не вдалося імпортувати. Не передбачено підтримки MAC-алгоритму."
 
 #: src/camel/camel-smime-context.c:175
-msgid "Unable to import.  Only password integrity and privacy modes supported."
+msgid ""
+"Unable to import.  Only password integrity and privacy modes supported."
 msgstr ""
 "Не вдалося імпортувати. Передбачено підтримку лише режиму цілісності пароля "
 "та закритого режиму."
@@ -4343,7 +4364,8 @@ msgstr "Не вдалося імпортувати. Структуру файл�
 
 #: src/camel/camel-smime-context.c:177
 msgid "Unable to import.  Encryption algorithm not supported."
-msgstr "Не вдалося імпортувати. Не передбачено підтримки алгоритму шифрування."
+msgstr ""
+"Не вдалося імпортувати. Не передбачено підтримки алгоритму шифрування."
 
 #: src/camel/camel-smime-context.c:178
 msgid "Unable to import.  File version not supported."
@@ -4512,7 +4534,8 @@ msgid "The OCSP server returned unexpected/invalid HTTP data."
 msgstr "Сервером OCSP повернуто неочікувані/некоректні дані HTTP."
 
 #: src/camel/camel-smime-context.c:214
-msgid "The OCSP server found the request to be corrupted or improperly formed."
+msgid ""
+"The OCSP server found the request to be corrupted or improperly formed."
 msgstr ""
 "Сервером OCSP визначено, що запит пошкоджено або сформовано неналежним чином."
 
@@ -4757,7 +4780,7 @@ msgstr "Заблокований пароль"
 msgid "Unknown PKCS11 error"
 msgstr "Невідома помилка PKCS11"
 
-#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:803
+#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:826
 msgid "Certificate signature algorithm disabled"
 msgstr "Алгоритм підписування сертифікатом вимкнено"
 
@@ -4765,7 +4788,7 @@ msgstr "Алгоритм підписування сертифікатом ви�
 msgid "Legacy database"
 msgstr "Застаріла база даних"
 
-#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:800
+#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:823
 msgid "Signature algorithm disabled"
 msgstr "Алгоритм підписування вимкнено"
 
@@ -4832,143 +4855,144 @@ msgid "Cannot add CMS Signer information"
 msgstr "Не вдалося додати CMS SignerInfo"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: src/camel/camel-smime-context.c:498
+#: src/camel/camel-smime-context.c:514
 msgid "Unverified"
 msgstr "Неперевірений"
 
-#: src/camel/camel-smime-context.c:501
+#: src/camel/camel-smime-context.c:517
 msgid "Good signature"
 msgstr "Правильний підпис"
 
-#: src/camel/camel-smime-context.c:503
+#: src/camel/camel-smime-context.c:519
 msgid "Bad signature"
 msgstr "Неправильний підпис"
 
-#: src/camel/camel-smime-context.c:505
+#: src/camel/camel-smime-context.c:521
 msgid "Content tampered with or altered in transit"
 msgstr "Вміст підроблений або змінений при передачі"
 
-#: src/camel/camel-smime-context.c:508
+#: src/camel/camel-smime-context.c:524
 msgid "Signing certificate not found"
 msgstr "Сертифікат підпису не існує"
 
-#: src/camel/camel-smime-context.c:511
+#: src/camel/camel-smime-context.c:527
 msgid "Signing certificate not trusted"
 msgstr "Сертифікат підпису недостовірний"
 
-#: src/camel/camel-smime-context.c:513
+#: src/camel/camel-smime-context.c:529
 msgid "Signature algorithm unknown"
 msgstr "Невідомий алгоритм підпису"
 
-#: src/camel/camel-smime-context.c:515
+#: src/camel/camel-smime-context.c:531
 msgid "Signature algorithm unsupported"
 msgstr "Непідтримуваний алгоритм підпису"
 
-#: src/camel/camel-smime-context.c:517
+#: src/camel/camel-smime-context.c:533
 msgid "Malformed signature"
 msgstr "Неправильно сформований підпис"
 
-#: src/camel/camel-smime-context.c:519
+#: src/camel/camel-smime-context.c:535
 msgid "Processing error"
 msgstr "Обробка помилки"
 
-#: src/camel/camel-smime-context.c:681
+#: src/camel/camel-smime-context.c:698
 msgid "No signed data in signature"
 msgstr "У підписі відсутні дані підпису"
 
-#: src/camel/camel-smime-context.c:686
+#: src/camel/camel-smime-context.c:703
 msgid "Digests missing from enveloped data"
 msgstr "У даних конверту відсутня хеш-сума"
 
-#: src/camel/camel-smime-context.c:699 src/camel/camel-smime-context.c:710
+#: src/camel/camel-smime-context.c:716 src/camel/camel-smime-context.c:727
 msgid "Cannot calculate digests"
 msgstr "Не вдалося обчислити хеш-суму"
 
-#: src/camel/camel-smime-context.c:717 src/camel/camel-smime-context.c:721
+#: src/camel/camel-smime-context.c:734 src/camel/camel-smime-context.c:738
 msgid "Cannot set message digests"
 msgstr "Не вдалося встановити хеш-суму"
 
-#: src/camel/camel-smime-context.c:731 src/camel/camel-smime-context.c:736
+#: src/camel/camel-smime-context.c:748 src/camel/camel-smime-context.c:753
 msgid "Certificate import failed"
 msgstr "Помилка при імпортуванні сертифікату"
 
-#: src/camel/camel-smime-context.c:746
+#: src/camel/camel-smime-context.c:763
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "У повідомленні лише сертифікати, не вдалось перевірити сертифікат"
 
-#: src/camel/camel-smime-context.c:748
+#: src/camel/camel-smime-context.c:765
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "У повідомленні лише сертифікати, сертифікати імпортовані та перевірені"
+msgstr ""
+"У повідомленні лише сертифікати, сертифікати імпортовані та перевірені"
 
-#: src/camel/camel-smime-context.c:752
+#: src/camel/camel-smime-context.c:769
 msgid "Cannot find signature digests"
 msgstr "Не вдалося знайти хеш-суму підпису"
 
-#: src/camel/camel-smime-context.c:812
+#: src/camel/camel-smime-context.c:835
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Підписано: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1576
+#: src/camel/camel-smime-context.c:1057 src/camel/camel-smime-context.c:1599
 msgid "Cannot create encoder context"
 msgstr "Не вдалося створити контекст шифрування"
 
-#: src/camel/camel-smime-context.c:1040
+#: src/camel/camel-smime-context.c:1063
 msgid "Failed to add data to CMS encoder"
 msgstr "Не вдалося додати дані до CMS шифратора"
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1593
+#: src/camel/camel-smime-context.c:1068 src/camel/camel-smime-context.c:1616
 msgid "Failed to encode data"
 msgstr "Не вдалося закодувати дані"
 
-#: src/camel/camel-smime-context.c:1199 src/camel/camel-smime-context.c:1698
+#: src/camel/camel-smime-context.c:1222 src/camel/camel-smime-context.c:1721
 msgid "Decoder failed"
 msgstr "Помилка дешифратора"
 
-#: src/camel/camel-smime-context.c:1470
+#: src/camel/camel-smime-context.c:1493
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Не знайдено дійсного або відповідного сертифіката для «%s»"
 
-#: src/camel/camel-smime-context.c:1510
+#: src/camel/camel-smime-context.c:1533
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Не вдалося знайти алгоритм загального пакетного шифрування"
 
-#: src/camel/camel-smime-context.c:1518
+#: src/camel/camel-smime-context.c:1541
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Не вдалося розподілити слот для ключа пакетного шифрування"
 
-#: src/camel/camel-smime-context.c:1529
+#: src/camel/camel-smime-context.c:1552
 msgid "Cannot create CMS Message"
 msgstr "Не вдалося створити CMS повідомлення"
 
-#: src/camel/camel-smime-context.c:1535
+#: src/camel/camel-smime-context.c:1558
 msgid "Cannot create CMS Enveloped data"
 msgstr "Не вдалося створити EnvelopedData"
 
-#: src/camel/camel-smime-context.c:1541
+#: src/camel/camel-smime-context.c:1564
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Не вдалося вкласти CMS EnvelopedData"
 
-#: src/camel/camel-smime-context.c:1547
+#: src/camel/camel-smime-context.c:1570
 msgid "Cannot attach CMS data object"
 msgstr "Не вдалося вкласти об'єкт CMS даних"
 
-#: src/camel/camel-smime-context.c:1556
+#: src/camel/camel-smime-context.c:1579
 msgid "Cannot create CMS Recipient information"
 msgstr "Не вдалося створити CMS RecipientInfo"
 
-#: src/camel/camel-smime-context.c:1561
+#: src/camel/camel-smime-context.c:1584
 msgid "Cannot add CMS Recipient information"
 msgstr "Не вдалося створити CMS RecipientInfo"
 
-#: src/camel/camel-smime-context.c:1587
+#: src/camel/camel-smime-context.c:1610
 msgid "Failed to add data to encoder"
 msgstr "Не вдалося додати дані у шифратор"
 
-#: src/camel/camel-smime-context.c:1705
+#: src/camel/camel-smime-context.c:1728
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME дешифрування: не знайдено контекст шифрування"
 
@@ -5132,7 +5156,8 @@ msgstr "Оновлення теки пошуку «%s»"
 #: src/camel/camel-vee-folder.c:1222 src/camel/camel-vee-folder.c:1348
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "Не вдалося скопіювати або перемістити повідомлення до віртуальної теки"
+msgstr ""
+"Не вдалося скопіювати або перемістити повідомлення до віртуальної теки"
 
 #. Translators: The first “%s” is replaced with a message UID, the second “%s”
 #. is replaced with an account name and the third “%s” is replaced with a full
@@ -5667,7 +5692,8 @@ msgid "Password"
 msgstr "Пароль"
 
 #: src/camel/providers/imapx/camel-imapx-store.c:1060
-msgid "This option will connect to the IMAP server using a plaintext password."
+msgid ""
+"This option will connect to the IMAP server using a plaintext password."
 msgstr "З'єднуватись з IMAP сервером використовуючи нешифрований пароль."
 
 #: src/camel/providers/imapx/camel-imapx-store.c:1144
@@ -6506,7 +6532,8 @@ msgstr "Не можна перейменовувати теку у групах 
 #: src/camel/providers/nntp/camel-nntp-store.c:1397
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr "Не можна переміщувати теку у групах новин: натомість слід відписатись."
+msgstr ""
+"Не можна переміщувати теку у групах новин: натомість слід відписатись."
 
 #: src/camel/providers/nntp/camel-nntp-store.c:1614
 #, c-format
@@ -7132,14 +7159,16 @@ msgid "Default reminder for all events in chosen calendars"
 msgstr "Типове нагадування для усіх подій у вибраних календарях"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:29
-msgid "Whether to show a specified reminder for all events in chosen calendars"
+msgid ""
+"Whether to show a specified reminder for all events in chosen calendars"
 msgstr ""
 "Визначає, чи слід показувати вказане нагадування для усіх подій у вибраних "
 "коментарях"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
 msgid "Interval of the default reminder for all events in chosen calendars"
-msgstr "Інтервал для типового нагадування для усіх подій у вибраних календарях"
+msgstr ""
+"Інтервал для типового нагадування для усіх подій у вибраних календарях"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:34
 msgid "Number of units for determining the reminder"
@@ -7641,7 +7670,8 @@ msgstr "Обробник OAuth2 сервера даних Evolution"
 msgid ""
 "Handles OAuth2 responses and passes them to the OAuth2 prompter "
 "implementation"
-msgstr "Обробляє відповіді OAuth2 і передає їх реалізації засобу запиту OAuth2"
+msgstr ""
+"Обробляє відповіді OAuth2 і передає їх реалізації засобу запиту OAuth2"
 
 #: src/libebackend/e-cache.c:738
 msgid "Out of memory"
@@ -7958,7 +7988,8 @@ msgstr[0] ""
 "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилина)"
 msgstr[1] ""
 "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилини)"
-msgstr[2] "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилин)"
+msgstr[2] ""
+"Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилин)"
 msgstr[3] ""
 "Сервер Google зайнято, очікуємо на повторну спробу (%d:%02d хвилина)"
 
@@ -8033,7 +8064,8 @@ msgstr "Немає PrtSsoCookie у відповіді"
 
 #: src/libedataserver/e-ms-oapxbc.c:389 src/libedataserver/e-ms-oapxbc.c:396
 #, c-format
-msgid "Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"
+msgid ""
+"Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"
 msgstr ""
 "Не вдалося обробити відповідь acquirePrtSsoCookie: некоректні дані "
 "PrtSsoCookie"
@@ -8043,47 +8075,54 @@ msgstr ""
 msgid "Failed to create SOAP cookie"
 msgstr "Не вдалося створити куку SOAP"
 
-#: src/libedataserver/e-oauth2-service.c:1101
+#: src/libedataserver/e-oauth2-service.c:156
+#, c-format
+msgid "The OAuth2 service “%s” has no token endpoint set for this account"
+msgstr ""
+"Служба OAuth2 «%s» не має встановленого жетона кінцевої точки для цього облік"
+"ового запису"
+
+#: src/libedataserver/e-oauth2-service.c:1114
 msgid "Malformed, no message body set"
 msgstr "Неправильне формування, тіло повідомлення не встановлено"
 
-#: src/libedataserver/e-oauth2-service.c:1325
+#: src/libedataserver/e-oauth2-service.c:1348
 msgid "Token record is incomplete"
 msgstr "Запис жетона неповний"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1352
-#: src/libedataserver/e-oauth2-service.c:1394
+#: src/libedataserver/e-oauth2-service.c:1375
+#: src/libedataserver/e-oauth2-service.c:1417
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Джерело «%s» (%s) є некоректним для служби OAuth2 «%s»"
 
-#: src/libedataserver/e-oauth2-service.c:1409
+#: src/libedataserver/e-oauth2-service.c:1432
 msgid "OAuth2 secret not found"
 msgstr "Не знайдено ключ OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1436
+#: src/libedataserver/e-oauth2-service.c:1459
 msgid "OAuth2 secret record is incomplete"
 msgstr "Запис реєстраційних даних OAuth2 є неповним"
 
-#: src/libedataserver/e-oauth2-service.c:1486
-#: src/libedataserver/e-oauth2-service.c:1588
+#: src/libedataserver/e-oauth2-service.c:1512
+#: src/libedataserver/e-oauth2-service.c:1617
 msgid "Failed to create HTTP session"
 msgstr "Не вдалося створити сеанс HTTP"
 
-#: src/libedataserver/e-oauth2-service.c:1500
-#: src/libedataserver/e-oauth2-service.c:1602
+#: src/libedataserver/e-oauth2-service.c:1526
+#: src/libedataserver/e-oauth2-service.c:1631
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "Не вдалося створити запит HTTP щодо «%s»:"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1655
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Отримано неправильну відповідь від сервера «%s»."
 
-#: src/libedataserver/e-oauth2-service.c:1649
+#: src/libedataserver/e-oauth2-service.c:1678
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -8094,17 +8133,18 @@ msgstr ""
 "\n"
 "Докладно про помилку: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1652
+#: src/libedataserver/e-oauth2-service.c:1681
 msgid "Failed to refresh access token. Sign to the server again, please."
-msgstr "Не вдалося оновити ключ доступу. Увійдіть на сервер знову, будь ласка."
+msgstr ""
+"Не вдалося оновити ключ доступу. Увійдіть на сервер знову, будь ласка."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1703
+#: src/libedataserver/e-oauth2-service.c:1732
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Джерело «%s» (%s) є неприпустимим джерелом для OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:2079
+#: src/libedataserver/e-oauth2-service.c:2108
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -8112,10 +8152,17 @@ msgstr ""
 "Термін дії ключа доступу вичерпано, і його не вдалося оновити. Увійдіть на "
 "сервер знову, будь ласка."
 
-#: src/libedataserver/e-oauth2-service.c:2093
+#: src/libedataserver/e-oauth2-service.c:2122
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
 "Не вдалося отримати ключ доступу. Увійдіть на сервер знову, будь ласка."
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: src/libedataserver/e-oauth2-service-dynamic.c:126
+#| msgid "OAuth2 (Outlook)"
+msgctxt "OAuth2Service"
+msgid "OAuth2 (automatic)"
+msgstr "OAuth2 (автоматично)"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -8552,7 +8599,8 @@ msgstr "Не вдалося отримати список керування д�
 
 #: src/libedataserver/e-webdav-session.c:4873
 msgid "Cannot store protected nor inherited Access Control Entry."
-msgstr "Неможливо зберегти захищений або успадкований запис керування доступом"
+msgstr ""
+"Неможливо зберегти захищений або успадкований запис керування доступом"
 
 #: src/libedataserver/e-webdav-session.c:4880
 msgid "Provided invalid principal kind for Access Control Entry."
@@ -8750,50 +8798,50 @@ msgstr "Запит щодо реєстраційних даних було ск�
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Джерело «%s» не підтримує запит облікових даних"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:347
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:350
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Не вдалося отримати ключ доступу з адреси «%s»: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Checking returned code"
 msgstr "Перевіряємо повернутий код"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Requesting access token, please wait…"
 msgstr "Просимо надати ключ доступу, будь ласка, зачекайте…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:682
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Запит щодо розпізнавання для доступу до адресної книги %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:687
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Запит щодо розпізнавання для доступу до календаря %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:695
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Запит щодо розпізнавання для доступу до списку приміток %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:697
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:700
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Запит щодо розпізнавання для доступу до списку завдань %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:703
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "Запит розпізнавання від пошти %s"
@@ -8801,7 +8849,7 @@ msgstr "Запит розпізнавання від пошти %s"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:708
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
 #, c-format
 msgid "%s account authentication request"
 msgstr "Запит щодо розпізнавання для доступу до облікового запису %s"
@@ -8809,7 +8857,7 @@ msgstr "Запит щодо розпізнавання для доступу д�
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:722
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8821,7 +8869,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:729
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8833,7 +8881,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:736
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8845,7 +8893,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:743
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8857,7 +8905,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:750
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:753
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8869,7 +8917,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:757
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:760
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8881,7 +8929,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:764
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:767
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8890,37 +8938,37 @@ msgstr ""
 "Щоб мати доступ до вашого облікового запису «%s», ви маєте увійти до вашого "
 "облікового запису %s і погодитися із умовами."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Не вдалося відкрити браузер: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1273
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
 msgid "_Copy URL"
 msgstr "_Копіювати адресу"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1275
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1306
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1278
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1309
 msgid "Open in _Browser"
 msgstr "В_ідкрити у інтернет-навігаторі"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1292
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1295
 #, c-format
 msgid "Open with “%s”"
 msgstr "Відкрити за допомогою «%s»"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1401
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1404
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1501
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1504
 msgid "URL:"
 msgstr "Адреса:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1576
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1579
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8931,16 +8979,16 @@ msgstr ""
 "завершив роботу майстер OAuth2, до наведеного нижче поля і продовжіть "
 "процедуру розпізнавання."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1613
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1616
 msgid "_Authorization code:"
 msgstr "Код _уповноваження:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1626
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1629
 msgid "C_ontinue"
 msgstr "Пр_одовжити"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1825
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1826
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1828
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1829
 msgid "Preparing request, please wait…"
 msgstr "Готуємо запит, будь ласка, зачекайте…"
 
