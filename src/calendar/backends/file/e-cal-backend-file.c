@@ -889,6 +889,7 @@ scan_vcalendar (ECalBackendFile *cbfile)
 				g_object_ref (icomp);
 				i_cal_object_set_owner (I_CAL_OBJECT (icomp), G_OBJECT (priv->vcalendar));
 
+				e_cal_util_sanitize_untrusted (icomp);
 				check_dup_uid (cbfile, comp);
 
 				add_component (cbfile, comp, FALSE);
@@ -3655,6 +3656,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		comp = e_cal_component_new_from_icalcomponent (g_object_ref (subcomp));
 		if (!comp)
 			continue;
+
+		e_cal_util_sanitize_untrusted (subcomp);
 
 		/* Set the created and last modified times on the component, if not there already */
 		current = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());

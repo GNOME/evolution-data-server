@@ -2044,6 +2044,293 @@ test_init_recur_task (ETestServerFixture *fixture,
 	g_clear_object (&vtodo);
 }
 
+#define test_param(_name, _value) G_STMT_START { \
+	gchar *param; \
+	param = i_cal_property_get_parameter_as_string (prop, _name); \
+	g_assert_cmpstr (param, ==, _value); \
+	g_free (param); \
+	} G_STMT_END
+
+static void
+test_sanitize_untrusted (void)
+{
+	ICalComponent *icomp;
+	ICalProperty *prop;
+	guint nth_attach;
+
+	/* first when all are fine */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:1\r\n"
+		"SUMMARY:first\r\n"
+		"ATTACH;FILENAME=logo.png;FMTTYPE=image/png:https://gnome.org/logo.png\r\n"
+		"ATTACH;VALUE=BINARY;FILENAME=text.txt;ENCODING=BASE64:aGVsbG8K\r\n"
+		"ATTACH:https://gnome.org/\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "1");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "first");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "https://gnome.org/logo.png");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 2);
+				test_param ("filename", "logo.png");
+				test_param ("fmttype", "image/png");
+				break;
+			case 2:
+				g_assert_false (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_data (attach), ==, "aGVsbG8K");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 3);
+				test_param ("value", "BINARY");
+				test_param ("filename", "text.txt");
+				test_param ("encoding", "BASE64");
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "https://gnome.org/");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+
+	e_cal_util_sanitize_untrusted (icomp);
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "1");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "first");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "https://gnome.org/logo.png");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 2);
+				test_param ("filename", "logo.png");
+				test_param ("fmttype", "image/png");
+				break;
+			case 2:
+				g_assert_false (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_data (attach), ==, "aGVsbG8K");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 3);
+				test_param ("value", "BINARY");
+				test_param ("filename", "text.txt");
+				test_param ("encoding", "BASE64");
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "https://gnome.org/");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	/* then when some are bad */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:2\r\n"
+		"SUMMARY:second\r\n"
+		"ATTACH;FILENAME=logo.png;FMTTYPE=image/png:file:///tmp/image.png\r\n"
+		"ATTACH;VALUE=BINARY;FILENAME=text.txt;ENCODING=BASE64:aGVsbG8K\r\n"
+		"ATTACH:cid:part-id\r\n"
+		"ATTACH:FiLe://y.z\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "2");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "second");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "file:///tmp/image.png");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 2);
+				test_param ("filename", "logo.png");
+				test_param ("fmttype", "image/png");
+				break;
+			case 2:
+				g_assert_false (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_data (attach), ==, "aGVsbG8K");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 3);
+				test_param ("value", "BINARY");
+				test_param ("filename", "text.txt");
+				test_param ("encoding", "BASE64");
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "cid:part-id");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 4:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "FiLe://y.z");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+
+	e_cal_util_sanitize_untrusted (icomp);
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "2");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "second");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "xfile:///tmp/image.png");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 2);
+				test_param ("filename", "logo.png");
+				test_param ("fmttype", "image/png");
+				break;
+			case 2:
+				g_assert_false (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_data (attach), ==, "aGVsbG8K");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 3);
+				test_param ("value", "BINARY");
+				test_param ("filename", "text.txt");
+				test_param ("encoding", "BASE64");
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "cid:part-id");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 4:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "xFiLe://y.z");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+
+	/* then with no ATTACH */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:3\r\n"
+		"SUMMARY:third\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	for (prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "3");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "third");
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+
+	e_cal_util_sanitize_untrusted (icomp);
+
+	for (prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "3");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "third");
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+}
+
+#undef test_param
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2067,6 +2354,7 @@ main (gint argc,
 		e_test_server_utils_setup, test_remove_as_all, e_test_server_utils_teardown);
 	g_test_add ("/ECalUtils/InitRecurTask", ETestServerFixture, &test_closure_calendar,
 		e_test_server_utils_setup, test_init_recur_task, e_test_server_utils_teardown);
+	g_test_add_func ("/ECalUtils/SanitizeUntrusted", test_sanitize_untrusted);
 
 	return e_test_server_utils_run (argc, argv);
 }
