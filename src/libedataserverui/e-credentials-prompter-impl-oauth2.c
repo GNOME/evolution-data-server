@@ -48,6 +48,7 @@ struct _ECredentialsPrompterImplOAuth2Private {
 	ESource *cred_source;
 	EOAuth2Service *service;
 	gchar *error_text;
+	gchar *state; /* sent in the authentication URI of this prompt */
 	ENamedParameters *credentials;
 	gboolean refresh_failed_with_transport_error;
 
@@ -95,6 +96,8 @@ e_credentials_prompter_impl_oauth2_free_prompt_data (ECredentialsPrompterImplOAu
 
 	g_free (prompter_oauth2->priv->error_text);
 	prompter_oauth2->priv->error_text = NULL;
+
+	g_clear_pointer (&prompter_oauth2->priv->state, g_free);
 
 	e_named_parameters_free (prompter_oauth2->priv->credentials);
 	prompter_oauth2->priv->credentials = NULL;
@@ -161,9 +164,10 @@ cpi_oauth2_dialog_response_cb (GtkDialog *dialog,
 }
 
 static gchar *
-cpi_oauth2_create_auth_uri (EOAuth2Service *service,
-			    ESource *source)
+cpi_oauth2_create_auth_uri (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 {
+	EOAuth2Service *service = prompter_oauth2->priv->service;
+	ESource *source = prompter_oauth2->priv->cred_source;
 	GHashTable *uri_query;
 	GUri *parsed_uri;
 	const gchar *auth_uri;
@@ -181,6 +185,12 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 
 	e_oauth2_service_prepare_authentication_uri_query (service, source, uri_query);
 
+	/* All URIs of one prompt (like "Copy URL") carry the same state */
+	if (prompter_oauth2->priv->state)
+		e_oauth2_service_util_set_to_form (uri_query, "state", prompter_oauth2->priv->state);
+	else
+		prompter_oauth2->priv->state = g_strdup (g_hash_table_lookup (uri_query, "state"));
+
 	query = soup_form_encode_hash (uri_query);
 	e_util_change_uri_component (&parsed_uri, SOUP_URI_QUERY, query);
 
@@ -191,6 +201,48 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 	g_free (query);
 
 	return uri;
+}
+
+/* Whether a code in @page_uri comes with the state sent for this prompt;
+   TRUE when the @page_uri carries no code */
+static gboolean
+cpi_oauth2_page_uri_has_our_state (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
+				   const gchar *page_uri)
+{
+	GUri *uri;
+	GHashTable *form = NULL;
+	const gchar *parts[2];
+	gboolean matches = TRUE;
+	guint ii;
+
+	uri = page_uri ? g_uri_parse (page_uri, SOUP_HTTP_URI_FLAGS | G_URI_FLAGS_PARSE_RELAXED, NULL) : NULL;
+	if (!uri)
+		return TRUE;
+
+	parts[0] = g_uri_get_query (uri);
+	parts[1] = g_uri_get_fragment (uri);
+
+	for (ii = 0; ii < G_N_ELEMENTS (parts) && !form; ii++) {
+		const gchar *code;
+
+		if (!parts[ii])
+			continue;
+
+		form = soup_form_decode (parts[ii]);
+		code = form ? g_hash_table_lookup (form, "code") : NULL;
+		if (!code || !*code)
+			g_clear_pointer (&form, g_hash_table_unref);
+	}
+
+	if (form) {
+		matches = prompter_oauth2->priv->state &&
+			g_strcmp0 (prompter_oauth2->priv->state, g_hash_table_lookup (form, "state")) == 0;
+		g_hash_table_unref (form);
+	}
+
+	g_uri_unref (uri);
+
+	return matches;
 }
 
 #ifdef WITH_WEBKITGTK
@@ -465,6 +517,13 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 
 	if (!e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service, use_source,
 		page_title, page_uri, page_content, &authorization_code)) {
+		return;
+	}
+
+	if (authorization_code && !cpi_oauth2_page_uri_has_our_state (prompter_oauth2, page_uri)) {
+		g_free (authorization_code);
+		cpi_oauth2_show_error (prompter_oauth2, "Invalid response",
+			_("The address does not contain an authorization code for this sign-in."));
 		return;
 	}
 
@@ -1052,11 +1111,17 @@ cpi_oauth2_test_authorization_code_from_gui (ECredentialsPrompterImplOAuth2 *pro
 		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", entered_text);
 
 	/* when the entered text looks like a URL, try to extract the code out of it */
-	if (entered_text && (g_ascii_strncasecmp (entered_text, "https://", 8) == 0 || (strstr (entered_text, ":") && strstr (entered_text, "code="))) &&
-	    e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
-		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
-		NULL, entered_text, NULL, &authorization_code)) {
-		cpi_oauth2_test_authorization_code (prompter_oauth2, authorization_code);
+	if (entered_text && (g_ascii_strncasecmp (entered_text, "https://", 8) == 0 || (strstr (entered_text, ":") && strstr (entered_text, "code=")))) {
+		if (e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
+			prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+			NULL, entered_text, NULL, &authorization_code) &&
+		    (!authorization_code || cpi_oauth2_page_uri_has_our_state (prompter_oauth2, entered_text))) {
+			cpi_oauth2_test_authorization_code (prompter_oauth2, authorization_code);
+		} else {
+			g_free (authorization_code);
+			gtk_label_set_text (prompter_oauth2->priv->error_text_label,
+				_("The address does not contain an authorization code for this sign-in."));
+		}
 	} else {
 		cpi_oauth2_test_authorization_code (prompter_oauth2, g_strdup (entered_text));
 	}
@@ -1157,7 +1222,7 @@ cpi_oauth2_open_in_browser (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 	gboolean any_found = FALSE;
 	gboolean success = FALSE;
 
-	uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
+	uri = cpi_oauth2_create_auth_uri (prompter_oauth2);
 	g_return_if_fail (uri != NULL);
 
 	if (cpi_oauth2_get_debug ())
@@ -1232,7 +1297,7 @@ cpi_oauth2_copy_url_activate_cb (GSimpleAction *action,
 
 	g_return_if_fail (prompter_oauth2->priv->dialog != NULL);
 
-	uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
+	uri = cpi_oauth2_create_auth_uri (prompter_oauth2);
 	g_return_if_fail (uri != NULL);
 
 	#if GTK_CHECK_VERSION(4, 0, 0)
@@ -1810,7 +1875,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	prompter_oauth2->priv->response = GTK_RESPONSE_NONE;
 
-	uri = cpi_oauth2_create_auth_uri (prompter_oauth2->priv->service, prompter_oauth2->priv->cred_source);
+	uri = cpi_oauth2_create_auth_uri (prompter_oauth2);
 	if (!uri) {
 		cpi_oauth2_dialog_finish_prompt (prompter_oauth2);
 	} else {

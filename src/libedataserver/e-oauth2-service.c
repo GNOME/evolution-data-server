@@ -165,17 +165,22 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 					      GHashTable *uri_query)
 {
 	guint8 state_bytes[16];
-	gchar *state;
+	GString *state;
+	guint ii;
 
 	e_oauth2_service_util_set_to_form (uri_query, "response_type", "code");
 	e_oauth2_service_util_set_to_form (uri_query, "client_id", e_oauth2_service_get_client_id (service, source));
 	e_oauth2_service_util_set_to_form (uri_query, "redirect_uri", e_oauth2_service_get_redirect_uri (service, source));
 
 	/* Generate a random state parameter for CSRF protection
-	 * per RFC 6749 Section 10.12 */
+	 * per RFC 6749 Section 10.12; hex, because providers are
+	 * not always careful when echoing "+" or "/" */
 	e_util_fill_random_bytes (state_bytes, sizeof (state_bytes));
-	state = g_base64_encode (state_bytes, 16);
-	e_oauth2_service_util_take_to_form (uri_query, "state", state);
+	state = g_string_sized_new (2 * sizeof (state_bytes) + 1);
+	for (ii = 0; ii < sizeof (state_bytes); ii++) {
+		g_string_append_printf (state, "%02x", state_bytes[ii]);
+	}
+	e_oauth2_service_util_take_to_form (uri_query, "state", g_string_free (state, FALSE));
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
