@@ -3482,6 +3482,7 @@ e_cal_util_inline_local_attachments_sync (ICalComponent *component,
 					  GCancellable *cancellable,
 					  GError **error)
 {
+	GFile *cache_dir = NULL, *tmp_dir = NULL;
 	ICalProperty *prop;
 	const gchar *uid;
 	gboolean success = TRUE;
@@ -3503,53 +3504,94 @@ e_cal_util_inline_local_attachments_sync (ICalComponent *component,
 			url_data = i_cal_attach_get_url (attach);
 			url = url_data ? i_cal_value_decode_ical_string (url_data) : NULL;
 
-			if (url && g_str_has_prefix (url, "file://")) {
+			if (url && g_ascii_strncasecmp (url, "file://", 7) == 0) {
 				GFile *file;
-				gchar *basename;
-				gchar *content;
-				gsize len;
+				gchar *path;
+				gboolean can;
 
 				file = g_file_new_for_uri (url);
-				basename = g_file_get_basename (file);
-				if (g_file_load_contents (file, cancellable, &content, &len, NULL, error)) {
-					ICalAttach *new_attach;
-					ICalParameter *param;
-					gchar *base64;
+				path = g_file_get_path (file);
+				can = path && *path;
 
-					base64 = g_base64_encode ((const guchar *) content, len);
-					new_attach = i_cal_attach_new_from_data (base64, (GFunc) g_free, NULL);
-					g_free (content);
+				if (can) {
+					if (!tmp_dir)
+						tmp_dir = g_file_new_for_path (g_get_tmp_dir ());
+					if (!cache_dir)
+						cache_dir = g_file_new_for_path (g_get_user_cache_dir ());
 
-					ecu_remove_all_but_filename_parameter (prop);
+					can = g_file_has_prefix (file, tmp_dir) ||
+						g_file_has_prefix (file, cache_dir);
 
-					i_cal_property_set_attach (prop, new_attach);
-					g_object_unref (new_attach);
+					if (!can) {
+						static const gchar *avoid_prefixes[] = { ".", "etc" };
+						gchar **parts;
+						guint ii, jj, n_parts;
 
-					param = i_cal_parameter_new_value (I_CAL_VALUE_BINARY);
-					i_cal_property_take_parameter (prop, param);
+						parts = g_strsplit (path, G_DIR_SEPARATOR_S, -1);
+						n_parts = g_strv_length (parts);
+						can = TRUE;
 
-					param = i_cal_parameter_new_encoding (I_CAL_ENCODING_BASE64);
-					i_cal_property_take_parameter (prop, param);
-
-					/* Preserve existing FILENAME parameter */
-					if (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER)) {
-						const gchar *use_filename = basename;
-
-						/* generated filename by Evolution */
-						if (uid && g_str_has_prefix (use_filename, uid) &&
-						    use_filename[strlen (uid)] == '-') {
-							use_filename += strlen (uid) + 1;
+						for (ii = 0; can && ii < G_N_ELEMENTS (avoid_prefixes); ii++) {
+							for (jj = 0; jj < n_parts; jj++) {
+								if (g_str_has_prefix (parts[jj], avoid_prefixes[ii])) {
+									can = FALSE;
+									break;
+								}
+							}
 						}
 
-						param = i_cal_parameter_new_filename (use_filename);
-						i_cal_property_take_parameter (prop, param);
+						g_strfreev (parts);
 					}
-				} else {
-					success = FALSE;
+				}
+
+				if (can) {
+					gchar *basename;
+					gchar *content;
+					gsize len;
+
+					basename = g_file_get_basename (file);
+					if (g_file_load_contents (file, cancellable, &content, &len, NULL, error)) {
+						ICalAttach *new_attach;
+						ICalParameter *param;
+						gchar *base64;
+
+						base64 = g_base64_encode ((const guchar *) content, len);
+						new_attach = i_cal_attach_new_from_data (base64, (GFunc) g_free, NULL);
+						g_free (content);
+
+						ecu_remove_all_but_filename_parameter (prop);
+
+						i_cal_property_set_attach (prop, new_attach);
+						g_object_unref (new_attach);
+
+						param = i_cal_parameter_new_value (I_CAL_VALUE_BINARY);
+						i_cal_property_take_parameter (prop, param);
+
+						param = i_cal_parameter_new_encoding (I_CAL_ENCODING_BASE64);
+						i_cal_property_take_parameter (prop, param);
+
+						/* Preserve existing FILENAME parameter */
+						if (!e_cal_util_property_has_parameter (prop, I_CAL_FILENAME_PARAMETER)) {
+							const gchar *use_filename = basename;
+
+							/* generated filename by Evolution */
+							if (uid && g_str_has_prefix (use_filename, uid) &&
+							    use_filename[strlen (uid)] == '-') {
+								use_filename += strlen (uid) + 1;
+							}
+
+							param = i_cal_parameter_new_filename (use_filename);
+							i_cal_property_take_parameter (prop, param);
+						}
+					} else {
+						success = FALSE;
+					}
+
+					g_free (basename);
 				}
 
 				g_object_unref (file);
-				g_free (basename);
+				g_free (path);
 			}
 
 			g_free (url);
@@ -3559,6 +3601,8 @@ e_cal_util_inline_local_attachments_sync (ICalComponent *component,
 	}
 
 	g_clear_object (&prop);
+	g_clear_object (&cache_dir);
+	g_clear_object (&tmp_dir);
 
 	return success;
 }
@@ -4360,4 +4404,56 @@ e_cal_util_get_property_email (ICalProperty *prop)
 		email = NULL;
 
 	return email;
+}
+
+/**
+ * e_cal_util_sanitize_untrusted:
+ * @comp: an #ICalComponent
+ *
+ * Sanitizes the @comp, which can be from an untrusted source,
+ * to not contain possible harmful properties or parameters.
+ *
+ * Since: 3.64
+ **/
+void
+e_cal_util_sanitize_untrusted (ICalComponent *comp)
+{
+	ICalProperty *prop;
+
+	g_return_if_fail (I_CAL_IS_COMPONENT (comp));
+
+	for (prop = i_cal_component_get_first_property (comp, I_CAL_ATTACH_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (comp, I_CAL_ATTACH_PROPERTY)) {
+		ICalAttach *attach;
+
+		attach = i_cal_property_get_attach (prop);
+		if (attach && i_cal_attach_get_is_url (attach)) {
+			const gchar *url_data;
+			gchar *url = NULL;
+
+			url_data = i_cal_attach_get_url (attach);
+			url = url_data ? i_cal_value_decode_ical_string (url_data) : NULL;
+
+			if (url && g_ascii_strncasecmp (url, "file://", 7) == 0) {
+				ICalAttach *new_attach;
+				gchar *new_url;
+
+				/* changes "file://" URI-s to "xfile://", which is not inlined */
+				new_url = g_strconcat ("x", url, NULL);
+				new_attach = i_cal_attach_new_from_url (new_url);
+
+				i_cal_property_set_attach (prop, new_attach);
+
+				g_object_unref (new_attach);
+				g_free (new_url);
+			}
+
+			g_free (url);
+		}
+
+		g_clear_object (&attach);
+	}
+
+	g_clear_object (&prop);
 }

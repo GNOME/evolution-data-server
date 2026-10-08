@@ -485,6 +485,7 @@ gboolean	e_cal_util_get_default_name_and_address
 const gchar *	e_cal_util_get_organizer_email	(const ECalComponentOrganizer *organizer);
 const gchar *	e_cal_util_get_attendee_email	(const ECalComponentAttendee *attendee);
 const gchar *	e_cal_util_get_property_email	(ICalProperty *prop);
+void		e_cal_util_sanitize_untrusted	(ICalComponent *comp);
 
 
 G_END_DECLS
