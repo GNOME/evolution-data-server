@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-09-11 08:08+0000\n"
-"PO-Revision-Date: 2026-09-13 18:04+0200\n"
+"POT-Creation-Date: 2026-10-07 13:32+0000\n"
+"PO-Revision-Date: 2026-10-08 06:04+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: \n"
 "Language: ka\n"
@@ -32,13 +32,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1822
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1686
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1753
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:988
 msgid "Server didn’t return object’s href"
 msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1824
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1688
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1755
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:990
 msgid "Server didn’t return object’s ETag"
 msgstr ""
@@ -48,7 +48,7 @@ msgid "Received object is not a valid vCard"
 msgstr ""
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1948
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1858
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1925
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1273
 #, c-format
 msgid ""
@@ -91,7 +91,7 @@ msgid "Loading..."
 msgstr "იტვირთება..."
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1180
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4817
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4913
 msgid "Searching..."
 msgstr "ძებნა..."
 
@@ -132,8 +132,8 @@ msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr ""
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:132
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4700
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1138
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4796
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:41
 #: src/addressbook/libebook-contacts/e-phone-number.c:41
 #: src/addressbook/libebook/e-book.c:1065
@@ -180,8 +180,8 @@ msgstr ""
 #: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:352
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -193,49 +193,49 @@ msgstr "უცნობი შეცდომა"
 msgid "Not connected"
 msgstr "დაკავშირებული არაა"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:875
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:880
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:987
 msgid "Reconnecting to LDAP server..."
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1114
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1119
 msgid "Invalid DN syntax"
 msgstr "DN-ის არასწორი სინტაქსი"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1130
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4699
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4795
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-ის შეცდომა 0x%x (%s)"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1783
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2131
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2144
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1788
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2136
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2149
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2060
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2200
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2065
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2205
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2342
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2480
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6359
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2347
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2485
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6455
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2637
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2642
 msgid "LDAP contact lists cannot be empty."
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2675
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2680
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -246,46 +246,46 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4646
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4742
 msgid "Receiving LDAP search results..."
 msgstr "LDAP ძებნის შედეგების მიღება..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4843
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4939
 msgid "Error performing search"
 msgstr "ძებნის შესრულების შეცდომა"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5053
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5149
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "კონტაქტების გადმოწერა (%d)..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5163
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5259
 #: src/addressbook/libedata-book/e-book-meta-backend.c:784
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:726
 msgid "Refreshing…"
 msgstr "განახლება…"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5666
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5762
 msgid "The backend does not support bulk additions"
 msgstr "ამ უკანაბოლოს მრავალჯერადი დამატების მხარდაჭერა არ გააჩნია"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5761
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5857
 msgid "Adding contact to LDAP server..."
 msgstr "კონტაქტების დამატება LDAP სერვერზე..."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5823
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5919
 msgid "The backend does not support bulk modifications"
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5845
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5941
 msgid "Modifying contact from LDAP server..."
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5917
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6013
 msgid "Removing contact from LDAP server..."
 msgstr ""
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6556
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6652
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr ""
@@ -1376,7 +1376,7 @@ msgstr ""
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr ""
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2412
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2479
 msgid "Failed to parse response data"
 msgstr ""
 
@@ -2901,7 +2901,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:233
+#: src/camel/camel-folder.c:235 src/camel/camel-folder.c:915
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr ""
@@ -2909,7 +2909,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:509
+#: src/camel/camel-folder.c:511
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
@@ -2919,7 +2919,7 @@ msgstr[1] "ახალი სპამის შესწავლა \"%s : %s
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:552
+#: src/camel/camel-folder.c:554
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
@@ -2929,26 +2929,26 @@ msgstr[1] ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:600
+#: src/camel/camel-folder.c:602
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/camel/camel-folder.c:1208
+#: src/camel/camel-folder.c:1282
 #: src/camel/providers/local/camel-maildir-folder.c:319
 msgid "Moving messages"
 msgstr "შეტყობინებების გადატანა"
 
-#: src/camel/camel-folder.c:1211
+#: src/camel/camel-folder.c:1285
 msgid "Copying messages"
 msgstr "შეტყობინებების კოპირება"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1256
+#: src/camel/camel-folder.c:1330
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr ""
@@ -2956,27 +2956,27 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1358
+#: src/camel/camel-folder.c:1432
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr ""
 
-#: src/camel/camel-folder.c:1460
+#: src/camel/camel-folder.c:1534
 msgid "Cannot get message headers, local message file not found"
 msgstr ""
 
-#: src/camel/camel-folder.c:1476
+#: src/camel/camel-folder.c:1550
 msgid "Cannot search message headers remotely, not supported"
 msgstr ""
 
-#: src/camel/camel-folder.c:1574
+#: src/camel/camel-folder.c:1648
 msgid "Cannot search message bodies remotely, not supported"
 msgstr ""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3333
+#: src/camel/camel-folder.c:3407
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr ""
@@ -2984,7 +2984,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3468
+#: src/camel/camel-folder.c:3542
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr ""
@@ -2992,7 +2992,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3693
+#: src/camel/camel-folder.c:3767
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr ""
@@ -3000,7 +3000,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3993
+#: src/camel/camel-folder.c:4067
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr ""
@@ -3008,9 +3008,13 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1778
+#: src/camel/camel-folder-summary.c:1887
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
+msgstr ""
+
+#: src/camel/camel-folder-summary.c:2078
+msgid "Failed to load folder summary from the database"
 msgstr ""
 
 #: src/camel/camel-folder-view.c:2253 src/camel/camel-folder-view.c:2326
@@ -3236,7 +3240,7 @@ msgstr ""
 msgid "Failed to pass command to GPG: %s"
 msgstr ""
 
-#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1022
+#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1045
 msgid "Could not generate signing data: "
 msgstr ""
 
@@ -3250,8 +3254,8 @@ msgstr ""
 
 #: src/camel/camel-gpg-context.c:2726 src/camel/camel-gpg-context.c:2734
 #: src/camel/camel-gpg-context.c:2742 src/camel/camel-gpg-context.c:2762
-#: src/camel/camel-smime-context.c:1153 src/camel/camel-smime-context.c:1167
-#: src/camel/camel-smime-context.c:1179
+#: src/camel/camel-smime-context.c:1177 src/camel/camel-smime-context.c:1191
+#: src/camel/camel-smime-context.c:1203
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
@@ -3262,10 +3266,6 @@ msgstr ""
 
 #: src/camel/camel-gpg-context.c:2977
 msgid "Could not generate encrypting data: "
-msgstr ""
-
-#: src/camel/camel-gpg-context.c:3059
-msgid "This is a digitally encrypted message part"
 msgstr ""
 
 #: src/camel/camel-gpg-context.c:3121 src/camel/camel-gpg-context.c:3130
@@ -3290,7 +3290,7 @@ msgid "Failed to decrypt MIME part: %s"
 msgstr ""
 
 #: src/camel/camel-gpg-context.c:3270 src/camel/camel-multipart-encrypted.c:34
-#: src/camel/camel-smime-context.c:1722
+#: src/camel/camel-smime-context.c:1746
 msgid "Encrypted content"
 msgstr ""
 
@@ -3759,6 +3759,16 @@ msgstr "OAuth2"
 
 #: src/camel/camel-sasl-xoauth2.c:16
 msgid "This option will use an OAuth 2.0 access token to connect to the server"
+msgstr ""
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:23
+msgid "OAuth2 (dynamic client)"
+msgstr ""
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token, of a dynamically registered "
+"client, to connect to the server"
 msgstr ""
 
 #: src/camel/camel-sasl-xoauth2-google.c:12
@@ -4541,7 +4551,7 @@ msgstr ""
 msgid "Unknown PKCS11 error"
 msgstr "უცნობი PKCS11 შეცდომა"
 
-#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:803
+#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:826
 msgid "Certificate signature algorithm disabled"
 msgstr ""
 
@@ -4549,7 +4559,7 @@ msgstr ""
 msgid "Legacy database"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:800
+#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:823
 msgid "Signature algorithm disabled"
 msgstr "ხელმოწერის ალგორითმი გამორთულია"
 
@@ -4616,143 +4626,143 @@ msgid "Cannot add CMS Signer information"
 msgstr ""
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: src/camel/camel-smime-context.c:498
+#: src/camel/camel-smime-context.c:514
 msgid "Unverified"
 msgstr "დაუმოწმებელი"
 
-#: src/camel/camel-smime-context.c:501
+#: src/camel/camel-smime-context.c:517
 msgid "Good signature"
 msgstr "კარგი ხელმოწერა"
 
-#: src/camel/camel-smime-context.c:503
+#: src/camel/camel-smime-context.c:519
 msgid "Bad signature"
 msgstr "არასწორი ხელმოწერა"
 
-#: src/camel/camel-smime-context.c:505
+#: src/camel/camel-smime-context.c:521
 msgid "Content tampered with or altered in transit"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:508
+#: src/camel/camel-smime-context.c:524
 msgid "Signing certificate not found"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:511
+#: src/camel/camel-smime-context.c:527
 msgid "Signing certificate not trusted"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:513
+#: src/camel/camel-smime-context.c:529
 msgid "Signature algorithm unknown"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:515
+#: src/camel/camel-smime-context.c:531
 msgid "Signature algorithm unsupported"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:517
+#: src/camel/camel-smime-context.c:533
 msgid "Malformed signature"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:519
+#: src/camel/camel-smime-context.c:535
 msgid "Processing error"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:681
+#: src/camel/camel-smime-context.c:698
 msgid "No signed data in signature"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:686
+#: src/camel/camel-smime-context.c:703
 msgid "Digests missing from enveloped data"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:699 src/camel/camel-smime-context.c:710
+#: src/camel/camel-smime-context.c:716 src/camel/camel-smime-context.c:727
 msgid "Cannot calculate digests"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:717 src/camel/camel-smime-context.c:721
+#: src/camel/camel-smime-context.c:734 src/camel/camel-smime-context.c:738
 msgid "Cannot set message digests"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:731 src/camel/camel-smime-context.c:736
+#: src/camel/camel-smime-context.c:748 src/camel/camel-smime-context.c:753
 msgid "Certificate import failed"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:746
+#: src/camel/camel-smime-context.c:763
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:748
+#: src/camel/camel-smime-context.c:765
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:752
+#: src/camel/camel-smime-context.c:769
 msgid "Cannot find signature digests"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:812
+#: src/camel/camel-smime-context.c:835
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1575
+#: src/camel/camel-smime-context.c:1057 src/camel/camel-smime-context.c:1599
 msgid "Cannot create encoder context"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1040
+#: src/camel/camel-smime-context.c:1063
 msgid "Failed to add data to CMS encoder"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1592
+#: src/camel/camel-smime-context.c:1068 src/camel/camel-smime-context.c:1616
 msgid "Failed to encode data"
 msgstr "მონაცემების დაშიფვრის შეცდომა"
 
-#: src/camel/camel-smime-context.c:1198 src/camel/camel-smime-context.c:1697
+#: src/camel/camel-smime-context.c:1222 src/camel/camel-smime-context.c:1721
 msgid "Decoder failed"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1469
+#: src/camel/camel-smime-context.c:1493
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1509
+#: src/camel/camel-smime-context.c:1533
 msgid "Cannot find common bulk encryption algorithm"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1517
+#: src/camel/camel-smime-context.c:1541
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1528
+#: src/camel/camel-smime-context.c:1552
 msgid "Cannot create CMS Message"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1534
+#: src/camel/camel-smime-context.c:1558
 msgid "Cannot create CMS Enveloped data"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1540
+#: src/camel/camel-smime-context.c:1564
 msgid "Cannot attach CMS Enveloped data"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1546
+#: src/camel/camel-smime-context.c:1570
 msgid "Cannot attach CMS data object"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1555
+#: src/camel/camel-smime-context.c:1579
 msgid "Cannot create CMS Recipient information"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1560
+#: src/camel/camel-smime-context.c:1584
 msgid "Cannot add CMS Recipient information"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1586
+#: src/camel/camel-smime-context.c:1610
 msgid "Failed to add data to encoder"
 msgstr ""
 
-#: src/camel/camel-smime-context.c:1704
+#: src/camel/camel-smime-context.c:1728
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr ""
 
@@ -5001,7 +5011,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:730
+#: src/camel/providers/imapx/camel-imapx-folder.c:734
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr ""
@@ -5010,34 +5020,34 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:997
+#: src/camel/providers/imapx/camel-imapx-folder.c:1001
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1063
+#: src/camel/providers/imapx/camel-imapx-folder.c:1067
 msgid "You must be working online to search in headers"
 msgstr "თავსართებში საძებნად ინტერნეტთან წვდომა აუცილებელია"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1117
+#: src/camel/providers/imapx/camel-imapx-folder.c:1121
 msgid "You must be working online to search in message body"
 msgstr "შეტყობინების შემცველობაში ძებნისთვის ინტერნეტთან წვდომა აუცილებელია"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1206
+#: src/camel/providers/imapx/camel-imapx-folder.c:1210
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1221
+#: src/camel/providers/imapx/camel-imapx-folder.c:1225
 msgid "Always check for _new mail in this folder"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1406
+#: src/camel/providers/imapx/camel-imapx-folder.c:1410
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr ""
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1418
+#: src/camel/providers/imapx/camel-imapx-folder.c:1422
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr ""
@@ -5045,7 +5055,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1596
+#: src/camel/providers/imapx/camel-imapx-folder.c:1600
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr ""
@@ -7650,47 +7660,52 @@ msgstr ""
 msgid "Failed to create SOAP cookie"
 msgstr "SOAP ქუქის შექმნა ჩავარდა"
 
-#: src/libedataserver/e-oauth2-service.c:1101
+#: src/libedataserver/e-oauth2-service.c:156
+#, c-format
+msgid "The OAuth2 service “%s” has no token endpoint set for this account"
+msgstr ""
+
+#: src/libedataserver/e-oauth2-service.c:1114
 msgid "Malformed, no message body set"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1325
+#: src/libedataserver/e-oauth2-service.c:1348
 msgid "Token record is incomplete"
 msgstr ""
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1352
-#: src/libedataserver/e-oauth2-service.c:1394
+#: src/libedataserver/e-oauth2-service.c:1375
+#: src/libedataserver/e-oauth2-service.c:1417
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1409
+#: src/libedataserver/e-oauth2-service.c:1432
 msgid "OAuth2 secret not found"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1436
+#: src/libedataserver/e-oauth2-service.c:1459
 msgid "OAuth2 secret record is incomplete"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1486
-#: src/libedataserver/e-oauth2-service.c:1588
+#: src/libedataserver/e-oauth2-service.c:1512
+#: src/libedataserver/e-oauth2-service.c:1617
 msgid "Failed to create HTTP session"
 msgstr "HTTP სესიის შექმნა ჩავარდა"
 
-#: src/libedataserver/e-oauth2-service.c:1500
-#: src/libedataserver/e-oauth2-service.c:1602
+#: src/libedataserver/e-oauth2-service.c:1526
+#: src/libedataserver/e-oauth2-service.c:1631
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "\"%s\"-ისთვის HTTP მოთხოვნის შექმნა ჩავარდა"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1655
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1649
+#: src/libedataserver/e-oauth2-service.c:1678
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7698,25 +7713,32 @@ msgid ""
 "Detailed error: %s"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1652
+#: src/libedataserver/e-oauth2-service.c:1681
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1703
+#: src/libedataserver/e-oauth2-service.c:1732
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:2079
+#: src/libedataserver/e-oauth2-service.c:2108
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:2093
+#: src/libedataserver/e-oauth2-service.c:2122
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: src/libedataserver/e-oauth2-service-dynamic.c:126
+#| msgid "OAuth2 (Outlook)"
+msgctxt "OAuth2Service"
+msgid "OAuth2 (automatic)"
+msgstr "OAuth2 (ავტომატური)"
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-google.c:48
@@ -7825,7 +7847,7 @@ msgstr ""
 msgid "Source “%s” does not support proxy lookups"
 msgstr ""
 
-#: src/libedataserver/e-source-registry.c:1461
+#: src/libedataserver/e-source-registry.c:1486
 #, c-format
 msgid ""
 "Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
@@ -8338,50 +8360,50 @@ msgstr ""
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:347
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:350
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Checking returned code"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Requesting access token, please wait…"
 msgstr ""
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:682
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr ""
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:687
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr ""
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:695
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr ""
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:697
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:700
 #, c-format
 msgid "%s Task List authentication request"
 msgstr ""
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:703
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
 #, c-format
 msgid "%s Mail authentication request"
 msgstr ""
@@ -8389,7 +8411,7 @@ msgstr ""
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:708
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
 #, c-format
 msgid "%s account authentication request"
 msgstr ""
@@ -8397,7 +8419,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:722
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8407,7 +8429,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:729
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8417,7 +8439,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:736
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8427,7 +8449,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:743
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8437,7 +8459,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:750
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:753
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8447,7 +8469,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:757
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:760
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8457,60 +8479,60 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:764
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:767
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1198
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1273
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
 msgid "_Copy URL"
 msgstr "URL-ის _კოპირება"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1275
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1306
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1278
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1309
 msgid "Open in _Browser"
 msgstr "_ბრაუზერში გახსნა"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1292
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1295
 #, c-format
 msgid "Open with “%s”"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1401
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1404
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_შეწყვეტა"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1501
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1504
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1576
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1579
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1613
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1616
 msgid "_Authorization code:"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1626
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1629
 msgid "C_ontinue"
 msgstr "_გაგრძელება"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1825
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1826
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1828
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1829
 msgid "Preparing request, please wait…"
 msgstr ""
 
