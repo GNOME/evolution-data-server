@@ -1,3 +1,28 @@
+Evolution-Data-Server 3.62.1 2026-10-09
+---------------------------------------
+
+Bug Fixes:
+	I#661 - OAuth2: Resolve collection as credential source on the token path (Tobias Mueller)
+	I#666 - OAuth2: Read the 'code' only from the redirect URI in the wizard
+	I#667 - LDAP: Support Jabber attribute (RFC 8284)
+	I#668 - CalDAV: Fails to populate local cache for iCloud servers
+	I#672 - Calendar: Limit which local files are inlined in components
+	M!249 - e-oauth2-service: Treat an empty refresh token as absent (Benjamin Herrenschmidt)
+	M!250 - Camel: Set a Content-Description on the S/MIME signature part (Mike C. Ward)
+	M!251 - test-camel-provider-imapx: Replace strcasestr() with camel_strstrcase() (Achill Gilgenast)
+	M!257 - Camel: Do not write an empty preamble for a new multipart/signed (Mike C. Ward)
+	M!257 - Camel: Encode tabs in quoted-printable text (Mike C. Ward)
+
+Miscellaneous:
+	LDAP: Avoid runtime warning on unrecognized known search query
+	test-camel-provider-imapx: Replace inet_addr() with inet_pton()
+	ESourceRegistry: Try harder with object manager thread's main context flush
+
+Translations:
+	Efstathios Iosifidis (el)
+	Patrik Sivek (cs)
+	Roy-Magne Mo (nn)
+
 Evolution-Data-Server 3.62.0 2026-09-11
 ---------------------------------------
 
