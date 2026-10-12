@@ -2066,6 +2066,223 @@ test_server_search (void)
 }
 
 static void
+test_server_search_no_match (void)
+{
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelMimeMessage *msg;
+	GPtrArray *words;
+	GPtrArray *result_uids = NULL;
+	gchar *folder_name;
+	GError *error = NULL;
+	gboolean success;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-search-nomatch");
+	store = CAMEL_STORE (service);
+	test_imapx_connect_service (service);
+
+	test_imapx_create_folder (store, "", "SearchNoMatchTest");
+	folder_name = test_folder_path ("SearchNoMatchTest");
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	msg = test_create_message ("Alpha Report", "Body one.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	/* An empty result (e.g. an ESEARCH reply without "ALL") must not be an error */
+	words = g_ptr_array_new ();
+	g_ptr_array_add (words, (gpointer) "NoSuchSubjectWord");
+
+	success = camel_folder_search_header_sync (folder, "Subject", words,
+		&result_uids, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_true (result_uids == NULL || result_uids->len == 0);
+
+	g_clear_pointer (&result_uids, g_ptr_array_unref);
+
+	/* A following search on the same connection still returns results */
+	g_ptr_array_remove_index (words, 0);
+	g_ptr_array_add (words, (gpointer) "Alpha");
+
+	success = camel_folder_search_header_sync (folder, "Subject", words,
+		&result_uids, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_nonnull (result_uids);
+	g_assert_cmpint (result_uids->len, ==, 1);
+
+	g_ptr_array_unref (result_uids);
+	g_ptr_array_unref (words);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "SearchNoMatchTest");
+	g_free (folder_name);
+	test_imapx_teardown (session, service);
+}
+
+static void
+test_append_literal_sizes (void)
+{
+	/* Sizes around the 4096-byte LITERAL- limit (RFC 7888) */
+	const gsize body_sizes[] = { 16, 3000, 4096, 5000, 20000 };
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	GPtrArray *uids;
+	gchar *folder_name;
+	GError *error = NULL;
+	gboolean success;
+	guint ii;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-literal-sizes");
+	store = CAMEL_STORE (service);
+	test_imapx_connect_service (service);
+
+	test_imapx_create_folder (store, "", "LiteralSizesTest");
+	folder_name = test_folder_path ("LiteralSizesTest");
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+
+	for (ii = 0; ii < G_N_ELEMENTS (body_sizes); ii++) {
+		CamelMimeMessage *msg;
+		gchar *subject, *body;
+
+		subject = g_strdup_printf ("Literal %" G_GSIZE_FORMAT, body_sizes[ii]);
+		body = g_malloc (body_sizes[ii] + 1);
+		memset (body, 'x', body_sizes[ii]);
+		body[body_sizes[ii]] = '\0';
+
+		msg = test_create_message (subject, body);
+		success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (success);
+
+		g_object_unref (msg);
+		g_free (subject);
+		g_free (body);
+	}
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+
+	uids = camel_folder_dup_uids (folder);
+	g_assert_cmpint (uids->len, ==, G_N_ELEMENTS (body_sizes));
+
+	for (ii = 0; ii < uids->len; ii++) {
+		CamelMimeMessage *fetched;
+		CamelDataWrapper *content;
+		CamelStream *stream;
+		GByteArray *bytes;
+		const gchar *subject;
+		gsize expected = 0, jj;
+
+		fetched = camel_folder_get_message_sync (folder, uids->pdata[ii], NULL, &error);
+		g_assert_no_error (error);
+		g_assert_nonnull (fetched);
+
+		subject = camel_mime_message_get_subject (fetched);
+		g_assert_nonnull (subject);
+		g_assert_true (g_str_has_prefix (subject, "Literal "));
+
+		for (jj = 0; jj < G_N_ELEMENTS (body_sizes); jj++) {
+			gchar *tmp = g_strdup_printf ("Literal %" G_GSIZE_FORMAT, body_sizes[jj]);
+			if (g_strcmp0 (tmp, subject) == 0)
+				expected = body_sizes[jj];
+			g_free (tmp);
+		}
+		g_assert_cmpuint (expected, >, 0);
+
+		content = camel_medium_get_content (CAMEL_MEDIUM (fetched));
+		g_assert_nonnull (content);
+
+		bytes = g_byte_array_new ();
+		stream = camel_stream_mem_new_with_byte_array (bytes);
+		camel_data_wrapper_decode_to_stream_sync (content, stream, NULL, &error);
+		g_assert_no_error (error);
+		g_assert_cmpuint (bytes->len, >=, expected);
+
+		for (jj = 0; jj < expected; jj++)
+			g_assert_cmpint (bytes->data[jj], ==, 'x');
+
+		g_object_unref (stream);
+		g_object_unref (fetched);
+	}
+
+	g_ptr_array_unref (uids);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, "LiteralSizesTest");
+	g_free (folder_name);
+	test_imapx_teardown (session, service);
+}
+
+static void
+test_utf8_folder_name (void)
+{
+	const gchar *name = "T\xc3\xabst-\xe6\x97\xa5\xe6\x9c\xac";
+	CamelSession *session;
+	CamelService *service;
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelMimeMessage *msg;
+	gchar *folder_name;
+	GError *error = NULL;
+	gboolean success;
+
+	session = test_imapx_session_new ();
+	service = test_imapx_create_service (session, "test-utf8-folder");
+	store = CAMEL_STORE (service);
+	test_imapx_connect_service (service);
+
+	test_imapx_create_folder (store, "", name);
+	folder_name = test_folder_path (name);
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (folder);
+
+	msg = test_create_message ("UTF-8 \xe6\x97\xa5\xe6\x9c\xac Subject", "Body.\n");
+	success = camel_folder_append_message_sync (folder, msg, NULL, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_object_unref (msg);
+
+	success = camel_folder_refresh_info_sync (folder, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (success);
+	g_assert_cmpint (camel_folder_get_message_count (folder), ==, 1);
+
+	g_object_unref (folder);
+
+	/* The name must round-trip through the server */
+	test_imapx_reconnect_service (session, &service, "test-utf8-folder-2");
+	store = CAMEL_STORE (service);
+
+	folder = camel_store_get_folder_sync (store, folder_name, 0, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (folder);
+	g_assert_cmpstr (camel_folder_get_display_name (folder), ==, name);
+	g_object_unref (folder);
+
+	test_imapx_delete_folder (store, name);
+	g_free (folder_name);
+	test_imapx_teardown (session, service);
+}
+
+static void
 test_subscription_state (void)
 {
 	CamelSession *session;
@@ -3143,6 +3360,9 @@ main (gint argc,
 	g_test_add_func ("/Camel/IMAPx/FolderCounts", test_folder_counts);
 	g_test_add_func ("/Camel/IMAPx/UserFlags", test_user_flags);
 	g_test_add_func ("/Camel/IMAPx/ServerSearch", test_server_search);
+	g_test_add_func ("/Camel/IMAPx/ServerSearchNoMatch", test_server_search_no_match);
+	g_test_add_func ("/Camel/IMAPx/AppendLiteralSizes", test_append_literal_sizes);
+	g_test_add_func ("/Camel/IMAPx/Utf8FolderName", test_utf8_folder_name);
 	g_test_add_func ("/Camel/IMAPx/SubscriptionState", test_subscription_state);
 	g_test_add_func ("/Camel/IMAPx/MultimailboxSearch", test_multimailbox_search);
 	g_test_add_func ("/Camel/IMAPx/RealTrashDeleteDuringSync", test_real_trash_delete_during_sync);
