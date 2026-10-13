@@ -5305,13 +5305,10 @@ test_with_main_loop_thread (gpointer user_data)
 }
 
 static gboolean
-quit_test_with_mainloop_cb (gpointer user_data)
+test_with_mainloop_timeout_cb (gpointer user_data)
 {
-	GMainLoop *main_loop = user_data;
-
-	g_assert_nonnull (main_loop);
-
-	g_main_loop_quit (main_loop);
+	/* Abort, the thread still uses 'mlt' from test_with_main_loop()'s stack */
+	g_error ("Test timeout was reached");
 
 	return FALSE;
 }
@@ -5348,11 +5345,12 @@ test_with_main_loop (ECalCache *cal_cache,
 	mlt.main_loop = g_main_loop_new (NULL, FALSE);
 
 	g_idle_add (test_with_mainloop_run_thread_idle, &mlt);
-	timeout_id = g_timeout_add_seconds (10, quit_test_with_mainloop_cb, mlt.main_loop);
+	timeout_id = tcu_get_timeout_secs () ? g_timeout_add_seconds (tcu_get_timeout_secs (), test_with_mainloop_timeout_cb, NULL) : 0;
 
 	g_main_loop_run (mlt.main_loop);
 
-	g_source_remove (timeout_id);
+	if (timeout_id)
+		g_source_remove (timeout_id);
 	g_main_loop_unref (mlt.main_loop);
 	g_clear_object (&mlt.meta_backend);
 }

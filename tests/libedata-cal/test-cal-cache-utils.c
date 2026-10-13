@@ -16,6 +16,7 @@
 #include "test-cal-cache-utils.h"
 
 static const gchar *args_data_dir = NULL;
+static guint args_timeout_secs = 10;
 
 void
 tcu_read_args (gint argc,
@@ -23,13 +24,19 @@ tcu_read_args (gint argc,
 {
 	gint ii;
 
-	for (ii = 0; ii < argc; ii++) {
-		if (g_strcmp0 (argv[ii], "--data-dir") == 0) {
-			if (ii + 1 < argc)
-				args_data_dir = argv[ii + 1];
-			break;
-		}
+	for (ii = 0; ii + 1 < argc; ii++) {
+		if (g_strcmp0 (argv[ii], "--data-dir") == 0)
+			args_data_dir = argv[++ii];
+		else if (g_strcmp0 (argv[ii], "--timeout") == 0)
+			args_timeout_secs = (guint) g_ascii_strtoull (argv[++ii], NULL, 10);
 	}
+}
+
+/* Seconds to wait for a test, set with "--timeout"; 0 means no limit */
+guint
+tcu_get_timeout_secs (void)
+{
+	return args_timeout_secs;
 }
 
 static void

@@ -52,6 +52,7 @@ G_BEGIN_DECLS
 
 void	tcu_read_args	(gint argc,
 			 gchar **argv);
+guint	tcu_get_timeout_secs	(void);
 
 /* 13 contacts in the test data have an email address ending with ".com" */
 #define N_FILTERED_CONTACTS  13

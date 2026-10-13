@@ -12,6 +12,7 @@ G_BEGIN_DECLS
 
 void		tcu_read_args				(gint argc,
 							 gchar **argv);
+guint		tcu_get_timeout_secs			(void);
 
 typedef enum {
 	TCU_LOAD_COMPONENT_SET_NONE,
