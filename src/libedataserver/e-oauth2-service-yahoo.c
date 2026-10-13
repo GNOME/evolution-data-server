@@ -30,6 +30,12 @@ eos_yahoo_guess_can_process (EOAuth2Service *service,
 		e_util_host_is_in_domain (hostname, "yahoo.com");
 }
 
+static guint32
+eos_yahoo_get_flags (EOAuth2Service *service)
+{
+	return E_OAUTH2_SERVICE_FLAG_USE_PKCE;
+}
+
 static const gchar *
 eos_yahoo_get_name (EOAuth2Service *service)
 {
@@ -156,6 +162,7 @@ static void
 e_oauth2_service_yahoo_oauth2_service_init (EOAuth2ServiceInterface *iface)
 {
 	iface->guess_can_process = eos_yahoo_guess_can_process;
+	iface->get_flags = eos_yahoo_get_flags;
 	iface->get_name = eos_yahoo_get_name;
 	iface->get_display_name = eos_yahoo_get_display_name;
 	iface->get_client_id = eos_yahoo_get_client_id;
