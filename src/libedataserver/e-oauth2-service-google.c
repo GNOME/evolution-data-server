@@ -193,41 +193,6 @@ eos_google_prepare_authentication_uri_query (EOAuth2Service *service,
 	e_oauth2_service_util_set_to_form (uri_query, "include_granted_scopes", "false");
 }
 
-static gboolean
-eos_google_extract_authorization_code (EOAuth2Service *service,
-				       ESource *source,
-				       const gchar *page_title,
-				       const gchar *page_uri,
-				       const gchar *page_content,
-				       gchar **out_authorization_code)
-{
-	gchar *error_code = NULL, *error_message = NULL;
-	gboolean success;
-
-	g_return_val_if_fail (out_authorization_code != NULL, FALSE);
-
-	*out_authorization_code = NULL;
-
-	if (page_title && *page_title) {
-		/* Known response, but no authorization code */
-		if (g_ascii_strncasecmp (page_title, "Denied ", 7) == 0)
-			return TRUE;
-
-		if (g_ascii_strncasecmp (page_title, "Success code=", 13) == 0) {
-			*out_authorization_code = g_strdup (page_title + 13);
-			return TRUE;
-		}
-	}
-
-	/* It is an acceptable response when either the authorization code or the error information is set. */
-	success = e_oauth2_service_util_extract_from_uri (page_uri, out_authorization_code, &error_code, &error_message);
-
-	g_free (error_code);
-	g_free (error_message);
-
-	return success;
-}
-
 static void
 e_oauth2_service_google_oauth2_service_init (EOAuth2ServiceInterface *iface)
 {
@@ -240,7 +205,6 @@ e_oauth2_service_google_oauth2_service_init (EOAuth2ServiceInterface *iface)
 	iface->get_refresh_uri = eos_google_get_refresh_uri;
 	iface->get_redirect_uri = eos_google_get_redirect_uri;
 	iface->prepare_authentication_uri_query = eos_google_prepare_authentication_uri_query;
-	iface->extract_authorization_code = eos_google_extract_authorization_code;
 }
 
 static void
