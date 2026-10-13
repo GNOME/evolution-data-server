@@ -38,6 +38,12 @@ eos_outlook_guess_can_process (EOAuth2Service *service,
 		e_util_host_is_in_domain (hostname, "office365.com"));
 }
 
+static guint32
+eos_outlook_get_flags (EOAuth2Service *service)
+{
+	return E_OAUTH2_SERVICE_FLAG_USE_PKCE;
+}
+
 static const gchar *
 eos_outlook_get_name (EOAuth2Service *service)
 {
@@ -164,6 +170,7 @@ static void
 e_oauth2_service_outlook_oauth2_service_init (EOAuth2ServiceInterface *iface)
 {
 	iface->guess_can_process = eos_outlook_guess_can_process;
+	iface->get_flags = eos_outlook_get_flags;
 	iface->get_name = eos_outlook_get_name;
 	iface->get_display_name = eos_outlook_get_display_name;
 	iface->get_client_id = eos_outlook_get_client_id;

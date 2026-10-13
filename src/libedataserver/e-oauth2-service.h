@@ -71,6 +71,7 @@ typedef enum {
  * @E_OAUTH2_SERVICE_FLAG_NONE: No flag set
  * @E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT: the service requires also page
  *    content to be passed to e_oauth2_service_extract_authorization_code()
+ * @E_OAUTH2_SERVICE_FLAG_USE_PKCE: the authorization code flow uses PKCE (RFC 7636) (Since: 3.64)
  *
  * Flags of the OAuth2 service.
  *
@@ -78,7 +79,8 @@ typedef enum {
  **/
 typedef enum {
 	E_OAUTH2_SERVICE_FLAG_NONE				= 0,
-	E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT	= (1 << 1)
+	E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT	= (1 << 1),
+	E_OAUTH2_SERVICE_FLAG_USE_PKCE				= (1 << 2)
 } EOAuth2ServiceFlags;
 
 /**

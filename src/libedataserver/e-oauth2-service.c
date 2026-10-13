@@ -41,7 +41,125 @@ G_DEFINE_QUARK (e-oauth2-service-error-quark, e_oauth2_service_error)
    and will be refreshed. */
 #define TOKEN_VALIDITY_GAP_SECS 10
 
+G_LOCK_DEFINE_STATIC (pkce_lock);
+static GHashTable *pkce_verifiers = NULL; /* gchar *source_uid ~> PkceEntry * */
+
+/* How long a pending PKCE verifier is reused instead of replaced */
+#define PKCE_VERIFIER_MAX_AGE_USEC (15 * 60 * (gint64) G_USEC_PER_SEC)
+
+typedef struct _PkceEntry {
+	gchar *verifier;
+	gint64 stashed_at; /* g_get_monotonic_time () */
+} PkceEntry;
+
+static void
+pkce_entry_free (gpointer data)
+{
+	PkceEntry *entry = data;
+
+	if (entry) {
+		g_free (entry->verifier);
+		g_free (entry);
+	}
+}
+
 G_DEFINE_INTERFACE (EOAuth2Service, e_oauth2_service, G_TYPE_OBJECT)
+
+static gchar *
+eos_base64url (const guchar *data,
+		       gsize length)
+{
+	gchar *text = g_base64_encode (data, length);
+	gchar *pos;
+
+	for (pos = text; *pos; pos++) {
+		if (*pos == '+')
+			*pos = '-';
+		else if (*pos == '/')
+			*pos = '_';
+		else if (*pos == '=') {
+			*pos = '\0';
+			break;
+		}
+	}
+
+	return text;
+}
+
+/* Returns the S256 challenge, reusing the pending verifier, because several
+   authentication URIs (like "Copy URL") can be in play for one source */
+static gchar *
+eos_stash_pkce_challenge (ESource *source)
+{
+	const gchar *uid;
+	gchar *verifier;
+	gchar *challenge;
+	GChecksum *checksum;
+	guint8 digest[32];
+	gsize digest_len = sizeof (digest);
+	PkceEntry *entry;
+
+	uid = e_source_get_uid (source);
+
+	G_LOCK (pkce_lock);
+
+	if (!pkce_verifiers)
+		pkce_verifiers = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, pkce_entry_free);
+
+	entry = g_hash_table_lookup (pkce_verifiers, uid);
+	if (entry && g_get_monotonic_time () - entry->stashed_at <= PKCE_VERIFIER_MAX_AGE_USEC) {
+		verifier = g_strdup (entry->verifier);
+	} else {
+		guchar random_bytes[32];
+
+		e_util_fill_random_bytes (random_bytes, sizeof (random_bytes));
+
+		verifier = eos_base64url (random_bytes, sizeof (random_bytes));
+
+		entry = g_new (PkceEntry, 1);
+		entry->verifier = g_strdup (verifier);
+		entry->stashed_at = g_get_monotonic_time ();
+
+		g_hash_table_insert (pkce_verifiers, g_strdup (uid), entry);
+	}
+
+	G_UNLOCK (pkce_lock);
+
+	checksum = g_checksum_new (G_CHECKSUM_SHA256);
+	g_checksum_update (checksum, (const guchar *) verifier, strlen (verifier));
+	g_checksum_get_digest (checksum, digest, &digest_len);
+	g_checksum_free (checksum);
+	g_free (verifier);
+
+	challenge = eos_base64url (digest, digest_len);
+
+	return challenge;
+}
+
+/* Removes and returns the verifier stashed for @source, or %NULL if none */
+static gchar *
+eos_redeem_pkce_verifier (ESource *source)
+{
+	const gchar *uid;
+	gchar *verifier = NULL;
+
+	uid = e_source_get_uid (source);
+
+	G_LOCK (pkce_lock);
+
+	if (pkce_verifiers) {
+		PkceEntry *entry = g_hash_table_lookup (pkce_verifiers, uid);
+
+		if (entry)
+			verifier = g_strdup (entry->verifier);
+
+		g_hash_table_remove (pkce_verifiers, uid);
+	}
+
+	G_UNLOCK (pkce_lock);
+
+	return verifier;
+}
 
 static gboolean
 eos_default_can_process (EOAuth2Service *service,
@@ -182,6 +300,11 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 	}
 	e_oauth2_service_util_take_to_form (uri_query, "state", g_string_free (state, FALSE));
 
+	if ((e_oauth2_service_get_flags (service) & E_OAUTH2_SERVICE_FLAG_USE_PKCE) != 0) {
+		e_oauth2_service_util_take_to_form (uri_query, "code_challenge", eos_stash_pkce_challenge (source));
+		e_oauth2_service_util_set_to_form (uri_query, "code_challenge_method", "S256");
+	}
+
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
 		gchar *user;
@@ -215,6 +338,9 @@ eos_default_prepare_get_token_form (EOAuth2Service *service,
 	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service, source));
 	e_oauth2_service_util_set_to_form (form, "redirect_uri", e_oauth2_service_get_redirect_uri (service, source));
 	e_oauth2_service_util_set_to_form (form, "grant_type", "authorization_code");
+
+	if ((e_oauth2_service_get_flags (service) & E_OAUTH2_SERVICE_FLAG_USE_PKCE) != 0)
+		e_oauth2_service_util_take_to_form (form, "code_verifier", eos_redeem_pkce_verifier (source));
 }
 
 static void
