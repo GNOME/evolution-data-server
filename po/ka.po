@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-10-07 13:32+0000\n"
-"PO-Revision-Date: 2026-10-08 06:04+0200\n"
+"POT-Creation-Date: 2026-10-13 10:29+0000\n"
+"PO-Revision-Date: 2026-10-13 17:04+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: \n"
 "Language: ka\n"
@@ -1210,7 +1210,7 @@ msgstr ""
 #: src/calendar/libedata-cal/e-cal-cache.c:2939
 #: src/calendar/libedata-cal/e-cal-cache.c:3002
 #: src/calendar/libedata-cal/e-cal-cache.c:3173
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1421
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1423
 #: src/libebackend/e-cache.c:1358 src/libebackend/e-cache.c:2334
 #: src/libebackend/e-cache.c:2374
 #, c-format
@@ -1261,20 +1261,20 @@ msgid "Received object for UID “%s” is invalid"
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1319
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1369
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1371
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1325
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1377
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2042
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2541
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3430
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3434
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr ""
@@ -1419,24 +1419,24 @@ msgstr ""
 msgid "Cannot save calendar data"
 msgstr ""
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1188
-#: src/calendar/backends/file/e-cal-backend-file.c:1317
+#: src/calendar/backends/file/e-cal-backend-file.c:1189
+#: src/calendar/backends/file/e-cal-backend-file.c:1318
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "ICS ფაილის \"%s\" დამუშავება შეუძლებელია"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1199
-#: src/calendar/backends/file/e-cal-backend-file.c:1328
+#: src/calendar/backends/file/e-cal-backend-file.c:1200
+#: src/calendar/backends/file/e-cal-backend-file.c:1329
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr ""
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3759
-#: src/calendar/backends/file/e-cal-backend-file.c:3765
-#: src/calendar/backends/file/e-cal-backend-file.c:3771
-#: src/calendar/backends/file/e-cal-backend-file.c:3798
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
+#: src/calendar/backends/file/e-cal-backend-file.c:3762
+#: src/calendar/backends/file/e-cal-backend-file.c:3768
+#: src/calendar/backends/file/e-cal-backend-file.c:3774
+#: src/calendar/backends/file/e-cal-backend-file.c:3801
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2640
 msgid "Unsupported method"
 msgstr ""
 
@@ -2635,18 +2635,18 @@ msgstr ""
 msgid "Cannot add timezone with invalid component"
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1187
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1189
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1926
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1928
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
 msgstr ""
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4329
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4333
 msgid "attachment.dat"
 msgstr ""
 
@@ -3717,11 +3717,11 @@ msgstr ""
 msgid "Unknown authentication state."
 msgstr ""
 
-#: src/camel/camel-sasl-ntlm.c:27
+#: src/camel/camel-sasl-ntlm.c:28
 msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
-#: src/camel/camel-sasl-ntlm.c:29
+#: src/camel/camel-sasl-ntlm.c:30
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
@@ -4779,7 +4779,7 @@ msgstr ""
 #: src/camel/camel-store.c:1915 src/camel/camel-store.c:1960
 #: src/camel/camel-vtrash-folder.c:35
 msgid "Trash"
-msgstr "ნაგავი"
+msgstr "ნაგვის ყუთი"
 
 #: src/camel/camel-store.c:1929 src/camel/camel-store.c:1977
 #: src/camel/camel-vtrash-folder.c:37
@@ -5576,7 +5576,7 @@ msgstr ""
 #: src/camel/providers/imapx/camel-imapx-store.c:2772
 msgctxt "IMAPDefaults"
 msgid "Trash"
-msgstr "ნაგავი"
+msgstr "ნაგვის ყუთი"
 
 #: src/camel/providers/imapx/camel-imapx-store.c:2773
 msgctxt "IMAPDefaults"
@@ -7665,47 +7665,47 @@ msgstr "SOAP ქუქის შექმნა ჩავარდა"
 msgid "The OAuth2 service “%s” has no token endpoint set for this account"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1114
+#: src/libedataserver/e-oauth2-service.c:1158
 msgid "Malformed, no message body set"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1348
+#: src/libedataserver/e-oauth2-service.c:1392
 msgid "Token record is incomplete"
 msgstr ""
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1375
-#: src/libedataserver/e-oauth2-service.c:1417
+#: src/libedataserver/e-oauth2-service.c:1419
+#: src/libedataserver/e-oauth2-service.c:1461
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1432
+#: src/libedataserver/e-oauth2-service.c:1476
 msgid "OAuth2 secret not found"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1459
+#: src/libedataserver/e-oauth2-service.c:1503
 msgid "OAuth2 secret record is incomplete"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1512
-#: src/libedataserver/e-oauth2-service.c:1617
+#: src/libedataserver/e-oauth2-service.c:1556
+#: src/libedataserver/e-oauth2-service.c:1661
 msgid "Failed to create HTTP session"
 msgstr "HTTP სესიის შექმნა ჩავარდა"
 
-#: src/libedataserver/e-oauth2-service.c:1526
-#: src/libedataserver/e-oauth2-service.c:1631
+#: src/libedataserver/e-oauth2-service.c:1570
+#: src/libedataserver/e-oauth2-service.c:1675
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "\"%s\"-ისთვის HTTP მოთხოვნის შექმნა ჩავარდა"
 
-#: src/libedataserver/e-oauth2-service.c:1655
+#: src/libedataserver/e-oauth2-service.c:1699
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1678
+#: src/libedataserver/e-oauth2-service.c:1722
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7713,29 +7713,28 @@ msgid ""
 "Detailed error: %s"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:1681
+#: src/libedataserver/e-oauth2-service.c:1725
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1732
+#: src/libedataserver/e-oauth2-service.c:1776
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:2108
+#: src/libedataserver/e-oauth2-service.c:2152
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
 
-#: src/libedataserver/e-oauth2-service.c:2122
+#: src/libedataserver/e-oauth2-service.c:2166
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-dynamic.c:126
-#| msgid "OAuth2 (Outlook)"
 msgctxt "OAuth2Service"
 msgid "OAuth2 (automatic)"
 msgstr "OAuth2 (ავტომატური)"
@@ -8505,34 +8504,34 @@ msgstr "_ბრაუზერში გახსნა"
 msgid "Open with “%s”"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1404
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1405
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_შეწყვეტა"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1504
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1505
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1579
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1580
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1616
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1617
 msgid "_Authorization code:"
 msgstr ""
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1629
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1630
 msgid "C_ontinue"
 msgstr "_გაგრძელება"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1828
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1829
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1838
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1839
 msgid "Preparing request, please wait…"
 msgstr ""
 
