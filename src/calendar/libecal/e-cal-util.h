@@ -485,8 +485,30 @@ gboolean	e_cal_util_get_default_name_and_address
 const gchar *	e_cal_util_get_organizer_email	(const ECalComponentOrganizer *organizer);
 const gchar *	e_cal_util_get_attendee_email	(const ECalComponentAttendee *attendee);
 const gchar *	e_cal_util_get_property_email	(ICalProperty *prop);
-void		e_cal_util_sanitize_untrusted	(ICalComponent *comp);
 
+/**
+ * ECalUtilUriNeedsChangeFunc:
+ * @in_uri: a URI to check
+ * @out_uri: (nullable) (out) (transfer full): an out variable to optionally
+ *    set a replacement URI for the @in_uri
+ * @user_data: user data passed to the e_cal_util_sanitize_untrusted_full()
+ *
+ * Called for each attachment URI, to check the @in_uri whether it needs to be replaced.
+ * The "file://" URI-s which need to replace will be changed to "xfile://" by
+ * the caller, unless the @out_uri is populated, in which case the @out_uri
+ * is used instead.
+ *
+ * Returns: %TRUE, when the @in_uri needs to be changed, or %FALSE, when it should stay as is
+ *
+ * Since: 3.62.2
+ **/
+typedef gboolean (* ECalUtilUriNeedsChangeFunc)	(const gchar *in_uri,
+						 gchar **out_uri,
+						 gpointer user_data);
+void		e_cal_util_sanitize_untrusted	(ICalComponent *comp);
+void		e_cal_util_sanitize_untrusted_full(ICalComponent *comp,
+						 ECalUtilUriNeedsChangeFunc uri_needs_change_func,
+						 gpointer user_data);
 
 G_END_DECLS
 

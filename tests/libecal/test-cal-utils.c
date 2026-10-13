@@ -2051,6 +2051,28 @@ test_init_recur_task (ETestServerFixture *fixture,
 	g_free (param); \
 	} G_STMT_END
 
+static gboolean
+test_sanitize_untrusted_uri_needs_change_cb (const gchar *in_uri,
+					     gchar **out_uri,
+					     gpointer user_data)
+{
+	const gchar *good_path = user_data;
+	gboolean needs_change = FALSE;
+
+	if (!in_uri)
+		return needs_change;
+
+	if (g_ascii_strncasecmp (in_uri, "file://", 7) == 0) {
+		needs_change = !g_str_has_prefix (in_uri + 7, good_path);
+	} else if (g_ascii_strncasecmp (in_uri, "xfile://", 8) == 0) {
+		needs_change = g_str_has_prefix (in_uri + 8, good_path);
+		if (needs_change)
+			*out_uri = g_strdup (in_uri + 1);
+	}
+
+	return needs_change;
+}
+
 static void
 test_sanitize_untrusted (void)
 {
@@ -2116,8 +2138,9 @@ test_sanitize_untrusted (void)
 	}
 
 	g_clear_object (&prop);
+	g_assert_cmpuint (nth_attach, ==, 3);
 
-	e_cal_util_sanitize_untrusted (icomp);
+	e_cal_util_sanitize_untrusted_full (icomp, NULL, NULL);
 
 	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
 	     prop;
@@ -2167,6 +2190,7 @@ test_sanitize_untrusted (void)
 
 	g_clear_object (&prop);
 	g_clear_object (&icomp);
+	g_assert_cmpuint (nth_attach, ==, 3);
 
 	/* then when some are bad */
 	icomp = i_cal_component_new_from_string (
@@ -2232,8 +2256,9 @@ test_sanitize_untrusted (void)
 	}
 
 	g_clear_object (&prop);
+	g_assert_cmpuint (nth_attach, ==, 4);
 
-	e_cal_util_sanitize_untrusted (icomp);
+	e_cal_util_sanitize_untrusted_full (icomp, NULL, NULL);
 
 	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
 	     prop;
@@ -2288,6 +2313,7 @@ test_sanitize_untrusted (void)
 
 	g_clear_object (&prop);
 	g_clear_object (&icomp);
+	g_assert_cmpuint (nth_attach, ==, 4);
 
 	/* then with no ATTACH */
 	icomp = i_cal_component_new_from_string (
@@ -2311,7 +2337,7 @@ test_sanitize_untrusted (void)
 
 	g_clear_object (&prop);
 
-	e_cal_util_sanitize_untrusted (icomp);
+	e_cal_util_sanitize_untrusted_full (icomp, NULL, NULL);
 
 	for (prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
 	     prop;
@@ -2327,6 +2353,153 @@ test_sanitize_untrusted (void)
 
 	g_clear_object (&prop);
 	g_clear_object (&icomp);
+
+	/* then flip the ATTACH URI-s */
+	icomp = i_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:4\r\n"
+		"SUMMARY:fourth\r\n"
+		"ATTACH:file:///good/path/file.txt\r\n"
+		"ATTACH:cid:part-id\r\n"
+		"ATTACH:file:///bad/path/bad.xml\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (icomp);
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "4");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "fourth");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "file:///good/path/file.txt");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 2:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "cid:part-id");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "file:///bad/path/bad.xml");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+	g_assert_cmpuint (nth_attach, ==, 3);
+
+	e_cal_util_sanitize_untrusted_full (icomp, test_sanitize_untrusted_uri_needs_change_cb, (gpointer) "/good/path/");
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "4");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "fourth");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "file:///good/path/file.txt");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 2:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "cid:part-id");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "xfile:///bad/path/bad.xml");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+
+	e_cal_util_sanitize_untrusted_full (icomp, test_sanitize_untrusted_uri_needs_change_cb, (gpointer) "/bad/path/");
+
+	for (nth_attach = 0, prop = i_cal_component_get_first_property (icomp, I_CAL_ANY_PROPERTY);
+	     prop;
+	     g_object_unref (prop), prop = i_cal_component_get_next_property (icomp, I_CAL_ANY_PROPERTY)) {
+		if (i_cal_property_isa (prop) == I_CAL_UID_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_uid (prop), ==, "4");
+		} else if (i_cal_property_isa (prop) == I_CAL_SUMMARY_PROPERTY) {
+			g_assert_cmpstr (i_cal_property_get_summary (prop), ==, "fourth");
+		} else if (i_cal_property_isa (prop) == I_CAL_ATTACH_PROPERTY) {
+			ICalAttach *attach;
+
+			attach = i_cal_property_get_attach (prop);
+			g_assert_nonnull (attach);
+
+			nth_attach++;
+
+			switch (nth_attach) {
+			case 1:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "xfile:///good/path/file.txt");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 2:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "cid:part-id");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			case 3:
+				g_assert_true (i_cal_attach_get_is_url (attach));
+				g_assert_cmpstr (i_cal_attach_get_url (attach), ==, "file:///bad/path/bad.xml");
+				g_assert_cmpint (i_cal_property_count_parameters (prop), ==, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			g_clear_object (&attach);
+		} else {
+			g_assert_not_reached ();
+		}
+	}
+
+	g_clear_object (&prop);
+	g_clear_object (&icomp);
+	g_assert_cmpuint (nth_attach, ==, 3);
 }
 
 #undef test_param
