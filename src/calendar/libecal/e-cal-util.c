@@ -4409,14 +4409,24 @@ e_cal_util_get_property_email (ICalProperty *prop)
 /**
  * e_cal_util_sanitize_untrusted:
  * @comp: an #ICalComponent
+ * @uri_needs_change_func: (nullable) (scope call) (closure user_data): an #ECalUtilUriNeedsChangeFunc
+ * @user_data: user data passed to the @uri_needs_change_func
  *
  * Sanitizes the @comp, which can be from an untrusted source,
  * to not contain possible harmful properties or parameters.
  *
+ * The @uri_needs_change_func, if not %NULL, is called for each
+ * attachment URI, to check whether the URI is trusted. It can
+ * be also used to replace the attachment URI-s.
+ * When the @uri_needs_change_func is %NULL the function modifies
+ * each "file://" URI to "xfile://".
+ *
  * Since: 3.64
  **/
 void
-e_cal_util_sanitize_untrusted (ICalComponent *comp)
+e_cal_util_sanitize_untrusted (ICalComponent *comp,
+			       ECalUtilUriNeedsChangeFunc uri_needs_change_func,
+			       gpointer user_data)
 {
 	ICalProperty *prop;
 
@@ -4435,17 +4445,33 @@ e_cal_util_sanitize_untrusted (ICalComponent *comp)
 			url_data = i_cal_attach_get_url (attach);
 			url = url_data ? i_cal_value_decode_ical_string (url_data) : NULL;
 
-			if (url && g_ascii_strncasecmp (url, "file://", 7) == 0) {
-				ICalAttach *new_attach;
-				gchar *new_url;
+			if (url) {
+				gchar *new_url = NULL;
+				gboolean needs_change;
 
-				/* changes "file://" URI-s to "xfile://", which is not inlined */
-				new_url = g_strconcat ("x", url, NULL);
-				new_attach = i_cal_attach_new_from_url (new_url);
+				if (uri_needs_change_func) {
+					needs_change = uri_needs_change_func (url, &new_url, user_data);
 
-				i_cal_property_set_attach (prop, new_attach);
+					if (needs_change && !new_url)
+						new_url = g_strconcat ("x", url, NULL);
+				} else {
+					needs_change = g_ascii_strncasecmp (url, "file://", 7) == 0;
 
-				g_object_unref (new_attach);
+					/* changes "file://" URI-s to "xfile://", which is not inlined */
+					if (needs_change)
+						new_url = g_strconcat ("x", url, NULL);
+				}
+
+				if (needs_change) {
+					ICalAttach *new_attach;
+
+					new_attach = i_cal_attach_new_from_url (new_url);
+
+					i_cal_property_set_attach (prop, new_attach);
+
+					g_object_unref (new_attach);
+				}
+
 				g_free (new_url);
 			}
 

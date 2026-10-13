@@ -863,6 +863,7 @@ remove_component (ECalBackendFile *cbfile,
 static void
 scan_vcalendar (ECalBackendFile *cbfile)
 {
+	ECalBackend *cal_backend = E_CAL_BACKEND (cbfile);
 	ECalBackendFilePrivate *priv;
 	ICalCompIter *iter;
 	ICalComponent *icomp;
@@ -889,7 +890,7 @@ scan_vcalendar (ECalBackendFile *cbfile)
 				g_object_ref (icomp);
 				i_cal_object_set_owner (I_CAL_OBJECT (icomp), G_OBJECT (priv->vcalendar));
 
-				e_cal_util_sanitize_untrusted (icomp);
+				e_cal_backend_sanitize_untrusted (cal_backend, icomp);
 				check_dup_uid (cbfile, comp);
 
 				add_component (cbfile, comp, FALSE);
@@ -3495,6 +3496,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
                                     GError **error)
 {
 	ESourceRegistry *registry;
+	ECalBackend *cal_backend;
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	ECalClientTzlookupICalCompData *lookup_data = NULL;
@@ -3507,6 +3509,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	ECalBackendFileTzidData tzdata;
 	GError *err = NULL;
 
+	cal_backend = E_CAL_BACKEND (backend);
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
@@ -3657,7 +3660,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		if (!comp)
 			continue;
 
-		e_cal_util_sanitize_untrusted (subcomp);
+		e_cal_backend_sanitize_untrusted (cal_backend, subcomp);
 
 		/* Set the created and last modified times on the component, if not there already */
 		current = i_cal_time_new_current_with_zone (i_cal_timezone_get_utc_timezone ());

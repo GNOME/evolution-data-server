@@ -1119,6 +1119,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 				  GError **error)
 {
 	ECacheOfflineFlag offline_flag = E_CACHE_IS_ONLINE;
+	ECalBackend *cal_backend = E_CAL_BACKEND (meta_backend);
 	ICalComponent *icomp = NULL;
 	GSList *new_instances = NULL;
 	gchar *extra = NULL;
@@ -1156,7 +1157,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 			ECalComponent *comp = e_cal_component_new_from_icalcomponent (i_cal_component_clone (subcomp));
 
 			if (comp) {
-				e_cal_util_sanitize_untrusted (e_cal_component_get_icalcomponent (comp));
+				e_cal_backend_sanitize_untrusted (cal_backend, e_cal_component_get_icalcomponent (comp));
 				new_instances = g_slist_prepend (new_instances, comp);
 
 				if (!loaded_uid)
@@ -1169,7 +1170,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		icomp = NULL;
 
 		if (comp) {
-			e_cal_util_sanitize_untrusted (e_cal_component_get_icalcomponent (comp));
+			e_cal_backend_sanitize_untrusted (cal_backend, e_cal_component_get_icalcomponent (comp));
 			new_instances = g_slist_prepend (new_instances, comp);
 
 			if (!loaded_uid)
@@ -2567,10 +2568,10 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	e_cal_util_sanitize_untrusted (e_cal_component_get_icalcomponent (comp));
-
 	cal_backend = E_CAL_BACKEND (meta_backend);
 	registry = e_cal_backend_get_registry (cal_backend);
+
+	e_cal_backend_sanitize_untrusted (cal_backend, e_cal_component_get_icalcomponent (comp));
 
 	/* Just to check whether component exists in the cache */
 	is_in_cache = e_cal_cache_contains (cal_cache, e_cal_component_id_get_uid (id), NULL, E_CACHE_EXCLUDE_DELETED) ||

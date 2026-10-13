@@ -4718,3 +4718,81 @@ e_cal_backend_schedule_custom_operation (ECalBackend *cal_backend,
 
 	cal_backend_dispatch_next_operation (cal_backend);
 }
+
+static gboolean
+ecb_uri_needs_change_cb (const gchar *in_uri,
+			 gchar **out_uri,
+			 gpointer user_data)
+{
+	const gchar *cache_dir = user_data;
+	gboolean needs_change = FALSE;
+
+	if (!in_uri)
+		return needs_change;
+
+	if (g_ascii_strncasecmp (in_uri, "file://", 7) == 0) {
+		GFile *file;
+
+		file = g_file_new_for_uri (in_uri);
+
+		needs_change = !g_file_peek_path (file) || !cache_dir || !*cache_dir || !g_str_has_prefix (g_file_peek_path (file), cache_dir);
+
+		g_clear_object (&file);
+	} else if (in_uri && cache_dir && g_ascii_strncasecmp (in_uri, "xfile://", 8) == 0) {
+		GFile *file;
+
+		/* the local attachments in the backend cache could be incorrectly garbled,
+		   thus fix them on the fly */
+		file = g_file_new_for_uri (in_uri + 1);
+
+		if (g_file_peek_path (file) && g_str_has_prefix (g_file_peek_path (file), cache_dir)) {
+			*out_uri = g_strdup (in_uri + 1);
+			needs_change = TRUE;
+		}
+
+		g_clear_object (&file);
+	}
+
+	return needs_change;
+}
+
+/**
+ * e_cal_backend_sanitize_untrusted:
+ * @self: an #ECalBackend
+ * @comp: an #ICalComponent
+ *
+ * Sanitizes the @comp, which can be from an untrusted source,
+ * to not contain possible harmful properties or parameters.
+ *
+ * Unlike e_cal_util_sanitize_untrusted() this keeps attachment
+ * URI-s pointing to the @self cache directory untouched.
+ *
+ * Since: 3.64
+ **/
+void
+e_cal_backend_sanitize_untrusted (ECalBackend *self,
+				  ICalComponent *comp)
+{
+	gchar *cache_dir = NULL;
+
+	g_return_if_fail (E_IS_CAL_BACKEND (self));
+	g_return_if_fail (I_CAL_IS_COMPONENT (comp));
+
+	g_mutex_lock (&self->priv->property_lock);
+	if (self->priv->cache_dir) {
+		guint len = strlen (self->priv->cache_dir);
+
+		/* always end the cache_dir with the directory separator, to avoid prefix mismatches */
+		if (len > 0 && self->priv->cache_dir[len - 1] == G_DIR_SEPARATOR) {
+			cache_dir = g_strdup (self->priv->cache_dir);
+		} else if (len > 0) {
+			cache_dir = g_malloc0 (sizeof (gchar) * (len + 2));
+			g_warn_if_fail (g_snprintf (cache_dir, len + 2, "%s%c", self->priv->cache_dir, G_DIR_SEPARATOR) < len + 2);
+		}
+	}
+	g_mutex_unlock (&self->priv->property_lock);
+
+	e_cal_util_sanitize_untrusted (comp, ecb_uri_needs_change_cb, cache_dir);
+
+	g_free (cache_dir);
+}

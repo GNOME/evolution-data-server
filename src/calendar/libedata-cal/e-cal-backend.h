@@ -514,6 +514,9 @@ void		e_cal_backend_schedule_custom_operation
 						 gpointer user_data,
 						 GDestroyNotify user_data_free);
 
+void		e_cal_backend_sanitize_untrusted(ECalBackend *self,
+						 ICalComponent *comp);
+
 G_END_DECLS
 
 #endif /* E_CAL_BACKEND_H */
