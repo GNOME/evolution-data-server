@@ -345,6 +345,7 @@ e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 	iface->extract_authorization_code = eos_default_extract_authorization_code;
 	iface->extract_error_message = eos_default_extract_error_message;
 	iface->dup_credentials_prompter_cookies_sync = NULL;
+	iface->dup_credentials_user_agent = NULL;
 }
 
 /**
@@ -986,6 +987,39 @@ e_oauth2_service_dup_credentials_prompter_cookies_sync (EOAuth2Service *service,
 	return iface->dup_credentials_prompter_cookies_sync (service, source, cancellable);
 }
 
+/**
+ * e_oauth2_service_dup_credentials_user_agent:
+ * @service: an #EOAuth2Service
+ * @source: an associated #ESource
+ *
+ * The User-Agent to be used for the service credentials flow, which is the
+ * sign-in dialog and the requests made to obtain or refresh the token. The
+ * default implementation does not provide any, in which case the defaults
+ * are used.
+ *
+ * Returns: (nullable) (transfer full): a newly allocated User-Agent string,
+ *   or %NULL to use the default
+ *
+ * Since: 3.64
+ **/
+gchar *
+e_oauth2_service_dup_credentials_user_agent (EOAuth2Service *service,
+					     ESource *source)
+{
+	EOAuth2ServiceInterface *iface;
+
+	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
+	g_return_val_if_fail (iface != NULL, NULL);
+
+	if (!iface->dup_credentials_user_agent)
+		return NULL;
+
+	return iface->dup_credentials_user_agent (service, source);
+}
+
 static SoupSession *
 eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 			 gpointer ref_source_user_data,
@@ -1040,13 +1074,16 @@ eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 }
 
 static SoupMessage *
-eos_create_soup_message (ESource *source,
+eos_create_soup_message (EOAuth2Service *service,
+			 ESource *source,
 			 const gchar *uri,
 			 GHashTable *post_form)
 {
 	SoupMessage *message;
 	gchar *post_data;
+	gchar *user_agent;
 
+	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (uri != NULL, NULL);
 	g_return_val_if_fail (post_form != NULL, NULL);
@@ -1066,6 +1103,13 @@ eos_create_soup_message (ESource *source,
 	e_soup_ssl_trust_connect (message, source);
 
 	soup_message_headers_append (soup_message_get_request_headers (message), "Connection", "close");
+
+	user_agent = e_oauth2_service_dup_credentials_user_agent (service, source);
+
+	if (user_agent && *user_agent)
+		soup_message_headers_replace (soup_message_get_request_headers (message), "User-Agent", user_agent);
+
+	g_free (user_agent);
 
 	return message;
 }
@@ -1517,7 +1561,7 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 
 	e_oauth2_service_prepare_get_token_form (service, source, authorization_code, post_form);
 
-	message = eos_create_soup_message (source, e_oauth2_service_get_refresh_uri (service, source), post_form);
+	message = eos_create_soup_message (service, source, e_oauth2_service_get_refresh_uri (service, source), post_form);
 
 	g_hash_table_destroy (post_form);
 
@@ -1622,7 +1666,7 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 
 	e_oauth2_service_prepare_refresh_token_form (service, source, refresh_token, post_form);
 
-	message = eos_create_soup_message (source, e_oauth2_service_get_refresh_uri (service, source), post_form);
+	message = eos_create_soup_message (service, source, e_oauth2_service_get_refresh_uri (service, source), post_form);
 
 	g_hash_table_destroy (post_form);
 

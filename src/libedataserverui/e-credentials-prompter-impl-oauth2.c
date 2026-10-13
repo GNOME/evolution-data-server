@@ -1363,6 +1363,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	WebKitCookieManager *cookie_manager;
 	WebKitSettings *webkit_settings;
 	WebKitWebContext *web_context;
+	gchar *user_agent;
 #if GTK_CHECK_VERSION(4, 0, 0) && WEBKIT_CHECK_VERSION(2, 39, 6)
 	WebKitNetworkSession *network_session;
 #else
@@ -1703,6 +1704,15 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"media-playback-allows-inline", FALSE,
 		"hardware-acceleration-policy", WEBKIT_HARDWARE_ACCELERATION_POLICY_NEVER,
 		NULL);
+
+	user_agent = e_oauth2_service_dup_credentials_user_agent (
+		prompter_oauth2->priv->service,
+		prompter_oauth2->priv->cred_source);
+
+	if (user_agent && *user_agent)
+		webkit_settings_set_user_agent (webkit_settings, user_agent);
+
+	g_free (user_agent);
 
 	web_context = webkit_web_context_new ();
 #if !GTK_CHECK_VERSION(4, 0, 0) || !WEBKIT_CHECK_VERSION(2, 39, 5)

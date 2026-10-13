@@ -181,8 +181,11 @@ struct _EOAuth2ServiceInterface {
 							(EOAuth2Service *service,
 							 ESource *source,
 							 GCancellable *cancellable);
+	gchar *		(* dup_credentials_user_agent)
+							(EOAuth2Service *service,
+							 ESource *source);
 	/* Padding for future expansion */
-	gpointer reserved[8];
+	gpointer reserved[7];
 };
 
 GType		e_oauth2_service_get_type		(void) G_GNUC_CONST;
@@ -247,6 +250,9 @@ GSList*		e_oauth2_service_dup_credentials_prompter_cookies_sync
 							(EOAuth2Service *service,
 							 ESource *source,
 							 GCancellable *cancellable);
+gchar *		e_oauth2_service_dup_credentials_user_agent
+							(EOAuth2Service *service,
+							 ESource *source);
 gboolean	e_oauth2_service_receive_and_store_token_sync
 							(EOAuth2Service *service,
 							 ESource *source,
