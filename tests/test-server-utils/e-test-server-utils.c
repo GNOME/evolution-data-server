@@ -1072,3 +1072,99 @@ e_test_server_utils_run_full (gint argc,
 
 	return tests_ret;
 }
+
+/* Fails every host name lookup at once; other lookups are not implemented */
+typedef GResolver ETestFailingResolver;
+typedef GResolverClass ETestFailingResolverClass;
+
+GType e_test_failing_resolver_get_type (void) G_GNUC_CONST;
+
+G_DEFINE_TYPE (ETestFailingResolver, e_test_failing_resolver, G_TYPE_RESOLVER)
+
+static GList *
+e_test_failing_resolver_lookup_by_name_with_flags (GResolver *resolver,
+						   const gchar *hostname,
+						   GResolverNameLookupFlags flags,
+						   GCancellable *cancellable,
+						   GError **error)
+{
+	g_set_error (error, G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, "No DNS in the test: %s", hostname);
+
+	return NULL;
+}
+
+static GList *
+e_test_failing_resolver_lookup_by_name (GResolver *resolver,
+					const gchar *hostname,
+					GCancellable *cancellable,
+					GError **error)
+{
+	return e_test_failing_resolver_lookup_by_name_with_flags (resolver, hostname, G_RESOLVER_NAME_LOOKUP_FLAGS_DEFAULT, cancellable, error);
+}
+
+static void
+e_test_failing_resolver_lookup_by_name_with_flags_async (GResolver *resolver,
+							 const gchar *hostname,
+							 GResolverNameLookupFlags flags,
+							 GCancellable *cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer user_data)
+{
+	GTask *task;
+
+	task = g_task_new (resolver, cancellable, callback, user_data);
+	g_task_return_new_error (task, G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, "No DNS in the test: %s", hostname);
+	g_object_unref (task);
+}
+
+static void
+e_test_failing_resolver_lookup_by_name_async (GResolver *resolver,
+					      const gchar *hostname,
+					      GCancellable *cancellable,
+					      GAsyncReadyCallback callback,
+					      gpointer user_data)
+{
+	e_test_failing_resolver_lookup_by_name_with_flags_async (resolver, hostname, G_RESOLVER_NAME_LOOKUP_FLAGS_DEFAULT, cancellable, callback, user_data);
+}
+
+static GList *
+e_test_failing_resolver_lookup_by_name_finish (GResolver *resolver,
+					       GAsyncResult *result,
+					       GError **error)
+{
+	return g_task_propagate_pointer (G_TASK (result), error);
+}
+
+static void
+e_test_failing_resolver_class_init (ETestFailingResolverClass *klass)
+{
+	klass->lookup_by_name = e_test_failing_resolver_lookup_by_name;
+	klass->lookup_by_name_async = e_test_failing_resolver_lookup_by_name_async;
+	klass->lookup_by_name_finish = e_test_failing_resolver_lookup_by_name_finish;
+	klass->lookup_by_name_with_flags = e_test_failing_resolver_lookup_by_name_with_flags;
+	klass->lookup_by_name_with_flags_async = e_test_failing_resolver_lookup_by_name_with_flags_async;
+	klass->lookup_by_name_with_flags_finish = e_test_failing_resolver_lookup_by_name_finish;
+}
+
+static void
+e_test_failing_resolver_init (ETestFailingResolver *resolver)
+{
+}
+
+/**
+ * e_test_server_utils_setup_failing_resolver:
+ *
+ * Makes every host name lookup in the test process fail at once, for
+ * tests which must not depend on a DNS server answering.
+ *
+ * Since: 3.64
+ */
+void
+e_test_server_utils_setup_failing_resolver (void)
+{
+	GResolver *resolver;
+
+	resolver = g_object_new (e_test_failing_resolver_get_type (), NULL);
+	g_resolver_set_default (resolver);
+	g_object_unref (resolver);
+}

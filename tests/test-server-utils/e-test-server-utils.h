@@ -149,5 +149,6 @@ void e_test_server_utils_prepare_run (gint argc,
 				      gchar *argv[],
 				      ETestServerFlags flags);
 void e_test_server_utils_finish_run (void);
+void e_test_server_utils_setup_failing_resolver (void);
 
 #endif /* E_TEST_UTILS_H */

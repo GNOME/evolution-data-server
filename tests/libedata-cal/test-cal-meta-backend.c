@@ -5398,6 +5398,7 @@ main (gint argc,
 	gint res;
 
 	g_test_init (&argc, &argv, NULL);
+	e_test_server_utils_setup_failing_resolver ();
 	g_test_bug_base ("https://gitlab.gnome.org/GNOME/evolution-data-server/");
 
 	tcu_read_args (argc, argv);
