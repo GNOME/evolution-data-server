@@ -7,10 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 4.0\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
-"issues/\n"
-"POT-Creation-Date: 2026-09-02 09:52+0000\n"
-"PO-Revision-Date: 2026-09-09 13:25+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/issues/\n"
+"POT-Creation-Date: 2026-10-14 07:30+0000\n"
+"PO-Revision-Date: 2026-10-18 10:11+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -33,13 +32,13 @@ msgid "Given URL “%s” doesn’t reference CardDAV address book"
 msgstr "Oppgitt URL «%s» refererer ikke til en CardDAV-adressebok"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1822
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1686
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1753
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:988
 msgid "Server didn’t return object’s href"
 msgstr "Tjener returnerte ikke en objektets href"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1824
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1688
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1755
 #: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:990
 msgid "Server didn’t return object’s ETag"
 msgstr "Tjener returnerte ikke objektets ETag"
@@ -49,16 +48,16 @@ msgid "Received object is not a valid vCard"
 msgstr "Mottatt objekt er ikke et gyldig vCard"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1948
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1858
-#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1272
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:1925
+#: src/calendar/backends/webdav-notes/e-cal-backend-webdav-notes.c:1273
 #, c-format
 msgid ""
 "Missing information about component URL, local cache is possibly incomplete "
 "or broken. You can try to remove it and restart background evolution-data-"
 "server processes. Cache file: %s"
 msgstr ""
-"Mangler informasjon om komponent-URL, lokal buffer er kanskje ikke komplett, "
-"eller ødelagt. Du kan prøve å fjern den og starte evolution-data-server på "
+"Mangler informasjon om komponent-URL, lokal buffer er kanskje ikke komplett,"
+" eller ødelagt. Du kan prøve å fjern den og starte evolution-data-server på "
 "nytt. Bufferfil: %s"
 
 #: src/addressbook/backends/carddav/e-book-backend-carddav.c:1954
@@ -95,7 +94,7 @@ msgid "Loading..."
 msgstr "Laster …"
 
 #: src/addressbook/backends/file/e-book-backend-file.c:1180
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4817
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4913
 msgid "Searching..."
 msgstr "Søker …"
 
@@ -136,8 +135,8 @@ msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Kunne ikke endre navn på gammel database fra «%s» til «%s»: %s"
 
 #: src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:132
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1133
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4700
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1138
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4796
 #: src/addressbook/libebook-contacts/e-book-contacts-utils.c:41
 #: src/addressbook/libebook-contacts/e-phone-number.c:41
 #: src/addressbook/libebook/e-book.c:1065
@@ -181,11 +180,11 @@ msgstr "Kunne ikke endre navn på gammel database fra «%s» til «%s»: %s"
 #: src/camel/providers/imapx/camel-imapx-server.c:3502
 #: src/camel/providers/imapx/camel-imapx-server.c:3514
 #: src/camel/providers/nntp/camel-nntp-store.c:410
-#: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
-#: src/libedataserver/e-soup-session.c:1129
+#: src/libebackend/e-server-side-source.c:504
+#: src/libedataserver/e-client.c:172 src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:349
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:352
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -197,49 +196,49 @@ msgstr "Ukjent feil"
 msgid "Not connected"
 msgstr "Ikke tilkoblet"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:875
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:880
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Klarte ikke å koble til med hverken v3 eller v2 binding"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:982
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:987
 msgid "Reconnecting to LDAP server..."
 msgstr "Kobler til LDAP-tjener på nytt …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1114
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1119
 msgid "Invalid DN syntax"
 msgstr "Ugyldig DN-syntaks"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1130
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4699
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1135
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4795
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-feil 0x%x (%s)"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1783
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2131
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2144
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:1788
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2136
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2149
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: NULL returnert fra ldap_first_entry"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2060
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2200
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2065
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2205
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Uhåndtert resultat type %d returnert"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2342
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2480
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6359
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2347
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2485
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6455
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Ikke håndtert søkeresultat av type %d ble returnert"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2637
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2642
 msgid "LDAP contact lists cannot be empty."
 msgstr "LDAP-kontaktlister kan ikke være tomme."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2675
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:2680
 #, c-format
 msgid ""
 "Contact lists in LDAP address books require each member to be from the same "
@@ -251,49 +250,49 @@ msgstr[0] ""
 "Kontaktlister i en LDAP-adressebok krever at alle medlemmer er fra samme "
 "LDAP-adressebok, men ett medlem ble ikke gjenkjent."
 msgstr[1] ""
-"Kontaktlister i LDAP-adressebøker krever at alle medlemmer er fra samme LDAP-"
-"adressebok, men %d medlemmer ble ikke gjenkjent."
+"Kontaktlister i LDAP-adressebøker krever at alle medlemmer er fra samme "
+"LDAP-adressebok, men %d medlemmer ble ikke gjenkjent."
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4646
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4742
 msgid "Receiving LDAP search results..."
 msgstr "Mottar søkeresultater fra LDAP-tjener …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4843
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:4939
 msgid "Error performing search"
 msgstr "Feil ved utføring av søk"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5053
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5149
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Laster ned kontakter (%d) …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5163
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5259
 #: src/addressbook/libedata-book/e-book-meta-backend.c:784
 #: src/calendar/libedata-cal/e-cal-meta-backend.c:726
 msgid "Refreshing…"
 msgstr "Oppdaterer …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5666
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5762
 msgid "The backend does not support bulk additions"
 msgstr "Motor støtter ikke å legge til flere oppføringer samtidig"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5761
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5857
 msgid "Adding contact to LDAP server..."
 msgstr "Legger til kontakt på LDAP-tjener …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5823
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5919
 msgid "The backend does not support bulk modifications"
 msgstr "Motor støtter ikke å legge til flere oppføringer samtidig"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5845
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5941
 msgid "Modifying contact from LDAP server..."
 msgstr "Endrer kontakt fra LDAP-tjener …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:5917
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6013
 msgid "Removing contact from LDAP server..."
 msgstr "Fjerner kontakt fra LDAP-tjener …"
 
-#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6556
+#: src/addressbook/backends/ldap/e-book-backend-ldap.c:6652
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Klarte ikke å hente DN for bruker «%s»"
@@ -326,7 +325,8 @@ msgstr "Unik ID"
 #. FILE_AS is not really a structured field - we use a getter/setter
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
-#. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
+#. * preferred user's description (or display name) of the contact. Note
+#. 'File' is a verb here.
 #: src/addressbook/libebook-contacts/e-contact.c:187
 msgid "File Under"
 msgstr "Arkiver under"
@@ -691,8 +691,10 @@ msgid "Last Revision"
 msgstr "Siste versjon"
 
 #. Translators: This is an EContact field description, in this case it's a
-#. * virtual field, which returns either name of the contact or the organization
-#. * name, recognized by multiple other fields, where the first filled is used.
+#. * virtual field, which returns either name of the contact or the
+#. organization
+#. * name, recognized by multiple other fields, where the first filled is
+#. used.
 #: src/addressbook/libebook-contacts/e-contact.c:304
 msgid "Name or Org"
 msgstr "Navn eller organisasjon"
@@ -728,8 +730,10 @@ msgstr "Fotografi"
 msgid "Logo"
 msgstr "Logo"
 
-#. Translators: This is an EContact field description, in this case it's a name
-#. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
+#. Translators: This is an EContact field description, in this case it's a
+#. name
+#. * of the contact, as specified in
+#. http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: src/addressbook/libebook-contacts/e-contact.c:321
 #: src/libedataserverui/e-webdav-discover-widget.c:183
 msgid "Name"
@@ -769,15 +773,19 @@ msgid "Wants HTML Mail"
 msgstr "Vil ha meldinger som HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
-#. * field describing whether it's a Contact list (list of email addresses) or a
+#. * field describing whether it's a Contact list (list of email addresses) or
+#. a
 #. * regular contact for one person/organization/...
 #: src/addressbook/libebook-contacts/e-contact.c:337
 msgid "List"
 msgstr "Liste"
 
-#. Translators: This is an EContact field description, in this case it's a flag
-#. * used to determine whether when sending to Contact lists the addresses should be
-#. * shown or not to other recipients - basically whether to use BCC field or CC
+#. Translators: This is an EContact field description, in this case it's a
+#. flag
+#. * used to determine whether when sending to Contact lists the addresses
+#. should be
+#. * shown or not to other recipients - basically whether to use BCC field or
+#. CC
 #. * message header when sending messages to this Contact list.
 #: src/addressbook/libebook-contacts/e-contact.c:342
 msgid "List Shows Addresses"
@@ -1025,7 +1033,8 @@ msgstr "Ugyldig landskode"
 
 #: src/addressbook/libebook-contacts/e-phone-number.c:34
 msgid ""
-"Remaining text after the country calling code is too short for a phone number"
+"Remaining text after the country calling code is too short for a phone "
+"number"
 msgstr ""
 "Gjenværende tekst etter landskode er for kort til å være et telefonnummer"
 
@@ -1176,8 +1185,8 @@ msgstr "Kan ikke sortere på et felt som kan ha flere verdier"
 #: src/addressbook/libedata-book/e-book-sqlite.c:8225
 #, c-format
 msgid ""
-"Tried to step a cursor in reverse, but cursor is already at the beginning of "
-"the contact list"
+"Tried to step a cursor in reverse, but cursor is already at the beginning of"
+" the contact list"
 msgstr ""
 "Prøvde å flytte en markør bakover, men markøren var allerede ved starten av "
 "kontaktlisten"
@@ -1227,7 +1236,7 @@ msgstr "Kan ikke åpne database %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2939
 #: src/calendar/libedata-cal/e-cal-cache.c:3002
 #: src/calendar/libedata-cal/e-cal-cache.c:3173
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1421
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1424
 #: src/libebackend/e-cache.c:1358 src/libebackend/e-cache.c:2334
 #: src/libebackend/e-cache.c:2374
 #, c-format
@@ -1266,32 +1275,34 @@ msgid "Contact field “%s” not in summary"
 msgstr "Kontaktfelt «%s» er ikke i sammendraget"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1080
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1132
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1133
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Forhåndslastet objekt for UID «%s» er ugyldig"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1141
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Mottatt objekt for UID «%s» er ugyldig"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1319
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1369
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1372
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
-msgstr "Hoppet over oppdatering fordi strømsparing er aktivert. Deaktiver strømsparing og gjenta handlingen."
+msgstr ""
+"Hoppet over oppdatering fordi strømsparing er aktivert. Deaktiver "
+"strømsparing og gjenta handlingen."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1325
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1378
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr "Hoppet over oppdatering fordi du er på et betalt nettverk."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2042
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2541
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3430
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3435
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Kunne ikke opprette underprosess «%s»:"
@@ -1395,7 +1406,7 @@ msgstr "Alfabetisk indeks ble satt for ugyldig locale"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Oppgitt URL «%s» har ingen referanse til en CalDAV-kalender"
 
-#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2406
+#: src/calendar/backends/caldav/e-cal-backend-caldav.c:2479
 msgid "Failed to parse response data"
 msgstr "Klarte ikke å tolke svardata"
 
@@ -1407,19 +1418,22 @@ msgstr "Fødselsdag"
 msgid "Deathday"
 msgstr "Dødsdag"
 
-#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Anniversary: %s" and "Death day: %s" strings
+#. Translators: The %s is replaced with a contact name, used in the Contacts
+#. calendar, beside "Anniversary: %s" and "Death day: %s" strings
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:1000
 #, c-format
 msgid "Birthday: %s"
 msgstr "Fødselsdag: %s"
 
-#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Death day: %s" strings
+#. Translators: The %s is replaced with a contact name, used in the Contacts
+#. calendar, beside "Birthday: %s" and "Death day: %s" strings
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:1025
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Jubileum: %s"
 
-#. Translators: The %s is replaced with a contact name, used in the Contacts calendar, beside "Birthday: %s" and "Anniversary: %s" strings
+#. Translators: The %s is replaced with a contact name, used in the Contacts
+#. calendar, beside "Birthday: %s" and "Anniversary: %s" strings
 #: src/calendar/backends/contacts/e-cal-backend-contacts.c:1050
 #, c-format
 msgid "Death day: %s"
@@ -1438,24 +1452,24 @@ msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 msgid "Cannot save calendar data"
 msgstr "Kan ikke lagre kalenderdata"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1188
-#: src/calendar/backends/file/e-cal-backend-file.c:1317
+#: src/calendar/backends/file/e-cal-backend-file.c:1190
+#: src/calendar/backends/file/e-cal-backend-file.c:1319
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "Kan ikke lese ICS-fil «%s»"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1199
-#: src/calendar/backends/file/e-cal-backend-file.c:1328
+#: src/calendar/backends/file/e-cal-backend-file.c:1201
+#: src/calendar/backends/file/e-cal-backend-file.c:1330
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Fil «%s» er ikke en VCALENDAR-komponent"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3759
 #: src/calendar/backends/file/e-cal-backend-file.c:3765
 #: src/calendar/backends/file/e-cal-backend-file.c:3771
-#: src/calendar/backends/file/e-cal-backend-file.c:3798
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
+#: src/calendar/backends/file/e-cal-backend-file.c:3777
+#: src/calendar/backends/file/e-cal-backend-file.c:3804
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2641
 msgid "Unsupported method"
 msgstr "Ikke støttet metode"
 
@@ -1518,13 +1532,15 @@ msgstr "Vær: Solskinn"
 msgid "Weather: Thunderstorms"
 msgstr "Vær: Tordenvær"
 
-#. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
+#. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is
+#. U+00B0 DEGREE SIGN)
 #: src/calendar/backends/weather/e-cal-backend-weather.c:379
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
-#. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
+#. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0
+#. DEGREE SIGN)
 #: src/calendar/backends/weather/e-cal-backend-weather.c:382
 #, c-format
 msgid "%.1f °C"
@@ -1763,11 +1779,16 @@ msgid_plural "Every %d weeks"
 msgstr[0] "Hver uke"
 msgstr[1] "Hver %d uker"
 
-#. Translators: This is used to merge set of week day names in a recurrence, which can contain any
-#. of the week day names. The string always starts with "on DAYNAME", then it can continue either
-#. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
-#. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
-#. the previously gathered text, while the '%2$s' is replaced with the text to append.
+#. Translators: This is used to merge set of week day names in a recurrence,
+#. which can contain any
+#. of the week day names. The string always starts with "on DAYNAME", then it
+#. can continue either
+#. with ", DAYNAME" or " and DAYNAME", thus it can be something like "on
+#. Monday and Tuesday"
+#. or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is
+#. replaced with
+#. the previously gathered text, while the '%2$s' is replaced with the text to
+#. append.
 #: src/calendar/libecal/e-cal-recur.c:5217
 #, c-format
 msgctxt "recur-description-dayname"
@@ -1935,187 +1956,218 @@ msgctxt "recur-description"
 msgid "on the last Saturday"
 msgstr "på siste lørdag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5454
 msgctxt "recur-description"
 msgid "on the 1st day"
 msgstr "på første dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the 2nd day"
 msgstr "på andre dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5462
 msgctxt "recur-description"
 msgid "on the 3rd day"
 msgstr "på tredje dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5466
 msgctxt "recur-description"
 msgid "on the 4th day"
 msgstr "på fjerde dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5470
 msgctxt "recur-description"
 msgid "on the 5th day"
 msgstr "på femte dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the 6th day"
 msgstr "på sjette dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5478
 msgctxt "recur-description"
 msgid "on the 7th day"
 msgstr "på sjuende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5482
 msgctxt "recur-description"
 msgid "on the 8th day"
 msgstr "på åttende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the 9th day"
 msgstr "på niende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5490
 msgctxt "recur-description"
 msgid "on the 10th day"
 msgstr "på tiende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5494
 msgctxt "recur-description"
 msgid "on the 11th day"
 msgstr "på ellevte dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5498
 msgctxt "recur-description"
 msgid "on the 12th day"
 msgstr "på tolvte dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the 13th day"
 msgstr "på trettende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5506
 msgctxt "recur-description"
 msgid "on the 14th day"
 msgstr "på fjortende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5510
 msgctxt "recur-description"
 msgid "on the 15th day"
 msgstr "på femtende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the 16th day"
 msgstr "på sekstende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5518
 msgctxt "recur-description"
 msgid "on the 17th day"
 msgstr "på søttende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5522
 msgctxt "recur-description"
 msgid "on the 18th day"
 msgstr "på attende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5526
 msgctxt "recur-description"
 msgid "on the 19th day"
 msgstr "på nittende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5530
 msgctxt "recur-description"
 msgid "on the 20th day"
 msgstr "på tjuende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5534
 msgctxt "recur-description"
 msgid "on the 21st day"
 msgstr "på tjueførste dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5538
 msgctxt "recur-description"
 msgid "on the 22nd day"
 msgstr "på tjueandre dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5542
 msgctxt "recur-description"
 msgid "on the 23rd day"
 msgstr "på tjuetredje dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5546
 msgctxt "recur-description"
 msgid "on the 24th day"
 msgstr "på tjuefjerde dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5550
 msgctxt "recur-description"
 msgid "on the 25th day"
 msgstr "på tjuefemte dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5554
 msgctxt "recur-description"
 msgid "on the 26th day"
 msgstr "på tjuesjette dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the 27th day"
 msgstr "på tjuesjuende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5562
 msgctxt "recur-description"
 msgid "on the 28th day"
 msgstr "på tjueåttende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5566
 msgctxt "recur-description"
 msgid "on the 29th day"
 msgstr "på tjueniende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5570
 msgctxt "recur-description"
 msgid "on the 30th day"
 msgstr "på trettiende dag"
 
-#. Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day"
+#. Translators: This is added to a monthly recurrence, forming something like
+#. "Every month on the Xth day"
 #: src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the 31st day"
@@ -2324,8 +2376,10 @@ msgid_plural "Every %d years"
 msgstr[0] "Hvert år"
 msgstr[1] "Hvert %d år"
 
-#. Translators: This is one of the last possible parts of a recurrence description.
-#. The text is appended at the end of the complete recurrence description, making it
+#. Translators: This is one of the last possible parts of a recurrence
+#. description.
+#. The text is appended at the end of the complete recurrence description,
+#. making it
 #. for example: "Every 3 days for 10 occurrences"
 #: src/calendar/libecal/e-cal-recur.c:5812
 #, c-format
@@ -2334,35 +2388,44 @@ msgid_plural "for %d occurrences"
 msgstr[0] "for en gjentakelse"
 msgstr[1] "for %d gjentakelser"
 
-#. Translators: This is one of the last possible parts of a recurrence description.
+#. Translators: This is one of the last possible parts of a recurrence
+#. description.
 #. The '%s' is replaced with actual date, thus it can create something like
 #. "until Mon 15.1.2018". The text is appended at the end of the complete
-#. recurrence description, making it for example: "Every 3 days until Mon 15.1.2018"
+#. recurrence description, making it for example: "Every 3 days until Mon
+#. 15.1.2018"
 #: src/calendar/libecal/e-cal-recur.c:5848
 #, c-format
 msgctxt "recur-description"
 msgid "until %s"
 msgstr "inntil %s"
 
-#. Translators: This is one of the last possible parts of a recurrence description.
-#. The text is appended at the end of the complete recurrence description, making it
+#. Translators: This is one of the last possible parts of a recurrence
+#. description.
+#. The text is appended at the end of the complete recurrence description,
+#. making it
 #. for example: "Every 2 months on Tuesday, Thursday and Friday forever"
 #: src/calendar/libecal/e-cal-recur.c:5854
 msgctxt "recur-description"
 msgid "forever"
 msgstr "for alltid"
 
-#. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
-#. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
-#. together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences".
+#. Translators: This constructs a complete recurrence description; the '%1$s'
+#. is like "Every 2 weeks",
+#. the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10
+#. occurrences", constructing
+#. together one sentence: "Every 2 weeks on Tuesday and Friday for 10
+#. occurrences".
 #: src/calendar/libecal/e-cal-recur.c:5864
 #, c-format
 msgctxt "recur-description"
 msgid "%1$s %2$s %3$s"
 msgstr "%1$s %2$s %3$s"
 
-#. Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
-#. the '%2$s' is like "for 10 occurrences", constructing together one sentence:
+#. Translators: This constructs a complete recurrence description; the '%1$s'
+#. is like "Every 2 days",
+#. the '%2$s' is like "for 10 occurrences", constructing together one
+#. sentence:
 #. "Every 2 days for 10 occurrences".
 #: src/calendar/libecal/e-cal-recur.c:5869
 #, c-format
@@ -2370,7 +2433,8 @@ msgctxt "recur-description"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#. Translators: This text is appended at the end of complete recur description using "%s%s" in
+#. Translators: This text is appended at the end of complete recur description
+#. using "%s%s" in
 #. context "recur-description"
 #: src/calendar/libecal/e-cal-recur.c:5885
 #, c-format
@@ -2379,9 +2443,12 @@ msgid_plural ", with %d exceptions"
 msgstr[0] ", med ett unntak"
 msgstr[1] ", med %d unntak"
 
-#. Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
-#. The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
-#. It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions"
+#. Translators: This appends text like ", with 3 exceptions" at the end of
+#. complete recurrence description.
+#. The "%1$s" is replaced with the recurrence description, the "%2$s" with the
+#. text about exceptions.
+#. It will form something like: "Every 2 weeks on Tuesday and Friday for 10
+#. occurrences, with 3 exceptions"
 #: src/calendar/libecal/e-cal-recur.c:5892
 #, c-format
 msgctxt "recur-description"
@@ -2413,7 +2480,8 @@ msgctxt "recur-description"
 msgid "The memo recurs"
 msgstr "Notatet gjentas"
 
-#. Translators: This adds a prefix in front of the complete recurrence description.
+#. Translators: This adds a prefix in front of the complete recurrence
+#. description.
 #. The '%1$s' is replaced with something like "The meeting recurs" and
 #. the '%2$s' with something like "every 2 days forever", thus forming
 #. sentence like "This meeting recurs every 2 days forever"
@@ -2479,7 +2547,8 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minutt"
 msgstr[1] "%d minutter"
 
-#. Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third")
+#. Translators: here, "second" is the time division (like "minute"), not the
+#. ordinal number (like "third")
 #: src/calendar/libecal/e-cal-util.c:1198
 #, c-format
 msgid "%d second"
@@ -2516,7 +2585,7 @@ msgstr "%s (%s)"
 #, c-format
 msgctxt "overdue"
 msgid "%s %s"
-msgstr "%s %s"
+msgstr "%s og %s"
 
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:65
 #: src/calendar/libedata-cal/e-cal-backend-sexp.c:1151
@@ -2659,18 +2728,20 @@ msgstr "Kan ikke legge til tidssone uten komponent"
 msgid "Cannot add timezone with invalid component"
 msgstr "Kan ikke legge til tidssone med ugyldig komponent"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1187
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1190
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Mottatt objekt for UID «%s» inneholder ikke forventet komponent"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1926
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1929
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
-msgstr "Kan ikke endre alle instanser fra en frakoblet instans. Endre en serieinstans i stedet."
+msgstr ""
+"Kan ikke endre alle instanser fra en frakoblet instans. Endre en "
+"serieinstans i stedet."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4329
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4334
 msgid "attachment.dat"
 msgstr "vedlegg.dat"
 
@@ -2782,16 +2853,16 @@ msgid "Unable to create cache path"
 msgstr "Kunne ikke opprette sti til buffer"
 
 #: src/camel/camel-data-cache.c:536
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create cache “%s”:"
 msgid "Failed to create cache file “%s”: %s"
-msgstr "Kunne ikke opprette underprosess «%s»:"
+msgstr "Kunne ikke opprette hurtigbuffer-filen «%s»: %s"
 
 #: src/camel/camel-data-cache.c:607
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgid "Failed to rename cache file “%s” to “%s”: %s"
-msgstr "Kunne ikke endre navn på gammel database fra «%s» til «%s»: %s"
+msgstr "Kunne ikke omdøpe hurtigbufferfilen «%s» til «%s»: %s"
 
 #: src/camel/camel-data-cache.c:700
 #, c-format
@@ -2813,8 +2884,10 @@ msgstr "Fil «%s» er allerede åpen"
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Kunne ikke endre navn på «%s» til %s: %s"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/camel-filter-driver.c:277
 #, c-format
@@ -2924,128 +2997,246 @@ msgstr "Ugyldige argumenter til (melding-lokasjon)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Feil under lagring av filtersøk: %s: %s"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:233
+#: src/camel/camel-folder.c:235 src/camel/camel-folder.c:915
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Lagrer endringer i mappe «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:509
+#: src/camel/camel-folder.c:511
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
 msgstr[0] "Lærer ny uønsket melding i «%s : %s»"
 msgstr[1] "Lærer nye uønskede meldinger i «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:552
+#: src/camel/camel-folder.c:554
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
 msgstr[0] "Lærer ny ønsket melding i «%s : %s»"
 msgstr[1] "Lærer nye ønskede meldinger i «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:600
+#: src/camel/camel-folder.c:602
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Filtrerer ny melding i «%s : %s»"
 msgstr[1] "Filtrerer nye meldinger i «%s : %s»"
 
-#: src/camel/camel-folder.c:1208
+#: src/camel/camel-folder.c:1282
 #: src/camel/providers/local/camel-maildir-folder.c:319
 msgid "Moving messages"
 msgstr "Flytter meldinger"
 
-#: src/camel/camel-folder.c:1211
+#: src/camel/camel-folder.c:1285
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1256
+#: src/camel/camel-folder.c:1330
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Kvoteinformasjon er ikke støttet for mappe «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:1358
+#: src/camel/camel-folder.c:1432
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Filtrerer mappe «%s : %s»"
 
-#: src/camel/camel-folder.c:1460
-#, fuzzy
+#: src/camel/camel-folder.c:1534
 #| msgid "Cannot get message with message ID %s: %s"
 msgid "Cannot get message headers, local message file not found"
-msgstr "Kan ikke hente melding med meldings-ID %s: %s"
+msgstr "Kan ikke hente meldingsoverskrifter, lokal meldingfil ikke funnet"
 
-#: src/camel/camel-folder.c:1476
-#, fuzzy
+#: src/camel/camel-folder.c:1550
 #| msgid "Cannot send message: sender address not valid."
 msgid "Cannot search message headers remotely, not supported"
-msgstr "Kan ikke sende melding: senderadresse ikke gyldig."
+msgstr "Kan ikke søke i meldingshoder på avstand, ikke støttet"
 
-#: src/camel/camel-folder.c:1574
-#, fuzzy
+#: src/camel/camel-folder.c:1648
 #| msgid "Forwarding messages is not supported"
 msgid "Cannot search message bodies remotely, not supported"
-msgstr "Videresending av meldinger er ikke støttet"
+msgstr "Kan ikke søke i meldingskroppene på avstand, ikke støttet"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3333
+#: src/camel/camel-folder.c:3407
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Tømmer mappe «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3468
+#: src/camel/camel-folder.c:3542
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Henter melding «%s» i «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3693
+#: src/camel/camel-folder.c:3767
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Henter kvoteinformasjon for «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder.c:3993
+#: src/camel/camel-folder.c:4067
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Oppdaterer mappe «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/camel-folder-summary.c:1778
+#: src/camel/camel-folder-summary.c:1887
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Slipp fri ubrukt minne for mappe «%s : %s»"
 
-#. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#: src/camel/camel-folder-summary.c:2078
+#| msgid "Could not create folder summary for %s"
+msgid "Failed to load folder summary from the database"
+msgstr "Kunne ikke laste mappesammendrag fra databasen"
+
+#: src/camel/camel-folder-view.c:2253 src/camel/camel-folder-view.c:2326
+#| msgid "Folders"
+msgid "Older"
+msgstr "Gammel"
+
+#: src/camel/camel-folder-view.c:2256
+msgid "Future"
+msgstr "Fremtid"
+
+#: src/camel/camel-folder-view.c:2274
+msgid "Today"
+msgstr "I dag"
+
+#: src/camel/camel-folder-view.c:2276 src/camel/camel-folder-view.c:2285
+msgid "Yesterday"
+msgstr "I går"
+
+#: src/camel/camel-folder-view.c:2278 src/camel/camel-folder-view.c:2289
+msgid "Last 7 Days"
+msgstr "Last 7 dager"
+
+#: src/camel/camel-folder-view.c:2280
+msgid "This Month"
+msgstr "Denne måneden"
+
+#: src/camel/camel-folder-view.c:2300
+#| msgid "Last Revision"
+msgid "Last Month"
+msgstr "Siste måned"
+
+#: src/camel/camel-folder-view.c:2305
+msgctxt "group-label"
+msgid "January"
+msgstr "januar"
+
+#: src/camel/camel-folder-view.c:2306
+msgctxt "group-label"
+msgid "February"
+msgstr "februar"
+
+#: src/camel/camel-folder-view.c:2307
+msgctxt "group-label"
+msgid "March"
+msgstr "mars"
+
+#: src/camel/camel-folder-view.c:2308
+msgctxt "group-label"
+msgid "April"
+msgstr "april"
+
+#: src/camel/camel-folder-view.c:2309
+msgctxt "group-label"
+msgid "May"
+msgstr "mai"
+
+#: src/camel/camel-folder-view.c:2310
+msgctxt "group-label"
+msgid "June"
+msgstr "juni"
+
+#: src/camel/camel-folder-view.c:2311
+msgctxt "group-label"
+msgid "July"
+msgstr "juli"
+
+#: src/camel/camel-folder-view.c:2312
+msgctxt "group-label"
+msgid "August"
+msgstr "august"
+
+#: src/camel/camel-folder-view.c:2313
+#| msgid "Member"
+msgctxt "group-label"
+msgid "September"
+msgstr "september"
+
+#: src/camel/camel-folder-view.c:2314
+msgctxt "group-label"
+msgid "October"
+msgstr "oktober"
+
+#: src/camel/camel-folder-view.c:2315
+#| msgid "Member"
+msgctxt "group-label"
+msgid "November"
+msgstr "november"
+
+#: src/camel/camel-folder-view.c:2316
+#| msgid "Member"
+msgctxt "group-label"
+msgid "December"
+msgstr "desember"
+
+#. Translators: The '%s' is replaced with the actual path and filename of the
+#. used gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:613
 #, c-format
 msgid "Output from %s:"
@@ -3136,8 +3327,10 @@ msgstr "Uventet svar fra GnuPG: %s"
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Kan ikke kryptere: Ingen gyldige mottakere spesifisert."
 
-#. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
-#. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#. Translators: The first '%s' is replaced with the e-mail address, like
+#. '<user@example.com>';
+#. the second '%s' is replaced with the actual path and filename of the used
+#. gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:1606
 #, c-format
 msgid ""
@@ -3148,42 +3341,49 @@ msgstr ""
 "problemstilling er at «%s» ikke har importert offentlig nøkkel for denne "
 "mottakeren."
 
-#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#. Translators: The '%s' is replaced with the e-mail address, like
+#. '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1613
 #, c-format
 msgid "Failed to encrypt: The public key for recipient “%s” was not found."
 msgstr "Kan ikke kryptere: Fant ikke offentlig nøkkel for mottakere «%s»."
 
-#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#. Translators: The '%s' is replaced with the e-mail address, like
+#. '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1620
 #, c-format
 msgid "Failed to encrypt: The key for recipient “%s” is revoked."
 msgstr "Kan ikke kryptere: Nøkkel for mottaker «%s» er tilbaketrukket."
 
-#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#. Translators: The '%s' is replaced with the e-mail address, like
+#. '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1627
 #, c-format
 msgid "Failed to encrypt: The key for recipient “%s” is expired."
 msgstr "Kan ikke kryptere: Nøkkel for mottaker «%s» er utløpt."
 
-#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#. Translators: The '%s' is replaced with the e-mail address, like
+#. '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1634
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to encrypt: No valid recipients specified."
 msgid "Failed to encrypt: The key for recipient “%s” is not trusted."
-msgstr "Kan ikke kryptere: Ingen gyldige mottakere spesifisert."
+msgstr "Klarte ikke kryptere: Nøkkelen for mottaker \"%s\" er ikke betrodd."
 
-#. Translators: The '%s' is replaced with the e-mail address, like '<user@example.com>'
+#. Translators: The '%s' is replaced with the e-mail address, like
+#. '<user@example.com>'
 #: src/camel/camel-gpg-context.c:1641
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to encrypt: No valid recipients specified."
 msgid "Failed to encrypt: The key for recipient “%s” is disabled."
-msgstr "Kan ikke kryptere: Ingen gyldige mottakere spesifisert."
+msgstr "Kryptering mislyktes: Nøkkelen for mottaker \"%s\" er deaktivert."
 
-#. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
-#. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#. Translators: The first '%s' is replaced with the e-mail address, like
+#. '<user@example.com>';
+#. the second '%s' is replaced with the actual path and filename of the used
+#. gpg, like '/usr/bin/gpg2'
 #: src/camel/camel-gpg-context.c:1649
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 #| "the %s doesn’t have imported public key for this recipient."
@@ -3191,17 +3391,16 @@ msgid ""
 "Failed to encrypt: Invalid recipient “%s” specified (code %d). A common "
 "issue is that the “%s” doesn’t have imported public key for this recipient."
 msgstr ""
-"Klarte ikke å kryptere: Ugyldig mottaker %s oppgitt. En vanlig "
-"problemstilling er at %s ikke har importert offentlig nøkkel for denne "
-"mottakeren."
+"Kryptering mislyktes: Ugyldig mottaker «%s» angitt (kode %d). Et vanlig "
+"problem er at «%s» ikke har importert offentlig nøkkel for denne mottakeren."
 
 #: src/camel/camel-gpg-context.c:1713 src/camel/camel-gpg-context.c:1724
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to get password from GOA: "
 msgid "Failed to pass command to GPG: %s"
-msgstr "Klarte ikke å hente passord fra GOA: "
+msgstr "Kunne ikke sende kommando til GPG: %s"
 
-#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1022
+#: src/camel/camel-gpg-context.c:2567 src/camel/camel-smime-context.c:1045
 msgid "Could not generate signing data: "
 msgstr "Kan ikke generere signeringsdata: "
 
@@ -3215,8 +3414,8 @@ msgstr "Feil ved kjøring av gpg."
 
 #: src/camel/camel-gpg-context.c:2726 src/camel/camel-gpg-context.c:2734
 #: src/camel/camel-gpg-context.c:2742 src/camel/camel-gpg-context.c:2762
-#: src/camel/camel-smime-context.c:1153 src/camel/camel-smime-context.c:1167
-#: src/camel/camel-smime-context.c:1179
+#: src/camel/camel-smime-context.c:1177 src/camel/camel-smime-context.c:1191
+#: src/camel/camel-smime-context.c:1203
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Kunne ikke verifisere meldingens signatur: Ugyldig meldingsformat"
@@ -3228,10 +3427,6 @@ msgstr "Kunne ikke verifisere meldingens signatur: "
 #: src/camel/camel-gpg-context.c:2977
 msgid "Could not generate encrypting data: "
 msgstr "Kunne ikke generere krypteringsdata: "
-
-#: src/camel/camel-gpg-context.c:3059
-msgid "This is a digitally encrypted message part"
-msgstr "Dette er en digitalt kryptert meldingsdel"
 
 #: src/camel/camel-gpg-context.c:3121 src/camel/camel-gpg-context.c:3130
 #: src/camel/camel-gpg-context.c:3155
@@ -3250,13 +3445,13 @@ msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Feil under dekryptering av MIME-del: Hemmelig nøkkel ikke funnet"
 
 #: src/camel/camel-gpg-context.c:3231
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to decrypt MIME part: protocol error"
 msgid "Failed to decrypt MIME part: %s"
-msgstr "Feil under dekryptering av MIME-del: protokollfeil"
+msgstr "Klarte ikke dekryptere MIME-delen: %s"
 
 #: src/camel/camel-gpg-context.c:3270 src/camel/camel-multipart-encrypted.c:34
-#: src/camel/camel-smime-context.c:1722
+#: src/camel/camel-smime-context.c:1746
 msgid "Encrypted content"
 msgstr "Kryptert innhold"
 
@@ -3413,34 +3608,42 @@ msgstr "Navneoppslag «%s» feilet: %s"
 msgid "Checking reachability of account “%s”"
 msgstr "Sjekker om konto «%s» kan nås"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/camel-offline-folder.c:182
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr "Laster ned nye meldinger for frakoblet modus i «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/camel-offline-folder.c:301
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr "Sjekker nedlasting av nye meldinger for frakoblet modus i «%s : %s»"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/camel-offline-folder.c:377
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Synkroniserer meldinger i mappe «%s : %s» til disk"
 
-#. Translators: The first “%d” is the sequence number of the message, the second “%d”
+#. Translators: The first “%d” is the sequence number of the message, the
+#. second “%d”
 #. is the total number of messages to synchronize.
 #. The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/camel-offline-folder.c:481
 #, c-format
@@ -3498,7 +3701,8 @@ msgstr "Dette valget vil koble til tjeneren med anonym pålogging."
 msgid "Authentication failed."
 msgstr "Autentisering feilet."
 
-#. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
+#. Translators: the 'trace information' term comes from
+#. https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an email address as the trace information,
 #. but the provided value is not a valid email address.
 #: src/camel/camel-sasl-anonymous.c:71
@@ -3510,7 +3714,8 @@ msgstr ""
 "Ugyldig informasjon i sporing av e-postadresse:\n"
 "%s"
 
-#. Translators: the 'trace information' term comes from https://tools.ietf.org/html/rfc4505
+#. Translators: the 'trace information' term comes from
+#. https://tools.ietf.org/html/rfc4505
 #. In this case the user set to use an opaque trace information,
 #. but the provided value looks like an email address.
 #: src/camel/camel-sasl-anonymous.c:88
@@ -3585,7 +3790,8 @@ msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: src/camel/camel-sasl-gssapi.c:77
-msgid "This option will connect to the server using Kerberos 5 authentication."
+msgid ""
+"This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Dette alternativet kobler til tjeneren med bruk av Kerberos 5-autentisering."
 
@@ -3619,8 +3825,8 @@ msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr ""
-"Oppgitt parameter for target_name inneholdt et navn som var ugyldig eller av "
-"en ikke støttet type."
+"Oppgitt parameter for target_name inneholdt et navn som var ugyldig eller av"
+" en ikke støttet type."
 
 #: src/camel/camel-sasl-gssapi.c:195
 msgid ""
@@ -3632,8 +3838,8 @@ msgstr ""
 
 #: src/camel/camel-sasl-gssapi.c:200
 msgid ""
-"The input_token contains an invalid signature, or a signature that could not "
-"be verified."
+"The input_token contains an invalid signature, or a signature that could not"
+" be verified."
 msgstr ""
 "input_token inneholder en ugyldig signatur eller en signatur som ikke kunne "
 "verifiseres."
@@ -3679,7 +3885,10 @@ msgid ""
 "Cannot ask for Kerberos ticket. Obtain the ticket manually, like on command "
 "line with “kinit” or open “Online Accounts” in “Settings” and add the "
 "Kerberos account there. Reported error was: %s"
-msgstr "Kan ikke be om en Kerberos-billett. Hent billetten manuelt. Enten på kommandolinjen med «kinit» eller åpne «Tilkoblede kontoer» i «Innstillinger» og legg til Kerberos-kontoen der. Rapportert feil var: %s"
+msgstr ""
+"Kan ikke be om en Kerberos-billett. Hent billetten manuelt. Enten på "
+"kommandolinjen med «kinit» eller åpne «Tilkoblede kontoer» i «Innstillinger»"
+" og legg til Kerberos-kontoen der. Rapportert feil var: %s"
 
 #: src/camel/camel-sasl-gssapi.c:507
 #, c-format
@@ -3699,11 +3908,11 @@ msgstr "Dette valget vil koble til tjeneren ved bruk av et passord."
 msgid "Unknown authentication state."
 msgstr "Ukjent autentiseringstilstand."
 
-#: src/camel/camel-sasl-ntlm.c:27
+#: src/camel/camel-sasl-ntlm.c:28
 msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
-#: src/camel/camel-sasl-ntlm.c:29
+#: src/camel/camel-sasl-ntlm.c:30
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
@@ -3743,8 +3952,25 @@ msgid "OAuth2"
 msgstr "OAuth2"
 
 #: src/camel/camel-sasl-xoauth2.c:16
-msgid "This option will use an OAuth 2.0 access token to connect to the server"
-msgstr "Dette alternativet vil bruke et OAuth 2.0 tilgangstegn for å koble til tjeneren"
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the server"
+msgstr ""
+"Dette alternativet vil bruke et OAuth 2.0 tilgangstegn for å koble til "
+"tjeneren"
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:23
+msgid "OAuth2 (dynamic client)"
+msgstr "OAuth2 (dynamisk klient)"
+
+#: src/camel/camel-sasl-xoauth2-dynamic.c:24
+#| msgid ""
+#| "This option will use an OAuth 2.0 access token to connect to the server"
+msgid ""
+"This option will use an OAuth 2.0 access token, of a dynamically registered "
+"client, to connect to the server"
+msgstr ""
+"Denne innstillingen vil bruke et OAuth 2.0-tilgangstoken fra en klient som "
+"er registrert dynamisk, for å koble til serveren."
 
 #: src/camel/camel-sasl-xoauth2-google.c:12
 msgid "OAuth2 (Google)"
@@ -3754,7 +3980,9 @@ msgstr "OAuth2 (Google)"
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Google "
 "server"
-msgstr "Dette alternativet vil bruke en OAuth 2.0 tilgangstegn for å koble til Google-tjeneren"
+msgstr ""
+"Dette alternativet vil bruke en OAuth 2.0 tilgangstegn for å koble til "
+"Google-tjeneren"
 
 #: src/camel/camel-sasl-xoauth2-outlook.c:12
 msgid "OAuth2 (Outlook)"
@@ -3762,9 +3990,11 @@ msgstr "OAuth2 (Outlook)"
 
 #: src/camel/camel-sasl-xoauth2-outlook.c:13
 msgid ""
-"This option will use an OAuth 2.0 access token to connect to the Outlook.com "
-"server"
-msgstr "Dette alternativet vil bruke et OAuth 2.0 tilgangstegn for å koble til Outlook.com tjeneren"
+"This option will use an OAuth 2.0 access token to connect to the Outlook.com"
+" server"
+msgstr ""
+"Dette alternativet vil bruke et OAuth 2.0 tilgangstegn for å koble til "
+"Outlook.com tjeneren"
 
 #: src/camel/camel-sasl-xoauth2-yahoo.c:12
 msgid "OAuth2 (Yahoo!)"
@@ -3774,7 +4004,9 @@ msgstr "OAuth2 (Yahoo!)"
 msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Yahoo! "
 "server"
-msgstr "Dette alternativet vil bruke et OAuth 2.0 tilgangstegn for å koble til Yahoo! tjeneren"
+msgstr ""
+"Dette alternativet vil bruke et OAuth 2.0 tilgangstegn for å koble til "
+"Yahoo! tjeneren"
 
 #: src/camel/camel-search-private.c:127
 #, c-format
@@ -3838,11 +4070,11 @@ msgstr "sikkerhetsbibliotek: ugyldig AVA."
 
 #: src/camel/camel-smime-context.c:102
 msgid "Improperly formatted time string."
-msgstr ""
+msgstr "Uformatert tidsstreng."
 
 #: src/camel/camel-smime-context.c:103
 msgid "security library: improperly formatted DER-encoded message."
-msgstr ""
+msgstr "sikkerhetsbibliotek: feilaktig formatert DER-kodet melding."
 
 #: src/camel/camel-smime-context.c:104
 msgid "Peer's certificate has an invalid signature."
@@ -3886,11 +4118,11 @@ msgstr "sikkerhetsbibliotek: feil ved minneallokering."
 
 #: src/camel/camel-smime-context.c:114
 msgid "Peer's certificate issuer has been marked as not trusted by the user."
-msgstr ""
+msgstr "Peerens sertifikatutsteder er merket som ikke betrodd av brukeren."
 
 #: src/camel/camel-smime-context.c:115
 msgid "Peer's certificate has been marked as not trusted by the user."
-msgstr ""
+msgstr "Peerens sertifikat er markert som ikke betrodd av brukeren."
 
 #: src/camel/camel-smime-context.c:116
 msgid "Certificate already exists in your database."
@@ -3899,20 +4131,23 @@ msgstr "Sertifikatet finnes allerede i din database."
 #: src/camel/camel-smime-context.c:117
 msgid "Downloaded certificate's name duplicates one already in your database."
 msgstr ""
+"Sertifikatet du lastet ned har samme navn som et sertifikat som allerede "
+"finnes i databasen din."
 
 #: src/camel/camel-smime-context.c:118
-#, fuzzy
 #| msgid "Signing certificate not trusted"
 msgid "Error adding certificate to database."
-msgstr "Stoler ikke på sertifikat for signering"
+msgstr "Feil ved tilføying av sertifikat til databasen."
 
 #: src/camel/camel-smime-context.c:119
 msgid "Error refiling the key for this certificate."
-msgstr ""
+msgstr "Feil ved fylling av nøkkel for dette sertifikatet."
 
 #: src/camel/camel-smime-context.c:120
 msgid "The private key for this certificate cannot be found in key database"
 msgstr ""
+"Den private nøkkelen for dette sertifikatet kan ikke finnes i "
+"nøkkeldatabasen"
 
 #: src/camel/camel-smime-context.c:121
 msgid "This certificate is valid."
@@ -3924,37 +4159,39 @@ msgstr "Sertifikatet er ikke gyldig."
 
 #: src/camel/camel-smime-context.c:123
 msgid "Cert Library: No Response"
-msgstr ""
+msgstr "Cert Library: Ingen respons"
 
 #: src/camel/camel-smime-context.c:124
 msgid ""
 "The certificate issuer's certificate has expired.  Check your system date "
 "and time."
 msgstr ""
+"Sertifikatutstederens sertifikat har utløpt. Kontroller systemets dato og "
+"klokkeslett."
 
 #: src/camel/camel-smime-context.c:125
 msgid ""
 "The CRL for the certificate's issuer has expired.  Update it or check your "
 "system date and time."
 msgstr ""
+"CRL for sertifikatets utsteder er utløpt. Oppdater den eller kontroller "
+"systemets dato og klokkeslett."
 
 #: src/camel/camel-smime-context.c:126
 msgid "The CRL for the certificate's issuer has an invalid signature."
-msgstr ""
+msgstr "CRL-en for sertifikatets utsteder har en ugyldig signatur."
 
 #: src/camel/camel-smime-context.c:127
 msgid "New CRL has an invalid format."
-msgstr ""
+msgstr "Ny CRL har et ugyldig format."
 
 #: src/camel/camel-smime-context.c:128
 msgid "Certificate extension value is invalid."
-msgstr ""
+msgstr "Sertifikatutvidelsesverdien er ugyldig."
 
 #: src/camel/camel-smime-context.c:129
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "Certificate extension not found."
-msgstr "Sertifikat for signering ble ikke funnet"
+msgstr "Sertifikatutvidelse ikke funnet."
 
 #: src/camel/camel-smime-context.c:130
 msgid "Issuer certificate is invalid."
@@ -3962,82 +4199,89 @@ msgstr "Utstedersertifikat er ugyldig."
 
 #: src/camel/camel-smime-context.c:131
 msgid "Certificate path length constraint is invalid."
-msgstr ""
+msgstr "Sertifikatstipolengdebegrensningen er ugyldig."
 
 #: src/camel/camel-smime-context.c:132
 msgid "Certificate usages field is invalid."
-msgstr ""
+msgstr "Sertifikatbruk-feltet er ugyldig."
 
 #: src/camel/camel-smime-context.c:133
 msgid "**Internal ONLY module**"
-msgstr ""
+msgstr "**Internt-modul</p>"
 
 #: src/camel/camel-smime-context.c:134
-#, fuzzy
-#| msgid "The backend does not support bulk additions"
 msgid "The key does not support the requested operation."
-msgstr "Motor støtter ikke å legge til flere oppføringer samtidig"
+msgstr "Nøkkelen støtter ikke den forespurte operasjonen."
 
 #: src/camel/camel-smime-context.c:135
 msgid "Certificate contains unknown critical extension."
-msgstr ""
+msgstr "Sertifikatet inneholder ukjent kritisk utvidelse."
 
 #: src/camel/camel-smime-context.c:136
 msgid "New CRL is not later than the current one."
-msgstr ""
+msgstr "Ny CRL er ikke senere enn den nåværende."
 
 #: src/camel/camel-smime-context.c:137
 msgid "Not encrypted or signed: you do not yet have an email certificate."
-msgstr ""
+msgstr "Ikke kryptert eller signert: du har ennå ikke et e-postsertifikat."
 
 #: src/camel/camel-smime-context.c:138
-msgid "Not encrypted: you do not have certificates for each of the recipients."
-msgstr ""
+msgid ""
+"Not encrypted: you do not have certificates for each of the recipients."
+msgstr "Ikke kryptert: du har ikke sertifikater for noen av mottakerne."
 
 #: src/camel/camel-smime-context.c:139
 msgid ""
-"Cannot decrypt: you are not a recipient, or matching certificate and private "
-"key not found."
+"Cannot decrypt: you are not a recipient, or matching certificate and private"
+" key not found."
 msgstr ""
+"Kan ikke dekryptere: du er ikke mottaker, eller tilsvarende sertifikat og "
+"privat nøkkel ble ikke funnet."
 
 #: src/camel/camel-smime-context.c:140
 msgid ""
 "Cannot decrypt: key encryption algorithm does not match your certificate."
 msgstr ""
+"Kan ikke dekryptere: nøkkelkrypteringsalgoritmen samsvarer ikke med "
+"sertifikatet ditt."
 
 #: src/camel/camel-smime-context.c:141
 msgid ""
 "Signature verification failed: no signer found, too many signers found, or "
 "improper or corrupted data."
 msgstr ""
+"Signaturverifiseringen mislyktes: ingen signaturfunn, for mange signaturer "
+"funnet, eller feilaktige eller ødelagte data."
 
 #: src/camel/camel-smime-context.c:142
 msgid "Unsupported or unknown key algorithm."
-msgstr ""
+msgstr "Ustøttet eller ukjent nøkkelalgoritme."
 
 #: src/camel/camel-smime-context.c:143
 msgid "Cannot decrypt: encrypted using a disallowed algorithm or key size."
 msgstr ""
+"Kan ikke dekryptere: kryptert med en ikke-tillatt algoritme eller "
+"nøkkelstørrelse."
 
 #: src/camel/camel-smime-context.c:144
 msgid ""
 "Fortezza card has not been properly initialized.  Please remove it and "
 "return it to your issuer."
 msgstr ""
+"Fortezza-kortet er ikke ordentlig initialisert. Vennligst fjern det og "
+"returner det til utstederen."
 
 #: src/camel/camel-smime-context.c:145
 msgid "No Fortezza cards Found"
-msgstr ""
+msgstr "Ingen Fortezza-kort funnet"
 
 #: src/camel/camel-smime-context.c:146
-#, fuzzy
-#| msgid "No reminder is selected."
 msgid "No Fortezza card selected"
-msgstr "Ingen påminnelse valgt"
+msgstr "Intet Fortezza-kort valgt"
 
 #: src/camel/camel-smime-context.c:147
 msgid "Please select a personality to get more info on"
-msgstr ""
+msgstr "Vennligst velg en personlighet for å få mer informasjon om"
 
 #: src/camel/camel-smime-context.c:148
 msgid "Personality not found"
@@ -4045,7 +4289,7 @@ msgstr "Personligheten ble ikke funnet"
 
 #: src/camel/camel-smime-context.c:149
 msgid "No more information on that Personality"
-msgstr ""
+msgstr "Ingen mer informasjon om den Personligheten"
 
 #: src/camel/camel-smime-context.c:150
 msgid "Invalid Pin"
@@ -4053,517 +4297,487 @@ msgstr "Ugyldig PIN"
 
 #: src/camel/camel-smime-context.c:151
 msgid "Couldn't initialize Fortezza personalities."
-msgstr ""
+msgstr "Kunne ikke initialisere Fortezza-personligheter."
 
 #: src/camel/camel-smime-context.c:152
 msgid "No KRL for this site's certificate has been found."
-msgstr ""
+msgstr "Ingen KRL for dette nettstedets sertifikat er funnet."
 
 #: src/camel/camel-smime-context.c:153
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "The KRL for this site's certificate has expired."
-msgstr "Sertifikatet har utløpt."
+msgstr "KRL-en for dette nettstedets sertifikat er utløpt."
 
 #: src/camel/camel-smime-context.c:154
 msgid "The KRL for this site's certificate has an invalid signature."
-msgstr ""
+msgstr "KRL-en for dette nettstedets sertifikat har en ugyldig signatur."
 
 #: src/camel/camel-smime-context.c:155
-#, fuzzy
-#| msgid "The certificate has expired."
 msgid "The key for this site's certificate has been revoked."
-msgstr "Sertifikatet har utløpt."
+msgstr "Nøkkelen for dette nettstedets sertifikat har blitt tilbakekalt."
 
 #: src/camel/camel-smime-context.c:156
 msgid "New KRL has an invalid format."
-msgstr ""
+msgstr "Ny KRL har et ugyldig format."
 
 #: src/camel/camel-smime-context.c:157
 msgid "security library: need random data."
-msgstr ""
+msgstr "sikkerhetsbibliotek: trenger tilfeldige data."
 
 #: src/camel/camel-smime-context.c:158
 msgid ""
 "security library: no security module can perform the requested operation."
 msgstr ""
+"sikkerhetsbibliotek: ingen sikkerhetsmodul kan utføre den forespurte "
+"operasjonen."
 
 #: src/camel/camel-smime-context.c:159
 msgid ""
 "The security card or token does not exist, needs to be initialized, or has "
 "been removed."
 msgstr ""
+"Sikkerhetskortet eller tokenet eksisterer ikke, må initialiseres, eller har "
+"blitt fjernet."
 
 #: src/camel/camel-smime-context.c:160
 msgid "security library: read-only database."
-msgstr ""
+msgstr "sikkerhetsbibliotek: skrivebeskyttet database."
 
 #: src/camel/camel-smime-context.c:161
-#, fuzzy
-#| msgid "No reminder is selected."
 msgid "No slot or token was selected."
-msgstr "Ingen påminnelse valgt"
+msgstr "Ingen spor eller token ble valgt."
 
 #: src/camel/camel-smime-context.c:162
 msgid "A certificate with the same nickname already exists."
-msgstr ""
+msgstr "Et sertifikat med samme kallenavn eksisterer allerede."
 
 #: src/camel/camel-smime-context.c:163
 msgid "A key with the same nickname already exists."
-msgstr ""
+msgstr "En nøkkel med samme kallenavn eksisterer allerede."
 
 #: src/camel/camel-smime-context.c:164
-#, fuzzy
-#| msgid "Error creating folder"
 msgid "error while creating safe object"
-msgstr "Feil ved oppretting av mappe"
+msgstr "feil under opprettelse av sikkert objekt"
 
 #: src/camel/camel-smime-context.c:165
 msgid "error while creating baggage object"
-msgstr ""
+msgstr "feil under opprettelse av baggage-objekt"
 
 #: src/camel/camel-smime-context.c:166
-#, fuzzy
-#| msgid "Could not open the link."
 msgid "Couldn't remove the principal"
-msgstr "Kunne ikke åpne lenken."
+msgstr "Kunne ikke fjerne hovedenheten"
 
 #: src/camel/camel-smime-context.c:167
-#, fuzzy
-#| msgid "Could not create cache file"
 msgid "Couldn't delete the privilege"
-msgstr "Kunne ikke opprette bufferfil"
+msgstr "Kunnet ikke slette privilegiet"
 
 #: src/camel/camel-smime-context.c:168
 msgid "This principal doesn't have a certificate"
-msgstr ""
+msgstr "Denne hovedpersonen har ikke et sertifikat"
 
 #: src/camel/camel-smime-context.c:169
 msgid "Required algorithm is not allowed."
-msgstr ""
+msgstr "Nødvendig algoritme er ikke tillatt."
 
 #: src/camel/camel-smime-context.c:170
 msgid "Error attempting to export certificates."
-msgstr ""
+msgstr "Feil ved eksport av sertifikater."
 
 #: src/camel/camel-smime-context.c:171
 msgid "Error attempting to import certificates."
-msgstr ""
+msgstr "Feil ved forsøk på å importere sertifikater."
 
 #: src/camel/camel-smime-context.c:172
 msgid "Unable to import.  Decoding error.  File not valid."
-msgstr ""
+msgstr "Kunne ikke importere. Dekodingsfeil. Filen er ikke gyldig."
 
 #: src/camel/camel-smime-context.c:173
 msgid "Unable to import.  Invalid MAC.  Incorrect password or corrupt file."
-msgstr ""
+msgstr "Kunne ikke importere. Ugyldig MAC. Feil passord eller ødelagt fil."
 
 #: src/camel/camel-smime-context.c:174
-#, fuzzy
-#| msgid "Signature algorithm unsupported"
 msgid "Unable to import.  MAC algorithm not supported."
-msgstr "Signaturalgoritmen er ikke støttet"
+msgstr "Kunne ikke importere. MAC-algoritme støttes ikke."
 
 #: src/camel/camel-smime-context.c:175
-msgid "Unable to import.  Only password integrity and privacy modes supported."
-msgstr ""
+msgid ""
+"Unable to import.  Only password integrity and privacy modes supported."
+msgstr "Kun passordintegritet og privatlivsmoduser støttes."
 
 #: src/camel/camel-smime-context.c:176
 msgid "Unable to import.  File structure is corrupt."
-msgstr ""
+msgstr "Kunne ikke importere. Filstrukturen er ødelagt."
 
 #: src/camel/camel-smime-context.c:177
 msgid "Unable to import.  Encryption algorithm not supported."
-msgstr ""
+msgstr "Kunne ikke importere. Krypteringsalgoritme støttes ikke."
 
 #: src/camel/camel-smime-context.c:178
-#, fuzzy
-#| msgid "Credentials store is not supported"
 msgid "Unable to import.  File version not supported."
-msgstr "Lagring av påloggingsinformasjon er ikke støttet"
+msgstr "Kunne ikke importere. Filversjon støttes ikke."
 
 #: src/camel/camel-smime-context.c:179
 msgid "Unable to import.  Incorrect privacy password."
-msgstr ""
+msgstr "Kunne ikke importere. Feil personvernpassord."
 
 #: src/camel/camel-smime-context.c:180
 msgid "Unable to import.  Same nickname already exists in database."
-msgstr ""
+msgstr "Kunne ikke importere. Samme kallenavn finnes allerede i databasen."
 
 #: src/camel/camel-smime-context.c:181
 msgid "The user pressed cancel."
-msgstr ""
+msgstr "Brukeren trykket avbryt."
 
 #: src/camel/camel-smime-context.c:182
 msgid "Not imported, already in database."
-msgstr ""
+msgstr "Ikke importert, allerede i databasen."
 
 #: src/camel/camel-smime-context.c:183
-#, fuzzy
-#| msgid "Message Storage"
 msgid "Message not sent."
-msgstr "Meldingslager"
+msgstr "Melding ikke sendt."
 
 #: src/camel/camel-smime-context.c:184
 msgid "Certificate key usage inadequate for attempted operation."
-msgstr ""
+msgstr "Sertifikatnøkkelbruk utilstrekkelig for forsøkt operasjon."
 
 #: src/camel/camel-smime-context.c:185
 msgid "Certificate type not approved for application."
-msgstr ""
+msgstr "Sertifikattypen er ikke godkjent for applikasjonen."
 
 #: src/camel/camel-smime-context.c:186
 msgid ""
 "Address in signing certificate does not match address in message headers."
 msgstr ""
+"Adressen i signatur-sertifikatet samsvarer ikke med adressen i meldings-"
+"headerne."
 
 #: src/camel/camel-smime-context.c:187
 msgid "Unable to import.  Error attempting to import private key."
-msgstr ""
+msgstr "Kunne ikke importere. Feil ved forsøk på å importere privat nøkkel."
 
 #: src/camel/camel-smime-context.c:188
 msgid "Unable to import.  Error attempting to import certificate chain."
-msgstr ""
+msgstr "Kunne ikke importere. Feil ved forsøk på å importere sertifikatkjede."
 
 #: src/camel/camel-smime-context.c:189
 msgid "Unable to export.  Unable to locate certificate or key by nickname."
 msgstr ""
+"Kunne ikke eksportere. Kunne ikke finne sertifikat eller nøkkel etter "
+"kallenavn."
 
 #: src/camel/camel-smime-context.c:190
 msgid "Unable to export.  Private Key could not be located and exported."
 msgstr ""
+"Kunne ikke eksportere. Privat nøkkel kunne ikke finnes og eksporteres."
 
 #: src/camel/camel-smime-context.c:191
 msgid "Unable to export.  Unable to write the export file."
-msgstr ""
+msgstr "Kunne ikke eksportere. Kunne ikke skrive eksportfilen."
 
 #: src/camel/camel-smime-context.c:192
 msgid "Unable to import.  Unable to read the import file."
-msgstr ""
+msgstr "Kunne ikke importere. Kunne ikke lese importfilen."
 
 #: src/camel/camel-smime-context.c:193
 msgid "Unable to export.  Key database corrupt or deleted."
-msgstr ""
+msgstr "Kunne ikke eksportere. Nøkkeldatabasen er korrupt eller slettet."
 
 #: src/camel/camel-smime-context.c:194
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Unable to generate public/private key pair."
-msgstr "Kunne ikke opprette sti til buffer"
+msgstr "Kunne ikke generere offentlig/privat nøkkelpar."
 
 #: src/camel/camel-smime-context.c:195
 msgid "Password entered is invalid.  Please pick a different one."
-msgstr ""
+msgstr "Passordet som ble skrevet inn er ugyldig. Velg et annet."
 
 #: src/camel/camel-smime-context.c:196
 msgid "Old password entered incorrectly.  Please try again."
-msgstr ""
+msgstr "Gammel passord skrevet feil. Vennligst prøv igjen."
 
 #: src/camel/camel-smime-context.c:197
-#, fuzzy
-#| msgid "Certificate import failed"
 msgid "Certificate nickname already in use."
-msgstr "Import av sertifikat feilet"
+msgstr "Sertifikat-kallenavn er allerede i bruk."
 
 #: src/camel/camel-smime-context.c:198
 msgid "Peer FORTEZZA chain has a non-FORTEZZA Certificate."
-msgstr ""
+msgstr "Peer FORTEZZA-kjeden har et ikke-FORTEZZA-sertifikat."
 
 #: src/camel/camel-smime-context.c:199
 msgid "A sensitive key cannot be moved to the slot where it is needed."
-msgstr ""
+msgstr "En sensitiv nøkkel kan ikke flyttes til sporet der den trengs."
 
 #: src/camel/camel-smime-context.c:200
-#, fuzzy
-#| msgid "Invalid query: "
 msgid "Invalid module name."
-msgstr "Ugyldig spørring: "
+msgstr "Ugyldig modulnavn."
 
 #: src/camel/camel-smime-context.c:201
 msgid "Invalid module path/filename"
-msgstr ""
+msgstr "Ugyldig modulsti/filnavn"
 
 #: src/camel/camel-smime-context.c:202
-#, fuzzy
-#| msgid "Failed to read resource"
 msgid "Unable to add module"
-msgstr "Klarte ikke å lese ressurs"
+msgstr "Kunne ikke legge til modul"
 
 #: src/camel/camel-smime-context.c:203
-#, fuzzy
-#| msgid "Failed to delete resource"
 msgid "Unable to delete module"
-msgstr "Klarte ikke å slette ressurs"
+msgstr "Kunne ikke slette modulen"
 
 #: src/camel/camel-smime-context.c:204
 msgid "New KRL is not later than the current one."
-msgstr ""
+msgstr "Ny KRL er ikke senere enn den nåværende."
 
 #: src/camel/camel-smime-context.c:205
 msgid "New CKL has different issuer than current CKL.  Delete current CKL."
-msgstr ""
+msgstr "Ny CKL har en annen utsteder enn nåværende CKL. Slett nåværende CKL."
 
 #: src/camel/camel-smime-context.c:206
 msgid ""
 "The Certifying Authority for this certificate is not permitted to issue a "
 "certificate with this name."
 msgstr ""
+"Sertifiseringsinstansen for dette sertifikatet har ikke tillatelse til å "
+"utstede et sertifikat med dette navnet."
 
 #: src/camel/camel-smime-context.c:207
 msgid "The key revocation list for this certificate is not yet valid."
 msgstr ""
+"Nøkkel tilbakekalling-listen for dette sertifikatet er ennå ikke gyldig."
 
 #: src/camel/camel-smime-context.c:208
-#, fuzzy
-#| msgid ""
-#| "The certificate has been revoked according to the connection’s "
-#| "certificate revocation list."
 msgid "The certificate revocation list for this certificate is not yet valid."
-msgstr ""
-"Sertifikatet er tilbaketrukket i følge tilkoblingens tilbaketrekkingsliste "
-"for sertifikater."
+msgstr "Sperrelisten for dette sertifikatet er ennå ikke gyldig."
 
 #: src/camel/camel-smime-context.c:209
 msgid "The requested certificate could not be found."
-msgstr ""
+msgstr "Det forespurte sertifikatet kunne ikke finnes."
 
 #: src/camel/camel-smime-context.c:210
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "The signer's certificate could not be found."
-msgstr "Sertifikat for signering ble ikke funnet"
+msgstr "Signatørens sertifikat kunne ikke finnes."
 
 #: src/camel/camel-smime-context.c:211
 msgid "The location for the certificate status server has invalid format."
-msgstr ""
+msgstr "Lokasjonen for sertifikatstatusen har ugyldig format."
 
 #: src/camel/camel-smime-context.c:212
 msgid "The OCSP response cannot be fully decoded; it is of an unknown type."
-msgstr ""
+msgstr "OCSP-svaret kan ikke dekodes fullstendig; det er av en ukjent type."
 
 #: src/camel/camel-smime-context.c:213
 msgid "The OCSP server returned unexpected/invalid HTTP data."
-msgstr ""
+msgstr "OCSP-serveren returnerte uventede/ugyldige HTTP-data."
 
 #: src/camel/camel-smime-context.c:214
-msgid "The OCSP server found the request to be corrupted or improperly formed."
-msgstr ""
+msgid ""
+"The OCSP server found the request to be corrupted or improperly formed."
+msgstr "OCSP-serveren fant forespørselen korrupt eller feilformet."
 
 #: src/camel/camel-smime-context.c:215
 msgid "The OCSP server experienced an internal error."
-msgstr ""
+msgstr "OCSP-serveren opplevde en intern feil."
 
 #: src/camel/camel-smime-context.c:216
 msgid "The OCSP server suggests trying again later."
-msgstr ""
+msgstr "OCSP-serveren foreslår å prøve igjen senere."
 
 #: src/camel/camel-smime-context.c:217
 msgid "The OCSP server requires a signature on this request."
-msgstr ""
+msgstr "OCSP-serveren krever en signatur på denne forespørselen."
 
 #: src/camel/camel-smime-context.c:218
 msgid "The OCSP server has refused this request as unauthorized."
-msgstr ""
+msgstr "OCSP-serveren har avvist denne forespørselen som uautorisert."
 
 #: src/camel/camel-smime-context.c:219
 msgid "The OCSP server returned an unrecognizable status."
-msgstr ""
+msgstr "OCSP-serveren returnerte en ugjenkjennelig status."
 
 #: src/camel/camel-smime-context.c:220
 msgid "The OCSP server has no status for the certificate."
-msgstr ""
+msgstr "OCSP-serveren har ingen status for sertifikatet."
 
 #: src/camel/camel-smime-context.c:221
-#, fuzzy
-#| msgid "You must be working online to complete this operation"
 msgid "You must enable OCSP before performing this operation."
-msgstr "Du må arbeide tilknyttet for å fullføre denne operasjonen"
+msgstr "Du må aktivere OCSP før du utfører denne operasjonen."
 
 #: src/camel/camel-smime-context.c:222
 msgid ""
 "You must set the OCSP default responder before performing this operation."
-msgstr ""
+msgstr "Du må angi standard OCSP-svarer før du utfører denne operasjonen."
 
 #: src/camel/camel-smime-context.c:223
 msgid "The response from the OCSP server was corrupted or improperly formed."
-msgstr ""
+msgstr "Svaret fra OCSP-serveren var korrupt eller feilformet."
 
 #: src/camel/camel-smime-context.c:224
 msgid ""
 "The signer of the OCSP response is not authorized to give status for this "
 "certificate."
 msgstr ""
+"Signatøren for OCSP-svaret er ikke autorisert til å gi status for dette "
+"sertifikatet."
 
 #: src/camel/camel-smime-context.c:225
 msgid "The OCSP response is not yet valid (contains a date in the future)."
-msgstr ""
+msgstr "OCSP-svaret er ennå ikke gyldig (inneholder en dato i fremtiden)."
 
 #: src/camel/camel-smime-context.c:226
 msgid "The OCSP response contains out-of-date information."
-msgstr ""
+msgstr "OCSP-svaret inneholder utdatert informasjon."
 
 #: src/camel/camel-smime-context.c:227
 msgid "The CMS or PKCS #7 Digest was not found in signed message."
-msgstr ""
+msgstr "CMS eller PKCS #7-oppsummeringen ble ikke funnet i signert melding."
 
 #: src/camel/camel-smime-context.c:228
 msgid "The CMS or PKCS #7 Message type is unsupported."
-msgstr ""
+msgstr "CMS- eller PKCS #7-meldingstypen støttes ikke."
 
 #: src/camel/camel-smime-context.c:229
 msgid "PKCS #11 module could not be removed because it is still in use."
-msgstr ""
+msgstr "PKCS #11-modulen kunne ikke fjernes fordi den fortsatt er i bruk."
 
 #: src/camel/camel-smime-context.c:230
 msgid "Could not decode ASN.1 data. Specified template was invalid."
-msgstr ""
+msgstr "Kunne ikke dekode ASN.1-data. Angitt mal var ugyldig."
 
 #: src/camel/camel-smime-context.c:231
 msgid "No matching CRL was found."
-msgstr ""
+msgstr "Ingen CRL ble funnet."
 
 #: src/camel/camel-smime-context.c:232
 msgid ""
 "You are attempting to import a cert with the same issuer/serial as an "
 "existing cert, but that is not the same cert."
 msgstr ""
+"Du forsøker å importere et sertifikat med samme utsteder/serienummer som et "
+"eksisterende sertifikat, men det er ikke det samme sertifikatet."
 
 #: src/camel/camel-smime-context.c:233
 msgid "NSS could not shutdown. Objects are still in use."
-msgstr ""
+msgstr "NSS kunne ikke stenges ned. Objekter er fortsatt i bruk."
 
 #: src/camel/camel-smime-context.c:234
 msgid "DER-encoded message contained extra unused data."
-msgstr ""
+msgstr "DER-kodet melding inneholdt ekstra ubrukt data."
 
 #: src/camel/camel-smime-context.c:235
-#, fuzzy
-#| msgid "Unsupported security layer."
 msgid "Unsupported elliptic curve."
-msgstr "Ustøttet sikkerhetslag."
+msgstr "Ustøttet elliptisk kurve."
 
 #: src/camel/camel-smime-context.c:236
-#, fuzzy
-#| msgid "Unsupported security layer."
 msgid "Unsupported elliptic curve point form."
-msgstr "Ustøttet sikkerhetslag."
+msgstr "Ustøttet elliptisk kurvepunktform."
 
 #: src/camel/camel-smime-context.c:237
 msgid "Unrecognized Object Identifier."
-msgstr ""
+msgstr "Ugjenkjennelig objekt-ID."
 
 #: src/camel/camel-smime-context.c:238
-#, fuzzy
-#| msgid "Signing certificate not trusted"
 msgid "Invalid OCSP signing certificate in OCSP response."
-msgstr "Stoler ikke på sertifikat for signering"
+msgstr "Ugyldig OCSP-signeringssertifikat i OCSP-respons."
 
 #: src/camel/camel-smime-context.c:239
-#, fuzzy
-#| msgid ""
-#| "The certificate has been revoked according to the connection’s "
-#| "certificate revocation list."
 msgid "Certificate is revoked in issuer's certificate revocation list."
 msgstr ""
-"Sertifikatet er tilbaketrukket i følge tilkoblingens tilbaketrekkingsliste "
-"for sertifikater."
+"Sertifikatet er tilbakekalt i utsteders sertifikat-tilbakekallingsliste."
 
 #: src/camel/camel-smime-context.c:240
 msgid "Issuer's OCSP responder reports certificate is revoked."
 msgstr ""
+"Utstederens OCSP-responder rapporterer at sertifikatet er tilbakekalt."
 
 #: src/camel/camel-smime-context.c:241
 msgid "Issuer's Certificate Revocation List has an unknown version number."
 msgstr ""
+"Utstederens sertifikat-tilbakekallingsliste har et ukjent versjonsnummer."
 
 #: src/camel/camel-smime-context.c:242
 msgid "Issuer's V1 Certificate Revocation List has a critical extension."
 msgstr ""
+"Utstederens V1-sertifikat-tilbaketrekkningsliste har en kritisk utvidelse."
 
 #: src/camel/camel-smime-context.c:243
 msgid ""
 "Issuer's V2 Certificate Revocation List has an unknown critical extension."
 msgstr ""
+"Utstederens V2-sertifikat-tilbakekallingsliste har en ukjent kritisk "
+"utvidelse."
 
 #: src/camel/camel-smime-context.c:244
 msgid "Unknown object type specified."
-msgstr ""
+msgstr "Ukjent objekttype angitt."
 
 #: src/camel/camel-smime-context.c:245
 msgid "PKCS #11 driver violates the spec in an incompatible way."
-msgstr ""
+msgstr "PKCS #11-driveren bryter spesifikasjonen på en inkompatibel måte."
 
 #: src/camel/camel-smime-context.c:246
 msgid "No new slot event is available at this time."
-msgstr ""
+msgstr "Ingen ny slot-hendelse er tilgjengelig for øyeblikket."
 
 #: src/camel/camel-smime-context.c:247
-#, fuzzy
-#| msgid "Folder already exists"
 msgid "CRL already exists."
-msgstr "Mappen eksisterer allerede"
+msgstr "CRL eksisterer allerede."
 
 #: src/camel/camel-smime-context.c:248
 msgid "NSS is not initialized."
-msgstr ""
+msgstr "NSS er ikke initialisert."
 
 #: src/camel/camel-smime-context.c:249
 msgid "The operation failed because the PKCS#11 token is not logged in."
-msgstr ""
+msgstr "Operasjonen mislyktes fordi PKCS#11-tokenet ikke er logget inn."
 
 #: src/camel/camel-smime-context.c:250
 msgid "Configured OCSP responder's certificate is invalid."
-msgstr ""
+msgstr "Konfigurert OCSP-responder-sertifikat er ugyldig."
 
 #: src/camel/camel-smime-context.c:251
-#, fuzzy
-#| msgid "No signed data in signature"
 msgid "OCSP response has an invalid signature."
-msgstr "Ingen signerte data i signatur"
+msgstr "OCSP-svaret har en ugyldig signatur."
 
 #: src/camel/camel-smime-context.c:254
 msgid "Cert validation search is out of search limits"
-msgstr ""
+msgstr "Sertifikatvalideringssøk er utenfor søkerammene"
 
 #: src/camel/camel-smime-context.c:255
 msgid "Policy mapping contains anypolicy"
-msgstr ""
+msgstr "Policy-mapping inneholder anypolicy"
 
 #: src/camel/camel-smime-context.c:256
 msgid "Cert chain fails policy validation"
-msgstr ""
+msgstr "Sertifikatkjeden feiler policyvalidering"
 
 #: src/camel/camel-smime-context.c:257
 msgid "Unknown location type in cert AIA extension"
-msgstr ""
+msgstr "Ukjent plasseringstype i sertifikat AIA-utvidelse"
 
 #: src/camel/camel-smime-context.c:258
 msgid "Server returned bad HTTP response"
-msgstr ""
+msgstr "Serveren returnerte dårlig HTTP-respons"
 
 #: src/camel/camel-smime-context.c:259
 msgid "Server returned bad LDAP response"
-msgstr ""
+msgstr "Serveren returnerte dårlig LDAP-respons"
 
 #: src/camel/camel-smime-context.c:260
-#, fuzzy
-#| msgid "Failed to add data to CMS encoder"
 msgid "Failed to encode data with ASN1 encoder"
-msgstr "Kunne ikke legge til data i CMS-koder"
+msgstr "Kunne ikke kode data med ASN1-koder"
 
 #: src/camel/camel-smime-context.c:261
 msgid "Bad information access location in cert extension"
-msgstr ""
+msgstr "Dårlig informasjonstilgang i sertifikatutvidelse"
 
 #: src/camel/camel-smime-context.c:262
 msgid "Libpkix internal error occurred during cert validation."
-msgstr ""
+msgstr "Libpkix intern feil oppstod under sertifikatsvalidering."
 
 #: src/camel/camel-smime-context.c:263
 msgid ""
 "A PKCS #11 module returned CKR_GENERAL_ERROR, indicating that an "
 "unrecoverable error has occurred."
 msgstr ""
+"En PKCS #11-modul returnerte CKR_GENERAL_ERROR, noe som indikerer at en "
+"uopprettelig feil har oppstått."
 
 #: src/camel/camel-smime-context.c:264
 msgid ""
@@ -4571,12 +4785,17 @@ msgid ""
 "requested function could not be performed.  Trying the same operation again "
 "might succeed."
 msgstr ""
+"En PKCS #11-modul returnerte CKR_FUNCTION_FAILED, noe som indikerer at den "
+"forespurte funksjonen ikke kunne utføres. Å prøve samme operasjon på nytt "
+"kan lykkes."
 
 #: src/camel/camel-smime-context.c:265
 msgid ""
 "A PKCS #11 module returned CKR_DEVICE_ERROR, indicating that a problem has "
 "occurred with the token or slot."
 msgstr ""
+"En PKCS #11-modul returnerte CKR_DEVICE_ERROR, noe som indikerer at det har "
+"oppstått et problem med tokenet eller sporet."
 
 #: src/camel/camel-smime-context.c:269
 msgid "Expired password"
@@ -4590,25 +4809,21 @@ msgstr "Låst passord"
 msgid "Unknown PKCS11 error"
 msgstr "Ukjent PKCS11-feil"
 
-#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:803
-#, fuzzy
-#| msgid "Certificate import failed"
+#: src/camel/camel-smime-context.c:272 src/camel/camel-smime-context.c:826
 msgid "Certificate signature algorithm disabled"
-msgstr "Import av sertifikat feilet"
+msgstr "Sertifikatsignaturalgoritme deaktivert"
 
 #: src/camel/camel-smime-context.c:273
 msgid "Legacy database"
-msgstr ""
+msgstr "Eldre database"
 
-#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:800
-#, fuzzy
-#| msgid "Signature algorithm unsupported"
+#: src/camel/camel-smime-context.c:274 src/camel/camel-smime-context.c:823
 msgid "Signature algorithm disabled"
-msgstr "Signaturalgoritmen er ikke støttet"
+msgstr "Signaturalgoritme deaktivert"
 
 #: src/camel/camel-smime-context.c:275
 msgid "Algorithm mismatch"
-msgstr ""
+msgstr "Algoritmeavvik"
 
 #: src/camel/camel-smime-context.c:304
 msgid "Unknown error."
@@ -4669,145 +4884,145 @@ msgid "Cannot add CMS Signer information"
 msgstr "Kan ikke legge til informasjon om CMS-signerer"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: src/camel/camel-smime-context.c:498
+#: src/camel/camel-smime-context.c:514
 msgid "Unverified"
 msgstr "Uverifisert"
 
-#: src/camel/camel-smime-context.c:501
+#: src/camel/camel-smime-context.c:517
 msgid "Good signature"
 msgstr "Gyldig signatur"
 
-#: src/camel/camel-smime-context.c:503
+#: src/camel/camel-smime-context.c:519
 msgid "Bad signature"
 msgstr "Ugyldig signatur"
 
-#: src/camel/camel-smime-context.c:505
+#: src/camel/camel-smime-context.c:521
 msgid "Content tampered with or altered in transit"
 msgstr "Innholdet er endret under overføring"
 
-#: src/camel/camel-smime-context.c:508
+#: src/camel/camel-smime-context.c:524
 msgid "Signing certificate not found"
 msgstr "Sertifikat for signering ble ikke funnet"
 
-#: src/camel/camel-smime-context.c:511
+#: src/camel/camel-smime-context.c:527
 msgid "Signing certificate not trusted"
 msgstr "Stoler ikke på sertifikat for signering"
 
-#: src/camel/camel-smime-context.c:513
+#: src/camel/camel-smime-context.c:529
 msgid "Signature algorithm unknown"
 msgstr "Ukjent signeringsalgoritme"
 
-#: src/camel/camel-smime-context.c:515
+#: src/camel/camel-smime-context.c:531
 msgid "Signature algorithm unsupported"
 msgstr "Signaturalgoritmen er ikke støttet"
 
-#: src/camel/camel-smime-context.c:517
+#: src/camel/camel-smime-context.c:533
 msgid "Malformed signature"
 msgstr "Feilutformet signatur"
 
-#: src/camel/camel-smime-context.c:519
+#: src/camel/camel-smime-context.c:535
 msgid "Processing error"
 msgstr "Lesefeil"
 
-#: src/camel/camel-smime-context.c:681
+#: src/camel/camel-smime-context.c:698
 msgid "No signed data in signature"
 msgstr "Ingen signerte data i signatur"
 
-#: src/camel/camel-smime-context.c:686
+#: src/camel/camel-smime-context.c:703
 msgid "Digests missing from enveloped data"
 msgstr "Sammendrag av innpakkede data mangler"
 
-#: src/camel/camel-smime-context.c:699 src/camel/camel-smime-context.c:710
+#: src/camel/camel-smime-context.c:716 src/camel/camel-smime-context.c:727
 msgid "Cannot calculate digests"
 msgstr "Kan ikke beregne sammendrag"
 
-#: src/camel/camel-smime-context.c:717 src/camel/camel-smime-context.c:721
+#: src/camel/camel-smime-context.c:734 src/camel/camel-smime-context.c:738
 msgid "Cannot set message digests"
 msgstr "Kan ikke sette sammendrag for melding"
 
-#: src/camel/camel-smime-context.c:731 src/camel/camel-smime-context.c:736
+#: src/camel/camel-smime-context.c:748 src/camel/camel-smime-context.c:753
 msgid "Certificate import failed"
 msgstr "Import av sertifikat feilet"
 
-#: src/camel/camel-smime-context.c:746
+#: src/camel/camel-smime-context.c:763
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
 "Sertifikatet er den eneste meldingen. Kan ikke verifisere sertifikatene"
 
-#: src/camel/camel-smime-context.c:748
+#: src/camel/camel-smime-context.c:765
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 "Sertifikatet er den eneste meldingen. Sertifikater importert og verifisert"
 
-#: src/camel/camel-smime-context.c:752
+#: src/camel/camel-smime-context.c:769
 msgid "Cannot find signature digests"
 msgstr "Kan ikke finne signatursammendrag"
 
-#: src/camel/camel-smime-context.c:812
+#: src/camel/camel-smime-context.c:835
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Signeringspart: %s <%s>: %s\n"
 
-#: src/camel/camel-smime-context.c:1034 src/camel/camel-smime-context.c:1575
+#: src/camel/camel-smime-context.c:1057 src/camel/camel-smime-context.c:1599
 msgid "Cannot create encoder context"
 msgstr "Kan ikke opprette kontekst for koding"
 
-#: src/camel/camel-smime-context.c:1040
+#: src/camel/camel-smime-context.c:1063
 msgid "Failed to add data to CMS encoder"
 msgstr "Kunne ikke legge til data i CMS-koder"
 
-#: src/camel/camel-smime-context.c:1045 src/camel/camel-smime-context.c:1592
+#: src/camel/camel-smime-context.c:1068 src/camel/camel-smime-context.c:1616
 msgid "Failed to encode data"
 msgstr "Kunne ikke kode data"
 
-#: src/camel/camel-smime-context.c:1198 src/camel/camel-smime-context.c:1697
+#: src/camel/camel-smime-context.c:1222 src/camel/camel-smime-context.c:1721
 msgid "Decoder failed"
 msgstr "Dekoder feilet"
 
-#: src/camel/camel-smime-context.c:1469
+#: src/camel/camel-smime-context.c:1493
 #, c-format
 msgid "No valid or appropriate certificate for “%s” was found"
 msgstr "Fant ikke gyldig eller passende sertifikat for «%s»"
 
-#: src/camel/camel-smime-context.c:1509
+#: src/camel/camel-smime-context.c:1533
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Kan ikke finne felles krypteringsalgoritme"
 
-#: src/camel/camel-smime-context.c:1517
+#: src/camel/camel-smime-context.c:1541
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Kan ikke allokere plass for krypteringsnøkkel"
 
-#: src/camel/camel-smime-context.c:1528
+#: src/camel/camel-smime-context.c:1552
 msgid "Cannot create CMS Message"
 msgstr "Kan ikke opprette CMS-melding"
 
-#: src/camel/camel-smime-context.c:1534
+#: src/camel/camel-smime-context.c:1558
 msgid "Cannot create CMS Enveloped data"
 msgstr "Kan ikke opprette CMS-innpakkede data"
 
-#: src/camel/camel-smime-context.c:1540
+#: src/camel/camel-smime-context.c:1564
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Kan ikke legge ved CMS-innpakkede data"
 
-#: src/camel/camel-smime-context.c:1546
+#: src/camel/camel-smime-context.c:1570
 msgid "Cannot attach CMS data object"
 msgstr "Kan ikke legge ved dataobjekt for CMS"
 
-#: src/camel/camel-smime-context.c:1555
+#: src/camel/camel-smime-context.c:1579
 msgid "Cannot create CMS Recipient information"
 msgstr "Kan ikke opprette mottakerinformasjon for CMS"
 
-#: src/camel/camel-smime-context.c:1560
+#: src/camel/camel-smime-context.c:1584
 msgid "Cannot add CMS Recipient information"
 msgstr "Kan ikke legge til mottakerinformasjon for CMS"
 
-#: src/camel/camel-smime-context.c:1586
+#: src/camel/camel-smime-context.c:1610
 msgid "Failed to add data to encoder"
 msgstr "Klarte ikke å legge til data for koder"
 
-#: src/camel/camel-smime-context.c:1704
+#: src/camel/camel-smime-context.c:1728
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME dekryptering: Fant ikke kryptert innhold"
 
@@ -4904,17 +5119,17 @@ msgstr "Kan ikke slette meldinger: Fant ikke mappe «%s»"
 msgid "Cannot count messages: Folder “%s” not found"
 msgstr "Kan ikke telle meldinger: Fant ikke mappe «%s»"
 
-#: src/camel/camel-store-db.c:2439
+#: src/camel/camel-store-db.c:2438
 #, c-format
 msgid "Cannot get UIDs and flags: Folder “%s” not found"
 msgstr "Kan ikke hente UIDer og flagg: Fant ikke mappe «%s»"
 
-#: src/camel/camel-store-db.c:2507
+#: src/camel/camel-store-db.c:2506
 #, c-format
 msgid "Cannot get junk UIDs: Folder “%s” not found"
 msgstr "Kan ikke hente UIDer for søppelpost: Fant ikke mappe «%s»"
 
-#: src/camel/camel-store-db.c:2556
+#: src/camel/camel-store-db.c:2555
 #, c-format
 msgid "Cannot get deleted UIDs: Folder “%s” not found"
 msgstr "Kan ikke hente UIDer for slettede meldinger: Fant ikke mappe «%s»"
@@ -5051,54 +5266,60 @@ msgstr "Kan ikke flytte slettede meldinger"
 msgid "Unable to move Not-Junk messages"
 msgstr "Kan ikke flytte meldinger som ikke er søppel"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:730
+#: src/camel/providers/imapx/camel-imapx-folder.c:734
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Kvoteinformasjon er ikke tilgjengelig for mappe «%s : %s»"
 
 #. transfer ownership to 'rcf'
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:997
+#: src/camel/providers/imapx/camel-imapx-folder.c:1001
 #, c-format
 msgid "Removing stale cache files in folder “%s : %s”"
 msgstr "Fjerner utdaterte bufferfiler i mappe «%s : %s»"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1063
+#: src/camel/providers/imapx/camel-imapx-folder.c:1067
 msgid "You must be working online to search in headers"
 msgstr "Du må arbeide tilknyttet for å søke i topptekster"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1117
+#: src/camel/providers/imapx/camel-imapx-folder.c:1121
 msgid "You must be working online to search in message body"
 msgstr "Du må arbeide tilknyttet for å søke i meldingskroppen"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1206
+#: src/camel/providers/imapx/camel-imapx-folder.c:1210
 #: src/camel/providers/nntp/camel-nntp-folder.c:735
 msgid "Apply message _filters to this folder"
 msgstr "Bruk mappe_filter på denne mappen"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1221
+#: src/camel/providers/imapx/camel-imapx-folder.c:1225
 msgid "Always check for _new mail in this folder"
 msgstr "Alltid se etter _nye meldinger i denne mappen"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1406
+#: src/camel/providers/imapx/camel-imapx-folder.c:1410
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Kunne ikke lage sammendrag for mappe %s"
 
-#: src/camel/providers/imapx/camel-imapx-folder.c:1418
+#: src/camel/providers/imapx/camel-imapx-folder.c:1422
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Kunne ikke lage mellomlager for %s: "
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: src/camel/providers/imapx/camel-imapx-folder.c:1596
+#: src/camel/providers/imapx/camel-imapx-folder.c:1600
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Ingen IMAP-postboks tilgjengelig for mappe «%s : %s»"
@@ -5213,7 +5434,8 @@ msgstr "Kommando:"
 msgid "Download large messages in chunks"
 msgstr "Last ned store meldinger i deler"
 
-#. Translators: This constructs either "Fetch new messages in ascending order" or "Fetch new messages in descending order"
+#. Translators: This constructs either "Fetch new messages in ascending order"
+#. or "Fetch new messages in descending order"
 #: src/camel/providers/imapx/camel-imapx-provider.c:70
 msgid "Fetch new messages in"
 msgstr "Hent nye meldinger i"
@@ -5293,7 +5515,9 @@ msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
 msgid ""
 "Plaintext authentication disallowed on insecure connections. Change "
 "encryption to STARTTLS or TLS for account “%s”."
-msgstr "Autentisering i ren tekst tillates ikke på usikre tilkoblinger. Endre kryptering til STARTTLS eller TLS for konto «%s»."
+msgstr ""
+"Autentisering i ren tekst tillates ikke på usikre tilkoblinger. Endre "
+"kryptering til STARTTLS eller TLS for konto «%s»."
 
 #: src/camel/providers/imapx/camel-imapx-server.c:3433
 #: src/camel/providers/nntp/camel-nntp-store.c:445
@@ -5383,8 +5607,10 @@ msgstr "Kan ikke lage spool-fil: "
 msgid "Error appending message"
 msgstr "Feil ved forsøk på å legge til en melding"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/providers/imapx/camel-imapx-server.c:5564
 #, c-format
@@ -5395,8 +5621,10 @@ msgstr "Søker etter endrede meldinger i «%s : %s»"
 msgid "Error scanning changes"
 msgstr "Feil ved søk i endringer"
 
-#. Translators: The first “%s” is replaced with an account name and the second “%s”
-#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. Translators: The first “%s” is replaced with an account name and the second
+#. “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional,
+#. as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: src/camel/providers/imapx/camel-imapx-server.c:5592
 #, c-format
@@ -5469,7 +5697,8 @@ msgstr "Søk feilet"
 msgid "Error running IDLE"
 msgstr "Feil ved utføring av IDLE"
 
-#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#. create a dummy "." parent inbox, use to scan, then put back at the top
+#. level
 #: src/camel/providers/imapx/camel-imapx-store.c:340
 #: src/camel/providers/local/camel-maildir-folder.c:472
 #: src/camel/providers/local/camel-maildir-store.c:335
@@ -5501,7 +5730,8 @@ msgid "Password"
 msgstr "Passord"
 
 #: src/camel/providers/imapx/camel-imapx-store.c:1060
-msgid "This option will connect to the IMAP server using a plaintext password."
+msgid ""
+"This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Dette valget vil la deg koble til en IMAP-tjener ved å bruke et klartekst-"
 "passord."
@@ -5526,18 +5756,24 @@ msgstr "Henter mappeliste for «%s»"
 msgid ""
 "The account does not support folder hierarchy. Create the folder on the "
 "account level instead."
-msgstr "Kontoen støtter ikke mappehierarkiet. Lag mappen på kontonivå i stedet."
+msgstr ""
+"Kontoen støtter ikke mappehierarkiet. Lag mappen på kontonivå i stedet."
 
 #: src/camel/providers/imapx/camel-imapx-store.c:2333
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Mappenavn «%s» er ugyldig fordi det inneholder tegnet «%c»"
 
-#. Translators: The strings in "IMAPDefaults" context are folder names as can be presented
-#. by the server; There's checked for the localized version of it and for the non-localized
-#. version as well. It's always the folder name (eventually path) as provided by the server,
-#. when returned in given localization. it can be checked semi-easily in the case of
-#. the GMail variants, by changing the GMail interface language in the GMail Preferences.
+#. Translators: The strings in "IMAPDefaults" context are folder names as can
+#. be presented
+#. by the server; There's checked for the localized version of it and for the
+#. non-localized
+#. version as well. It's always the folder name (eventually path) as provided
+#. by the server,
+#. when returned in given localization. it can be checked semi-easily in the
+#. case of
+#. the GMail variants, by changing the GMail interface language in the GMail
+#. Preferences.
 #: src/camel/providers/imapx/camel-imapx-store.c:2746
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
@@ -6042,8 +6278,8 @@ msgstr "Kunne ikke lagre mappe: %s"
 #: src/camel/providers/local/camel-mbox-summary.c:1064
 #, c-format
 msgid ""
-"MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
-"it.)"
+"MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get"
+" it.)"
 msgstr ""
 "MBOX-filen er korrupt. Vennligst korriger den. (Forventet en From: linje, "
 "men fant den ikke.)"
@@ -6247,7 +6483,8 @@ msgstr ""
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "Vis relative mappenavn i abonnementsdialogen"
 
-#. Translators: The '%s' is replaced with a spin button with the actual value to use
+#. Translators: The '%s' is replaced with a spin button with the actual value
+#. to use
 #: src/camel/providers/nntp/camel-nntp-provider.c:31
 #, c-format
 msgid "Download only up to %s latest messages"
@@ -6263,7 +6500,7 @@ msgstr "NNTP over TLS"
 
 #: src/camel/providers/nntp/camel-nntp-provider.c:44
 msgid "USENET news"
-msgstr "USENET news"
+msgstr "USENET-nyheter"
 
 #: src/camel/providers/nntp/camel-nntp-provider.c:46
 msgid "This is a provider for reading from and posting to USENET newsgroups."
@@ -6275,7 +6512,8 @@ msgstr ""
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
-msgstr "Dette alternativet kobler til NNTP-tjener anonymt, uten autentisering."
+msgstr ""
+"Dette alternativet kobler til NNTP-tjener anonymt, uten autentisering."
 
 #: src/camel/providers/nntp/camel-nntp-provider.c:77
 msgid ""
@@ -6313,7 +6551,7 @@ msgstr "Klarte ikke å koble til NNTP-tjener %s i sikker modus: "
 #: src/camel/providers/nntp/camel-nntp-store.c:500
 #, c-format
 msgid "USENET News via %s"
-msgstr "USENET News via %s"
+msgstr "USENET-nyheter via %s"
 
 #: src/camel/providers/nntp/camel-nntp-store.c:1239
 #, c-format
@@ -6504,7 +6742,7 @@ msgstr ""
 #. Translators: This is the separator between an error and an explanation
 #: src/camel/providers/pop3/camel-pop3-store.c:77
 msgid ": "
-msgstr ": "
+msgstr ":"
 
 #: src/camel/providers/pop3/camel-pop3-store.c:144
 #, c-format
@@ -6580,8 +6818,8 @@ msgstr ""
 #: src/camel/providers/pop3/camel-pop3-store.c:858
 #, c-format
 msgid ""
-"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
-"attack suspected. Please contact your admin."
+"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation"
+" attack suspected. Please contact your admin."
 msgstr ""
 "Kan ikke koble til POP-tjener %s:\\tUgyldig APOP-ID mottatt. Mulig "
 "identitetstyveri. Kontakt din administrator."
@@ -6962,36 +7200,34 @@ msgstr ""
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:28
 msgid "Default reminder for all events in chosen calendars"
-msgstr ""
+msgstr "Standardpåminnelse for alle hendelser i valgte kalendere"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:29
-msgid "Whether to show a specified reminder for all events in chosen calendars"
+msgid ""
+"Whether to show a specified reminder for all events in chosen calendars"
 msgstr ""
+"Om det skal vises en angitt påminnelse for alle hendelser i valgte kalendere"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:33
 msgid "Interval of the default reminder for all events in chosen calendars"
 msgstr ""
+"Intervall for standardpåminnelser for alle hendelser i valgte kalendere"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:34
-#, fuzzy
-#| msgid "Number of units for determining a birthday or anniversary reminder"
 msgid "Number of units for determining the reminder"
-msgstr "Antall enheter for å bestemme en påminnelse om bursdag eller jubileum"
+msgstr "Antall enheter for å bestemme påminnelsen"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:38
 msgid "Units of the default reminder for all events in chosen calendars"
-msgstr ""
+msgstr "Enheter for standardpåminnelser for alle hendelser i valgte kalendere"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:39
-#, fuzzy
-#| msgid ""
-#| "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
 msgid ""
 "Units for the default reminder for all events in chosen calendars, "
 "“minutes”, “hours” or “days”"
 msgstr ""
-"Enheter for påminnelser om bursdager eller jubileum. «minutes», «hours» "
-"eller «days»"
+"Enheter for standardpåminnelsen for alle hendelser i valgte kalendere, "
+"«minutter», «timer» eller «dager»"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:44
 msgid "Past reminders for EReminderWatcher"
@@ -6999,7 +7235,7 @@ msgstr "Tidligere påminnelser for EReminderWatcher"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:48
 msgid "Snoozed reminders for EReminderWatcher"
-msgstr ""
+msgstr "Utstedte påminnelser for EReminderWatcher"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:52
 msgid ""
@@ -7007,6 +7243,9 @@ msgid ""
 "days are automatically removed from the list of the past reminders. Use '0' "
 "to not remove old reminders."
 msgstr ""
+"Hvor mange dager tilbakemeldingene kan holdes tilbake. Påminnelser som er "
+"eldre enn disse dagene fjernes automatisk fra listen over tidligere "
+"påminnelser. Bruk '0' for å ikke fjerne gamle påminnelser."
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:57
 msgid "Reminder programs"
@@ -7014,77 +7253,78 @@ msgstr "Påminnelsesprogrammer"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:58
 msgid "Programs that are allowed to be run by reminders"
-msgstr ""
+msgstr "Programmer som er tillatt å kjøre via påminnelser"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:62
-#, fuzzy
-#| msgid "Calendar event notifications"
 msgid "Enable desktop notifications"
-msgstr "Varsling for kalenderhendelse"
+msgstr "Aktiver skrivebordsvarsler"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:63
 msgid "When set to true, the desktop/system notifications are shown"
-msgstr ""
+msgstr "Når den er satt til true, vises skrivebords-/systemvarsler"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:67
-#, fuzzy
-#| msgid "Calendar event notifications"
 msgid "Enable audio notifications"
-msgstr "Varsling for kalenderhendelse"
+msgstr "Aktiver lydvarsler"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:68
 msgid ""
 "When set to true, the audio reminders will be played, otherwise audio "
 "reminders will be silently ignored"
 msgstr ""
+"Når den er satt til true, vil lydpåminningene spilles av, ellers vil "
+"lydpåminningene bli stille ignorert"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:72
 msgid "Show reminders in notification tray only"
-msgstr ""
+msgstr "Vis påminnelser i varslingsfeltet kun"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:73
 msgid ""
 "When set to true, the reminders are shown only in the notification tray, "
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
+"Når den er satt til true, vises påminnelsene kun i varslingsfeltet, ellers "
+"vises påminnelsesdialogen umiddelbart"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:77
 msgid "Show reminder notification dialog always on top"
-msgstr ""
+msgstr "Vis påminnelsesvarsel alltid øverst"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:78
 msgid ""
-"Whether or not to show reminder notification dialog always on top. Note this "
-"works only as a hint for the window manager, which may or may not obey it."
+"Whether or not to show reminder notification dialog always on top. Note this"
+" works only as a hint for the window manager, which may or may not obey it."
 msgstr ""
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:82
 msgid "X position of the reminder notification dialog"
-msgstr ""
+msgstr "X-posisjon for påminningsvarslingsdialogen"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:86
 msgid "Y position of the reminder notification dialog"
-msgstr ""
+msgstr "Y-posisjon for påminningsvarslingsdialogen"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:90
 msgid "Width of the reminder notification dialog"
-msgstr ""
+msgstr "Bredden på påminningsvarslingsdialogen"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:94
 msgid "Height of the reminder notification dialog"
-msgstr ""
+msgstr "Høyde på påminnelsesvarslet"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:98
 msgid "Size in pixels of the event list in the reminder notification dialog"
 msgstr ""
+"Størrelse i piksler for hendelseslisten i påminnelsesvarslingsdialogen"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:102
 msgid "Show reminder notification for completed tasks"
-msgstr ""
+msgstr "Vis påminnelsesvarsel for fullførte oppgaver"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:106
 msgid "Show reminder notification for past events"
-msgstr ""
+msgstr "Vis påminnelse for tidligere hendelser"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:110
 msgid ""
@@ -7092,11 +7332,14 @@ msgid ""
 "start, otherwise the actual value is used in conjunction with “notify-last-"
 "snooze-from-start”"
 msgstr ""
+"Siste brukte snooze-tid, i minutter; negativt tall betyr alltid før start, "
+"ellers brukes den faktiske verdien i sammenheng med «notify-last-snooze-"
+"from-start»"
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:114
 msgid ""
-"Whether the last snooze time is calculated relative to the event/task start; "
-"false to count relative to the current time"
+"Whether the last snooze time is calculated relative to the event/task start;"
+" false to count relative to the current time"
 msgstr ""
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:118
@@ -7109,7 +7352,7 @@ msgstr ""
 
 #: data/org.gnome.evolution-data-server.calendar.gschema.xml.in:122
 msgid "Delete meeting from calendar on Decline"
-msgstr ""
+msgstr "Slett møte fra kalender ved avslag"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:5
 msgid "An absolute path where the gpg (or gpg2) binary is"
@@ -7121,41 +7364,52 @@ msgid ""
 "is set, then it will be searched for. Change requires restart of the "
 "application."
 msgstr ""
+"Et eksempel er «/usr/bin/gpg»; når den står tom, eller en feil verdi er "
+"satt, vil den bli søkt etter. Endring krever omstart av applikasjonen."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:10
 msgid "Whether to load photos of signers/encrypters"
-msgstr ""
+msgstr "Om det skal lastes inn bilder av signaturer/kryptere"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:11
 msgid ""
 "When set to “true”, tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
 msgstr ""
+"Når den er satt til «true», forsøker den også å laste inn bilde av "
+"signatørene/krypterne, hvis tilgjengelig i nøkkelen/sertifikatet."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:15
 msgid "Override SMTP HELO/EHLO argument"
-msgstr ""
+msgstr "Overstyr SMTP HELO/EHLO-argumentet"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:16
 msgid ""
 "When not empty, it's used as the SMTP HELO/EHLO argument, instead of the "
 "local host name/IP."
 msgstr ""
+"Når den ikke er tom, brukes den som SMTP HELO/EHLO-argumentet, i stedet for "
+"det lokale vertsnavnet/IP-adressen."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:20
 msgid "Array of user header names"
-msgstr ""
+msgstr "Array av brukernavn for overskrifter"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:21
 msgid ""
-"These headers can be stored in the folder summary, possibly being visible in "
-"the GUI. The value can contain a pipe character ('|'), which delimits the "
+"These headers can be stored in the folder summary, possibly being visible in"
+" the GUI. The value can contain a pipe character ('|'), which delimits the "
 "display name from the header name. Example: 'Spam Score|X-Spam-Score'"
 msgstr ""
+"Disse overskriftene kan lagres i mappen oppsummering, og kan være synlige i "
+"GUI. Verdien kan inneholde et røyrtegn ('|'), som skiller visningsnavnet fra"
+" overskriftsnavnet. Eksempel: 'Spam Score|X-Spam-Score'"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:25
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
+"GIO-navnet til GNetworkMonitor som skal brukes for en ENetworkMonitor-"
+"instans"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:26
 msgid ""
@@ -7169,27 +7423,32 @@ msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
 msgstr ""
+"En full sti til en mappe der .source-filer med forhåndskonfigurerte valg kan"
+" lagres"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:31
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
 msgstr ""
+"Denne mappen, hvis den er fylt med en eksisterende sti, blir sjekket i "
+"tillegg til XDG-konfigurasjonsmapper."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:35
 msgid "A list of variables which can be part of the autoconfig .source files"
 msgstr ""
+"En liste over variabler som kan være en del av autokonfig .source-filene"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:36
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
-"variables are checked before environment variables, but after the predefined "
-"USER, REALNAME and HOST variables."
+"variables are checked before environment variables, but after the predefined"
+" USER, REALNAME and HOST variables."
 msgstr ""
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:40
 msgid "A list of hints for OAuth2 services"
-msgstr ""
+msgstr "En liste med veiledninger for OAuth2-tjenester"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:41
 msgid ""
@@ -7203,8 +7462,8 @@ msgid ""
 "provided multiple lines for one OAuth2 service. Note that the actual URL "
 "where the token is requested and refreshed cannot be changed here, the "
 "hostname is to allow other servers, where the OAuth2 service can be used. "
-"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication "
-"for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
+"Examples: Company:mail.company.com — enables “Company” OAuth2 authentication"
+" for “mail.company.com” host Company-CalDAV:caldav.company.com — enables "
 "“Company” OAuth2 authentication for any “CalDAV” source, which reads data "
 "from “caldav.company.com” host"
 msgstr ""
@@ -7214,83 +7473,111 @@ msgid ""
 "An OAuth2 client ID to use to connect to Google servers, instead of the one "
 "provided during build time"
 msgstr ""
+"En OAuth2-klient-ID som skal brukes til å koble til Google-servere, i stedet"
+" for den som ble oppgitt under bygging"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:58
 msgid ""
 "User-specified OAuth2 client ID for Google servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Brukerdefinert OAuth2-klient-ID for Google-servere. Tom streng betyr at den "
+"som ble oppgitt under bygging brukes. Endring krever omstart."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:62
 msgid ""
 "An OAuth2 client secret to use to connect to Google servers, instead of the "
 "one provided during build time"
 msgstr ""
+"En OAuth2-klienthemmelighet som brukes til å koble til Google-servere, i "
+"stedet for den som ble oppgitt under bygging"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:63
 msgid ""
 "User-specified OAuth2 client secret for Google servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Brukerdefinert OAuth2-klienthemmelighet for Google-servere. Tom streng betyr"
+" at den som ble oppgitt under bygging brukes. Endring krever omstart."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:67
 msgid ""
-"An OAuth2 client ID to use to connect to Outlook servers, instead of the one "
-"provided during build time"
+"An OAuth2 client ID to use to connect to Outlook servers, instead of the one"
+" provided during build time"
 msgstr ""
+"En OAuth2-klient-ID som skal brukes til å koble til Outlook-servere, i "
+"stedet for den som ble oppgitt under bygging"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:68
 msgid ""
 "User-specified OAuth2 client ID for Outlook servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Brukerdefinert OAuth2-klient-ID for Outlook-servere. Tom streng betyr at den"
+" som ble oppgitt under bygging brukes. Endring krever omstart."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:72
 msgid ""
-"An OAuth2 client secret to use to connect to Outlook servers, instead of the "
-"one provided during build time"
+"An OAuth2 client secret to use to connect to Outlook servers, instead of the"
+" one provided during build time"
 msgstr ""
+"En OAuth2-klienthemmelighet som brukes til å koble til Outlook-servere, i "
+"stedet for den som ble oppgitt under bygging"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:73
 msgid ""
 "User-specified OAuth2 client secret for Outlook servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Brukerdefinert OAuth2-klienthemmelighet for Outlook-servere. Tom streng "
+"betyr at den som ble oppgitt under bygging brukes. Endring krever omstart."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:77
 msgid ""
 "An OAuth2 client ID to use to connect to Yahoo! servers, instead of the one "
 "provided during build time"
 msgstr ""
+"En OAuth2-klient-ID som skal brukes til å koble til Yahoo!-servere, i stedet"
+" for den som ble oppgitt under bygging"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:78
 msgid ""
 "User-specified OAuth2 client ID for Yahoo! servers. Empty string means to "
 "use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Brukerdefinert OAuth2-klient-ID for Yahoo!-servere. Tom streng betyr at den "
+"som ble oppgitt under bygging brukes. Endring krever omstart."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:82
 msgid ""
 "An OAuth2 client secret to use to connect to Yahoo! servers, instead of the "
 "one provided during build time"
 msgstr ""
+"En OAuth2-klienthemmelighet som brukes til å koble til Yahoo!-servere, i "
+"stedet for den som ble oppgitt under bygging"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:83
 msgid ""
 "User-specified OAuth2 client secret for Yahoo! servers. Empty string means "
 "to use the one provided during build time. Change of this requires restart."
 msgstr ""
+"Brukerdefinert OAuth2-klienthemmelighet for Yahoo!-servere. En tom streng "
+"betyr at den som ble oppgitt under bygging brukes. Endring av dette krever "
+"omstart."
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:87
 msgid "Whether to limit operations in Power Saver mode"
-msgstr ""
+msgstr "Om operasjoner skal begrenses i strømsparingsmodus"
 
 #: data/org.gnome.evolution-data-server.gschema.xml.in:88
 msgid ""
-"When set to “true”, possibly expensive operations required to refresh books/"
-"calendars/mail accounts/... are skipped when the machine is in the Power "
-"Saver mode."
+"When set to “true”, possibly expensive operations required to refresh "
+"books/calendars/mail accounts/... are skipped when the machine is in the "
+"Power Saver mode."
 msgstr ""
+"Når den er satt til «true», blir mulig kostbare operasjoner som kreves for å"
+" oppdatere bøker/kalendere/mailkontoer/... hoppet over når maskinen er i "
+"strømsparingsmodus."
 
 #: data/org.gnome.evolution.shell.network-config.gschema.xml.in:11
 msgid "(Deprecated) Proxy type to use"
@@ -7311,9 +7598,12 @@ msgstr "(Utfaset) Type proxy som skal brukes"
 #: data/org.gnome.evolution.shell.network-config.gschema.xml.in:72
 msgid ""
 "This key was deprecated in version 3.12 and should no longer be used. Proxy "
-"settings are now integrated into Evolution-Data-Server’s account system. See "
-"the ESourceProxy API documentation for details."
+"settings are now integrated into Evolution-Data-Server’s account system. See"
+" the ESourceProxy API documentation for details."
 msgstr ""
+"Denne nøkkelen ble forkastet i versjon 3.12 og skal ikke lenger brukes. "
+"Proxy-innstillinger er nå integrert i Evolution-Data-Server’s kontosystem. "
+"Se ESourceProxy API-dokumentasjonen for detaljer."
 
 #: data/org.gnome.evolution.shell.network-config.gschema.xml.in:16
 msgid "(Deprecated) Whether to use http-proxy"
@@ -7365,23 +7655,23 @@ msgstr "(Utfaset) URL for automatisk konfigurasjon av proxy"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:3
 msgid "Events and Tasks Reminders"
-msgstr ""
+msgstr "Hendelses- og oppgavepåminnelser"
 
 #: data/org.gnome.Evolution-alarm-notify.desktop.in.in:4
-#, fuzzy
-#| msgid "Calendar event notifications"
 msgid "Event and task notifications"
-msgstr "Varsling for kalenderhendelse"
+msgstr "Hendelses- og oppgavevarslinger"
 
 #: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:3
 msgid "Evolution Data Server OAuth2 Handler"
-msgstr ""
+msgstr "Evolution Data Server OAuth2-håndterer"
 
 #: data/org.gnome.evolution-data-server.OAuth2-handler.desktop.in:4
 msgid ""
 "Handles OAuth2 responses and passes them to the OAuth2 prompter "
 "implementation"
 msgstr ""
+"Håndterer OAuth2-svar og sender dem videre til OAuth2-prompter-"
+"implementeringen"
 
 #: src/libebackend/e-cache.c:738
 msgid "Out of memory"
@@ -7447,7 +7737,7 @@ msgid ""
 msgstr "Datakilde «%s» har ingen samlingsmotor for å slette ekstern ressurs"
 
 #: src/libebackend/e-server-side-source.c:1474
-#: src/libebackend/e-source-registry-server.c:1025
+#: src/libebackend/e-source-registry-server.c:1038
 #: src/libedataserver/e-source.c:1846
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -7574,7 +7864,8 @@ msgctxt "CategoryName"
 msgid "Phone Calls"
 msgstr "Telefonsamtaler"
 
-#. Translators: "Status" is a category name; it can mean anything user wants to
+#. Translators: "Status" is a category name; it can mean anything user wants
+#. to
 #: src/libedataserver/e-categories.c:52
 msgctxt "CategoryName"
 msgid "Status"
@@ -7689,18 +7980,21 @@ msgstr "Tidsavbrudd"
 msgid "Google server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Google server is busy, waiting to retry (%d:%02d minutes)"
 msgstr[0] ""
+"Google-serveren er opptatt, venter på å prøve på nytt (%d:%02d minutt)"
 msgstr[1] ""
+"Google-serveren er opptatt, venter på å prøve på nytt (%d:%02d minutter)"
 
 #: src/libedataserver/e-gdata-session.c:212
 #, c-format
 msgid "Google server is busy, waiting to retry (%d second)"
 msgid_plural "Google server is busy, waiting to retry (%d seconds)"
-msgstr[0] ""
+msgstr[0] "Google-serveren er opptatt, venter på å prøve på nytt (%d sekund)"
 msgstr[1] ""
+"Google-serveren er opptatt, venter på å prøve på nytt (%d sekunder)"
 
 #: src/libedataserver/e-gdata-session.c:549
 msgid "No JSON object returned by the server"
-msgstr ""
+msgstr "Ingen JSON-objekt returnert av serveren"
 
 #: src/libedataserver/e-gdata-session.c:735
 #: src/libedataserver/e-gdata-session.c:794
@@ -7716,172 +8010,175 @@ msgstr ""
 #: src/libedataserver/e-gdata-session.c:1721
 #: src/libedataserver/e-gdata-session.c:1784
 #: src/libedataserver/e-gdata-session.c:1844
-#, fuzzy, c-format
-#| msgid "Failed to dismiss all:"
+#, c-format
 msgid "Failed to call %s: "
-msgstr "Klarte ikke å forkaste alle:"
+msgstr "Kunne ikke kalle %s:"
 
 #: src/libedataserver/e-ms-oapxbc.c:121
-#, fuzzy
-#| msgid "Failed to create address book"
 msgid "Failed to create broker proxy: "
-msgstr "Klarte ikke å lage adressebok"
+msgstr "Kunne ikke opprette broker-proxy:"
 
 #: src/libedataserver/e-ms-oapxbc.c:187
-#, fuzzy
-#| msgid "Failed to find Account element"
 msgid "Failed to call getAccounts: "
-msgstr "Klarte ikke å finne kontoelement"
+msgstr "Kunne ikke kalle getAccounts:"
 
 #: src/libedataserver/e-ms-oapxbc.c:195
-#, fuzzy
-#| msgid "Failed to parse response data"
 msgid "Failed to parse getAccounts response: "
-msgstr "Klarte ikke å tolke svardata"
+msgstr "Kunne ikke tolke getAccounts-svaret:"
 
 #: src/libedataserver/e-ms-oapxbc.c:202
-#, fuzzy, c-format
-#| msgid "Failed to parse response data"
+#, c-format
 msgid "Failed to parse getAccounts response: root is not an object"
-msgstr "Klarte ikke å tolke svardata"
+msgstr "Kunne ikke tolke getAccounts-svaret: rot er ikke et objekt"
 
 #: src/libedataserver/e-ms-oapxbc.c:354
 msgid "Failed to acquire PRT SSO cookie: "
-msgstr ""
+msgstr "Kunne ikke hente PRT SSO-cookie:"
 
 #: src/libedataserver/e-ms-oapxbc.c:362
-#, fuzzy
-#| msgid "Failed to parse autodiscover response XML"
 msgid "Failed to parse acquirePrtSsoCookie response: "
-msgstr "Klarte ikke å tolke svar-XML fra automatisk gjenkjenning"
+msgstr "Kunne ikke tolke svaret fra acquirePrtSsoCookie:"
 
 #: src/libedataserver/e-ms-oapxbc.c:367
 #, c-format
 msgid "Failed to parse acquirePrtSsoCookie response: root is not an object"
 msgstr ""
+"Kunne ikke tolke svaret fra acquirePrtSsoCookie: rot er ikke et objekt"
 
 #: src/libedataserver/e-ms-oapxbc.c:380
 #, c-format
 msgid "No PrtSsoCookie in response"
-msgstr ""
+msgstr "Ingen PrtSsoCookie i responsen"
 
 #: src/libedataserver/e-ms-oapxbc.c:389 src/libedataserver/e-ms-oapxbc.c:396
 #, c-format
-msgid "Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"
-msgstr ""
+msgid ""
+"Failed to parse acquirePrtSsoCookie response: invalid PrtSsoCookie data"
+msgstr "Kunne ikke tolke PrtSsoCookie-svaret: ugyldige PrtSsoCookie-data"
 
 #: src/libedataserver/e-ms-oapxbc.c:407
-#, fuzzy, c-format
-#| msgid "Failed to create address book"
+#, c-format
 msgid "Failed to create SOAP cookie"
-msgstr "Klarte ikke å lage adressebok"
+msgstr "Kunne ikke opprette SOAP-cookie"
 
-#: src/libedataserver/e-oauth2-service.c:1101
+#: src/libedataserver/e-oauth2-service.c:156
+#, c-format
+msgid "The OAuth2 service “%s” has no token endpoint set for this account"
+msgstr ""
+"OAuth2-tjenesten «%s» har ingen token-endepunkt satt for denne kontoen"
+
+#: src/libedataserver/e-oauth2-service.c:1158
 msgid "Malformed, no message body set"
 msgstr "Feilutformet, ingen meldingskropp satt"
 
-#: src/libedataserver/e-oauth2-service.c:1325
+#: src/libedataserver/e-oauth2-service.c:1392
 msgid "Token record is incomplete"
-msgstr ""
+msgstr "Token-oppføringen er ufullstendig"
 
-#. Translators: The first %s is a display name of the source, the second is its UID and
+#. Translators: The first %s is a display name of the source, the second is
+#. its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1352
-#: src/libedataserver/e-oauth2-service.c:1394
+#: src/libedataserver/e-oauth2-service.c:1419
+#: src/libedataserver/e-oauth2-service.c:1461
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Kilde «%s» (%s) er ikke gyldig for «%s» Oauth2-tjeneste"
 
-#: src/libedataserver/e-oauth2-service.c:1409
+#: src/libedataserver/e-oauth2-service.c:1476
 msgid "OAuth2 secret not found"
 msgstr "OAuth2-hemmelighet ble ikke funnet"
 
-#: src/libedataserver/e-oauth2-service.c:1436
+#: src/libedataserver/e-oauth2-service.c:1503
 msgid "OAuth2 secret record is incomplete"
-msgstr ""
+msgstr "OAuth2-hemmelighetsprotokoll er ufullstendig"
 
-#: src/libedataserver/e-oauth2-service.c:1486
-#: src/libedataserver/e-oauth2-service.c:1588
-#, fuzzy
-#| msgid "Failed to create collection"
+#: src/libedataserver/e-oauth2-service.c:1556
+#: src/libedataserver/e-oauth2-service.c:1661
 msgid "Failed to create HTTP session"
-msgstr "Klarte ikke å lage samling"
+msgstr "Kunne ikke opprette HTTP-sesjon"
 
-#: src/libedataserver/e-oauth2-service.c:1500
-#: src/libedataserver/e-oauth2-service.c:1602
-#, fuzzy, c-format
-#| msgid "Failed to create cache “%s”:"
+#: src/libedataserver/e-oauth2-service.c:1570
+#: src/libedataserver/e-oauth2-service.c:1675
+#, c-format
 msgid "Failed to create HTTP request for “%s”"
-msgstr "Kunne ikke opprette underprosess «%s»:"
+msgstr "Kunne ikke opprette HTTP-forespørsel for «%s»"
 
-#: src/libedataserver/e-oauth2-service.c:1626
+#: src/libedataserver/e-oauth2-service.c:1699
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Mottok ugyldig svar fra tjener «%s»."
 
-#: src/libedataserver/e-oauth2-service.c:1649
-#, fuzzy, c-format
-#| msgid "Failed to refresh access token. Sign to the server again, please."
+#: src/libedataserver/e-oauth2-service.c:1722
+#, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
 "\n"
 "Detailed error: %s"
 msgstr ""
-"Klarte ikke å oppdatere adgangstegn. Vennligst logg inn på tjener igjen."
+"Kunne ikke oppdatere tilgangstoken. Vennligst logg inn på serveren på nytt.\n"
+"\n"
+"Detaljert feil: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1652
+#: src/libedataserver/e-oauth2-service.c:1725
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Klarte ikke å oppdatere adgangstegn. Vennligst logg inn på tjener igjen."
 
-#. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1703
+#. Translators: The first %s is a display name of the source, the second is
+#. its UID.
+#: src/libedataserver/e-oauth2-service.c:1776
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Kilde «%s» (%s) er ikke en gyldig OAuth2-kilde"
 
-#: src/libedataserver/e-oauth2-service.c:2079
+#: src/libedataserver/e-oauth2-service.c:2152
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
+"Tilgangstokenet er utløpt og det mislyktes å fornye det. Vennligst logg inn "
+"på serveren på nytt."
 
-#: src/libedataserver/e-oauth2-service.c:2093
-#, fuzzy
-#| msgid "Failed to refresh access token. Sign to the server again, please."
+#: src/libedataserver/e-oauth2-service.c:2166
 msgid "Failed to obtain access token. Sign to the server again, please."
-msgstr ""
-"Klarte ikke å oppdatere adgangstegn. Vennligst logg inn på tjener igjen."
+msgstr "Kunne ikke hente tilgangstoken. Logg på serveren på nytt."
 
-#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#. Translators: This is a user-visible string, display name of an OAuth2
+#. service.
+#: src/libedataserver/e-oauth2-service-dynamic.c:126
+msgctxt "OAuth2Service"
+msgid "OAuth2 (automatic)"
+msgstr "OAuth2 (automatisk)"
+
+#. Translators: This is a user-visible string, display name of an OAuth2
+#. service.
 #: src/libedataserver/e-oauth2-service-google.c:48
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
 
-#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#. Translators: This is a user-visible string, display name of an OAuth2
+#. service.
 #: src/libedataserver/e-oauth2-service-outlook.c:51
 msgctxt "OAuth2Service"
 msgid "Outlook"
 msgstr "Outlook"
 
-#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#. Translators: This is a user-visible string, display name of an OAuth2
+#. service.
 #: src/libedataserver/e-oauth2-service-yahoo.c:43
 msgctxt "OAuth2Service"
 msgid "Yahoo!"
 msgstr "Yahoo!"
 
 #: src/libedataserver/e-soup-session.c:1236
-#, fuzzy
-#| msgid "URI not set"
 msgid "No URI set"
 msgstr "URI er ikke satt"
 
 #: src/libedataserver/e-soup-session.c:1246
-#, fuzzy, c-format
-#| msgid "Invalid Query “%s”"
+#, c-format
 msgid "Invalid URI “%s”"
-msgstr "Ugyldig spørring «%s»"
+msgstr "Ugyldig URI «%s»"
 
 #: src/libedataserver/e-soup-session.c:1393
 #, c-format
@@ -7889,32 +8186,30 @@ msgid "Failed with HTTP error %d: %s"
 msgstr "Feilet med HTTP-feil %d: %s"
 
 #: src/libedataserver/e-soup-session.c:1469
-#, fuzzy
-#| msgid "Failed to authenticate"
 msgid "Failed to setup authentication"
-msgstr "Klarte ikke å autentisere"
+msgstr "Klarte ikke å sette opp autentisering"
 
 #: src/libedataserver/e-soup-session.c:1900
 #, c-format
 msgid "Server is busy, waiting to retry (%d:%02d minute)"
 msgid_plural "Server is busy, waiting to retry (%d:%02d minutes)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Serveren er opptatt, venter på nytilsyn (%d:%02d minutter)"
+msgstr[1] "Serveren er opptatt, venter på nytilsyn (%d:%02d minutter)"
 
 #: src/libedataserver/e-soup-session.c:1906
 #, c-format
 msgid "Server is busy, waiting to retry (%d second)"
 msgid_plural "Server is busy, waiting to retry (%d seconds)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Serveren er opptatt, venter på å prøve på nytt (%d sekund)"
+msgstr[1] "Serveren er opptatt, venter på nytilsyn (%d sekunder)"
 
 #: src/libedataserver/e-soup-session.c:2027
 msgid "Too many redirects"
-msgstr ""
+msgstr "For mange omdirigeringer"
 
 #: src/libedataserver/e-soup-session.c:2049
 msgid "Redirect from HTTPS to HTTP is not allowed"
-msgstr ""
+msgstr "Omdirigering fra HTTPS til HTTP er ikke tillatt"
 
 #: src/libedataserver/e-source.c:762
 #, c-format
@@ -7932,10 +8227,8 @@ msgid "Data source “%s” is not writable"
 msgstr "Datakilde «%s» er ikke skrivbar"
 
 #: src/libedataserver/e-source.c:1886
-#, fuzzy
-#| msgid "Failed to obtain an access token for “%s”: "
 msgid "Failed to obtain OAuth 2.0 access token"
-msgstr "Klarte ikke å hente et adgangstegn for «%s»: "
+msgstr "Kunne ikke hente OAuth 2.0-tilgangstoken"
 
 #: src/libedataserver/e-source.c:2226
 msgid "Unnamed"
@@ -7967,11 +8260,13 @@ msgstr "Signaturskriptet må være en lokal fil"
 msgid "Source “%s” does not support proxy lookups"
 msgstr "Kilde «%s» støtter ikke oppslag via proxy"
 
-#: src/libedataserver/e-source-registry.c:1461
+#: src/libedataserver/e-source-registry.c:1486
 #, c-format
 msgid ""
 "Cannot connect to D-Bus service “%s” with object path “%s”, no owner found"
 msgstr ""
+"Kan ikke koble til D-Bus-tjenesten «%s» med objektsti «%s», ingen eier "
+"funnet"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -8126,6 +8421,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"Serveren svarte med en HTML-side, noe som kan bety at det er en feil på "
+"serveren eller med klientforespørselen. Den brukte URI-en var: %s"
 
 #: src/libedataserver/e-webdav-session.c:983
 #, c-format
@@ -8133,20 +8430,26 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"Serveren svarte med en HTML-side, noe som kan bety at det er en feil på "
+"serveren eller med klientforespørselen."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
-#. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#. The last '%s' is replaced with detailed error text, as returned by the server.
+#. The second '%s' is replaced with a reason phrase of the error (user
+#. readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the
+#. server.
 #: src/libedataserver/e-webdav-session.c:1004
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP-feilkode %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
-#. The '%s' is replaced with a reason phrase of the error (user readable text).
-#. The last '%s' is replaced with detailed error text, as returned by the server.
+#. The '%s' is replaced with a reason phrase of the error (user readable
+#. text).
+#. The last '%s' is replaced with detailed error text, as returned by the
+#. server.
 #: src/libedataserver/e-webdav-session.c:1012
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
@@ -8155,14 +8458,16 @@ msgstr "Feilet med HTTP-feilkode %d (%s): %s"
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
-#. The second '%s' is replaced with a reason phrase of the error (user readable text).
+#. The second '%s' is replaced with a reason phrase of the error (user
+#. readable text).
 #: src/libedataserver/e-webdav-session.c:1027
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP-feilkode %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
-#. The '%s' is replaced with a reason phrase of the error (user readable text).
+#. The '%s' is replaced with a reason phrase of the error (user readable
+#. text).
 #: src/libedataserver/e-webdav-session.c:1033
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
@@ -8244,13 +8549,13 @@ msgstr "Klarte ikke å låse ressurs"
 #: src/libedataserver/e-webdav-session.c:2837
 #: src/libedataserver/e-webdav-session.c:3026
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "Forventet applikasjons/xml-respons, men ingen returnert"
 
 #: src/libedataserver/e-webdav-session.c:2840
 #: src/libedataserver/e-webdav-session.c:3029
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "Forventet applikasjonsrespons i XML-format, men %s returnerte"
 
 #: src/libedataserver/e-webdav-session.c:2852
 #: src/libedataserver/e-webdav-session.c:3042
@@ -8272,12 +8577,12 @@ msgstr "Uventet flerstatuskode, men %d returnerte (%s)"
 
 #: src/libedataserver/e-webdav-session.c:3051
 msgid "XML data does not have root node"
-msgstr ""
+msgstr "XML-data har ikke rotnode"
 
 #: src/libedataserver/e-webdav-session.c:3074
 #, c-format
 msgid "XML data doesn't have required structure (%s)"
-msgstr ""
+msgstr "XML-data har ikke påkrevd struktur (%s)"
 
 #: src/libedataserver/e-webdav-session.c:4138
 msgid "Failed to get access control list"
@@ -8289,29 +8594,30 @@ msgstr "Kan ikke lagre beskyttet eller arvet aksesskontrolloppføring."
 
 #: src/libedataserver/e-webdav-session.c:4880
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "Oppgitt ugyldig hovedtype for tilgangskontrolloppføring."
 
 #: src/libedataserver/e-webdav-session.c:4887
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "Kan ikke lagre egenskapsbasert Access Control Entry."
 
 #: src/libedataserver/e-webdav-session.c:4894
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
+"Tilgangskontrolloppføring kan kun være Grant eller Deny, men ikke None."
 
 #: src/libedataserver/e-webdav-session.c:4902
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"Tilgangskontrolloppføring kan kun være for Tillat eller Avvis, men ikke "
+"begge."
 
 #: src/libedataserver/e-webdav-session.c:4961
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "Access Control Entry-privilegiet kan ikke være NULL."
 
 #: src/libedataserver/e-webdav-session.c:5313
-#, fuzzy
-#| msgid "Server didn’t return object’s href"
 msgid "Server did not return sync-token"
-msgstr "Tjener returnerte ikke en objektets href"
+msgstr "Serveren returnerte ikke synkroniseringstokenet"
 
 #: src/libedataserverui/e-buffer-tagger.c:64
 msgid "Could not open the link."
@@ -8327,169 +8633,149 @@ msgstr "Kopier _lenkeadresse"
 msgid "O_pen Link in Browser"
 msgstr "Å_pne lenke i nettleser"
 
-#. To Translators: The text is concatenated to a form: "Ctrl-click to open a link http://www.example.com"
+#. To Translators: The text is concatenated to a form: "Ctrl-click to open a
+#. link http://www.example.com"
 #: src/libedataserverui/e-buffer-tagger.c:697
 msgid "Ctrl-click to open a link"
 msgstr "Ctrl-klikk for å åpne en lenke"
 
 #. x509 certificate usage types
 #: src/libedataserverui/e-certificate-widget.c:287
-#, fuzzy
-#| msgid "Mail Signature"
 msgid "Digital Signature"
-msgstr "E-postsignatur"
+msgstr "Digital signatur"
 
 #: src/libedataserverui/e-certificate-widget.c:288
 msgid "Key Encipherment"
-msgstr ""
+msgstr "Nøkkelkryptering"
 
 #: src/libedataserverui/e-certificate-widget.c:289
 msgid "Data Encipherment"
-msgstr ""
+msgstr "Datakryptering"
 
 #: src/libedataserverui/e-certificate-widget.c:290
 msgid "Non Repudiation"
-msgstr ""
+msgstr "Ikke-benektelse"
 
 #: src/libedataserverui/e-certificate-widget.c:291
 msgid "Key Agreement"
-msgstr ""
+msgstr "Nøkkelavtale"
 
 #: src/libedataserverui/e-certificate-widget.c:292
-#, fuzzy
-#| msgid "PGP Certificate"
 msgid "Key Certificate Sign"
-msgstr "PGP-sertifikat"
+msgstr "Nøkkel-Sertifikat-Signatur"
 
 #: src/libedataserverui/e-certificate-widget.c:293
 msgid "CRL Sign"
-msgstr ""
+msgstr "CRL-signatur"
 
 #: src/libedataserverui/e-certificate-widget.c:294
 msgid "Encipher Only"
-msgstr ""
+msgstr "Kun kryptering"
 
 #: src/libedataserverui/e-certificate-widget.c:416
-#, fuzzy
-#| msgid "PGP Certificate"
 msgid "Certificate"
-msgstr "PGP-sertifikat"
+msgstr "Sertifikat"
 
 #: src/libedataserverui/e-certificate-widget.c:416
-#, fuzzy
-#| msgid "Mail Identity"
 msgid "Identity"
-msgstr "E-postidentitet"
+msgstr "Identitet"
 
 #: src/libedataserverui/e-certificate-widget.c:417
 #: src/libedataserverui/e-certificate-widget.c:429
 msgid "Issuer"
-msgstr ""
+msgstr "Utsteder"
 
 #: src/libedataserverui/e-certificate-widget.c:418
 msgid "Expires on"
-msgstr ""
+msgstr "Utløper"
 
 #: src/libedataserverui/e-certificate-widget.c:419
 msgid "Subject"
-msgstr ""
+msgstr "Emne"
 
 #: src/libedataserverui/e-certificate-widget.c:419
 #: src/libedataserverui/e-certificate-widget.c:429
 msgid "Common Name"
-msgstr ""
+msgstr "Vanlig navn"
 
 #: src/libedataserverui/e-certificate-widget.c:421
 #: src/libedataserverui/e-certificate-widget.c:430
-#, fuzzy
-#| msgid "Email 1"
 msgid "Email"
-msgstr "E-post 1"
+msgstr "E-post"
 
 #: src/libedataserverui/e-certificate-widget.c:423
 #: src/libedataserverui/e-certificate-widget.c:432
-#, fuzzy
-#| msgid "Organizational Unit"
 msgid "Organization Unit"
 msgstr "Organisasjonsenhet"
 
 #: src/libedataserverui/e-certificate-widget.c:424
 #: src/libedataserverui/e-certificate-widget.c:433
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 #: src/libedataserverui/e-certificate-widget.c:425
 #: src/libedataserverui/e-certificate-widget.c:434
-#, fuzzy
-#| msgctxt "CategoryName"
-#| msgid "Status"
 msgid "State"
-msgstr "Status"
+msgstr "Stat"
 
 #: src/libedataserverui/e-certificate-widget.c:426
 #: src/libedataserverui/e-certificate-widget.c:435
-#, fuzzy
-#| msgid "Local delivery"
 msgid "Locality"
-msgstr "Lokal levering"
+msgstr "Lokalitet"
 
 #: src/libedataserverui/e-certificate-widget.c:427
 #: src/libedataserverui/e-certificate-widget.c:436
 msgid "Domain Component Name"
-msgstr ""
+msgstr "Domenekomponentnavn"
 
 #: src/libedataserverui/e-certificate-widget.c:428
 msgid "Alternative Emails"
-msgstr ""
+msgstr "Alternative e-poster"
 
 #: src/libedataserverui/e-certificate-widget.c:437
 #: src/libedataserverui/e-certificate-widget.c:445
 msgid "SHA-256 Fingerprint"
-msgstr ""
+msgstr "SHA-256-fingeravtrykk"
 
 #: src/libedataserverui/e-certificate-widget.c:438
 msgid "Details"
-msgstr ""
+msgstr "Detaljer"
 
 #: src/libedataserverui/e-certificate-widget.c:438
-#, fuzzy
-#| msgid "Not supported"
 msgid "Not Before"
-msgstr "Ikke støttet"
+msgstr "Ikke før"
 
 #: src/libedataserverui/e-certificate-widget.c:439
 msgid "Not After"
-msgstr ""
+msgstr "Ikke etter"
 
 #: src/libedataserverui/e-certificate-widget.c:440
 msgid "Usage"
-msgstr ""
+msgstr "Bruk"
 
 #: src/libedataserverui/e-certificate-widget.c:441
 msgid "Version"
-msgstr ""
+msgstr "Versjon"
 
 #: src/libedataserverui/e-certificate-widget.c:442
 msgid "Serial Number"
-msgstr ""
+msgstr "Serienummer"
 
 #: src/libedataserverui/e-certificate-widget.c:443
 msgid "Key ID"
-msgstr ""
+msgstr "Nøkkel-ID"
 
 #: src/libedataserverui/e-certificate-widget.c:444
-#, fuzzy
-#| msgid "Signature algorithm unknown"
 msgid "Signature Algorithm"
-msgstr "Ukjent signeringsalgoritme"
+msgstr "Signeringsalgoritme"
 
 #: src/libedataserverui/e-certificate-widget.c:446
 msgid "Public Key"
-msgstr ""
+msgstr "Offentlig nøkkel"
 
 #: src/libedataserverui/e-certificate-widget.c:446
 msgid "Algorithm"
-msgstr ""
+msgstr "Algoritme"
 
 #: src/libedataserverui/e-credentials-prompter.c:83
 #: src/libedataserverui/e-credentials-prompter.c:238
@@ -8503,70 +8789,75 @@ msgstr "Spørsmål om påloggingsinformasjon ble avbrutt"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Kilde «%s» støtter ikke oppslag av påloggingsinformasjon"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:347
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:350
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Klarte ikke å hente et adgangstegn fra adresse «%s»: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
-#, fuzzy
-#| msgid "Checking folder consistency"
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Checking returned code"
-msgstr "Sjekker om mappen er konsistent"
+msgstr "Sjekker returnert kode"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:378
-#, fuzzy
-#| msgid "Requesting access token, please wait..."
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
 msgid "Requesting access token, please wait…"
-msgstr "Ber om adgangstegn, vennligst vent …"
+msgstr "Ber om tilgangstoken, vent…"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:652
+#. Translators: The %s is replaced with an OAuth2 service display name, like
+#. the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Address Book authentication
+#. request".
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Autentiseringsforespørsel for %s adressebok"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like
+#. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:657
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Autentiseringsforespørsel for %s kalender"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like
+#. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:662
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:695
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Autentiseringsforespørsel for %s notatliste"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like
+#. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:667
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:700
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Autentiseringsforespørsel for %s oppgaveliste"
 
-#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like
+#. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:673
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "Autentiseringsforespørsel for %s e-post"
 
 #. generic account prompt
-#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. Translators: The %s is replaced with an OAuth2 service display name, like
+#. the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:678
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
 #, c-format
 msgid "%s account authentication request"
 msgstr "Autentiseringsforespørsel for %s konto"
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:692
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8575,46 +8866,54 @@ msgstr ""
 "Logg inn til din %s konto og godta betingelsene for å aksessere din "
 "adressebok «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:699
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
-"Logg inn til din %s konto og godta betingelsene for å aksessere din kalender "
-"«%s»."
+"Logg inn til din %s konto og godta betingelsene for å aksessere din kalender"
+" «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
 msgstr ""
-"Logg inn til din %s konto og godta betingelsene for å aksessere din e-"
-"postkonto «%s»."
+"Logg inn til din %s konto og godta betingelsene for å aksessere din "
+"e-postkonto «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:713
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
 msgstr ""
-"Logg inn til din %s konto og godta betingelsene for å aksessere din e-"
-"posttransport «%s»."
+"Logg inn til din %s konto og godta betingelsene for å aksessere din "
+"e-posttransport «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:720
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:753
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8623,10 +8922,12 @@ msgstr ""
 "Logg inn til din %s konto og godta betingelsene for å aksessere din "
 "notatliste «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:727
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:760
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8635,10 +8936,12 @@ msgstr ""
 "Logg inn til din %s konto og godta betingelsene for å aksessere din "
 "oppgaveliste «%s»."
 
-#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
-#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. Translators: The first %s is replaced with an OAuth2 service display name,
+#. like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The
+#. second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:734
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:767
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8647,59 +8950,58 @@ msgstr ""
 "Logg inn til din %s konto og godta betingelsene for å aksessere din konto "
 "«%s»."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1168
-#, fuzzy, c-format
-#| msgid "Failed to get properties"
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#, c-format
 msgid "Failed to open browser: %s"
-msgstr "Klarte ikke å hente egenskaper"
+msgstr "Kunne ikke åpne nettleser: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1243
-msgid "_Copy URL"
-msgstr ""
-
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1245
 #: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
-#, fuzzy
-#| msgid "O_pen Link in Browser"
+msgid "_Copy URL"
+msgstr "_Kopier URL"
+
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1278
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1309
 msgid "Open in _Browser"
-msgstr "Å_pne lenke i nettleser"
+msgstr "Å_pne i nettleser"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1262
-#, fuzzy, c-format
-#| msgid "Opening folder “%s”"
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1295
+#, c-format
 msgid "Open with “%s”"
-msgstr "Åpner mappe «%s»"
+msgstr "Åpne med «%s»"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1371
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1405
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "A_vbryt"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1471
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1505
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1546
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1580
 msgid ""
-"Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
-"the resulting authorization code, or the URL the OAuth2 wizard finished "
+"Open the above URL in a browser and go through the OAuth2 wizard there. Copy"
+" the resulting authorization code, or the URL the OAuth2 wizard finished "
 "with, below to continue the authentication process."
 msgstr ""
+"Åpne ovennevnte URL i en nettleser og fullfør OAuth2-veiviseren der. Kopier "
+"den resulterende autorisasjonskoden, eller URL-en som OAuth2-veiviseren "
+"fullførte med, nedenfor for å fortsette autentiseringsprosessen."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1583
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1617
 msgid "_Authorization code:"
-msgstr ""
+msgstr "_Autorisasjonskode:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1596
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1630
 msgid "C_ontinue"
-msgstr ""
+msgstr "_Fortsett"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1795
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1796
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1838
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1839
 msgid "Preparing request, please wait…"
-msgstr ""
+msgstr "Forbereder forespørsel, vennligst vent…"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:228
 msgid "Address book authentication request"
@@ -8753,7 +9055,8 @@ msgstr "Vennligst oppgi passordet for oppgaveliste «%s»."
 msgid "Please enter the password for account “%s”."
 msgstr "Vennligst oppgi passordet for konto «%s»."
 
-#. Translators: This is part of a credential prompt, constructing for example: "Please enter the password for account “%s”.\n(host: hostname)"
+#. Translators: This is part of a credential prompt, constructing for example:
+#. "Please enter the password for account “%s”.\n(host: hostname)"
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:279
 #, c-format
 msgid ""
@@ -8766,7 +9069,7 @@ msgstr ""
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:336
 #: src/libedataserverui/e-webdav-discover-widget.c:1139
 msgid "_OK"
-msgstr "_OK"
+msgstr "_Ok"
 
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:485
 msgid "_User Name:"
@@ -8783,74 +9086,67 @@ msgstr "Legg til dette p_assordet i nøkkelringen"
 
 #. Translators: short version of "Snooze until start"
 #: src/libedataserverui/e-reminders-widget.c:165
-#, fuzzy
-#| msgid "until start time"
 msgctxt "snooze-time"
 msgid "until start"
 msgstr "frem til starttid"
 
 #: src/libedataserverui/e-reminders-widget.c:167
-#, fuzzy
-#| msgid "until start time"
 msgctxt "snooze-time"
 msgid "Snooze until start"
-msgstr "frem til starttid"
+msgstr "Utsett til start"
 
 #. Translators: short version of "Snooze until 10 minutes before" ...start
 #: src/libedataserverui/e-reminders-widget.c:176
 #, c-format
 msgctxt "snooze-time"
 msgid "until %s before start"
-msgstr ""
+msgstr "før %s start"
 
-#. Translators: the '%s' is replaced with actual time interval, like "10 minutes", making it "Snooze until 10 minutes before" ...start
+#. Translators: the '%s' is replaced with actual time interval, like "10
+#. minutes", making it "Snooze until 10 minutes before" ...start
 #: src/libedataserverui/e-reminders-widget.c:179
 #, c-format
 msgctxt "snooze-time"
 msgid "Snooze until %s before start"
-msgstr ""
+msgstr "Snooze til %s før start"
 
 #. Translators: short version of "Snooze until 10 minutes after start"
 #: src/libedataserverui/e-reminders-widget.c:183
-#, fuzzy, c-format
-#| msgid "until start time"
+#, c-format
 msgctxt "snooze-time"
 msgid "until %s after start"
-msgstr "frem til starttid"
+msgstr "frem til %s etter oppstart"
 
-#. Translators: the '%s' is replaced with actual time interval, like "10 minutes", making it "Snooze until 10 minutes after start"
+#. Translators: the '%s' is replaced with actual time interval, like "10
+#. minutes", making it "Snooze until 10 minutes after start"
 #: src/libedataserverui/e-reminders-widget.c:186
 #, c-format
 msgctxt "snooze-time"
 msgid "Snooze until %s after start"
-msgstr ""
+msgstr "Snooze til %s etter start"
 
 #. Translators: short version of "Snooze for 10 minutes"
 #: src/libedataserverui/e-reminders-widget.c:190
 #, c-format
 msgctxt "snooze-time"
 msgid "for %s"
-msgstr ""
+msgstr "i %s"
 
-#. Translators: the '%s' is replaced with actual time interval, like "10 minutes", making it "Snooze for 10 minutes"
+#. Translators: the '%s' is replaced with actual time interval, like "10
+#. minutes", making it "Snooze for 10 minutes"
 #: src/libedataserverui/e-reminders-widget.c:193
-#, fuzzy, c-format
-#| msgid "_Snooze"
+#, c-format
 msgctxt "snooze-time"
 msgid "Snooze for %s"
-msgstr "_Pause"
+msgstr "Utsett i %s"
 
 #: src/libedataserverui/e-reminders-widget.c:358
-#, fuzzy
-#| msgid "Add custom time…"
 msgid "_Add custom time"
-msgstr "Legg til egendefinert tid …"
+msgstr "_Legg til tilpasset tid"
 
 #: src/libedataserverui/e-reminders-widget.c:361
-#, fuzzy
-#| msgid "Clear custom times"
 msgid "_Clear custom times"
-msgstr "Tøm egendefinerte tider"
+msgstr "_Tøm tilpassede tider"
 
 #: src/libedataserverui/e-reminders-widget.c:409
 msgctxt "overdue"
@@ -8898,19 +9194,22 @@ msgstr "Klarte ikke å forkaste alle:"
 msgid "Set a custom snooze time for"
 msgstr "Sett egendefinert pausetid for"
 
-#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days
+#. [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: src/libedataserverui/e-reminders-widget.c:1429
 msgctxt "reminders-snooze"
 msgid "da_ys"
 msgstr "da_ger"
 
-#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days
+#. [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: src/libedataserverui/e-reminders-widget.c:1445
 msgctxt "reminders-snooze"
 msgid "_hours"
 msgstr "_timer"
 
-#. Translators: this is part of: "Set a custom snooze time for [nnn] days [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
+#. Translators: this is part of: "Set a custom snooze time for [nnn] days
+#. [nnn] hours [nnn] minutes", where the text in "[]" means a separate widget
 #: src/libedataserverui/e-reminders-widget.c:1461
 msgctxt "reminders-snooze"
 msgid "_minutes"
@@ -8918,15 +9217,15 @@ msgstr "_minutter"
 
 #: src/libedataserverui/e-reminders-widget.c:1468
 msgid "from now"
-msgstr ""
+msgstr "fra nå"
 
 #: src/libedataserverui/e-reminders-widget.c:1469
 msgid "before start"
-msgstr ""
+msgstr "før start"
 
 #: src/libedataserverui/e-reminders-widget.c:1470
 msgid "after start"
-msgstr ""
+msgstr "etter oppstart"
 
 #: src/libedataserverui/e-reminders-widget.c:1475
 msgid "_Add Snooze time"
@@ -8963,23 +9262,19 @@ msgstr "Godt_a permanent"
 
 #: src/libedataserverui/e-trust-prompt.c:112
 msgid "Temporarily reject the certificate"
-msgstr ""
+msgstr "Avvis sertifikatet midlertidig"
 
 #: src/libedataserverui/e-trust-prompt.c:115
 msgid "Permanently reject the certificate"
-msgstr ""
+msgstr "Avvis sertifikatet permanent"
 
 #: src/libedataserverui/e-trust-prompt.c:118
-#, fuzzy
-#| msgid "Temporary authentication failure"
 msgid "Temporarily accept the certificate"
-msgstr "Midlertidig autentiseringsfeil"
+msgstr "Midlertidig godta sertifikatet"
 
 #: src/libedataserverui/e-trust-prompt.c:121
-#, fuzzy
-#| msgid "Cannot add encryption certificate"
 msgid "Permanently accept the certificate"
-msgstr "Kan ikke legge til sertifikat for kryptering"
+msgstr "Godta sertifikatet permanent"
 
 #: src/libedataserverui/e-trust-prompt.c:206
 #: src/modules/trust-prompt/trust-prompt-gtk.c:156
@@ -9004,8 +9299,8 @@ msgstr "Signerende sertifikatautoritet er ikke kjent."
 #: src/libedataserverui/e-trust-prompt.c:292
 #: src/modules/trust-prompt/module-trust-prompt.c:69
 msgid ""
-"The certificate does not match the expected identity of the site that it was "
-"retrieved from."
+"The certificate does not match the expected identity of the site that it was"
+" retrieved from."
 msgstr ""
 "Sertifikatet er ikke likt forventet identitet for nettstedet det ble hentet "
 "fra."
@@ -9065,7 +9360,7 @@ msgstr "Oppgaver"
 #: src/libedataserverui/e-webdav-discover-widget.c:557
 msgctxt "WebDAVDiscover"
 msgid "Server-side scheduling"
-msgstr ""
+msgstr "Server-side-planlegging"
 
 #: src/libedataserverui/e-webdav-discover-widget.c:880
 msgid "Invalid URL"
@@ -9126,13 +9421,12 @@ msgstr "Klarte ikke å finne kontoelement"
 #: src/modules/gnome-online-accounts/goaewsclient.c:293
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
-msgstr "Klarte ikke å finne ASUrl og OABUrl i svar fra automatisk gjenkjenning"
+msgstr ""
+"Klarte ikke å finne ASUrl og OABUrl i svar fra automatisk gjenkjenning"
 
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1758
-#, fuzzy
-#| msgid "Collection/GNOME Online Accounts"
 msgid "Unable to connect to the GNOME Online Accounts service"
-msgstr "Samling/GNOME nettkontoer"
+msgstr "Kunne ikke koble til GNOME Online Accounts-tjenesten"
 
 #: src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1770
 #, c-format
@@ -9188,15 +9482,13 @@ msgstr "_Ja"
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:412
 #, c-format
 msgid ""
-"A calendar reminder is about to trigger. This reminder is configured to run "
-"the following program:\n"
+"A calendar reminder is about to trigger. This reminder is configured to run the following program:\n"
 "\n"
 "        %s\n"
 "\n"
 "Are you sure you want to run this program?"
 msgstr ""
-"En kalenderpåminnelse er i ferd med å utløses. Denne påminnelsen er "
-"konfigurert til å kjøre følgende program:\n"
+"En kalenderpåminnelse er i ferd med å utløses. Denne påminnelsen er konfigurert til å kjøre følgende program:\n"
 "        %s\n"
 "\n"
 "Er du sikker på at du vil kjøre dette programmet?"
@@ -9211,27 +9503,23 @@ msgstr "Vis påminnelsesvindu med _varslinger"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:739
 msgid "Keep reminder notification window always on _top"
-msgstr ""
+msgstr "Hold påminnelsesvarslingsvinduet alltid på _toppen"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:740
-#, fuzzy
-#| msgid "Calendar event notifications"
 msgid "Enable _desktop notifications"
-msgstr "Varsling for kalenderhendelse"
+msgstr "Aktiver _skrivebordsvarsler"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:741
-#, fuzzy
-#| msgid "Calendar event notifications"
 msgid "Enable _audio notifications"
-msgstr "Varsling for kalenderhendelse"
+msgstr "Aktiver _lydvarsler"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:742
 msgid "Display reminders for _completed tasks"
-msgstr ""
+msgstr "Vis påminnelser for _fullførte oppgaver"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:743
 msgid "Display reminders for _past events"
-msgstr ""
+msgstr "Vis påminnelser for _tidligere hendelser"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:757
 msgid "Reminders Options:"
@@ -9246,7 +9534,7 @@ msgstr[1] "Du har %d påminnelser"
 
 #: src/services/evolution-alarm-notify/e-alarm-notify.c:1213
 msgid "The app is auto-started"
-msgstr ""
+msgstr "Appen starter automatisk"
 
 #: src/services/evolution-source-registry/evolution-source-registry.c:24
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -9275,14 +9563,12 @@ msgid "OUTPUTFILE"
 msgstr "UTDATAFIL"
 
 #: src/tools/addressbook-export/addressbook-export.c:942
-#, fuzzy
-#| msgid "List local address book folders"
 msgid "List available address books"
-msgstr "Vis lokale adressebokmapper"
+msgstr "Vis tilgjengelige adressebøker"
 
 #: src/tools/addressbook-export/addressbook-export.c:945
 msgid "List available address books and show how many contacts they have"
-msgstr ""
+msgstr "Vis tilgjengelige adressebøker og vis hvor mange kontakter de har"
 
 #: src/tools/addressbook-export/addressbook-export.c:948
 msgid "Show cards as vcard or csv file"
@@ -9290,7 +9576,7 @@ msgstr "Vis kort som vcard eller csv-fil"
 
 #: src/tools/addressbook-export/addressbook-export.c:1000
 msgid "Cannot use --list and --list-with-count together."
-msgstr ""
+msgstr "Kan ikke bruke --list og --list-with-count sammen."
 
 #: src/tools/addressbook-export/addressbook-export.c:1004
 msgid ""
@@ -9300,10 +9586,8 @@ msgstr ""
 "bruksinformasjon."
 
 #: src/tools/addressbook-export/addressbook-export.c:1018
-#, fuzzy
-#| msgid "Only support csv or vcard format."
 msgid "Only supports csv or vcard format."
-msgstr "Støtt bare csv- eller vcard-format."
+msgstr "Støtter kun csv- eller vcard-format."
 
 #: src/tools/list-sources/list-sources.c:71
 msgid "Show only enabled sources"
