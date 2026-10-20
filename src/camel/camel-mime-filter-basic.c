@@ -15,9 +15,43 @@ struct _CamelMimeFilterBasicPrivate {
 	guchar uubuf[60];
 	gint state;
 	gint save;
+	gint b64col;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelMimeFilterBasic, camel_mime_filter_basic, CAMEL_TYPE_MIME_FILTER)
+
+static gsize
+mime_filter_basic_base64_fold (gint *col,
+                               gchar *buf,
+                               gsize len)
+{
+	gsize breaks;
+	gsize newlen;
+	gssize ii;
+	gint colbefore;
+	gsize breaksbefore;
+	gsize outidx;
+
+	breaks = (gsize) ((*col + (gint) len) / 76);
+	newlen = len + breaks * 2;
+
+	for (ii = (gssize) len - 1; ii >= 0; ii--) {
+		colbefore = *col + (gint) ii;
+		breaksbefore = (gsize) (colbefore / 76);
+		outidx = (gsize) ii + breaksbefore * 2;
+
+		buf[outidx] = buf[ii];
+
+		if ((colbefore + 1) % 76 == 0) {
+			buf[outidx + 1] = '\r';
+			buf[outidx + 2] = '\n';
+		}
+	}
+
+	*col = (*col + (gint) len) % 76;
+
+	return newlen;
+}
 
 /* here we do all of the basic mime filtering */
 static void
@@ -37,14 +71,14 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 	switch (priv->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
-		camel_mime_filter_set_size (
-			mime_filter, len * 2 + 6, FALSE);
+		camel_mime_filter_set_size (mime_filter, len * 2 + 6, FALSE);
 		newlen = g_base64_encode_step (
 			(const guchar *) in, len,
-			TRUE,
+			FALSE,
 			mime_filter->outbuf,
 			&priv->state,
 			&priv->save);
+		newlen = mime_filter_basic_base64_fold (&priv->b64col, mime_filter->outbuf, newlen);
 		g_return_if_fail (newlen <= len * 2 + 6);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
@@ -172,21 +206,26 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 	switch (priv->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
-		camel_mime_filter_set_size (
-			mime_filter, len * 2 + 6, FALSE);
+		camel_mime_filter_set_size (mime_filter, len * 2 + 10, FALSE);
 		if (len > 0)
 			newlen += g_base64_encode_step (
 				(const guchar *) in, len,
-				TRUE,
+				FALSE,
 				mime_filter->outbuf,
 				&priv->state,
 				&priv->save);
 		newlen += g_base64_encode_close (
-			TRUE,
-			mime_filter->outbuf,
+			FALSE,
+			mime_filter->outbuf + newlen,
 			&priv->state,
 			&priv->save);
-		g_return_if_fail (newlen <= len * 2 + 6);
+		newlen = mime_filter_basic_base64_fold (&priv->b64col, mime_filter->outbuf, newlen);
+		if (priv->b64col != 0) {
+			g_return_if_fail (newlen + 2 <= len * 2 + 10);
+			mime_filter->outbuf[newlen++] = '\r';
+			mime_filter->outbuf[newlen++] = '\n';
+			priv->b64col = 0;
+		}
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 		/* *4 is definetly more than needed ... */
@@ -278,6 +317,7 @@ mime_filter_basic_reset (CamelMimeFilter *mime_filter)
 		priv->state = 0;
 	}
 	priv->save = 0;
+	priv->b64col = 0;
 }
 
 static void

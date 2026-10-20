@@ -300,7 +300,7 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	/* first boundary */
-	content = g_strdup_printf ("%s--%s\n", preface ? "\n" : "", boundary);
+	content = g_strdup_printf ("%s--%s\r\n", preface ? "\r\n" : "", boundary);
 	count = camel_stream_write_string (
 		stream, content, cancellable, error);
 	g_free (content);
@@ -320,7 +320,7 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* boundary */
-	content = g_strdup_printf ("\n--%s\n", boundary);
+	content = g_strdup_printf ("\r\n--%s\r\n", boundary);
 	count = camel_stream_write_string (
 		stream, content, cancellable, error);
 	g_free (content);
@@ -337,7 +337,7 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* write the terminating boudary delimiter */
-	content = g_strdup_printf ("\n--%s--\n", boundary);
+	content = g_strdup_printf ("\r\n--%s--\r\n", boundary);
 	count = camel_stream_write_string (
 		stream, content, cancellable, error);
 	g_free (content);
@@ -455,7 +455,7 @@ multipart_signed_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	/* first boundary */
-	content = g_strdup_printf ("%s--%s\n", preface ? "\n" : "", boundary);
+	content = g_strdup_printf ("%s--%s\r\n", preface ? "\r\n" : "", boundary);
 	success = g_output_stream_write_all (
 		output_stream,
 		content, strlen (content),
@@ -483,7 +483,7 @@ multipart_signed_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	total += (gssize) bytes_written;
 
 	/* boundary */
-	content = g_strdup_printf ("\n--%s\n", boundary);
+	content = g_strdup_printf ("\r\n--%s\r\n", boundary);
 	success = g_output_stream_write_all (
 		output_stream,
 		content, strlen (content),
@@ -502,7 +502,7 @@ multipart_signed_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	total += result;
 
 	/* write the terminating boudary delimiter */
-	content = g_strdup_printf ("\n--%s--\n", boundary);
+	content = g_strdup_printf ("\r\n--%s--\r\n", boundary);
 	success = g_output_stream_write_all (
 		output_stream,
 		content, strlen (content),
