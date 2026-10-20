@@ -119,6 +119,24 @@ async_context_free (AsyncContext *async_context)
 	g_slice_free (AsyncContext, async_context);
 }
 
+static gchar *
+crlf_ize_header_value (const gchar *value)
+{
+	GString *out;
+	gsize ii;
+
+	out = g_string_sized_new (strlen (value) + 16);
+
+	for (ii = 0; value[ii]; ii++) {
+		if (value[ii] == '\n' && (ii == 0 || value[ii - 1] != '\r'))
+			g_string_append_c (out, '\r');
+
+		g_string_append_c (out, value[ii]);
+	}
+
+	return g_string_free (out, FALSE);
+}
+
 static gssize
 write_header (gpointer stream,
               const gchar *name,
@@ -133,8 +151,16 @@ write_header (gpointer stream,
 	g_string_append_c (buffer, ':');
 	if (!isspace (value[0]))
 		g_string_append_c (buffer, ' ');
-	g_string_append (buffer, value);
-	g_string_append_c (buffer, '\n');
+
+	if (strchr (value, '\n')) {
+		gchar *crlf_value = crlf_ize_header_value (value);
+		g_string_append (buffer, crlf_value);
+		g_free (crlf_value);
+	} else {
+		g_string_append (buffer, value);
+	}
+
+	g_string_append (buffer, "\r\n");
 
 	/* XXX For now we handle both types of streams. */
 
@@ -199,7 +225,7 @@ write_references (gpointer stream,
 				ide = value = strlen (ids) + ids;
 
 			if (len > 0 && len + (ide - ids) >= CAMEL_FOLD_SIZE) {
-				g_string_append_len (buffer, "\n\t", 2);
+				g_string_append_len (buffer, "\r\n\t", 3);
 				len = 0;
 			}
 
@@ -207,11 +233,18 @@ write_references (gpointer stream,
 			len += (ide - ids);
 		}
 	} else {
-		g_string_append (buffer, value);
+		gchar *crlf_value = crlf_ize_header_value (value);
+		g_string_append (buffer, crlf_value);
+		g_free (crlf_value);
 	}
 
-	if (buffer->len > 0 && buffer->str[buffer->len - 1] != '\n')
-		g_string_append_c (buffer, '\n');
+	if (buffer->len >= 2 && buffer->str[buffer->len - 2] == '\r' && buffer->str[buffer->len - 1] == '\n') {
+		/* already properly terminated */
+	} else if (buffer->len > 0 && buffer->str[buffer->len - 1] == '\n') {
+		g_string_insert_c (buffer, buffer->len - 1, '\r');
+	} else if (buffer->len > 0) {
+		g_string_append (buffer, "\r\n");
+	}
 
 	/* XXX For now we handle both types of streams. */
 
@@ -625,7 +658,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 		total += count;
 	}
 
-	count = camel_stream_write (stream, "\n", 1, cancellable, error);
+	count = camel_stream_write (stream, "\r\n", 2, cancellable, error);
 	if (count == -1)
 		return -1;
 	total += count;

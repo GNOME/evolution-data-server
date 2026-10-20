@@ -83,11 +83,11 @@ test_multipart_signed_no_preface (void)
 	mps = build_multipart_signed (NULL);
 
 	text = write_to_stream (CAMEL_DATA_WRAPPER (mps));
-	g_assert_true (g_str_has_prefix (text, "--" BOUNDARY "\nContent-Type: text/plain\n"));
+	g_assert_true (g_str_has_prefix (text, "--" BOUNDARY "\r\nContent-Type: text/plain\n"));
 	g_free (text);
 
 	text = write_to_output_stream (CAMEL_DATA_WRAPPER (mps));
-	g_assert_true (g_str_has_prefix (text, "--" BOUNDARY "\nContent-Type: text/plain\n"));
+	g_assert_true (g_str_has_prefix (text, "--" BOUNDARY "\r\nContent-Type: text/plain\n"));
 	g_free (text);
 
 	g_object_unref (mps);
@@ -102,11 +102,11 @@ test_multipart_signed_preface (void)
 	mps = build_multipart_signed ("preface");
 
 	text = write_to_stream (CAMEL_DATA_WRAPPER (mps));
-	g_assert_true (g_str_has_prefix (text, "preface\n--" BOUNDARY "\n"));
+	g_assert_true (g_str_has_prefix (text, "preface\r\n--" BOUNDARY "\r\n"));
 	g_free (text);
 
 	text = write_to_output_stream (CAMEL_DATA_WRAPPER (mps));
-	g_assert_true (g_str_has_prefix (text, "preface\n--" BOUNDARY "\n"));
+	g_assert_true (g_str_has_prefix (text, "preface\r\n--" BOUNDARY "\r\n"));
 	g_free (text);
 
 	g_object_unref (mps);
