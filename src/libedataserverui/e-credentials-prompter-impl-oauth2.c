@@ -203,8 +203,8 @@ cpi_oauth2_create_auth_uri (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
 	return uri;
 }
 
-/* Whether a code in @page_uri comes with the state sent for this prompt;
-   TRUE when the @page_uri carries no code */
+/* Whether a code or an error in @page_uri comes with the state sent for this prompt;
+   TRUE when the @page_uri carries neither */
 static gboolean
 cpi_oauth2_page_uri_has_our_state (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
 				   const gchar *page_uri)
@@ -223,14 +223,22 @@ cpi_oauth2_page_uri_has_our_state (ECredentialsPrompterImplOAuth2 *prompter_oaut
 	parts[1] = g_uri_get_fragment (uri);
 
 	for (ii = 0; ii < G_N_ELEMENTS (parts) && !form; ii++) {
-		const gchar *code;
+		const gchar *keys[] = { "code", "error", "error_description" };
+		gboolean is_response = FALSE;
+		guint jj;
 
 		if (!parts[ii])
 			continue;
 
 		form = soup_form_decode (parts[ii]);
-		code = form ? g_hash_table_lookup (form, "code") : NULL;
-		if (!code || !*code)
+
+		for (jj = 0; form && jj < G_N_ELEMENTS (keys) && !is_response; jj++) {
+			const gchar *value = g_hash_table_lookup (form, keys[jj]);
+
+			is_response = value && *value;
+		}
+
+		if (!is_response)
 			g_clear_pointer (&form, g_hash_table_unref);
 	}
 
@@ -520,7 +528,7 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 		return;
 	}
 
-	if (authorization_code && !cpi_oauth2_page_uri_has_our_state (prompter_oauth2, page_uri)) {
+	if (!cpi_oauth2_page_uri_has_our_state (prompter_oauth2, page_uri)) {
 		g_free (authorization_code);
 		cpi_oauth2_show_error (prompter_oauth2, "Invalid response",
 			_("The address does not contain an authorization code for this sign-in."));
@@ -1098,7 +1106,8 @@ cpi_oauth2_prepare_web_view_thread (gpointer user_data)
 #endif /* WITH_WEBKITGTK */
 
 static void
-cpi_oauth2_test_authorization_code_from_gui (ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+cpi_oauth2_test_authorization_code_from_gui (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
+					     gboolean is_redirect_uri)
 {
 	gchar *authorization_code = NULL;
 	const gchar *entered_text;
@@ -1110,12 +1119,12 @@ cpi_oauth2_test_authorization_code_from_gui (ECredentialsPrompterImplOAuth2 *pro
 	if (cpi_oauth2_get_debug ())
 		e_util_debug_print ("OAuth2", "Continue with user-entered authorization code: '%s'\n", entered_text);
 
-	/* when the entered text looks like a URL, try to extract the code out of it */
-	if (entered_text && (g_ascii_strncasecmp (entered_text, "https://", 8) == 0 || (strstr (entered_text, ":") && strstr (entered_text, "code=")))) {
+	/* when the entered text looks like a URL, try to extract the code out of it; a redirect URI is never taken as the code */
+	if (entered_text && (is_redirect_uri || g_ascii_strncasecmp (entered_text, "https://", 8) == 0 || (strstr (entered_text, ":") && strstr (entered_text, "code=")))) {
 		if (e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
 			prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
 			NULL, entered_text, NULL, &authorization_code) &&
-		    (!authorization_code || cpi_oauth2_page_uri_has_our_state (prompter_oauth2, entered_text))) {
+		    cpi_oauth2_page_uri_has_our_state (prompter_oauth2, entered_text)) {
 			cpi_oauth2_test_authorization_code (prompter_oauth2, authorization_code);
 		} else {
 			g_free (authorization_code);
@@ -1139,7 +1148,7 @@ cpi_oauth2_handle_response_uri (EDBusOAuth2Response *object,
 
 	if (arg_uri && *arg_uri) {
 		_libedataserverui_entry_set_text (prompter_oauth2->priv->auth_code_entry, arg_uri);
-		cpi_oauth2_test_authorization_code_from_gui (prompter_oauth2);
+		cpi_oauth2_test_authorization_code_from_gui (prompter_oauth2, TRUE);
 	}
 
 	return TRUE;
@@ -1393,7 +1402,7 @@ cpi_oauth2_manual_continue_clicked_cb (GtkButton *button,
 {
 	ECredentialsPrompterImplOAuth2 *prompter_oauth2 = user_data;
 
-	cpi_oauth2_test_authorization_code_from_gui (prompter_oauth2);
+	cpi_oauth2_test_authorization_code_from_gui (prompter_oauth2, FALSE);
 }
 
 static void
