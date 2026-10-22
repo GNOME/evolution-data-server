@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/"
 "issues/\n"
-"POT-Creation-Date: 2026-10-08 16:36+0000\n"
-"PO-Revision-Date: 2026-10-11 08:00+0300\n"
+"POT-Creation-Date: 2026-10-21 09:55+0000\n"
+"PO-Revision-Date: 2026-10-22 08:00+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -193,8 +193,8 @@ msgstr "Eski veri tabanını “%s”, “%s” olarak adlandırılamadı: %s"
 #: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:352
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:404
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1266
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -1238,7 +1238,7 @@ msgstr "%s veri tabanı açılamadı: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2939
 #: src/calendar/libedata-cal/e-cal-cache.c:3002
 #: src/calendar/libedata-cal/e-cal-cache.c:3173
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1423
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1424
 #: src/libebackend/e-cache.c:1358 src/libebackend/e-cache.c:2334
 #: src/libebackend/e-cache.c:2374
 #, c-format
@@ -1277,19 +1277,19 @@ msgid "Contact field “%s” not in summary"
 msgstr "Bağlantı alanı “%s” özet değil"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1080
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1132
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1133
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "UID “%s” için önceden yüklenmiş nesne geçersiz"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1141
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "UID “%s” için alınan nesne geçersiz"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1319
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1371
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1372
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1298,13 +1298,13 @@ msgstr ""
 "devre dışı bırakın ve eylemi yineleyin."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1325
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1377
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1378
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr "Kotalı ağda devre dışı bırakıldığı için yenileme atlandı."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2042
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2541
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3434
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3435
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” önbelleği oluşturulamadı:"
@@ -1451,24 +1451,24 @@ msgstr "Takvim verisi kaydedilemedi: Hatalı URI."
 msgid "Cannot save calendar data"
 msgstr "Takvim verisi kaydedilemedi"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1189
-#: src/calendar/backends/file/e-cal-backend-file.c:1318
+#: src/calendar/backends/file/e-cal-backend-file.c:1190
+#: src/calendar/backends/file/e-cal-backend-file.c:1319
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "“%s” ISC dosyası ayrıştırılamadı"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1200
-#: src/calendar/backends/file/e-cal-backend-file.c:1329
+#: src/calendar/backends/file/e-cal-backend-file.c:1201
+#: src/calendar/backends/file/e-cal-backend-file.c:1330
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "“%s” dosyası bir VCALENDAR bileşeni değil"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3762
-#: src/calendar/backends/file/e-cal-backend-file.c:3768
-#: src/calendar/backends/file/e-cal-backend-file.c:3774
-#: src/calendar/backends/file/e-cal-backend-file.c:3801
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2640
+#: src/calendar/backends/file/e-cal-backend-file.c:3765
+#: src/calendar/backends/file/e-cal-backend-file.c:3771
+#: src/calendar/backends/file/e-cal-backend-file.c:3777
+#: src/calendar/backends/file/e-cal-backend-file.c:3804
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2641
 msgid "Unsupported method"
 msgstr "Desteklenmeyen yöntem"
 
@@ -2654,12 +2654,12 @@ msgstr "Bileşen olmadan saat dilimi eklenemedi"
 msgid "Cannot add timezone with invalid component"
 msgstr "Geçersiz bileşenle saat dilimi eklenemedi"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1189
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1190
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID “%s” için alınan nesne herhangi bir beklenen bileşeni içermiyor"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1928
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1929
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2667,7 +2667,7 @@ msgstr ""
 "Ayrılmış bir örnekten tüm örnekler değiştirilemez. Bunun yerine bir seri "
 "örneğini değiştirin."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4333
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4334
 msgid "attachment.dat"
 msgstr "ek.dat"
 
@@ -3775,11 +3775,11 @@ msgstr "Bu seçenek sunucuya basit bir parola kullanarak bağlantı kuracaktır.
 msgid "Unknown authentication state."
 msgstr "Bilinmeyen kimlik doğrulama durumu."
 
-#: src/camel/camel-sasl-ntlm.c:27
+#: src/camel/camel-sasl-ntlm.c:28
 msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
-#: src/camel/camel-sasl-ntlm.c:29
+#: src/camel/camel-sasl-ntlm.c:30
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
@@ -7921,47 +7921,47 @@ msgstr "SOAP çerezi oluşturulamadı"
 msgid "The OAuth2 service “%s” has no token endpoint set for this account"
 msgstr "“%s” OAuth2 hizmetinde bu hesap için belirlenmiş jeton uç noktası yok"
 
-#: src/libedataserver/e-oauth2-service.c:1114
+#: src/libedataserver/e-oauth2-service.c:1163
 msgid "Malformed, no message body set"
 msgstr "Hatalı biçimlendirilmiş, ileti gövdesi takımı yok"
 
-#: src/libedataserver/e-oauth2-service.c:1348
+#: src/libedataserver/e-oauth2-service.c:1397
 msgid "Token record is incomplete"
 msgstr "Jeton kaydı tamamlanmamış"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1375
-#: src/libedataserver/e-oauth2-service.c:1417
+#: src/libedataserver/e-oauth2-service.c:1424
+#: src/libedataserver/e-oauth2-service.c:1466
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” (%s) kaynağı, “%s” OAuth2 hizmeti için geçerli değil"
 
-#: src/libedataserver/e-oauth2-service.c:1432
+#: src/libedataserver/e-oauth2-service.c:1481
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 gizi bulunamadı"
 
-#: src/libedataserver/e-oauth2-service.c:1459
+#: src/libedataserver/e-oauth2-service.c:1508
 msgid "OAuth2 secret record is incomplete"
 msgstr "OAuth2 giz kaydı tamamlanmamış"
 
-#: src/libedataserver/e-oauth2-service.c:1512
-#: src/libedataserver/e-oauth2-service.c:1617
+#: src/libedataserver/e-oauth2-service.c:1561
+#: src/libedataserver/e-oauth2-service.c:1666
 msgid "Failed to create HTTP session"
 msgstr "HTTP oturumu oluşturulamadı"
 
-#: src/libedataserver/e-oauth2-service.c:1526
-#: src/libedataserver/e-oauth2-service.c:1631
+#: src/libedataserver/e-oauth2-service.c:1575
+#: src/libedataserver/e-oauth2-service.c:1680
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "“%s” için HTTP isteği oluşturulamadı"
 
-#: src/libedataserver/e-oauth2-service.c:1655
+#: src/libedataserver/e-oauth2-service.c:1704
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "“%s” sunucusundan geçersiz yanıt alındı."
 
-#: src/libedataserver/e-oauth2-service.c:1678
+#: src/libedataserver/e-oauth2-service.c:1727
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -7972,24 +7972,24 @@ msgstr ""
 "\n"
 "Ayrıntılı hata: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1681
+#: src/libedataserver/e-oauth2-service.c:1730
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1732
+#: src/libedataserver/e-oauth2-service.c:1781
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” (%s) kaynağı geçerli bir OAuth2 kaynağı değil"
 
-#: src/libedataserver/e-oauth2-service.c:2108
+#: src/libedataserver/e-oauth2-service.c:2157
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
 "Erişim jetonunun süresi dolmuş ve yenilenemedi. Lütfen yeniden giriş yapın."
 
-#: src/libedataserver/e-oauth2-service.c:2122
+#: src/libedataserver/e-oauth2-service.c:2171
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr "Erişim jetonu alınamadı. Lütfen sunucuya yeniden giriş yapın."
 
@@ -8626,50 +8626,55 @@ msgstr "Kimlik bilgileri istemi iptal edildi"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "“%s” kaynağı kimlik bilgilerinin sorulmasını desteklemiyor"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:350
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:402
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "“%s” adresinden erişim jetonu alınamadı: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:433
 msgid "Checking returned code"
 msgstr "Dönen kod denetleniyor"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:433
 msgid "Requesting access token, please wait…"
 msgstr "Erişim jetonu isteniyor, lütfen bekleyin…"
 
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1123
+msgid "The address does not contain an authorization code for this sign-in."
+msgstr "Adres, bu oturum açış için yetkilendirme kodu içermiyor"
+
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:744
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "%s Adres defteri kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:749
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "%s Takvim kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:695
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:754
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "%s Not Listesi kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:700
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:759
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "%s Görev Listesi kimlik doğrulama isteği"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:765
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "%s E-posta kimlik doğrulama isteği"
@@ -8677,7 +8682,7 @@ msgstr "%s E-posta kimlik doğrulama isteği"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:770
 #, c-format
 msgid "%s account authentication request"
 msgstr "%s hesabı kimlik doğrulama isteği"
@@ -8685,7 +8690,7 @@ msgstr "%s hesabı kimlik doğrulama isteği"
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:784
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8697,7 +8702,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:791
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8709,7 +8714,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:798
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8721,7 +8726,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:805
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8733,7 +8738,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:753
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:812
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8745,7 +8750,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:760
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:819
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8757,7 +8762,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:767
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:826
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8766,37 +8771,37 @@ msgstr ""
 "%s hesabınıza giriş yapın ve “%s” hesabınıza erişmek için koşulları kabul "
 "edin."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1266
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Tarayıcı açılamadı: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1341
 msgid "_Copy URL"
 msgstr "URL’yi _Kopyala"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1278
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1309
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1343
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1374
 msgid "Open in _Browser"
 msgstr "Tarayıcıda _Aç"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1295
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1360
 #, c-format
 msgid "Open with “%s”"
 msgstr "“%s” ile aç"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1404
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1470
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "İ_ptal"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1504
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1570
 msgid "URL:"
 msgstr "URL:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1579
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1645
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8806,16 +8811,16 @@ msgstr ""
 "yetkilendirme kodunu veya OAuth2 sihirbazının bittiği URL’yi aşağıya "
 "kopyalayın ve kimlik doğrulama sürecini sürdürün."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1616
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1682
 msgid "_Authorization code:"
 msgstr "_Yetkilendirme kodu:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1629
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1695
 msgid "C_ontinue"
 msgstr "_Sürdür"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1828
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1829
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1903
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1904
 msgid "Preparing request, please wait…"
 msgstr "İstek hazırlanıyor, lütfen bekleyin…"
 
