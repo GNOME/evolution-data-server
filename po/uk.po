@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/evolution-data-server/is"
 "sues/\n"
-"POT-Creation-Date: 2026-10-07 13:32+0000\n"
-"PO-Revision-Date: 2026-10-07 19:34+0300\n"
+"POT-Creation-Date: 2026-10-21 09:55+0000\n"
+"PO-Revision-Date: 2026-10-23 20:59+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -189,8 +189,8 @@ msgstr "Не вдалося перейменувати стару базу да�
 #: src/libebackend/e-server-side-source.c:504 src/libedataserver/e-client.c:172
 #: src/libedataserver/e-soup-session.c:1129
 #: src/libedataserver/e-soup-session.c:2245
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:352
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:404
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1266
 #: src/libedataserverui/e-reminders-widget.c:2278
 #: src/tools/list-sources/list-sources.c:417
 msgid "Unknown error"
@@ -1243,7 +1243,7 @@ msgstr "Не вдалося відкрити базу даних %s: %s"
 #: src/calendar/libedata-cal/e-cal-cache.c:2939
 #: src/calendar/libedata-cal/e-cal-cache.c:3002
 #: src/calendar/libedata-cal/e-cal-cache.c:3173
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1421
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1424
 #: src/libebackend/e-cache.c:1358 src/libebackend/e-cache.c:2334
 #: src/libebackend/e-cache.c:2374
 #, c-format
@@ -1283,19 +1283,19 @@ msgid "Contact field “%s” not in summary"
 msgstr "Поле контакту «%s» не перебуває у резюме"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1080
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1132
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1133
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Попередньо завантажений об'єкт для UID «%s» недійсний"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1088
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1140
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1141
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Отриманий об'єкт для UID «%s» недійсний"
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1319
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1369
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1372
 msgid ""
 "Refresh skipped due to enabled Power Saver mode. Disable Power Saver mode "
 "and repeat the action."
@@ -1304,14 +1304,14 @@ msgstr ""
 "енергозаощадження і повторіть дію."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:1325
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1375
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1378
 msgid "Refresh skipped due to being disabled on metered network."
 msgstr ""
 "Оновлення пропущено, оскільки його вимкнено у мережах з обліком даних."
 
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2042
 #: src/addressbook/libedata-book/e-book-meta-backend.c:2541
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:3430
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:3435
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Не вдалося створити кеш «%s»:"
@@ -1460,24 +1460,24 @@ msgstr "Не вдалося зберегти дані календаря: неп
 msgid "Cannot save calendar data"
 msgstr "Не вдалося зберегти дані календаря"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1188
-#: src/calendar/backends/file/e-cal-backend-file.c:1317
+#: src/calendar/backends/file/e-cal-backend-file.c:1190
+#: src/calendar/backends/file/e-cal-backend-file.c:1319
 #, c-format
 msgid "Cannot parse ICS file “%s”"
 msgstr "Не вдалося обробити файл ICS «%s»"
 
-#: src/calendar/backends/file/e-cal-backend-file.c:1199
-#: src/calendar/backends/file/e-cal-backend-file.c:1328
+#: src/calendar/backends/file/e-cal-backend-file.c:1201
+#: src/calendar/backends/file/e-cal-backend-file.c:1330
 #, c-format
 msgid "File “%s” is not a VCALENDAR component"
 msgstr "Файл «%s» не є компонентом VCALENDAR"
 
 #. FIXME This should be doable once all the recurid stuff is done
-#: src/calendar/backends/file/e-cal-backend-file.c:3759
 #: src/calendar/backends/file/e-cal-backend-file.c:3765
 #: src/calendar/backends/file/e-cal-backend-file.c:3771
-#: src/calendar/backends/file/e-cal-backend-file.c:3798
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:2636
+#: src/calendar/backends/file/e-cal-backend-file.c:3777
+#: src/calendar/backends/file/e-cal-backend-file.c:3804
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:2641
 msgid "Unsupported method"
 msgstr "Непідтримуваний метод"
 
@@ -2718,13 +2718,13 @@ msgstr "Неможливо додати часовий пояс без комп�
 msgid "Cannot add timezone with invalid component"
 msgstr "Неможливо додати часовий пояс з недійсним компонентом"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1187
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1190
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Отриманий об'єкт для UID «%s» не містить жодного очікуваного компонента"
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:1926
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:1929
 msgid ""
 "Cannot modify all instances from a detached instance. Modify a series "
 "instance instead."
@@ -2732,7 +2732,7 @@ msgstr ""
 "Неможливо змінювати усі екземпляри з від'єднаного екземпляра. Замість цього, "
 "слід вносити зміни до екземпляра послідовності."
 
-#: src/calendar/libedata-cal/e-cal-meta-backend.c:4329
+#: src/calendar/libedata-cal/e-cal-meta-backend.c:4334
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -3855,11 +3855,11 @@ msgstr "З'єднуватись с сервером використовуючи
 msgid "Unknown authentication state."
 msgstr "Невідомий стан автентифікації."
 
-#: src/camel/camel-sasl-ntlm.c:27
+#: src/camel/camel-sasl-ntlm.c:28
 msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
-#: src/camel/camel-sasl-ntlm.c:29
+#: src/camel/camel-sasl-ntlm.c:30
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
@@ -3910,15 +3910,12 @@ msgid "OAuth2 (dynamic client)"
 msgstr "OAuth2 (динамічний клієнт)"
 
 #: src/camel/camel-sasl-xoauth2-dynamic.c:24
-#| msgid ""
-#| "This option will use an OAuth 2.0 access token to connect to the server"
 msgid ""
 "This option will use an OAuth 2.0 access token, of a dynamically registered "
 "client, to connect to the server"
 msgstr ""
-"Цей параметр використовуватиме ключ доступу OAuth 2.0 динамічно зареєстровано"
-"го клієнта, щоб під'єднатись до "
-"сервера"
+"Цей параметр використовуватиме ключ доступу OAuth 2.0 динамічно "
+"зареєстрованого клієнта, щоб під'єднатись до сервера"
 
 #: src/camel/camel-sasl-xoauth2-google.c:12
 msgid "OAuth2 (Google)"
@@ -8079,50 +8076,50 @@ msgstr "Не вдалося створити куку SOAP"
 #, c-format
 msgid "The OAuth2 service “%s” has no token endpoint set for this account"
 msgstr ""
-"Служба OAuth2 «%s» не має встановленого жетона кінцевої точки для цього облік"
-"ового запису"
+"Служба OAuth2 «%s» не має встановленого жетона кінцевої точки для цього "
+"облікового запису"
 
-#: src/libedataserver/e-oauth2-service.c:1114
+#: src/libedataserver/e-oauth2-service.c:1163
 msgid "Malformed, no message body set"
 msgstr "Неправильне формування, тіло повідомлення не встановлено"
 
-#: src/libedataserver/e-oauth2-service.c:1348
+#: src/libedataserver/e-oauth2-service.c:1397
 msgid "Token record is incomplete"
 msgstr "Запис жетона неповний"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: src/libedataserver/e-oauth2-service.c:1375
-#: src/libedataserver/e-oauth2-service.c:1417
+#: src/libedataserver/e-oauth2-service.c:1424
+#: src/libedataserver/e-oauth2-service.c:1466
 #, c-format
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Джерело «%s» (%s) є некоректним для служби OAuth2 «%s»"
 
-#: src/libedataserver/e-oauth2-service.c:1432
+#: src/libedataserver/e-oauth2-service.c:1481
 msgid "OAuth2 secret not found"
 msgstr "Не знайдено ключ OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:1459
+#: src/libedataserver/e-oauth2-service.c:1508
 msgid "OAuth2 secret record is incomplete"
 msgstr "Запис реєстраційних даних OAuth2 є неповним"
 
-#: src/libedataserver/e-oauth2-service.c:1512
-#: src/libedataserver/e-oauth2-service.c:1617
+#: src/libedataserver/e-oauth2-service.c:1561
+#: src/libedataserver/e-oauth2-service.c:1666
 msgid "Failed to create HTTP session"
 msgstr "Не вдалося створити сеанс HTTP"
 
-#: src/libedataserver/e-oauth2-service.c:1526
-#: src/libedataserver/e-oauth2-service.c:1631
+#: src/libedataserver/e-oauth2-service.c:1575
+#: src/libedataserver/e-oauth2-service.c:1680
 #, c-format
 msgid "Failed to create HTTP request for “%s”"
 msgstr "Не вдалося створити запит HTTP щодо «%s»:"
 
-#: src/libedataserver/e-oauth2-service.c:1655
+#: src/libedataserver/e-oauth2-service.c:1704
 #, c-format
 msgid "Received incorrect response from server “%s”."
 msgstr "Отримано неправильну відповідь від сервера «%s»."
 
-#: src/libedataserver/e-oauth2-service.c:1678
+#: src/libedataserver/e-oauth2-service.c:1727
 #, c-format
 msgid ""
 "Failed to refresh access token. Sign to the server again, please.\n"
@@ -8133,18 +8130,18 @@ msgstr ""
 "\n"
 "Докладно про помилку: %s"
 
-#: src/libedataserver/e-oauth2-service.c:1681
+#: src/libedataserver/e-oauth2-service.c:1730
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Не вдалося оновити ключ доступу. Увійдіть на сервер знову, будь ласка."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: src/libedataserver/e-oauth2-service.c:1732
+#: src/libedataserver/e-oauth2-service.c:1781
 #, c-format
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Джерело «%s» (%s) є неприпустимим джерелом для OAuth2"
 
-#: src/libedataserver/e-oauth2-service.c:2108
+#: src/libedataserver/e-oauth2-service.c:2157
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -8152,14 +8149,13 @@ msgstr ""
 "Термін дії ключа доступу вичерпано, і його не вдалося оновити. Увійдіть на "
 "сервер знову, будь ласка."
 
-#: src/libedataserver/e-oauth2-service.c:2122
+#: src/libedataserver/e-oauth2-service.c:2171
 msgid "Failed to obtain access token. Sign to the server again, please."
 msgstr ""
 "Не вдалося отримати ключ доступу. Увійдіть на сервер знову, будь ласка."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: src/libedataserver/e-oauth2-service-dynamic.c:126
-#| msgid "OAuth2 (Outlook)"
 msgctxt "OAuth2Service"
 msgid "OAuth2 (automatic)"
 msgstr "OAuth2 (автоматично)"
@@ -8798,50 +8794,56 @@ msgstr "Запит щодо реєстраційних даних було ск�
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Джерело «%s» не підтримує запит облікових даних"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:350
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:402
 #, c-format
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Не вдалося отримати ключ доступу з адреси «%s»: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:433
 msgid "Checking returned code"
 msgstr "Перевіряємо повернутий код"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:381
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:433
 msgid "Requesting access token, please wait…"
 msgstr "Просимо надати ключ доступу, будь ласка, зачекайте…"
 
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1123
+#| msgid "Server response did not contain authorization data"
+msgid "The address does not contain an authorization code for this sign-in."
+msgstr "В адресі не міститься коду уповноваження для цього входу."
+
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:685
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:744
 #, c-format
 msgid "%s Address Book authentication request"
 msgstr "Запит щодо розпізнавання для доступу до адресної книги %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:690
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:749
 #, c-format
 msgid "%s Calendar authentication request"
 msgstr "Запит щодо розпізнавання для доступу до календаря %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:695
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:754
 #, c-format
 msgid "%s Memo List authentication request"
 msgstr "Запит щодо розпізнавання для доступу до списку приміток %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:700
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:759
 #, c-format
 msgid "%s Task List authentication request"
 msgstr "Запит щодо розпізнавання для доступу до списку завдань %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:706
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:765
 #, c-format
 msgid "%s Mail authentication request"
 msgstr "Запит розпізнавання від пошти %s"
@@ -8849,7 +8851,7 @@ msgstr "Запит розпізнавання від пошти %s"
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:711
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:770
 #, c-format
 msgid "%s account authentication request"
 msgstr "Запит щодо розпізнавання для доступу до облікового запису %s"
@@ -8857,7 +8859,7 @@ msgstr "Запит щодо розпізнавання для доступу д�
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:725
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:784
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8869,7 +8871,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:732
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:791
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8881,7 +8883,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:739
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:798
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8893,7 +8895,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:746
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:805
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
@@ -8905,7 +8907,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:753
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:812
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
@@ -8917,7 +8919,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:760
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:819
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
@@ -8929,7 +8931,7 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:767
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:826
 #, c-format
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
@@ -8938,37 +8940,37 @@ msgstr ""
 "Щоб мати доступ до вашого облікового запису «%s», ви маєте увійти до вашого "
 "облікового запису %s і погодитися із умовами."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1201
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1266
 #, c-format
 msgid "Failed to open browser: %s"
 msgstr "Не вдалося відкрити браузер: %s"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1276
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1341
 msgid "_Copy URL"
 msgstr "_Копіювати адресу"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1278
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1309
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1343
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1374
 msgid "Open in _Browser"
 msgstr "В_ідкрити у інтернет-навігаторі"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1295
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1360
 #, c-format
 msgid "Open with “%s”"
 msgstr "Відкрити за допомогою «%s»"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1404
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1470
 #: src/libedataserverui/e-credentials-prompter-impl-password.c:335
 #: src/libedataserverui/e-trust-prompt.c:105
 #: src/libedataserverui/e-webdav-discover-widget.c:1138
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1504
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1570
 msgid "URL:"
 msgstr "Адреса:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1579
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1645
 msgid ""
 "Open the above URL in a browser and go through the OAuth2 wizard there. Copy "
 "the resulting authorization code, or the URL the OAuth2 wizard finished "
@@ -8979,16 +8981,16 @@ msgstr ""
 "завершив роботу майстер OAuth2, до наведеного нижче поля і продовжіть "
 "процедуру розпізнавання."
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1616
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1682
 msgid "_Authorization code:"
 msgstr "Код _уповноваження:"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1629
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1695
 msgid "C_ontinue"
 msgstr "Пр_одовжити"
 
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1828
-#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1829
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1903
+#: src/libedataserverui/e-credentials-prompter-impl-oauth2.c:1904
 msgid "Preparing request, please wait…"
 msgstr "Готуємо запит, будь ласка, зачекайте…"
 
