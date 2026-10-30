@@ -65,6 +65,14 @@ GType		e_source_address_book_get_type	(void) G_GNUC_CONST;
 guint		e_source_address_book_get_order	(ESourceAddressBook *extension);
 void		e_source_address_book_set_order	(ESourceAddressBook *extension,
 						 guint order);
+const gchar * const *
+		e_source_address_book_get_groups
+						(ESourceAddressBook *extension);
+gchar **	e_source_address_book_dup_groups
+						(ESourceAddressBook *extension);
+void		e_source_address_book_set_groups
+						(ESourceAddressBook *extension,
+						 const gchar * const *groups);
 
 G_END_DECLS
 

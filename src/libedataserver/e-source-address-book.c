@@ -26,12 +26,14 @@
 #include <libedataserver/e-data-server-util.h>
 
 struct _ESourceAddressBookPrivate {
+	gchar **groups;
 	guint order;
 };
 
 enum {
 	PROP_0,
 	PROP_ORDER,
+	PROP_GROUPS,
 	N_PROPS
 };
 
@@ -51,6 +53,12 @@ source_address_book_set_property (GObject *object,
 				E_SOURCE_ADDRESS_BOOK (object),
 				g_value_get_uint (value));
 			return;
+
+		case PROP_GROUPS:
+			e_source_address_book_set_groups (
+				E_SOURCE_ADDRESS_BOOK (object),
+				g_value_get_boxed (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -69,9 +77,27 @@ source_address_book_get_property (GObject *object,
 				e_source_address_book_get_order (
 				E_SOURCE_ADDRESS_BOOK (object)));
 			return;
+
+		case PROP_GROUPS:
+			g_value_take_boxed (
+				value,
+				e_source_address_book_dup_groups (
+				E_SOURCE_ADDRESS_BOOK (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_address_book_finalize (GObject *object)
+{
+	ESourceAddressBook *extension = E_SOURCE_ADDRESS_BOOK (object);
+
+	g_strfreev (extension->priv->groups);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_address_book_parent_class)->finalize (object);
 }
 
 static void
@@ -83,6 +109,7 @@ e_source_address_book_class_init (ESourceAddressBookClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_address_book_set_property;
 	object_class->get_property = source_address_book_get_property;
+	object_class->finalize = source_address_book_finalize;
 
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
@@ -97,6 +124,24 @@ e_source_address_book_class_init (ESourceAddressBookClass *class)
 			"order",
 			NULL, NULL,
 			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING);
+
+	/**
+	 * ESourceAddressBook:groups
+	 *
+	 * List of group names to which the source belongs
+	 *
+	 * Since: 3.64
+	 **/
+	properties[PROP_GROUPS] =
+		g_param_spec_boxed (
+			"groups",
+			NULL, NULL,
+			G_TYPE_STRV,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -149,4 +194,89 @@ e_source_address_book_set_order (ESourceAddressBook *extension,
 	extension->priv->order = order;
 
 	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ORDER]);
+}
+
+/**
+ * e_source_address_book_get_groups:
+ * @extension: an #ESourceAddressBook
+ *
+ * Returns a %NULL-terminated string array of group names for the #ESource
+ * to which @extension belongs. The returned array is owned by @extension
+ * and should not be modified or freed.
+ *
+ * Returns: (nullable) (transfer none): a %NULL-terminated string array of
+ *    group names for the #ESource, or %NULL, when none is set
+ *
+ * Since: 3.64
+ **/
+const gchar * const *
+e_source_address_book_get_groups (ESourceAddressBook *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_ADDRESS_BOOK (extension), NULL);
+
+	return (const gchar * const *) extension->priv->groups;
+}
+
+/**
+ * e_source_address_book_dup_groups:
+ * @extension: an #ESourceAddressBook
+ *
+ * Thread-safe variation of e_source_address_book_get_groups().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string array should be freed with g_strfreev() when no
+ * longer needed.
+ *
+ * Returns: (nullable) (transfer full): a newly-allocated copy of
+ *    #ESourceAddressBook:groups, or %NULL, when none is set
+ *
+ * Since: 3.64
+ **/
+gchar **
+e_source_address_book_dup_groups (ESourceAddressBook *extension)
+{
+	const gchar * const *protected;
+	gchar **duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_ADDRESS_BOOK (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_address_book_get_groups (extension);
+	duplicate = g_strdupv ((gchar **) protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_address_book_set_groups:
+ * @extension: an #ESourceAddressBook
+ * @groups: (nullable) (array zero-terminated=1): a %NULL-terminated string
+ *    array of group names, or %NULL
+ *
+ * Sets the groups for the #ESource to which @extension belongs.
+ *
+ * Since: 3.64
+ **/
+void
+e_source_address_book_set_groups (ESourceAddressBook *extension,
+				  const gchar * const *groups)
+{
+	g_return_if_fail (E_IS_SOURCE_ADDRESS_BOOK (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (e_util_strv_equal (groups, extension->priv->groups)) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_strfreev (extension->priv->groups);
+	extension->priv->groups = g_strdupv ((gchar **) groups);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_GROUPS]);
 }

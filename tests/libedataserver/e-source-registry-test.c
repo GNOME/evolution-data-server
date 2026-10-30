@@ -125,6 +125,8 @@ test_source_groups_idle_cb (gpointer user_data)
 	ESource *scratch_source;
 	ESource *created_source;
 	ESourceExtension *extension;
+	const gchar * const calendar_groups[] = { "Work", "Private", NULL };
+	const gchar * const book_groups[] = { "Friends", "Family", NULL };
 	const gchar *uid;
 	GError *local_error = NULL;
 
@@ -141,8 +143,8 @@ test_source_groups_idle_cb (gpointer user_data)
 	g_assert_null (e_source_selectable_get_groups (E_SOURCE_SELECTABLE (extension)));
 
 	/* Set groups. */
-	e_source_selectable_set_groups (E_SOURCE_SELECTABLE (extension), "Work,Private");
-	g_assert_cmpstr (e_source_selectable_get_groups (E_SOURCE_SELECTABLE (extension)), ==, "Work,Private");
+	e_source_selectable_set_groups (E_SOURCE_SELECTABLE (extension), calendar_groups);
+	g_assert_cmpstrv (e_source_selectable_get_groups (E_SOURCE_SELECTABLE (extension)), calendar_groups);
 
 	uid = e_source_get_uid (scratch_source);
 
@@ -153,12 +155,51 @@ test_source_groups_idle_cb (gpointer user_data)
 	/* Obtain the newly-created source from the registry. */
 	created_source = e_source_registry_ref_source (fixture->registry, uid);
 	g_assert_nonnull (created_source);
+	g_assert_true (scratch_source != created_source);
 
 	extension = e_source_get_extension (created_source, E_SOURCE_EXTENSION_CALENDAR);
 	g_assert_nonnull (extension);
 
 	/* Verify the groups property was successfully serialized, deserialized, and loaded. */
-	g_assert_cmpstr (e_source_selectable_get_groups (E_SOURCE_SELECTABLE (extension)), ==, "Work,Private");
+	g_assert_cmpstrv (e_source_selectable_get_groups (E_SOURCE_SELECTABLE (extension)), calendar_groups);
+
+	/* Clean up. */
+	remove_source (fixture->registry, created_source);
+	g_clear_object (&created_source);
+	g_clear_object (&scratch_source);
+
+	/* Configure a minimal scratch source with Address Book extension. */
+	scratch_source = e_source_new (NULL, NULL, &local_error);
+	g_assert_no_error (local_error);
+	e_source_set_parent (scratch_source, "local-stub");
+	e_source_set_display_name (scratch_source, "Test Groups Address Book");
+
+	extension = e_source_get_extension (scratch_source, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	g_assert_nonnull (extension);
+
+	/* Verify initially empty/NULL. */
+	g_assert_null (e_source_address_book_get_groups (E_SOURCE_ADDRESS_BOOK (extension)));
+
+	/* Set groups. */
+	e_source_address_book_set_groups (E_SOURCE_ADDRESS_BOOK (extension), book_groups);
+	g_assert_cmpstrv (e_source_address_book_get_groups (E_SOURCE_ADDRESS_BOOK (extension)), book_groups);
+
+	uid = e_source_get_uid (scratch_source);
+
+	/* Commit the scratch source. */
+	e_source_registry_commit_source_sync (fixture->registry, scratch_source, NULL, &local_error);
+	g_assert_no_error (local_error);
+
+	/* Obtain the newly-created source from the registry. */
+	created_source = e_source_registry_ref_source (fixture->registry, uid);
+	g_assert_nonnull (created_source);
+	g_assert_true (scratch_source != created_source);
+
+	extension = e_source_get_extension (created_source, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	g_assert_nonnull (extension);
+
+	/* Verify the groups property was successfully serialized, deserialized, and loaded. */
+	g_assert_cmpstrv (e_source_address_book_get_groups (E_SOURCE_ADDRESS_BOOK (extension)), book_groups);
 
 	/* Clean up. */
 	remove_source (fixture->registry, created_source);

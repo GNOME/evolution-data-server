@@ -18,7 +18,7 @@
 
 struct _ESourceSelectablePrivate {
 	gchar *color;
-	gchar *groups;
+	gchar **groups;
 	gboolean selected;
 	guint order;
 };
@@ -67,7 +67,7 @@ source_selectable_set_property (GObject *object,
 		case PROP_GROUPS:
 			e_source_selectable_set_groups (
 				E_SOURCE_SELECTABLE (object),
-				g_value_get_string (value));
+				g_value_get_boxed (value));
 			return;
 	}
 
@@ -103,7 +103,7 @@ source_selectable_get_property (GObject *object,
 			return;
 
 		case PROP_GROUPS:
-			g_value_take_string (
+			g_value_take_boxed (
 				value,
 				e_source_selectable_dup_groups (
 				E_SOURCE_SELECTABLE (object)));
@@ -121,7 +121,7 @@ source_selectable_finalize (GObject *object)
 	priv = E_SOURCE_SELECTABLE (object)->priv;
 
 	g_free (priv->color);
-	g_free (priv->groups);
+	g_strfreev (priv->groups);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_selectable_parent_class)->finalize (object);
@@ -191,15 +191,15 @@ e_source_selectable_class_init (ESourceSelectableClass *class)
 	/**
 	 * ESourceSelectable:groups
 	 *
-	 * Comma-separated list of group names to which the source belongs
+	 * List of group names to which the source belongs
 	 *
-	 * Since: 3.62
+	 * Since: 3.64
 	 **/
 	properties[PROP_GROUPS] =
-		g_param_spec_string (
+		g_param_spec_boxed (
 			"groups",
 			NULL, NULL,
-			NULL,
+			G_TYPE_STRV,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -395,20 +395,21 @@ e_source_selectable_set_order (ESourceSelectable *extension,
  * e_source_selectable_get_groups:
  * @extension: an #ESourceSelectable
  *
- * Returns the group specification for the #ESource to which @extension
- * belongs. This is a comma-separated list of group names.
+ * Returns a %NULL-terminated string array of group names for the #ESource
+ * to which @extension belongs. The returned array is owned by @extension
+ * and should not be modified or freed.
  *
- * Returns: (nullable): the group specification for the #ESource,
- *    or %NULL, when none is set
+ * Returns: (nullable) (transfer none): a %NULL-terminated string array of
+ *    group names for the #ESource, or %NULL, when none is set
  *
- * Since: 3.62
+ * Since: 3.64
  **/
-const gchar *
+const gchar * const *
 e_source_selectable_get_groups (ESourceSelectable *extension)
 {
 	g_return_val_if_fail (E_IS_SOURCE_SELECTABLE (extension), NULL);
 
-	return extension->priv->groups;
+	return (const gchar * const *) extension->priv->groups;
 }
 
 /**
@@ -418,25 +419,26 @@ e_source_selectable_get_groups (ESourceSelectable *extension)
  * Thread-safe variation of e_source_selectable_get_groups().
  * Use this function when accessing @extension from multiple threads.
  *
- * The returned string should be freed with g_free() when no longer needed.
+ * The returned string array should be freed with g_strfreev() when no
+ * longer needed.
  *
- * Returns: (nullable): a newly-allocated copy of #ESourceSelectable:groups,
- *    or %NULL, when none is set
+ * Returns: (nullable) (transfer full): a newly-allocated copy of
+ *    #ESourceSelectable:groups, or %NULL, when none is set
  *
- * Since: 3.62
+ * Since: 3.64
  **/
-gchar *
+gchar **
 e_source_selectable_dup_groups (ESourceSelectable *extension)
 {
-	const gchar *protected;
-	gchar *duplicate;
+	const gchar * const *protected;
+	gchar **duplicate;
 
 	g_return_val_if_fail (E_IS_SOURCE_SELECTABLE (extension), NULL);
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_selectable_get_groups (extension);
-	duplicate = g_strdup (protected);
+	duplicate = g_strdupv ((gchar **) protected);
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
@@ -446,30 +448,28 @@ e_source_selectable_dup_groups (ESourceSelectable *extension)
 /**
  * e_source_selectable_set_groups:
  * @extension: an #ESourceSelectable
- * @groups: (nullable): a comma-separated list of group names, or %NULL
+ * @groups: (nullable) (array zero-terminated=1): a %NULL-terminated string
+ *    array of group names, or %NULL
  *
- * Sets the groups specification for the #ESource to which @extension belongs.
+ * Sets the groups for the #ESource to which @extension belongs.
  *
- * The internal copy of @groups is automatically stripped of leading and
- * trailing whitespace. If the resulting string is empty, %NULL is set instead.
- *
- * Since: 3.62
+ * Since: 3.64
  **/
 void
 e_source_selectable_set_groups (ESourceSelectable *extension,
-                                const gchar *groups)
+                                const gchar * const *groups)
 {
 	g_return_if_fail (E_IS_SOURCE_SELECTABLE (extension));
 
 	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
-	if (e_util_strcmp0 (extension->priv->groups, groups) == 0) {
+	if (e_util_strv_equal (groups, extension->priv->groups)) {
 		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
-	g_free (extension->priv->groups);
-	extension->priv->groups = e_util_strdup_strip (groups);
+	g_strfreev (extension->priv->groups);
+	extension->priv->groups = g_strdupv ((gchar **) groups);
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 

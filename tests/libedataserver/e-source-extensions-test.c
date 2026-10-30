@@ -80,6 +80,168 @@ test_oauth2_client_keyfile_group (void)
 	g_object_unref (source);
 }
 
+static void
+test_address_book_property_roundtrip (void)
+{
+	const gchar * const groups1[] = { "Friends", "Family", NULL };
+	const gchar * const groups2[] = { "Work", NULL };
+	ESource *source;
+	ESourceAddressBook *extension;
+	gchar **dup_val = NULL;
+	gchar **prop_val = NULL;
+	GError *local_error = NULL;
+
+	source = e_source_new_with_uid ("address-book-test", NULL, &local_error);
+	g_assert_no_error (local_error);
+
+	g_assert_false (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK));
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	g_assert_nonnull (extension);
+
+	/* Verify initially empty/NULL. */
+	g_assert_null (e_source_address_book_get_groups (extension));
+	dup_val = e_source_address_book_dup_groups (extension);
+	g_assert_null (dup_val);
+	g_object_get (extension, "groups", &prop_val, NULL);
+	g_assert_null (prop_val);
+
+	/* Set groups via setter. */
+	e_source_address_book_set_groups (extension, groups1);
+	g_assert_cmpstrv (e_source_address_book_get_groups (extension), groups1);
+
+	dup_val = e_source_address_book_dup_groups (extension);
+	g_assert_cmpstrv (dup_val, groups1);
+	g_strfreev (dup_val);
+
+	g_object_get (extension, "groups", &prop_val, NULL);
+	g_assert_cmpstrv (prop_val, groups1);
+	g_strfreev (prop_val);
+
+	/* Set groups via g_object_set. */
+	g_object_set (extension, "groups", groups2, NULL);
+	g_assert_cmpstrv (e_source_address_book_get_groups (extension), groups2);
+
+	dup_val = e_source_address_book_dup_groups (extension);
+	g_assert_cmpstrv (dup_val, groups2);
+	g_strfreev (dup_val);
+
+	/* Clear groups with NULL. */
+	e_source_address_book_set_groups (extension, NULL);
+	g_assert_null (e_source_address_book_get_groups (extension));
+
+	/* Also test order property */
+	g_assert_cmpuint (e_source_address_book_get_order (extension), ==, 0);
+	e_source_address_book_set_order (extension, 5);
+	g_assert_cmpuint (e_source_address_book_get_order (extension), ==, 5);
+
+	g_object_unref (source);
+}
+
+static void
+test_address_book_keyfile_group (void)
+{
+	const gchar * const groups[] = { "Friends", "Family", NULL };
+	ESource *source;
+	ESourceAddressBook *extension;
+	gchar *data;
+	GError *local_error = NULL;
+
+	source = e_source_new_with_uid ("address-book-test", NULL, &local_error);
+	g_assert_no_error (local_error);
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	e_source_address_book_set_groups (extension, groups);
+	e_source_address_book_set_order (extension, 3);
+
+	data = e_source_to_string (source, NULL);
+	g_assert_nonnull (data);
+	g_assert_nonnull (strstr (data, "[Address Book]"));
+	g_assert_nonnull (strstr (data, "Groups=Friends;Family;"));
+	g_assert_nonnull (strstr (data, "Order=3"));
+	g_free (data);
+
+	g_object_unref (source);
+}
+
+static void
+test_selectable_property_roundtrip (void)
+{
+	const gchar * const groups1[] = { "Work", "Private", NULL };
+	const gchar * const groups2[] = { "Shared", NULL };
+	ESource *source;
+	ESourceSelectable *extension;
+	gchar **dup_val = NULL;
+	gchar **prop_val = NULL;
+	GError *local_error = NULL;
+
+	source = e_source_new_with_uid ("selectable-test", NULL, &local_error);
+	g_assert_no_error (local_error);
+
+	/* ESourceSelectable is abstract; use concrete ESourceCalendar extension. */
+	g_assert_false (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR));
+
+	extension = E_SOURCE_SELECTABLE (e_source_get_extension (source, E_SOURCE_EXTENSION_CALENDAR));
+	g_assert_nonnull (extension);
+
+	/* Verify initially empty/NULL. */
+	g_assert_null (e_source_selectable_get_groups (extension));
+	dup_val = e_source_selectable_dup_groups (extension);
+	g_assert_null (dup_val);
+	g_object_get (extension, "groups", &prop_val, NULL);
+	g_assert_null (prop_val);
+
+	/* Set groups via setter. */
+	e_source_selectable_set_groups (extension, groups1);
+	g_assert_cmpstrv (e_source_selectable_get_groups (extension), groups1);
+
+	dup_val = e_source_selectable_dup_groups (extension);
+	g_assert_cmpstrv (dup_val, groups1);
+	g_strfreev (dup_val);
+
+	g_object_get (extension, "groups", &prop_val, NULL);
+	g_assert_cmpstrv (prop_val, groups1);
+	g_strfreev (prop_val);
+
+	/* Set groups via g_object_set. */
+	g_object_set (extension, "groups", groups2, NULL);
+	g_assert_cmpstrv (e_source_selectable_get_groups (extension), groups2);
+
+	dup_val = e_source_selectable_dup_groups (extension);
+	g_assert_cmpstrv (dup_val, groups2);
+	g_strfreev (dup_val);
+
+	/* Clear groups with NULL. */
+	e_source_selectable_set_groups (extension, NULL);
+	g_assert_null (e_source_selectable_get_groups (extension));
+
+	g_object_unref (source);
+}
+
+static void
+test_selectable_keyfile_group (void)
+{
+	const gchar * const groups[] = { "Work", "Private", NULL };
+	ESource *source;
+	ESourceSelectable *extension;
+	gchar *data;
+	GError *local_error = NULL;
+
+	source = e_source_new_with_uid ("selectable-test", NULL, &local_error);
+	g_assert_no_error (local_error);
+
+	extension = E_SOURCE_SELECTABLE (e_source_get_extension (source, E_SOURCE_EXTENSION_CALENDAR));
+	e_source_selectable_set_groups (extension, groups);
+
+	data = e_source_to_string (source, NULL);
+	g_assert_nonnull (data);
+	g_assert_nonnull (strstr (data, "[Calendar]"));
+	g_assert_nonnull (strstr (data, "Groups=Work;Private;"));
+	g_free (data);
+
+	g_object_unref (source);
+}
+
 gint
 main (gint argc,
       gchar *argv[])
@@ -88,6 +250,10 @@ main (gint argc,
 
 	g_test_add_func ("/e-source-oauth2-client/PropertyRoundtrip", test_oauth2_client_property_roundtrip);
 	g_test_add_func ("/e-source-oauth2-client/KeyfileGroup", test_oauth2_client_keyfile_group);
+	g_test_add_func ("/e-source-address-book/PropertyRoundtrip", test_address_book_property_roundtrip);
+	g_test_add_func ("/e-source-address-book/KeyfileGroup", test_address_book_keyfile_group);
+	g_test_add_func ("/e-source-selectable/PropertyRoundtrip", test_selectable_property_roundtrip);
+	g_test_add_func ("/e-source-selectable/KeyfileGroup", test_selectable_keyfile_group);
 
 	return g_test_run ();
 }
