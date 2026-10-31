@@ -1020,8 +1020,13 @@ refresh_custom_op_cb (ECalBackend *cal_backend,
 static gboolean
 refresh_timeout_cb (gpointer user_data)
 {
-	ECalBackendFile *cbfile = user_data;
+	GWeakRef *weak_ref = user_data;
+	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+
+	cbfile = g_weak_ref_get (weak_ref);
+	if (!cbfile)
+		return G_SOURCE_REMOVE;
 
 	priv = cbfile->priv;
 
@@ -1030,6 +1035,7 @@ refresh_timeout_cb (gpointer user_data)
 
 	if (!priv->refresh_monitor) {
 		g_mutex_unlock (&priv->refresh_lock);
+		g_object_unref (cbfile);
 		return G_SOURCE_REMOVE;
 	}
 
@@ -1046,6 +1052,8 @@ refresh_timeout_cb (gpointer user_data)
 		E_CAL_BACKEND (cbfile), priv->refresh_cancellable,
 		refresh_custom_op_cb, NULL, NULL);
 
+	g_object_unref (cbfile);
+
 	return G_SOURCE_REMOVE;
 }
 
@@ -1054,9 +1062,15 @@ custom_file_changed (GFileMonitor *monitor,
                      GFile *file,
                      GFile *other_file,
                      GFileMonitorEvent event_type,
-                     ECalBackendFile *cbfile)
+                     gpointer user_data)
 {
+	GWeakRef *weak_ref = user_data;
+	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+
+	cbfile = g_weak_ref_get (weak_ref);
+	if (!cbfile)
+		return;
 
 	priv = cbfile->priv;
 
@@ -1071,9 +1085,12 @@ custom_file_changed (GFileMonitor *monitor,
 		g_source_remove (priv->refresh_timeout_id);
 	}
 
-	priv->refresh_timeout_id = g_timeout_add_seconds (2, refresh_timeout_cb, cbfile);
+	priv->refresh_timeout_id = g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, 2,
+		refresh_timeout_cb, e_weak_ref_new (cbfile), (GDestroyNotify) e_weak_ref_free);
 
 	g_mutex_unlock (&priv->refresh_lock);
+
+	g_object_unref (cbfile);
 }
 
 static void
@@ -1109,9 +1126,10 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 			custom_file, G_FILE_MONITOR_WATCH_MOUNTS | G_FILE_MONITOR_WATCH_MOVES, NULL, &error);
 
 		if (error == NULL) {
-			g_signal_connect (
+			g_signal_connect_data (
 				priv->refresh_monitor, "changed",
-				G_CALLBACK (custom_file_changed), cbfile);
+				G_CALLBACK (custom_file_changed), e_weak_ref_new (cbfile),
+				(GClosureNotify) e_weak_ref_free, 0);
 		} else {
 			g_warning ("%s", error->message);
 			g_error_free (error);
