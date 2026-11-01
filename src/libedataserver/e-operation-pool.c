@@ -58,7 +58,7 @@ e_operation_pool_new (guint max_threads,
  * e_operation_pool_free:
  * @pool: an #EOperationPool
  *
- * Frees previously created @pool.
+ * Waits for all pushed operations to finish, then frees @pool.
  *
  * Since: 3.2
  **/
@@ -67,7 +67,7 @@ e_operation_pool_free (EOperationPool *pool)
 {
 	g_return_if_fail (pool != NULL);
 
-	g_thread_pool_free (pool->pool, FALSE, FALSE);
+	g_thread_pool_free (pool->pool, FALSE, TRUE);
 	g_mutex_clear (&pool->ops_lock);
 	g_hash_table_destroy (pool->ops);
 	g_slice_free (EOperationPool, pool);
