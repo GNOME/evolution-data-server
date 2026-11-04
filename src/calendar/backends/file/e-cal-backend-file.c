@@ -305,6 +305,11 @@ e_cal_backend_file_dispose (GObject *object)
 
 	free_refresh_data (E_CAL_BACKEND_FILE (object));
 
+	if (priv->dirty_idle_id) {
+		g_source_remove (priv->dirty_idle_id);
+		priv->dirty_idle_id = 0;
+	}
+
 	/* Save if necessary */
 	if (priv->is_dirty)
 		save_file_when_idle (cbfile);
