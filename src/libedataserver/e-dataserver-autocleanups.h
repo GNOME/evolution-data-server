@@ -28,7 +28,9 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2Service, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2ServiceGoogle, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2ServiceOutlook, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOAuth2Services, g_object_unref)
+#ifndef EDS_DISABLE_DEPRECATED
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(EOperationPool, e_operation_pool_free)
+#endif /* EDS_DISABLE_DEPRECATED */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESExp, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESoupAuthBearer, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(ESoupSession, g_object_unref)

@@ -23,6 +23,8 @@ struct _EOperationPool {
  *   Free it with e_operation_pool_free(), when no longer needed.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.64: This API is not used anywhere.
  **/
 EOperationPool *
 e_operation_pool_new (guint max_threads,
@@ -61,6 +63,8 @@ e_operation_pool_new (guint max_threads,
  * Waits for all pushed operations to finish, then frees @pool.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.64: This API is not used anywhere.
  **/
 void
 e_operation_pool_free (EOperationPool *pool)
@@ -84,6 +88,8 @@ e_operation_pool_free (EOperationPool *pool)
  * Returns: a new operation ID
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.64: This API is not used anywhere.
  **/
 guint32
 e_operation_pool_reserve_opid (EOperationPool *pool)
@@ -121,6 +127,8 @@ e_operation_pool_reserve_opid (EOperationPool *pool)
  * Releases @opid previously reserved by e_operation_pool_reserve_opid().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.64: This API is not used anywhere.
  **/
 void
 e_operation_pool_release_opid (EOperationPool *pool,
@@ -143,6 +151,8 @@ e_operation_pool_release_opid (EOperationPool *pool,
  * provided in e_operation_pool_new().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.64: This API is not used anywhere.
  **/
 void
 e_operation_pool_push (EOperationPool *pool,

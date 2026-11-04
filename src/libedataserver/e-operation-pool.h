@@ -12,9 +12,13 @@
 
 #include <gio/gio.h>
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 /**
  * EOperationPool:
  * Since: 3.2
+ *
+ * Deprecated: 3.64: This API is not used anywhere.
  **/
 typedef struct _EOperationPool EOperationPool;
 
@@ -23,5 +27,7 @@ void		e_operation_pool_free (EOperationPool *pool);
 guint32		e_operation_pool_reserve_opid (EOperationPool *pool);
 void		e_operation_pool_release_opid (EOperationPool *pool, guint32 opid);
 void		e_operation_pool_push (EOperationPool *pool, gpointer opdata);
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* E_OPERATION_POOL_H */
