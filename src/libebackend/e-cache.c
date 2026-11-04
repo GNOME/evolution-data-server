@@ -842,7 +842,7 @@ e_cache_init_tables (ECache *cache,
 
 	if (!e_cache_sqlite_exec_internal (cache, "PRAGMA table_info (" E_CACHE_TABLE_OBJECTS ")",
 		e_cache_garther_column_names_cb, known_columns, cancellable, error)) {
-		g_string_free (objects_stmt, TRUE);
+		g_hash_table_destroy (known_columns);
 
 		return FALSE;
 	}

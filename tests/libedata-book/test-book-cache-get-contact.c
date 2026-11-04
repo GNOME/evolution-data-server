@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <locale.h>
+#include <glib/gstdio.h>
 #include <libebook/libebook.h>
 
 #include "e-test-server-utils.h"
@@ -106,6 +107,41 @@ static const gchar *paths[] = {
 	"/EBookCache/EmptySummary/Search"
 };
 
+static void
+test_init_broken_objects_table (void)
+{
+	EBookCache *book_cache;
+	GError *error = NULL;
+	gchar *dirname, *filename;
+
+	dirname = g_dir_make_tmp ("test-book-cache-XXXXXX", &error);
+	g_assert_no_error (error);
+	filename = g_build_filename (dirname, "cache.db", NULL);
+
+	book_cache = e_book_cache_new (filename, NULL, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (book_cache);
+
+	/* a view of a dropped table makes "PRAGMA table_info" fail on the next open */
+	e_cache_sqlite_exec (E_CACHE (book_cache),
+		"DROP TABLE " E_CACHE_TABLE_OBJECTS ";"
+		"CREATE TABLE t (x);"
+		"CREATE VIEW " E_CACHE_TABLE_OBJECTS " AS SELECT * FROM t;"
+		"DROP TABLE t;", NULL, &error);
+	g_assert_no_error (error);
+	g_clear_object (&book_cache);
+
+	book_cache = e_book_cache_new (filename, NULL, NULL, &error);
+	g_assert_null (book_cache);
+	g_assert_nonnull (error);
+	g_clear_error (&error);
+
+	g_unlink (filename);
+	g_rmdir (dirname);
+	g_free (filename);
+	g_free (dirname);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -126,6 +162,8 @@ main (gint argc,
 			paths[ii], TCUFixture, &closures[ii],
 			tcu_fixture_setup, ii < 2 ? test_get_contact : test_search, tcu_fixture_teardown);
 	}
+
+	g_test_add_func ("/EBookCache/InitBrokenObjectsTable", test_init_broken_objects_table);
 
 	return e_test_server_utils_run_full (argc, argv, 0);
 }
