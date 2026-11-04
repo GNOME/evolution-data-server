@@ -129,6 +129,98 @@ test_modify_contact_async (ETestServerFixture *fixture,
 	g_object_unref (contact);
 }
 
+typedef struct {
+	guint simple1;
+	guint simple2;
+	guint other;
+} ModifiedCounts;
+
+static void
+objects_modified_cb (EBookClientView *view,
+                     const GSList *contacts,
+                     gpointer user_data)
+{
+	ModifiedCounts *counts = user_data;
+	const GSList *link;
+
+	for (link = contacts; link; link = g_slist_next (link)) {
+		const gchar *uid = e_contact_get_const (link->data, E_CONTACT_UID);
+
+		if (!g_strcmp0 (uid, "simple-1"))
+			counts->simple1++;
+		else if (!g_strcmp0 (uid, "simple-2"))
+			counts->simple2++;
+		else
+			counts->other++;
+	}
+}
+
+static void
+view_complete_cb (EBookClientView *view,
+                  const GError *error,
+                  gpointer user_data)
+{
+	g_assert_no_error (error);
+	g_main_loop_quit (user_data);
+}
+
+static void
+test_modify_contacts_notify_view (ETestServerFixture *fixture,
+                                  gconstpointer user_data)
+{
+	EBookClient *book_client;
+	EBookClientView *view;
+	EBookQuery *query;
+	EContact *contact1, *contact2;
+	ModifiedCounts counts = { 0, 0, 0 };
+	GSList *contacts;
+	gchar *sexp;
+	GError *error = NULL;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!add_contact_from_test_case_verify (book_client, "simple-1", &contact1) ||
+	    !add_contact_from_test_case_verify (book_client, "simple-2", &contact2))
+		g_error ("Failed to add contacts");
+
+	query = e_book_query_any_field_contains ("");
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+	if (!e_book_client_get_view_sync (book_client, sexp, &view, NULL, &error))
+		g_error ("get book view sync: %s", error->message);
+	g_free (sexp);
+
+	g_signal_connect (view, "objects-modified", G_CALLBACK (objects_modified_cb), &counts);
+	g_signal_connect (view, "complete", G_CALLBACK (view_complete_cb), fixture->loop);
+
+	e_book_client_view_start (view, &error);
+	if (error)
+		g_error ("start view: %s", error->message);
+
+	/* wait for the initial population of the view */
+	g_main_loop_run (fixture->loop);
+
+	e_contact_set (contact1, E_CONTACT_FULL_NAME, "Foo Bar Modified");
+	e_contact_set (contact2, E_CONTACT_FULL_NAME, "Baz Qux Modified");
+	contacts = g_slist_append (g_slist_append (NULL, contact1), contact2);
+
+	if (!e_book_client_modify_contacts_sync (book_client, contacts, E_BOOK_OPERATION_FLAG_NONE, NULL, &error))
+		g_error ("modify contacts sync: %s", error->message);
+
+	/* the backend completes the view after notifying about the changes */
+	g_main_loop_run (fixture->loop);
+
+	g_assert_cmpuint (counts.simple1, ==, 1);
+	g_assert_cmpuint (counts.simple2, ==, 1);
+	g_assert_cmpuint (counts.other, ==, 0);
+
+	e_book_client_view_stop (view, NULL);
+	g_object_unref (view);
+	g_slist_free (contacts);
+	g_object_unref (contact1);
+	g_object_unref (contact2);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -151,6 +243,13 @@ main (gint argc,
 		&book_closure_async,
 		e_test_server_utils_setup,
 		test_modify_contact_async,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/ModifyContact/NotifyView",
+		ETestServerFixture,
+		&book_closure_sync,
+		e_test_server_utils_setup,
+		test_modify_contacts_notify_view,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run (argc, argv);

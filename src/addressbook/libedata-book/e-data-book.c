@@ -1466,7 +1466,7 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 		GSList *link;
 
 		for (link = (GSList *) contacts; link; link = g_slist_next (link)) {
-			EContact *contact = contacts->data;
+			EContact *contact = link->data;
 
 			g_queue_push_tail (queue, g_object_ref (contact));
 		}
