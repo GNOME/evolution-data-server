@@ -79,6 +79,7 @@ set(TESTS
 	test-cal-cache-offline
 	test-cal-cache-search
 	test-cal-meta-backend
+	test-cal-backend-file
 )
 
 foreach(_test ${TESTS})
