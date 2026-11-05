@@ -680,7 +680,12 @@ send_pending_removes (EDataCalView *view)
 static gboolean
 pending_flush_timeout_cb (gpointer data)
 {
-	EDataCalView *view = data;
+	GWeakRef *weak_ref = data;
+	EDataCalView *view;
+
+	view = g_weak_ref_get (weak_ref);
+	if (!view)
+		return FALSE;
 
 	g_mutex_lock (&view->priv->pending_mutex);
 
@@ -694,6 +699,8 @@ pending_flush_timeout_cb (gpointer data)
 
 	g_mutex_unlock (&view->priv->pending_mutex);
 
+	g_object_unref (view);
+
 	return FALSE;
 }
 
@@ -704,11 +711,13 @@ ensure_pending_flush_timeout (EDataCalView *view)
 		return;
 
 	if (e_data_cal_view_is_completed (view)) {
-		view->priv->flush_id = e_named_timeout_add (
-			10 /* ms */, pending_flush_timeout_cb, view);
+		view->priv->flush_id = e_named_timeout_add_full (
+			G_PRIORITY_DEFAULT, 10 /* ms */, pending_flush_timeout_cb,
+			e_weak_ref_new (view), (GDestroyNotify) e_weak_ref_free);
 	} else {
-		view->priv->flush_id = e_named_timeout_add_seconds (
-			THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
+		view->priv->flush_id = e_named_timeout_add_seconds_full (
+			G_PRIORITY_DEFAULT, THRESHOLD_SECONDS, pending_flush_timeout_cb,
+			e_weak_ref_new (view), (GDestroyNotify) e_weak_ref_free);
 	}
 }
 
