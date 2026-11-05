@@ -58,6 +58,7 @@ set(TESTS
 	test-camel-mime-filter-basic
 	test-camel-mime-filter-canon
 	test-camel-mime-filter-crlf
+	test-camel-mime-filter-enriched
 	test-camel-mime-filter-tohtml
 	test-camel-text-index
 	test-camel-db
@@ -99,3 +100,14 @@ set(TESTS_SKIP
 
 add_camel_tests(TESTS ON)
 add_camel_tests(TESTS_SKIP OFF)
+
+add_dependencies(test-camel-provider-imapx camelimapx)
+
+target_include_directories(test-camel-provider-imapx PRIVATE
+	${CMAKE_SOURCE_DIR}/src/camel/providers/imapx
+	${CMAKE_BINARY_DIR}/src/camel/providers/imapx
+)
+
+target_link_libraries(test-camel-provider-imapx
+	$<TARGET_FILE:camelimapx>
+)

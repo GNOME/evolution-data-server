@@ -32,6 +32,8 @@ extern gint camel_verbose_debug;
 		camel_imapx_debug_flags |= CAMEL_IMAPX_DEBUG_ ## flag; \
 	} while (0)
 
+#define CAMEL_IMAPX_MAX_BODY_DEPTH 100
+
 static void camel_imapx_set_debug_flags (void)
 {
 	if (camel_verbose_debug || camel_debug ("imapx")) {
@@ -1384,96 +1386,156 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	return info;
 }
 
+typedef enum {
+	IMAPX_BODY_STATE_START,
+	IMAPX_BODY_STATE_MULTIPART_CHILD,
+	IMAPX_BODY_STATE_SINGLE_CHILD,
+	IMAPX_BODY_STATE_SINGLE_TAIL,
+	IMAPX_BODY_STATE_SOAK_EXT,
+	IMAPX_BODY_STATE_FINISH,
+	IMAPX_BODY_STATE_SKIP,
+	IMAPX_BODY_STATE_DONE
+} ImapxBodyState;
+
+typedef struct _ImapxBodyFrame {
+	CamelMessageContentInfo *cinfo;
+	CamelMessageContentInfo **last;
+	CamelContentDisposition *dinfo;
+	ImapxBodyState state;
+} ImapxBodyFrame;
+
+static void
+imapx_body_frame_free (gpointer data)
+{
+	ImapxBodyFrame *frame = data;
+
+	if (frame->cinfo)
+		camel_message_content_info_free (frame->cinfo);
+
+	if (frame->dinfo)
+		camel_content_disposition_unref (frame->dinfo);
+
+	g_free (frame);
+}
+
 CamelMessageContentInfo *
 imapx_parse_body (CamelIMAPXInputStream *stream,
                   GCancellable *cancellable,
                   GError **error)
 {
-	gint tok, nested_extension = 0;
+	GPtrArray *stack;
+	ImapxBodyFrame *frame;
+	CamelMessageContentInfo *cinfo = NULL, *subinfo = NULL;
+	gint tok, nested_extension, skip_depth;
+	ImapxBodyState state = IMAPX_BODY_STATE_START;
 	guint len;
 	guchar *token;
-	struct _CamelMessageContentInfo * cinfo = NULL;
-	struct _CamelMessageContentInfo *subinfo, *last;
-	struct _CamelContentDisposition * dinfo = NULL;
 	GError *local_error = NULL;
 
-	/* body            ::= "(" body_type_1part / body_type_mpart ")" */
+	stack = g_ptr_array_new_with_free_func (imapx_body_frame_free);
 
-	tok = camel_imapx_input_stream_token (
-		stream, &token, &len, cancellable, &local_error);
-	if (tok != '(') {
-		g_set_error (
-			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
-			"body: expecting '('");
-		return NULL;
-	}
+	while (state != IMAPX_BODY_STATE_DONE) {
+		switch (state) {
+		case IMAPX_BODY_STATE_START:
+			if (stack->len >= CAMEL_IMAPX_MAX_BODY_DEPTH) {
+				skip_depth = stack->len;
+				state = IMAPX_BODY_STATE_SKIP;
+				break;
+			}
 
-	if (local_error)
-		goto error;
+			/* body            ::= "(" body_type_1part / body_type_mpart ")" */
 
-	/* 1*body (optional for multiparts) */
-	tok = camel_imapx_input_stream_token (
-		stream, &token, &len, cancellable, &local_error);
-
-	if (local_error)
-		goto error;
-
-	camel_imapx_input_stream_ungettoken (stream, tok, token, len);
-
-	if (tok == '(') {
-		/* body_type_mpart ::= 1*body SPACE media_subtype
-		[SPACE body_ext_mpart] */
-
-		cinfo = camel_message_content_info_new ();
-		last = (struct _CamelMessageContentInfo *) &cinfo->childs;
-		do {
-			subinfo = imapx_parse_body (stream, cancellable, &local_error);
-			if (local_error)
-				goto error;
-
-			last->next = subinfo;
-			last = subinfo;
-			subinfo->parent = cinfo;
 			tok = camel_imapx_input_stream_token (
-				stream, &token, &len,
-				cancellable, &local_error);
+				stream, &token, &len, cancellable, &local_error);
+
+			if (tok != '(') {
+				g_clear_error (&local_error);
+				g_set_error (
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
+					"body: expecting '('");
+				goto error;
+			}
 
 			if (local_error)
 				goto error;
 
-			camel_imapx_input_stream_ungettoken (
-				stream, tok, token, len);
-		} while (tok == '(');
-
-		if (!camel_imapx_input_stream_astring (stream, &token, cancellable, &local_error) || local_error)
-			goto error;
-
-		cinfo->type = camel_content_type_new (
-			"multipart", (gchar *) token);
-
-		/* body_ext_mpart  ::= body_fld_param
-		 * [SPACE body_fld_dsp SPACE body_fld_lang
-		 * [SPACE 1#body_extension]]
-		 *    ;; MUST NOT be returned on non-extensible
-		 *    ;; "BODY" fetch */
-
-		tok = camel_imapx_input_stream_token (
-			stream, &token, &len, cancellable, &local_error);
-
-		if (local_error)
-			goto error;
-
-		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
-
-		if (tok == '(') {
-			imapx_parse_param_list (
-				stream, &cinfo->type->params,
-				cancellable, &local_error);
+			/* 1*body (optional for multiparts) */
+			tok = camel_imapx_input_stream_token (
+				stream, &token, &len, cancellable, &local_error);
 
 			if (local_error)
 				goto error;
 
-			/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
+			camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
+			if (tok == '(') {
+				/* body_type_mpart ::= 1*body SPACE media_subtype
+				[SPACE body_ext_mpart] */
+
+				cinfo = camel_message_content_info_new ();
+				frame = g_new0 (ImapxBodyFrame, 1);
+				frame->cinfo = cinfo;
+				frame->last = &cinfo->childs;
+				frame->state = IMAPX_BODY_STATE_MULTIPART_CHILD;
+				g_ptr_array_add (stack, frame);
+				cinfo = NULL;
+				state = IMAPX_BODY_STATE_START;
+				break;
+			}
+
+			/* body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
+			 * [SPACE body_ext_1part]
+			 *
+			 * body_type_basic ::= media_basic SPACE body_fields
+			 * body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
+			 * body_type_msg   ::= media_message SPACE body_fields SPACE envelope
+			 * SPACE body SPACE body_fld_lines */
+
+			cinfo = imapx_parse_body_fields (stream, cancellable, &local_error);
+
+			if (local_error)
+				goto error;
+
+			frame = g_new0 (ImapxBodyFrame, 1);
+			frame->cinfo = cinfo;
+			frame->last = &cinfo->childs;
+			frame->state = IMAPX_BODY_STATE_SINGLE_CHILD;
+			g_ptr_array_add (stack, frame);
+			cinfo = NULL;
+
+			/* do we have an envelope following */
+			tok = camel_imapx_input_stream_token (
+				stream, &token, &len, cancellable, &local_error);
+
+			if (local_error)
+				goto error;
+
+			camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
+			if (tok == '(') {
+				CamelMessageInfo *minfo;
+
+				/* Read and ignore the envelope */
+				minfo = imapx_parse_envelope (stream, cancellable, &local_error);
+				g_clear_object (&minfo);
+
+				if (local_error)
+					goto error;
+
+				/* Read the message content info */
+				state = IMAPX_BODY_STATE_START;
+			} else {
+				state = IMAPX_BODY_STATE_SINGLE_TAIL;
+			}
+			break;
+
+		case IMAPX_BODY_STATE_MULTIPART_CHILD:
+			frame = g_ptr_array_index (stack, stack->len - 1);
+
+			*(frame->last) = subinfo;
+			frame->last = &subinfo->next;
+			subinfo->parent = frame->cinfo;
+			subinfo = NULL;
 
 			tok = camel_imapx_input_stream_token (
 				stream, &token, &len, cancellable, &local_error);
@@ -1481,159 +1543,251 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 			if (local_error)
 				goto error;
 
-			camel_imapx_input_stream_ungettoken (
-				stream, tok, token, len);
+			camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 
-			if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
-				if (tok == '(')
-					dinfo = imapx_parse_ext_optional (stream, cancellable, &local_error);
-
-				if (local_error)
-					goto error;
-				/* other extension fields?, soaked up below */
+			if (tok == '(') {
+				state = IMAPX_BODY_STATE_START;
+				break;
 			}
-		}
-	} else {
-		/* body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
-		 * [SPACE body_ext_1part]
-		 *
-		 * body_type_basic ::= media_basic SPACE body_fields
-		 * body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
-		 * body_type_msg   ::= media_message SPACE body_fields SPACE envelope
-		 * SPACE body SPACE body_fld_lines */
 
-		cinfo = imapx_parse_body_fields (
-			stream, cancellable, &local_error);
+			if (!camel_imapx_input_stream_astring (stream, &token, cancellable, &local_error) || local_error)
+				goto error;
 
-		if (local_error)
-			goto error;
+			frame->cinfo->type = camel_content_type_new (
+				"multipart", (gchar *) token);
 
-		/* do we have an envelope following */
-		tok = camel_imapx_input_stream_token (
-			stream, &token, &len, cancellable, &local_error);
-
-		if (local_error)
-			goto error;
-
-		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
-		if (tok == '(') {
-			CamelMessageInfo *minfo;
-
-			/* Read and ignore the envelope */
-			minfo = imapx_parse_envelope (stream, cancellable, &local_error);
-			g_clear_object (&minfo);
+			tok = camel_imapx_input_stream_token (
+				stream, &token, &len, cancellable, &local_error);
 
 			if (local_error)
 				goto error;
 
-			/* Read the message content info */
-			subinfo = imapx_parse_body (stream, cancellable, &local_error);
+			camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 
-			if (subinfo) {
-				CamelMessageContentInfo **plast;
+			if (tok == '(') {
+				/* body_ext_mpart  ::= body_fld_param
+				 * [SPACE body_fld_dsp SPACE body_fld_lang
+				 * [SPACE 1#body_extension]]
+				 *    ;; MUST NOT be returned on non-extensible
+				 *    ;; "BODY" fetch */
 
-				plast = &(cinfo->childs);
-				while (*plast) {
-					plast = &((*plast)->next);
+				imapx_parse_param_list (
+					stream, &frame->cinfo->type->params,
+					cancellable, &local_error);
+
+				if (local_error)
+					goto error;
+
+				/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
+
+				tok = camel_imapx_input_stream_token (
+					stream, &token, &len, cancellable, &local_error);
+
+				if (local_error)
+					goto error;
+
+				camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
+				if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
+					if (tok == '(')
+						frame->dinfo = imapx_parse_ext_optional (stream, cancellable, &local_error);
+
+					if (local_error)
+						goto error;
+					/* other extension fields?, soaked up below */
 				}
-
-				*plast = subinfo;
-				subinfo->parent = cinfo;
 			}
 
-			if (local_error)
-				goto error;
-		}
+			state = IMAPX_BODY_STATE_SOAK_EXT;
+			break;
 
-		/* do we have fld_lines following? */
-		tok = camel_imapx_input_stream_token (
-			stream, &token, &len, cancellable, &local_error);
+		case IMAPX_BODY_STATE_SINGLE_CHILD:
+			frame = g_ptr_array_index (stack, stack->len - 1);
 
-		if (local_error)
-			goto error;
+			*(frame->last) = subinfo;
+			frame->last = &subinfo->next;
+			subinfo->parent = frame->cinfo;
+			subinfo = NULL;
 
-		if (tok == IMAPX_TOK_INT) {
-			tok = camel_imapx_input_stream_token (
-				stream, &token, &len, cancellable, &local_error);
+			state = IMAPX_BODY_STATE_SINGLE_TAIL;
+			break;
 
-			if (local_error)
-				goto error;
-		}
-		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+		case IMAPX_BODY_STATE_SINGLE_TAIL:
+			frame = g_ptr_array_index (stack, stack->len - 1);
 
-		/* body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
-		[SPACE body_fld_lang
-		[SPACE 1#body_extension]]]
-		 * ;; MUST NOT be returned on non - extensible
-		 * ;; "BODY" fetch */
-
-		if (tok != ')') {
-			camel_imapx_input_stream_nstring (
-				stream, &token, cancellable, &local_error);
-
-			if (local_error)
-				goto error;
-
-			/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
-
+			/* do we have fld_lines following? */
 			tok = camel_imapx_input_stream_token (
 				stream, &token, &len, cancellable, &local_error);
 
 			if (local_error)
 				goto error;
 
-			camel_imapx_input_stream_ungettoken (
-				stream, tok, token, len);
-			if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
-				if (tok == '(')
-					dinfo = imapx_parse_ext_optional (stream, cancellable, &local_error);
+			if (tok == IMAPX_TOK_INT) {
+				tok = camel_imapx_input_stream_token (
+					stream, &token, &len, cancellable, &local_error);
 
 				if (local_error)
 					goto error;
-				/* then other extension fields, soaked up below */
 			}
-		}
-	}
 
-	/* soak up any other extension fields that may be present */
-	do {
-		tok = camel_imapx_input_stream_token (
-			stream, &token, &len, cancellable, &local_error);
+			camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 
-		if (local_error)
-			goto error;
+			/* body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
+			[SPACE body_fld_lang
+			[SPACE 1#body_extension]]]
+			 * ;; MUST NOT be returned on non - extensible
+			 * ;; "BODY" fetch */
 
-		if (tok == '(') {
-			nested_extension++;
-		} else if (tok == ')' && nested_extension > 0) {
-			tok = 0; /* To not be used as the stop condition */
-			nested_extension--;
-		} else if (tok == IMAPX_TOK_LITERAL) {
-			camel_imapx_input_stream_set_literal (stream, len);
+			if (tok != ')') {
+				camel_imapx_input_stream_nstring (
+					stream, &token, cancellable, &local_error);
+
+				if (local_error)
+					goto error;
+
+				/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
+
+				tok = camel_imapx_input_stream_token (
+					stream, &token, &len, cancellable, &local_error);
+
+				if (local_error)
+					goto error;
+
+				camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
+				if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
+					if (tok == '(')
+						frame->dinfo = imapx_parse_ext_optional (stream, cancellable, &local_error);
+
+					if (local_error)
+						goto error;
+					/* then other extension fields, soaked up below */
+				}
+			}
+
+			state = IMAPX_BODY_STATE_SOAK_EXT;
+			break;
+
+		case IMAPX_BODY_STATE_SOAK_EXT:
+			/* soak up any other extension fields that may be present */
+			nested_extension = 0;
 
 			do {
-				tok = camel_imapx_input_stream_getl (stream, &token, &len, cancellable, error);
-			} while (tok > 0);
+				tok = camel_imapx_input_stream_token (
+					stream, &token, &len, cancellable, &local_error);
+
+				if (local_error)
+					goto error;
+
+				if (tok == '(') {
+					nested_extension++;
+				} else if (tok == ')' && nested_extension > 0) {
+					tok = 0; /* To not be used as the stop condition */
+					nested_extension--;
+				} else if (tok == IMAPX_TOK_LITERAL) {
+					camel_imapx_input_stream_set_literal (stream, len);
+
+					do {
+						tok = camel_imapx_input_stream_getl (
+							stream, &token, &len, cancellable, &local_error);
+					} while (tok > 0);
+
+					if (local_error)
+						goto error;
+				}
+			} while ((nested_extension > 0 || tok != ')') && tok != IMAPX_TOK_ERROR);
+
+			state = IMAPX_BODY_STATE_FINISH;
+			break;
+
+		case IMAPX_BODY_STATE_SKIP:
+			tok = camel_imapx_input_stream_token (
+				stream, &token, &len, cancellable, &local_error);
+
+			if (local_error)
+				goto error;
+
+			if (tok == IMAPX_TOK_ERROR) {
+				g_set_error (
+					&local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
+					"body: unexpected end of response");
+				goto error;
+			}
+
+			if (tok == '(') {
+				skip_depth++;
+			} else if (tok == ')') {
+				skip_depth--;
+
+				if (skip_depth == 0) {
+					g_set_error (
+						&local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE,
+						"body: maximum nesting depth exceeded");
+					goto error;
+				}
+			} else if (tok == IMAPX_TOK_LITERAL) {
+				camel_imapx_input_stream_set_literal (stream, len);
+
+				do {
+					tok = camel_imapx_input_stream_getl (
+						stream, &token, &len, cancellable, &local_error);
+				} while (tok > 0);
+
+				if (local_error)
+					goto error;
+			}
+			break;
+
+		case IMAPX_BODY_STATE_FINISH:
+			frame = g_ptr_array_index (stack, stack->len - 1);
+			cinfo = frame->cinfo;
+
+			if (frame->dinfo) {
+				cinfo->disposition = frame->dinfo;
+				frame->dinfo = NULL;
+			}
+
+			frame->cinfo = NULL;
+			g_ptr_array_remove_index (stack, stack->len - 1);
+
+			subinfo = cinfo;
+			cinfo = NULL;
+
+			if (stack->len == 0) {
+				state = IMAPX_BODY_STATE_DONE;
+			} else {
+				frame = g_ptr_array_index (stack, stack->len - 1);
+				state = frame->state;
+			}
+			break;
+
+		case IMAPX_BODY_STATE_DONE:
+			break;
 		}
-	} while ((nested_extension > 0 || tok != ')') && tok != IMAPX_TOK_ERROR);
+	}
+
+	g_ptr_array_free (stack, TRUE);
+
+	cinfo = subinfo;
+
+	return cinfo;
 
  error:
 	/* CHEN TODO handle exceptions better */
-	if (local_error != NULL) {
+	if (local_error) {
 		g_propagate_error (error, local_error);
-		if (cinfo)
-			camel_message_content_info_free (cinfo);
-		if (dinfo)
-			camel_content_disposition_unref (dinfo);
-		return NULL;
+		local_error = NULL;
 	}
 
 	if (cinfo)
-		cinfo->disposition = dinfo;
-	else if (dinfo)
-		camel_content_disposition_unref (dinfo);
+		camel_message_content_info_free (cinfo);
 
-	return cinfo;
+	if (subinfo)
+		camel_message_content_info_free (subinfo);
+
+	g_ptr_array_free (stack, TRUE);
+
+	return NULL;
 }
 
 gchar *
@@ -1868,12 +2022,22 @@ imapx_parse_fetch_body (CamelIMAPXInputStream *stream,
 	camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 
 	if (tok == '(') {
-		finfo->cinfo = imapx_parse_body (stream, cancellable, error);
+		GError *local_error = NULL;
 
-		if (finfo->cinfo != NULL)
+		finfo->cinfo = imapx_parse_body (stream, cancellable, &local_error);
+
+		if (finfo->cinfo != NULL) {
 			finfo->got |= FETCH_CINFO;
+		} else if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE)) {
+			g_clear_error (&local_error);
+		}
 
-		return (finfo->cinfo != NULL);
+		if (local_error) {
+			g_propagate_error (error, local_error);
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 	if (tok == '[') {
@@ -1928,12 +2092,22 @@ imapx_parse_fetch_bodystructure (CamelIMAPXInputStream *stream,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	finfo->cinfo = imapx_parse_body (stream, cancellable, error);
+	GError *local_error = NULL;
 
-	if (finfo->cinfo != NULL)
+	finfo->cinfo = imapx_parse_body (stream, cancellable, &local_error);
+
+	if (finfo->cinfo != NULL) {
 		finfo->got |= FETCH_CINFO;
+	} else if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE)) {
+		g_clear_error (&local_error);
+	}
 
-	return (finfo->cinfo != NULL);
+	if (local_error) {
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean

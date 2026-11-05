@@ -13,6 +13,8 @@
 #include "camel-mime-filter-enriched.h"
 #include "camel-string-utils.h"
 
+#define MAX_ENRICHED_TAG_LEN 256
+
 struct _CamelMimeFilterEnrichedPrivate {
 	guint32 flags;
 	gint nofill;
@@ -331,8 +333,20 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 			}
 
 			tag = inptr;
-			while (inptr < inend && *inptr != '>')
+			while (inptr < inend && *inptr != '>' && (inptr - tag) < MAX_ENRICHED_TAG_LEN)
 				inptr++;
+
+			if ((inptr - tag) >= MAX_ENRICHED_TAG_LEN) {
+				if ((outptr + 4) < outend) {
+					memcpy (outptr, "&lt;", 4);
+					outptr += 4;
+					inptr = tag - 1;
+					goto loop;
+				} else {
+					inptr = tag - 1;
+					goto backup;
+				}
+			}
 
 			if (inptr == inend) {
 				inptr = tag - 1;
@@ -355,11 +369,11 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 				}
 			} else {
 				const gchar *html_tag;
-				gchar *enriched_tag;
+				gchar enriched_tag[MAX_ENRICHED_TAG_LEN];
 				gint len;
 
 				len = inptr - tag;
-				enriched_tag = g_alloca (len + 1);
+				g_warn_if_fail (len + 1 < MAX_ENRICHED_TAG_LEN);
 				memcpy (enriched_tag, tag, len);
 				enriched_tag[len] = '\0';
 
