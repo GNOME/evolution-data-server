@@ -555,6 +555,78 @@ test_vee_folder_simple (void)
 }
 
 static void
+test_vee_folder_orig_info_lifetime (void)
+{
+	CamelStore *store;
+	CamelFolder *f1, *f2, *f3;
+	CamelVeeFolder *vf;
+	CamelVeeStore *vee_store;
+	CamelMessageInfo *mi, *orig_mi;
+	GPtrArray *uids;
+	const gchar *subject;
+	GError *local_error = NULL;
+	gboolean success;
+
+	test_vee_folder_create_folders (&store, &f1, &f2, &f3);
+	g_assert_nonnull (store);
+	g_assert_nonnull (f1);
+	g_assert_nonnull (f2);
+	g_assert_nonnull (f3);
+
+	vee_store = test_vee_folder_create_vee_store ();
+	g_assert_nonnull (vee_store);
+
+	vf = CAMEL_VEE_FOLDER (camel_vee_folder_new (CAMEL_STORE (vee_store), "vf", 0));
+	g_assert_nonnull (vf);
+
+	success = camel_vee_folder_add_folder_sync (vf, f3, CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+
+	success = camel_vee_folder_set_expression_sync (vf, "(header-contains \"subject\" \"mess\")", CAMEL_VEE_FOLDER_OP_FLAG_NONE, NULL, &local_error);
+	g_assert_no_error (local_error);
+	g_assert_true (success);
+	test_vee_folder_check_uids (vf, "31", NULL);
+
+	test_session_wait_for_pending_jobs ();
+
+	uids = camel_folder_dup_uids (CAMEL_FOLDER (vf));
+	g_assert_nonnull (uids);
+	g_assert_cmpuint (uids->len, ==, 1);
+
+	mi = camel_folder_get_message_info (CAMEL_FOLDER (vf), g_ptr_array_index (uids, 0));
+	g_assert_nonnull (mi);
+
+	subject = camel_message_info_get_subject (mi);
+	g_assert_cmpstr (subject, ==, "Different Subject Message 31");
+
+	orig_mi = camel_folder_get_message_info (f3, "31");
+	g_assert_nonnull (orig_mi);
+	g_object_add_weak_pointer (G_OBJECT (orig_mi), (gpointer *) &orig_mi);
+	g_object_unref (orig_mi);
+
+	/* the original info is dropped by its summary, the returned pointer should survive it */
+	g_assert_true (camel_folder_summary_remove_uid (camel_folder_get_folder_summary (f3), "31"));
+	g_assert_nonnull (orig_mi);
+	g_assert_cmpstr (subject, ==, "Different Subject Message 31");
+
+	g_object_remove_weak_pointer (G_OBJECT (orig_mi), (gpointer *) &orig_mi);
+	g_clear_object (&mi);
+	g_ptr_array_unref (uids);
+
+	test_session_wait_for_pending_jobs ();
+
+	g_clear_object (&f1);
+	g_clear_object (&f2);
+	g_clear_object (&f3);
+	g_clear_object (&vf);
+	g_clear_object (&vee_store);
+	g_clear_object (&store);
+
+	test_session_check_finalized ();
+}
+
+static void
 test_vee_folder_nested (void)
 {
 	CamelStore *store;
@@ -2960,6 +3032,7 @@ main (gint argc,
 
 	g_test_add_func ("/Camel/CamelVeeFolder/Create", test_vee_folder_create);
 	g_test_add_func ("/Camel/CamelVeeFolder/Simple", test_vee_folder_simple);
+	g_test_add_func ("/Camel/CamelVeeFolder/OrigInfoLifetime", test_vee_folder_orig_info_lifetime);
 	g_test_add_func ("/Camel/CamelVeeFolder/Nested", test_vee_folder_nested);
 	g_test_add_func ("/Camel/CamelVeeFolder/Duplicates", test_vee_folder_duplicates);
 	g_test_add_func ("/Camel/CamelVeeFolder/Changes", test_vee_folder_changes);

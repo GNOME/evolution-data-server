@@ -19,6 +19,7 @@
 
 struct _CamelVeeMessageInfoPrivate {
 	CamelFolderSummary *orig_summary;
+	CamelMessageInfo *orig_mi; /* keeps the returned transfer-none pointers valid */
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CamelVeeMessageInfo, camel_vee_message_info, CAMEL_TYPE_MESSAGE_INFO)
@@ -63,6 +64,26 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 	camel_folder_change_info_free (changes);
 }
 
+/* Returns the original info, owned by the vmi */
+static CamelMessageInfo *
+vee_message_info_get_orig_mi (CamelVeeMessageInfo *vmi,
+			      const gchar *orig_uid)
+{
+	CamelMessageInfo *orig_mi;
+
+	orig_mi = g_atomic_pointer_get (&vmi->priv->orig_mi);
+	if (orig_mi)
+		return orig_mi;
+
+	orig_mi = camel_folder_summary_get (vmi->priv->orig_summary, orig_uid);
+	if (orig_mi && !g_atomic_pointer_compare_and_exchange (&vmi->priv->orig_mi, NULL, orig_mi)) {
+		g_object_unref (orig_mi);
+		orig_mi = g_atomic_pointer_get (&vmi->priv->orig_mi);
+	}
+
+	return orig_mi;
+}
+
 #define vee_call_from_parent_mi(_err_ret, _ret_type, _call_what, _call_args, _is_set) G_STMT_START {	\
 		CamelVeeMessageInfo *vmi;							\
 		CamelMessageInfo *orig_mi;							\
@@ -87,7 +108,7 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 			return _err_ret;							\
 		}										\
 												\
-		orig_mi = (CamelMessageInfo *) camel_folder_summary_get (vmi->priv->orig_summary, uid + 8);		\
+		orig_mi = vee_message_info_get_orig_mi (vmi, uid + 8);				\
 		if (!orig_mi) {									\
 			/* It can be NULL when it had been removed from the orig folder */	\
 			camel_pstring_free (uid);						\
@@ -103,7 +124,6 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 			vee_message_info_notify_mi_changed (this_folder, uid);			\
 												\
 		g_clear_object (&this_summary);							\
-		g_clear_object (&orig_mi);							\
 		camel_pstring_free (uid);							\
 												\
 		return result;									\
@@ -450,6 +470,7 @@ vee_message_info_dispose (GObject *object)
 {
 	CamelVeeMessageInfo *vmi = CAMEL_VEE_MESSAGE_INFO (object);
 
+	g_clear_object (&vmi->priv->orig_mi);
 	g_clear_object (&vmi->priv->orig_summary);
 
 	/* Chain up to parent's method. */
