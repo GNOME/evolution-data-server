@@ -1832,6 +1832,37 @@ test_component_bag_changes (void)
 }
 
 static void
+test_component_bag_user_data_funcs (void)
+{
+	ECalClient *client;
+	ECalComponent *comp;
+	ECalComponentBag *bag;
+	ECalComponentBagItem *item;
+
+	client = create_client ("cl1");
+	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
+		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+	item = e_cal_component_bag_item_new (client, comp, 0, NULL);
+	bag = e_cal_component_bag_new ();
+
+	/* the copy and free functions are both set or both unset */
+	g_test_expect_message ("libecal", G_LOG_LEVEL_CRITICAL, "*!copy_user_data == !free_user_data*");
+	e_cal_component_bag_item_set_user_data (item, NULL, NULL, test_bag_free_user_data);
+	g_test_assert_expected_messages ();
+	g_assert_null (item->free_user_data);
+
+	g_test_expect_message ("libecal", G_LOG_LEVEL_CRITICAL, "*!copy_user_data == !free_user_data*");
+	e_cal_component_bag_add_with_user_data (bag, client, comp, NULL, test_bag_copy_user_data, NULL);
+	g_test_assert_expected_messages ();
+	g_assert_cmpint (e_cal_component_bag_get_n_items (bag), ==, 0);
+
+	g_clear_object (&bag);
+	g_clear_pointer (&item, e_cal_component_bag_item_free);
+	g_clear_object (&comp);
+	g_clear_object (&client);
+}
+
+static void
 test_component_bag_rebuild (void)
 {
 	CheckData ck_data;
@@ -2115,6 +2146,7 @@ main (gint argc,
 	g_test_add_func ("/ECalComponentBag/RecurrenceId", test_component_bag_recurrence_id);
 	g_test_add_func ("/ECalComponentBag/Changes", test_component_bag_changes);
 	g_test_add_func ("/ECalComponentBag/Rebuild", test_component_bag_rebuild);
+	g_test_add_func ("/ECalComponentBag/UserDataFuncs", test_component_bag_user_data_funcs);
 
 	return e_test_server_utils_run (argc, argv);
 }

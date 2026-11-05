@@ -377,6 +377,8 @@ e_cal_component_bag_item_read_times (ECalComponentBagItem *self,
  * the @free_user_data if provided, when the user_data instance is the same
  * as the already set.
  *
+ * Either both @copy_user_data and @free_user_data are set, or both are %NULL.
+ *
  * Since: 3.58
  **/
 void
@@ -386,6 +388,7 @@ e_cal_component_bag_item_set_user_data (ECalComponentBagItem *self,
 					GBoxedFreeFunc free_user_data)
 {
 	g_return_if_fail (self != NULL);
+	g_return_if_fail (!copy_user_data == !free_user_data);
 
 	if (self->user_data == user_data) {
 		if (free_user_data)
@@ -925,6 +928,8 @@ e_cal_component_bag_add (ECalComponentBag *self,
  * item only if it's set (non-%NULL), otherwise it's left unchanged.
  * See e_cal_component_bag_item_set_user_data() for more information.
  *
+ * Either both @copy_user_data and @free_user_data are set, or both are %NULL.
+ *
  * Since: 3.58
  **/
 void
@@ -943,6 +948,7 @@ e_cal_component_bag_add_with_user_data (ECalComponentBag *self,
 	g_return_if_fail (E_IS_CAL_COMPONENT_BAG (self));
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+	g_return_if_fail (!copy_user_data == !free_user_data);
 
 	LOCK (self);
 
