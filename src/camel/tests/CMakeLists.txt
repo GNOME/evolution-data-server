@@ -64,6 +64,7 @@ set(TESTS
 	test-camel-folder-thread
 	test-camel-folder-view
 	test-camel-store-search
+	test-camel-store-summary
 	test-camel-vee-folder
 	test-camel-folder-body-search
 	test-camel-maildir-flags

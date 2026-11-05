@@ -981,8 +981,8 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
 	}
 
 	g_hash_table_insert (summary->priv->folder_summaries, folder_summary, g_strdup (path));
-	g_signal_connect (folder_summary, "notify::saved-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
-	g_signal_connect (folder_summary, "notify::unread-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
+	g_signal_connect_object (folder_summary, "notify::saved-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary, 0);
+	g_signal_connect_object (folder_summary, "notify::unread-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary, 0);
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 
