@@ -35,6 +35,18 @@
 /* how long to wait until notifications are propagated to UI; in seconds */
 #define THRESHOLD_SECONDS 2
 
+typedef enum _PendingKind {
+	PENDING_KIND_ADDS,
+	PENDING_KIND_CHANGES,
+	PENDING_KIND_REMOVES,
+	PENDING_KIND_COMPLETE
+} PendingKind;
+
+typedef struct _PendingBatch {
+	PendingKind kind;
+	gchar **strv;
+} PendingBatch;
+
 struct _EDataBookViewPrivate {
 	GDBusConnection *connection;
 	EDBusAddressBookView *dbus_object;
@@ -53,6 +65,9 @@ struct _EDataBookViewPrivate {
 	GArray *adds;
 	GArray *changes;
 	GArray *removes;
+
+	GQueue pending_batches; /* PendingBatch * */
+	gboolean flushing;
 
 	GHashTable *ids;
 
@@ -152,72 +167,147 @@ reset_array (GArray *array)
 }
 
 static void
-send_pending_adds (EDataBookView *view)
+pending_batch_free (gpointer ptr)
 {
-	if (view->priv->adds->len == 0)
-		return;
+	PendingBatch *batch = ptr;
 
-	if ((view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
-		g_signal_emit (view, signals[OBJECTS_ADDED], 0, (const gchar * const *) view->priv->adds->data);
-	} else {
-		e_dbus_address_book_view_emit_objects_added (
-			view->priv->dbus_object,
-			(const gchar * const *) view->priv->adds->data);
+	if (batch) {
+		g_strfreev (batch->strv);
+		g_free (batch);
 	}
-
-	reset_array (view->priv->adds);
 }
 
 static void
-send_pending_changes (EDataBookView *view)
+queue_pending_batch (EDataBookView *view,
+                     PendingKind kind,
+                     GArray *array)
 {
-	if (view->priv->changes->len == 0)
+	PendingBatch *batch;
+
+	if (array->len == 0)
 		return;
 
-	if ((view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
-		g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, (const gchar * const *) view->priv->changes->data);
-	} else {
-		e_dbus_address_book_view_emit_objects_modified (
-			view->priv->dbus_object,
-			(const gchar * const *) view->priv->changes->data);
-	}
+	batch = g_new0 (PendingBatch, 1);
+	batch->kind = kind;
+	batch->strv = g_memdup2 (array->data, (array->len + 1) * sizeof (gchar *));
 
-	reset_array (view->priv->changes);
+	g_array_set_size (array, 0);
+
+	g_queue_push_tail (&view->priv->pending_batches, batch);
 }
 
 static void
-send_pending_removes (EDataBookView *view)
+queue_pending_adds (EDataBookView *view)
 {
-	if (view->priv->removes->len == 0)
-		return;
+	queue_pending_batch (view, PENDING_KIND_ADDS, view->priv->adds);
+}
+
+static void
+queue_pending_changes (EDataBookView *view)
+{
+	queue_pending_batch (view, PENDING_KIND_CHANGES, view->priv->changes);
+}
+
+static void
+queue_pending_removes (EDataBookView *view)
+{
+	queue_pending_batch (view, PENDING_KIND_REMOVES, view->priv->removes);
+}
+
+static void
+pending_batch_emit (EDataBookView *view,
+                    const PendingBatch *batch)
+{
+	const gchar * const *strv = (const gchar * const *) batch->strv;
 
 	if ((view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
-		g_signal_emit (view, signals[OBJECTS_REMOVED], 0, (const gchar * const *) view->priv->removes->data);
+		guint signal_id = 0;
+
+		switch (batch->kind) {
+		case PENDING_KIND_ADDS:
+			signal_id = signals[OBJECTS_ADDED];
+			break;
+		case PENDING_KIND_CHANGES:
+			signal_id = signals[OBJECTS_MODIFIED];
+			break;
+		case PENDING_KIND_REMOVES:
+			signal_id = signals[OBJECTS_REMOVED];
+			break;
+		case PENDING_KIND_COMPLETE:
+			e_dbus_address_book_view_emit_complete (view->priv->dbus_object, strv[0], strv[1]);
+			return;
+		}
+
+		g_return_if_fail (signal_id != 0);
+
+		g_signal_emit (view, signal_id, 0, strv);
 	} else {
-		e_dbus_address_book_view_emit_objects_removed (
-			view->priv->dbus_object,
-			(const gchar * const *) view->priv->removes->data);
+		switch (batch->kind) {
+		case PENDING_KIND_ADDS:
+			e_dbus_address_book_view_emit_objects_added (view->priv->dbus_object, strv);
+			break;
+		case PENDING_KIND_CHANGES:
+			e_dbus_address_book_view_emit_objects_modified (view->priv->dbus_object, strv);
+			break;
+		case PENDING_KIND_REMOVES:
+			e_dbus_address_book_view_emit_objects_removed (view->priv->dbus_object, strv);
+			break;
+		case PENDING_KIND_COMPLETE:
+			e_dbus_address_book_view_emit_complete (view->priv->dbus_object, strv[0], strv[1]);
+			break;
+		}
+	}
+}
+
+/* The caller holds the pending_mutex; it is released during the emission */
+static void
+flush_pending_batches (EDataBookView *view)
+{
+	EDataBookViewPrivate *priv = view->priv;
+
+	if (priv->flushing)
+		return;
+
+	priv->flushing = TRUE;
+
+	while (!g_queue_is_empty (&priv->pending_batches)) {
+		PendingBatch *batch = g_queue_pop_head (&priv->pending_batches);
+
+		g_mutex_unlock (&priv->pending_mutex);
+
+		pending_batch_emit (view, batch);
+		pending_batch_free (batch);
+
+		g_mutex_lock (&priv->pending_mutex);
 	}
 
-	reset_array (view->priv->removes);
+	priv->flushing = FALSE;
 }
 
 static gboolean
 pending_flush_timeout_cb (gpointer data)
 {
-	EDataBookView *view = data;
+	EDataBookView *view;
+
+	view = g_weak_ref_get (data);
+	if (!view)
+		return FALSE;
 
 	g_mutex_lock (&view->priv->pending_mutex);
 
 	view->priv->flush_id = 0;
 
 	if (!g_source_is_destroyed (g_main_current_source ())) {
-		send_pending_adds (view);
-		send_pending_changes (view);
-		send_pending_removes (view);
+		queue_pending_adds (view);
+		queue_pending_changes (view);
+		queue_pending_removes (view);
 	}
 
+	flush_pending_batches (view);
+
 	g_mutex_unlock (&view->priv->pending_mutex);
+
+	g_object_unref (view);
 
 	return FALSE;
 }
@@ -228,8 +318,9 @@ ensure_pending_flush_timeout (EDataBookView *view)
 	if (view->priv->flush_id > 0)
 		return;
 
-	view->priv->flush_id = e_named_timeout_add_seconds (
-		THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
+	view->priv->flush_id = e_named_timeout_add_seconds_full (
+		G_PRIORITY_DEFAULT, THRESHOLD_SECONDS, pending_flush_timeout_cb,
+		e_weak_ref_new (view), (GDestroyNotify) e_weak_ref_free);
 }
 
 static gpointer
@@ -639,6 +730,8 @@ data_book_view_finalize (GObject *object)
 	if (priv->fields_of_interest)
 		g_hash_table_destroy (priv->fields_of_interest);
 
+	g_queue_clear_full (&priv->pending_batches, pending_batch_free);
+
 	g_mutex_clear (&priv->pending_mutex);
 	g_weak_ref_clear (&priv->backend_weakref);
 
@@ -862,6 +955,7 @@ e_data_book_view_init (EDataBookView *view)
 	view->priv->running = FALSE;
 	view->priv->complete = FALSE;
 	g_mutex_init (&view->priv->pending_mutex);
+	g_queue_init (&view->priv->pending_batches);
 
 	/* THRESHOLD_ITEMS * 2 because we store UID and vcard */
 	view->priv->adds = g_array_sized_new (
@@ -1100,11 +1194,11 @@ notify_change (EDataBookView *view,
 {
 	gchar *utf8_vcard, *utf8_id;
 
-	send_pending_adds (view);
-	send_pending_removes (view);
+	queue_pending_adds (view);
+	queue_pending_removes (view);
 
 	if (view->priv->changes->len == THRESHOLD_ITEMS * 2) {
-		send_pending_changes (view);
+		queue_pending_changes (view);
 	}
 
 	if (!view->priv->send_uids_only || (view->priv->flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
@@ -1127,11 +1221,11 @@ notify_remove (EDataBookView *view,
 {
 	gchar *valid_id;
 
-	send_pending_adds (view);
-	send_pending_changes (view);
+	queue_pending_adds (view);
+	queue_pending_changes (view);
 
 	if (view->priv->removes->len == THRESHOLD_ITEMS) {
-		send_pending_removes (view);
+		queue_pending_removes (view);
 	}
 
 	valid_id = e_util_utf8_make_valid (id);
@@ -1152,8 +1246,8 @@ notify_add (EDataBookView *view,
 	EBookClientViewFlags flags;
 	gchar *utf8_vcard, *utf8_id;
 
-	send_pending_changes (view);
-	send_pending_removes (view);
+	queue_pending_changes (view);
+	queue_pending_removes (view);
 
 	utf8_id = e_util_utf8_make_valid (id);
 
@@ -1163,7 +1257,7 @@ notify_add (EDataBookView *view,
 		gchar *utf8_id_copy = g_strdup (utf8_id);
 
 		if (view->priv->adds->len == THRESHOLD_ITEMS) {
-			send_pending_adds (view);
+			queue_pending_adds (view);
 		}
 
 		if (!view->priv->send_uids_only || (flags & E_BOOK_CLIENT_VIEW_FLAGS_MANUAL_QUERY) != 0) {
@@ -1244,6 +1338,8 @@ e_data_book_view_notify_update (EDataBookView *view,
 		/* else nothing; we're removing a card that wasn't there */
 	}
 
+	flush_pending_batches (view);
+
 	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
@@ -1296,6 +1392,8 @@ e_data_book_view_notify_update_vcard (EDataBookView *view,
 	/* Do this last so that id is still valid when notify_ is called */
 	g_object_unref (contact);
 
+	flush_pending_batches (view);
+
 	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
@@ -1343,6 +1441,8 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *view,
 	else
 		notify_add (view, id, vcard);
 
+	flush_pending_batches (view);
+
 	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
@@ -1369,6 +1469,8 @@ e_data_book_view_notify_remove (EDataBookView *view,
 	if (id_is_in_view (view, id))
 		notify_remove (view, id);
 
+	flush_pending_batches (view);
+
 	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
@@ -1385,6 +1487,7 @@ void
 e_data_book_view_notify_complete (EDataBookView *view,
                                   const GError *error)
 {
+	PendingBatch *batch;
 	gchar *error_name, *error_message;
 
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
@@ -1394,14 +1497,6 @@ e_data_book_view_notify_complete (EDataBookView *view,
 
 	/* View is complete */
 	view->priv->complete = TRUE;
-
-	g_mutex_lock (&view->priv->pending_mutex);
-
-	send_pending_adds (view);
-	send_pending_changes (view);
-	send_pending_removes (view);
-
-	g_mutex_unlock (&view->priv->pending_mutex);
 
 	if (error) {
 		gchar *dbus_error_name = g_dbus_error_encode_gerror (error);
@@ -1415,13 +1510,23 @@ e_data_book_view_notify_complete (EDataBookView *view,
 		error_message = g_strdup ("");
 	}
 
-	e_dbus_address_book_view_emit_complete (
-		view->priv->dbus_object,
-		error_name,
-		error_message);
+	batch = g_new0 (PendingBatch, 1);
+	batch->kind = PENDING_KIND_COMPLETE;
+	batch->strv = g_new0 (gchar *, 3);
+	batch->strv[0] = error_name;
+	batch->strv[1] = error_message;
 
-	g_free (error_name);
-	g_free (error_message);
+	g_mutex_lock (&view->priv->pending_mutex);
+
+	queue_pending_adds (view);
+	queue_pending_changes (view);
+	queue_pending_removes (view);
+
+	g_queue_push_tail (&view->priv->pending_batches, batch);
+
+	flush_pending_batches (view);
+
+	g_mutex_unlock (&view->priv->pending_mutex);
 
 	e_util_call_malloc_trim ();
 }
