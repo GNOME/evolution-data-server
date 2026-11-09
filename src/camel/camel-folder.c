@@ -1275,7 +1275,8 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 
 	/* to not propagate status messages from sub-functions into UI */
 	if (cancellable)
-		handler_id = g_signal_connect_swapped (cancellable, "cancelled", G_CALLBACK (g_cancellable_cancel), local_cancellable);
+		handler_id = g_signal_connect_data (cancellable, "cancelled", G_CALLBACK (g_cancellable_cancel),
+			g_object_ref (local_cancellable), (GClosureNotify) g_object_unref, G_CONNECT_SWAPPED);
 
 	if (delete_originals)
 		camel_operation_push_message (

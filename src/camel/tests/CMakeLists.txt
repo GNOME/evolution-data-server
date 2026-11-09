@@ -69,6 +69,7 @@ set(TESTS
 	test-camel-store-summary
 	test-camel-vee-folder
 	test-camel-folder-body-search
+	test-camel-folder
 	test-camel-maildir-flags
 	test-camel-provider-imapx
 	test-camel-provider-nntp
