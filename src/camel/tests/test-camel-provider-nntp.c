@@ -1196,6 +1196,148 @@ test_disconnect_after_idle_reset_by_activity (void)
 	test_nntp_teardown (session, service);
 }
 
+typedef struct _FakeServer {
+	GSocketListener *listener;
+	GCancellable *cancellable;
+	gint authenticated;
+} FakeServer;
+
+static void
+fake_server_say (GOutputStream *output,
+		 const gchar *text)
+{
+	g_output_stream_write_all (output, text, strlen (text), NULL, NULL, NULL);
+}
+
+/* Answers LIST with 480 until the client authenticates */
+static gpointer
+fake_server_thread (gpointer user_data)
+{
+	FakeServer *server = user_data;
+	GSocketConnection *connection;
+
+	while ((connection = g_socket_listener_accept (server->listener, NULL, server->cancellable, NULL)) != NULL) {
+		GDataInputStream *input;
+		GOutputStream *output;
+		gchar *line;
+
+		input = g_data_input_stream_new (g_io_stream_get_input_stream (G_IO_STREAM (connection)));
+		g_data_input_stream_set_newline_type (input, G_DATA_STREAM_NEWLINE_TYPE_CR_LF);
+		output = g_io_stream_get_output_stream (G_IO_STREAM (connection));
+
+		fake_server_say (output, "200 fake server\r\n");
+
+		while ((line = g_data_input_stream_read_line (input, NULL, server->cancellable, NULL)) != NULL) {
+			if (g_ascii_strncasecmp (line, "list overview", 13) == 0) {
+				fake_server_say (output, "215 format\r\nSubject:\r\nFrom:\r\nDate:\r\nMessage-ID:\r\nReferences:\r\nBytes:\r\nLines:\r\n.\r\n");
+			} else if (g_ascii_strncasecmp (line, "list", 4) == 0) {
+				if (g_atomic_int_get (&server->authenticated))
+					fake_server_say (output, "215 groups\r\ncamel.test.group 10 1 y\r\n.\r\n");
+				else
+					fake_server_say (output, "480 authentication required\r\n");
+			} else if (g_ascii_strncasecmp (line, "authinfo user", 13) == 0) {
+				fake_server_say (output, "381 password required\r\n");
+			} else if (g_ascii_strncasecmp (line, "authinfo pass", 13) == 0) {
+				g_atomic_int_set (&server->authenticated, 1);
+				fake_server_say (output, "281 authenticated\r\n");
+			} else if (g_ascii_strncasecmp (line, "date", 4) == 0) {
+				fake_server_say (output, "111 20260101000000\r\n");
+			} else if (g_ascii_strncasecmp (line, "capabilities", 12) == 0) {
+				fake_server_say (output, "101 capabilities\r\nVERSION 2\r\nREADER\r\n.\r\n");
+			} else if (g_ascii_strncasecmp (line, "quit", 4) == 0) {
+				fake_server_say (output, "205 bye\r\n");
+			} else {
+				fake_server_say (output, "200 ok\r\n");
+			}
+
+			g_free (line);
+		}
+
+		g_object_unref (input);
+		g_object_unref (connection);
+	}
+
+	return NULL;
+}
+
+typedef struct _GetFolderInfoData {
+	CamelStore *store;
+	gint done;
+} GetFolderInfoData;
+
+static gpointer
+get_folder_info_thread (gpointer user_data)
+{
+	GetFolderInfoData *gfid = user_data;
+
+	camel_folder_info_free (camel_store_get_folder_info_sync (gfid->store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, NULL));
+	g_atomic_int_set (&gfid->done, 1);
+
+	return NULL;
+}
+
+static void
+test_retry_after_auth_required (void)
+{
+	FakeServer server = { 0, };
+	GetFolderInfoData gfid = { 0, };
+	GSocketAddress *address, *effective_address = NULL;
+	CamelSession *session;
+	CamelService *service;
+	CamelSettings *settings;
+	CamelFolderInfo *fi;
+	GThread *server_thread, *thread;
+	gint64 deadline;
+	GError *error = NULL;
+
+	server.listener = g_socket_listener_new ();
+	server.cancellable = g_cancellable_new ();
+	address = g_inet_socket_address_new_from_string ("127.0.0.1", 0);
+	g_socket_listener_add_address (server.listener, address, G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_TCP, NULL, &effective_address, &error);
+	g_assert_no_error (error);
+	server_thread = g_thread_new ("fake-nntp-server", fake_server_thread, &server);
+
+	session = test_nntp_session_new ();
+	service = camel_session_add_service (session, "test-retry-after-auth-required", "nntp", CAMEL_PROVIDER_STORE, &error);
+	g_assert_no_error (error);
+
+	/* ANONYMOUS skips the authentication on connect, thus the LIST gets the 480 */
+	settings = camel_service_ref_settings (service);
+	camel_network_settings_set_host (CAMEL_NETWORK_SETTINGS (settings), "127.0.0.1");
+	camel_network_settings_set_port (CAMEL_NETWORK_SETTINGS (settings), g_inet_socket_address_get_port (G_INET_SOCKET_ADDRESS (effective_address)));
+	camel_network_settings_set_security_method (CAMEL_NETWORK_SETTINGS (settings), CAMEL_NETWORK_SECURITY_METHOD_NONE);
+	camel_network_settings_set_user (CAMEL_NETWORK_SETTINGS (settings), "user");
+	camel_network_settings_set_auth_mechanism (CAMEL_NETWORK_SETTINGS (settings), "ANONYMOUS");
+	g_object_unref (settings);
+	camel_service_set_password (service, "password");
+
+	test_nntp_connect_service (service);
+
+	fi = camel_store_get_folder_info_sync (CAMEL_STORE (service), NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (test_folder_info_contains (fi, "camel.test.group"));
+	g_assert_true (g_atomic_int_get (&server.authenticated));
+	camel_folder_info_free (fi);
+
+	/* the retried command must not leave the stream locked by this thread */
+	gfid.store = CAMEL_STORE (service);
+	thread = g_thread_new ("get-folder-info", get_folder_info_thread, &gfid);
+	deadline = g_get_monotonic_time () + 5 * G_USEC_PER_SEC;
+	while (!g_atomic_int_get (&gfid.done) && g_get_monotonic_time () < deadline)
+		g_usleep (G_USEC_PER_SEC / 100);
+	g_assert_true (g_atomic_int_get (&gfid.done));
+	g_thread_join (thread);
+
+	test_nntp_teardown (session, service);
+
+	g_cancellable_cancel (server.cancellable);
+	g_thread_join (server_thread);
+	g_object_unref (server.cancellable);
+	g_object_unref (server.listener);
+	g_object_unref (effective_address);
+	g_object_unref (address);
+}
+
 /* Local NNTP server discovery, used only when --use-server wasn't given
  * (i.e. plain `make check`/`ctest` runs): unlike the IMAPx provider test,
  * there's no way to spin up a throwaway NNTP server here (newsgroups are
@@ -1334,6 +1476,8 @@ main (gint argc,
 	camel_test_init (&argc, &argv);
 	camel_test_provider_init (1, nntp_drivers);
 
+	g_test_add_func ("/Camel/NNTP/RetryAfterAuthRequired", test_retry_after_auth_required);
+
 	if (!external_server) {
 		external_server = discover_local_external_server ();
 		is_discovered = TRUE;
@@ -1349,8 +1493,9 @@ main (gint argc,
 			"'camel.test.group'/'camel.test.group2' newsgroups already created.", config_path);
 
 		g_free (config_path);
+		ret = g_test_run ();
 		camel_test_shutdown ();
-		return 0;
+		return ret;
 	}
 
 	if (is_discovered)

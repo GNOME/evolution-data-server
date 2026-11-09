@@ -2396,7 +2396,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 			}
 			retry--;
 			ret = -1;
-			continue;
+			break;
 		case 411:	/* no such group */
 			g_set_error (
 				error, CAMEL_FOLDER_ERROR,
@@ -2416,7 +2416,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 					service, FALSE, cancellable, NULL);
 			}
 			ret = -1;
-			continue;
+			break;
 		case -1:	/* i/o error */
 			if (camel_service_get_connection_status (service) != CAMEL_SERVICE_CONNECTING) {
 				/* Reset the cancellable, thus the disconnect attempt can succeed. */
