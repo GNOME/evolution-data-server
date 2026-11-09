@@ -314,12 +314,11 @@ source_refresh_constructed (GObject *object)
 	extension = E_SOURCE_EXTENSION (object);
 	source = e_source_extension_ref_source (extension);
 
-	/* There should be no lifecycle issues here
-	 * since we get finalized with our ESource. */
-	g_signal_connect (
+	/* e_source_get_extension() can drop this instance as a duplicate */
+	g_signal_connect_object (
 		source, "notify::enabled",
 		G_CALLBACK (source_refresh_notify_enabled_cb),
-		extension);
+		extension, 0);
 
 	g_object_unref (source);
 }

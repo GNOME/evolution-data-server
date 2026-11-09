@@ -471,10 +471,7 @@ source_webdav_constructed (GObject *object)
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_source_webdav_parent_class)->constructed (object);
 
-	/* XXX I *think* we don't need to worry about disconnecting the
-	 *     signals.  ESourceExtensions are only added, never removed,
-	 *     and they all finalize with their ESource.  At least that's
-	 *     how it's supposed to work if everyone follows the rules. */
+	/* e_source_get_extension() can drop this instance as a duplicate */
 
 	extension = E_SOURCE_EXTENSION (object);
 	source = e_source_extension_ref_source (extension);
@@ -490,17 +487,17 @@ source_webdav_constructed (GObject *object)
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	extension = e_source_get_extension (source, extension_name);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		extension, "notify::host",
-		G_CALLBACK (source_webdav_notify_cb), object);
+		G_CALLBACK (source_webdav_notify_cb), object, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		extension, "notify::port",
-		G_CALLBACK (source_webdav_notify_cb), object);
+		G_CALLBACK (source_webdav_notify_cb), object, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		extension, "notify::user",
-		G_CALLBACK (source_webdav_notify_cb), object);
+		G_CALLBACK (source_webdav_notify_cb), object, 0);
 
 	/* This updates the authentication method
 	 * based on whether a user name was given. */
@@ -515,9 +512,9 @@ source_webdav_constructed (GObject *object)
 	extension_name = E_SOURCE_EXTENSION_SECURITY;
 	extension = e_source_get_extension (source, extension_name);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		extension, "notify::secure",
-		G_CALLBACK (source_webdav_notify_cb), object);
+		G_CALLBACK (source_webdav_notify_cb), object, 0);
 
 	g_object_unref (source);
 }
