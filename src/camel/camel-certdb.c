@@ -497,6 +497,7 @@ camel_certdb_load (CamelCertDB *certdb)
 		 * disk the next time the certdb is dirtied for some reason and
 		 * has to be saved. */
 		camel_certdb_put (certdb, cert);
+		camel_cert_unref (cert);
 	}
 
 	g_rec_mutex_unlock (&certdb->priv->lock);

@@ -120,6 +120,49 @@ test_certdb_put_during_save (void)
 	g_free (tmpdir);
 }
 
+static void
+test_certdb_save_and_load (void)
+{
+	CamelCertDB *certdb;
+	CamelCert *cert;
+	gchar *tmpdir, *filename;
+	GError *local_error = NULL;
+
+	tmpdir = g_dir_make_tmp ("test-camel-certdb-XXXXXX", &local_error);
+	g_assert_no_error (local_error);
+	filename = g_build_filename (tmpdir, "certs.db", NULL);
+
+	certdb = camel_certdb_new ();
+	camel_certdb_set_filename (certdb, filename);
+
+	cert = camel_cert_new ();
+	cert->hostname = g_strdup ("example.com");
+	cert->fingerprint = g_strdup ("00:11:22:33");
+	cert->trust = CAMEL_CERT_TRUST_FULLY;
+	camel_certdb_put (certdb, cert);
+	camel_cert_unref (cert);
+
+	g_assert_cmpint (camel_certdb_save (certdb), ==, 0);
+	g_object_unref (certdb);
+
+	certdb = camel_certdb_new ();
+	camel_certdb_set_filename (certdb, filename);
+	g_assert_cmpint (camel_certdb_load (certdb), ==, 0);
+
+	cert = camel_certdb_get_host (certdb, "example.com", "00:11:22:33");
+	g_assert_nonnull (cert);
+	g_assert_cmpint (cert->trust, ==, CAMEL_CERT_TRUST_FULLY);
+	camel_cert_unref (cert);
+
+	/* the loaded certificate is freed with the database; LeakSanitizer checks it */
+	g_object_unref (certdb);
+
+	g_assert_cmpint (g_unlink (filename), ==, 0);
+	g_assert_cmpint (g_rmdir (tmpdir), ==, 0);
+	g_free (filename);
+	g_free (tmpdir);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -129,6 +172,7 @@ main (gint argc,
 	camel_test_init (&argc, &argv);
 
 	g_test_add_func ("/Camel/CertDB/PutDuringSave", test_certdb_put_during_save);
+	g_test_add_func ("/Camel/CertDB/SaveAndLoad", test_certdb_save_and_load);
 
 	ret = g_test_run ();
 	camel_test_shutdown ();
