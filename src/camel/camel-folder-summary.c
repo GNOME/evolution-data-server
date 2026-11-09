@@ -680,8 +680,12 @@ summary_header_save (CamelFolderSummary *summary,
 static gboolean
 folder_summary_emit_info_flags_changed_idle_cb (gpointer user_data)
 {
-	CamelFolderSummary *self = user_data;
+	CamelFolderSummary *self;
 	GHashTable *changes;
+
+	self = g_weak_ref_get (user_data);
+	if (!self)
+		return G_SOURCE_REMOVE;
 
 	g_mutex_lock (&self->priv->info_flags_changed_lock);
 	changes = g_steal_pointer (&self->priv->info_flags_changes);
@@ -703,6 +707,8 @@ folder_summary_emit_info_flags_changed_idle_cb (gpointer user_data)
 		g_hash_table_unref (changes);
 	}
 
+	g_object_unref (self);
+
 	return G_SOURCE_REMOVE;
 }
 
@@ -722,7 +728,8 @@ folder_summary_schedule_info_flags_changed (CamelFolderSummary *self,
 
 	if (!self->priv->info_flags_changed_id) {
 		self->priv->info_flags_changed_id = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE + 50,
-			folder_summary_emit_info_flags_changed_idle_cb, self, NULL);
+			folder_summary_emit_info_flags_changed_idle_cb,
+			camel_utils_weak_ref_new (self), (GDestroyNotify) camel_utils_weak_ref_free);
 	}
 
 	g_mutex_unlock (&self->priv->info_flags_changed_lock);
