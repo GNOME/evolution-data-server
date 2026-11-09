@@ -61,6 +61,7 @@ set(TESTS
 	test-camel-mime-filter-enriched
 	test-camel-mime-filter-tohtml
 	test-camel-text-index
+	test-camel-certdb
 	test-camel-db
 	test-camel-folder-thread
 	test-camel-folder-summary
