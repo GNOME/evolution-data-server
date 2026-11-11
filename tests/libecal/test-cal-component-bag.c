@@ -182,7 +182,7 @@ test_component_bag_item_basic (void)
 	zone = i_cal_timezone_get_utc_timezone ();
 	g_assert_nonnull (zone);
 
-	item1 = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item1 = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item1);
 	g_assert_true (item1->client == client);
 	g_assert_true (item1->comp == comp);
@@ -224,7 +224,7 @@ test_component_bag_item_basic (void)
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", "America/New_York",
 		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, 15);
 
-	item2 = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item2 = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item2);
 	g_assert_true (item2->client == client);
 	g_assert_true (item2->comp == comp);
@@ -253,27 +253,27 @@ test_component_bag_item_basic (void)
 
 	g_assert_cmpint (item2->duration_minutes, ==, 15);
 
-	changed = e_cal_component_bag_item_read_times (item2, 0, zone);
+	changed = e_cal_component_bag_item_read_times (item2, 0, FALSE, zone);
 	g_assert_false (changed);
 	g_assert_cmpint (item2->duration_minutes, ==, 15);
 
-	changed = e_cal_component_bag_item_read_times (item2, 10, zone);
+	changed = e_cal_component_bag_item_read_times (item2, 10, FALSE, zone);
 	g_assert_false (changed);
 	g_assert_cmpint (item2->duration_minutes, ==, 15);
 
-	changed = e_cal_component_bag_item_read_times (item2, 23, zone);
+	changed = e_cal_component_bag_item_read_times (item2, 23, FALSE, zone);
 	g_assert_true (changed);
 	g_assert_cmpint (item2->duration_minutes, ==, 23);
 
-	changed = e_cal_component_bag_item_read_times (item2, 21, zone);
+	changed = e_cal_component_bag_item_read_times (item2, 21, FALSE, zone);
 	g_assert_true (changed);
 	g_assert_cmpint (item2->duration_minutes, ==, 21);
 
-	changed = e_cal_component_bag_item_read_times (item2, 14, zone);
+	changed = e_cal_component_bag_item_read_times (item2, 14, FALSE, zone);
 	g_assert_true (changed);
 	g_assert_cmpint (item2->duration_minutes, ==, 15);
 
-	changed = e_cal_component_bag_item_read_times (item2, 15, zone);
+	changed = e_cal_component_bag_item_read_times (item2, 15, FALSE, zone);
 	g_assert_false (changed);
 	g_assert_cmpint (item2->duration_minutes, ==, 15);
 
@@ -298,7 +298,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, 1742990400);
 	g_assert_cmpint (item->duration_minutes, ==, 0);
@@ -307,7 +307,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		20250326, 120000, 20250326, 130000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, 1742990400);
 	g_assert_cmpint (item->duration_minutes, ==, 60);
@@ -316,7 +316,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, 20250326, 140000, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, 1742990400);
 	g_assert_cmpint (item->duration_minutes, ==, 120);
@@ -325,7 +325,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, 130);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, 1742990400);
 	g_assert_cmpint (item->duration_minutes, ==, 130);
@@ -334,7 +334,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, -1);
 	g_assert_cmpint (item->duration_minutes, ==, 0);
@@ -343,7 +343,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		SKIP_TIME_VAL, SKIP_TIME_VAL, 20250326, 130000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, -1);
 	g_assert_cmpint (item->duration_minutes, ==, 0);
@@ -352,7 +352,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, 20250326, 140000, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, -1);
 	g_assert_cmpint (item->duration_minutes, ==, 0);
@@ -361,7 +361,7 @@ test_component_bag_item_read (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, 130);
-	item = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	g_assert_nonnull (item);
 	g_assert_cmpint (item->start, ==, -1);
 	g_assert_cmpint (item->duration_minutes, ==, 130);
@@ -401,7 +401,7 @@ test_component_bag_item_user_data (void)
 
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
-	item1 = e_cal_component_bag_item_new (client, comp, 0, zone);
+	item1 = e_cal_component_bag_item_new (client, comp, 0, FALSE, zone);
 	item1->user_data = GINT_TO_POINTER (3);
 
 	item2 = e_cal_component_bag_item_copy (item1);
@@ -480,6 +480,94 @@ test_component_bag_item_user_data (void)
 	g_clear_pointer (&item1, e_cal_component_bag_item_free);
 	g_assert_cmpint (test_bag_free_user_data_counter, ==, 3);
 
+	g_clear_object (&comp);
+	g_clear_object (&client);
+}
+
+static void
+test_component_bag_item_use_whole_day (void)
+{
+	ECalClient *client;
+	ECalComponentBagItem *item;
+	ECalComponent *comp;
+	ICalTimezone *utc, *berlin;
+
+	utc = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (utc);
+
+	berlin = i_cal_timezone_get_builtin_timezone ("Europe/Berlin");
+	g_assert_nonnull (berlin);
+
+	client = create_client ("cl1");
+
+	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
+		20261022, SKIP_TIME_VAL, 20261023, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, utc);
+
+	g_assert_nonnull (item);
+	g_assert_cmpint (item->start, ==, 1792627200);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+	g_assert_false (e_cal_component_bag_item_read_times (item, 0, FALSE, utc));
+	g_assert_cmpint (item->start, ==, 1792627200);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+	g_assert_false (e_cal_component_bag_item_read_times (item, 0, TRUE, utc));
+	g_assert_cmpint (item->start, ==, 1792627200);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, FALSE, berlin));
+	g_assert_cmpint (item->start, ==, 1792620000);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+	g_assert_false (e_cal_component_bag_item_read_times (item, 0, TRUE, berlin));
+	g_assert_cmpint (item->start, ==, 1792620000);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+
+	g_clear_pointer (&item, e_cal_component_bag_item_free);
+	g_clear_object (&comp);
+
+
+	comp = create_component (E_CAL_COMPONENT_EVENT, "e2", NULL, "event 2", "UTC",
+		20261022, 110000, 20261022, 112500, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, utc);
+
+	g_assert_nonnull (item);
+	g_assert_cmpint (item->start, ==, 1792666800);
+	g_assert_cmpint (item->duration_minutes, ==, 25);
+	g_assert_false (e_cal_component_bag_item_read_times (item, 0, FALSE, utc));
+	g_assert_cmpint (item->start, ==, 1792666800);
+	g_assert_cmpint (item->duration_minutes, ==, 25);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, TRUE, utc));
+	g_assert_cmpint (item->start, ==, 1792627200);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, FALSE, berlin));
+	g_assert_cmpint (item->start, ==, 1792666800);
+	g_assert_cmpint (item->duration_minutes, ==, 25);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, TRUE, berlin));
+	g_assert_cmpint (item->start, ==, 1792620000);
+	g_assert_cmpint (item->duration_minutes, ==, 24 * 60);
+
+	g_clear_pointer (&item, e_cal_component_bag_item_free);
+	g_clear_object (&comp);
+
+	comp = create_component (E_CAL_COMPONENT_EVENT, "e3", NULL, "event 3", "UTC",
+		20261022, 100000, 20261023, 140000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, utc);
+
+	g_assert_nonnull (item);
+	g_assert_cmpint (item->start, ==, 1792663200);
+	g_assert_cmpint (item->duration_minutes, ==, 28 * 60);
+	g_assert_false (e_cal_component_bag_item_read_times (item, 0, FALSE, utc));
+	g_assert_cmpint (item->start, ==, 1792663200);
+	g_assert_cmpint (item->duration_minutes, ==, 28 * 60);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, TRUE, utc));
+	g_assert_cmpint (item->start, ==, 1792627200);
+	g_assert_cmpint (item->duration_minutes, ==, 48 * 60);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, FALSE, berlin));
+	g_assert_cmpint (item->start, ==, 1792663200);
+	g_assert_cmpint (item->duration_minutes, ==, 28 * 60);
+	g_assert_true (e_cal_component_bag_item_read_times (item, 0, TRUE, berlin));
+	g_assert_cmpint (item->start, ==, 1792620000);
+	g_assert_cmpint (item->duration_minutes, ==, 48 * 60);
+
+	g_clear_pointer (&item, e_cal_component_bag_item_free);
 	g_clear_object (&comp);
 	g_clear_object (&client);
 }
@@ -1842,7 +1930,7 @@ test_component_bag_user_data_funcs (void)
 	client = create_client ("cl1");
 	comp = create_component (E_CAL_COMPONENT_EVENT, "e1", NULL, "event 1", NULL,
 		20250326, 120000, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
-	item = e_cal_component_bag_item_new (client, comp, 0, NULL);
+	item = e_cal_component_bag_item_new (client, comp, 0, FALSE, NULL);
 	bag = e_cal_component_bag_new ();
 
 	/* the copy and free functions are both set or both unset */
@@ -2131,6 +2219,87 @@ test_component_bag_rebuild (void)
 	g_clear_object (&client);
 }
 
+static void
+test_component_bag_use_whole_day (void)
+{
+	struct _comps {
+		const gchar *uid;
+		guint start_date;
+		guint start_time;
+		guint end_date;
+		guint end_time;
+		ECalComponent *comp;
+	} comps[] = {
+		/* 10:00 15 30 45 11 15 30
+		   AAAAAAAA     CCCCCCCC
+			BBBBBBBBBBB   EEE
+		 DDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		*/
+		{ "A", 20261022, 100000, 20261022, 101500, NULL },
+		{ "B", 20261022, 101000, 20261022, 110000, NULL },
+		{ "C", 20261022, 104500, 20261022, 112000, NULL },
+		{ "D", 20261022, SKIP_TIME_VAL, 20261023, SKIP_TIME_VAL, NULL },
+		{ "E", 20261022, 111500, 20261022, 113000, NULL }
+	};
+	ECalClient *client;
+	ECalComponentBag *bag;
+	ECalComponentBagItem *item;
+	ICalTimezone *utc;
+	const GPtrArray *span;
+	guint ii;
+
+	utc = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (utc);
+
+	client = create_client ("cl1");
+	bag = e_cal_component_bag_new ();
+
+	e_cal_component_bag_set_timezone (bag, utc);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		comps[ii].comp = create_component (E_CAL_COMPONENT_EVENT, comps[ii].uid, NULL, comps[ii].uid, "UTC",
+			comps[ii].start_date, comps[ii].start_time, comps[ii].end_date, comps[ii].end_time,
+			SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+		g_assert_nonnull (comps[ii].comp);
+		e_cal_component_bag_add (bag, client, comps[ii].comp);
+	}
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_items (bag), ==, G_N_ELEMENTS (comps));
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, 3);
+
+	span = e_cal_component_bag_get_span (bag, 0);
+	g_assert_cmpuint (span->len, ==, 2);
+	item = g_ptr_array_index (span, 0);
+	g_assert_cmpstr (item->uid, ==, "A");
+	item = g_ptr_array_index (span, 1);
+	g_assert_cmpstr (item->uid, ==, "C");
+
+	span = e_cal_component_bag_get_span (bag, 1);
+	g_assert_cmpuint (span->len, ==, 2);
+	item = g_ptr_array_index (span, 0);
+	g_assert_cmpstr (item->uid, ==, "B");
+	item = g_ptr_array_index (span, 1);
+	g_assert_cmpstr (item->uid, ==, "E");
+
+	span = e_cal_component_bag_get_span (bag, 2);
+	g_assert_cmpuint (span->len, ==, 1);
+	item = g_ptr_array_index (span, 0);
+	g_assert_cmpstr (item->uid, ==, "D");
+
+	e_cal_component_bag_set_use_whole_day (bag, TRUE);
+	e_cal_component_bag_rebuild (bag);
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_items (bag), ==, G_N_ELEMENTS (comps));
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, G_N_ELEMENTS (comps));
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		g_clear_object (&comps[ii].comp);
+	}
+
+	g_clear_object (&bag);
+	g_clear_object (&client);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2141,12 +2310,14 @@ main (gint argc,
 	g_test_add_func ("/ECalComponentBagItem/Basic", test_component_bag_item_basic);
 	g_test_add_func ("/ECalComponentBagItem/Read", test_component_bag_item_read);
 	g_test_add_func ("/ECalComponentBagItem/UserData", test_component_bag_item_user_data);
+	g_test_add_func ("/ECalComponentBagItem/UseWholeDay", test_component_bag_item_use_whole_day);
 	g_test_add_func ("/ECalComponentBag/Create", test_component_bag_create);
 	g_test_add_func ("/ECalComponentBag/Basic", test_component_bag_basic);
 	g_test_add_func ("/ECalComponentBag/RecurrenceId", test_component_bag_recurrence_id);
 	g_test_add_func ("/ECalComponentBag/Changes", test_component_bag_changes);
 	g_test_add_func ("/ECalComponentBag/Rebuild", test_component_bag_rebuild);
 	g_test_add_func ("/ECalComponentBag/UserDataFuncs", test_component_bag_user_data_funcs);
+	g_test_add_func ("/ECalComponentBag/UseWholeDay", test_component_bag_use_whole_day);
 
 	return e_test_server_utils_run (argc, argv);
 }

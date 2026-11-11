@@ -37,6 +37,7 @@ struct _ECalComponentBag {
 	GPtrArray *spans; /* GPtrArray * { ECalComponentBagItem * } */
 	GHashTable *items; /* ECalComponentBagItem * ~> ECalComponentBagItem *; owned by `spans` */
 	guint min_duration_minutes;
+	gboolean use_whole_day;
 };
 
 enum {
@@ -90,6 +91,7 @@ e_cal_component_bag_hash_keys_to_array (GHashTable *hash_table,
  * @client: an #ECalClient
  * @comp: an #ECalComponent
  * @min_duration_minutes: minimum duration, in minutes
+ * @use_whole_day: whether to clamp the component start/end time to use the whole day
  * @timezone: (nullable): an #ICalTimezone to calculate the start time for, or %NULL
  *
  * Creates a new #ECalComponentBagItem, which will have prefilled
@@ -97,6 +99,9 @@ e_cal_component_bag_hash_keys_to_array (GHashTable *hash_table,
  *
  * The @min_duration_minutes is used to define the minimum duration, in minutes,
  * the item should have set. Any smaller duration is increased to it.
+ *
+ * The @use_whole_day, if %TRUE, clamps the component start/end time to cover
+ * whole days it touches.
  *
  * The span_index member is always zero here.
  *
@@ -110,6 +115,7 @@ ECalComponentBagItem *
 e_cal_component_bag_item_new (ECalClient *client,
 			      ECalComponent *comp,
 			      guint min_duration_minutes,
+			      gboolean use_whole_day,
 			      ICalTimezone *timezone)
 {
 	ECalComponentBagItem *self;
@@ -127,7 +133,7 @@ e_cal_component_bag_item_new (ECalClient *client,
 	self->uid = g_strdup (e_cal_component_get_uid (comp));
 	self->rid = e_cal_component_get_recurid_as_string (comp);
 
-	e_cal_component_bag_item_read_times (self, min_duration_minutes, timezone);
+	e_cal_component_bag_item_read_times (self, min_duration_minutes, use_whole_day, timezone);
 
 	return self;
 }
@@ -290,6 +296,7 @@ e_cal_component_bag_item_equal_by_comp (gconstpointer item1,
  * e_cal_component_bag_item_read_times:
  * @self: an #ECalComponentBagItem
  * @min_duration_minutes: minimum duration, in minutes
+ * @use_whole_day: whether to clamp the component start/end time to use the whole day
  * @timezone: (nullable): an #ICalTimezone to calculate the start time for, or %NULL
  *
  * Reads the start time and the duration from the set component,
@@ -298,6 +305,9 @@ e_cal_component_bag_item_equal_by_comp (gconstpointer item1,
  * The @min_duration_minutes is used to define the minimum duration, in minutes,
  * the item should have set. Any smaller duration is increased to it.
  *
+ * The @use_whole_day, if %TRUE, clamps the component start/end time to cover
+ * whole days it touches.
+ *
  * Returns: %TRUE when any of the stored times changed, %FALSE if not
  *
  * Since: 3.58
@@ -305,6 +315,7 @@ e_cal_component_bag_item_equal_by_comp (gconstpointer item1,
 gboolean
 e_cal_component_bag_item_read_times (ECalComponentBagItem *self,
 				     guint min_duration_minutes,
+				     gboolean use_whole_day,
 				     ICalTimezone *timezone)
 {
 	ICalComponent *icomp;
@@ -356,6 +367,22 @@ e_cal_component_bag_item_read_times (ECalComponentBagItem *self,
 
 	if (self->duration_minutes < min_duration_minutes)
 		self->duration_minutes = min_duration_minutes;
+
+	if (use_whole_day && self->start != 0) {
+		time_t start, end;
+
+		start = time_day_begin_with_zone (self->start, timezone);
+		end = time_day_end_with_zone (self->start + (self->duration_minutes * 60), timezone);
+
+		/* the end time is non-inclusive, thus it can use the next date
+		   as the end time, which would add 1 more day to it when
+		   converted to the day end */
+		if (end == time_add_day_with_zone (self->start + (self->duration_minutes * 60), 1, timezone))
+			end = time_add_day_with_zone (end, -1, timezone);
+
+		self->start = start;
+		self->duration_minutes = (end - start) / 60;
+	}
 
 	return old_start != self->start || old_duration_minutes != self->duration_minutes;
 }
@@ -629,6 +656,7 @@ e_cal_component_bag_init (ECalComponentBag *self)
 	g_rec_mutex_init (&self->lock);
 	self->spans = g_ptr_array_new_with_free_func ((GDestroyNotify) g_ptr_array_unref);
 	self->items = g_hash_table_new (e_cal_component_bag_item_hash_by_comp, e_cal_component_bag_item_equal_by_comp);
+	self->use_whole_day = FALSE;
 }
 
 /**
@@ -728,6 +756,50 @@ e_cal_component_bag_get_min_duration_minutes (ECalComponentBag *self)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT_BAG (self), 0);
 
 	return self->min_duration_minutes;
+}
+
+/**
+ * e_cal_component_bag_set_use_whole_day:
+ * @self: an #ECalComponentBag
+ * @value: a value to set
+ *
+ * Sets whether the component start/end times should be rounded
+ * to cover the whole day. The default value is %FALSE.
+ *
+ * Changing the value does not influence already added components.
+ * Use e_cal_component_bag_rebuild() to rebuild the content.
+ *
+ * Since: 3.64
+ **/
+void
+e_cal_component_bag_set_use_whole_day (ECalComponentBag *self,
+				       gboolean value)
+{
+	g_return_if_fail (E_IS_CAL_COMPONENT_BAG (self));
+
+	if (!self->use_whole_day == !value)
+		return;
+
+	self->use_whole_day = value;
+}
+
+/**
+ * e_cal_component_bag_get_use_whole_day:
+ * @self: an #ECalComponentBag
+ *
+ * Gets whether the component start/end times are rounded to cover
+ * the whole day, previously set by the e_cal_component_bag_set_use_whole_day().
+ *
+ * Returns: %TRUE, when the times are rounded to the whole day, %FALSE otherwise
+ *
+ * Since: 3.64
+ **/
+gboolean
+e_cal_component_bag_get_use_whole_day (ECalComponentBag *self)
+{
+	g_return_val_if_fail (E_IS_CAL_COMPONENT_BAG (self), FALSE);
+
+	return self->use_whole_day;
 }
 
 /**
@@ -966,7 +1038,7 @@ e_cal_component_bag_add_with_user_data (ECalComponentBag *self,
 		if (g_set_object (&item->comp, comp))
 			item_changed = TRUE;
 
-		if (e_cal_component_bag_item_read_times (item, self->min_duration_minutes, self->timezone)) {
+		if (e_cal_component_bag_item_read_times (item, self->min_duration_minutes, self->use_whole_day, self->timezone)) {
 			gboolean can_keep = TRUE;
 
 			item_changed = TRUE;
@@ -996,7 +1068,7 @@ e_cal_component_bag_add_with_user_data (ECalComponentBag *self,
 		if (item_changed)
 			g_signal_emit (self, signals[ITEM_CHANGED], 0, item);
 	} else {
-		item = e_cal_component_bag_item_new (client, comp, self->min_duration_minutes, self->timezone);
+		item = e_cal_component_bag_item_new (client, comp, self->min_duration_minutes, self->use_whole_day, self->timezone);
 
 		e_cal_component_place_item_locked (self, item, TRUE, &span_changed);
 
@@ -1226,7 +1298,7 @@ e_cal_component_bag_rebuild (ECalComponentBag *self)
 			/* steal the item */
 			items->pdata[ii] = NULL;
 
-			e_cal_component_bag_item_read_times (item, self->min_duration_minutes, self->timezone);
+			e_cal_component_bag_item_read_times (item, self->min_duration_minutes, self->use_whole_day, self->timezone);
 			e_cal_component_place_item_locked (self, item, TRUE, &span_changed);
 		}
 

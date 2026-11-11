@@ -58,6 +58,7 @@ ECalComponentBagItem *
 		e_cal_component_bag_item_new	(ECalClient *client,
 						 ECalComponent *comp,
 						 guint min_duration_minutes,
+						 gboolean use_whole_day,
 						 ICalTimezone *timezone);
 ECalComponentBagItem *
 		e_cal_component_bag_item_copy	(const ECalComponentBagItem *self);
@@ -70,6 +71,7 @@ gboolean	e_cal_component_bag_item_equal_by_comp
 gboolean	e_cal_component_bag_item_read_times
 						(ECalComponentBagItem *self,
 						 guint min_duration_minutes,
+						 gboolean use_whole_day,
 						 ICalTimezone *timezone);
 void		e_cal_component_bag_item_set_user_data
 						(ECalComponentBagItem *self,
@@ -85,6 +87,11 @@ void		e_cal_component_bag_set_min_duration_minutes
 						(ECalComponentBag *self,
 						 guint value);
 guint		e_cal_component_bag_get_min_duration_minutes
+						(ECalComponentBag *self);
+void		e_cal_component_bag_set_use_whole_day
+						(ECalComponentBag *self,
+						 gboolean value);
+gboolean	e_cal_component_bag_get_use_whole_day
 						(ECalComponentBag *self);
 void		e_cal_component_bag_lock	(ECalComponentBag *self);
 void		e_cal_component_bag_unlock	(ECalComponentBag *self);
