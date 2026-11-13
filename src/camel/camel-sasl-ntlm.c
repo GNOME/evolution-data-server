@@ -125,7 +125,7 @@ ntlm_lanmanager_hash (const gchar *password,
 	gint i;
 
 	for (i = 0; i < 14 && password && password[i]; i++)
-		lm_password[i] = toupper ((guchar) password[i]);
+		lm_password[i] = g_ascii_toupper (password[i]);
 
 	for (; i < 15; i++)
 		lm_password[i] = '\0';
@@ -174,7 +174,13 @@ setup_schedule (const guchar *key_56,
 	gint i, c, bit;
 
 	for (i = 0; i < 8; i++) {
-		key[i] = KEYBITS (key_56, i * 7);
+		/* The key_56 has only 7 bytes; the last byte's lowest bit
+		 * would come from key_56[7], but it is the parity bit, which
+		 * is set below anyway, thus do not read past the key. */
+		if (i < 7)
+			key[i] = KEYBITS (key_56, i * 7);
+		else
+			key[i] = (key_56[6] << 1) & 0xFF;
 
 		/* Fix parity */
 		for (c = bit = 0; bit < 8; bit++)

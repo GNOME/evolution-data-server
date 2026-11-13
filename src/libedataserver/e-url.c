@@ -89,7 +89,7 @@ e_url_equal (const gchar *url1,
 	return rv;
 }
 
-#define HEXVAL(c) (isdigit (c) ? (c) - '0' : tolower (c) - 'a' + 10)
+#define HEXVAL(c) (isdigit (c) ? (c) - '0' : g_ascii_tolower (c) - 'a' + 10)
 
 static void
 uri_decode (gchar *part)

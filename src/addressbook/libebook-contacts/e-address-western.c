@@ -96,7 +96,7 @@ e_address_western_is_po_box (gchar *line)
 	for (cntr = 0; line[cntr] != '\0'; cntr++) {
 		if (state == FIRSTCHAR)	{
 			if (isalnum (line[cntr])) {
-				if (tolower (line[cntr]) == 'p')
+				if (g_ascii_tolower (line[cntr]) == 'p')
 					state = SECONDCHAR;
 				else {
 					retval = FALSE;
@@ -106,7 +106,7 @@ e_address_western_is_po_box (gchar *line)
 		}
 		else if (state == SECONDCHAR) {
 			if (isalnum (line[cntr])) {
-				if (tolower (line[cntr]) == 'o')
+				if (g_ascii_tolower (line[cntr]) == 'o')
 					state = WHITESPACE;
 				else {
 					retval = FALSE;

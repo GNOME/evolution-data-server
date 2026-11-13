@@ -365,7 +365,7 @@ camel_imapx_input_stream_atom (CamelIMAPXInputStream *is,
 		case IMAPX_TOK_TOKEN:
 			p = *data;
 			while ((c = *p))
-				*p++ = toupper(c);
+				*p++ = g_ascii_toupper (c);
 			return TRUE;
 
 		case IMAPX_TOK_INT:
@@ -527,9 +527,9 @@ camel_imapx_input_stream_nstring (CamelIMAPXInputStream *is,
 
 		case IMAPX_TOK_TOKEN:
 			p = *data;
-			if (toupper (p[0]) == 'N' &&
-			    toupper (p[1]) == 'I' &&
-			    toupper (p[2]) == 'L' &&
+			if (g_ascii_toupper (p[0]) == 'N' &&
+			    g_ascii_toupper (p[1]) == 'I' &&
+			    g_ascii_toupper (p[2]) == 'L' &&
 			    p[3] == 0) {
 				*data = NULL;
 				return TRUE;
@@ -599,9 +599,9 @@ camel_imapx_input_stream_nstring_bytes (CamelIMAPXInputStream *is,
 			return success;
 
 		case IMAPX_TOK_TOKEN:
-			if (toupper (token[0]) == 'N' &&
-			    toupper (token[1]) == 'I' &&
-			    toupper (token[2]) == 'L' &&
+			if (g_ascii_toupper (token[0]) == 'N' &&
+			    g_ascii_toupper (token[1]) == 'I' &&
+			    g_ascii_toupper (token[2]) == 'L' &&
 			    token[3] == 0) {
 				*out_bytes = NULL;
 				return TRUE;

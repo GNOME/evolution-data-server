@@ -1259,7 +1259,7 @@ e_vcard_qp_decode (const gchar *txt)
 		}
 
 		if (c == '=' && inptr[1] && inptr[2]) {
-			guchar a = toupper (inptr[1]), b = toupper (inptr[2]);
+			guchar a = g_ascii_toupper (inptr[1]), b = g_ascii_toupper (inptr[2]);
 			if (isxdigit (a) && isxdigit (b)) {
 				*outptr++ = (((a >= 'A' ? a - 'A' + 10 : a - '0') & 0x0f) << 4)
 					   | ((b >= 'A' ? b - 'A' + 10 : b - '0') & 0x0f);
