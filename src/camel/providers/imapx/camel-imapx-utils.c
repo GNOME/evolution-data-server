@@ -553,7 +553,7 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 			case IMAPX_TOK_STRING:
 				p = token;
 				while ((c = *p))
-					*p++ = toupper(c);
+					*p++ = g_ascii_toupper (c);
 				if (!strncmp ((gchar *) token, "AUTH=", 5)) {
 					g_hash_table_insert (
 						cinfo->auth_types,
@@ -2333,7 +2333,7 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 
 		p = token;
 		while ((c=*p))
-			*p++ = toupper(c);
+			*p++ = g_ascii_toupper (c);
 
 		switch (imapx_tokenise ((gchar *) token, len)) {
 			case IMAPX_BODY:

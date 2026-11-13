@@ -696,8 +696,8 @@ camel_quoted_decode_step (guchar *in,
 		case 2:
 			c = *inptr++;
 			if (isxdigit (c) && isxdigit (save)) {
-				c = toupper (c);
-				save = toupper (save);
+				c = g_ascii_toupper (c);
+				save = g_ascii_toupper (save);
 				*outptr++ = (((save>='A'?save-'A'+10:save-'0')&0x0f) << 4)
 					| ((c >= 'A' ? c - 'A' + 10 : c - '0') &0x0f);
 			} else if (c == '\n' && save == '\r') {
@@ -760,8 +760,8 @@ quoted_decode (const guchar *in,
 		if (c == '=') {
 			/* silently ignore truncated data? */
 			if (inend - inptr >= 2) {
-				c = toupper (*inptr++);
-				c1 = toupper (*inptr++);
+				c = g_ascii_toupper (*inptr++);
+				c1 = g_ascii_toupper (*inptr++);
 				*outptr++ = (((c>='A'?c-'A'+10:c-'0')&0x0f) << 4)
 					| ((c1 >= 'A' ? c1 - 'A' + 10 : c1 - '0') &0x0f);
 			} else {
@@ -2301,7 +2301,7 @@ camel_header_decode_int (const gchar **in)
 	return v;
 }
 
-#define HEXVAL(c) (isdigit (c) ? (c) - '0' : tolower (c) - 'a' + 10)
+#define HEXVAL(c) (isdigit (c) ? (c) - '0' : g_ascii_tolower (c) - 'a' + 10)
 
 static gchar *
 hex_decode (const gchar *in,
