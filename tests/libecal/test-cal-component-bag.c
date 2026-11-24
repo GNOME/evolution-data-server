@@ -2300,6 +2300,325 @@ test_component_bag_use_whole_day (void)
 	g_clear_object (&client);
 }
 
+typedef struct _SpanChangedData {
+	guint called;
+	guint n_items;
+} SpanChangedData;
+
+static void
+test_bag_span_changed_cb (ECalComponentBag *bag,
+			  GPtrArray *items,
+			  gpointer user_data)
+{
+	SpanChangedData *data = user_data;
+
+	data->called++;
+	data->n_items += items->len;
+}
+
+static time_t
+test_bag_item_get_real_start (ECalComponentBagItem *item,
+			      ICalTimezone *zone)
+{
+	ICalComponent *icomp;
+	time_t start;
+
+	icomp = e_cal_component_get_icalcomponent (item->comp);
+	start = e_cal_util_comp_time_to_zone (icomp, I_CAL_DTSTART_PROPERTY, zone, NULL,
+		E_TIMEZONE_CACHE (item->client), NULL);
+
+	if (start <= (time_t) 0)
+		start = 0;
+
+	return start;
+}
+
+static gint
+test_bag_compare_by_real_start (ECalComponentBagItem *item_a,
+				ECalComponentBagItem *item_b,
+				gpointer user_data)
+{
+	ICalTimezone *zone = user_data;
+	time_t start_a, start_b;
+
+	start_a = test_bag_item_get_real_start (item_a, zone);
+	start_b = test_bag_item_get_real_start (item_b, zone);
+
+	if (start_a != start_b)
+		return start_a < start_b ? -1 : 1;
+
+	return g_strcmp0 (item_a->uid, item_b->uid);
+}
+
+static void
+test_bag_check_span (ECalComponentBag *bag,
+		     guint span_index,
+		     const gchar * const *uids) /* NULL-terminated */
+{
+	const GPtrArray *span;
+	guint ii;
+
+	span = e_cal_component_bag_get_span (bag, span_index);
+	g_assert_nonnull (span);
+
+	for (ii = 0; uids[ii]; ii++) {
+		ECalComponentBagItem *item;
+
+		g_assert_cmpuint (ii, <, span->len);
+
+		item = g_ptr_array_index (span, ii);
+		g_assert_cmpstr (item->uid, ==, uids[ii]);
+		g_assert_cmpuint (item->span_index, ==, span_index);
+	}
+
+	g_assert_cmpuint (span->len, ==, ii);
+}
+
+static void
+test_component_bag_sort_func (void)
+{
+	static const gchar * const expected_spans[][2] = {
+		{ "A", NULL },
+		{ "B", NULL },
+		{ "C", NULL }
+	};
+	struct _comps {
+		const gchar *uid;
+		guint start_time;
+		guint end_time;
+		ECalComponent *comp;
+	} comps[] = {
+		/* added in a reverse order on purpose */
+		{ "C", 102000, 112000, NULL },
+		{ "B", 101000, 111000, NULL },
+		{ "A", 100000, 110000, NULL }
+	};
+	ECalClient *client;
+	ECalComponentBag *bag, *bag2;
+	ICalTimezone *utc;
+	guint ii;
+
+	utc = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (utc);
+
+	client = create_client ("cl1");
+	bag = e_cal_component_bag_new ();
+
+	e_cal_component_bag_set_timezone (bag, utc);
+	e_cal_component_bag_set_sort_func (bag, test_bag_compare_by_real_start, utc, NULL);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		comps[ii].comp = create_component (E_CAL_COMPONENT_EVENT, comps[ii].uid, NULL, comps[ii].uid, "UTC",
+			20261022, comps[ii].start_time, 20261022, comps[ii].end_time,
+			SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+		g_assert_nonnull (comps[ii].comp);
+		e_cal_component_bag_add (bag, client, comps[ii].comp);
+	}
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_items (bag), ==, G_N_ELEMENTS (comps));
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, G_N_ELEMENTS (expected_spans));
+
+	for (ii = 0; ii < G_N_ELEMENTS (expected_spans); ii++) {
+		test_bag_check_span (bag, ii, expected_spans[ii]);
+	}
+
+	/* setting the sort func re-packs the already stored items */
+	bag2 = e_cal_component_bag_new ();
+	e_cal_component_bag_set_timezone (bag2, utc);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		e_cal_component_bag_add (bag2, client, comps[ii].comp);
+	}
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag2), ==, G_N_ELEMENTS (expected_spans));
+	test_bag_check_span (bag2, 0, (const gchar *[]) { "C", NULL });
+	test_bag_check_span (bag2, 1, (const gchar *[]) { "B", NULL });
+	test_bag_check_span (bag2, 2, (const gchar *[]) { "A", NULL });
+
+	e_cal_component_bag_set_sort_func (bag2, test_bag_compare_by_real_start, utc, NULL);
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag2), ==, G_N_ELEMENTS (expected_spans));
+
+	for (ii = 0; ii < G_N_ELEMENTS (expected_spans); ii++) {
+		test_bag_check_span (bag2, ii, expected_spans[ii]);
+	}
+
+	/* replacing the sort func frees the user data of the previous one */
+	test_bag_free_user_data_counter = 0;
+	e_cal_component_bag_set_sort_func (bag2, NULL, GINT_TO_POINTER (1), test_bag_free_user_data);
+	g_assert_cmpuint (test_bag_free_user_data_counter, ==, 0);
+	e_cal_component_bag_set_sort_func (bag2, NULL, GINT_TO_POINTER (2), test_bag_free_user_data);
+	g_assert_cmpuint (test_bag_free_user_data_counter, ==, 1);
+
+	g_clear_object (&bag2);
+	g_assert_cmpuint (test_bag_free_user_data_counter, ==, 2);
+
+	g_clear_object (&bag);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		g_clear_object (&comps[ii].comp);
+	}
+
+	g_clear_object (&client);
+}
+
+static void
+test_component_bag_sort_func_whole_day (void)
+{
+	static const gchar * const expected_spans[][3] = {
+		{ "X", "Y", NULL },
+		{ "Z", NULL }
+	};
+	struct _comps {
+		const gchar *uid;
+		guint start_date;
+		guint start_time;
+		guint end_date;
+		guint end_time;
+		ECalComponent *comp;
+	} comps[] = {
+		/* the timed event is added as the first one, but the all-day
+		   event of the same day has to be placed before it */
+		{ "Z", 20261022, 90000, 20261022, 95500, NULL },
+		{ "X", 20261021, SKIP_TIME_VAL, 20261022, SKIP_TIME_VAL, NULL },
+		{ "Y", 20261022, SKIP_TIME_VAL, 20261023, SKIP_TIME_VAL, NULL }
+	};
+	ECalClient *client;
+	ECalComponentBag *bag;
+	ICalTimezone *utc;
+	guint ii;
+
+	utc = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (utc);
+
+	client = create_client ("cl1");
+	bag = e_cal_component_bag_new ();
+
+	e_cal_component_bag_set_timezone (bag, utc);
+	e_cal_component_bag_set_use_whole_day (bag, TRUE);
+	e_cal_component_bag_set_sort_func (bag, test_bag_compare_by_real_start, utc, NULL);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		comps[ii].comp = create_component (E_CAL_COMPONENT_EVENT, comps[ii].uid, NULL, comps[ii].uid, "UTC",
+			comps[ii].start_date, comps[ii].start_time, comps[ii].end_date, comps[ii].end_time,
+			SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+		g_assert_nonnull (comps[ii].comp);
+		e_cal_component_bag_add (bag, client, comps[ii].comp);
+	}
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_items (bag), ==, G_N_ELEMENTS (comps));
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, G_N_ELEMENTS (expected_spans));
+
+	for (ii = 0; ii < G_N_ELEMENTS (expected_spans); ii++) {
+		test_bag_check_span (bag, ii, expected_spans[ii]);
+	}
+
+	g_clear_object (&bag);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		g_clear_object (&comps[ii].comp);
+	}
+
+	g_clear_object (&client);
+}
+
+static void
+test_component_bag_sort_func_changes (void)
+{
+	static const gchar * const expected_spans[][2] = {
+		{ "A", NULL },
+		{ "B", NULL },
+		{ "C", NULL }
+	};
+	struct _comps {
+		const gchar *uid;
+		guint start_time;
+		guint end_time;
+		ECalComponent *comp;
+	} comps[] = {
+		{ "B", 90000, 100000, NULL },
+		{ "A", 90000, 100000, NULL },
+		{ "C", 90000, 100000, NULL }
+	};
+	SpanChangedData span_data;
+	ECalClient *client;
+	ECalComponentBag *bag;
+	ECalComponent *comp_c;
+	ICalTimezone *utc;
+	guint ii;
+
+	utc = i_cal_timezone_get_utc_timezone ();
+	g_assert_nonnull (utc);
+
+	client = create_client ("cl1");
+	bag = e_cal_component_bag_new ();
+
+	e_cal_component_bag_set_timezone (bag, utc);
+	e_cal_component_bag_set_sort_func (bag, test_bag_compare_by_real_start, utc, NULL);
+
+	memset (&span_data, 0, sizeof (SpanChangedData));
+	g_signal_connect (bag, "span-changed", G_CALLBACK (test_bag_span_changed_cb), &span_data);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		comps[ii].comp = create_component (E_CAL_COMPONENT_EVENT, comps[ii].uid, NULL, comps[ii].uid, "UTC",
+			20261022, comps[ii].start_time, 20261022, comps[ii].end_time,
+			SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+		g_assert_nonnull (comps[ii].comp);
+		e_cal_component_bag_add (bag, client, comps[ii].comp);
+	}
+
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, G_N_ELEMENTS (expected_spans));
+
+	for (ii = 0; ii < G_N_ELEMENTS (expected_spans); ii++) {
+		test_bag_check_span (bag, ii, expected_spans[ii]);
+	}
+
+	/* rebuild keeps the order */
+	memset (&span_data, 0, sizeof (SpanChangedData));
+	e_cal_component_bag_rebuild (bag);
+
+	g_assert_cmpuint (span_data.called, ==, 0);
+	g_assert_cmpuint (span_data.n_items, ==, 0);
+
+	for (ii = 0; ii < G_N_ELEMENTS (expected_spans); ii++) {
+		test_bag_check_span (bag, ii, expected_spans[ii]);
+	}
+
+	/* removing the first item re-packs the rest and notifies about it */
+	memset (&span_data, 0, sizeof (SpanChangedData));
+	e_cal_component_bag_remove (bag, client, "A", NULL);
+
+	g_assert_cmpuint (span_data.called, ==, 1);
+	g_assert_cmpuint (span_data.n_items, ==, 2);
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, 2);
+	test_bag_check_span (bag, 0, (const gchar *[]) { "B", NULL });
+	test_bag_check_span (bag, 1, (const gchar *[]) { "C", NULL });
+
+	/* changing the time of an item re-packs and notifies about it */
+	comp_c = create_component (E_CAL_COMPONENT_EVENT, "C", NULL, "C", "UTC",
+		20261022, 80000, 20261022, 93000,
+		SKIP_TIME_VAL, SKIP_TIME_VAL, SKIP_TIME_VAL);
+	g_assert_nonnull (comp_c);
+
+	memset (&span_data, 0, sizeof (SpanChangedData));
+	e_cal_component_bag_add (bag, client, comp_c);
+
+	g_assert_cmpuint (span_data.called, ==, 1);
+	g_assert_cmpuint (span_data.n_items, ==, 2);
+	g_assert_cmpuint (e_cal_component_bag_get_n_spans (bag), ==, 2);
+	test_bag_check_span (bag, 0, (const gchar *[]) { "C", NULL });
+	test_bag_check_span (bag, 1, (const gchar *[]) { "B", NULL });
+
+	g_clear_object (&comp_c);
+	g_clear_object (&bag);
+
+	for (ii = 0; ii < G_N_ELEMENTS (comps); ii++) {
+		g_clear_object (&comps[ii].comp);
+	}
+
+	g_clear_object (&client);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -2318,6 +2637,9 @@ main (gint argc,
 	g_test_add_func ("/ECalComponentBag/Rebuild", test_component_bag_rebuild);
 	g_test_add_func ("/ECalComponentBag/UserDataFuncs", test_component_bag_user_data_funcs);
 	g_test_add_func ("/ECalComponentBag/UseWholeDay", test_component_bag_use_whole_day);
+	g_test_add_func ("/ECalComponentBag/SortFunc", test_component_bag_sort_func);
+	g_test_add_func ("/ECalComponentBag/SortFunc/WholeDay", test_component_bag_sort_func_whole_day);
+	g_test_add_func ("/ECalComponentBag/SortFunc/Changes", test_component_bag_sort_func_changes);
 
 	return e_test_server_utils_run (argc, argv);
 }

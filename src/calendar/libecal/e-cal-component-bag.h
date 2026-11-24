@@ -52,6 +52,28 @@ typedef gboolean(* ECalComponentBagForeachFunc)	(ECalComponentBag *bag,
 						 ECalComponentBagItem *item,
 						 gpointer user_data);
 
+/**
+ * ECalComponentBagItemCompareFunc:
+ * @item_a: (not nullable): an #ECalComponentBagItem
+ * @item_b: (not nullable): an #ECalComponentBagItem
+ * @user_data: user data passed to e_cal_component_bag_set_sort_func()
+ *
+ * A callback function used by the #ECalComponentBag to order the items
+ * when placing them into the spans. The items are placed into the spans
+ * in this order, which also defines the order of the spans. The items
+ * can read their #ECalComponentBagItem:comp to get the real start time,
+ * because the #ECalComponentBagItem:start can be clamped to whole days.
+ *
+ * Returns: a negative value when the @item_a should be placed before
+ *    the @item_b, a positive value when the @item_a should be placed
+ *    after the @item_b, and zero when the items are equal
+ *
+ * Since: 3.64
+ **/
+typedef gint (* ECalComponentBagItemCompareFunc) (ECalComponentBagItem *item_a,
+						  ECalComponentBagItem *item_b,
+						  gpointer user_data);
+
 GType		e_cal_component_bag_item_get_type
 						(void);
 ECalComponentBagItem *
@@ -93,6 +115,11 @@ void		e_cal_component_bag_set_use_whole_day
 						 gboolean value);
 gboolean	e_cal_component_bag_get_use_whole_day
 						(ECalComponentBag *self);
+void		e_cal_component_bag_set_sort_func
+						(ECalComponentBag *self,
+						 ECalComponentBagItemCompareFunc sort_func,
+						 gpointer user_data,
+						 GDestroyNotify user_data_free);
 void		e_cal_component_bag_lock	(ECalComponentBag *self);
 void		e_cal_component_bag_unlock	(ECalComponentBag *self);
 void		e_cal_component_bag_add		(ECalComponentBag *self,

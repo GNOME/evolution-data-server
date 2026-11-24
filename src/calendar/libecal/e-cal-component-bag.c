@@ -38,7 +38,15 @@ struct _ECalComponentBag {
 	GHashTable *items; /* ECalComponentBagItem * ~> ECalComponentBagItem *; owned by `spans` */
 	guint min_duration_minutes;
 	gboolean use_whole_day;
+
+	ECalComponentBagItemCompareFunc sort_func;
+	gpointer sort_user_data;
+	GDestroyNotify sort_user_data_free;
 };
+
+static void	e_cal_component_bag_repack_locked
+					(ECalComponentBag *self,
+					 GPtrArray *span_changed);
 
 enum {
 	PROP_0,
@@ -484,6 +492,12 @@ e_cal_component_bag_finalize (GObject *object)
 	g_clear_pointer (&self->items, g_hash_table_unref);
 	g_clear_object (&self->timezone);
 
+	if (self->sort_user_data_free)
+		self->sort_user_data_free (self->sort_user_data);
+	self->sort_func = NULL;
+	self->sort_user_data = NULL;
+	self->sort_user_data_free = NULL;
+
 	G_OBJECT_CLASS (e_cal_component_bag_parent_class)->finalize (object);
 }
 
@@ -803,6 +817,64 @@ e_cal_component_bag_get_use_whole_day (ECalComponentBag *self)
 }
 
 /**
+ * e_cal_component_bag_set_sort_func:
+ * @self: an #ECalComponentBag
+ * @sort_func: (nullable): an #ECalComponentBagItemCompareFunc, or %NULL to
+ *    place the items in the order they are added
+ * @user_data: (closure): user data for the @sort_func
+ * @user_data_free: (nullable): a function to free the @user_data, or %NULL
+ *
+ * Sets a comparator used to order the items when placing them into
+ * the spans. The items are placed into the spans in this order, thus
+ * the spans themselves are ordered by their first item.
+ *
+ * The comparator can use the #ECalComponentBagItem:comp of the items to get
+ * the real start time of the components, unlike the #ECalComponentBagItem:start,
+ * which can be clamped to whole days with the e_cal_component_bag_set_use_whole_day().
+ *
+ * Setting the @sort_func re-packs the currently stored items.
+ *
+ * Since: 3.64
+ **/
+void
+e_cal_component_bag_set_sort_func (ECalComponentBag *self,
+				   ECalComponentBagItemCompareFunc sort_func,
+				   gpointer user_data,
+				   GDestroyNotify user_data_free)
+{
+	GPtrArray *span_changed;
+	guint previous_n_spans;
+
+	g_return_if_fail (E_IS_CAL_COMPONENT_BAG (self));
+
+	LOCK (self);
+
+	if (self->sort_user_data_free)
+		self->sort_user_data_free (self->sort_user_data);
+
+	self->sort_func = sort_func;
+	self->sort_user_data = user_data;
+	self->sort_user_data_free = user_data_free;
+
+	if (sort_func && self->spans->len) {
+		previous_n_spans = self->spans->len;
+		span_changed = g_ptr_array_new ();
+
+		e_cal_component_bag_repack_locked (self, span_changed);
+
+		if (span_changed->len)
+			g_signal_emit (self, signals[SPAN_CHANGED], 0, span_changed);
+
+		if (self->spans->len != previous_n_spans)
+			g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_N_SPANS]);
+
+		g_ptr_array_unref (span_changed);
+	}
+
+	UNLOCK (self);
+}
+
+/**
  * e_cal_component_bag_lock:
  * @self: an #ECalComponentBag
  *
@@ -836,39 +908,16 @@ e_cal_component_bag_unlock (ECalComponentBag *self)
 	UNLOCK (self);
 }
 
-/* should hold the lock when calling this */
+/* should hold the lock when calling this; the @item is not part of any span */
 static void
-e_cal_component_place_item_locked (ECalComponentBag *self,
-				   ECalComponentBagItem *item,
-				   gboolean is_new,
-				   GPtrArray **inout_span_changed) /* ECalComponentBagItem * */
+e_cal_component_bag_insert_item_locked (ECalComponentBag *self,
+					ECalComponentBagItem *item)
 {
 	GPtrArray *span_items; /* ECalComponentBagItem * */
-	guint ii, jj, previous_span_index = item->span_index;
+	guint ii, jj;
 	gboolean added = FALSE;
 
-	if (!is_new) {
-		*inout_span_changed = g_ptr_array_new ();
-		span_items = g_ptr_array_index (self->spans, item->span_index);
-
-		jj = span_items->len;
-		g_warn_if_fail (g_ptr_array_find (span_items, item, &jj));
-		item = g_ptr_array_steal_index (span_items, jj);
-
-		if (!span_items->len) {
-			for (jj = item->span_index + 1; jj < self->spans->len; jj++) {
-				span_items = g_ptr_array_index (self->spans, jj);
-				for (ii = 0; ii < span_items->len; ii++) {
-					ECalComponentBagItem *existing = g_ptr_array_index (span_items, ii);
-
-					existing->span_index--;
-					g_ptr_array_add (*inout_span_changed, existing);
-				}
-			}
-		}
-	}
-
-	for (jj = 0; jj < self->spans->len; jj++) {
+	for (jj = 0; jj < self->spans->len && !added; jj++) {
 		gint insert_index = -1;
 
 		added = TRUE;
@@ -892,10 +941,6 @@ e_cal_component_place_item_locked (ECalComponentBag *self,
 		if (added) {
 			item->span_index = jj;
 			g_ptr_array_insert (span_items, insert_index, item);
-
-			if (is_new)
-				g_hash_table_insert (self->items, item, item);
-			break;
 		}
 	}
 
@@ -904,15 +949,99 @@ e_cal_component_place_item_locked (ECalComponentBag *self,
 		span_items = g_ptr_array_new_with_free_func ((GDestroyNotify) e_cal_component_bag_item_free);
 		g_ptr_array_add (self->spans, span_items);
 		g_ptr_array_add (span_items, item);
-
-		if (is_new)
-			g_hash_table_insert (self->items, item, item);
 	}
+}
+
+/* should hold the lock when calling this */
+static void
+e_cal_component_place_item_locked (ECalComponentBag *self,
+				   ECalComponentBagItem *item,
+				   gboolean is_new,
+				   GPtrArray **inout_span_changed) /* ECalComponentBagItem * */
+{
+	GPtrArray *span_items; /* ECalComponentBagItem * */
+	guint ii, jj, previous_span_index = item->span_index;
+
+	if (!is_new) {
+		*inout_span_changed = g_ptr_array_new ();
+		span_items = g_ptr_array_index (self->spans, item->span_index);
+
+		jj = span_items->len;
+		g_warn_if_fail (g_ptr_array_find (span_items, item, &jj));
+		item = g_ptr_array_steal_index (span_items, jj);
+
+		if (!span_items->len) {
+			for (jj = item->span_index + 1; jj < self->spans->len; jj++) {
+				span_items = g_ptr_array_index (self->spans, jj);
+				for (ii = 0; ii < span_items->len; ii++) {
+					ECalComponentBagItem *existing = g_ptr_array_index (span_items, ii);
+
+					existing->span_index--;
+					g_ptr_array_add (*inout_span_changed, existing);
+				}
+			}
+		}
+	}
+
+	e_cal_component_bag_insert_item_locked (self, item);
+
+	if (is_new)
+		g_hash_table_insert (self->items, item, item);
 
 	if (*inout_span_changed) {
 		if (item->span_index != previous_span_index)
 			g_ptr_array_add (*inout_span_changed, item);
 	}
+}
+
+static gint
+e_cal_component_bag_compare_items_cb (gconstpointer aa,
+				      gconstpointer bb,
+				      gpointer user_data)
+{
+	ECalComponentBag *self = user_data;
+	ECalComponentBagItem *item_a = *(ECalComponentBagItem * const *) aa;
+	ECalComponentBagItem *item_b = *(ECalComponentBagItem * const *) bb;
+
+	return self->sort_func (item_a, item_b, self->sort_user_data);
+}
+
+/* should hold the lock when calling this */
+static void
+e_cal_component_bag_repack_locked (ECalComponentBag *self,
+				   GPtrArray *span_changed) /* ECalComponentBagItem * */
+{
+	GPtrArray *items; /* ECalComponentBagItem * */
+	guint ii, jj;
+
+	g_return_if_fail (self->sort_func != NULL);
+
+	items = g_ptr_array_new ();
+
+	for (jj = 0; jj < self->spans->len; jj++) {
+		GPtrArray *span_items = g_ptr_array_index (self->spans, jj);
+
+		while (span_items->len) {
+			g_ptr_array_add (items, g_ptr_array_steal_index (span_items, span_items->len - 1));
+		}
+	}
+
+	g_ptr_array_remove_range (self->spans, 0, self->spans->len);
+
+	g_ptr_array_sort_with_data (items, e_cal_component_bag_compare_items_cb, self);
+
+	for (ii = 0; ii < items->len; ii++) {
+		ECalComponentBagItem *item = g_ptr_array_index (items, ii);
+		guint previous_span_index = item->span_index;
+
+		e_cal_component_bag_insert_item_locked (self, item);
+
+		if (item->span_index != previous_span_index &&
+		    !g_ptr_array_find (span_changed, item, NULL))
+			g_ptr_array_add (span_changed, item);
+	}
+
+	g_ptr_array_unref (items);
 }
 
 /* should hold the lock when calling this */
@@ -1016,6 +1145,7 @@ e_cal_component_bag_add_with_user_data (ECalComponentBag *self,
 	GPtrArray *span_items; /* ECalComponentBagItem * */
 	GPtrArray *span_changed = NULL; /* ECalComponentBagItem * */
 	guint ii, spans_before;
+	gboolean needs_repack = FALSE;
 
 	g_return_if_fail (E_IS_CAL_COMPONENT_BAG (self));
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -1043,30 +1173,36 @@ e_cal_component_bag_add_with_user_data (ECalComponentBag *self,
 
 			item_changed = TRUE;
 
-			/* check whether the `item` won't collide with any other in its current span */
-			span_items = g_ptr_array_index (self->spans, item->span_index);
+			if (!self->sort_func) {
+				/* check whether the `item` won't collide with any other in its current span */
+				span_items = g_ptr_array_index (self->spans, item->span_index);
 
-			for (ii = 0; ii < span_items->len; ii++) {
-				ECalComponentBagItem *existing = g_ptr_array_index (span_items, ii);
+				for (ii = 0; ii < span_items->len; ii++) {
+					ECalComponentBagItem *existing = g_ptr_array_index (span_items, ii);
 
-				if (existing != item &&
-				    existing->start < item->start + (item->duration_minutes * 60) &&
-				    existing->start + (existing->duration_minutes * 60) > item->start) {
-					can_keep = FALSE;
-					break;
+					if (existing != item &&
+					    existing->start < item->start + (item->duration_minutes * 60) &&
+					    existing->start + (existing->duration_minutes * 60) > item->start) {
+						can_keep = FALSE;
+						break;
+					}
 				}
-			}
 
-			if (!can_keep)
-				e_cal_component_place_item_locked (self, item, FALSE, &span_changed);
+				if (!can_keep)
+					e_cal_component_place_item_locked (self, item, FALSE, &span_changed);
+			}
 		}
 
 		/* only if the user data changes */
 		if (user_data)
 			e_cal_component_bag_item_set_user_data (item, user_data, copy_user_data, free_user_data);
 
-		if (item_changed)
+		if (item_changed) {
+			if (self->sort_func)
+				needs_repack = TRUE;
+
 			g_signal_emit (self, signals[ITEM_CHANGED], 0, item);
+		}
 	} else {
 		item = e_cal_component_bag_item_new (client, comp, self->min_duration_minutes, self->use_whole_day, self->timezone);
 
@@ -1077,6 +1213,16 @@ e_cal_component_bag_add_with_user_data (ECalComponentBag *self,
 		g_signal_emit (self, signals[ADDED], 0, item);
 
 		g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_N_ITEMS]);
+
+		if (self->sort_func)
+			needs_repack = TRUE;
+	}
+
+	if (needs_repack) {
+		if (!span_changed)
+			span_changed = g_ptr_array_new ();
+
+		e_cal_component_bag_repack_locked (self, span_changed);
 	}
 
 	if (self->spans->len != spans_before)
@@ -1115,7 +1261,7 @@ e_cal_component_bag_remove (ECalComponentBag *self,
 	GPtrArray *array;
 	ECalComponentBagItem *item;
 	ECalComponentBagItem lookup_item = { 0, };
-	guint ii, jj, spans_removed = 0;
+	guint ii, jj, spans_removed = 0, previous_n_spans;
 
 	g_return_if_fail (E_IS_CAL_COMPONENT_BAG (self));
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
@@ -1127,6 +1273,8 @@ e_cal_component_bag_remove (ECalComponentBag *self,
 		rid = NULL;
 
 	LOCK (self);
+
+	previous_n_spans = self->spans->len;
 
 	lookup_item.client = client;
 	lookup_item.uid = (gchar *) uid;
@@ -1211,6 +1359,23 @@ e_cal_component_bag_remove (ECalComponentBag *self,
 		}
 	}
 
+	if (self->sort_func && g_hash_table_size (removed)) {
+		GPtrArray *repacked = g_ptr_array_new (); /* ECalComponentBagItem * */
+
+		e_cal_component_bag_repack_locked (self, repacked);
+
+		if (repacked->len) {
+			if (!span_changed)
+				span_changed = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+			for (ii = 0; ii < repacked->len; ii++) {
+				g_hash_table_add (span_changed, g_ptr_array_index (repacked, ii));
+			}
+		}
+
+		g_ptr_array_unref (repacked);
+	}
+
 	array = e_cal_component_bag_hash_keys_to_array (removed, TRUE);
 	if (array) {
 		g_signal_emit (self, signals[REMOVED], 0, array);
@@ -1225,7 +1390,7 @@ e_cal_component_bag_remove (ECalComponentBag *self,
 		g_ptr_array_unref (array);
 	}
 
-	if (spans_removed)
+	if (self->spans->len != previous_n_spans)
 		g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_N_SPANS]);
 
 	UNLOCK (self);
@@ -1291,6 +1456,9 @@ e_cal_component_bag_rebuild (ECalComponentBag *self)
 
 		g_hash_table_remove_all (self->items);
 		g_ptr_array_remove_range (self->spans, 0, self->spans->len);
+
+		if (self->sort_func)
+			g_ptr_array_sort_with_data (items, e_cal_component_bag_compare_items_cb, self);
 
 		for (ii = 0; ii < items->len; ii++) {
 			ECalComponentBagItem *item = g_ptr_array_index (items, ii);
