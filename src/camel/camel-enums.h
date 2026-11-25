@@ -713,6 +713,7 @@ typedef enum _CamelVeeFolderOpFlags { /*< flags >*/
  * CamelFolderViewThreading:
  * @CAMEL_FOLDER_VIEW_THREADING_NONE: flat list, no threading
  * @CAMEL_FOLDER_VIEW_THREADING_FLAT: single-level threading, all replies directly under thread root
+ * @CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST: single-level threading, with the latest message shown as the thread root
  * @CAMEL_FOLDER_VIEW_THREADING_FULL: full thread hierarchy with arbitrary depth
  * @CAMEL_FOLDER_VIEW_THREADING_COMPRESSED: full thread hierarchy with straight-line chains compressed
  *
@@ -723,6 +724,7 @@ typedef enum _CamelVeeFolderOpFlags { /*< flags >*/
 typedef enum {
 	CAMEL_FOLDER_VIEW_THREADING_NONE,
 	CAMEL_FOLDER_VIEW_THREADING_FLAT,
+	CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST,
 	CAMEL_FOLDER_VIEW_THREADING_FULL,
 	CAMEL_FOLDER_VIEW_THREADING_COMPRESSED
 } CamelFolderViewThreading;

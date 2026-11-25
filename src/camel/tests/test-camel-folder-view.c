@@ -1993,6 +1993,386 @@ test_folder_view_thread_latest (void)
 }
 
 static void
+add_latest_root_messages (CamelFolder *folder,
+			  gchar **part_a,
+			  gchar **part_b,
+			  gchar **part_c)
+{
+	guint64 refs_b[] = { MSG_ID_A };
+
+	*part_a = test_build_part_string (MSG_ID_A, NULL, 0);
+	*part_b = test_build_part_string (MSG_ID_B, refs_b, 1);
+	*part_c = test_build_part_string (MSG_ID_C, NULL, 0);
+
+	test_add_messages (folder,
+		"uid", "a", "subject", "Thread A root", "from", "alice@test.com",
+		"dsent", (gint64) 1000, "dreceived", (gint64) 1010,
+		"part", *part_a, "",
+		"uid", "b", "subject", "Re: Thread A root", "from", "bob@test.com",
+		"dsent", (gint64) 9000, "dreceived", (gint64) 9010,
+		"part", *part_b, "",
+		"uid", "c", "subject", "Standalone C", "from", "charlie@test.com",
+		"dsent", (gint64) 5000, "dreceived", (gint64) 5010,
+		"part", *part_c, "",
+		NULL);
+}
+
+static void
+test_folder_view_flat_thread_latest_root (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	gchar *part_a, *part_b, *part_c;
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+	add_latest_root_messages (folder, &part_a, &part_b, &part_c);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	first = camel_folder_view_get_row (view, 0);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "c");
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "b");
+
+	first = camel_folder_view_get_row (view, 2);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "b"), ==, 0);
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "a"), ==, 1);
+	g_assert_true (camel_folder_view_is_expandable (view, "b"));
+	g_assert_false (camel_folder_view_is_expandable (view, "a"));
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "b"), ==, 1);
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "a"), ==, 2);
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
+}
+
+static void
+test_folder_view_flat_threads_root_is_starter (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	gchar *part_a, *part_b, *part_c;
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+	add_latest_root_messages (folder, &part_a, &part_b, &part_c);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FLAT);
+	camel_folder_view_set_thread_latest (view, TRUE);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	first = camel_folder_view_get_row (view, 2);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "b");
+
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "a"), ==, 0);
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "b"), ==, 1);
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
+}
+
+static void
+test_folder_view_full_thread_root_stays_starter (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	gchar *part_a, *part_b, *part_c;
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+	add_latest_root_messages (folder, &part_a, &part_b, &part_c);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FULL);
+	camel_folder_view_set_thread_latest (view, TRUE);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "a"), ==, 0);
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "b"), ==, 1);
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
+}
+
+static void
+test_folder_view_flat_root_latest_with_thread_latest (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	gchar *part_a, *part_b, *part_c;
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+	add_latest_root_messages (folder, &part_a, &part_b, &part_c);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	camel_folder_view_freeze (view);
+	camel_folder_view_set_thread_latest (view, TRUE);
+	camel_folder_view_thaw (view);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	first = camel_folder_view_get_row (view, 0);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "c");
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "b");
+
+	first = camel_folder_view_get_row (view, 2);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
+}
+
+static void
+test_folder_view_flat_thread_latest_root_incremental (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	CamelFolderChangeInfo *changes;
+	GArray *inserted_ranges;
+	GArray *removed_ranges;
+	gulong inserted_id, removed_id;
+	guint64 refs_d[] = { MSG_ID_A };
+	gchar *part_a, *part_b, *part_c, *part_d;
+	const RowRange expected_removed[] = { { 1, 1 } };
+	const RowRange expected_inserted[] = { { 1, 1 }, { 3, 3 } };
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+	add_latest_root_messages (folder, &part_a, &part_b, &part_c);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	inserted_ranges = g_array_new (FALSE, FALSE, sizeof (RowRange));
+	removed_ranges = g_array_new (FALSE, FALSE, sizeof (RowRange));
+	inserted_id = g_signal_connect (view, "rows-inserted", G_CALLBACK (capture_row_range_cb), inserted_ranges);
+	removed_id = g_signal_connect (view, "rows-removed", G_CALLBACK (capture_row_range_cb), removed_ranges);
+
+	part_d = test_build_part_string (MSG_ID_D, refs_d, 1);
+
+	test_add_messages (folder,
+		"uid", "d", "subject", "Re: Thread A root", "from", "dave@test.com",
+		"dsent", (gint64) 9500, "dreceived", (gint64) 9510,
+		"part", part_d, "",
+		NULL);
+
+	changes = camel_folder_change_info_new ();
+	camel_folder_change_info_add_uid (changes, "d");
+	camel_folder_changed (folder, changes);
+	camel_folder_change_info_free (changes);
+
+	wait_for_folder_changed (view);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 4);
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "d");
+
+	first = camel_folder_view_get_row (view, 2);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	first = camel_folder_view_get_row (view, 3);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "b");
+
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "d"), ==, 0);
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "d"), ==, 1);
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "a"), ==, 2);
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "b"), ==, 3);
+
+	assert_row_ranges (removed_ranges, expected_removed, G_N_ELEMENTS (expected_removed), "flat_thread_latest_root_incremental_removed");
+	assert_row_ranges (inserted_ranges, expected_inserted, G_N_ELEMENTS (expected_inserted), "flat_thread_latest_root_incremental_inserted");
+
+	g_signal_handler_disconnect (view, inserted_id);
+	g_signal_handler_disconnect (view, removed_id);
+	g_array_unref (inserted_ranges);
+	g_array_unref (removed_ranges);
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
+	g_free (part_d);
+}
+
+static void
+test_folder_view_flat_thread_latest_root_latest_removed (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	CamelFolderChangeInfo *changes;
+	guint64 refs_b[] = { MSG_ID_A };
+	guint64 refs_d[] = { MSG_ID_A };
+	gchar *part_a, *part_b, *part_c, *part_d;
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+
+	part_a = test_build_part_string (MSG_ID_A, NULL, 0);
+	part_b = test_build_part_string (MSG_ID_B, refs_b, 1);
+	part_c = test_build_part_string (MSG_ID_C, NULL, 0);
+	part_d = test_build_part_string (MSG_ID_D, refs_d, 1);
+
+	test_add_messages (folder,
+		"uid", "a", "subject", "Thread A root", "from", "alice@test.com",
+		"dsent", (gint64) 1000, "dreceived", (gint64) 1010,
+		"part", part_a, "",
+		"uid", "b", "subject", "Re: Thread A root", "from", "bob@test.com",
+		"dsent", (gint64) 9000, "dreceived", (gint64) 9010,
+		"part", part_b, "",
+		"uid", "c", "subject", "Standalone C", "from", "charlie@test.com",
+		"dsent", (gint64) 5000, "dreceived", (gint64) 5010,
+		"part", part_c, "",
+		"uid", "d", "subject", "Re: Thread A root", "from", "dave@test.com",
+		"dsent", (gint64) 9500, "dreceived", (gint64) 9510,
+		"part", part_d, "",
+		NULL);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 4);
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "d");
+
+	camel_folder_summary_remove_uid (camel_folder_get_folder_summary (folder), "d");
+
+	changes = camel_folder_change_info_new ();
+	camel_folder_change_info_remove_uid (changes, "d");
+	camel_folder_changed (folder, changes);
+	camel_folder_change_info_free (changes);
+
+	wait_for_folder_changed (view);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "b");
+
+	first = camel_folder_view_get_row (view, 2);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "b"), ==, 1);
+	g_assert_cmpuint (camel_folder_view_find_row_by_uid (view, "a"), ==, 2);
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
+	g_free (part_d);
+}
+
+static void
 test_folder_view_group_by_date (void)
 {
 	CamelStore *store;
@@ -4766,6 +5146,12 @@ main (gint argc,
 	g_test_add_func ("/Camel/CamelFolderView/RowsInsertedIntoCollapsedThread", test_folder_view_rows_inserted_into_collapsed_thread);
 	g_test_add_func ("/Camel/CamelFolderView/RowsGroupedHeaderChurn", test_folder_view_rows_grouped_header_churn);
 	g_test_add_func ("/Camel/CamelFolderView/ThreadLatest", test_folder_view_thread_latest);
+	g_test_add_func ("/Camel/CamelFolderView/FlatThreadLatestRoot", test_folder_view_flat_thread_latest_root);
+	g_test_add_func ("/Camel/CamelFolderView/FlatThreadsRootIsStarter", test_folder_view_flat_threads_root_is_starter);
+	g_test_add_func ("/Camel/CamelFolderView/FullThreadRootStaysStarter", test_folder_view_full_thread_root_stays_starter);
+	g_test_add_func ("/Camel/CamelFolderView/FlatRootLatestWithThreadLatest", test_folder_view_flat_root_latest_with_thread_latest);
+	g_test_add_func ("/Camel/CamelFolderView/FlatThreadLatestRootIncremental", test_folder_view_flat_thread_latest_root_incremental);
+	g_test_add_func ("/Camel/CamelFolderView/FlatThreadLatestRootLatestRemoved", test_folder_view_flat_thread_latest_root_latest_removed);
 	g_test_add_func ("/Camel/CamelFolderView/GroupByDate", test_folder_view_group_by_date);
 	g_test_add_func ("/Camel/CamelFolderView/GroupByDateLabels", test_folder_view_group_by_date_labels);
 	g_test_add_func ("/Camel/CamelFolderView/GroupByDateSparse", test_folder_view_group_by_date_sparse);

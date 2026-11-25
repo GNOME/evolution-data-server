@@ -496,6 +496,13 @@ folder_view_prune_phantom_roots (ViewBuildCtx *ctx,
 }
 #pragma GCC diagnostic pop
 
+static gboolean
+threading_is_flat (CamelFolderViewThreading threading)
+{
+	return threading == CAMEL_FOLDER_VIEW_THREADING_FLAT ||
+		threading == CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST;
+}
+
 static void
 folder_view_thread_node_by_refs (CamelFolderView *self,
                                  ViewBuildCtx *ctx,
@@ -897,6 +904,48 @@ compute_thread_latest_dates (ViewRow *roots,
 	}
 
 	return TRUE;
+}
+
+static void
+view_row_swap_message_infos (GHashTable *uid_to_node,
+                             ViewRow *left,
+                             ViewRow *right)
+{
+	CamelMessageInfo *left_info, *right_info;
+	GArray *left_references, *right_references;
+	const gchar *left_uid, *right_uid;
+	gint64 left_sort_date, right_sort_date;
+	guint left_order, right_order;
+
+	left_info = left->info;
+	right_info = right->info;
+	left_references = left->references;
+	right_references = right->references;
+	left_sort_date = left->sort_date;
+	right_sort_date = right->sort_date;
+	left_order = left->order;
+	right_order = right->order;
+
+	left_uid = camel_message_info_get_uid (left_info);
+	right_uid = camel_message_info_get_uid (right_info);
+
+	g_hash_table_remove (uid_to_node, left_uid);
+	g_hash_table_remove (uid_to_node, right_uid);
+
+	left->info = right_info;
+	left->references = right_references;
+	left->sort_date = right_sort_date;
+	left->order = right_order;
+	right->info = left_info;
+	right->references = left_references;
+	right->sort_date = left_sort_date;
+	right->order = left_order;
+
+	view_row_clear_derived_cache (left);
+	view_row_clear_derived_cache (right);
+
+	g_hash_table_insert (uid_to_node, (gpointer) left_uid, right);
+	g_hash_table_insert (uid_to_node, (gpointer) right_uid, left);
 }
 
 static gint
@@ -2445,14 +2494,19 @@ folder_view_clear_root_subjects (ViewRow *row)
 
 static void
 folder_view_flatten_thread_children (ViewRow *root,
-                                     ViewRow *child)
+                                     ViewRow *child,
+                                     ViewRow **latest)
 {
 	ViewRow *next;
 
 	while (child) {
 		next = child->next;
 
-		folder_view_flatten_thread_children (root, child->child);
+		folder_view_flatten_thread_children (root, child->child, latest);
+
+		if (child->sort_date > (*latest)->sort_date)
+			*latest = child;
+
 		view_row_parent_child (root, child);
 
 		child = next;
@@ -2460,12 +2514,20 @@ folder_view_flatten_thread_children (ViewRow *root,
 }
 
 static void
-folder_view_flatten_thread_roots (ViewRow *head)
+folder_view_flatten_thread_roots (CamelFolderView *self,
+                                  ViewBuildCtx *ctx,
+                                  ViewRow *head)
 {
 	ViewRow *cc;
 
 	for (cc = head; cc; cc = cc->next) {
-		folder_view_flatten_thread_children (cc, cc->child);
+		ViewRow *latest = cc;
+
+		folder_view_flatten_thread_children (cc, cc->child, &latest);
+
+		if (self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT_ROOT_LATEST &&
+		    latest != cc)
+			view_row_swap_message_infos (ctx->uid_to_node, cc, latest);
 	}
 }
 
@@ -2548,8 +2610,8 @@ thread_items (CamelFolderView *self,
 	if (success)
 		success = folder_view_prune_phantom_roots (ctx, &head, cancellable, error);
 
-	if (success && self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT)
-		folder_view_flatten_thread_roots (head);
+	if (success && threading_is_flat (self->threading))
+		folder_view_flatten_thread_roots (self, ctx, head);
 
 	if (success)
 		folder_view_clear_root_subjects (head);
@@ -4275,7 +4337,7 @@ folder_view_threaded_change_needs_rebuild (CamelFolderView *self,
 		if (!folder_view_message_hidden_by_flags (self, row->info))
 			continue;
 
-		is_flat_child = self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT &&
+		is_flat_child = threading_is_flat (self->threading) &&
 			row->parent != NULL && !row->parent->is_group;
 
 		if (!is_flat_child)
@@ -5436,7 +5498,7 @@ camel_folder_view_get_depth (CamelFolderView *self,
 
 	row = g_hash_table_lookup (self->current_gen->uid_to_node, uid);
 
-	if (self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT)
+	if (threading_is_flat (self->threading))
 		return (row && row->parent) ? 1 : 0;
 
 	if (self->threading == CAMEL_FOLDER_VIEW_THREADING_COMPRESSED)
@@ -5470,7 +5532,7 @@ camel_folder_view_is_expandable (CamelFolderView *self,
 	if (!row || !row->child)
 		return FALSE;
 
-	if (self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT)
+	if (threading_is_flat (self->threading))
 		return row->parent == NULL;
 
 	return TRUE;
