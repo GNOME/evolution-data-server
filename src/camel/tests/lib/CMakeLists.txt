@@ -22,7 +22,6 @@ add_dependencies(cameltest camel)
 
 target_compile_definitions(cameltest PRIVATE
 	-DG_LOG_DOMAIN=\"camel-test\"
-	-DCAMEL_BUILD_DIR=\"${CMAKE_BINARY_DIR}/src/camel\"
 	-DINSTALLED_TEST_DIR=\"${INSTALLED_TESTS_EXEC_DIR}\"
 )
 
@@ -53,7 +52,7 @@ add_dependencies(cameltest-provider camel)
 
 target_compile_definitions(cameltest-provider PRIVATE
 	-DG_LOG_DOMAIN=\"camel-test-provider\"
-	-DCAMEL_BUILD_DIR=\"${CMAKE_BINARY_DIR}/src/camel\"
+	-DCAMEL_PROVIDERDIR=\"${camel_providerdir}\"
 )
 
 target_compile_options(cameltest-provider PUBLIC

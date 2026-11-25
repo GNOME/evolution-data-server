@@ -105,13 +105,38 @@ set(TESTS_SKIP
 add_camel_tests(TESTS ON)
 add_camel_tests(TESTS_SKIP OFF)
 
-add_dependencies(test-camel-provider-imapx camelimapx)
+if(ENABLE_INSTALLED_TESTS)
+	install(DIRECTORY data DESTINATION ${INSTALLED_TESTS_EXEC_DIR})
+endif(ENABLE_INSTALLED_TESTS)
 
-target_include_directories(test-camel-provider-imapx PRIVATE
+add_executable(test-camel-imapx-bodystructure test-camel-imapx-bodystructure.c)
+add_dependencies(test-camel-imapx-bodystructure camel camelimapx)
+
+target_compile_definitions(test-camel-imapx-bodystructure PRIVATE
+	-DG_LOG_DOMAIN=\"test-camel-imapx-bodystructure\"
+)
+
+target_compile_options(test-camel-imapx-bodystructure PUBLIC
+	${CAMEL_CFLAGS}
+)
+
+target_include_directories(test-camel-imapx-bodystructure PRIVATE
+	${CMAKE_BINARY_DIR}
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/src/camel
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/camel
+	${CMAKE_SOURCE_DIR}/src/camel/tests/lib
 	${CMAKE_SOURCE_DIR}/src/camel/providers/imapx
 	${CMAKE_BINARY_DIR}/src/camel/providers/imapx
+	${CAMEL_INCLUDE_DIRS}
 )
 
-target_link_libraries(test-camel-provider-imapx
+target_link_libraries(test-camel-imapx-bodystructure
+	camel
+	cameltest
 	$<TARGET_FILE:camelimapx>
+	${CAMEL_LDFLAGS}
 )
+
+add_check_test(test-camel-imapx-bodystructure)
