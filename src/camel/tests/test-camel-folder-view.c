@@ -125,6 +125,32 @@ add_threaded_messages (CamelFolder *folder)
 }
 
 static void
+add_deep_reply_first_messages (CamelFolder *folder,
+			       gchar **part_a,
+			       gchar **part_b,
+			       gchar **part_c)
+{
+	guint64 refs_b[] = { MSG_ID_C, MSG_ID_A };
+	guint64 refs_c[] = { MSG_ID_A };
+
+	*part_a = test_build_part_string (MSG_ID_A, NULL, 0);
+	*part_b = test_build_part_string (MSG_ID_B, refs_b, 2);
+	*part_c = test_build_part_string (MSG_ID_C, refs_c, 1);
+
+	test_add_messages (folder,
+		"uid", "a", "subject", "Flat thread root", "from", "alice@test.com",
+		"dsent", (gint64) 1000, "dreceived", (gint64) 1010,
+		"part", *part_a, "",
+		"uid", "b", "subject", "Re: Re: Flat thread root", "from", "bob@test.com",
+		"dsent", (gint64) 3000, "dreceived", (gint64) 3010,
+		"part", *part_b, "",
+		"uid", "c", "subject", "Re: Flat thread root", "from", "carol@test.com",
+		"dsent", (gint64) 2000, "dreceived", (gint64) 2010,
+		"part", *part_c, "",
+		NULL);
+}
+
+static void
 test_folder_view_flat_no_filter (void)
 {
 	CamelStore *store;
@@ -269,6 +295,55 @@ test_folder_view_flat_threads (void)
 	g_clear_object (&view);
 	g_clear_object (&folder);
 	g_clear_object (&store);
+}
+
+static void
+test_folder_view_flat_thread_root_with_deep_reply_first (void)
+{
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderView *view;
+	CamelFolderViewRow *first;
+	gchar *part_a, *part_b, *part_c;
+
+	store = test_store_new ();
+	folder = create_test_folder (store, "f1");
+	add_deep_reply_first_messages (folder, &part_a, &part_b, &part_c);
+
+	view = camel_folder_view_new (folder, TRUE);
+
+	camel_folder_view_set_threading (view, CAMEL_FOLDER_VIEW_THREADING_FLAT);
+	camel_folder_view_set_sort (view, CAMEL_FOLDER_VIEW_COLUMN_DATE_SENT, CAMEL_SORT_ASCENDING);
+	camel_folder_view_rebuild_sync (view, NULL, NULL);
+
+	g_assert_cmpuint (camel_folder_view_get_row_count (view), ==, 3);
+
+	first = camel_folder_view_get_row (view, 0);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "a");
+
+	first = camel_folder_view_get_row (view, 1);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "c");
+
+	first = camel_folder_view_get_row (view, 2);
+
+	g_assert_nonnull (first);
+	g_assert_cmpstr (camel_folder_view_row_get_uid (first), ==, "b");
+
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "a"), ==, 0);
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "c"), ==, 1);
+	g_assert_cmpuint (camel_folder_view_get_depth (view, "b"), ==, 1);
+
+	g_clear_object (&view);
+	g_clear_object (&folder);
+	g_clear_object (&store);
+
+	g_free (part_a);
+	g_free (part_b);
+	g_free (part_c);
 }
 
 static void
@@ -4663,6 +4738,7 @@ main (gint argc,
 	g_test_add_func ("/Camel/CamelFolderView/FlatWithFilter", test_folder_view_flat_with_filter);
 	g_test_add_func ("/Camel/CamelFolderView/Threaded", test_folder_view_threaded);
 	g_test_add_func ("/Camel/CamelFolderView/FlatThreads", test_folder_view_flat_threads);
+	g_test_add_func ("/Camel/CamelFolderView/FlatThreadRootWithDeepReplyFirst", test_folder_view_flat_thread_root_with_deep_reply_first);
 	g_test_add_func ("/Camel/CamelFolderView/ThreadSubject", test_folder_view_thread_subject);
 	g_test_add_func ("/Camel/CamelFolderView/Sort", test_folder_view_sort);
 	g_test_add_func ("/Camel/CamelFolderView/SortNonDbColumn", test_folder_view_sort_non_db_column);

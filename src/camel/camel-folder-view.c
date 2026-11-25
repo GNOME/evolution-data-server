@@ -504,117 +504,49 @@ folder_view_thread_node_by_refs (CamelFolderView *self,
                                  gboolean create_placeholders)
 {
 	CamelSummaryMessageID mid_val;
+	ViewRow *child = row, *cc;
 	guint jj;
 
 	if (self->threading == CAMEL_FOLDER_VIEW_THREADING_NONE || !references || references->len == 0)
 		return;
 
-	if (self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT) {
-		ViewRow *thread_root = NULL, *cc;
+	if (create_placeholders) {
+		for (jj = 0; jj < references->len; jj++) {
+			gboolean found = FALSE;
 
+			mid_val.id.id = g_array_index (references, guint64, jj);
+			if (!mid_val.id.id)
+				continue;
+
+			cc = g_hash_table_lookup (ctx->id_table, &mid_val);
+			if (cc == NULL) {
+				cc = camel_memchunk_alloc0 (ctx->node_chunks);
+				cc->view = self;
+				cc->expanded = self->default_expanded;
+				cc->id_table_key.id.id = mid_val.id.id;
+				cc->has_id_table_key = TRUE;
+				g_hash_table_insert (ctx->id_table, &cc->id_table_key, cc);
+			} else {
+				found = TRUE;
+			}
+
+			if (cc != child) {
+				view_row_parent_child (cc, child);
+				if (found)
+					break;
+			}
+			child = cc;
+		}
+	} else {
 		for (jj = 0; jj < references->len; jj++) {
 			mid_val.id.id = g_array_index (references, guint64, jj);
 			if (!mid_val.id.id)
 				continue;
 
 			cc = g_hash_table_lookup (ctx->id_table, &mid_val);
-			if (cc) {
-				while (cc->parent) {
-					cc = cc->parent;
-				}
-				thread_root = cc;
+			if (cc && cc != row) {
+				view_row_parent_child (cc, row);
 				break;
-			}
-		}
-
-		if (create_placeholders) {
-			for (jj = 0; jj < references->len; jj++) {
-				mid_val.id.id = g_array_index (references, guint64, jj);
-				if (!mid_val.id.id)
-					continue;
-
-				cc = g_hash_table_lookup (ctx->id_table, &mid_val);
-				if (!cc) {
-					cc = camel_memchunk_alloc0 (ctx->node_chunks);
-					cc->view = self;
-					cc->expanded = self->default_expanded;
-					cc->id_table_key.id.id = mid_val.id.id;
-					cc->has_id_table_key = TRUE;
-					g_hash_table_insert (ctx->id_table, &cc->id_table_key, cc);
-
-					if (thread_root)
-						view_row_parent_child (thread_root, cc);
-					else
-						thread_root = cc;
-				} else {
-					ViewRow *rr = cc;
-
-					while (rr->parent) {
-						rr = rr->parent;
-					}
-
-					if (!thread_root) {
-						thread_root = rr;
-					} else if (rr != thread_root) {
-						ViewRow *ch = rr->child;
-
-						rr->child = NULL;
-						while (ch) {
-							ViewRow *nx = ch->next;
-							ch->next = NULL;
-							ch->parent = NULL;
-							view_row_parent_child (thread_root, ch);
-							ch = nx;
-						}
-						view_row_parent_child (thread_root, rr);
-					}
-				}
-			}
-		}
-
-		if (thread_root && thread_root != row)
-			view_row_parent_child (thread_root, row);
-	} else {
-		ViewRow *child = row, *cc;
-
-		if (create_placeholders) {
-			for (jj = 0; jj < references->len; jj++) {
-				gboolean found = FALSE;
-
-				mid_val.id.id = g_array_index (references, guint64, jj);
-				if (!mid_val.id.id)
-					continue;
-
-				cc = g_hash_table_lookup (ctx->id_table, &mid_val);
-				if (cc == NULL) {
-					cc = camel_memchunk_alloc0 (ctx->node_chunks);
-					cc->view = self;
-					cc->expanded = self->default_expanded;
-					cc->id_table_key.id.id = mid_val.id.id;
-					cc->has_id_table_key = TRUE;
-					g_hash_table_insert (ctx->id_table, &cc->id_table_key, cc);
-				} else {
-					found = TRUE;
-				}
-
-				if (cc != child) {
-					view_row_parent_child (cc, child);
-					if (found)
-						break;
-				}
-				child = cc;
-			}
-		} else {
-			for (jj = 0; jj < references->len; jj++) {
-				mid_val.id.id = g_array_index (references, guint64, jj);
-				if (!mid_val.id.id)
-					continue;
-
-				cc = g_hash_table_lookup (ctx->id_table, &mid_val);
-				if (cc && cc != row) {
-					view_row_parent_child (cc, row);
-					break;
-				}
 			}
 		}
 	}
@@ -2511,6 +2443,32 @@ folder_view_clear_root_subjects (ViewRow *row)
 	}
 }
 
+static void
+folder_view_flatten_thread_children (ViewRow *root,
+                                     ViewRow *child)
+{
+	ViewRow *next;
+
+	while (child) {
+		next = child->next;
+
+		folder_view_flatten_thread_children (root, child->child);
+		view_row_parent_child (root, child);
+
+		child = next;
+	}
+}
+
+static void
+folder_view_flatten_thread_roots (ViewRow *head)
+{
+	ViewRow *cc;
+
+	for (cc = head; cc; cc = cc->next) {
+		folder_view_flatten_thread_children (cc, cc->child);
+	}
+}
+
 static gboolean
 thread_items (CamelFolderView *self,
               ViewBuildCtx *ctx,
@@ -2589,6 +2547,9 @@ thread_items (CamelFolderView *self,
 
 	if (success)
 		success = folder_view_prune_phantom_roots (ctx, &head, cancellable, error);
+
+	if (success && self->threading == CAMEL_FOLDER_VIEW_THREADING_FLAT)
+		folder_view_flatten_thread_roots (head);
 
 	if (success)
 		folder_view_clear_root_subjects (head);
