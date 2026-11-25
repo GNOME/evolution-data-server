@@ -199,7 +199,7 @@ static struct {
 } flagbits[] = {
 	{ 'D', CAMEL_MESSAGE_DRAFT },
 	{ 'F', CAMEL_MESSAGE_FLAGGED },
-	/*{ 'P', CAMEL_MESSAGE_FORWARDED },*/
+	{ 'P', CAMEL_MESSAGE_FORWARDED },
 	{ 'R', CAMEL_MESSAGE_ANSWERED },
 	{ 'S', CAMEL_MESSAGE_SEEN },
 	{ 'T', CAMEL_MESSAGE_DELETED },
