@@ -143,6 +143,11 @@ guint		e_source_webdav_get_limit_download_days
 void		e_source_webdav_set_limit_download_days
 						(ESourceWebdav *extension,
 						 guint value);
+gboolean	e_source_webdav_get_allow_sync_collection
+						(ESourceWebdav *extension);
+void		e_source_webdav_set_allow_sync_collection
+						(ESourceWebdav *extension,
+						 gboolean allow_sync_collection);
 
 G_END_DECLS
 

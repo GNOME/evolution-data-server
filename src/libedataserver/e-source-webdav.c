@@ -54,6 +54,7 @@ struct _ESourceWebdavPrivate {
 	gchar *ssl_trust;
 	gboolean avoid_ifmatch;
 	gboolean calendar_auto_schedule;
+	gboolean allow_sync_collection;
 	GUri *uri;
 	guint order;
 	guint timeout;
@@ -74,6 +75,7 @@ enum {
 	PROP_ORDER,
 	PROP_TIMEOUT,
 	PROP_LIMIT_DOWNLOAD_DAYS,
+	PROP_ALLOW_SYNC_COLLECTION,
 	N_PROPS
 };
 
@@ -341,6 +343,12 @@ source_webdav_set_property (GObject *object,
 				E_SOURCE_WEBDAV (object),
 				g_value_get_uint (value));
 			return;
+
+		case PROP_ALLOW_SYNC_COLLECTION:
+			e_source_webdav_set_allow_sync_collection (
+				E_SOURCE_WEBDAV (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -434,6 +442,13 @@ source_webdav_get_property (GObject *object,
 			g_value_set_uint (
 				value,
 				e_source_webdav_get_limit_download_days (
+				E_SOURCE_WEBDAV (object)));
+			return;
+
+		case PROP_ALLOW_SYNC_COLLECTION:
+			g_value_set_boolean (
+				value,
+				e_source_webdav_get_allow_sync_collection (
 				E_SOURCE_WEBDAV (object)));
 			return;
 	}
@@ -720,6 +735,24 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"limit-download-days",
 			NULL, NULL,
 			0, G_MAXUINT, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_EXPLICIT_NOTIFY |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING);
+
+	/**
+	 * ESourceWebdav:allow-sync-collection
+	 *
+	 * Whether the backend can use sync-collection extension, when the server supports it.
+	 *
+	 * Since: 3.64
+	 **/
+	properties[PROP_ALLOW_SYNC_COLLECTION] =
+		g_param_spec_boolean (
+			"allow-sync-collection",
+			NULL, NULL,
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_EXPLICIT_NOTIFY |
@@ -1814,4 +1847,49 @@ e_source_webdav_set_limit_download_days (ESourceWebdav *extension,
 	extension->priv->limit_download_days = value;
 
 	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_LIMIT_DOWNLOAD_DAYS]);
+}
+
+/**
+ * e_source_webdav_get_allow_sync_collection:
+ * @extension: an #ESourceWebdav
+ *
+ * Returns whether the backend can use sync-collection extension,
+ * if the server supports it.
+ *
+ * The default is %TRUE.
+ *
+ * Returns: %TRUE, when the backend can use the sync-collection extension
+ *
+ * Since: 3.64
+ **/
+gboolean
+e_source_webdav_get_allow_sync_collection (ESourceWebdav *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), FALSE);
+
+	return extension->priv->allow_sync_collection;
+}
+
+/**
+ * e_source_webdav_set_allow_sync_collection:
+ * @extension: an #ESourceWebdav
+ * @allow_sync_collection: whether the backend can use sync-collection extension
+ *
+ * Sets whether the backend can use sync-collection extension,
+ * if the server supports it.
+ *
+ * Since: 3.64
+ **/
+void
+e_source_webdav_set_allow_sync_collection (ESourceWebdav *extension,
+                                           gboolean allow_sync_collection)
+{
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if ((!extension->priv->allow_sync_collection) == (!allow_sync_collection))
+		return;
+
+	extension->priv->allow_sync_collection = allow_sync_collection;
+
+	g_object_notify_by_pspec (G_OBJECT (extension), properties[PROP_ALLOW_SYNC_COLLECTION]);
 }

@@ -1042,7 +1042,7 @@ ecb_caldav_resource_modified_cb (EWebDAVSession *webdav,
 {
 	CalDAVChangesData *ccd = user_data;
 
-	if (href && *href && etag && *etag && !ecb_caldav_href_is_collection (NULL, href)) {
+	if (href && *href && !ecb_caldav_href_is_collection (NULL, href)) {
 		ECalMetaBackendInfo *nfo;
 
 		nfo = e_cal_meta_backend_info_new ("", etag, NULL, href);
@@ -1100,6 +1100,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 {
 	ECalBackendCalDAV *cbdav;
 	EWebDAVSession *webdav;
+	gboolean use_sync_collection;
 	gboolean can_run_getctag = TRUE;
 	gboolean can_run_list = TRUE;
 	gboolean success;
@@ -1120,7 +1121,17 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 	webdav = ecb_caldav_ref_session (cbdav);
 
-	if (cbdav->priv->supports_sync_collection && !cbdav->priv->limit_download_days) {
+	use_sync_collection = cbdav->priv->supports_sync_collection;
+	if (use_sync_collection) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (cbdav)), E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+		if (!e_source_webdav_get_allow_sync_collection (webdav_extension))
+			use_sync_collection = FALSE;
+	}
+
+	if (use_sync_collection && !cbdav->priv->limit_download_days) {
 		CalDAVChangesData ccd;
 		gchar *new_sync_tag = NULL;
 		const gchar *last_sync_token = cbdav->priv->force_refresh ? NULL : last_sync_tag;

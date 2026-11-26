@@ -1295,7 +1295,7 @@ ebb_carddav_resource_modified_cb (EWebDAVSession *webdav,
 {
 	CardDAVChangesData *ccd = user_data;
 
-	if (href && *href && etag && *etag) {
+	if (href && *href) {
 		EBookMetaBackendInfo *nfo;
 
 		nfo = e_book_meta_backend_info_new ("", etag, NULL, href);
@@ -1353,6 +1353,7 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 {
 	EBookBackendCardDAV *bbdav;
 	EWebDAVSession *webdav;
+	gboolean use_sync_collection;
 	gboolean can_run_getctag = TRUE;
 	gboolean can_run_list = TRUE;
 	gboolean success;
@@ -1372,7 +1373,17 @@ ebb_carddav_get_changes_sync (EBookMetaBackend *meta_backend,
 	bbdav = E_BOOK_BACKEND_CARDDAV (meta_backend);
 	webdav = ebb_carddav_ref_session (bbdav);
 
-	if (bbdav->priv->supports_sync_collection) {
+	use_sync_collection = bbdav->priv->supports_sync_collection;
+	if (use_sync_collection) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (bbdav)), E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+		if (!e_source_webdav_get_allow_sync_collection (webdav_extension))
+			use_sync_collection = FALSE;
+	}
+
+	if (use_sync_collection) {
 		CardDAVChangesData ccd;
 		gchar *new_sync_tag = NULL;
 		const gchar *last_sync_token = last_sync_tag;
