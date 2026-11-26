@@ -140,3 +140,4 @@ target_link_libraries(test-camel-imapx-bodystructure
 )
 
 add_check_test(test-camel-imapx-bodystructure)
+set_tests_properties(test-camel-imapx-bodystructure PROPERTIES ENVIRONMENT "GSETTINGS_SCHEMA_DIR=${CMAKE_BINARY_DIR}/data")
