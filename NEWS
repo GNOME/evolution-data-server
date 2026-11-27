@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.62.2 2026-11-27
+---------------------------------------
+
+Bug Fixes:
+	I#672 - Calendar: Limit which local files are inlined in components ][
+	I#676 - test-cal-cache-search: Correct time value
+	I#677 - Camel: Use locale-independent case conversion for protocol data (Ramal Rəhimov)
+	I#680 - Maildir: Support the ‘P’ (passed/forwarded) flag in file names
+	I#681 - Correct Camel installed tests
+	M!271 - Address book: Notify views about every bulk-modified contact (Tobias Mueller)
+	M!272 - ECache: Fix double free of objects_stmt in e_cache_init_tables() in error path (Tobias Mueller)
+	M!275 - ECalBackendFile: Remove the save idle before saving in dispose (Tobias Mueller)
+	M!291 - ECalBackendFile: Fix a possible use-after-free in the custom file monitor handler (Tobias Mueller)
+	evo-I#3417 - Camel: Use CRLF in MIME parts data
+
+Miscellaneous:
+	WebDAV: Add option to not use sync-collection extension
+
+Translations:
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.62.1 2026-10-09
 ---------------------------------------
 
