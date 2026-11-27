@@ -4407,7 +4407,7 @@ e_cal_util_get_property_email (ICalProperty *prop)
 }
 
 /**
- * e_cal_util_sanitize_untrusted_full:
+ * e_cal_util_sanitize_untrusted:
  * @comp: an #ICalComponent
  *
  * Sanitizes the @comp, which can be from an untrusted source,
